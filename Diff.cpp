@@ -22,14 +22,28 @@ struct Library* WindowBase;
 struct Library* LayoutBase;
 struct Library* ButtonBase;
 
+#include <stdio.h>
+#include "oscottlibs/SimpleString.h"
+
+using namespace oscottlibs;
+
 // Forward declarations
 void closeLibs();
+
+using namespace std;
 
 int main()
 {
   Object* pWindow;
   Object* pLayout;
   Object* pButton;
+
+  SimpleString s1 = "Hallo";
+  SimpleString s2 = "Welt";
+  SimpleString s3;
+  s3 = s1 + " " + s2;
+
+  printf("Text: %s\n", s3.C_str());
 
   struct Window* pIntuiWin;
 
@@ -90,7 +104,7 @@ int main()
   bool bDone = false;
   while(!bDone)
   {
-    ULONG winWait = (winSignal
+//    ULONG winWait = (winSignal
   }
 
 /*
@@ -110,9 +124,9 @@ int main()
               done=TRUE;
               break;
           }
-        } /* End while */
-      } /* End if */
-    } /* End while */
+        }
+      }
+    }
 */
 
 

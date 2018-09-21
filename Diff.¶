@@ -74,6 +74,7 @@ Section
 9
 File
 26 "Diff.qiq"
+"Diff.qiq"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -84,6 +85,7 @@ Section
 4
 File
 1 "Diff.cpp"
+"Diff.cpp"
 Storm Shell Project (Dependencies)
 "objects_debug/Diff.o" "objects_debug/Diff.debug"
 ""
@@ -104,18 +106,21 @@ Section
 7
 File
 5 "storm.lib"
+"storm.lib"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
 5 "amiga.lib"
+"amiga.lib"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
 5 "debug.lib"
+"debug.lib"
 Storm Shell Project (Dependencies)
 "" ""
 ""
