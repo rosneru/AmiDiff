@@ -47,13 +47,19 @@ int main(int argc, char **argv)
   // Screen successfully opened
   Delay(200L);
 
+  int screenWidth = pAppScreen->Width;
+  int screenHeight = pAppScreen->Height;
+  int screenBarHeight = pAppScreen->BarHeight;
+
+  int winWidth = screenWidth / 2;
+  int winHeight = screenHeight - screenBarHeight - 1;
 
   struct TagItem windowTags[] =
   {
-    {WA_Left, 50},
-    {WA_Top, 50},
-    {WA_Width, 320},
-    {WA_Height, 256},
+    {WA_Left, 0},
+    {WA_Top, screenBarHeight + 1},
+    {WA_Width, winWidth},
+    {WA_Height, winHeight},
     {WA_Title, (ULONG)"Left Diff Window"},
     {WA_PubScreen, (ULONG)pAppScreen},
     {TAG_DONE, NULL},
