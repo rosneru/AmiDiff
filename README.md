@@ -1,14 +1,13 @@
 # README #
 
-This is me on my Amiga experimenting and learning the basics of
-ReAction programming.
+This is me learning the basics of AMIGA programming.
 
-Maybe someday this developes into a graphical diff tool for OS2.X and 
-OS 3.x Amigas which could be ported to OS4.x without too many efforts.
+Maybe someday this develops into a graphical diff tool for OS2.04 and 
+above.
 
 
 ### Development environment ###
 
-* Amiga with OS3.9
-* NDK 3.9
+* Amiga with OS2.04 or newer
+* NDK for AmigaOS 2
 * StormC 4
