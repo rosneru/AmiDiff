@@ -13,10 +13,9 @@ void closeLibs();
 struct Library* IntuitionBase;
 struct Library* DosBase;
 
+
 int main(int argc, char **argv)
 {
-  struct Screen* pAppScreen;
-
   IntuitionBase = OpenLibrary("intuition.library", 37);
   DosBase = OpenLibrary("dos.library", 37);
 
@@ -33,25 +32,51 @@ int main(int argc, char **argv)
     return 20;
   }
 
-      pAppScreen = OpenScreenTags(NULL,
-                    SA_LikeWorkbench, TRUE,
-                    SA_Title, "AmiDiff (C) 2018 by Uwe Rosner.",
-                    TAG_DONE);
+  struct Screen* pAppScreen;
+  pAppScreen = OpenScreenTags(NULL,
+                SA_LikeWorkbench, TRUE,
+                SA_Title, "AmiDiff (C) 2018 by Uwe Rosner.",
+                TAG_DONE);
 
-      if (pAppScreen == NULL)
-      {
-        closeLibs();
-        return 30;
-      }
+  if (pAppScreen == NULL)
+  {
+    closeLibs();
+    return 30;
+  }
 
-      // Screen successfully opened
-      Delay(300L);
+  // Screen successfully opened
+  Delay(200L);
 
-      // TODO Opening Windows etc
 
-      CloseScreen(pAppScreen);
-      closeLibs();
-      return 0;
+  struct TagItem windowTags[] =
+  {
+    {WA_Left, 50},
+    {WA_Top, 50},
+    {WA_Width, 320},
+    {WA_Height, 256},
+    {WA_Title, (ULONG)"Left Diff Window"},
+    {WA_PubScreen, (ULONG)pAppScreen},
+    {TAG_DONE, NULL},
+  };
+
+  struct Window* pLeftWindow;
+  pLeftWindow = OpenWindowTagList(NULL, windowTags);
+  if(pLeftWindow == NULL)
+  {
+    CloseScreen(pAppScreen);
+    closeLibs();
+    return 40;
+  }
+
+  // Window successfully opened
+  Delay(200L);
+
+  // TODO Instanciating menus
+  CloseWindow(pLeftWindow);
+
+  CloseScreen(pAppScreen);
+  closeLibs();
+  return 0;
 }
 
 void closeLibs()
