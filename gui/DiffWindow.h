@@ -13,7 +13,7 @@
 class DiffWindow
 {
 public:
-  DiffWindow(struct Screen* p_pScreen);
+  DiffWindow(const struct Screen* p_pScreen);
   ~DiffWindow();
 
   /**
@@ -50,7 +50,7 @@ public:
 
 
 private:
-  struct Screen* m_pScreen;
+  const struct Screen* m_pScreen;
   struct Window* m_pWindow;
 };
 

@@ -2,7 +2,7 @@
 #include "DiffWindow.h"
 
 
-DiffWindow::DiffWindow(struct Screen* p_pScreen)
+DiffWindow::DiffWindow(const struct Screen* p_pScreen)
 {
   m_pScreen = p_pScreen;
   m_pWindow = NULL;
@@ -34,7 +34,6 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   //
   // Calculating window size in depency of screen dimesions
   //
-
   int screenWidth = m_pScreen->Width;
   int screenHeight = m_pScreen->Height;
   int screenBarHeight = m_pScreen->BarHeight;
@@ -64,6 +63,8 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   // Opening the window
   //
   m_pWindow = OpenWindowTagList(NULL, windowTags);
+
+  return m_pWindow != NULL;
 }
 
 void DiffWindow::Close()

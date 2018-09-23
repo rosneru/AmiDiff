@@ -133,8 +133,8 @@ int main(int argc, char **argv)
   ClearMenuStrip(leftWindow.Window());
   FreeMenus(pAppMenu);
   FreeVisualInfo(pVisualInfo);
-    leftWindow.Close();
-    screen.Close();
+  leftWindow.Close();
+  screen.Close();
   closeLibs();
   return 0;
 }
