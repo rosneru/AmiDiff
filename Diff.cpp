@@ -14,12 +14,15 @@
 #include "AppScreen.h"
 #include "DiffWindow.h"
 
+
 void closeLibs();
 void handleWindowEvents(struct Window *win, struct Menu *menuStrip);
+
 
 struct Library* IntuitionBase;
 struct Library* DosBase;
 struct Library* GadToolsBase;
+
 
 int main(int argc, char **argv)
 {
@@ -122,11 +125,64 @@ int main(int argc, char **argv)
   }
 
   //
-  // Waiting for user activity
+  // Waiting for messages from Intuition about user activity
   //
 
-  //int leftWindowSignal = 1L <
-//  handleWindowEvents(leftWindow.IntuiWindow(), appMenu.IntuiMenu());
+  int leftWinSig = 1L << leftWindow.IntuiWindow()->UserPort->mp_SigBit;
+  int rightWinSig = 1L << rightWindow.IntuiWindow()->UserPort->mp_SigBit;
+
+  bool bExit = false;
+  do
+  {
+    int signals = Wait(leftWinSig | rightWinSig);
+    struct IntuiMessage* pMsg = NULL;
+
+    do
+    {
+      if(signals & leftWinSig)
+      {
+        pMsg = (struct IntuiMessage*)
+                 GetMsg(leftWindow.IntuiWindow()->UserPort);
+      }
+      else if(signals & rightWinSig)
+      {
+        pMsg = (struct IntuiMessage*)
+                 GetMsg(rightWindow.IntuiWindow()->UserPort);
+      }
+
+      switch (pMsg->Class)
+      {
+      case IDCMP_MENUPICK:
+        UWORD menuNumber = pMsg->Code;
+        while ((menuNumber != MENUNULL) && (bExit == false))
+        {
+          struct MenuItem* pItem = ItemAddress(appMenu.IntuiMenu(),
+                                     menuNumber);
+
+          // Which item in menu and submenu was selected?
+          UWORD menuNum = MENUNUM(menuNumber);
+          UWORD itemNum = ITEMNUM(menuNumber);
+          UWORD subNum  = SUBNUM(menuNumber);
+
+          /* stop if quit is selected. */
+          if ((menuNum == 0) && (itemNum == 3))
+          {
+            bExit = true;
+          }
+
+          menuNumber = pItem->NextSelect;
+        }
+        break;
+      }
+
+      ReplyMsg((struct Message *)pMsg);
+
+
+    }
+    while(bExit == false && pMsg != NULL);
+
+  }
+  while(bExit == false);
 
   rightWindow.Close();
   leftWindow.Close();
@@ -143,52 +199,3 @@ void closeLibs()
   CloseLibrary(IntuitionBase);
 }
 
-void handleWindowEvents(struct Window *win1, struct Menu *menuStrip)
-{
-  struct IntuiMessage *msg;
-  SHORT done;
-  UWORD menuNumber;
-  UWORD menuNum;
-  UWORD itemNum;
-  UWORD subNum;
-  struct MenuItem *item;
-
-  done = FALSE;
-  while (FALSE == done)
-  {
-    // we only have one signal bit, so we do not have to check which
-    // bit broke the Wait().
-    Wait(1L << win1->UserPort->mp_SigBit);
-
-    while ((FALSE == done) &&
-            (NULL != (msg = (struct IntuiMessage *)GetMsg(win1->UserPort))))
-    {
-      switch (msg->Class)
-      {
-//    case IDCMP_CLOSEWINDOW:
-//        done = TRUE;
-//        break;
-      case IDCMP_MENUPICK:
-          menuNumber = msg->Code;
-          while ((menuNumber != MENUNULL) && (!done))
-              {
-              item = ItemAddress(menuStrip, menuNumber);
-
-              /* process the item here! */
-              menuNum = MENUNUM(menuNumber);
-              itemNum = ITEMNUM(menuNumber);
-              subNum  = SUBNUM(menuNumber);
-
-              /* stop if quit is selected. */
-              if ((menuNum == 0) && (itemNum == 3))
-                  done = TRUE;
-
-              menuNumber = item->NextSelect;
-              }
-          break;
-      }
-
-      ReplyMsg((struct Message *)msg);
-    }
-  }
-}
