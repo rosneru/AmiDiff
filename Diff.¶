@@ -95,6 +95,12 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "oscottlibs/SimpleString.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/SimpleString.o" "objects_debug/SimpleString.debug"
+""
+1 1
+File
 1 "gui/DiffWindow.cpp"
 "gui/DiffWindow.cpp"
 "gui/DiffWindow.h"
@@ -139,6 +145,12 @@ Storm Shell Project (Dependencies)
 File
 2 "gui/DiffWindow.h"
 "gui/DiffWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "oscottlibs/SimpleString.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

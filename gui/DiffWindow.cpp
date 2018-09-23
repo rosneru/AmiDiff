@@ -47,7 +47,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
 
   if(p_DwType == RIGHT)
   {
-    winLeft = winWidth; // ==> screenWidth / 2; see above
+    winLeft = winWidth; // begin one pixel after LEFT window ends
     m_Title = "Right Diff Window";
     activateWin = FALSE;
   }
