@@ -10,6 +10,9 @@
 #include <clib/intuition_protos.h>
 #include <clib/gadtools_protos.h>
 
+#include "AppScreen.h"
+#include "DiffWindow.h"
+
 void closeLibs();
 void handleWindowEvents(struct Window *win, struct Menu *menuStrip);
 
@@ -40,58 +43,23 @@ int main(int argc, char **argv)
   // Opening the screen
   //
 
-  struct Screen* pAppScreen;
-  pAppScreen = OpenScreenTags(NULL,
-                SA_LikeWorkbench, TRUE,
-                SA_Title, "AmiDiff (C) 2018 by Uwe Rosner.",
-                TAG_DONE);
-
-  if (pAppScreen == NULL)
+  AppScreen screen;
+  if (!screen.Open())
   {
     // Opening the screen failed
     closeLibs();
     return 30;
   }
 
-  //
-  // Calculating window size in depency of screen dimesions
-  //
-
-  int screenWidth = pAppScreen->Width;
-  int screenHeight = pAppScreen->Height;
-  int screenBarHeight = pAppScreen->BarHeight;
-
-  int winWidth = screenWidth / 2;
-  int winHeight = screenHeight - screenBarHeight - 1;
-
-  //
-  // Setting up the window properties
-  //
-
-  struct TagItem windowTags[] =
-  {
-    { WA_Left, 0 },
-    { WA_Top, screenBarHeight + 1 },
-    { WA_Width, winWidth },
-    { WA_Height, winHeight },
-    { WA_Title, (ULONG)"Left Diff Window" },
-    { WA_Activate, TRUE },
-    { WA_PubScreen, (ULONG)pAppScreen },
-    { WA_IDCMP, IDCMP_MENUPICK },
-    { WA_NewLookMenus, TRUE },  // Ignored before v39
-    { TAG_DONE, NULL },
-  };
 
   //
   // Opening the window
   //
-
-  struct Window* pLeftWindow;
-  pLeftWindow = OpenWindowTagList(NULL, windowTags);
-  if(pLeftWindow == NULL)
+  DiffWindow leftWindow(screen.Screen());
+  if(!leftWindow.Open(DiffWindow::LEFT))
   {
     // Opening the window failed
-    CloseScreen(pAppScreen);
+    screen.Close();
     closeLibs();
     return 40;
   }
@@ -112,12 +80,12 @@ int main(int argc, char **argv)
 
   // Prepare menu: get visual info from screen
   APTR* pVisualInfo = NULL;
-  pVisualInfo = (APTR*)GetVisualInfo(pAppScreen, TAG_END);
+  pVisualInfo = (APTR*)GetVisualInfo(screen.Screen(), TAG_END);
   if(pVisualInfo == NULL)
   {
     // Getting visual info has failed
-    CloseWindow(pLeftWindow);
-    CloseScreen(pAppScreen);
+    leftWindow.Close();
+    screen.Close();
     closeLibs();
     return 40;
 
@@ -129,8 +97,8 @@ int main(int argc, char **argv)
   {
     // Creating the menu has failed
     FreeVisualInfo(pVisualInfo);
-    CloseWindow(pLeftWindow);
-    CloseScreen(pAppScreen);
+    leftWindow.Close();
+    screen.Close();
     closeLibs();
     return 50;
   }
@@ -142,31 +110,31 @@ int main(int argc, char **argv)
   {
     FreeMenus(pAppMenu);
     FreeVisualInfo(pVisualInfo);
-    CloseWindow(pLeftWindow);
-    CloseScreen(pAppScreen);
+    leftWindow.Close();
+    screen.Close();
     closeLibs();
     return 60;
   }
 
   // Wire the menu strip into the window
-  if(SetMenuStrip(pLeftWindow, pAppMenu) == FALSE)
+  if(SetMenuStrip(leftWindow.Window(), pAppMenu) == FALSE)
   {
     FreeMenus(pAppMenu);
     FreeVisualInfo(pVisualInfo);
-    CloseWindow(pLeftWindow);
-    CloseScreen(pAppScreen);
+    leftWindow.Close();
+    screen.Close();
     closeLibs();
     return 70;
 
   }
 
-  handleWindowEvents(pLeftWindow, pAppMenu);
+  handleWindowEvents(leftWindow.Window(), pAppMenu);
 
-  ClearMenuStrip(pLeftWindow);
+  ClearMenuStrip(leftWindow.Window());
   FreeMenus(pAppMenu);
   FreeVisualInfo(pVisualInfo);
-  CloseWindow(pLeftWindow);
-  CloseScreen(pAppScreen);
+    leftWindow.Close();
+    screen.Close();
   closeLibs();
   return 0;
 }

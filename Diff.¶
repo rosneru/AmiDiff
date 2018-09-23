@@ -3,6 +3,8 @@ Settings (Start)
 C/C++ Environment
 "StormC:include"
 0
+"gui"
+0
 Includepath (End)
 0 "" 80
 1 "objects_debug"
@@ -92,18 +94,24 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "gui/DiffWindow.cpp"
+"gui/DiffWindow.cpp"
+"gui/DiffWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
 ""
 1 1
 File
 1 "gui/AppScreen.cpp"
+"gui/AppScreen.cpp"
+"gui/AppScreen.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AppScreen.o" "objects_debug/AppScreen.debug"
 ""
 1 1
 File
 1 "gui/AppMenu.cpp"
+"gui/AppMenu.cpp"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AppMenu.o" "objects_debug/AppMenu.debug"
 ""
@@ -114,18 +122,21 @@ Section
 2
 File
 2 "gui/AppMenu.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
 2 "gui/AppScreen.h"
+"gui/AppScreen.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
 2 "gui/DiffWindow.h"
+"gui/DiffWindow.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
