@@ -79,7 +79,7 @@ int main(int argc, char **argv)
   }
 
   //
-  // Instanciating the menu via GadTools
+  // Creating the menu
   //
 
   AppMenu appMenu(screen.Screen());
@@ -93,6 +93,10 @@ int main(int argc, char **argv)
     return 60;
   }
 
+  //
+  // Installing menu to left window
+  //
+
   if(appMenu.BindToWindow(leftWindow.Window()) == FALSE)
   {
     rightWindow.Close();
@@ -102,6 +106,10 @@ int main(int argc, char **argv)
 
     return 70;
   }
+
+  //
+  // Installing menu to left window
+  //
 
   if(appMenu.BindToWindow(rightWindow.Window()) == FALSE)
   {
@@ -113,8 +121,12 @@ int main(int argc, char **argv)
     return 70;
   }
 
+  //
+  // Waiting for user activity
+  //
 
-  handleWindowEvents(leftWindow.Window(), appMenu.Menu());
+  //int leftWindowSignal = 1L <
+//  handleWindowEvents(leftWindow.Window(), appMenu.Menu());
 
   rightWindow.Close();
   leftWindow.Close();
