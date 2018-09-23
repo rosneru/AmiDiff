@@ -75,6 +75,7 @@ int main(int argc, char **argv)
     { WA_Width, winWidth },
     { WA_Height, winHeight },
     { WA_Title, (ULONG)"Left Diff Window" },
+    { WA_Activate, TRUE },
     { WA_PubScreen, (ULONG)pAppScreen },
     { WA_IDCMP, IDCMP_MENUPICK },
     { WA_NewLookMenus, TRUE },  // Ignored before v39
@@ -136,7 +137,7 @@ int main(int argc, char **argv)
 
   // Menu building step 2: Layout the menu
   if(LayoutMenus(pAppMenu, pVisualInfo,
-                 GTMN_NewLookMenus, // Ignored before v39
+                 GTMN_NewLookMenus, TRUE, // Ignored before v39
                  TAG_END) == FALSE)
   {
     FreeMenus(pAppMenu);
