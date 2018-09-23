@@ -8,6 +8,6 @@ above.
 
 ### Development environment ###
 
-* Amiga with OS2.04 or newer
-* NDK for AmigaOS 2
+* Amiga with OS3.9
+* NDK for AmigaOS 3.9
 * StormC 4
