@@ -95,7 +95,14 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "Application.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/Application.o" "objects_debug/Application.debug"
+""
+1 1
+File
 1 "oscottlibs/SimpleString.cpp"
+"oscottlibs/SimpleString.cpp"
 Storm Shell Project (Dependencies)
 "objects_debug/SimpleString.o" "objects_debug/SimpleString.debug"
 ""
@@ -151,6 +158,13 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "oscottlibs/SimpleString.h"
+"oscottlibs/SimpleString.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "Application.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -161,7 +175,6 @@ Section
 7
 File
 10 "Diff"
-"Diff"
 Storm Shell Project (Dependencies)
 "" ""
 ""
