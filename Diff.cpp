@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 
 
   //
-  // Opening the window
+  // Opening the left window
   //
   DiffWindow leftWindow(screen.Screen());
   if(!leftWindow.Open(DiffWindow::LEFT))
@@ -62,6 +62,19 @@ int main(int argc, char **argv)
     screen.Close();
     closeLibs();
     return 40;
+  }
+
+  //
+  // Opening the right window
+  //
+  DiffWindow rightWindow(screen.Screen());
+  if(!rightWindow.Open(DiffWindow::RIGHT))
+  {
+    // Opening the window failed
+    leftWindow.Close();
+    screen.Close();
+    closeLibs();
+    return 50;
   }
 
   //
@@ -84,10 +97,11 @@ int main(int argc, char **argv)
   if(pVisualInfo == NULL)
   {
     // Getting visual info has failed
+    rightWindow.Close();
     leftWindow.Close();
     screen.Close();
     closeLibs();
-    return 40;
+    return 60;
 
   }
 
@@ -97,10 +111,11 @@ int main(int argc, char **argv)
   {
     // Creating the menu has failed
     FreeVisualInfo(pVisualInfo);
+    rightWindow.Close();
     leftWindow.Close();
     screen.Close();
     closeLibs();
-    return 50;
+    return 70;
   }
 
   // Menu building step 2: Layout the menu
@@ -110,10 +125,11 @@ int main(int argc, char **argv)
   {
     FreeMenus(pAppMenu);
     FreeVisualInfo(pVisualInfo);
+    rightWindow.Close();
     leftWindow.Close();
     screen.Close();
     closeLibs();
-    return 60;
+    return 80;
   }
 
   // Wire the menu strip into the window
@@ -121,10 +137,11 @@ int main(int argc, char **argv)
   {
     FreeMenus(pAppMenu);
     FreeVisualInfo(pVisualInfo);
+    rightWindow.Close();
     leftWindow.Close();
     screen.Close();
     closeLibs();
-    return 70;
+    return 90;
 
   }
 
@@ -133,6 +150,7 @@ int main(int argc, char **argv)
   ClearMenuStrip(leftWindow.Window());
   FreeMenus(pAppMenu);
   FreeVisualInfo(pVisualInfo);
+  rightWindow.Close();
   leftWindow.Close();
   screen.Close();
   closeLibs();

@@ -9,6 +9,7 @@
 #define DIFFWINDOW
 
 #include <intuition/screens.h>
+#include "SimpleString.h"
 
 class DiffWindow
 {
@@ -47,11 +48,14 @@ public:
    */
   struct Window* Window();
 
+  const char* Title();
+  void SetTitle(const char* p_pNewTitle);
 
 
 private:
-  const struct Screen* m_pScreen;
-  struct Window* m_pWindow;
+  const struct Screen*      m_pScreen;
+  struct Window*            m_pWindow;
+  oscottlibs::SimpleString  m_Title;
 };
 
 

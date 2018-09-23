@@ -32,7 +32,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   }
 
   //
-  // Calculating window size in depency of screen dimesions
+  // Calculating window size etc in depency of screen dimesions
   //
   int screenWidth = m_pScreen->Width;
   int screenHeight = m_pScreen->Height;
@@ -41,18 +41,29 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   int winWidth = screenWidth / 2;
   int winHeight = screenHeight - screenBarHeight - 1;
 
+  int activateWin = TRUE;
+  int winLeft = 0;
+  m_Title = "Left Diff Window";
+
+  if(p_DwType == RIGHT)
+  {
+    winLeft = winWidth; // ==> screenWidth / 2; see above
+    m_Title = "Right Diff Window";
+    activateWin = FALSE;
+  }
+
   //
   // Setting up the window properties
   //
 
   struct TagItem windowTags[] =
   {
-    { WA_Left, 0 },
+    { WA_Left, winLeft },
     { WA_Top, screenBarHeight + 1 },
     { WA_Width, winWidth },
     { WA_Height, winHeight },
-    { WA_Title, (ULONG)"Left Diff Window" },
-    { WA_Activate, TRUE },
+    { WA_Title, (ULONG)m_Title.C_str() },
+    { WA_Activate, activateWin },
     { WA_PubScreen, (ULONG)m_pScreen },
     { WA_IDCMP, IDCMP_MENUPICK },
     { WA_NewLookMenus, TRUE },  // Ignored before v39
@@ -79,4 +90,16 @@ void DiffWindow::Close()
 struct Window* DiffWindow::Window()
 {
   return m_pWindow;
+}
+
+const char* DiffWindow::Title()
+{
+  return m_Title.C_str();
+}
+
+void DiffWindow::SetTitle(const char* p_pNewTitle)
+{
+  m_Title = p_pNewTitle;
+
+  // TODO: Set the title in the window??
 }
