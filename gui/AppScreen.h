@@ -32,7 +32,7 @@ public:
   /**
    * Gets the intuition screen structure or NULL if screen is not open
    */
-  struct Screen* Screen();
+  struct Screen* IntuiScreen();
 
 private:
   struct Screen* m_pScreen;

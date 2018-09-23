@@ -46,7 +46,7 @@ public:
   /**
    * Gets the intuition window structure or NULL if window is not open
    */
-  struct Window* Window();
+  struct Window* IntuiWindow();
 
   const char* Title();
   void SetTitle(const char* p_pNewTitle);

@@ -46,7 +46,7 @@ void AppScreen::Close()
   }
 }
 
-struct Screen* AppScreen::Screen()
+struct Screen* AppScreen::IntuiScreen()
 {
   return m_pScreen;
 }

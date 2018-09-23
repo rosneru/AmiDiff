@@ -87,7 +87,7 @@ void DiffWindow::Close()
   }
 }
 
-struct Window* DiffWindow::Window()
+struct Window* DiffWindow::IntuiWindow()
 {
   return m_pWindow;
 }

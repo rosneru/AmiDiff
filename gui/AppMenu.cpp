@@ -85,7 +85,7 @@ bool AppMenu::BindToWindow(struct Window* p_pWindow)
   return true;
 }
 
-struct Menu* AppMenu::Menu()
+struct Menu* AppMenu::IntuiMenu()
 {
   return m_pMenu;
 }

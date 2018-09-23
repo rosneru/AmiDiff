@@ -56,7 +56,7 @@ int main(int argc, char **argv)
   //
   // Opening the left window
   //
-  DiffWindow leftWindow(screen.Screen());
+  DiffWindow leftWindow(screen.IntuiScreen());
   if(!leftWindow.Open(DiffWindow::LEFT))
   {
     // Opening the window failed
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
   //
   // Opening the right window
   //
-  DiffWindow rightWindow(screen.Screen());
+  DiffWindow rightWindow(screen.IntuiScreen());
   if(!rightWindow.Open(DiffWindow::RIGHT))
   {
     // Opening the window failed
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
   // Creating the menu
   //
 
-  AppMenu appMenu(screen.Screen());
+  AppMenu appMenu(screen.IntuiScreen());
   if(appMenu.Create() == FALSE)
   {
     rightWindow.Close();
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
   // Installing menu to left window
   //
 
-  if(appMenu.BindToWindow(leftWindow.Window()) == FALSE)
+  if(appMenu.BindToWindow(leftWindow.IntuiWindow()) == FALSE)
   {
     rightWindow.Close();
     leftWindow.Close();
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
   // Installing menu to left window
   //
 
-  if(appMenu.BindToWindow(rightWindow.Window()) == FALSE)
+  if(appMenu.BindToWindow(rightWindow.IntuiWindow()) == FALSE)
   {
     rightWindow.Close();
     leftWindow.Close();
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
   //
 
   //int leftWindowSignal = 1L <
-//  handleWindowEvents(leftWindow.Window(), appMenu.Menu());
+//  handleWindowEvents(leftWindow.IntuiWindow(), appMenu.IntuiMenu());
 
   rightWindow.Close();
   leftWindow.Close();

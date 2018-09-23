@@ -35,7 +35,7 @@ public:
   /**
    * Gets the intuition menu structure or NULL if menu is not open
    */
-  struct Menu* Menu();
+  struct Menu* IntuiMenu();
 
 private:
   APTR* m_pVisualInfo;
