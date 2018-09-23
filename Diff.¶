@@ -90,6 +90,46 @@ Storm Shell Project (Dependencies)
 "objects_debug/Diff.o" "objects_debug/Diff.debug"
 ""
 1 1
+File
+1 "gui/DiffWindow.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
+""
+1 1
+File
+1 "gui/AppScreen.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/AppScreen.o" "objects_debug/AppScreen.debug"
+""
+1 1
+File
+1 "gui/AppMenu.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/AppMenu.o" "objects_debug/AppMenu.debug"
+""
+1 1
+Section
+2 1 95
+0 1 1 0
+2
+File
+2 "gui/AppMenu.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "gui/AppScreen.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "gui/DiffWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
 Section
 10 1 40
 0 0 0 0
