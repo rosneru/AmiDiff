@@ -10,6 +10,7 @@
 #include <clib/intuition_protos.h>
 #include <clib/gadtools_protos.h>
 
+#include "AppMenu.h"
 #include "AppScreen.h"
 #include "DiffWindow.h"
 
@@ -81,79 +82,45 @@ int main(int argc, char **argv)
   // Instanciating the menu via GadTools
   //
 
-  struct NewMenu appMenuDefinition[] =
+  AppMenu appMenu(screen.Screen());
+  if(appMenu.Create() == FALSE)
   {
-    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open left file...",     "L", 0, 0, 0 },
-    {  NM_ITEM,   "Open right file...",    "R", 0, 0, 0 },
-    {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
-    {  NM_ITEM,   "Quit",                  "Q", 0, 0, 0 },
-    {  NM_END,    NULL,                     0 , 0, 0, 0 },
-  };
-
-  // Prepare menu: get visual info from screen
-  APTR* pVisualInfo = NULL;
-  pVisualInfo = (APTR*)GetVisualInfo(screen.Screen(), TAG_END);
-  if(pVisualInfo == NULL)
-  {
-    // Getting visual info has failed
     rightWindow.Close();
     leftWindow.Close();
     screen.Close();
     closeLibs();
-    return 60;
 
+    return 60;
   }
 
-  // Menu building step 1: Create the menu
-  struct Menu* pAppMenu = CreateMenus(appMenuDefinition, TAG_END);
-  if(pAppMenu == NULL)
+  if(appMenu.BindToWindow(leftWindow.Window()) == FALSE)
   {
-    // Creating the menu has failed
-    FreeVisualInfo(pVisualInfo);
     rightWindow.Close();
     leftWindow.Close();
     screen.Close();
     closeLibs();
+
     return 70;
   }
 
-  // Menu building step 2: Layout the menu
-  if(LayoutMenus(pAppMenu, pVisualInfo,
-                 GTMN_NewLookMenus, TRUE, // Ignored before v39
-                 TAG_END) == FALSE)
+  if(appMenu.BindToWindow(rightWindow.Window()) == FALSE)
   {
-    FreeMenus(pAppMenu);
-    FreeVisualInfo(pVisualInfo);
     rightWindow.Close();
     leftWindow.Close();
     screen.Close();
     closeLibs();
-    return 80;
+
+    return 70;
   }
 
-  // Wire the menu strip into the window
-  if(SetMenuStrip(leftWindow.Window(), pAppMenu) == FALSE)
-  {
-    FreeMenus(pAppMenu);
-    FreeVisualInfo(pVisualInfo);
-    rightWindow.Close();
-    leftWindow.Close();
-    screen.Close();
-    closeLibs();
-    return 90;
 
-  }
+  handleWindowEvents(leftWindow.Window(), appMenu.Menu());
 
-  handleWindowEvents(leftWindow.Window(), pAppMenu);
-
-  ClearMenuStrip(leftWindow.Window());
-  FreeMenus(pAppMenu);
-  FreeVisualInfo(pVisualInfo);
   rightWindow.Close();
   leftWindow.Close();
   screen.Close();
   closeLibs();
+
   return 0;
 }
 
@@ -164,7 +131,7 @@ void closeLibs()
   CloseLibrary(IntuitionBase);
 }
 
-void handleWindowEvents(struct Window *win, struct Menu *menuStrip)
+void handleWindowEvents(struct Window *win1, struct Menu *menuStrip)
 {
   struct IntuiMessage *msg;
   SHORT done;
@@ -179,10 +146,10 @@ void handleWindowEvents(struct Window *win, struct Menu *menuStrip)
   {
     // we only have one signal bit, so we do not have to check which
     // bit broke the Wait().
-    Wait(1L << win->UserPort->mp_SigBit);
+    Wait(1L << win1->UserPort->mp_SigBit);
 
     while ((FALSE == done) &&
-            (NULL != (msg = (struct IntuiMessage *)GetMsg(win->UserPort))))
+            (NULL != (msg = (struct IntuiMessage *)GetMsg(win1->UserPort))))
     {
       switch (msg->Class)
       {
