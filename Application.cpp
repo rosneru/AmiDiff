@@ -119,64 +119,54 @@ bool Application::Run()
 
 }
 
-
 void Application::intuiEventLoop()
 {
   //
   // Waiting for messages from Intuition
   //
 
-  int leftWinSig = 1L << m_pLeftWin->IntuiWindow()->UserPort->mp_SigBit;
-  int rightWinSig = 1L << m_pRightWin->IntuiWindow()->UserPort->mp_SigBit;
+  struct Window* pWin1 = m_pLeftWin->IntuiWindow();
+  struct Window* pWin2 = m_pRightWin->IntuiWindow();
+  struct Menu* pMenu = m_pMenu->IntuiMenu();
 
   bool bExit = false;
-  do
+  while (bExit == false)
   {
-    int signals = Wait(leftWinSig | rightWinSig);
-    struct IntuiMessage* pMsg = NULL;
-    do
-    {
-      if(signals & leftWinSig)
-      {
-        pMsg = (struct IntuiMessage*) GetMsg(m_pLeftWin->IntuiWindow()->UserPort);
-      }
-      else if(signals & rightWinSig)
-      {
-        pMsg = (struct IntuiMessage*) GetMsg(m_pRightWin->IntuiWindow()->UserPort);
-      }
+    // Waiting for a signals from LeftWin or from RightWin
+    Wait(1L << pWin1->UserPort->mp_SigBit |
+         1L << pWin2->UserPort->mp_SigBit);
 
+    struct IntuiMessage* pMsg;
+    while ((bExit == false) &&
+           ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort))))
+    {
       switch (pMsg->Class)
       {
       case IDCMP_MENUPICK:
-        UWORD menuNumber = pMsg->Code;
-        struct MenuItem* pItem = NULL;
-
-        while ((menuNumber != MENUNULL) && (bExit == false))
-        {
-          pItem = ItemAddress(m_pMenu->IntuiMenu(), menuNumber);
-
-          // Which item in menu and submenu was selected?
-          UWORD menuNum = MENUNUM(menuNumber);
-          UWORD itemNum = ITEMNUM(menuNumber);
-          UWORD subNum  = SUBNUM(menuNumber);
-
-          /* stop if quit is selected. */
-          if ((menuNum == 0) && (itemNum == 3))
+          UWORD menuNumber = pMsg->Code;
+          while ((menuNumber != MENUNULL) && (bExit == false))
           {
-            bExit = true;
+            struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
+
+            // process the item here!
+            UWORD menuNum = MENUNUM(menuNumber);
+            UWORD itemNum = ITEMNUM(menuNumber);
+            UWORD subNum  = SUBNUM(menuNumber);
+
+            // stop if quit is selected.
+            if ((menuNum == 0) && (itemNum == 3))
+            {
+              bExit = true;
+            }
+
+            menuNumber = pSelectedItem->NextSelect;
           }
 
-          menuNumber = pItem->NextSelect;
-        }
-        break;
+          break;
       }
 
       ReplyMsg((struct Message *)pMsg);
-
-
     }
-    while((bExit == false) && (pMsg != NULL));
-
   }
-  while(bExit == false);
 }
