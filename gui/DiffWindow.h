@@ -53,9 +53,9 @@ public:
 
 
 private:
-  const struct Screen*      m_pScreen;
-  struct Window*            m_pWindow;
-  oscottlibs::SimpleString  m_Title;
+  const struct Screen* m_pScreen;
+  struct Window* m_pWindow;
+  SimpleString m_Title;
 };
 
 

@@ -8,42 +8,39 @@
 #ifndef OSCOTTLIBS_STRING
 #define OSCOTTLIBS_STRING
 
-namespace oscottlibs
+class SimpleString
 {
-  class SimpleString
-  {
-  public:
-    SimpleString();
-    SimpleString(const char* p_pTxt);
-    SimpleString(const SimpleString& other);
-    SimpleString(char p_Character, int p_Count);
+public:
+  SimpleString();
+  SimpleString(const char* p_pTxt);
+  SimpleString(const SimpleString& other);
+  SimpleString(char p_Character, int p_Count);
 
-    ~SimpleString();
+  ~SimpleString();
 
-    /**
-     * Get C string equivalent
-     */
-    char* C_str();
+  /**
+   * Get C string equivalent
+   */
+  char* C_str();
 
-    /**
-     * Get length of string
-     */
-    int Length();
+  /**
+   * Get length of string
+   */
+  int Length();
 
-    // Operators
-    SimpleString& operator=(const SimpleString& p_Other);
-    SimpleString& operator=(const char* p_pOtherChar);
-    SimpleString& operator+(const SimpleString& p_Other);
-    SimpleString& operator+(const char* p_pOtherChar);
-    bool operator==(const SimpleString& p_Other);
-    bool operator<(const SimpleString& p_Other);
-    bool operator>(const SimpleString& p_Other);
-    char& operator[](int p_Index);
+  // Operators
+  SimpleString& operator=(const SimpleString& p_Other);
+  SimpleString& operator=(const char* p_pOtherChar);
+  SimpleString& operator+(const SimpleString& p_Other);
+  SimpleString& operator+(const char* p_pOtherChar);
+  bool operator==(const SimpleString& p_Other);
+  bool operator<(const SimpleString& p_Other);
+  bool operator>(const SimpleString& p_Other);
+  char& operator[](int p_Index);
 
-  private:
-    char *m_pBuf;
-    int   m_Len;
-  };
-}
+private:
+  char *m_pBuf;
+  int   m_Len;
+};
 
 #endif

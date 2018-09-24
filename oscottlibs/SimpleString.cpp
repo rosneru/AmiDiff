@@ -1,8 +1,6 @@
 #include "SimpleString.h"
 #include <string.h>
 
-using namespace oscottlibs;
-
 SimpleString::SimpleString()
 {
   m_pBuf = new char[1];

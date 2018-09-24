@@ -7,6 +7,8 @@ C/C++ Environment
 0
 "oscottlibs"
 0
+"commands"
+0
 Includepath (End)
 0 "" 80
 1 "objects_debug"
@@ -73,7 +75,7 @@ Run
 Settings (End)
 Storm Shell Project (Custom Sections End)
 Section
-26 1 110
+26 0 110
 0 0 1 0
 9
 File
@@ -90,12 +92,15 @@ Section
 File
 1 "Diff.cpp"
 "Diff.cpp"
+"Application.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Diff.o" "objects_debug/Diff.debug"
 ""
 1 1
 File
 1 "Application.cpp"
+"Application.cpp"
+"Application.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -103,8 +108,33 @@ Storm Shell Project (Dependencies)
 File
 1 "oscottlibs/SimpleString.cpp"
 "oscottlibs/SimpleString.cpp"
+"oscottlibs/SimpleString.h"
 Storm Shell Project (Dependencies)
 "objects_debug/SimpleString.o" "objects_debug/SimpleString.debug"
+""
+1 1
+File
+1 "commands/DiffDocument.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/DiffDocument.o" "objects_debug/DiffDocument.debug"
+""
+1 1
+File
+1 "commands/Command.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/Command.o" "objects_debug/Command.debug"
+""
+1 1
+File
+1 "commands/CmdQuit.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/CmdQuit.o" "objects_debug/CmdQuit.debug"
+""
+1 1
+File
+1 "commands/CmdFileOpen.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/CmdFileOpen.o" "objects_debug/CmdFileOpen.debug"
 ""
 1 1
 File
@@ -165,6 +195,31 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "Application.h"
+"Application.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "commands/CmdFileOpen.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "commands/CmdQuit.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "commands/Command.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "commands/DiffDocument.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -175,12 +230,13 @@ Section
 7
 File
 10 "Diff"
+"Diff"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 Section
-5 1 -50
+5 0 -50
 0 0 0 0
 7
 File
