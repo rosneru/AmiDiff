@@ -97,9 +97,16 @@ const char* DiffWindow::Title()
   return m_Title.C_str();
 }
 
-void DiffWindow::SetTitle(const char* p_pNewTitle)
+void DiffWindow::SetTitle(SimpleString p_NewTitle)
 {
-  m_Title = p_pNewTitle;
+  m_Title = p_NewTitle;
 
   // TODO: Set the title in the window??
+}
+
+
+bool DiffWindow::Open()
+{
+  //SetTitle(p_Context);
+  return true;
 }

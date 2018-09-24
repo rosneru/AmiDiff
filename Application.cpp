@@ -2,6 +2,8 @@
 #include <clib/intuition_protos.h>
 
 #include "Application.h"
+#include "CmdFileOpen.h"
+#include "CmdQuit.h"
 
 Application::Application()
 {
@@ -9,6 +11,10 @@ Application::Application()
   m_pLeftWin = NULL;
   m_pRightWin = NULL;
   m_pMenu = NULL;
+  m_bExitRequested = false;
+  m_pCmdOpenLeftFile = NULL;
+  m_pCmdOpenRightFile = NULL;
+  m_pCmdQuit = NULL;
 }
 
 Application::~Application()
@@ -22,6 +28,24 @@ void Application::Dispose()
   {
     delete m_pMenu;
     m_pMenu = NULL;
+  }
+
+  if(m_pCmdOpenLeftFile != NULL)
+  {
+    delete m_pCmdOpenLeftFile;
+    m_pCmdOpenLeftFile = NULL;
+  }
+
+  if(m_pCmdOpenRightFile != NULL)
+  {
+    delete m_pCmdOpenRightFile;
+    m_pCmdOpenRightFile = NULL;
+  }
+
+  if(m_pCmdQuit != NULL)
+  {
+    delete m_pCmdQuit;
+    m_pCmdQuit = NULL;
   }
 
   if(m_pRightWin != NULL)
@@ -49,7 +73,6 @@ bool Application::Run()
   //
   // Opening the screen
   //
-
   m_pScreen = new AppScreen();
   if (!m_pScreen->Open())
   {
@@ -82,9 +105,15 @@ bool Application::Run()
   }
 
   //
+  // Instanciating the commands
+  //
+  m_pCmdQuit = new CmdQuit("Quit the application", m_bExitRequested);
+  m_pCmdOpenRightFile = new CmdFileOpen("Open the right file", *m_pRightWin);
+  m_pCmdOpenLeftFile = new CmdFileOpen("Open the left file", *m_pLeftWin);
+
+  //
   // Creating the menu
   //
-
   m_pMenu = new AppMenu(m_pScreen->IntuiScreen());
   if(m_pMenu->Create() == FALSE)
   {
@@ -95,7 +124,6 @@ bool Application::Run()
   //
   // Installing menu to left window
   //
-
   if(m_pMenu->BindToWindow(m_pLeftWin->IntuiWindow()) == FALSE)
   {
     Dispose();
@@ -129,15 +157,15 @@ void Application::intuiEventLoop()
   struct Window* pWin2 = m_pRightWin->IntuiWindow();
   struct Menu* pMenu = m_pMenu->IntuiMenu();
 
-  bool bExit = false;
-  while (bExit == false)
+
+  while (m_bExitRequested == false)
   {
     // Waiting for a signals from LeftWin or from RightWin
     Wait(1L << pWin1->UserPort->mp_SigBit |
          1L << pWin2->UserPort->mp_SigBit);
 
     struct IntuiMessage* pMsg;
-    while ((bExit == false) &&
+    while ((m_bExitRequested == false) &&
            ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
            (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort))))
     {
@@ -145,7 +173,7 @@ void Application::intuiEventLoop()
       {
       case IDCMP_MENUPICK:
           UWORD menuNumber = pMsg->Code;
-          while ((menuNumber != MENUNULL) && (bExit == false))
+          while ((menuNumber != MENUNULL) && (m_bExitRequested == false))
           {
             struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
 
@@ -157,7 +185,7 @@ void Application::intuiEventLoop()
             // stop if quit is selected.
             if ((menuNum == 0) && (itemNum == 3))
             {
-              bExit = true;
+              m_bExitRequested = true;
             }
 
             menuNumber = pSelectedItem->NextSelect;

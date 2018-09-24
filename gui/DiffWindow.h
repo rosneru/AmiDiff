@@ -9,13 +9,14 @@
 #define DIFFWINDOW
 
 #include <intuition/screens.h>
+#include "DiffDocument.h"
 #include "SimpleString.h"
 
-class DiffWindow
+class DiffWindow : public DiffDocument
 {
 public:
   DiffWindow(const struct Screen* p_pScreen);
-  ~DiffWindow();
+  virtual ~DiffWindow();
 
   /**
    * Used to define if this window is the left or the right diff window
@@ -49,8 +50,18 @@ public:
   struct Window* IntuiWindow();
 
   const char* Title();
-  void SetTitle(const char* p_pNewTitle);
+  void SetTitle(SimpleString p_NewTitle);
 
+  /**
+   * Open a text file
+   *
+   * Implemented abstract method from interface DiffDocument
+   *
+   * @param p_Context
+   * Provided from calling command. Gives an explantation what is
+   * opened / in which context the open occurs.
+   */
+  virtual bool Open();
 
 private:
   const struct Screen* m_pScreen;

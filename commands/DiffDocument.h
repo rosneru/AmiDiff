@@ -6,14 +6,12 @@
 class DiffDocument
 {
 public:
-  DiffDocument(SimpleString p_Name);
   virtual ~DiffDocument();
 
-  bool Open(SimpleString p_FileName);
-  SimpleString Name();
+  virtual bool Open() = 0;
 
-private:
-  SimpleString m_Name;
+protected:
+  DiffDocument();
 };
 
 #endif // DIFF_DOCUMENT_H
