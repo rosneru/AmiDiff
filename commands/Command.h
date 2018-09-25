@@ -11,8 +11,8 @@ public:
   virtual SimpleString Name();
 
 protected:
-  SimpleString m_Name;
   Command(SimpleString p_Name);
+  SimpleString m_Name;
 
 };
 

@@ -107,10 +107,14 @@ bool Application::Run()
   //
   // Instanciating the commands
   //
+
+  SimpleString str1 = "Beenden";
+  Command* pCmd = new CmdQuit(str1, m_bExitRequested);
+  /*
   m_pCmdQuit = new CmdQuit("Quit the application", m_bExitRequested);
   m_pCmdOpenRightFile = new CmdFileOpen("Open the right file", *m_pRightWin);
   m_pCmdOpenLeftFile = new CmdFileOpen("Open the left file", *m_pLeftWin);
-
+*/
   //
   // Creating the menu
   //
