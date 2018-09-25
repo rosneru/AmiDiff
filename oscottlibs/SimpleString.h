@@ -8,6 +8,8 @@
 #ifndef OSCOTTLIBS_STRING
 #define OSCOTTLIBS_STRING
 
+#include <stdlib.h>
+
 class SimpleString
 {
 public:
@@ -18,6 +20,18 @@ public:
 
   ~SimpleString();
 
+  // Operators
+  SimpleString& operator=(const SimpleString& p_Other);
+  SimpleString& operator=(const char* p_pOtherChar);
+  SimpleString operator+(const SimpleString& p_Other);
+  SimpleString operator+(const char* p_pOtherChar);
+  SimpleString& operator+=(const SimpleString& p_Other);
+  SimpleString& operator+=(const char* p_pOtherChar);
+  bool operator==(const SimpleString& p_Other);
+  bool operator<(const SimpleString& p_Other);
+  bool operator>(const SimpleString& p_Other);
+  char& operator[](unsigned int p_Index);
+
   /**
    * Get C string equivalent
    */
@@ -26,21 +40,85 @@ public:
   /**
    * Get length of string
    */
-  int Length();
+  size_t Length();
 
-  // Operators
-  SimpleString& operator=(const SimpleString& p_Other);
-  SimpleString& operator=(const char* p_pOtherChar);
-  SimpleString& operator+(const SimpleString& p_Other);
-  SimpleString& operator+(const char* p_pOtherChar);
-  bool operator==(const SimpleString& p_Other);
-  bool operator<(const SimpleString& p_Other);
-  bool operator>(const SimpleString& p_Other);
-  char& operator[](int p_Index);
+
+  /**
+   * @brief
+   * Returns a newly constructed string object with its value
+   * initialized to a copy of a substring of this object.
+   *
+   * @param p_Index
+   * Index of the first character to be copied as a substring. If this
+   * is equal or greate to the string length, the function returns an
+   * empty string.
+   *
+   * @param p_Len
+   * Number of characters to include in the substring. If the string
+   * is shorter, as many characters as possible are used.
+   */
+  SimpleString SubStr(size_t p_Index, size_t p_Len);
+
+
+  /**
+   * @brief
+   * Replaces the portion of the string that begins at index pos and
+   * spans len characters (or the part of the string in the range
+   * between [i1,i2)) with a given SimpleString.
+   *
+   * WARNING This creates *no* copy. It changes the string directly!
+   *
+   * @param p_Index
+   * Index of the first character to be replaced. If this is greater
+   * than the string length, nothing will be done.
+   *
+   *
+   * @param p_ReplaceBy
+   * String that will be inserted at replace position
+   *
+   */
+  SimpleString& Replace(size_t p_Index, SimpleString& p_ReplaceBy);
+
+  /**
+   * @brief
+   * Replaces the portion of the string that begins at index pos and
+   * spans len characters (or the part of the string in the range
+   * between [i1,i2)) with a given text.
+   *
+   * WARNING This creates *no* copy. It changes the string directly!
+   *
+   * @param p_Index
+   * Index of the first character to be replaced. If this is greater
+   * than the string length, nothing will be done.
+   *
+   *
+   * @param p_pReplaceBy
+   * Pointer to the C string that will be inserted at replace position
+   *
+   */
+  SimpleString& Replace(size_t p_Index, const char* p_pReplaceBy);
+
+  /**
+   * @brief
+   * Inserts a given SimpleString at given position into this string
+   *
+   * WARNING This creates *no* copy. It changes the string directly!
+   *
+   */
+  SimpleString& Insert(size_t p_Index, SimpleString& p_Insert);
+
+  /**
+   * @brief
+   * Inserts a given C string at given position into this string
+   *
+   * WARNING This creates *no* copy. It changes the string directly!
+   *
+   */
+  SimpleString& Insert(size_t p_Index, const char* p_pInsert);
 
 private:
+  size_t m_Len;
   char *m_pBuf;
-  int   m_Len;
 };
 
 #endif
