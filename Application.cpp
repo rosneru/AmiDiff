@@ -118,7 +118,7 @@ bool Application::Run()
 
 
   // Fill GadTools menu struct giving the commands pointers as nm_UserData
-  struct NewMenu appMenuDefinition[] =
+  struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
     {  NM_ITEM,   "Open left file...",     "L", 0, 0, m_pCmdOpenLeftFile },
@@ -127,12 +127,12 @@ bool Application::Run()
     {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
     {  NM_END,    NULL,                     0 , 0, 0, 0 },
   };
-  
+
   //
   // Creating the menu
   //
   m_pMenu = new AppMenu(m_pScreen->IntuiScreen());
-  if(m_pMenu->Create() == FALSE)
+  if(m_pMenu->Create(menuDefinition) == FALSE)
   {
     Dispose();
     return false;
@@ -183,49 +183,25 @@ void Application::intuiEventLoop()
 
     struct IntuiMessage* pMsg;
     while ((m_bExitRequested == false) &&
-           ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
+          ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
            (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort))))
     {
       switch (pMsg->Class)
       {
       case IDCMP_MENUPICK:
-          UWORD menuNumber = pMsg->Code;
-          while ((menuNumber != MENUNULL) && (m_bExitRequested == false))
-          {
-            struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
-            
-            // Getting the user data from selected menu item
-            APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
-            if(pUserData != NULL)
-            {
-              // Testing if UserData contains a pointer to a Command
-              Command* pSelecedCommand = dynamic_cast<Command*>(pUserData);
-              if(pSelecedCommand != NULL)
-              {
-                // It is a command, execute it
-                pSelecedCommand.Execute();
-              }
-            }
-            
-            // So the following code seems to be obsolete.
-            // TODO (I.) Check and remove.
-            // TODO (II.) I think the while loop is obsolete, too.
-            
-            // // process the item here!
-            // UWORD menuNum = MENUNUM(menuNumber);
-            // UWORD itemNum = ITEMNUM(menuNumber);
-            // UWORD subNum  = SUBNUM(menuNumber);
-            // 
-            // // stop if quit is selected.
-            // if ((menuNum == 0) && (itemNum == 3))
-            // {
-            //   m_bExitRequested = true;
-            // }
-            // 
-            // menuNumber = pSelectedItem->NextSelect;
-          }
+        UWORD menuNumber = pMsg->Code;
+        struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
 
-          break;
+        // Getting the user data from selected menu item
+        APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
+        if(pUserData != NULL)
+        {
+          // Testing if UserData contains a pointer to a Command
+          Command* pSelecedCommand = static_cast<Command*>(pUserData);
+          pSelecedCommand->Execute();
+        }
+
+        break;
       }
 
       ReplyMsg((struct Message *)pMsg);

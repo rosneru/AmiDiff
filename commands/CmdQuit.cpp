@@ -14,8 +14,5 @@ CmdQuit::~CmdQuit()
 
 void CmdQuit::Execute()
 {
-  /*
-  std::cout << "CmdQuit::Execute()" << std::endl;
   m_bExitRequested = true;
-  */
 }
