@@ -1,4 +1,6 @@
+#include <clib/asl_protos.h>
 #include <clib/intuition_protos.h>
+#include <libraries/asl.h>
 #include "DiffWindow.h"
 
 
@@ -44,11 +46,13 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   int activateWin = TRUE;
   int winLeft = 0;
   m_Title = "Left Diff Window";
+  m_FileRequesterTitle = "Select left diff file";
 
   if(p_DwType == RIGHT)
   {
     winLeft = winWidth; // begin one pixel after LEFT window ends
     m_Title = "Right Diff Window";
+    m_FileRequesterTitle = "Select right diff file";
     activateWin = FALSE;
   }
 
@@ -108,7 +112,6 @@ void DiffWindow::SetTitle(SimpleString p_NewTitle)
 
 bool DiffWindow::Open(SimpleString p_FileName)
 {
-  SetTitle("DiffWindow::Open()"); // TODO only for test
   if(p_FileName.Length() == 0)
   {
     p_FileName = aslRequestFileName();
@@ -118,6 +121,9 @@ bool DiffWindow::Open(SimpleString p_FileName)
       return false;
     }
   }
+
+  SetTitle(p_FileName); // TODO only for test
+
 
   // TODO open the file and execute a TBD Diff command.
   // Note: this command will be have two "execute" channels
@@ -130,5 +136,39 @@ bool DiffWindow::Open(SimpleString p_FileName)
 SimpleString DiffWindow::aslRequestFileName()
 {
   SimpleString fileName = "";
+
+  struct TagItem fileRequestTags[] =
+  {
+    ASL_Hail,       (ULONG)m_FileRequesterTitle.C_str(),
+    TAG_DONE
+  };
+
+  struct TagItem requestOpeningTags[] =
+  {
+    ASLFR_Window, (ULONG)m_pWindow,
+    TAG_DONE
+  };
+
+  struct FileRequester* pFileRequest;
+  pFileRequest = (struct FileRequester*)
+    AllocAslRequest(ASL_FileRequest, fileRequestTags);
+
+  if(pFileRequest == NULL)
+  {
+    return fileName;
+  }
+
+  if(AslRequest(pFileRequest,requestOpeningTags) == TRUE)
+  {
+    STRPTR pDir = pFileRequest->rf_Dir;
+    STRPTR pFile = pFileRequest->fr_File;
+
+    fileName = pDir;
+    fileName += "/";
+    fileName += pFile;
+  }
+
+  FreeAslRequest(pFileRequest);
+
   return fileName;
 }

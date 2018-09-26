@@ -67,6 +67,7 @@ private:
   const struct Screen* m_pScreen;
   struct Window* m_pWindow;
   SimpleString m_Title;
+  SimpleString m_FileRequesterTitle;
 
   SimpleString aslRequestFileName();
 };
