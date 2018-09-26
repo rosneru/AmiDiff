@@ -10,6 +10,7 @@ void closeLibs();
 struct Library* IntuitionBase;
 struct Library* DosBase;
 struct Library* GadToolsBase;
+struct Library* AslBase;
 
 
 int main(int argc, char **argv)
