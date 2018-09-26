@@ -42,7 +42,6 @@ public:
    */
   size_t Length();
 
-
   /**
    * @brief
    * Returns a newly constructed string object with its value
@@ -58,7 +57,6 @@ public:
    * is shorter, as many characters as possible are used.
    */
   SimpleString SubStr(size_t p_Index, size_t p_Len);
-
 
   /**
    * @brief

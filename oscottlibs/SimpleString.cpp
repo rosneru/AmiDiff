@@ -1,6 +1,5 @@
-#include "SimpleString.h"
 #include <string.h>
-
+#include "SimpleString.h"
 
 SimpleString::SimpleString()
   : m_Len(1),
