@@ -8,7 +8,7 @@ class DiffDocument
 public:
   virtual ~DiffDocument();
 
-  virtual bool Open() = 0;
+  virtual bool Open(SimpleString p_FileName = "") = 0;
 
 protected:
   DiffDocument();

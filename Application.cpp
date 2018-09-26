@@ -11,16 +11,19 @@
 
 #include "Application.h"
 
-Application::Application()
+Application::Application(int argc, char **argv)
+  : m_Argc(argc),
+    m_Argv(argv),
+    m_pScreen(NULL),
+    m_pLeftWin(NULL),
+    m_pRightWin(NULL),
+    m_pMenu(NULL),
+    m_bExitRequested(false),
+    m_pCmdOpenLeftFile(NULL),
+    m_pCmdOpenRightFile(NULL),
+    m_pCmdQuit(NULL)
 {
-  m_pScreen = NULL;
-  m_pLeftWin = NULL;
-  m_pRightWin = NULL;
-  m_pMenu = NULL;
-  m_bExitRequested = false;
-  m_pCmdOpenLeftFile = NULL;
-  m_pCmdOpenRightFile = NULL;
-  m_pCmdQuit = NULL;
+
 }
 
 Application::~Application()
@@ -156,6 +159,22 @@ bool Application::Run()
     Dispose();
     return false;
   }
+
+  //
+  // If there are at least two command line arguments permitted,
+  // (three for the if as the first one is the apps name), try to take
+  // the first two of them as file names and load them into left and
+  // right window
+  //
+  if(m_Argc >=3)
+  {
+    SimpleString fileNameLeft = m_Argv[1];
+    SimpleString fileNameRight = m_Argv[2];
+
+    m_pLeftWin->Open(fileNameLeft);
+    m_pRightWin->Open(fileNameRight);
+  }
+
 
   intuiEventLoop();
 

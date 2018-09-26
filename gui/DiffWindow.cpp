@@ -100,13 +100,35 @@ const char* DiffWindow::Title()
 void DiffWindow::SetTitle(SimpleString p_NewTitle)
 {
   m_Title = p_NewTitle;
-  SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
 
-  // TODO: Set the title in the window??
+  // Call intuition function to set the window title
+  // Note the ~0 inverts the value ang is a value of -1
+  SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
 }
 
-bool DiffWindow::Open()
+bool DiffWindow::Open(SimpleString p_FileName)
 {
   SetTitle("DiffWindow::Open()"); // TODO only for test
+  if(p_FileName.Length() == 0)
+  {
+    p_FileName = aslRequestFileName();
+
+    if(p_FileName.Length() == 0)
+    {
+      return false;
+    }
+  }
+
+  // TODO open the file and execute a TBD Diff command.
+  // Note: this command will be have two "execute" channels
+  // and will only start executing if the 2nd channel also
+  // is executed.
+
   return true;
+}
+
+SimpleString DiffWindow::aslRequestFileName()
+{
+  SimpleString fileName = "";
+  return fileName;
 }

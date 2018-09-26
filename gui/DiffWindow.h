@@ -57,16 +57,18 @@ public:
    *
    * Implemented abstract method from interface DiffDocument
    *
-   * @param p_Context
-   * Provided from calling command. Gives an explantation what is
-   * opened / in which context the open occurs.
+   * @param p_FileName
+   * Full file name with path for to be opened file. If empty a ASL
+   * request will be opened asking the user for the file name.
    */
-  virtual bool Open();
+  virtual bool Open(SimpleString p_FileName = "");
 
 private:
   const struct Screen* m_pScreen;
   struct Window* m_pWindow;
   SimpleString m_Title;
+
+  SimpleString aslRequestFileName();
 };
 
 

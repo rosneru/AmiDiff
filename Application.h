@@ -16,7 +16,7 @@
 class Application
 {
 public:
-  Application();
+  Application(int argc, char **argv);
   ~Application();
 
   /**
@@ -27,6 +27,9 @@ public:
   bool Run();
 
 private:
+  int m_Argc;
+  char** m_Argv;
+
   bool m_bExitRequested;
   AppScreen* m_pScreen;
   DiffWindow* m_pLeftWin;

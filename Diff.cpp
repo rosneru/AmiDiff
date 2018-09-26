@@ -17,8 +17,9 @@ int main(int argc, char **argv)
   IntuitionBase = OpenLibrary("intuition.library", 37);
   DosBase = OpenLibrary("dos.library", 37);
   GadToolsBase = OpenLibrary("gadtools.library", 37);
+  AslBase = OpenLibrary("asl.library", 37);
 
-  if((!IntuitionBase) || (!DosBase) || (!GadToolsBase))
+  if((!IntuitionBase) || (!DosBase) || (!GadToolsBase) || (!AslBase))
   {
     closeLibs();
     return 20;
@@ -31,7 +32,7 @@ int main(int argc, char **argv)
     return 20;
   }
 
-  Application app;
+  Application app(argc, argv);
   bool bSuccess = app.Run();
 
   closeLibs();
@@ -41,6 +42,7 @@ int main(int argc, char **argv)
 
 void closeLibs()
 {
+  CloseLibrary(AslBase);
   CloseLibrary(GadToolsBase);
   CloseLibrary(DosBase);
   CloseLibrary(IntuitionBase);
