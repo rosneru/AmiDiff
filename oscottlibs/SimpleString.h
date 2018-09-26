@@ -116,6 +116,16 @@ public:
    */
   SimpleString& Insert(size_t p_Index, const char* p_pInsert);
 
+  /**
+   * @brief
+   * Erases part of the string, reducing its length.
+   *
+   * Erases the portion of the string value that begins at p_Index and
+   * spans p_Len characters (or until the end of the string, if the
+   * content is too short).
+   */
+  SimpleString& Erase(size_t p_Index, size_t p_Len);
+
 private:
   size_t m_Len;
   char *m_pBuf;

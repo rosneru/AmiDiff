@@ -106,9 +106,9 @@ SimpleString&SimpleString::Replace(size_t p_Index, const char* p_pReplaceBy)
 
 SimpleString& SimpleString::Insert(size_t p_Index, SimpleString& p_Insert)
 {
-  if(p_Index > p_Insert.m_Len)
+  if(p_Index > m_Len)
   {
-    p_Index = p_Insert.Length();
+    p_Index = m_Len;
   }
 
   m_Len = m_Len + p_Insert.m_Len;
@@ -123,11 +123,11 @@ SimpleString& SimpleString::Insert(size_t p_Index, SimpleString& p_Insert)
   return *this;
 }
 
-SimpleString&SimpleString::Insert(size_t p_Index, const char* p_pInsert)
+SimpleString& SimpleString::Insert(size_t p_Index, const char* p_pInsert)
 {
-  if(p_Index > strlen(p_pInsert))
+  if(p_Index > m_Len)
   {
-    p_Index = strlen(p_pInsert);
+    p_Index = m_Len;
   }
 
   m_Len = m_Len + strlen(p_pInsert);
@@ -136,6 +136,40 @@ SimpleString&SimpleString::Insert(size_t p_Index, const char* p_pInsert)
   strncpy(pNewBuf, m_pBuf, p_Index);
   strncpy(pNewBuf + p_Index, p_pInsert, strlen(p_pInsert));
   strcpy(pNewBuf + p_Index + strlen(p_pInsert), m_pBuf + p_Index);
+
+  delete[] m_pBuf;
+  m_pBuf = pNewBuf;
+  return *this;
+}
+
+SimpleString& SimpleString::Erase(size_t p_Index, size_t p_Len)
+{
+  if(p_Index >= m_Len)
+  {
+    return *this;
+  }
+
+  size_t copyLen1 = p_Index;
+  size_t copyLen2 = m_Len - p_Index - p_Len;
+  if(p_Index + p_Len > m_Len)
+  {
+    copyLen2 = 0;
+  }
+
+  m_Len = copyLen1 + copyLen2;
+  char* pNewBuf = new char[m_Len + 1];
+
+  if(copyLen1 > 0)
+  {
+    strncpy(pNewBuf, m_pBuf, copyLen1);
+  }
+
+  if(copyLen2 > 0)
+  {
+    strncpy(pNewBuf + copyLen1, m_pBuf + copyLen1 + p_Len, copyLen2);
+  }
+
+  pNewBuf[m_Len] = '\0';
 
   delete[] m_pBuf;
   m_pBuf = pNewBuf;
