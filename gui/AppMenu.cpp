@@ -1,4 +1,3 @@
-#include <libraries/gadtools.h>
 #include <clib/gadtools_protos.h>
 #include <clib/intuition_protos.h>
 
@@ -19,7 +18,7 @@ AppMenu::~AppMenu()
   Dispose();
 }
 
-bool AppMenu::Create()
+bool AppMenu::Create(struct NewMenu* p_pMenuDefinition)
 {
   if(m_pVisualInfo == NULL)
   {
@@ -28,29 +27,19 @@ bool AppMenu::Create()
   }
 
   // Menu building step 1: Create the menu
-  struct NewMenu appMenuDefinition[] =
-  {
-    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open left file...",     "L", 0, 0, 0 },
-    {  NM_ITEM,   "Open right file...",    "R", 0, 0, 0 },
-    {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
-    {  NM_ITEM,   "Quit",                  "Q", 0, 0, 0 },
-    {  NM_END,    NULL,                     0 , 0, 0, 0 },
-  };
-
-  m_pMenu = CreateMenus(appMenuDefinition, TAG_END);
+  m_pMenu = CreateMenus(p_pMenuDefinition, TAG_END);
   if(m_pMenu == NULL)
   {
     // Menu creation failed
     return false;
   }
 
-  // Menu building step 2: Layouting the menu
+  // Menu building step 2: Outlaying the menu
   if(LayoutMenus(m_pMenu, m_pVisualInfo,
                  GTMN_NewLookMenus, TRUE, // Ignored before v39
                  TAG_END) == FALSE)
   {
-    // Layouting the menu failed
+    // Outlaying the menu failed
     FreeMenus(m_pMenu);
     m_pMenu = NULL;
     return false;

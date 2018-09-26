@@ -10,6 +10,7 @@
 
 #include <intuition/intuition.h>
 #include <intuition/screens.h>
+#include <libraries/gadtools.h>
 
 class AppMenu
 {
@@ -18,9 +19,9 @@ public:
   ~AppMenu();
 
   /**
-   * Creating and layouting the menu
+   * Creating and outlaying the menu
    */
-  bool Create();
+  bool Create(struct NewMenu* p_pMenuDefinition);
 
   /**
    * Freeing the menu and all obtained resources

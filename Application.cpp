@@ -1,9 +1,15 @@
+#include <libraries/gadtools.h>
+
 #include <clib/exec_protos.h>
 #include <clib/intuition_protos.h>
 
-#include "Application.h"
+#include "LinkedList.h"
+
+#include "Command.h"
 #include "CmdFileOpen.h"
 #include "CmdQuit.h"
+
+#include "Application.h"
 
 Application::Application()
 {
@@ -65,7 +71,6 @@ void Application::Dispose()
     delete m_pScreen;
     m_pScreen = NULL;
   }
-
 }
 
 bool Application::Run()
@@ -105,12 +110,24 @@ bool Application::Run()
   }
 
   //
-  // Instanciating the commands
+  // Instantiating the commands
   //
   m_pCmdQuit = new CmdQuit("Quit the application", m_bExitRequested);
-  m_pCmdOpenRightFile = new CmdFileOpen("Open the right file", *m_pRightWin);
   m_pCmdOpenLeftFile = new CmdFileOpen("Open the left file", *m_pLeftWin);
+  m_pCmdOpenRightFile = new CmdFileOpen("Open the right file", *m_pRightWin);
 
+
+  // Fill GadTools menu struct giving the commands pointers as nm_UserData
+  struct NewMenu appMenuDefinition[] =
+  {
+    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
+    {  NM_ITEM,   "Open left file...",     "L", 0, 0, m_pCmdOpenLeftFile },
+    {  NM_ITEM,   "Open right file...",    "R", 0, 0, m_pCmdOpenRightFile },
+    {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
+    {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
+    {  NM_END,    NULL,                     0 , 0, 0, 0 },
+  };
+  
   //
   // Creating the menu
   //
@@ -176,19 +193,36 @@ void Application::intuiEventLoop()
           while ((menuNumber != MENUNULL) && (m_bExitRequested == false))
           {
             struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
-
-            // process the item here!
-            UWORD menuNum = MENUNUM(menuNumber);
-            UWORD itemNum = ITEMNUM(menuNumber);
-            UWORD subNum  = SUBNUM(menuNumber);
-
-            // stop if quit is selected.
-            if ((menuNum == 0) && (itemNum == 3))
+            
+            // Getting the user data from selected menu item
+            APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
+            if(pUserData != NULL)
             {
-              m_bExitRequested = true;
+              // Testing if UserData contains a pointer to a Command
+              Command* pSelecedCommand = dynamic_cast<Command*>(pUserData);
+              if(pSelecedCommand != NULL)
+              {
+                // It is a command, execute it
+                pSelecedCommand.Execute();
+              }
             }
-
-            menuNumber = pSelectedItem->NextSelect;
+            
+            // So the following code seems to be obsolete.
+            // TODO (I.) Check and remove.
+            // TODO (II.) I think the while loop is obsolete, too.
+            
+            // // process the item here!
+            // UWORD menuNum = MENUNUM(menuNumber);
+            // UWORD itemNum = ITEMNUM(menuNumber);
+            // UWORD subNum  = SUBNUM(menuNumber);
+            // 
+            // // stop if quit is selected.
+            // if ((menuNum == 0) && (itemNum == 3))
+            // {
+            //   m_bExitRequested = true;
+            // }
+            // 
+            // menuNumber = pSelectedItem->NextSelect;
           }
 
           break;
