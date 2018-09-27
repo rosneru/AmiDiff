@@ -175,7 +175,9 @@ bool Application::Run()
     m_pRightWin->Open(fileNameRight);
   }
 
-
+  //
+  // Wait-in-loop for menu actions etc
+  //
   intuiEventLoop();
 
   Dispose();
