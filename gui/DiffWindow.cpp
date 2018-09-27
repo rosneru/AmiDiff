@@ -1,4 +1,6 @@
+#include <string.h>
 #include <clib/asl_protos.h>
+#include <clib/dos_protos.h>
 #include <clib/intuition_protos.h>
 #include <libraries/asl.h>
 #include "DiffWindow.h"
@@ -158,14 +160,17 @@ SimpleString DiffWindow::aslRequestFileName()
     return fileName;
   }
 
-  if(AslRequest(pFileRequest,requestOpeningTags) == TRUE)
+  if(AslRequest(pFileRequest,requestOpeningTags))
   {
-    STRPTR pDir = pFileRequest->rf_Dir;
-    STRPTR pFile = pFileRequest->fr_File;
+    // Copying path name into a big enough buffer
+    char fullPathBuf[512];
+    strcpy(fullPathBuf, pFileRequest->rf_Dir);
 
-    fileName = pDir;
-    fileName += "/";
-    fileName += pFile;
+    // Calling a dos.library function to combine path and file name
+    if(AddPart(fullPathBuf, pFileRequest->fr_File, 512))
+    {
+     fileName = fullPathBuf;
+    }
   }
 
   FreeAslRequest(pFileRequest);
