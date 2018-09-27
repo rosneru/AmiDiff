@@ -1,9 +1,10 @@
-#include <string.h>
 #include "SimpleString.h"
+#include <string.h>
+
 
 SimpleString::SimpleString()
-  : m_Len(1),
-    m_pBuf(new char[m_Len])
+  : m_Len(0),
+    m_pBuf(new char[m_Len + 1])
 {
   m_pBuf[0] = '\0';
 }
