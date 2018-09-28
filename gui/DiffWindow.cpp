@@ -3,6 +3,7 @@
 #include <clib/dos_protos.h>
 #include <clib/intuition_protos.h>
 #include <libraries/asl.h>
+#include <libraries/dos.h>
 #include "DiffWindow.h"
 
 
@@ -126,12 +127,35 @@ bool DiffWindow::Open(SimpleString p_FileName)
 
   SetTitle(p_FileName); // TODO only for test
 
+  // Open file and read line by line into window
+  // TODO Remove it to some better place
+  BPTR pFile = ::Open(p_FileName.C_str(), MODE_OLDFILE);
+  if(pFile == NULL)
+  {
+    return false;
+  }
+
+  char pLineBuf[DIFF_MAX_LINE_LENGTH];
+  size_t readBufSize = DIFF_MAX_LINE_LENGTH - 1; // v36/37 workaround
+  char* pBuf = NULL;
+
+  while( (pBuf = FGets(pFile, pLineBuf, readBufSize)) != NULL )
+  {
+    SimpleString line(pBuf);
+    if(line[line.Length()] == '\n')
+    {
+      line = line.SubStr(0, line.Length() - 1);
+
+      // TODO output the line in the window
+    }
+  }
 
   // TODO open the file and execute a TBD Diff command.
   // Note: this command will be have two "execute" channels
   // and will only start executing if the 2nd channel also
   // is executed.
 
+  ::Close(pFile);
   return true;
 }
 

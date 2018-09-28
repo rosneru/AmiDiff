@@ -12,6 +12,7 @@ public:
 
 protected:
   DiffDocument();
+  const size_t DIFF_MAX_LINE_LENGTH;
 };
 
 #endif // DIFF_DOCUMENT_H
