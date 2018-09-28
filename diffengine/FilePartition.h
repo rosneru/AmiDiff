@@ -40,41 +40,41 @@ protected:
 };
 
 
-//typedef CTemplateArray<FileLine*>		ArrayLines;
-//typedef CTemplateArray<long>			ArrayLong;
-//typedef CTemplateObjArray<SimpleString>		ArraySimpleString;
+typedef CTemplateArray<FileLine*>		ArrayLines;
+typedef CTemplateArray<long>			ArrayLong;
+typedef CTemplateObjArray<SimpleString>		ArraySimpleString;
 
 
-//class FileOptions
-//{
-//	// Members
-//protected:
-//	ArraySimpleString arrOptions;
+class FileOptions
+{
+  // Members
+protected:
+  ArraySimpleString arrOptions;
 
-//	// "indent" : should the diff engine see differences in tabs/spaces (default = yes)
-//	// "case" : should the diff engine see case differences (default = yes)
+  // "indent" : should the diff engine see differences in tabs/spaces (default = yes)
+  // "case" : should the diff engine see case differences (default = yes)
 
-//	// how to use this class :
-//	//       FileOptions o;
-//	//       o.SetOption("indent","yes");
+  // how to use this class :
+  //       FileOptions o;
+  //       o.SetOption("indent","yes");
 
-//	// Constructor
-//public:
-//	FileOptions();
+  // Constructor
+public:
+  FileOptions();
 
-//	// Accessors
-//public:
-//	void SetOption(SimpleString &szOptionName, SimpleString &szOptionValue);
-//	SimpleString GetOption(SimpleString &szOptionName);
+  // Accessors
+public:
+  void SetOption(SimpleString &szOptionName, SimpleString &szOptionValue);
+  SimpleString GetOption(SimpleString &szOptionName);
 
-//	BOOL IsDefaultOptions();
+  bool IsDefaultOptions();
 		
-//	long GetOptionCount();
-//	SimpleString GetOption(long i);
+  long GetOptionCount();
+  SimpleString GetOption(long i);
 
-//	// Methods
-//	void Copy(FileOptions &src);
-//};
+  // Methods
+  void Copy(FileOptions &src);
+};
 
 
 
@@ -111,20 +111,20 @@ public:
 
 
 	// Methods
-	BOOL PreProcess(SimpleString &szFilename, FileOptions &options);
-	BOOL PreProcessFolder(SimpleString &szFolder, FileOptions &options);
+  bool PreProcess(SimpleString &szFilename, FileOptions &options);
+  bool PreProcessFolder(SimpleString &szFolder, FileOptions &options);
 
 	void AddString(SimpleString &s, LineStatus ls);
 	void AddBlankLine();
 
-	BOOL MatchLine(long i1, FilePartition &f2,  long &i2);
+  bool MatchLine(long i1, FilePartition &f2,  long &i2);
 
 	void Dump(SimpleString &szTitle);
 
 
 	// Helpers
 protected:
-	BOOL PreProcessFolder(SimpleString &szFolder, FileOptions &options, /*in/out*/long nIndent);
+  bool PreProcessFolder(SimpleString &szFolder, FileOptions &options, /*in/out*/long nIndent);
 	void AddString(SimpleString &s);
 };
 

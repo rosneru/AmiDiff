@@ -33,7 +33,7 @@ bool DiffEngine::Diff(	FilePartition &f1, FilePartition &f2,
 			f1_bis.AddBlankLine();
 			f2_bis.AddString( f2.GetRawLine(nLinef2++), Normal);
 		}
-		return TRUE;
+    return true;
 	}
 
 	long i = 0;
@@ -58,7 +58,7 @@ bool DiffEngine::Diff(	FilePartition &f1, FilePartition &f2,
 
 		if ( f1.MatchLine(i, f2, nLinef2) )
 		{
-			BOOL bDeleted = FALSE;
+      bool bDeleted = false;
 			if (nLinef2 > nf2CurrentLine)
 			{
 				long itmp = nf2CurrentLine;
@@ -152,7 +152,7 @@ bool DiffEngine::Diff(	FilePartition &f1, FilePartition &f2,
 	}
 
 
-	return TRUE;
+  return true;
 }
 
 
@@ -299,7 +299,7 @@ SimpleString DiffEngine::Escape(SimpleString &s) // a helper aimed to make sure 
 	if (nSize==0) return SimpleString("&nbsp;");
 
 	TCHAR c;
-	BOOL bIndentation = TRUE;
+  bool bIndentation = true;
 
 	for (long i=0; i<nSize; i++)
 	{
@@ -312,7 +312,7 @@ SimpleString DiffEngine::Escape(SimpleString &s) // a helper aimed to make sure 
 				o += "&nbsp;&nbsp;&nbsp;&nbsp;";
 			continue;
 		}
-		bIndentation = FALSE;
+    bIndentation = false;
 
 		if (c=='<')
 			o += "&lt;";
@@ -327,7 +327,7 @@ SimpleString DiffEngine::Escape(SimpleString &s) // a helper aimed to make sure 
 }
 
 
-BOOL DiffEngine::ExportAsHtml(SimpleString &szFilename, SimpleString &szContent)
+bool DiffEngine::ExportAsHtml(SimpleString &szFilename, SimpleString &szContent)
 {
 	CStdioFile f;
 	if ( !f.Open(szFilename, CFile::modeCreate | CFile::modeWrite | CFile::typeBinary) )
@@ -335,21 +335,21 @@ BOOL DiffEngine::ExportAsHtml(SimpleString &szFilename, SimpleString &szContent)
 		TCHAR szError[MAX_PATH];
 		sprintf(szError, "error : cannot create %s\r\n", szFilename.GetBuffer(0) );
 		OutputDebugString(szError);
-		return FALSE;
+    return false;
 	}
 
 	f.Write(szContent.GetBuffer(0), szContent.GetLength());
 
 	f.Close();
 
-	return TRUE;
+  return true;
 }
 
 
-BOOL DiffEngine::ExportAsStdout(SimpleString &szContent)
+bool DiffEngine::ExportAsStdout(SimpleString &szContent)
 {
 	printf ("%s", szContent.GetBuffer(0));
-	return TRUE;
+  return true;
 }
 
 

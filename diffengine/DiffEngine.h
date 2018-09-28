@@ -11,7 +11,9 @@
 #ifndef DIFF_ENGINE
 #define DIFF_ENGINE
 
+#include "FilePartition.h"
 #include "SimpleString.h"
+
 
 class DiffEngine
 {
@@ -35,8 +37,8 @@ public:
 	SimpleString Serialize(	FilePartition &f1, 
 						FilePartition &f2);
 
-	BOOL ExportAsHtml(SimpleString &szFilename, SimpleString &szContent);
-	BOOL ExportAsStdout(SimpleString &szContent);
+  bool ExportAsHtml(SimpleString &szFilename, SimpleString &szContent);
+  bool ExportAsStdout(SimpleString &szContent);
 
 protected:
 	SimpleString m_szColorText, m_szColorBackground, m_szColorChanged, m_szColorAdded, m_szColorDeleted; // used by the html renderer

@@ -19,7 +19,7 @@ long FileLine::SetLine(SimpleString &s, FileOptions &o) // store string and buil
 	SimpleString so = GetLineWithOptions(s,o);
 	
 	long nToken = 0;
-	long nLength = so.GetLength();
+  long nLength = so.Length();
 	TCHAR *lpString = so.GetBuffer(0);
 
 	for (long i=0; i<nLength; i++)
@@ -56,11 +56,11 @@ SimpleString FileLine::GetLineWithOptions(SimpleString s,FileOptions &o)
 	if ( !szIndentoption.IsEmpty() && szIndentoption!="yes")
 	{
 		// no, then remove all 09 and 20 chars from the begin of the string
-		long nSize = so.GetLength();
+    long nSize = so.Length();
 		if (nSize>0)
 		{
 			TCHAR c;
-			BOOL bIndentation = TRUE;
+      bool bIndentation = true;
 
       int j = 0;
 			for (long i=0; i<nSize && bIndentation; i++)
@@ -68,9 +68,9 @@ SimpleString FileLine::GetLineWithOptions(SimpleString s,FileOptions &o)
         j = i;
 				c = so.GetAt(i);
 				if (c!=0x20 && c!=0x09)
-					bIndentation = FALSE;
+          bIndentation = false;
 			}
-			so = bIndentation ? so : so.Right( so.GetLength()+1 - j);
+      so = bIndentation ? so : so.Right( so.Length()+1 - j);
 		}
 	}
 
@@ -100,90 +100,90 @@ LineStatus FileLine::GetStatus()
 
 
 
-//// FileOptions /////////////////////////////////////////////////////
-////
-///////////////////////////////////////////////////////////////////////
-//// S.Rodriguez - Feb 2003
-///////////////////////////////////////////////////////////////////////
-////
-////
+// FileOptions /////////////////////////////////////////////////////
+//
+/////////////////////////////////////////////////////////////////////
+// S.Rodriguez - Feb 2003
+/////////////////////////////////////////////////////////////////////
+//
+//
 
-//FileOptions::FileOptions()
-//{
-//}
+FileOptions::FileOptions()
+{
+}
 
-//// Accessors
-//void FileOptions::SetOption(SimpleString &szOptionName, SimpleString &szOptionValue)
-//{
-//	// is it a new option ?
-//	long nSize = arrOptions.GetSize();
-//	BOOL bFound = FALSE;
-//	for (long i=0; i<nSize && !bFound; i++)
-//	{
-//		SimpleString s = arrOptions.GetAt(i);
-//		if (!s.IsEmpty() && s.Find(szOptionName,0)==0)
-//		{
-//			bFound = TRUE;
-//			long n = s.Find(';',0);
-//			if (n>-1)
-//				s = s.Left(n) + ";" + szOptionValue;
-//			else
-//				s = s + ";" + szOptionValue;
+// Accessors
+void FileOptions::SetOption(SimpleString &szOptionName, SimpleString &szOptionValue)
+{
+  // is it a new option ?
+  long nSize = arrOptions.GetSize();
+  bool bFound = false;
+  for (long i=0; i<nSize && !bFound; i++)
+  {
+    SimpleString s = arrOptions.GetAt(i);
+    if (!s.IsEmpty() && s.Find(szOptionName,0)==0)
+    {
+      bFound = true;
+      long n = s.Find(';',0);
+      if (n>-1)
+        s = s.Left(n) + ";" + szOptionValue;
+      else
+        s = s + ";" + szOptionValue;
 
-//			arrOptions.SetAt(i, s);
-//		}
-//	} // for
+      arrOptions.SetAt(i, s);
+    }
+  } // for
 
-//	if (!bFound)
-//	{
-//		SimpleString s = szOptionName + ";" + szOptionValue;
-//		arrOptions.Add(s);
-//	}
-//}
+  if (!bFound)
+  {
+    SimpleString s = szOptionName + ";" + szOptionValue;
+    arrOptions.Add(s);
+  }
+}
 
-//SimpleString FileOptions::GetOption(SimpleString &szOptionName)
-//{
-//	long nSize = arrOptions.GetSize();
-//	for (long i=0; i<nSize; i++)
-//	{
-//		SimpleString s = arrOptions.GetAt(i);
-//		if (!s.IsEmpty() && s.Find(szOptionName,0)==0)
-//		{
-//			long n = s.Find(';',0);
-//			if (n>-1)
-//				return s.Right( s.GetLength() - (n+1) );
-//			else
-//				return SimpleString("");
-//		}
-//	} // for
+SimpleString FileOptions::GetOption(SimpleString &szOptionName)
+{
+  long nSize = arrOptions.GetSize();
+  for (long i=0; i<nSize; i++)
+  {
+    SimpleString s = arrOptions.GetAt(i);
+    if (!s.IsEmpty() && s.Find(szOptionName,0)==0)
+    {
+      long n = s.Find(';',0);
+      if (n>-1)
+        return s.Right( s.Length() - (n+1) );
+      else
+        return SimpleString("");
+    }
+  } // for
 
-//	return SimpleString("");
-//}
-
-
-//BOOL FileOptions::IsDefaultOptions()
-//{
-//	return GetOptionCount()==0;
-//}
-
-//long FileOptions::GetOptionCount()
-//{
-//	return arrOptions.GetSize();
-//}
-
-//SimpleString FileOptions::GetOption(long i)
-//{
-//	return (i>=0 && i<GetOptionCount()) ? arrOptions.GetAt(i) : SimpleString("");
-//}
+  return SimpleString("");
+}
 
 
-//// Methods
-//void FileOptions::Copy(FileOptions &src)
-//{
-//	long nbOptions = src.GetOptionCount();
-//	for (long i=0; i<nbOptions; i++)
-//		arrOptions.Add( src.GetOption(i) );
-//}
+bool FileOptions::IsDefaultOptions()
+{
+  return GetOptionCount()==0;
+}
+
+long FileOptions::GetOptionCount()
+{
+  return arrOptions.GetSize();
+}
+
+SimpleString FileOptions::GetOption(long i)
+{
+  return (i>=0 && i<GetOptionCount()) ? arrOptions.GetAt(i) : SimpleString("");
+}
+
+
+// Methods
+void FileOptions::Copy(FileOptions &src)
+{
+  long nbOptions = src.GetOptionCount();
+  for (long i=0; i<nbOptions; i++)
+    arrOptions.Add( src.GetOption(i) );
+}
 
 
 
@@ -233,7 +233,7 @@ long FilePartition::GetNBLines()
 
 SimpleString FilePartition::GetLine(long i)
 {
-	ASSERT( i>=0 && i<GetNBLines());
+  // TODO Assert( i>=0 && i<GetNBLines());
 
 	FileLine *pLine = NULL;
 	if (i>=0 && i<GetNBLines())
@@ -246,7 +246,7 @@ SimpleString FilePartition::GetRawLine(long i) // returns an arbitrary line (not
 {
 	FileOptions o; // default options
 
-	ASSERT( i>=0 && i<GetNBLines());
+  // TODO Assert( i>=0 && i<GetNBLines());
 
 	FileLine *pLine = NULL;
 	if (i>=0 && i<GetNBLines())
@@ -257,7 +257,7 @@ SimpleString FilePartition::GetRawLine(long i) // returns an arbitrary line (not
 
 LineStatus FilePartition::GetStatusLine(long i)
 {
-	ASSERT( i>=0 && i<GetNBLines());
+  // TODO Assert( i>=0 && i<GetNBLines());
 
 	FileLine *pLine = NULL;
 	if (i>=0 && i<GetNBLines())
@@ -303,13 +303,13 @@ void FilePartition::HowManyChanges(int &nAdded, int &nChanged, int &nDeleted)
 //
 // purpose : reads a file, on a line-by-line basis
 //
-BOOL FilePartition::PreProcess(SimpleString &szFilename, FileOptions &options)
+bool FilePartition::PreProcess(SimpleString &szFilename, FileOptions &options)
 {
-	ASSERT( !szFilename.IsEmpty() );
+  // TODO Assert( !szFilename.IsEmpty() );
 	if (szFilename.IsEmpty())
 	{
 		OutputDebugString("error : empty input filename\r\n");
-		return FALSE;
+    return false;
 	}
 
 	SetName(szFilename);
@@ -324,7 +324,7 @@ BOOL FilePartition::PreProcess(SimpleString &szFilename, FileOptions &options)
 		TCHAR szError[MAX_PATH];
 		sprintf(szError, "error : cannot open %s\r\n", szFilename.GetBuffer(0) );
 		OutputDebugString(szError);
-		return FALSE;
+    return false;
 	}
 
 	// 
@@ -334,7 +334,7 @@ BOOL FilePartition::PreProcess(SimpleString &szFilename, FileOptions &options)
 
 	f.Close();
 
-	return TRUE;
+  return true;
 }
 
 
@@ -343,7 +343,7 @@ BOOL FilePartition::PreProcess(SimpleString &szFilename, FileOptions &options)
 // purpose : list folders, files and subfolders
 //           and then build a tree-like list out of it
 //
-BOOL FilePartition::PreProcessFolder(SimpleString &szFolder, FileOptions &options)
+bool FilePartition::PreProcessFolder(SimpleString &szFolder, FileOptions &options)
 {
 
 	SetName(szFolder);
@@ -352,15 +352,15 @@ BOOL FilePartition::PreProcessFolder(SimpleString &szFolder, FileOptions &option
 	long nIndent = 0;
 
 	// make sure there is no trailing backslash
-	while (!szFolder.IsEmpty() && szFolder.GetAt( szFolder.GetLength()-1 )=='\\')
-		szFolder = szFolder.Left( szFolder.GetLength()-1 );
+  while (!szFolder.IsEmpty() && szFolder.GetAt( szFolder.Length()-1 )=='\\')
+    szFolder = szFolder.Left( szFolder.Length()-1 );
 
 	return PreProcessFolder(szFolder, options, nIndent);
 }
 
-BOOL FilePartition::PreProcessFolder(SimpleString &szFolder, FileOptions &options, /*in/out*/long nIndent)
+bool FilePartition::PreProcessFolder(SimpleString &szFolder, FileOptions &options, /*in/out*/long nIndent)
 {
-	if (szFolder.IsEmpty()) return FALSE;
+  if (szFolder.IsEmpty()) return false;
 
 	CSortedArray arrFiles;
 
@@ -373,7 +373,7 @@ BOOL FilePartition::PreProcessFolder(SimpleString &szFolder, FileOptions &option
 	SimpleString szCurrentFolder = szFolder;
 	int nBackSlash = szCurrentFolder.ReverseFind('\\');
 	if (nBackSlash>-1)
-		szCurrentFolder = szCurrentFolder.Right( szCurrentFolder.GetLength()-(nBackSlash+1) );
+    szCurrentFolder = szCurrentFolder.Right( szCurrentFolder.Length()-(nBackSlash+1) );
 
 	// add the folder in the partition
 	AddString( szIndent + "+ " + szCurrentFolder );
@@ -440,14 +440,14 @@ BOOL FilePartition::PreProcessFolder(SimpleString &szFolder, FileOptions &option
 	for (i=0; i<nbFiles; i++)
 		AddString( szIndent + "    " + arrFiles.GetAt(i) );
 
-	return TRUE;
+  return true;
 }
 
 
 void FilePartition::AddString(SimpleString &s, LineStatus ls)
 {
 	FileLine *p = new FileLine();
-	ASSERT(p);
+  // TODO Assert(p);
 	if (p)
 	{
 		p->SetLine(s, ls);
@@ -463,7 +463,7 @@ void FilePartition::AddBlankLine()
 void FilePartition::AddString(SimpleString &s)
 {
 	FileLine *p = new FileLine();
-	ASSERT(p);
+  // TODO Assert(p);
 	if (p)
 	{
 		m_arrTokens.Add( p->SetLine(s, m_options) );
@@ -496,13 +496,13 @@ void FilePartition::Dump(SimpleString &szTitle)
 	}
 }
 
-BOOL FilePartition::MatchLine(long i1, FilePartition &f2, long &i2)
+bool FilePartition::MatchLine(long i1, FilePartition &f2, long &i2)
 {
-	ASSERT( m_arrTokens.GetSize()>0 );
-	if ( m_arrTokens.GetSize()==0 ) return FALSE;
+  // TODO Assert( m_arrTokens.GetSize()>0 );
+  if ( m_arrTokens.GetSize()==0 ) return false;
 
-	ASSERT( i1<GetNBLines() );
-	if ( i1>=GetNBLines() ) return FALSE; // should never happen though
+  // TODO Assert( i1<GetNBLines() );
+  if ( i1>=GetNBLines() ) return false; // should never happen though
 
 	// try to match the current token from f1, into the a subset of f2 tokens
 	//
@@ -512,9 +512,9 @@ BOOL FilePartition::MatchLine(long i1, FilePartition &f2, long &i2)
 
 	long *pf2Tokens = f2.GetTokens();
 	if (!pf2Tokens)
-		return FALSE;
+    return false;
 
-	BOOL bFound = FALSE;
+  bool bFound = false;
 	long i = 0;
 	long nf2SubsetLines = f2.GetNBLines() - i2;
 
@@ -536,8 +536,8 @@ BOOL FilePartition::MatchLine(long i1, FilePartition &f2, long &i2)
 	if (bFound)
 	{
 		i2 += i;
-		return TRUE;
+    return true;
 	}
 
-	return FALSE;
+  return false;
 }
