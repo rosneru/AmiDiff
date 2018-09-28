@@ -12,17 +12,17 @@ INCLUDEPATH +=  ../ \
                 ../../oscottlibs
 
 SOURCES += \
-    OscottModels_test.cpp \
-    ../TextDocument.cpp \
-    ../../oscottlibs/DiffEngine.cpp \
-    ../../oscottlibs/FilePartition.cpp \
+    DiffEngine_test.cpp \
+    ../DiffEngine.cpp \
+    ../FilePartition.cpp \
+    ../../oscottlibs/LinkedList.cpp \
     ../../oscottlibs/LinkedListNode.cpp \
     ../../oscottlibs/SimpleString.cpp
 
 
 HEADERS += \
-    ../TextDocument.h \
-    ../../oscottlibs/DiffEngine.h \
-    ../../oscottlibs/FilePartition.h \
+    ../DiffEngine.h \
+    ../FilePartition.h \
+    ../../oscottlibs/LinkedList.h \
     ../../oscottlibs/LinkedListNode.h \
     ../../oscottlibs/SimpleString.h

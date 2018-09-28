@@ -3,3 +3,6 @@ objects_debug
 *.map
 *.qiq
 *.info
+*.pro.user
+*.autosave
+build-*

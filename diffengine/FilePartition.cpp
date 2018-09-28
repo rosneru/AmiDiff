@@ -100,90 +100,90 @@ LineStatus FileLine::GetStatus()
 
 
 
-// FileOptions /////////////////////////////////////////////////////
-//
-/////////////////////////////////////////////////////////////////////
-// S.Rodriguez - Feb 2003
-/////////////////////////////////////////////////////////////////////
-//
-//
+//// FileOptions /////////////////////////////////////////////////////
+////
+///////////////////////////////////////////////////////////////////////
+//// S.Rodriguez - Feb 2003
+///////////////////////////////////////////////////////////////////////
+////
+////
 
-FileOptions::FileOptions()
-{
-}
+//FileOptions::FileOptions()
+//{
+//}
 
-// Accessors
-void FileOptions::SetOption(SimpleString &szOptionName, SimpleString &szOptionValue)
-{
-	// is it a new option ?
-	long nSize = arrOptions.GetSize();
-	BOOL bFound = FALSE;
-	for (long i=0; i<nSize && !bFound; i++)
-	{
-		SimpleString s = arrOptions.GetAt(i);
-		if (!s.IsEmpty() && s.Find(szOptionName,0)==0)
-		{
-			bFound = TRUE;
-			long n = s.Find(';',0);
-			if (n>-1)
-				s = s.Left(n) + ";" + szOptionValue;
-			else
-				s = s + ";" + szOptionValue;
+//// Accessors
+//void FileOptions::SetOption(SimpleString &szOptionName, SimpleString &szOptionValue)
+//{
+//	// is it a new option ?
+//	long nSize = arrOptions.GetSize();
+//	BOOL bFound = FALSE;
+//	for (long i=0; i<nSize && !bFound; i++)
+//	{
+//		SimpleString s = arrOptions.GetAt(i);
+//		if (!s.IsEmpty() && s.Find(szOptionName,0)==0)
+//		{
+//			bFound = TRUE;
+//			long n = s.Find(';',0);
+//			if (n>-1)
+//				s = s.Left(n) + ";" + szOptionValue;
+//			else
+//				s = s + ";" + szOptionValue;
 
-			arrOptions.SetAt(i, s);
-		}
-	} // for
+//			arrOptions.SetAt(i, s);
+//		}
+//	} // for
 
-	if (!bFound)
-	{
-		SimpleString s = szOptionName + ";" + szOptionValue;
-		arrOptions.Add(s);
-	}
-}
+//	if (!bFound)
+//	{
+//		SimpleString s = szOptionName + ";" + szOptionValue;
+//		arrOptions.Add(s);
+//	}
+//}
 
-SimpleString FileOptions::GetOption(SimpleString &szOptionName)
-{
-	long nSize = arrOptions.GetSize();
-	for (long i=0; i<nSize; i++)
-	{
-		SimpleString s = arrOptions.GetAt(i);
-		if (!s.IsEmpty() && s.Find(szOptionName,0)==0)
-		{
-			long n = s.Find(';',0);
-			if (n>-1)
-				return s.Right( s.GetLength() - (n+1) );
-			else
-				return SimpleString("");
-		}
-	} // for
+//SimpleString FileOptions::GetOption(SimpleString &szOptionName)
+//{
+//	long nSize = arrOptions.GetSize();
+//	for (long i=0; i<nSize; i++)
+//	{
+//		SimpleString s = arrOptions.GetAt(i);
+//		if (!s.IsEmpty() && s.Find(szOptionName,0)==0)
+//		{
+//			long n = s.Find(';',0);
+//			if (n>-1)
+//				return s.Right( s.GetLength() - (n+1) );
+//			else
+//				return SimpleString("");
+//		}
+//	} // for
 
-	return SimpleString("");
-}
-
-
-BOOL FileOptions::IsDefaultOptions()
-{
-	return GetOptionCount()==0;
-}
-
-long FileOptions::GetOptionCount()
-{
-	return arrOptions.GetSize();
-}
-
-SimpleString FileOptions::GetOption(long i)
-{
-	return (i>=0 && i<GetOptionCount()) ? arrOptions.GetAt(i) : SimpleString("");
-}
+//	return SimpleString("");
+//}
 
 
-// Methods
-void FileOptions::Copy(FileOptions &src)
-{
-	long nbOptions = src.GetOptionCount();
-	for (long i=0; i<nbOptions; i++)
-		arrOptions.Add( src.GetOption(i) );
-}
+//BOOL FileOptions::IsDefaultOptions()
+//{
+//	return GetOptionCount()==0;
+//}
+
+//long FileOptions::GetOptionCount()
+//{
+//	return arrOptions.GetSize();
+//}
+
+//SimpleString FileOptions::GetOption(long i)
+//{
+//	return (i>=0 && i<GetOptionCount()) ? arrOptions.GetAt(i) : SimpleString("");
+//}
+
+
+//// Methods
+//void FileOptions::Copy(FileOptions &src)
+//{
+//	long nbOptions = src.GetOptionCount();
+//	for (long i=0; i<nbOptions; i++)
+//		arrOptions.Add( src.GetOption(i) );
+//}
 
 
 

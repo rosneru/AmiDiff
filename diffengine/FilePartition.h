@@ -40,41 +40,41 @@ protected:
 };
 
 
-typedef CTemplateArray<FileLine*>		ArrayLines;
-typedef CTemplateArray<long>			ArrayLong;
-typedef CTemplateObjArray<SimpleString>		ArraySimpleString;
+//typedef CTemplateArray<FileLine*>		ArrayLines;
+//typedef CTemplateArray<long>			ArrayLong;
+//typedef CTemplateObjArray<SimpleString>		ArraySimpleString;
 
 
-class FileOptions
-{
-	// Members
-protected:
-	ArraySimpleString arrOptions;
+//class FileOptions
+//{
+//	// Members
+//protected:
+//	ArraySimpleString arrOptions;
 
-	// "indent" : should the diff engine see differences in tabs/spaces (default = yes)
-	// "case" : should the diff engine see case differences (default = yes)
+//	// "indent" : should the diff engine see differences in tabs/spaces (default = yes)
+//	// "case" : should the diff engine see case differences (default = yes)
 
-	// how to use this class :
-	//       FileOptions o;
-	//       o.SetOption("indent","yes");
+//	// how to use this class :
+//	//       FileOptions o;
+//	//       o.SetOption("indent","yes");
 
-	// Constructor
-public:
-	FileOptions();
+//	// Constructor
+//public:
+//	FileOptions();
 
-	// Accessors
-public:
-	void SetOption(SimpleString &szOptionName, SimpleString &szOptionValue);
-	SimpleString GetOption(SimpleString &szOptionName);
+//	// Accessors
+//public:
+//	void SetOption(SimpleString &szOptionName, SimpleString &szOptionValue);
+//	SimpleString GetOption(SimpleString &szOptionName);
 
-	BOOL IsDefaultOptions();
+//	BOOL IsDefaultOptions();
 		
-	long GetOptionCount();
-	SimpleString GetOption(long i);
+//	long GetOptionCount();
+//	SimpleString GetOption(long i);
 
-	// Methods
-	void Copy(FileOptions &src);
-};
+//	// Methods
+//	void Copy(FileOptions &src);
+//};
 
 
 
@@ -85,7 +85,7 @@ class FilePartition
 	// Members
 protected:
 	SimpleString			m_szFilename;
-	FileOptions	m_options;
+//	FileOptions	m_options;
 	ArrayLines		m_arrLines;
 	ArrayLong		m_arrTokens;
 

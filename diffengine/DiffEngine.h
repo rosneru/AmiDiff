@@ -24,7 +24,7 @@ public:
 	// compare f1 (old version) with f2 (new version)
 	// and build two new copies of those file objects with status on a line by line basis
 	//
-	BOOL Diff(	FilePartition &f1, FilePartition &f2,
+  bool Diff(	FilePartition &f1, FilePartition &f2,
 				FilePartition &f1_bis, FilePartition &f2_bis);
 
 	// build html report
