@@ -120,7 +120,8 @@ bool Application::Run()
   m_pCmdOpenRightFile = new CmdFileOpen("Open the right file", *m_pRightWin);
 
 
-  // Fill GadTools menu struct giving the commands pointers as nm_UserData
+  // Fill the GadTools menu struct, supplying pointers to the commands
+  // as nm_UserData
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
@@ -162,9 +163,9 @@ bool Application::Run()
 
   //
   // If there are at least two command line arguments permitted,
-  // (three for the if as the first one is the apps name), try to take
-  // the first two of them as file names and load them into left and
-  // right window
+  // (three for the if as the first one is the application name),
+  // try to take the first two of them as file names and load them
+  // into left and right window
   //
   if(m_Argc >= 3)
   {
@@ -217,8 +218,10 @@ void Application::intuiEventLoop()
         APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
         if(pUserData != NULL)
         {
-          // Testing if UserData contains a pointer to a Command
+          // Our user data always contains a pointer to a Command
           Command* pSelecedCommand = static_cast<Command*>(pUserData);
+
+          // Execute this command
           pSelecedCommand->Execute();
         }
 
