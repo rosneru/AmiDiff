@@ -4,13 +4,14 @@
 #include <clib/intuition_protos.h>
 #include <libraries/asl.h>
 #include <libraries/dos.h>
+
 #include "DiffWindow.h"
 
 
-DiffWindow::DiffWindow(const struct Screen* p_pScreen)
+DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
+  : m_pAppScreen(p_pAppScreen),
+    m_pWindow(NULL)
 {
-  m_pScreen = p_pScreen;
-  m_pWindow = NULL;
 }
 
 DiffWindow::~DiffWindow()
@@ -24,7 +25,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   // Initial validations
   //
 
-  if(m_pScreen == NULL)
+  if(m_pAppScreen == NULL)
   {
     // In this design we need a screen to open the window
     return false;
@@ -39,9 +40,9 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   //
   // Calculating window size etc in depency of screen dimesions
   //
-  int screenWidth = m_pScreen->Width;
-  int screenHeight = m_pScreen->Height;
-  int screenBarHeight = m_pScreen->BarHeight;
+  int screenWidth = m_pAppScreen->IntuiScreen()->Width;
+  int screenHeight = m_pAppScreen->IntuiScreen()->Height;
+  int screenBarHeight = m_pAppScreen->IntuiScreen()->BarHeight;
 
   int winWidth = screenWidth / 2;
   int winHeight = screenHeight - screenBarHeight - 1;
@@ -71,7 +72,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
     { WA_Height, winHeight },
     { WA_Title, (ULONG)m_Title.C_str() },
     { WA_Activate, activateWin },
-    { WA_PubScreen, (ULONG)m_pScreen },
+    { WA_PubScreen, (ULONG)m_pAppScreen->IntuiScreen() },
     { WA_IDCMP, IDCMP_MENUPICK },
     { WA_NewLookMenus, TRUE },  // Ignored before v39
     { TAG_DONE, NULL },
@@ -94,11 +95,6 @@ void DiffWindow::Close()
   }
 }
 
-struct Window* DiffWindow::IntuiWindow()
-{
-  return m_pWindow;
-}
-
 const char* DiffWindow::Title()
 {
   return m_Title.C_str();
@@ -111,6 +107,11 @@ void DiffWindow::SetTitle(SimpleString p_NewTitle)
   // Call intuition function to set the window title
   // Note the ~0 inverts the value ang is a value of -1
   SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
+}
+
+struct Window* DiffWindow::IntuiWindow()
+{
+  return m_pWindow;
 }
 
 bool DiffWindow::Open(SimpleString p_FileName)
@@ -141,13 +142,17 @@ bool DiffWindow::Open(SimpleString p_FileName)
 
   while( (pBuf = FGets(pFile, pLineBuf, readBufSize)) != NULL )
   {
+    // Read the line into a string object
     SimpleString line(pBuf);
-    if(line[line.Length()] == '\n')
+
+    // Remove
+    if(line[line.Length() - 1] == '\n')
     {
       line = line.SubStr(0, line.Length() - 1);
-
-      // TODO output the line in the window
     }
+
+    // TODO output the line in the window
+
   }
 
   // TODO open the file and execute a TBD Diff command.

@@ -10,10 +10,12 @@
 
 #include <intuition/screens.h>
 
+#include "SimpleString.h"
+
 class AppScreen
 {
 public:
-  AppScreen();
+  AppScreen(SimpleString p_Title);
   ~AppScreen();
 
   /**
@@ -29,13 +31,24 @@ public:
    */
   void Close();
 
+  const char* Title();
+
   /**
    * Gets the intuition screen structure or NULL if screen is not open
    */
   struct Screen* IntuiScreen();
 
+  /**
+   * Gets the intuition screen draw info or NULL if it hadnt been
+   * akquired successfully
+   */
+  struct DrawInfo* IntuiDrawInfo();
+
 private:
+  SimpleString m_Title;
   struct Screen* m_pScreen;
+  struct DrawInfo* m_pDrawInfo;
+
 };
 
 

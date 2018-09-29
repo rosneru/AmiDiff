@@ -9,13 +9,14 @@
 #define DIFFWINDOW
 
 #include <intuition/screens.h>
+#include "AppScreen.h"
 #include "DiffDocument.h"
 #include "SimpleString.h"
 
 class DiffWindow : public DiffDocument
 {
 public:
-  DiffWindow(const struct Screen* p_pScreen);
+  DiffWindow(AppScreen* p_pAppScreen);
   virtual ~DiffWindow();
 
   /**
@@ -44,13 +45,13 @@ public:
    */
   void Close();
 
+  const char* Title();
+  void SetTitle(SimpleString p_NewTitle);
+
   /**
    * Gets the intuition window structure or NULL if window is not open
    */
   struct Window* IntuiWindow();
-
-  const char* Title();
-  void SetTitle(SimpleString p_NewTitle);
 
   /**
    * Open a text file
@@ -64,7 +65,7 @@ public:
   virtual bool Open(SimpleString p_FileName = "");
 
 private:
-  const struct Screen* m_pScreen;
+  AppScreen* m_pAppScreen;
   struct Window* m_pWindow;
   SimpleString m_Title;
   SimpleString m_FileRequesterTitle;

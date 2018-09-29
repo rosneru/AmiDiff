@@ -2,9 +2,10 @@
 #include "AppScreen.h"
 
 
-AppScreen::AppScreen()
+AppScreen::AppScreen(SimpleString p_Title)
+  : m_Title(p_Title),
+    m_pScreen(NULL)
 {
-  m_pScreen = NULL;
 }
 
 AppScreen::~AppScreen()
@@ -31,14 +32,32 @@ bool AppScreen::Open()
   m_pScreen = OpenScreenTags(
     NULL,
     SA_LikeWorkbench, TRUE,
-    SA_Title, "AmiDiff (C) 2018 by Uwe Rosner.",
+    SA_Title, m_Title.C_str(),
     TAG_DONE);
 
-  return m_pScreen != NULL;
+  if(m_pScreen == NULL)
+  {
+    return false;
+  }
+
+  m_pDrawInfo = GetScreenDrawInfo(m_pScreen);
+  if(m_pDrawInfo == NULL)
+  {
+    Close();
+    return false;
+  }
+
+  return true;
 }
 
 void AppScreen::Close()
 {
+  if(m_pDrawInfo != NULL)
+  {
+    FreeScreenDrawInfo(m_pScreen, m_pDrawInfo);
+    m_pDrawInfo = NULL;
+  }
+
   if(m_pScreen != NULL)
   {
     CloseScreen(m_pScreen);
@@ -46,7 +65,18 @@ void AppScreen::Close()
   }
 }
 
+const char* AppScreen::Title()
+{
+  return m_Title.C_str();
+}
+
+
 struct Screen* AppScreen::IntuiScreen()
 {
   return m_pScreen;
+}
+
+struct DrawInfo* AppScreen::IntuiDrawInfo()
+{
+  return m_pDrawInfo;
 }

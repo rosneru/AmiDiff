@@ -81,7 +81,7 @@ bool Application::Run()
   //
   // Opening the screen
   //
-  m_pScreen = new AppScreen();
+  m_pScreen = new AppScreen("AmiDiff (C) 2018 by Uwe Rosner.");
   if (!m_pScreen->Open())
   {
     // Opening the screen failed
@@ -93,7 +93,7 @@ bool Application::Run()
   //
   // Opening the left window
   //
-  m_pLeftWin = new DiffWindow(m_pScreen->IntuiScreen());
+  m_pLeftWin = new DiffWindow(m_pScreen);
   if(!m_pLeftWin->Open(DiffWindow::LEFT))
   {
     // Opening the window failed
@@ -104,7 +104,7 @@ bool Application::Run()
   //
   // Opening the right window
   //
-  m_pRightWin = new DiffWindow(m_pScreen->IntuiScreen());
+  m_pRightWin = new DiffWindow(m_pScreen);
   if(!m_pRightWin->Open(DiffWindow::RIGHT))
   {
     // Opening the window failed
@@ -166,7 +166,7 @@ bool Application::Run()
   // the first two of them as file names and load them into left and
   // right window
   //
-  if(m_Argc >=3)
+  if(m_Argc >= 3)
   {
     SimpleString fileNameLeft = m_Argv[1];
     SimpleString fileNameRight = m_Argv[2];
