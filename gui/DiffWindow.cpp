@@ -128,6 +128,29 @@ bool DiffWindow::Open(SimpleString p_FileName)
 
   SetTitle(p_FileName); // TODO only for test
 
+  // Setup Pens, TextAttr and prepare IntuiText
+  // TODO Remove it to some better place
+  struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
+  ULONG txtPen = pDrawInfo->dri_Pens[TEXTPEN];
+  ULONG bgPen = pDrawInfo->dri_Pens[BACKGROUNDPEN];
+
+  struct TextAttr textAttr;
+  textAttr.ta_Name = pDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
+  textAttr.ta_YSize = pDrawInfo->dri_Font->tf_YSize;
+  textAttr.ta_Style = pDrawInfo->dri_Font->tf_Style;
+  textAttr.ta_Flags = pDrawInfo->dri_Font->tf_Flags;
+
+  // Prepare IntuiText for line-by-line printing
+  struct IntuiText intuiText;
+  intuiText.FrontPen  = txtPen;
+  intuiText.BackPen   = bgPen;
+  intuiText.DrawMode  = JAM2;
+  intuiText.LeftEdge  = 0;
+  intuiText.TopEdge   = 0;
+  intuiText.ITextFont = &textAttr;
+  intuiText.NextText  = NULL;
+
+
   // Open file and read line by line into window
   // TODO Remove it to some better place
   BPTR pFile = ::Open(p_FileName.C_str(), MODE_OLDFILE);
@@ -152,7 +175,12 @@ bool DiffWindow::Open(SimpleString p_FileName)
     }
 
     // TODO output the line in the window
+    intuiText.IText = (UBYTE*)line.C_str();
+    PrintIText(m_pWindow->RPort, &intuiText, 10, 10);
 
+    // Increment Y value of struct IntuiText in preparation of the next
+    // line
+    intuiText.TopEdge += textAttr.ta_YSize;
   }
 
   // TODO open the file and execute a TBD Diff command.
