@@ -30,7 +30,7 @@ public:
   bool operator==(const SimpleString& p_Other);
   bool operator<(const SimpleString& p_Other);
   bool operator>(const SimpleString& p_Other);
-  char& operator[](unsigned int p_Index);
+  char& operator[](size_t p_Index);
 
   /**
    * Get C string equivalent
@@ -123,8 +123,17 @@ public:
    * Erases the portion of the string value that begins at p_Index and
    * spans p_Len characters (or until the end of the string, if the
    * content is too short).
+   *
+   * WARNING This creates *no* copy. It changes the string directly!
    */
   SimpleString& Erase(size_t p_Index, size_t p_Len);
+
+  /**
+   * @brief
+   * Returns a newly constructed string object with all occurences of
+   * '\r', '\r', '\t' and ' ' from the end of the string are removed.
+   */
+  SimpleString Trim();
 
 private:
   size_t m_Len;

@@ -9,6 +9,7 @@
 #ifndef OSCOTTLIBS_LINKEDLIST
 #define OSCOTTLIBS_LINKEDLIST
 
+#include <stdlib.h>
 #include "LinkedListNode.h"
 
 using namespace std;
@@ -37,9 +38,14 @@ public:
   void* GetPrev(void);
   void* GetSelected(void);
 
-  void* GetIndexed(int p_Id);
+  void* GetIndexed(size_t p_Id);
 
   void* searchList(void* p_pItemSearch, int(fcmp) (void* pItList, void* pItNew));
+
+  size_t Size();
+
+private:
+  size_t m_Size;
 };
 
 #endif

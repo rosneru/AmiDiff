@@ -177,6 +177,45 @@ SimpleString& SimpleString::Erase(size_t p_Index, size_t p_Len)
 }
 
 
+
+SimpleString SimpleString::Trim()
+{
+  SimpleString trimmedString = *this;
+  for (size_t i = 0; i < Length(); i++)
+  {
+    char c = trimmedString[i];
+    if((c == '\r') ||
+       (c == '\n') ||
+       (c == '\t') ||
+       (c == ' '))
+    {
+      // TODO negate the condition
+    }
+    else
+    {
+      trimmedString = trimmedString.SubStr(i, trimmedString.Length() - i);
+      break;
+    }
+  }
+
+  size_t i = trimmedString.Length() - 1;
+  char c = trimmedString[i];
+  while((c == '\r') ||
+     (c == '\n') ||
+     (c == '\t') ||
+     (c == ' '))
+  {
+    i--;
+    c = trimmedString[i];
+  }
+
+  trimmedString = trimmedString.SubStr(0, i + 1);
+
+
+  return trimmedString;
+}
+
+
 SimpleString::~SimpleString()
 {
   delete[] m_pBuf;
@@ -296,7 +335,7 @@ bool SimpleString::operator>(const SimpleString& p_Other)
   }
 }
 
-char& SimpleString::operator[](unsigned int p_Index)
+char& SimpleString::operator[](size_t p_Index)
 {
   if(p_Index < m_Len)
   {
