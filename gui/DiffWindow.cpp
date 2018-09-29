@@ -126,8 +126,6 @@ bool DiffWindow::Open(SimpleString p_FileName)
     }
   }
 
-  SetTitle(p_FileName); // TODO only for test
-
   // Setup Pens, TextAttr and prepare IntuiText
   // TODO Remove it to some better place
   struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
@@ -158,6 +156,10 @@ bool DiffWindow::Open(SimpleString p_FileName)
   {
     return false;
   }
+
+  // Set full path of opened file as window title
+  SetTitle(p_FileName);
+
 
   char pLineBuf[DIFF_MAX_LINE_LENGTH];
   size_t readBufSize = DIFF_MAX_LINE_LENGTH - 1; // v36/37 workaround
