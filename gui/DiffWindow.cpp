@@ -1,12 +1,16 @@
 #include <string.h>
+
 #include <clib/asl_protos.h>
 #include <clib/dos_protos.h>
 #include <clib/intuition_protos.h>
+#include <intuition/intuition.h>
 #include <libraries/asl.h>
 #include <libraries/dos.h>
 
 #include "DiffWindow.h"
 
+#define CONTENT_X_OFFSET 10
+#define CONTENT_Y_OFFSET 10
 
 DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   : m_pAppScreen(p_pAppScreen),
@@ -215,17 +219,29 @@ void DiffWindow::displayFile()
   intuiText.ITextFont = &textAttr;
   intuiText.NextText  = NULL;
 
+  size_t numLinesInWindow = m_pWindow->Height;
+  numLinesInWindow -= m_pWindow->BorderTop;
+  numLinesInWindow -= m_pWindow->BorderBottom;
+  numLinesInWindow -= CONTENT_Y_OFFSET;
+  numLinesInWindow /= textAttr.ta_YSize;
+
   SimpleString* pLine = GetFirstLine();
+  size_t i = 0;
   while(pLine != NULL)
   {
     // Output the line in the window
     intuiText.IText = (UBYTE*)pLine->C_str();
-    PrintIText(m_pWindow->RPort, &intuiText, 10, 10);
+    PrintIText(m_pWindow->RPort, &intuiText, CONTENT_X_OFFSET, CONTENT_Y_OFFSET);
 
     // Increment Y value of struct IntuiText in preparation of the next
     // line
     intuiText.TopEdge += textAttr.ta_YSize;
 
     pLine = GetNextLine();
+    i++;
+    if(i >= numLinesInWindow)
+    {
+      break;
+    }
   }
 }

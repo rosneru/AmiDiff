@@ -3,8 +3,6 @@
 #include <clib/exec_protos.h>
 #include <clib/intuition_protos.h>
 
-#include <stdio.h>
-
 #include "LinkedList.h"
 
 #include "Command.h"

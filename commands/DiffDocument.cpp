@@ -8,8 +8,7 @@ DiffDocument::DiffDocument()
   : MAX_LINE_LENGTH(512),
     m_pLines(new LinkedList())
 {
-  SimpleString* pInitial = new SimpleString();
-  m_pLines->InsertHead(pInitial);
+
 }
 
 DiffDocument::~DiffDocument()
@@ -20,6 +19,11 @@ DiffDocument::~DiffDocument()
 
 bool DiffDocument::ReadFile(SimpleString p_FileName)
 {
+  if(NumLines() > 0)
+  {
+    Clear();
+  }
+
   // Open file and read line by line into window
   // TODO Remove it to some better place
   BPTR pFile = ::Open(p_FileName.C_str(), MODE_OLDFILE);
