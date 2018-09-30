@@ -3,6 +3,8 @@
 #include <clib/exec_protos.h>
 #include <clib/intuition_protos.h>
 
+#include <stdio.h>
+
 #include "LinkedList.h"
 
 #include "Command.h"
@@ -210,22 +212,38 @@ void Application::intuiEventLoop()
     {
       switch (pMsg->Class)
       {
-      case IDCMP_MENUPICK:
-        UWORD menuNumber = pMsg->Code;
-        struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
-
-        // Getting the user data from selected menu item
-        APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
-        if(pUserData != NULL)
+        case IDCMP_MENUPICK:
         {
-          // Our user data always contains a pointer to a Command
-          Command* pSelecedCommand = static_cast<Command*>(pUserData);
+          UWORD menuNumber = pMsg->Code;
+          struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
 
-          // Execute this command
-          pSelecedCommand->Execute();
+          // Getting the user data from selected menu item
+          APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
+          if(pUserData != NULL)
+          {
+            // Our user data always contains a pointer to a Command
+            Command* pSelecedCommand = static_cast<Command*>(pUserData);
+
+            // Execute this command
+            pSelecedCommand->Execute();
+          }
+
+          break;
         }
+       case IDCMP_RAWKEY:
+        {
+          if(pMsg->Code == CURSORDOWN)
+          {
+            printf("Cursor down\n");
+          }
 
-        break;
+          if(pMsg->Code == CURSORUP)
+          {
+            printf("Cursor up\n");
+          }
+
+          break;
+        }
       }
 
       ReplyMsg((struct Message *)pMsg);

@@ -74,7 +74,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
     { WA_Title, (ULONG)m_Title.C_str() },
     { WA_Activate, activateWin },
     { WA_PubScreen, (ULONG)m_pAppScreen->IntuiScreen() },
-    { WA_IDCMP, IDCMP_MENUPICK },
+    { WA_IDCMP, IDCMP_MENUPICK | IDCMP_VANILLAKEY | IDCMP_RAWKEY},
     { WA_NewLookMenus, TRUE },  // Ignored before v39
     { WA_Flags, WFLG_GIMMEZEROZERO },
     { TAG_DONE, NULL },
