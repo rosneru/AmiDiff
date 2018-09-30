@@ -139,44 +139,14 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
   return true;
 }
 
-void DiffWindow::displayFile()
+void DiffWindow::ScrollDownOneLine()
 {
-  // Setup Pens, TextAttr and prepare IntuiText
-  // TODO Remove it to some better place
-  struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
-  ULONG txtPen = pDrawInfo->dri_Pens[TEXTPEN];
-  ULONG bgPen = pDrawInfo->dri_Pens[BACKGROUNDPEN];
-
-  struct TextAttr textAttr;
-  textAttr.ta_Name = pDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
-  textAttr.ta_YSize = pDrawInfo->dri_Font->tf_YSize;
-  textAttr.ta_Style = pDrawInfo->dri_Font->tf_Style;
-  textAttr.ta_Flags = pDrawInfo->dri_Font->tf_Flags;
-
-  // Prepare IntuiText for line-by-line printing
-  struct IntuiText intuiText;
-  intuiText.FrontPen  = txtPen;
-  intuiText.BackPen   = bgPen;
-  intuiText.DrawMode  = JAM2;
-  intuiText.LeftEdge  = 0;
-  intuiText.TopEdge   = 0;
-  intuiText.ITextFont = &textAttr;
-  intuiText.NextText  = NULL;
-
-  SimpleString* pLine = GetFirstLine();
-  while(pLine != NULL)
-  {
-    // Output the line in the window
-    intuiText.IText = (UBYTE*)pLine->C_str();
-    PrintIText(m_pWindow->RPort, &intuiText, 10, 10);
-
-    // Increment Y value of struct IntuiText in preparation of the next
-    // line
-    intuiText.TopEdge += textAttr.ta_YSize;
-
-    pLine = GetNextLine();
-  }
 }
+
+void DiffWindow::ScrollUpOneLine()
+{
+}
+
 
 SimpleString DiffWindow::aslRequestFileName()
 {
@@ -219,4 +189,43 @@ SimpleString DiffWindow::aslRequestFileName()
   FreeAslRequest(pFileRequest);
 
   return fileName;
+}
+
+void DiffWindow::displayFile()
+{
+  // Setup Pens, TextAttr and prepare IntuiText
+  // TODO Remove it to some better place
+  struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
+  ULONG txtPen = pDrawInfo->dri_Pens[TEXTPEN];
+  ULONG bgPen = pDrawInfo->dri_Pens[BACKGROUNDPEN];
+
+  struct TextAttr textAttr;
+  textAttr.ta_Name = pDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
+  textAttr.ta_YSize = pDrawInfo->dri_Font->tf_YSize;
+  textAttr.ta_Style = pDrawInfo->dri_Font->tf_Style;
+  textAttr.ta_Flags = pDrawInfo->dri_Font->tf_Flags;
+
+  // Prepare IntuiText for line-by-line printing
+  struct IntuiText intuiText;
+  intuiText.FrontPen  = txtPen;
+  intuiText.BackPen   = bgPen;
+  intuiText.DrawMode  = JAM2;
+  intuiText.LeftEdge  = 0;
+  intuiText.TopEdge   = 0;
+  intuiText.ITextFont = &textAttr;
+  intuiText.NextText  = NULL;
+
+  SimpleString* pLine = GetFirstLine();
+  while(pLine != NULL)
+  {
+    // Output the line in the window
+    intuiText.IText = (UBYTE*)pLine->C_str();
+    PrintIText(m_pWindow->RPort, &intuiText, 10, 10);
+
+    // Increment Y value of struct IntuiText in preparation of the next
+    // line
+    intuiText.TopEdge += textAttr.ta_YSize;
+
+    pLine = GetNextLine();
+  }
 }

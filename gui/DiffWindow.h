@@ -64,6 +64,9 @@ public:
    */
   virtual bool ReadFile(SimpleString p_FileName = "");
 
+  void ScrollDownOneLine();
+  void ScrollUpOneLine();
+
 private:
   AppScreen* m_pAppScreen;
   struct Window* m_pWindow;

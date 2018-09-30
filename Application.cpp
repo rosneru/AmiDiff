@@ -230,31 +230,31 @@ void Application::intuiEventLoop()
 
           break;
         }
-       case IDCMP_RAWKEY:
+
+        case IDCMP_RAWKEY:
         {
           if(pMsg->Code == CURSORDOWN)
           {
             if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
             {
-              printf("LEFT WIN: Cursor down\n");
+              m_pLeftWin->ScrollDownOneLine();
             }
             else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
             {
-              printf("RIGHT WIN: Cursor down\n");
+              m_pRightWin->ScrollDownOneLine();
             }
           }
           else if(pMsg->Code == CURSORUP)
           {
             if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
             {
-              printf("LEFT WIN: Cursor up\n");
+              m_pLeftWin->ScrollUpOneLine();
             }
             else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
             {
-              printf("RIGHT WIN: Cursor up\n");
+              m_pRightWin->ScrollUpOneLine();
             }
           }
-
           break;
         }
       }
