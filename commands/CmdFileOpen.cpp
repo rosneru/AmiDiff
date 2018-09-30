@@ -15,5 +15,5 @@ CmdFileOpen::~CmdFileOpen()
 
 void CmdFileOpen::Execute()
 {
-  m_Document.Open();
+  m_Document.ReadFile();
 }

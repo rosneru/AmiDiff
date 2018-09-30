@@ -115,7 +115,7 @@ struct Window* DiffWindow::IntuiWindow()
   return m_pWindow;
 }
 
-bool DiffWindow::Open(SimpleString p_FileName)
+bool DiffWindow::ReadFile(SimpleString p_FileName)
 {
   if(p_FileName.Length() == 0)
   {
@@ -126,6 +126,15 @@ bool DiffWindow::Open(SimpleString p_FileName)
       return false;
     }
   }
+
+  if(DiffDocument::ReadFile(p_FileName) == false)
+  {
+    return false;
+  }
+
+  // Set full path of opened file as window title
+  SetTitle(p_FileName);
+
 
   // Setup Pens, TextAttr and prepare IntuiText
   // TODO Remove it to some better place
@@ -149,43 +158,20 @@ bool DiffWindow::Open(SimpleString p_FileName)
   intuiText.ITextFont = &textAttr;
   intuiText.NextText  = NULL;
 
-
-  // Open file and read line by line into window
-  // TODO Remove it to some better place
-  BPTR pFile = ::Open(p_FileName.C_str(), MODE_OLDFILE);
-  if(pFile == NULL)
+/*
+  // for each line
   {
-    return false;
-  }
-
-  // Set full path of opened file as window title
-  SetTitle(p_FileName);
-
-
-  char pLineBuf[DIFF_MAX_LINE_LENGTH];
-  size_t readBufSize = DIFF_MAX_LINE_LENGTH - 1; // v36/37 workaround
-  char* pBuf = NULL;
-
-  while( (pBuf = FGets(pFile, pLineBuf, readBufSize)) != NULL )
-  {
-    // Read the line into a string object
-    SimpleString line(pBuf);
 
     // TODO output the line in the window
-    intuiText.IText = (UBYTE*)line.Trim().C_str();
+    intuiText.IText = (UBYTE*)line.C_str();
     PrintIText(m_pWindow->RPort, &intuiText, 10, 10);
 
     // Increment Y value of struct IntuiText in preparation of the next
     // line
     intuiText.TopEdge += textAttr.ta_YSize;
   }
+*/
 
-  // TODO open the file and execute a TBD Diff command.
-  // Note: this command will be have two "execute" channels
-  // and will only start executing if the 2nd channel also
-  // is executed.
-
-  ::Close(pFile);
   return true;
 }
 

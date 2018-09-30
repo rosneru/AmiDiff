@@ -56,13 +56,13 @@ public:
   /**
    * Open a text file
    *
-   * Implemented abstract method from interface DiffDocument
+   * Extended method from base class DiffDocument
    *
    * @param p_FileName
    * Full file name with path for to be opened file. If empty a ASL
    * request will be opened asking the user for the file name.
    */
-  virtual bool Open(SimpleString p_FileName = "");
+  virtual bool ReadFile(SimpleString p_FileName = "");
 
 private:
   AppScreen* m_pAppScreen;

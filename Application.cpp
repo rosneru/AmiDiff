@@ -172,8 +172,8 @@ bool Application::Run()
     SimpleString fileNameLeft = m_Argv[1];
     SimpleString fileNameRight = m_Argv[2];
 
-    m_pLeftWin->Open(fileNameLeft);
-    m_pRightWin->Open(fileNameRight);
+    m_pLeftWin->ReadFile(fileNameLeft);
+    m_pRightWin->ReadFile(fileNameRight);
   }
 
   //
