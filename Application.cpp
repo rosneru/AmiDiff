@@ -234,12 +234,25 @@ void Application::intuiEventLoop()
         {
           if(pMsg->Code == CURSORDOWN)
           {
-            printf("Cursor down\n");
+            if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+            {
+              printf("LEFT WIN: Cursor down\n");
+            }
+            else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+            {
+              printf("RIGHT WIN: Cursor down\n");
+            }
           }
-
-          if(pMsg->Code == CURSORUP)
+          else if(pMsg->Code == CURSORUP)
           {
-            printf("Cursor up\n");
+            if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+            {
+              printf("LEFT WIN: Cursor up\n");
+            }
+            else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+            {
+              printf("RIGHT WIN: Cursor up\n");
+            }
           }
 
           break;
