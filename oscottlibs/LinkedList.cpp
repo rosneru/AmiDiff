@@ -3,9 +3,9 @@
 
 
 LinkedList::LinkedList()
-  : m_pFirst(nullptr),
-    m_pActual(nullptr),
-    m_pLast(nullptr),
+  : m_pFirst(NULL),
+    m_pActual(NULL),
+    m_pLast(NULL),
     m_Size(0)
 {
 
@@ -21,17 +21,17 @@ bool LinkedList::RemoveItem()
   LinkedListNode* tmp;
   tmp = m_pActual;
 
-  if (m_pActual != nullptr)
+  if (m_pActual != NULL)
   {
-    if (m_pActual->m_pNxt != nullptr)
+    if (m_pActual->m_pNxt != NULL)
     {
-      if (m_pActual->m_pPrv != nullptr)
+      if (m_pActual->m_pPrv != NULL)
       {
         m_pActual->m_pPrv->m_pNxt = m_pActual->m_pNxt;
       }
       else
       {
-        m_pActual->m_pNxt->m_pPrv = nullptr;
+        m_pActual->m_pNxt->m_pPrv = NULL;
         m_pFirst = m_pActual->m_pNxt;
       }
 
@@ -41,15 +41,15 @@ bool LinkedList::RemoveItem()
       m_Size--;
       return true;
     }
-    else if (m_pActual->m_pPrv != nullptr)
+    else if (m_pActual->m_pPrv != NULL)
     {
-      if (m_pActual->m_pNxt != nullptr)
+      if (m_pActual->m_pNxt != NULL)
       {
         m_pActual->m_pNxt->m_pPrv = m_pActual->m_pPrv;
       }
       else
       {
-        m_pActual->m_pPrv->m_pNxt = nullptr;
+        m_pActual->m_pPrv->m_pNxt = NULL;
         m_pLast = m_pActual->m_pPrv;
       }
 
@@ -61,7 +61,7 @@ bool LinkedList::RemoveItem()
     }
     else
     {
-      m_pFirst = m_pLast = m_pActual = nullptr;
+      m_pFirst = m_pLast = m_pActual = NULL;
       delete tmp;
       m_Size--;
       return true;
@@ -79,9 +79,9 @@ bool LinkedList::InsertHead(void* p_pItemIns)
 {
   LinkedListNode* tmp;
 
-  if (m_pFirst == nullptr)
+  if (m_pFirst == NULL)
   {
-    if ((m_pFirst = new LinkedListNode(p_pItemIns, nullptr, nullptr)) != nullptr)
+    if ((m_pFirst = new LinkedListNode(p_pItemIns, NULL, NULL)) != NULL)
     {
       m_pLast = m_pActual = m_pFirst;
       m_Size++;
@@ -96,7 +96,7 @@ bool LinkedList::InsertHead(void* p_pItemIns)
   {
     tmp = m_pFirst;
 
-    if ((m_pFirst = new LinkedListNode(p_pItemIns, nullptr, m_pFirst)) != nullptr)
+    if ((m_pFirst = new LinkedListNode(p_pItemIns, NULL, m_pFirst)) != NULL)
     {
       tmp->m_pPrv = m_pFirst;
       m_pActual = m_pFirst;
@@ -115,9 +115,9 @@ bool LinkedList::InsertTail(void* p_pItemIns)
 {
   LinkedListNode* tmp;
 
-  if (m_pLast == nullptr)
+  if (m_pLast == NULL)
   {
-    if ((m_pLast = new LinkedListNode(p_pItemIns, nullptr, nullptr)) != nullptr)
+    if ((m_pLast = new LinkedListNode(p_pItemIns, NULL, NULL)) != NULL)
     {
       m_pFirst = m_pActual = m_pLast;
       m_Size++;
@@ -132,7 +132,7 @@ bool LinkedList::InsertTail(void* p_pItemIns)
   {
     tmp = m_pLast;
 
-    if ((m_pLast = new LinkedListNode(p_pItemIns, m_pLast, nullptr)) != nullptr)
+    if ((m_pLast = new LinkedListNode(p_pItemIns, m_pLast, NULL)) != NULL)
     {
       tmp->m_pNxt = m_pLast;
       m_pActual = m_pLast;
@@ -151,14 +151,14 @@ bool LinkedList::InsertBefore(void* p_pItemIns)
 {
   LinkedListNode* tmp;
 
-  if (m_pActual == nullptr)
+  if (m_pActual == NULL)
   {
     return InsertTail(p_pItemIns);
   }
 
-  if ((tmp = new LinkedListNode(p_pItemIns, m_pActual->m_pPrv, m_pActual)) != nullptr)
+  if ((tmp = new LinkedListNode(p_pItemIns, m_pActual->m_pPrv, m_pActual)) != NULL)
   {
-    if (m_pActual->m_pPrv != nullptr)
+    if (m_pActual->m_pPrv != NULL)
     {
       m_pActual->m_pPrv->m_pNxt = tmp;
     }
@@ -185,14 +185,14 @@ bool LinkedList::InsertBehind(void* p_pItemIns)
 {
   LinkedListNode* tmp;
 
-  if (m_pActual == nullptr)
+  if (m_pActual == NULL)
   {
     return InsertHead(p_pItemIns);
   }
 
-  if ((tmp = new LinkedListNode(p_pItemIns, m_pActual, m_pActual->m_pNxt)) != nullptr)
+  if ((tmp = new LinkedListNode(p_pItemIns, m_pActual, m_pActual->m_pNxt)) != NULL)
   {
-    if (m_pActual->m_pNxt != nullptr)
+    if (m_pActual->m_pNxt != NULL)
     {
       m_pActual->m_pNxt->m_pPrv = tmp;
     }
@@ -223,7 +223,7 @@ bool LinkedList::AddItemToList(void* p_pItemIns, int(*fcmp) (void* p_ItList, voi
     {
       if (fcmp(p_pItemIns, m_pActual->m_pData) > 0)
       {
-        if (GetNext() == nullptr)
+        if (GetNext() == NULL)
         {
           return InsertTail(p_pItemIns);
         }
@@ -244,7 +244,7 @@ bool LinkedList::AddItemToList(void* p_pItemIns, int(*fcmp) (void* p_ItList, voi
 
 void* LinkedList::searchList(void* p_pItemSearch, int(fcmp) (void* pItList, void* pItNew))
 {
-  if (GetFirst() != nullptr)
+  if (GetFirst() != NULL)
   {
     do
     {
@@ -253,11 +253,11 @@ void* LinkedList::searchList(void* p_pItemSearch, int(fcmp) (void* pItList, void
         return m_pActual->m_pData;
       }
     }
-    while (GetNext() != nullptr);
+    while (GetNext() != NULL);
 
-    return nullptr;
+    return NULL;
   }
-  return nullptr;
+  return NULL;
 }
 
 size_t LinkedList::Size()
@@ -266,66 +266,66 @@ size_t LinkedList::Size()
 }
 void* LinkedList::GetFirst(void)
 {
-  if (m_pFirst != nullptr)
+  if (m_pFirst != NULL)
   {
     m_pActual = m_pFirst;
     return m_pActual->m_pData;
   }
 
-  return nullptr;
+  return NULL;
 }
 
 void* LinkedList::GetLast(void)
 {
-  if (m_pLast != nullptr)
+  if (m_pLast != NULL)
   {
     m_pActual = m_pLast;
     return m_pActual->m_pData;
   }
 
-  return nullptr;
+  return NULL;
 }
 
 void* LinkedList::GetNext(void)
 {
-  if(m_pActual == nullptr)
+  if(m_pActual == NULL)
   {
-    return nullptr;
+    return NULL;
   }
 
-  if (m_pActual->m_pNxt != nullptr)
+  if (m_pActual->m_pNxt != NULL)
   {
     m_pActual = m_pActual->m_pNxt;
     return m_pActual->m_pData;
   }
 
-  return nullptr;
+  return NULL;
 }
 
 void* LinkedList::GetPrev(void)
 {
-  if(m_pActual == nullptr)
+  if(m_pActual == NULL)
   {
-    return nullptr;
+    return NULL;
   }
 
-  if (m_pActual->m_pPrv != nullptr)
+  if (m_pActual->m_pPrv != NULL)
   {
     m_pActual = m_pActual->m_pPrv;
     return m_pActual->m_pData;
   }
 
-  return nullptr;
+  return NULL;
 }
 
 void* LinkedList::GetSelected(void)
 {
-  if (m_pActual != nullptr)
+  if (m_pActual != NULL)
   {
     return m_pActual->m_pData;
   }
 
-  return nullptr;
+  return NULL;
 }
 
 void* LinkedList::GetIndexed(size_t p_Id)
@@ -336,7 +336,7 @@ void* LinkedList::GetIndexed(size_t p_Id)
   {
     currIdx++;
     pItem = GetNext();
-    if(pItem == nullptr)
+    if(pItem == NULL)
     {
       return pItem;
     }
