@@ -2,6 +2,7 @@
 
 #include <clib/asl_protos.h>
 #include <clib/dos_protos.h>
+#include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <intuition/intuition.h>
 #include <libraries/asl.h>
@@ -9,14 +10,16 @@
 
 #include "DiffWindow.h"
 
-#define CONTENT_X_OFFSET 10
-#define CONTENT_Y_OFFSET 10
-
 DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   : m_pAppScreen(p_pAppScreen),
     m_pWindow(NULL),
+    m_MaxWindowTextLines(0),
     m_Y(0),
-    m_MaxWindowTextLines(0)
+    m_FontHeight(0),
+    m_ScrollXMin(10),
+    m_ScrollYMin(10),
+    m_ScrollXMax(),
+    m_ScrollYMax(0)
 {
 }
 
@@ -82,6 +85,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
     { WA_IDCMP, IDCMP_MENUPICK | IDCMP_VANILLAKEY | IDCMP_RAWKEY},
     { WA_NewLookMenus, TRUE },  // Ignored before v39
     { WA_Flags, WFLG_GIMMEZEROZERO },
+    { WA_SmartRefresh, TRUE },
     { TAG_DONE, NULL },
   };
 
@@ -94,13 +98,19 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
     return false;
   }
 
-  // Calculate how many lines can be displayed in the window
   struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
+
+  // Calculate values needeed for text scrolling
+  m_FontHeight = pDrawInfo->dri_Font->tf_YSize;
+  m_ScrollXMax = m_pWindow->Width - m_pWindow->BorderRight - m_ScrollXMin;
+  m_ScrollYMax = m_pWindow->Height - m_pWindow->BorderBottom - m_ScrollYMin;
+
+  // Calculate how many lines can be displayed in the window
   m_MaxWindowTextLines = m_pWindow->Height;
   m_MaxWindowTextLines -= m_pWindow->BorderTop;
   m_MaxWindowTextLines -= m_pWindow->BorderBottom;
-  m_MaxWindowTextLines -= CONTENT_Y_OFFSET;
-  m_MaxWindowTextLines /= pDrawInfo->dri_Font->tf_YSize;
+  m_MaxWindowTextLines -= m_ScrollYMin;
+  m_MaxWindowTextLines /= m_FontHeight;
 
   return true;
 }
@@ -156,13 +166,41 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
   return true;
 }
 
-void DiffWindow::ScrollDownOneLine()
-{
-  //if(
-}
-
 void DiffWindow::ScrollUpOneLine()
 {
+  if(NumLines() < m_MaxWindowTextLines)
+  {
+    // Do not move down if all the text fits into the window
+    return;
+  }
+
+  if((m_MaxWindowTextLines + m_Y) >= NumLines())
+  {
+    // Do not move the text up if already at top
+    return;
+  }
+
+  // Scroll upward one line by the current font height
+  ScrollRaster(m_pWindow->RPort, 0, m_FontHeight,
+    m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+
+  m_Y++;
+}
+
+void DiffWindow::ScrollDownOneLine()
+{
+  if(m_Y == 0)
+  {
+    // Do not move the text down if already at bottom
+    return;
+  }
+
+  // Scroll upward one line by the current font height
+  ScrollRaster(m_pWindow->RPort, 0, -m_FontHeight,
+    m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+
+  m_Y--;
+
 }
 
 
@@ -239,7 +277,7 @@ void DiffWindow::displayFile()
   {
     // Output the line in the window
     intuiText.IText = (UBYTE*)pLine->C_str();
-    PrintIText(m_pWindow->RPort, &intuiText, CONTENT_X_OFFSET, CONTENT_Y_OFFSET);
+    PrintIText(m_pWindow->RPort, &intuiText, m_ScrollXMin, m_ScrollYMin);
 
     // Increment Y value of struct IntuiText in preparation of the next
     // line

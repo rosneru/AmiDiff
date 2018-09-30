@@ -72,8 +72,14 @@ private:
   struct Window* m_pWindow;
   SimpleString m_Title;
   SimpleString m_FileRequesterTitle;
-  size_t m_Y; /// Index of first displayed text line
-  size_t m_MaxWindowTextLines;
+  size_t m_MaxWindowTextLines;  ///> Number of text lines that would fit in window
+  size_t m_Y;         ///> Index of currently first displayed text line
+
+  WORD m_FontHeight;  ///> Height of current text font
+  WORD m_ScrollXMin;  ///> Left x coordinate of scrolling area
+  WORD m_ScrollYMin;  ///> Left y coordinate of scrolling area
+  WORD m_ScrollXMax;  ///> Right x coordinate of scrolling area
+  WORD m_ScrollYMax;  ///> Right y coordinate of scrolling area
 
 
   SimpleString aslRequestFileName();

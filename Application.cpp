@@ -219,7 +219,7 @@ void Application::intuiEventLoop()
           APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
           if(pUserData != NULL)
           {
-            // Our user data always contains a pointer to a Command
+            // Our menu user data always contains a pointer to a Command
             Command* pSelecedCommand = static_cast<Command*>(pUserData);
 
             // Execute this command
@@ -233,17 +233,7 @@ void Application::intuiEventLoop()
         {
           if(pMsg->Code == CURSORDOWN)
           {
-            if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-            {
-              m_pLeftWin->ScrollDownOneLine();
-            }
-            else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-            {
-              m_pRightWin->ScrollDownOneLine();
-            }
-          }
-          else if(pMsg->Code == CURSORUP)
-          {
+            // Cursor *down* => scroll the text *up* in according window
             if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
             {
               m_pLeftWin->ScrollUpOneLine();
@@ -251,6 +241,18 @@ void Application::intuiEventLoop()
             else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
             {
               m_pRightWin->ScrollUpOneLine();
+            }
+          }
+          else if(pMsg->Code == CURSORUP)
+          {
+            // Cursor *up* => scroll the text *down* in according window
+            if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+            {
+              m_pLeftWin->ScrollDownOneLine();
+            }
+            else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+            {
+              m_pRightWin->ScrollDownOneLine();
             }
           }
           break;

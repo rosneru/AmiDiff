@@ -11,6 +11,7 @@ struct Library* IntuitionBase;
 struct Library* DosBase;
 struct Library* GadToolsBase;
 struct Library* AslBase;
+struct Library* GfxBase;
 
 
 int main(int argc, char **argv)
@@ -19,8 +20,9 @@ int main(int argc, char **argv)
   DosBase = OpenLibrary("dos.library", 37);
   GadToolsBase = OpenLibrary("gadtools.library", 37);
   AslBase = OpenLibrary("asl.library", 37);
+  GfxBase = OpenLibrary("graphics.library", 37);
 
-  if((!IntuitionBase) || (!DosBase) || (!GadToolsBase) || (!AslBase))
+  if((!IntuitionBase) || (!DosBase) || (!GadToolsBase) || (!AslBase) || (!GfxBase))
   {
     closeLibs();
     return 20;
@@ -34,7 +36,7 @@ int main(int argc, char **argv)
   }
 
   Application app(argc, argv);
-  bool bSuccess = app.Run();
+  app.Run();
 
   closeLibs();
 
@@ -43,6 +45,7 @@ int main(int argc, char **argv)
 
 void closeLibs()
 {
+  CloseLibrary(GfxBase);
   CloseLibrary(AslBase);
   CloseLibrary(GadToolsBase);
   CloseLibrary(DosBase);
