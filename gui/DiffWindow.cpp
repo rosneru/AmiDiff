@@ -75,6 +75,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
     { WA_PubScreen, (ULONG)m_pAppScreen->IntuiScreen() },
     { WA_IDCMP, IDCMP_MENUPICK },
     { WA_NewLookMenus, TRUE },  // Ignored before v39
+    { WA_Flags, WFLG_GIMMEZEROZERO },
     { TAG_DONE, NULL },
   };
 
@@ -170,14 +171,8 @@ bool DiffWindow::Open(SimpleString p_FileName)
     // Read the line into a string object
     SimpleString line(pBuf);
 
-    // Remove
-    if(line[line.Length() - 1] == '\n')
-    {
-      line = line.SubStr(0, line.Length() - 1);
-    }
-
     // TODO output the line in the window
-    intuiText.IText = (UBYTE*)line.C_str();
+    intuiText.IText = (UBYTE*)line.Trim().C_str();
     PrintIText(m_pWindow->RPort, &intuiText, 10, 10);
 
     // Increment Y value of struct IntuiText in preparation of the next
