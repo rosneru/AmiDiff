@@ -69,8 +69,11 @@ private:
   struct Window* m_pWindow;
   SimpleString m_Title;
   SimpleString m_FileRequesterTitle;
+  size_t m_Y; /// Index of first displayed text line
+
 
   SimpleString aslRequestFileName();
+  void displayFile();
 };
 
 

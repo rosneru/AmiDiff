@@ -18,16 +18,6 @@ DiffDocument::~DiffDocument()
   delete m_pLines;
 }
 
-void DiffDocument::Clear()
-{
-  SimpleString* pCurrentLine = NULL;
-  while ((pCurrentLine = GetFirstLine()))
-  {
-    delete pCurrentLine;
-    m_pLines->RemoveItem();
-  }
-}
-
 bool DiffDocument::ReadFile(SimpleString p_FileName)
 {
   // Open file and read line by line into window
@@ -51,10 +41,23 @@ bool DiffDocument::ReadFile(SimpleString p_FileName)
     m_pLines->InsertTail(pNewLineStr);
   }
 
-
   ::Close(pFile);
   return true;
+}
 
+void DiffDocument::Clear()
+{
+  SimpleString* pCurrentLine = NULL;
+  while ((pCurrentLine = GetFirstLine()))
+  {
+    delete pCurrentLine;
+    m_pLines->RemoveItem();
+  }
+}
+
+size_t DiffDocument::NumLines()
+{
+  return m_pLines->Size();
 }
 
 SimpleString* DiffDocument::GetFirstLine()

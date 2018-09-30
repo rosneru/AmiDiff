@@ -10,7 +10,8 @@
 
 DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   : m_pAppScreen(p_pAppScreen),
-    m_pWindow(NULL)
+    m_pWindow(NULL),
+    m_Y(0)
 {
 }
 
@@ -134,8 +135,12 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
 
   // Set full path of opened file as window title
   SetTitle(p_FileName);
+  displayFile();
+  return true;
+}
 
-
+void DiffWindow::displayFile()
+{
   // Setup Pens, TextAttr and prepare IntuiText
   // TODO Remove it to some better place
   struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
@@ -158,21 +163,19 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
   intuiText.ITextFont = &textAttr;
   intuiText.NextText  = NULL;
 
-/*
-  // for each line
+  SimpleString* pLine = GetFirstLine();
+  while(pLine != NULL)
   {
-
-    // TODO output the line in the window
-    intuiText.IText = (UBYTE*)line.C_str();
+    // Output the line in the window
+    intuiText.IText = (UBYTE*)pLine->C_str();
     PrintIText(m_pWindow->RPort, &intuiText, 10, 10);
 
     // Increment Y value of struct IntuiText in preparation of the next
     // line
     intuiText.TopEdge += textAttr.ta_YSize;
-  }
-*/
 
-  return true;
+    pLine = GetNextLine();
+  }
 }
 
 SimpleString DiffWindow::aslRequestFileName()
