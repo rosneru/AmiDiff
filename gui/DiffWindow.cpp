@@ -15,7 +15,8 @@
 DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   : m_pAppScreen(p_pAppScreen),
     m_pWindow(NULL),
-    m_Y(0)
+    m_Y(0),
+    m_MaxWindowTextLines(0)
 {
 }
 
@@ -88,8 +89,20 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   // Opening the window
   //
   m_pWindow = OpenWindowTagList(NULL, windowTags);
+  if(m_pWindow == NULL)
+  {
+    return false;
+  }
 
-  return m_pWindow != NULL;
+  // Calculate how many lines can be displayed in the window
+  struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
+  m_MaxWindowTextLines = m_pWindow->Height;
+  m_MaxWindowTextLines -= m_pWindow->BorderTop;
+  m_MaxWindowTextLines -= m_pWindow->BorderBottom;
+  m_MaxWindowTextLines -= CONTENT_Y_OFFSET;
+  m_MaxWindowTextLines /= pDrawInfo->dri_Font->tf_YSize;
+
+  return true;
 }
 
 void DiffWindow::Close()
@@ -145,6 +158,7 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
 
 void DiffWindow::ScrollDownOneLine()
 {
+  //if(
 }
 
 void DiffWindow::ScrollUpOneLine()
@@ -219,12 +233,6 @@ void DiffWindow::displayFile()
   intuiText.ITextFont = &textAttr;
   intuiText.NextText  = NULL;
 
-  size_t numLinesInWindow = m_pWindow->Height;
-  numLinesInWindow -= m_pWindow->BorderTop;
-  numLinesInWindow -= m_pWindow->BorderBottom;
-  numLinesInWindow -= CONTENT_Y_OFFSET;
-  numLinesInWindow /= textAttr.ta_YSize;
-
   SimpleString* pLine = GetFirstLine();
   size_t i = 0;
   while(pLine != NULL)
@@ -239,7 +247,7 @@ void DiffWindow::displayFile()
 
     pLine = GetNextLine();
     i++;
-    if(i >= numLinesInWindow)
+    if(i >= m_MaxWindowTextLines)
     {
       break;
     }

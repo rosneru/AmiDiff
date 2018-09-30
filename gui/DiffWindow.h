@@ -73,6 +73,7 @@ private:
   SimpleString m_Title;
   SimpleString m_FileRequesterTitle;
   size_t m_Y; /// Index of first displayed text line
+  size_t m_MaxWindowTextLines;
 
 
   SimpleString aslRequestFileName();
