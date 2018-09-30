@@ -132,12 +132,21 @@ public:
    * @brief
    * Returns a newly constructed string object with all occurences of
    * '\r', '\r', '\t' and ' ' from the end of the string are removed.
+   *
+   * Per Default the parameter p_bRemoveAlsoLeadingWhiteSp is set to
+   * false so all leading and trailing white spaces are removed.
+   *
+   * @param p_bRemoveAlsoLeadingWhiteSp
+   * When true only trailing white spaces are removed. When false the
+   * trailing and also leading white spaces are removed.
    */
-  SimpleString Trim();
+  SimpleString Trim(bool p_bRemoveAlsoLeadingWhiteSp = false);
 
 private:
   size_t m_Len;
   char *m_pBuf;
+
+  bool containsOnlyWhiteSpaces();
 };
 
 #endif

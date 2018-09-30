@@ -35,6 +35,11 @@ SimpleString::SimpleString(char p_Character, int p_Count)
   m_pBuf[p_Count]='\0';
 }
 
+SimpleString::~SimpleString()
+{
+  delete[] m_pBuf;
+}
+
 char* SimpleString::C_str()
 {
   return m_pBuf;
@@ -178,48 +183,82 @@ SimpleString& SimpleString::Erase(size_t p_Index, size_t p_Len)
 
 
 
-SimpleString SimpleString::Trim()
+SimpleString SimpleString::Trim(bool p_bRemoveAlsoLeadingWhiteSp)
 {
-  SimpleString trimmedString = *this;
-  for (size_t i = 0; i < Length(); i++)
+  if(containsOnlyWhiteSpaces() == true)
   {
-    char c = trimmedString[i];
+    // String contains only white spaces: return an empty string
+    SimpleString trimmed = "";
+    return trimmed;
+  }
+
+  SimpleString trimmed = *this;
+  if(p_bRemoveAlsoLeadingWhiteSp == true)
+  {
+    for (size_t i = 0; i < Length(); i++)
+    {
+      char& c = trimmed[i];
+      if(!(c == '\r') &&
+         !(c == '\n') &&
+         !(c == '\t') &&
+         !(c == ' '))
+      {
+        trimmed = trimmed.SubStr(i, trimmed.Length() - i);
+        break;
+      }
+    }
+  }
+
+  if(trimmed.Length() == 1)
+  {
+    char& c = trimmed[0];
     if((c == '\r') ||
        (c == '\n') ||
        (c == '\t') ||
        (c == ' '))
     {
-      // TODO negate the condition
-    }
-    else
-    {
-      trimmedString = trimmedString.SubStr(i, trimmedString.Length() - i);
-      break;
+      // The only character of the string is a to be trimmed special
+      // char: create an new empty string
+      trimmed = "";
     }
   }
-
-  size_t i = trimmedString.Length() - 1;
-  char c = trimmedString[i];
-  while((c == '\r') ||
-     (c == '\n') ||
-     (c == '\t') ||
-     (c == ' '))
+  else if(trimmed.Length() > 1)
   {
-    i--;
-    c = trimmedString[i];
+    size_t i = trimmed.Length() - 1;
+    char& c = trimmed[i];
+    while((c == '\r') ||
+       (c == '\n') ||
+       (c == '\t') ||
+       (c == ' '))
+    {
+      i--;
+      c = trimmed[i];
+    }
+
+    size_t shortenBy = trimmed.Length() - i - 1;
+    trimmed = trimmed.SubStr(0, trimmed.Length() - shortenBy);
   }
 
-  trimmedString = trimmedString.SubStr(0, i + 1);
-
-
-  return trimmedString;
+  return trimmed;
 }
 
-
-SimpleString::~SimpleString()
+bool SimpleString::containsOnlyWhiteSpaces()
 {
-  delete[] m_pBuf;
+  for(size_t i=0; i < m_Len; i++)
+  {
+    if(!(m_pBuf[i] == '\r') &&
+       !(m_pBuf[i] == '\n') &&
+       !(m_pBuf[i] == '\t') &&
+       !(m_pBuf[i] == ' '))
+    {
+      // first non-whitespace character found
+      return false;
+    }
+  }
+
+  return true;
 }
+
 
 
 SimpleString& SimpleString::operator=(const SimpleString& p_Other)
