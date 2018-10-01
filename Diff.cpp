@@ -1,3 +1,4 @@
+
 #define INTUI_V36_NAMES_ONLY
 
 #include <exec/types.h>
@@ -51,4 +52,8 @@ void closeLibs()
   CloseLibrary(DosBase);
   CloseLibrary(IntuitionBase);
 }
+
+
+
+
 

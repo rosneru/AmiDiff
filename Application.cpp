@@ -215,17 +215,19 @@ void Application::intuiEventLoop()
           UWORD menuNumber = pMsg->Code;
           struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
 
-          // Getting the user data from selected menu item
-          APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
-          if(pUserData != NULL)
+          if(pSelectedItem != NULL)
           {
-            // Our menu user data always contains a pointer to a Command
-            Command* pSelecedCommand = static_cast<Command*>(pUserData);
+            // Getting the user data from selected menu item
+            APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
+            if(pUserData != NULL)
+            {
+              // Our menu user data always contains a pointer to a Command
+              Command* pSelecedCommand = static_cast<Command*>(pUserData);
 
-            // Execute this command
-            pSelecedCommand->Execute();
+              // Execute this command
+              pSelecedCommand->Execute();
+            }
           }
-
           break;
         }
 
