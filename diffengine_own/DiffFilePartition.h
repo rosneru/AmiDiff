@@ -2,7 +2,7 @@
 /*-------------------------------------------------------------------*/
 /* Class for storing a file line by line with diff information       */
 /*                                                                   */
-/* This is an adaption of Stephane Rodriguez source code on          */
+/* This has been inspired by Stephane Rodriguez source code on       */
 /* CodeProject: https://www.codeproject.com/Articles/3666/Diff-tool  */
 /*                                                                   */
 /* Uwe Rosner                                                        */
@@ -16,11 +16,22 @@
 #include "SimpleString.h"
 
 
-class FilePartition
+class DiffFilePartition
 {
   // Constructor
 public:
-  FilePartition();
+  DiffFilePartition(LinkedList* p_pLinesList);
+  virtual ~DiffFilePartition();
+  bool PreProcess();
+
+private:
+  LinkedList* m_pLinesList;
+  LinkedList* m_pTokensList;
+
+  long calculateLineToken(SimpleString* p_pLine);
+  void clearTokensList();
+
+
 //   virtual ~FilePartition();
 // 
 //   // Accessors

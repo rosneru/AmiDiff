@@ -15,12 +15,44 @@
 #include "DiffFilePartition.h"
 #include "DiffEngine.h"
 #include "DiffLine.h"
+#include "LinkedList.h"
+#include "SimpleString.h"
+
+void deleteAllListStrings(LinkedList& p_List)
+{
+  SimpleString* pItem = static_cast<SimpleString*>(p_List.GetFirst());
+  while(pItem != NULL)
+  {
+    delete pItem;
+    pItem = static_cast<SimpleString*>(p_List.GetNext());
+  }
+}
 
 BOOST_AUTO_TEST_CASE( textDocument )
 {
   //
-  // Testing normal typing, cursor left, cursor right and return
+  // Creating a first pair of diff files
   //
+  LinkedList leftFileLines;
+  leftFileLines.InsertTail(new SimpleString("Line 1"));
+  leftFileLines.InsertTail(new SimpleString("Line 3"));
+  leftFileLines.InsertTail(new SimpleString("Line 4"));
+
+  LinkedList rightFileLines;
+  rightFileLines.InsertTail(new SimpleString("Line 1"));
+  rightFileLines.InsertTail(new SimpleString("Line 2"));
+  rightFileLines.InsertTail(new SimpleString("Line 3"));
+  rightFileLines.InsertTail(new SimpleString("Line 4"));
+
+  DiffFilePartition leftFilePartition(&leftFileLines);
+  leftFilePartition.PreProcess();
+
+  // clean up
+  deleteAllListStrings(leftFileLines);
+  deleteAllListStrings(rightFileLines);
+
+
+
 
 //  // Is it empty initialized?
 //  TextDocument textDocument;
