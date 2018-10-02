@@ -28,31 +28,39 @@ void deleteAllListStrings(LinkedList& p_List)
   }
 }
 
-BOOST_AUTO_TEST_CASE( textDocument )
+BOOST_AUTO_TEST_CASE( testDiff )
 {
   //
   // Creating a first pair of diff files
   //
-  LinkedList leftFileLines;
-  leftFileLines.InsertTail(new SimpleString("Line 1"));
-  leftFileLines.InsertTail(new SimpleString("Line 3"));
-  leftFileLines.InsertTail(new SimpleString("Line 4"));
+//  LinkedList leftFileLines;
+//  leftFileLines.InsertTail(new SimpleString("Line 1"));
+//  leftFileLines.InsertTail(new SimpleString("Line 3"));
+//  leftFileLines.InsertTail(new SimpleString("Line 4"));
 
-  LinkedList rightFileLines;
-  rightFileLines.InsertTail(new SimpleString("Line 1"));
-  rightFileLines.InsertTail(new SimpleString("Line 2"));
-  rightFileLines.InsertTail(new SimpleString("Line 3"));
-  rightFileLines.InsertTail(new SimpleString("Line 4"));
+//  LinkedList rightFileLines;
+//  rightFileLines.InsertTail(new SimpleString("Line 1"));
+//  rightFileLines.InsertTail(new SimpleString("Line 2"));
+//  rightFileLines.InsertTail(new SimpleString("Line 3"));
+//  rightFileLines.InsertTail(new SimpleString("Line 4"));
 
-  DiffFilePartition leftFilePartition(&leftFileLines);
-  leftFilePartition.PreProcess();
+//  DiffFilePartition leftFilePartition(&leftFileLines);
+//  leftFilePartition.PreProcess();
 
-  // clean up
-  deleteAllListStrings(leftFileLines);
-  deleteAllListStrings(rightFileLines);
+//  // clean up
+//  deleteAllListStrings(leftFileLines);
+//  deleteAllListStrings(rightFileLines);
 
 
+}
 
+BOOST_AUTO_TEST_CASE( testFilePartition )
+{
+  SimpleString text1 = "abc";
+  SimpleString text2 = "defg";
+
+  DiffFilePartition partition(NULL);
+  partition.AddString(&text1);
 
 //  // Is it empty initialized?
 //  TextDocument textDocument;

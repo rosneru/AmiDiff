@@ -15,6 +15,7 @@
 #include "LinkedList.h"
 #include "SimpleString.h"
 
+#include "DiffLine.h"
 
 class DiffFilePartition
 {
@@ -30,11 +31,16 @@ public:
   bool PreProcess();
   bool MatchLine(size_t i1, DiffFilePartition* p_pOtherFile, size_t i2);
 
+  void AddString(SimpleString* p_pString, DiffLine::LineStatus p_LineStatus);
+  void AddString(SimpleString* p_pString);
+  void AddBlankLine();
+
 private:
-  LinkedList* m_pLinesList;
+  LinkedList* m_pInputLinesList;
+  LinkedList* m_pDiffLinesList;
   LinkedList* m_pTokensList;
 
-  long calculateLineToken(SimpleString* p_pLine);
+  void clearDiffLinesList();
   void clearTokensList();
 
 

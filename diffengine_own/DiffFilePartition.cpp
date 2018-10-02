@@ -1,7 +1,8 @@
 #include "DiffFilePartition.h"
 
 DiffFilePartition::DiffFilePartition(LinkedList* p_pLinesList)
-  : m_pLinesList(p_pLinesList),
+  : m_pInputLinesList(p_pLinesList),
+    m_pDiffLinesList(new LinkedList),
     m_pTokensList(new LinkedList())
 {
 
@@ -11,21 +12,24 @@ DiffFilePartition::~DiffFilePartition()
 {
   clearTokensList();
   delete m_pTokensList;
+
+  clearDiffLinesList();
+  delete m_pDiffLinesList;
 }
 
 size_t DiffFilePartition::NumberOfLines()
 {
-  if(m_pLinesList == NULL)
+  if(m_pDiffLinesList == NULL)
   {
     return 0;
   }
 
-  return m_pLinesList->Size();
+  return m_pDiffLinesList->Size();
 }
 
 SimpleString* DiffFilePartition::GetIndexedLine(size_t idx)
 {
-  SimpleString* pLine = static_cast<SimpleString*>(m_pLinesList->GetIndexed(idx));
+  SimpleString* pLine = static_cast<SimpleString*>(m_pDiffLinesList->GetIndexed(idx));
   return pLine;
 }
 
@@ -36,14 +40,12 @@ LinkedList* DiffFilePartition::TokensList()
 
 bool DiffFilePartition::PreProcess()
 {
-  SimpleString* pFileLine = static_cast<SimpleString*>(m_pLinesList->GetFirst());
+  SimpleString* pFileLine = static_cast<SimpleString*>(m_pInputLinesList->GetFirst());
   while(pFileLine != NULL)
   {
-    long* pToken = new long[1];
-    pToken[0] = calculateLineToken(pFileLine);
-    m_pTokensList->InsertTail(pToken);
+    AddString(pFileLine);
 
-    pFileLine = static_cast<SimpleString*>(m_pLinesList->GetNext());
+    pFileLine = static_cast<SimpleString*>(m_pInputLinesList->GetNext());
   }
 
   return true;
@@ -106,19 +108,56 @@ bool DiffFilePartition::MatchLine(size_t i1, DiffFilePartition* p_pOtherFile, si
   return false;
 }
 
-
-long DiffFilePartition::calculateLineToken(SimpleString* p_pLine)
+void DiffFilePartition::AddString(SimpleString* p_pString, DiffLine::LineStatus p_LineStatus)
 {
-  long token = 0;
-  char* pBuf = p_pLine->C_str();
-
-  for(size_t i = 0; i < p_pLine->Length(); i++)
+  DiffLine* pDiffLine = new DiffLine();
+  if(pDiffLine != NULL)
   {
-    token += 2 * token + *(pBuf++); // (George V. Reilly hint)
+    pDiffLine->SetLine(p_pString, p_LineStatus);
   }
 
-  return token;
+  // Append DiffLine to list
+  m_pDiffLinesList->InsertTail(pDiffLine);
 }
+
+void DiffFilePartition::AddString(SimpleString* p_pString)
+{
+  DiffLine* pDiffLine = new DiffLine();
+  if(pDiffLine != NULL)
+  {
+    // Set string in DiffLine gets us the token
+    long token = pDiffLine->SetLine(p_pString);
+
+    // Dynamically allocate memory for the token
+    long* pToken = new long[1];
+    pToken[0] = token;
+
+    // Append token to list
+    m_pTokensList->InsertTail(pToken);
+
+    // Append DiffLine to list
+    m_pDiffLinesList->InsertTail(pDiffLine);
+  }
+
+}
+
+void DiffFilePartition::AddBlankLine()
+{
+  // TODO How and when will this new created string be deleted??
+  AddString(new SimpleString(""), DiffLine::Normal);
+}
+
+void DiffFilePartition::clearDiffLinesList()
+{
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetFirst());
+  while(pDiffLine != NULL)
+  {
+    delete[] pDiffLine;
+    m_pDiffLinesList->RemoveItem();
+    pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetFirst());
+  }
+}
+
 
 void DiffFilePartition::clearTokensList()
 {

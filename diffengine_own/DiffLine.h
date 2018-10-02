@@ -16,11 +16,9 @@
 #include "SimpleString.h"
 
 
-class FileLine
+class DiffLine
 {
 public:
-  FileLine();
-  
   enum LineStatus
   {
     Normal=0,
@@ -29,17 +27,19 @@ public:
     Deleted
   };
 
-//  long SetLine(SimpleString s); // store string and build token
-//  void SetLine(SimpleString &s, LineStatus ls); // store string and status (does not eval token)
-//  SimpleString GetLine(FileOptions &o);
+  DiffLine();
+  ~DiffLine();
 
-//  void SetStatus(LineStatus ls);
-//  LineStatus Status();
+  long SetLine(SimpleString* p_pString); // store string and build token
+  void SetLine(SimpleString* p_pString, LineStatus p_LineStatus); // store string and status (does not eval token)
+  SimpleString* GetLine();
 
-//protected:
-//  SimpleString m_s;
-//  LineStatus m_status;
-//  SimpleString GetLineWithOptions(SimpleString s,FileOptions &o); // that's where options are implemented
+  void SetStatus(LineStatus p_LineStatus);
+  LineStatus GetStatus();
+
+protected:
+  LineStatus m_LineStatus;
+  SimpleString* m_pLineStr;
 };
 
 #endif
