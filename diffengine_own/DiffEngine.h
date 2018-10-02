@@ -22,6 +22,12 @@ class DiffEngine
 public:
   DiffEngine();
 
+  bool Diff(DiffFilePartition* p_File1Src,
+            DiffFilePartition* p_File2Src,
+            DiffFilePartition* p_File1Diff,
+            DiffFilePartition* p_File2Diff);
+
+
 //  // Methods
 //
 //  // compare f1 (old version) with f2 (new version)

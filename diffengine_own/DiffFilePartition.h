@@ -22,7 +22,13 @@ class DiffFilePartition
 public:
   DiffFilePartition(LinkedList* p_pLinesList);
   virtual ~DiffFilePartition();
+
+  size_t NumberOfLines();
+  SimpleString* GetIndexedLine(size_t idx);
+  LinkedList* TokensList();
+
   bool PreProcess();
+  bool MatchLine(size_t i1, DiffFilePartition* p_pOtherFile, size_t i2);
 
 private:
   LinkedList* m_pLinesList;
