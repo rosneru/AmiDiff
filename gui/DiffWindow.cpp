@@ -112,6 +112,26 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   m_MaxWindowTextLines -= m_ScrollYMin;
   m_MaxWindowTextLines /= m_FontHeight;
 
+  // Setup structs for text drawing
+    // Setup Pens, TextAttr and prepare IntuiText
+  // TODO Remove it to some better place
+  ULONG txtPen = pDrawInfo->dri_Pens[TEXTPEN];
+  ULONG bgPen = pDrawInfo->dri_Pens[BACKGROUNDPEN];
+
+  m_TextAttr.ta_Name = pDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
+  m_TextAttr.ta_YSize = pDrawInfo->dri_Font->tf_YSize;
+  m_TextAttr.ta_Style = pDrawInfo->dri_Font->tf_Style;
+  m_TextAttr.ta_Flags = pDrawInfo->dri_Font->tf_Flags;
+
+  // Prepare IntuiText for line-by-line printing
+  m_IntuiText.FrontPen  = txtPen;
+  m_IntuiText.BackPen   = bgPen;
+  m_IntuiText.DrawMode  = JAM2;
+  m_IntuiText.LeftEdge  = 0;
+  m_IntuiText.TopEdge   = 0;
+  m_IntuiText.ITextFont = &m_TextAttr;
+  m_IntuiText.NextText  = NULL;
+
   return true;
 }
 
@@ -247,41 +267,26 @@ SimpleString DiffWindow::aslRequestFileName()
   return fileName;
 }
 
+void DiffWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge)
+{
+  m_IntuiText.TopEdge += m_TextAttr.ta_YSize;
+  m_IntuiText.IText = (UBYTE*)p_pLine->C_str();
+  PrintIText(m_pWindow->RPort, &m_IntuiText, m_ScrollXMin, m_ScrollYMin);
+}
+
 void DiffWindow::displayFile()
 {
-  // Setup Pens, TextAttr and prepare IntuiText
-  // TODO Remove it to some better place
-  struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
-  ULONG txtPen = pDrawInfo->dri_Pens[TEXTPEN];
-  ULONG bgPen = pDrawInfo->dri_Pens[BACKGROUNDPEN];
-
-  struct TextAttr textAttr;
-  textAttr.ta_Name = pDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
-  textAttr.ta_YSize = pDrawInfo->dri_Font->tf_YSize;
-  textAttr.ta_Style = pDrawInfo->dri_Font->tf_Style;
-  textAttr.ta_Flags = pDrawInfo->dri_Font->tf_Flags;
-
-  // Prepare IntuiText for line-by-line printing
-  struct IntuiText intuiText;
-  intuiText.FrontPen  = txtPen;
-  intuiText.BackPen   = bgPen;
-  intuiText.DrawMode  = JAM2;
-  intuiText.LeftEdge  = 0;
-  intuiText.TopEdge   = 0;
-  intuiText.ITextFont = &textAttr;
-  intuiText.NextText  = NULL;
-
   SimpleString* pLine = GetFirstLine();
   size_t i = 0;
   while(pLine != NULL)
   {
     // Output the line in the window
-    intuiText.IText = (UBYTE*)pLine->C_str();
-    PrintIText(m_pWindow->RPort, &intuiText, m_ScrollXMin, m_ScrollYMin);
+    m_IntuiText.IText = (UBYTE*)pLine->C_str();
+    PrintIText(m_pWindow->RPort, &m_IntuiText, m_ScrollXMin, m_ScrollYMin);
 
     // Increment Y value of struct IntuiText in preparation of the next
     // line
-    intuiText.TopEdge += textAttr.ta_YSize;
+    m_IntuiText.TopEdge += m_TextAttr.ta_YSize;
 
     pLine = GetNextLine();
     i++;

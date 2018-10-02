@@ -81,9 +81,12 @@ private:
   WORD m_ScrollXMax;  ///> Right x coordinate of scrolling area
   WORD m_ScrollYMax;  ///> Right y coordinate of scrolling area
 
+  struct TextAttr m_TextAttr;
+  struct IntuiText m_IntuiText;
 
   SimpleString aslRequestFileName();
   void displayFile();
+  void DiffWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge);
 };
 
 
