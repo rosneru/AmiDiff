@@ -61,6 +61,15 @@ BOOST_AUTO_TEST_CASE( testFilePartition )
 
   DiffFilePartition partition(NULL);
   partition.AddString(&text1);
+  partition.AddBlankLine();
+  partition.AddString(&text2);
+  partition.AddString(&text1);
+
+  BOOST_CHECK_EQUAL(partition.NumberOfLines(), 4);
+  BOOST_CHECK_EQUAL(partition.GetIndexedDiffLine(0)->GetLine()->C_str(), "abc");
+  BOOST_CHECK_EQUAL(partition.GetIndexedDiffLine(1)->GetLine()->C_str(), "");
+  BOOST_CHECK_EQUAL(partition.GetIndexedDiffLine(2)->GetLine()->C_str(), "defg");
+  BOOST_CHECK_EQUAL(partition.GetIndexedDiffLine(3)->GetLine()->C_str(), "abc");
 
 //  // Is it empty initialized?
 //  TextDocument textDocument;

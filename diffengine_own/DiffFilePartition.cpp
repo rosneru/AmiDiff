@@ -27,10 +27,10 @@ size_t DiffFilePartition::NumberOfLines()
   return m_pDiffLinesList->Size();
 }
 
-SimpleString* DiffFilePartition::GetIndexedLine(size_t idx)
+DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t idx)
 {
-  SimpleString* pLine = static_cast<SimpleString*>(m_pDiffLinesList->GetIndexed(idx));
-  return pLine;
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(idx));
+  return pDiffLine;
 }
 
 LinkedList* DiffFilePartition::TokensList()
@@ -71,7 +71,7 @@ bool DiffFilePartition::MatchLine(size_t i1, DiffFilePartition* p_pOtherFile, si
     return false;
   }
 
-  SimpleString* pLineF1 = GetIndexedLine(i1); // TODO move above while loop?
+  SimpleString* pLineF1 = GetIndexedDiffLine(i1)->GetLine(); // TODO move above while loop?
 
   bool bFound = false;
   size_t i = 0;
@@ -84,7 +84,7 @@ bool DiffFilePartition::MatchLine(size_t i1, DiffFilePartition* p_pOtherFile, si
     if(nf1Token == nf2Token)  // Fast compare
     {
       // Make sure strings really match
-      SimpleString* pLineF2 = p_pOtherFile->GetIndexedLine(i2 + i);
+      SimpleString* pLineF2 = p_pOtherFile->GetIndexedDiffLine(i2 + i)->GetLine();
       bFound = ((*pLineF1) == (*pLineF2));
     }
 
@@ -144,7 +144,7 @@ void DiffFilePartition::AddString(SimpleString* p_pString)
 void DiffFilePartition::AddBlankLine()
 {
   // TODO How and when will this new created string be deleted??
-  AddString(new SimpleString(""), DiffLine::Normal);
+  AddString(NULL, DiffLine::Normal);
 }
 
 void DiffFilePartition::clearDiffLinesList()
@@ -152,7 +152,7 @@ void DiffFilePartition::clearDiffLinesList()
   DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetFirst());
   while(pDiffLine != NULL)
   {
-    delete[] pDiffLine;
+    delete pDiffLine;
     m_pDiffLinesList->RemoveItem();
     pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetFirst());
   }

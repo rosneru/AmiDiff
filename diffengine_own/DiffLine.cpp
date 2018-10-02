@@ -15,7 +15,7 @@ DiffLine::~DiffLine()
   }
 }
 
-long DiffLine::SetLine(SimpleString* p_pString)
+long DiffLine::SetLine(SimpleString* p_String)
 {
   if(m_pLineStr != NULL)
   {
@@ -27,12 +27,12 @@ long DiffLine::SetLine(SimpleString* p_pString)
 
   // Deep-copy of p_pString
   // TODO Would it go better?
-  *m_pLineStr = *p_pString;
+  *m_pLineStr = *p_String;
 
-  char* pBuf = p_pString->C_str();
+  char* pBuf = p_String->C_str();
 
   long nToken = 0;
-  for(size_t i = 0; i < p_pString->Length(); i++)
+  for(size_t i = 0; i < p_String->Length(); i++)
   {
     nToken += 2 * nToken + *(pBuf++); // (George V. Reilly hint)
   }
@@ -52,7 +52,11 @@ void DiffLine::SetLine(SimpleString* p_pString, DiffLine::LineStatus p_LineStatu
 
   // Deep-copy of p_pString
   // TODO Would it go better?
-  *m_pLineStr = *p_pString;
+  if(p_pString != NULL)
+  {
+    *m_pLineStr = *p_pString;
+  }
+
   SetStatus(p_LineStatus);
 }
 

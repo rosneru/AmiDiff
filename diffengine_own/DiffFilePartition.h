@@ -25,7 +25,7 @@ public:
   virtual ~DiffFilePartition();
 
   size_t NumberOfLines();
-  SimpleString* GetIndexedLine(size_t idx);
+  DiffLine* GetIndexedDiffLine(size_t idx);
   LinkedList* TokensList();
 
   bool PreProcess();
