@@ -194,7 +194,7 @@ void DiffWindow::ScrollUpOneLine()
     return;
   }
 
-  if((m_MaxWindowTextLines + m_Y) >= NumLines())
+  if(m_Y == NumLines() - 1)
   {
     // Do not move the text up if already at top
     return;
@@ -205,11 +205,14 @@ void DiffWindow::ScrollUpOneLine()
     m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
 
   m_Y++;
+
+  SimpleString* pLine = GetIndexedLine(m_Y);
+  displayLine(pLine, (m_MaxWindowTextLines - 1) * m_FontHeight);
 }
 
 void DiffWindow::ScrollDownOneLine()
 {
-  if(m_Y == 0)
+  if(m_Y < m_MaxWindowTextLines)
   {
     // Do not move the text down if already at bottom
     return;
@@ -220,6 +223,10 @@ void DiffWindow::ScrollDownOneLine()
     m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
 
   m_Y--;
+
+  SimpleString* pLine = GetIndexedLine(m_Y - m_MaxWindowTextLines + 1);
+  displayLine(pLine, 0);
+
 
 }
 
@@ -269,30 +276,25 @@ SimpleString DiffWindow::aslRequestFileName()
 
 void DiffWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge)
 {
-  m_IntuiText.TopEdge += m_TextAttr.ta_YSize;
   m_IntuiText.IText = (UBYTE*)p_pLine->C_str();
+  m_IntuiText.TopEdge = p_TopEdge;
   PrintIText(m_pWindow->RPort, &m_IntuiText, m_ScrollXMin, m_ScrollYMin);
 }
 
 void DiffWindow::displayFile()
 {
   SimpleString* pLine = GetFirstLine();
-  size_t i = 0;
+  m_Y = 0;
   while(pLine != NULL)
   {
-    // Output the line in the window
-    m_IntuiText.IText = (UBYTE*)pLine->C_str();
-    PrintIText(m_pWindow->RPort, &m_IntuiText, m_ScrollXMin, m_ScrollYMin);
+    displayLine(pLine, m_Y * m_FontHeight);
 
-    // Increment Y value of struct IntuiText in preparation of the next
-    // line
-    m_IntuiText.TopEdge += m_TextAttr.ta_YSize;
-
-    pLine = GetNextLine();
-    i++;
-    if(i >= m_MaxWindowTextLines)
+    if(m_Y >= m_MaxWindowTextLines - 1)
     {
       break;
     }
+
+    m_Y++;
+    pLine = GetNextLine();
   }
 }
