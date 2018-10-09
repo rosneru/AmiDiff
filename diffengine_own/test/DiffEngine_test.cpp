@@ -51,10 +51,10 @@ BOOST_AUTO_TEST_CASE( testMatch )
   DiffFilePartition rightDestFilePartition;
 
   DiffEngine diffEngine;
-  bool diffOk = diffEngine.Diff(&leftSrcFilePartition,
-                                &rightSrcFilePartition,
-                                &leftDestFilePartition,
-                                &rightDestFilePartition);
+  bool diffOk = diffEngine.Diff(leftSrcFilePartition,
+                                rightSrcFilePartition,
+                                leftDestFilePartition,
+                                rightDestFilePartition);
 
   BOOST_CHECK_EQUAL(diffOk, true);
 
@@ -84,6 +84,25 @@ BOOST_AUTO_TEST_CASE( testMatch )
   // clean up
   deleteAllListStrings(leftFileLines);
   deleteAllListStrings(rightFileLines);
+
+
+  //
+  // Test case 3: Deleted "Line 3" in right file
+  //
+
+//  leftFileLines.InsertTail(new SimpleString("Line 1"));
+//  leftFileLines.InsertTail(new SimpleString("Line 2"));
+//  leftFileLines.InsertTail(new SimpleString("Line 3"));
+//  leftFileLines.InsertTail(new SimpleString("Line 4"));
+
+//  rightFileLines.InsertTail(new SimpleString("Line 1"));
+//  rightFileLines.InsertTail(new SimpleString("Line 2"));
+//  rightFileLines.InsertTail(new SimpleString("Line 3"));
+//  rightFileLines.InsertTail(new SimpleString("Line 4"));
+
+//  // clean up
+//  deleteAllListStrings(leftFileLines);
+//  deleteAllListStrings(rightFileLines);
 }
 
 BOOST_AUTO_TEST_CASE( testFilePartition )
@@ -102,11 +121,4 @@ BOOST_AUTO_TEST_CASE( testFilePartition )
   BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(1)->GetLine()->C_str(), "");
   BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(2)->GetLine()->C_str(), "defg");
   BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(3)->GetLine()->C_str(), "abc");
-
-//  // Is it empty initialized?
-//  TextDocument textDocument;
-//  BOOST_CHECK_EQUAL(textDocument.GetCurrentLine()->C_str(), "");
-//  BOOST_CHECK_EQUAL(textDocument.X(), 0);
-//  BOOST_CHECK_EQUAL(textDocument.Y(), 0);
-
 }

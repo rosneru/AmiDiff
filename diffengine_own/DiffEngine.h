@@ -22,10 +22,10 @@ class DiffEngine
 public:
   DiffEngine();
 
-  bool Diff(DiffFilePartition* p_File1Src,
-            DiffFilePartition* p_File2Src,
-            DiffFilePartition* p_File1Diff,
-            DiffFilePartition* p_File2Diff);
+  bool Diff(DiffFilePartition& p_File1Src,
+            DiffFilePartition& p_File2Src,
+            DiffFilePartition& p_File1Diff,
+            DiffFilePartition& p_File2Diff);
 };
 
 #endif
