@@ -70,37 +70,26 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   }
 
   //
-  // Setting up the window properties
-  //
-
-  struct TagItem windowTags[] =
-  {
-    { WA_Left, winLeft },
-    { WA_Top, screenBarHeight + 1 },
-    { WA_Width, winWidth },
-    { WA_Height, winHeight },
-    { WA_Title, (ULONG)m_Title.C_str() },
-    { WA_Activate, activateWin },
-    { WA_PubScreen, (ULONG)m_pAppScreen->IntuiScreen() },
-    { WA_IDCMP, IDCMP_MENUPICK | IDCMP_VANILLAKEY | IDCMP_RAWKEY},
-    { WA_NewLookMenus, TRUE },  // Ignored before v39
-    { WA_Flags, WFLG_GIMMEZEROZERO },
-    { WA_SmartRefresh, TRUE },
-    { TAG_DONE, NULL },
-  };
-
-  //
   // Opening the window
   //
-  m_pWindow = OpenWindowTagList(NULL, windowTags);
-  if(m_pWindow == NULL)
-  {
-    return false;
-  }
+  m_pWindow = OpenWindowTags(NULL,
+    WA_Left, winLeft,
+    WA_Top, screenBarHeight + 1,
+    WA_Width, winWidth,
+    WA_Height, winHeight,
+    WA_Title, (ULONG)m_Title.C_str(),
+    WA_Activate, activateWin,
+    WA_PubScreen, (ULONG)m_pAppScreen->IntuiScreen(),
+    WA_IDCMP, IDCMP_MENUPICK | IDCMP_VANILLAKEY | IDCMP_RAWKEY,
+    WA_NewLookMenus, TRUE,  // Ignored before v39
+    WA_Flags, WFLG_GIMMEZEROZERO,
+    WA_SmartRefresh, TRUE,
+    TAG_END);
+
 
   struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
 
-  // Calculate values needeed for text scrolling
+  // Calculate values needed for text scrolling
   m_FontHeight = pDrawInfo->dri_Font->tf_YSize;
   m_ScrollXMax = m_pWindow->Width - m_pWindow->BorderRight - m_ScrollXMin;
   m_ScrollYMax = m_pWindow->Height - m_pWindow->BorderBottom - m_ScrollYMin;
