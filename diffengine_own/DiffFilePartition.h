@@ -21,17 +21,20 @@ class DiffFilePartition
 {
   // Constructor
 public:
+  DiffFilePartition();
   DiffFilePartition(LinkedList* p_pLinesList);
   virtual ~DiffFilePartition();
 
   size_t NumberOfLines();
-  DiffLine* GetIndexedDiffLine(size_t idx);
+  DiffLine* GetIndexedDiffLine(size_t p_Index);
+  SimpleString* GetIndexedRawLine(size_t p_Index);
+  DiffLine::LineState GetIndexedLineState(size_t p_Index);
   LinkedList* TokensList();
 
   bool PreProcess();
   bool MatchLine(size_t i1, DiffFilePartition* p_pOtherFile, size_t i2);
 
-  void AddString(SimpleString* p_pString, DiffLine::LineStatus p_LineStatus);
+  void AddString(SimpleString* p_pString, DiffLine::LineState p_LineState);
   void AddString(SimpleString* p_pString);
   void AddBlankLine();
 

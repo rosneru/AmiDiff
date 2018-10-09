@@ -19,27 +19,28 @@
 class DiffLine
 {
 public:
-  enum LineStatus
+  enum LineState
   {
-    Normal=0,
+    Normal = 0,
     Changed,
     Added,
-    Deleted
+    Deleted,
+    Undefined
   };
 
   DiffLine();
   ~DiffLine();
 
-  long SetLine(SimpleString* p_pString); // store string and build token
-  void SetLine(SimpleString* p_pString, LineStatus p_LineStatus); // store string and status (does not eval token)
+  long SetLine(SimpleString* p_pString); ///> store string and build token
+  void SetLine(SimpleString* p_pString, LineState p_LineState); ///> store string and state (does not eval token)
   SimpleString* GetLine();
 
-  void SetStatus(LineStatus p_LineStatus);
-  LineStatus GetStatus();
+  void SetState(LineState p_LineState);
+  LineState GetState();
 
 protected:
-  LineStatus m_LineStatus;
-  SimpleString* m_pLineStr;
+  LineState m_LineState;
+  SimpleString* m_pLineText;
 };
 
 #endif

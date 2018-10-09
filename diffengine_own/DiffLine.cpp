@@ -1,33 +1,33 @@
 #include "DiffLine.h"
 
 DiffLine::DiffLine()
-  : m_LineStatus(Normal),
-    m_pLineStr(NULL)
+  : m_LineState(Normal),
+    m_pLineText(NULL)
 {
 }
 
 DiffLine::~DiffLine()
 {
-  if(m_pLineStr != NULL)
+  if(m_pLineText != NULL)
   {
-    delete m_pLineStr;
-    m_pLineStr = NULL;
+    delete m_pLineText;
+    m_pLineText = NULL;
   }
 }
 
 long DiffLine::SetLine(SimpleString* p_String)
 {
-  if(m_pLineStr != NULL)
+  if(m_pLineText != NULL)
   {
-    delete m_pLineStr;
-    m_pLineStr = NULL;
+    delete m_pLineText;
+    m_pLineText = NULL;
   }
 
-  m_pLineStr = new SimpleString();
+  m_pLineText = new SimpleString();
 
   // Deep-copy of p_pString
   // TODO Would it go better?
-  *m_pLineStr = *p_String;
+  *m_pLineText = *p_String;
 
   char* pBuf = p_String->C_str();
 
@@ -40,37 +40,37 @@ long DiffLine::SetLine(SimpleString* p_String)
   return nToken;
 }
 
-void DiffLine::SetLine(SimpleString* p_pString, DiffLine::LineStatus p_LineStatus)
+void DiffLine::SetLine(SimpleString* p_pString, DiffLine::LineState p_LineState)
 {
-  if(m_pLineStr != NULL)
+  if(m_pLineText != NULL)
   {
-    delete m_pLineStr;
-    m_pLineStr = NULL;
+    delete m_pLineText;
+    m_pLineText = NULL;
   }
 
-  m_pLineStr = new SimpleString();
+  m_pLineText = new SimpleString();
 
   // Deep-copy of p_pString
   // TODO Would it go better?
   if(p_pString != NULL)
   {
-    *m_pLineStr = *p_pString;
+    *m_pLineText = *p_pString;
   }
 
-  SetStatus(p_LineStatus);
+  SetState(p_LineState);
 }
 
 SimpleString* DiffLine::GetLine()
 {
-  return m_pLineStr;
+  return m_pLineText;
 }
 
-void DiffLine::SetStatus(DiffLine::LineStatus p_LineStatus)
+void DiffLine::SetState(DiffLine::LineState p_LineState)
 {
-  m_LineStatus = p_LineStatus;
+  m_LineState = p_LineState;
 }
 
-DiffLine::LineStatus DiffLine::GetStatus()
+DiffLine::LineState DiffLine::GetState()
 {
-  return m_LineStatus;
+  return m_LineState;
 }

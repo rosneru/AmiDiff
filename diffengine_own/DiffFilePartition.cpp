@@ -1,5 +1,13 @@
 #include "DiffFilePartition.h"
 
+DiffFilePartition::DiffFilePartition()
+  : m_pInputLinesList(NULL),
+    m_pDiffLinesList(new LinkedList),
+    m_pTokensList(new LinkedList())
+{
+
+}
+
 DiffFilePartition::DiffFilePartition(LinkedList* p_pLinesList)
   : m_pInputLinesList(p_pLinesList),
     m_pDiffLinesList(new LinkedList),
@@ -27,10 +35,52 @@ size_t DiffFilePartition::NumberOfLines()
   return m_pDiffLinesList->Size();
 }
 
-DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t idx)
+DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t p_Index)
 {
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(idx));
+  if(m_pDiffLinesList == NULL)
+  {
+    return NULL;
+  }
+
+  if(p_Index >= m_pDiffLinesList->Size())
+  {
+    return NULL;
+  }
+
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(p_Index));
   return pDiffLine;
+}
+
+SimpleString* DiffFilePartition::GetIndexedRawLine(size_t p_Index)
+{
+  if(m_pDiffLinesList == NULL)
+  {
+    return NULL;
+  }
+
+  if(p_Index >= m_pDiffLinesList->Size())
+  {
+    return NULL;
+  }
+
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(p_Index));
+  return pDiffLine->GetLine();
+}
+
+DiffLine::LineState DiffFilePartition::GetIndexedLineState(size_t p_Index)
+{
+  if(m_pDiffLinesList == NULL)
+  {
+    return DiffLine::Undefined;
+  }
+
+  if(p_Index >= m_pDiffLinesList->Size())
+  {
+    return DiffLine::Undefined;
+  }
+
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(p_Index));
+  return pDiffLine->GetState();
 }
 
 LinkedList* DiffFilePartition::TokensList()
@@ -108,12 +158,12 @@ bool DiffFilePartition::MatchLine(size_t i1, DiffFilePartition* p_pOtherFile, si
   return false;
 }
 
-void DiffFilePartition::AddString(SimpleString* p_pString, DiffLine::LineStatus p_LineStatus)
+void DiffFilePartition::AddString(SimpleString* p_pString, DiffLine::LineState p_LineState)
 {
   DiffLine* pDiffLine = new DiffLine();
   if(pDiffLine != NULL)
   {
-    pDiffLine->SetLine(p_pString, p_LineStatus);
+    pDiffLine->SetLine(p_pString, p_LineState);
   }
 
   // Append DiffLine to list
@@ -143,7 +193,6 @@ void DiffFilePartition::AddString(SimpleString* p_pString)
 
 void DiffFilePartition::AddBlankLine()
 {
-  // TODO How and when will this new created string be deleted??
   AddString(NULL, DiffLine::Normal);
 }
 
