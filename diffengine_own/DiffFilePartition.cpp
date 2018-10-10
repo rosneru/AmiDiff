@@ -101,14 +101,14 @@ bool DiffFilePartition::PreProcess()
   return true;
 }
 
-bool DiffFilePartition::MatchLine(size_t i1, DiffFilePartition& p_OtherFile, size_t& i2)
+bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long& i2)
 {
   if(m_pTokensList->Size() == 0)
   {
     return false;
   }
 
-  if(i1 > NumberOfLines())
+  if((i1 < 0 ) || (i1 > NumberOfLines()))
   {
     return false;
   }
@@ -124,8 +124,8 @@ bool DiffFilePartition::MatchLine(size_t i1, DiffFilePartition& p_OtherFile, siz
   SimpleString* pLineF1 = GetIndexedDiffLine(i1)->GetLine(); // TODO move above while loop?
 
   bool bFound = false;
-  size_t i = 0;
-  size_t nf2SubsetLines = p_OtherFile.NumberOfLines() - i2;
+  long i = 0;
+  long nf2SubsetLines = p_OtherFile.NumberOfLines() - i2;
 
   long nf2Token = *static_cast<long*>(pF2TokenList->GetIndexed(i2));
 

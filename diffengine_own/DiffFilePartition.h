@@ -32,7 +32,7 @@ public:
   LinkedList* TokensList();
 
   bool PreProcess();
-  bool MatchLine(size_t i1, DiffFilePartition& p_OtherFile, size_t& i2);
+  bool MatchLine(long i1, DiffFilePartition& p_OtherFile, long& i2);
 
   void AddString(SimpleString* p_pString, DiffLine::LineState p_LineState);
   void AddString(SimpleString* p_pString);
