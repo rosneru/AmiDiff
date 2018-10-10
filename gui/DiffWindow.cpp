@@ -5,6 +5,9 @@
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <intuition/intuition.h>
+#include <intuition/gadgetclass.h>
+#include <intuition/imageclass.h>
+#include <intuition/icclass.h>
 #include <libraries/asl.h>
 #include <libraries/dos.h>
 
@@ -30,6 +33,11 @@ DiffWindow::~DiffWindow()
 
 bool DiffWindow::Open(DW_TYPE p_DwType)
 {
+  //
+  // Create some "shortcut pointers" for often used variables
+  //
+  struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
+
   //
   // Initial validations
   //
@@ -70,6 +78,49 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   }
 
   //
+  // Setting up scroll bars for the window
+  //
+
+	int titleBarHeight = m_pAppScreen->IntuiScreen()->WBorTop+ m_pAppScreen->IntuiScreen()->RastPort.TxHeight + 2;
+  ULONG sizeGadgetWidth = 18;
+  ULONG sizeGadgetHeight = 10;
+
+  // Getting the width of the (currently hidden) size gadget of the window
+  struct Image* pSizeImage = (struct Image*) NewObject(
+      NULL, SYSICLASS,
+			SYSIA_Which, SIZEIMAGE,
+			SYSIA_Size, SYSISIZE_MEDRES,
+			SYSIA_DrawInfo, pDrawInfo,
+			TAG_END);
+
+	if(pSizeImage != NULL)
+	{
+	  GetAttr(IA_Width, pSizeImage, &sizeGadgetWidth);
+	  GetAttr(IA_Width, pSizeImage, &sizeGadgetHeight);
+	}
+
+  //struct Gadget* pWinPropGadgetX;
+	struct Gadget* pWinPropGadgetY = (struct Gadget*) NewObject(
+	  NULL, PROPGCLASS,
+  	//GA_Previous,uarrowbutton,
+  	//GA_ID,GID_YPROP,
+  	GA_ID, 916,   // TODO change see above
+  	GA_RelRight, - sizeGadgetWidth + 4,
+  	GA_Top, titleBarHeight,
+  	GA_Width, sizeGadgetWidth - 6,
+  	GA_RelHeight, - sizeGadgetHeight - winHeight - winHeight - titleBarHeight - 1,
+  	GA_DrawInfo, pDrawInfo,
+  	GA_GZZGadget, TRUE,
+  	GA_RightBorder, TRUE,
+  	PGA_Freedom, FREEVERT,
+  	PGA_Borderless, TRUE,
+  	PGA_NewLook, TRUE,
+  	PGA_Total, screenHeight,
+  	ICA_TARGET, ICTARGET_IDCMP,
+  	TAG_END);
+
+
+  //
   // Opening the window
   //
   m_pWindow = OpenWindowTags(NULL,
@@ -84,10 +135,8 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
     WA_NewLookMenus, TRUE,  // Ignored before v39
     WA_Flags, WFLG_GIMMEZEROZERO,
     WA_SmartRefresh, TRUE,
+    WA_Gadgets, pWinPropGadgetY,
     TAG_END);
-
-
-  struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
 
   // Calculate values needed for text scrolling
   m_FontHeight = pDrawInfo->dri_Font->tf_YSize;
