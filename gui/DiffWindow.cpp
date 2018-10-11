@@ -16,14 +16,65 @@
 DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   : m_pAppScreen(p_pAppScreen),
     m_pWindow(NULL),
+    m_pWinPropGadgetY(NULL),
     m_MaxWindowTextLines(0),
     m_Y(0),
     m_FontHeight(0),
     m_ScrollXMin(10),
     m_ScrollYMin(10),
-    m_ScrollXMax(),
+    m_ScrollXMax(0),
     m_ScrollYMax(0)
 {
+  //
+  // Calculate some basic values
+  //
+  m_FontHeight = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
+	int titleBarHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 1; // TODO or +2?
+
+  //
+  // Setting up scroll bars and gadgets for the window. They will be
+  // attached to the window at opening time
+  //
+  ULONG sizeGadgetWidth = 18;
+  ULONG sizeGadgetHeight = 10;
+
+  // Getting the width of the (currently hidden) size gadget of the window
+  struct Image* pSizeImage = (struct Image*) NewObject(
+      NULL, SYSICLASS,
+			SYSIA_Which, SIZEIMAGE,
+			SYSIA_Size, SYSISIZE_MEDRES,
+			SYSIA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+			TAG_END);
+
+	if(pSizeImage != NULL)
+	{
+	  GetAttr(IA_Width, pSizeImage, &sizeGadgetWidth);
+	  GetAttr(IA_Width, pSizeImage, &sizeGadgetHeight);
+	}
+
+	DisposeObject(pSizeImage);
+
+  //struct Gadget* pWinPropGadgetX;
+	m_pWinPropGadgetY = (struct Gadget*) NewObject(
+	  NULL, PROPGCLASS,
+  	//GA_Previous,uarrowbutton,
+  	//GA_ID,GID_YPROP,
+  	GA_ID, 916,   // TODO change see above
+  	GA_Top, titleBarHeight,
+  	GA_Width, sizeGadgetWidth - 6,
+  	GA_RelRight, -sizeGadgetWidth + 4,
+  	GA_RelHeight, -sizeGadgetHeight - titleBarHeight - 1,
+  	GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+  	GA_GZZGadget, TRUE,
+  	GA_RightBorder, TRUE,
+  	PGA_Freedom, FREEVERT,
+  	PGA_Borderless, TRUE,
+  	PGA_NewLook, TRUE,
+  	PGA_Total, 100,   // after file opening: set to the number of lines in file
+  	PGA_Top, 0,
+  	PGA_Visible, 100,  // after file opening: set to m_MaxWindowTextLines
+  	ICA_TARGET, ICTARGET_IDCMP,
+  	TAG_END);
 }
 
 DiffWindow::~DiffWindow()
@@ -33,11 +84,6 @@ DiffWindow::~DiffWindow()
 
 bool DiffWindow::Open(DW_TYPE p_DwType)
 {
-  //
-  // Create some "shortcut pointers" for often used variables
-  //
-  struct DrawInfo* pDrawInfo = m_pAppScreen->IntuiDrawInfo();
-
   //
   // Initial validations
   //
@@ -77,47 +123,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
     activateWin = FALSE;
   }
 
-  //
-  // Setting up scroll bars for the window
-  //
 
-	int titleBarHeight = m_pAppScreen->IntuiScreen()->WBorTop+ m_pAppScreen->IntuiScreen()->RastPort.TxHeight + 2;
-  ULONG sizeGadgetWidth = 18;
-  ULONG sizeGadgetHeight = 10;
-
-  // Getting the width of the (currently hidden) size gadget of the window
-  struct Image* pSizeImage = (struct Image*) NewObject(
-      NULL, SYSICLASS,
-			SYSIA_Which, SIZEIMAGE,
-			SYSIA_Size, SYSISIZE_MEDRES,
-			SYSIA_DrawInfo, pDrawInfo,
-			TAG_END);
-
-	if(pSizeImage != NULL)
-	{
-	  GetAttr(IA_Width, pSizeImage, &sizeGadgetWidth);
-	  GetAttr(IA_Width, pSizeImage, &sizeGadgetHeight);
-	}
-
-  //struct Gadget* pWinPropGadgetX;
-	struct Gadget* pWinPropGadgetY = (struct Gadget*) NewObject(
-	  NULL, PROPGCLASS,
-  	//GA_Previous,uarrowbutton,
-  	//GA_ID,GID_YPROP,
-  	GA_ID, 916,   // TODO change see above
-  	GA_RelRight, - sizeGadgetWidth + 4,
-  	GA_Top, titleBarHeight,
-  	GA_Width, sizeGadgetWidth - 6,
-  	GA_RelHeight, - sizeGadgetHeight - winHeight - winHeight - titleBarHeight - 1,
-  	GA_DrawInfo, pDrawInfo,
-  	GA_GZZGadget, TRUE,
-  	GA_RightBorder, TRUE,
-  	PGA_Freedom, FREEVERT,
-  	PGA_Borderless, TRUE,
-  	PGA_NewLook, TRUE,
-  	PGA_Total, screenHeight,
-  	ICA_TARGET, ICTARGET_IDCMP,
-  	TAG_END);
 
 
   //
@@ -128,18 +134,32 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
     WA_Top, screenBarHeight + 1,
     WA_Width, winWidth,
     WA_Height, winHeight,
-    WA_Title, (ULONG)m_Title.C_str(),
+    WA_Title, (ULONG) m_Title.C_str(),
     WA_Activate, activateWin,
-    WA_PubScreen, (ULONG)m_pAppScreen->IntuiScreen(),
-    WA_IDCMP, IDCMP_MENUPICK | IDCMP_VANILLAKEY | IDCMP_RAWKEY,
-    WA_NewLookMenus, TRUE,  // Ignored before v39
-    WA_Flags, WFLG_GIMMEZEROZERO,
-    WA_SmartRefresh, TRUE,
-    WA_Gadgets, pWinPropGadgetY,
+    WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
+    WA_IDCMP, IDCMP_MENUPICK |      // Inform us about menu selection
+              IDCMP_VANILLAKEY |    // Inform us about RAW key press
+              IDCMP_RAWKEY |        // Inform us about printable key press
+              IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
+              IDCMP_NEWSIZE |       // Inform us about resizing
+              IDCMP_IDCMPUPDATE,    // Inform us about TODO
+    WA_NewLookMenus, TRUE,          // Ignored before v39
+    WA_Flags, WFLG_CLOSEGADGET |    // Add a close gadget
+              WFLG_DRAGBAR |
+              WFLG_DEPTHGADGET |
+              WFLG_SIZEGADGET |
+              WFLG_GIMMEZEROZERO |
+              WFLG_ACTIVATE |
+              WFLG_NOCAREREFRESH,
+    WA_SmartRefresh, TRUE,  // TODO Change to simple refresh??
+		WA_MinWidth, 120,
+		WA_MinHeight, 90,
+		WA_MaxWidth, -1,
+		WA_MaxHeight, -1,
+    WA_Gadgets, m_pWinPropGadgetY,
     TAG_END);
 
   // Calculate values needed for text scrolling
-  m_FontHeight = pDrawInfo->dri_Font->tf_YSize;
   m_ScrollXMax = m_pWindow->Width - m_pWindow->BorderRight - m_ScrollXMin;
   m_ScrollYMax = m_pWindow->Height - m_pWindow->BorderBottom - m_ScrollYMin;
 
@@ -153,13 +173,13 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   // Setup structs for text drawing
     // Setup Pens, TextAttr and prepare IntuiText
   // TODO Remove it to some better place
-  ULONG txtPen = pDrawInfo->dri_Pens[TEXTPEN];
-  ULONG bgPen = pDrawInfo->dri_Pens[BACKGROUNDPEN];
+  ULONG txtPen = m_pAppScreen->IntuiDrawInfo()->dri_Pens[TEXTPEN];
+  ULONG bgPen = m_pAppScreen->IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
 
-  m_TextAttr.ta_Name = pDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
-  m_TextAttr.ta_YSize = pDrawInfo->dri_Font->tf_YSize;
-  m_TextAttr.ta_Style = pDrawInfo->dri_Font->tf_Style;
-  m_TextAttr.ta_Flags = pDrawInfo->dri_Font->tf_Flags;
+  m_TextAttr.ta_Name = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
+  m_TextAttr.ta_YSize = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
+  m_TextAttr.ta_Style = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_Style;
+  m_TextAttr.ta_Flags = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_Flags;
 
   // Prepare IntuiText for line-by-line printing
   m_IntuiText.FrontPen  = txtPen;
@@ -175,6 +195,11 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
 
 void DiffWindow::Close()
 {
+  if(m_pWinPropGadgetY != NULL)
+  {
+    DisposeObject(m_pWinPropGadgetY);
+  }
+
   if(m_pWindow != NULL)
   {
     CloseWindow(m_pWindow);

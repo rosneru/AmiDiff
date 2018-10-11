@@ -70,6 +70,9 @@ public:
 private:
   AppScreen* m_pAppScreen;
   struct Window* m_pWindow;
+
+  struct Gadget* m_pWinPropGadgetY;
+
   SimpleString m_Title;
   SimpleString m_FileRequesterTitle;
   size_t m_MaxWindowTextLines;  ///> Number of text lines that would fit in window
