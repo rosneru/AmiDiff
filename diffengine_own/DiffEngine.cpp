@@ -14,7 +14,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
 {
   if(p_File1Src.NumberOfLines() == 0)
   {
-    size_t i = 0;
+    long i = 0;
     while(i < p_File2Src.NumberOfLines())
     {
       p_File1Diff.AddBlankLine();
@@ -24,8 +24,8 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
     return true;
   }
 
-  size_t i = 0;
-  size_t nF2CurrentLine = 0;
+  long i = 0;
+  long nF2CurrentLine = 0;
 
   while(i < p_File1Src.NumberOfLines())
   {

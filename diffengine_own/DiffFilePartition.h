@@ -2,7 +2,7 @@
 /*-------------------------------------------------------------------*/
 /* Class for storing a file line by line with diff information       */
 /*                                                                   */
-/* This has been inspired by Stephane Rodriguez source code on       */
+/* This is an adaption of Stephane Rodriguez source code on          */
 /* CodeProject: https://www.codeproject.com/Articles/3666/Diff-tool  */
 /*                                                                   */
 /* Uwe Rosner                                                        */

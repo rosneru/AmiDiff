@@ -113,38 +113,38 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
     return false;
   }
 
-  long nf1Token = *static_cast<long*>(m_pTokensList->GetIndexed(i1));
+  long thisFileToken = *static_cast<long*>(m_pTokensList->GetIndexed(i1));
 
-  LinkedList* pF2TokenList = p_OtherFile.TokensList();
-  if(pF2TokenList == NULL)
+  LinkedList* pOtherFileTokenList = p_OtherFile.TokensList();
+  if(pOtherFileTokenList == NULL)
   {
     return false;
   }
 
-  SimpleString* pLineF1 = GetIndexedDiffLine(i1)->GetLine(); // TODO move above while loop?
+  SimpleString* pLineThisFile = GetIndexedDiffLine(i1)->GetLine();
 
   bool bFound = false;
   long i = 0;
-  long nf2SubsetLines = p_OtherFile.NumberOfLines() - i2;
+  long otherFileSubsetLines = p_OtherFile.NumberOfLines() - i2;
 
-  long nf2Token = *static_cast<long*>(pF2TokenList->GetIndexed(i2));
+  long otherFileToken = *static_cast<long*>(pOtherFileTokenList->GetIndexed(i2));
 
-  while(!bFound && i < nf2SubsetLines)
+  while(!bFound && i < otherFileSubsetLines)
   {
-    if(nf1Token == nf2Token)  // Fast compare
+    if(thisFileToken == otherFileToken)  // Fast compare
     {
       // Make sure strings really match
-      SimpleString* pLineF2 = p_OtherFile.GetIndexedDiffLine(i2 + i)->GetLine();
-      bFound = ((*pLineF1) == (*pLineF2));
+      SimpleString* pLineOtherFile = p_OtherFile.GetIndexedDiffLine(i2 + i)->GetLine();
+      bFound = ((*pLineThisFile) == (*pLineOtherFile));
     }
 
     i++;
-    if(static_cast<long*>(pF2TokenList->GetNext()) == NULL)
+    if(static_cast<long*>(pOtherFileTokenList->GetNext()) == NULL)
     {
-      return false;
+      break;
     }
 
-    nf2Token = *static_cast<long*>(pF2TokenList->GetSelected());
+    otherFileToken = *static_cast<long*>(pOtherFileTokenList->GetSelected());
   }
 
   i--;
