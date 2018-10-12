@@ -18,6 +18,27 @@
 #include "LinkedList.h"
 #include "SimpleString.h"
 
+
+
+BOOST_AUTO_TEST_CASE( testFilePartition )
+{
+  SimpleString text1 = "abc";
+  SimpleString text2 = "defg";
+
+  DiffFilePartition partition1(NULL);
+  partition1.AddString(&text1);
+  partition1.AddBlankLine();
+  partition1.AddString(&text2);
+  partition1.AddString(&text1);
+
+  BOOST_CHECK_EQUAL(partition1.NumberOfLines(), 4);
+  BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(0)->GetLine()->C_str(), "abc");
+  BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(1)->GetLine()->C_str(), "");
+  BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(2)->GetLine()->C_str(), "defg");
+  BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(3)->GetLine()->C_str(), "abc");
+}
+
+
 void deleteAllListStrings(LinkedList& p_List)
 {
   SimpleString* pItem = static_cast<SimpleString*>(p_List.GetFirst());
@@ -29,10 +50,12 @@ void deleteAllListStrings(LinkedList& p_List)
   }
 }
 
-BOOST_AUTO_TEST_CASE( testMatch )
+BOOST_AUTO_TEST_CASE( testDiff )
 {
   LinkedList leftFileLines;
   LinkedList rightFileLines;
+  bool diffOk = false;
+  DiffEngine diffEngine;
 
   //
   // Test case 1: Left file is empty
@@ -51,11 +74,10 @@ BOOST_AUTO_TEST_CASE( testMatch )
   DiffFilePartition leftDiffPartition1;
   DiffFilePartition rightDiffPartition1;
 
-  DiffEngine diffEngine;
-  bool diffOk = diffEngine.Diff(leftSrcPartition1,
-                                rightSrcPartition1,
-                                leftDiffPartition1,
-                                rightDiffPartition1);
+  diffOk = diffEngine.Diff(leftSrcPartition1,
+                           rightSrcPartition1,
+                           leftDiffPartition1,
+                           rightDiffPartition1);
 
   BOOST_CHECK_EQUAL(diffOk, true);
 
@@ -176,19 +198,18 @@ BOOST_AUTO_TEST_CASE( testMatch )
   BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedRawLine(1)->C_str(), "Line 2");
   BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedLineState(1), DiffLine::Normal);
   BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedRawLine(2)->C_str(), "Line 3");
-  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedLineState(2), DiffLine::Changed);  // Why?
+  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedLineState(2), DiffLine::Deleted);
   BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedRawLine(3)->C_str(), "Line 4");
-  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedLineState(3), DiffLine::Deleted);  // Why?
-
+  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedLineState(3), DiffLine::Normal);
 
   BOOST_CHECK_EQUAL(rightDiffPartition3.NumberOfLines(), 4);
   BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedRawLine(0)->C_str(), "Line 1");
   BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedLineState(0), DiffLine::Normal);
   BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedRawLine(1)->C_str(), "Line 2");
   BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedLineState(1), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedRawLine(2)->C_str(), "Line 4"); // Why?
-  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedLineState(2), DiffLine::Changed); // Why not deleted?
-  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedRawLine(3)->C_str(), "");
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedRawLine(2)->C_str(), "");
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedLineState(2), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedRawLine(3)->C_str(), "Line 4");
   BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedLineState(3), DiffLine::Normal);
 
   // clean up
@@ -196,20 +217,4 @@ BOOST_AUTO_TEST_CASE( testMatch )
   deleteAllListStrings(rightFileLines);
 }
 
-BOOST_AUTO_TEST_CASE( testFilePartition )
-{
-  SimpleString text1 = "abc";
-  SimpleString text2 = "defg";
 
-  DiffFilePartition partition1(NULL);
-  partition1.AddString(&text1);
-  partition1.AddBlankLine();
-  partition1.AddString(&text2);
-  partition1.AddString(&text1);
-
-  BOOST_CHECK_EQUAL(partition1.NumberOfLines(), 4);
-  BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(0)->GetLine()->C_str(), "abc");
-  BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(1)->GetLine()->C_str(), "");
-  BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(2)->GetLine()->C_str(), "defg");
-  BOOST_CHECK_EQUAL(partition1.GetIndexedDiffLine(3)->GetLine()->C_str(), "abc");
-}
