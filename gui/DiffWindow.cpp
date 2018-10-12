@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include <clib/alib_protos.h>
 #include <clib/asl_protos.h>
 #include <clib/dos_protos.h>
 #include <clib/graphics_protos.h>
@@ -70,9 +71,9 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   	PGA_Freedom, FREEVERT,
   	PGA_Borderless, TRUE,
   	PGA_NewLook, TRUE,
-  	PGA_Total, 100,   // after file opening: set to the number of lines in file
+  	PGA_Total, 100,
   	PGA_Top, 0,
-  	PGA_Visible, 100,  // after file opening: set to m_MaxWindowTextLines
+  	PGA_Visible, 100,
   	ICA_TARGET, ICTARGET_IDCMP,
   	TAG_END);
 }
@@ -80,6 +81,22 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
 DiffWindow::~DiffWindow()
 {
   Close();
+}
+
+void DiffWindow::Resized()
+{
+  // Calculate how many lines *now* can be displayed in the window
+  calcMaxWindowTextLines();
+
+  // Set scroll gadgets pot size dependend on new window size
+  if(m_pWinPropGadgetY != NULL)
+  {
+	  SetGadgetAttrs(m_pWinPropGadgetY, m_pWindow, NULL,
+    	PGA_Visible, m_MaxWindowTextLines,
+    	TAG_DONE
+	   );
+  }
+
 }
 
 bool DiffWindow::Open(DW_TYPE p_DwType)
@@ -123,9 +140,6 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
     activateWin = FALSE;
   }
 
-
-
-
   //
   // Opening the window
   //
@@ -164,11 +178,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   m_ScrollYMax = m_pWindow->Height - m_pWindow->BorderBottom - m_ScrollYMin;
 
   // Calculate how many lines can be displayed in the window
-  m_MaxWindowTextLines = m_pWindow->Height;
-  m_MaxWindowTextLines -= m_pWindow->BorderTop;
-  m_MaxWindowTextLines -= m_pWindow->BorderBottom;
-  m_MaxWindowTextLines -= m_ScrollYMin;
-  m_MaxWindowTextLines /= m_FontHeight;
+  calcMaxWindowTextLines();
 
   // Setup structs for text drawing
     // Setup Pens, TextAttr and prepare IntuiText
@@ -246,6 +256,19 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
   // Set full path of opened file as window title
   SetTitle(p_FileName);
   displayFile();
+
+  // Set scroll gadgets pot size dependend on window size and the number
+  // of lines in opened file
+  if(m_pWinPropGadgetY != NULL)
+  {
+	  SetGadgetAttrs(m_pWinPropGadgetY, m_pWindow, NULL,
+    	PGA_Total, NumLines(),
+    	PGA_Top, 0,
+    	PGA_Visible, m_MaxWindowTextLines,
+    	TAG_DONE
+	   );
+  }
+
   return true;
 }
 
@@ -293,6 +316,14 @@ void DiffWindow::ScrollDownOneLine()
 
 }
 
+void DiffWindow::calcMaxWindowTextLines()
+{
+  m_MaxWindowTextLines = m_pWindow->Height;
+  m_MaxWindowTextLines -= m_pWindow->BorderTop;
+  m_MaxWindowTextLines -= m_pWindow->BorderBottom;
+  m_MaxWindowTextLines -= m_ScrollYMin;
+  m_MaxWindowTextLines /= m_FontHeight;
+}
 
 SimpleString DiffWindow::aslRequestFileName()
 {
@@ -300,7 +331,7 @@ SimpleString DiffWindow::aslRequestFileName()
 
   struct TagItem fileRequestTags[] =
   {
-    ASL_Hail,       (ULONG)m_FileRequesterTitle.C_str(),
+    ASL_Hail, (ULONG)m_FileRequesterTitle.C_str(),
     TAG_DONE
   };
 

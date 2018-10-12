@@ -259,6 +259,20 @@ void Application::intuiEventLoop()
           }
           break;
         }
+
+        case IDCMP_NEWSIZE :
+        {
+          if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+          {
+            m_pLeftWin->Resized();
+          }
+          else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+          {
+            m_pRightWin->Resized();
+          }
+
+          break;
+        }
       }
 
       ReplyMsg((struct Message *)pMsg);

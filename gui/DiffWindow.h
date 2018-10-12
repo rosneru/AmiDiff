@@ -29,6 +29,15 @@ public:
   };
 
   /**
+   * Reorganises the window including re-calculating scrollbars. If
+   * needed also re-drawing the obscured text areas.
+   *
+   * This shoud be called from the application if the signal
+   * IDCMP_NEWSIZE for this window is received.
+   */
+  void Resized();
+
+  /**
    * Opens the window.
    *
    * @param dwType
@@ -87,6 +96,11 @@ private:
   struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;
 
+  /**
+   * Calculates how many lines fit into current window size and sets
+   * the member variable.
+   */
+  void calcMaxWindowTextLines();
   SimpleString aslRequestFileName();
   void displayFile();
   void DiffWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge);
