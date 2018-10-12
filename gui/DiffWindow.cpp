@@ -101,6 +101,13 @@ void DiffWindow::Resized()
 
 }
 
+void DiffWindow::Refresh()
+{
+  BeginRefresh(m_pWindow);
+  displayFile();  // TODO start from right line
+  EndRefresh(m_pWindow, TRUE);
+}
+
 bool DiffWindow::Open(DW_TYPE p_DwType)
 {
   //
@@ -158,6 +165,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
               IDCMP_RAWKEY |        // Inform us about printable key press
               IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
               IDCMP_NEWSIZE |       // Inform us about resizing
+              IDCMP_REFRESHWINDOW |
               IDCMP_IDCMPUPDATE,    // Inform us about TODO
     WA_NewLookMenus, TRUE,          // Ignored before v39
     WA_Flags, WFLG_CLOSEGADGET |    // Add a close gadget
@@ -166,7 +174,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
               WFLG_SIZEGADGET |
               WFLG_GIMMEZEROZERO |
               WFLG_ACTIVATE,
-    WA_SimpleRefresh, TRUE,  // TODO Change to simple refresh??
+    WA_SimpleRefresh, TRUE,
 		WA_MinWidth, 120,
 		WA_MinHeight, 90,
 		WA_MaxWidth, -1,

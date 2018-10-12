@@ -260,7 +260,7 @@ void Application::intuiEventLoop()
           break;
         }
 
-        case IDCMP_NEWSIZE :
+        case IDCMP_NEWSIZE:
         {
           if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
           {
@@ -273,6 +273,21 @@ void Application::intuiEventLoop()
 
           break;
         }
+
+        case IDCMP_REFRESHWINDOW:
+        {
+          if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+          {
+            m_pLeftWin->Refresh();
+          }
+          else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+          {
+            m_pRightWin->Refresh();
+          }
+
+          break;
+        }
+
       }
 
       ReplyMsg((struct Message *)pMsg);

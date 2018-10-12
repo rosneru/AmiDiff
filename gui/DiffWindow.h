@@ -37,6 +37,8 @@ public:
    */
   void Resized();
 
+  void Refresh();
+
   /**
    * Opens the window.
    *
