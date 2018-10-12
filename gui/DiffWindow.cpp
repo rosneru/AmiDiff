@@ -97,6 +97,8 @@ void DiffWindow::Resized()
 	   );
   }
 
+  // TODO redraw obscured window regions
+
 }
 
 bool DiffWindow::Open(DW_TYPE p_DwType)
@@ -163,9 +165,8 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
               WFLG_DEPTHGADGET |
               WFLG_SIZEGADGET |
               WFLG_GIMMEZEROZERO |
-              WFLG_ACTIVATE |
-              WFLG_NOCAREREFRESH,
-    WA_SmartRefresh, TRUE,  // TODO Change to simple refresh??
+              WFLG_ACTIVATE,
+    WA_SimpleRefresh, TRUE,  // TODO Change to simple refresh??
 		WA_MinWidth, 120,
 		WA_MinHeight, 90,
 		WA_MaxWidth, -1,
