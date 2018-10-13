@@ -288,6 +288,12 @@ void Application::intuiEventLoop()
           break;
         }
 
+        case IDCMP_CLOSEWINDOW:
+        {
+          m_pCmdQuit->Execute();
+          break;
+        }
+
       }
 
       ReplyMsg((struct Message *)pMsg);
