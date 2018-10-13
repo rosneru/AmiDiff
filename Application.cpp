@@ -2,6 +2,7 @@
 
 #include <clib/exec_protos.h>
 #include <clib/intuition_protos.h>
+#include <clib/utility_protos.h>
 
 #include "LinkedList.h"
 
@@ -226,6 +227,31 @@ void Application::intuiEventLoop()
 
               // Execute this command
               pSelecedCommand->Execute();
+            }
+          }
+          break;
+        }
+
+        case IDCMP_IDCMPUPDATE:
+        {
+          ULONG tagData = GetTagData(GA_ID, 0,
+            (struct TagItem *)pMsg->IAddress);
+          switch(tagData)
+          {
+            case GID_YPROP:
+            {
+              size_t newY = GetTagData(PGA_Top, 0,
+                (struct TagItem *)pMsg->IAddress);
+
+              if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+              {
+                m_pLeftWin->YChanged(newY);
+              }
+              else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+              {
+                m_pRightWin->YChanged(newY);
+              }
+              break;
             }
           }
           break;

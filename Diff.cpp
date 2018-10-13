@@ -13,6 +13,7 @@ struct Library* DosBase;
 struct Library* GadToolsBase;
 struct Library* AslBase;
 struct Library* GfxBase;
+struct Library* UtilityBase;
 
 
 int main(int argc, char **argv)
@@ -22,8 +23,10 @@ int main(int argc, char **argv)
   GadToolsBase = OpenLibrary("gadtools.library", 37);
   AslBase = OpenLibrary("asl.library", 37);
   GfxBase = OpenLibrary("graphics.library", 37);
+  UtilityBase = OpenLibrary("utility.library", 37);
 
-  if((!IntuitionBase) || (!DosBase) || (!GadToolsBase) || (!AslBase) || (!GfxBase))
+  if((!IntuitionBase) || (!DosBase) || (!GadToolsBase) ||
+     (!AslBase) || (!GfxBase) || (!UtilityBase))
   {
     closeLibs();
     return 20;
@@ -46,6 +49,7 @@ int main(int argc, char **argv)
 
 void closeLibs()
 {
+  CloseLibrary(UtilityBase);
   CloseLibrary(GfxBase);
   CloseLibrary(AslBase);
   CloseLibrary(GadToolsBase);

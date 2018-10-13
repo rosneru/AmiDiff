@@ -13,6 +13,18 @@
 #include "DiffDocument.h"
 #include "SimpleString.h"
 
+/**
+ * IDs to allow to interprete the events of this window's boopsi system
+ * gadgets in the Application event loop.
+ */
+#define GID_RARROW 911
+#define GID_LARROW 912
+#define GID_UARROW 913
+#define GID_DARROW 914
+#define GID_XPROP  915
+#define GID_YPROP  916
+
+
 class DiffWindow : public DiffDocument
 {
 public:
@@ -74,6 +86,14 @@ public:
    * request will be opened asking the user for the file name.
    */
   virtual bool ReadFile(SimpleString p_FileName = "");
+
+  /**
+   * Moves the text **tbd with intelligence** upward or downward to the
+   * new y-Position. Should be called from Application event loop if
+   * the Y-proportional gadget attached to the window has been moved by
+   * the user.
+   */
+  void YChanged(size_t p_NewY);
 
   void ScrollDownOneLine();
   void ScrollUpOneLine();

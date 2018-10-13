@@ -59,8 +59,7 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
 	m_pWinPropGadgetY = (struct Gadget*) NewObject(
 	  NULL, PROPGCLASS,
   	//GA_Previous,uarrowbutton,
-  	//GA_ID,GID_YPROP,
-  	GA_ID, 916,   // TODO change see above
+  	GA_ID, GID_YPROP,
   	GA_Top, titleBarHeight,
   	GA_Width, sizeGadgetWidth - 6,
   	GA_RelRight, -sizeGadgetWidth + 4,
@@ -279,6 +278,31 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
   }
 
   return true;
+}
+
+// TODO Make it better and smother some day
+void DiffWindow::YChanged(size_t p_NewY)
+{
+  if(p_NewY > m_Y)
+  {
+    size_t numLinesUp = p_NewY - m_Y;
+    for(size_t i = 0; i < numLinesUp; i++)
+    {
+      ScrollUpOneLine();
+    }
+
+    m_Y = p_NewY;
+  }
+  else if(p_NewY < m_Y)
+  {
+    size_t numLinesDown = m_Y - p_NewY;
+    for(size_t i = 0; i < numLinesDown; i++)
+    {
+      ScrollDownOneLine();
+    }
+
+    m_Y = p_NewY;
+  }
 }
 
 void DiffWindow::ScrollUpOneLine()
