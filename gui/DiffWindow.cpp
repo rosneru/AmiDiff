@@ -21,8 +21,8 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
     m_MaxWindowTextLines(0),
     m_Y(0),
     m_FontHeight(0),
-    m_ScrollXMin(10),
-    m_ScrollYMin(10),
+    m_ScrollXMin(0),
+    m_ScrollYMin(0),
     m_ScrollXMax(0),
     m_ScrollYMax(0)
 {
@@ -165,14 +165,14 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
               IDCMP_RAWKEY |        // Inform us about printable key press
               IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
               IDCMP_NEWSIZE |       // Inform us about resizing
-              IDCMP_REFRESHWINDOW |
+              IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
               IDCMP_IDCMPUPDATE,    // Inform us about TODO
     WA_NewLookMenus, TRUE,          // Ignored before v39
     WA_Flags, WFLG_CLOSEGADGET |    // Add a close gadget
-              WFLG_DRAGBAR |
-              WFLG_DEPTHGADGET |
-              WFLG_SIZEGADGET |
-              WFLG_GIMMEZEROZERO |
+              WFLG_DRAGBAR |        // Add a drag gadget
+              WFLG_DEPTHGADGET |    // Add a depth gadget
+              WFLG_SIZEGADGET |     // Add a size gadget
+              WFLG_GIMMEZEROZERO |  // Different layers for border and content
               WFLG_ACTIVATE,
     WA_SimpleRefresh, TRUE,
 		WA_MinWidth, 120,
@@ -183,8 +183,8 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
     TAG_END);
 
   // Calculate values needed for text scrolling
-  m_ScrollXMax = m_pWindow->Width - m_pWindow->BorderRight - m_ScrollXMin;
-  m_ScrollYMax = m_pWindow->Height - m_pWindow->BorderBottom - m_ScrollYMin;
+  m_ScrollXMax = m_pWindow->Width; //- m_pWindow->BorderRight - m_ScrollXMin;
+  m_ScrollYMax = m_pWindow->Height; // - m_pWindow->BorderBottom - m_ScrollYMin;
 
   // Calculate how many lines can be displayed in the window
   calcMaxWindowTextLines();
@@ -392,7 +392,7 @@ void DiffWindow::displayFile()
   {
     displayLine(pLine, lineId * m_FontHeight);
 
-    if((lineId - m_Y) >= m_MaxWindowTextLines - 1)
+    if(lineId >= m_MaxWindowTextLines - 1)
     {
       break;
     }
