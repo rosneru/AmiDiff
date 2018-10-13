@@ -1,10 +1,15 @@
+#include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
+#include <graphics/text.h>
 #include "AppScreen.h"
 
 
 AppScreen::AppScreen(SimpleString p_Title)
-  : m_Title(p_Title),
-    m_pScreen(NULL)
+  : m_pTextFont(NULL),
+    m_FontName(""),
+    m_Title(p_Title),
+    m_pScreen(NULL),
+    m_pDrawInfo(NULL)
 {
 }
 
@@ -26,14 +31,64 @@ bool AppScreen::Open()
   }
 
   //
+  // Get some data from the Workbench screen to open an own screen with
+  // similar parameters
+  //
+  struct Screen* pWbScreen = LockPubScreen("Workbench");
+  if(pWbScreen == NULL)
+  {
+    return false;
+  }
+
+  struct DrawInfo* pWbDrawInfo = GetScreenDrawInfo(pWbScreen);
+  if(pWbDrawInfo == NULL)
+  {
+    UnlockPubScreen(NULL, pWbScreen);
+    return false;
+  }
+
+  ULONG wbScreenModeId = GetVPModeID(&pWbScreen->ViewPort);
+  if(wbScreenModeId == INVALID_ID)
+  {
+    FreeScreenDrawInfo(pWbScreen, pWbDrawInfo);
+    UnlockPubScreen(NULL, pWbScreen);
+    return false;
+  }
+
+  // Get font font name and other properties fro Workbench DrawInfo and
+  // store it here
+  m_FontName = pWbDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
+  m_TextAttr.ta_Name = m_FontName.C_str();
+  m_TextAttr.ta_YSize = pWbDrawInfo->dri_Font->tf_YSize;
+  m_TextAttr.ta_Style = pWbDrawInfo->dri_Font->tf_Style;
+  m_TextAttr.ta_Flags = pWbDrawInfo->dri_Font->tf_Flags;
+
+  m_pTextFont = OpenFont(&m_TextAttr);
+  if(m_pTextFont == NULL)
+  {
+    FreeScreenDrawInfo(pWbScreen, pWbDrawInfo);
+    UnlockPubScreen(NULL, pWbScreen);
+    return false;
+  }
+
+  //
   // Opening the screen
   //
-
-  m_pScreen = OpenScreenTags(
-    NULL,
-    SA_LikeWorkbench, TRUE,
+  m_pScreen = OpenScreenTags(NULL,
+    SA_Width, pWbScreen->Width,
+    SA_Height, pWbScreen->Height,
+    SA_Depth, pWbDrawInfo->dri_Depth,
+    SA_Overscan, OSCAN_TEXT,
+    SA_AutoScroll, TRUE,
+    SA_Pens, (ULONG)pWbDrawInfo->dri_Pens,
+    SA_Font, (ULONG) &m_TextAttr,
+    SA_DisplayID, wbScreenModeId,
     SA_Title, m_Title.C_str(),
     TAG_DONE);
+
+  // We don't need them anymore
+  FreeScreenDrawInfo(pWbScreen, pWbDrawInfo);
+  UnlockPubScreen(NULL, pWbScreen);
 
   if(m_pScreen == NULL)
   {
@@ -63,6 +118,14 @@ void AppScreen::Close()
     CloseScreen(m_pScreen);
     m_pScreen = NULL;
   }
+
+  if(m_pTextFont != NULL)
+  {
+    CloseFont(m_pTextFont);
+    m_pTextFont = NULL;
+  }
+
+
 }
 
 const char* AppScreen::Title()

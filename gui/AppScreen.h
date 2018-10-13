@@ -8,6 +8,7 @@
 #ifndef APPSCREEN
 #define APPSCREEN
 
+#include <graphics/text.h>
 #include <intuition/screens.h>
 
 #include "SimpleString.h"
@@ -45,6 +46,9 @@ public:
   struct DrawInfo* IntuiDrawInfo();
 
 private:
+  struct TextAttr m_TextAttr;
+  struct TextFont* m_pTextFont;
+  SimpleString m_FontName;
   SimpleString m_Title;
   struct Screen* m_pScreen;
   struct DrawInfo* m_pDrawInfo;
