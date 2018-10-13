@@ -88,7 +88,7 @@ void DiffWindow::Resized()
   // Calculate how many lines *now* can be displayed in the window
   calcMaxWindowTextLines();
 
-  // Set scroll gadgets pot size dependend on new window size
+  // Set scroll gadgets pot size in relation of new window size
   if(m_pWinPropGadgetY != NULL)
   {
 	  SetGadgetAttrs(m_pWinPropGadgetY, m_pWindow, NULL,
@@ -97,14 +97,14 @@ void DiffWindow::Resized()
 	   );
   }
 
-  // TODO redraw obscured window regions
-
+  // Redraw obscured window regions
+  Refresh();
 }
 
 void DiffWindow::Refresh()
 {
   BeginRefresh(m_pWindow);
-  displayFile();  // TODO start from right line
+  displayFile();
   EndRefresh(m_pWindow, TRUE);
 }
 
@@ -289,7 +289,7 @@ void DiffWindow::ScrollUpOneLine()
     return;
   }
 
-  if(m_Y == NumLines() - 1)
+  if((m_Y + m_MaxWindowTextLines)  == (NumLines() - 1))
   {
     // Do not move the text up if already at top
     return;
@@ -301,13 +301,13 @@ void DiffWindow::ScrollUpOneLine()
 
   m_Y++;
 
-  SimpleString* pLine = GetIndexedLine(m_Y);
+  SimpleString* pLine = GetIndexedLine(m_Y + m_MaxWindowTextLines - 1);
   displayLine(pLine, (m_MaxWindowTextLines - 1) * m_FontHeight);
 }
 
 void DiffWindow::ScrollDownOneLine()
 {
-  if(m_Y < m_MaxWindowTextLines)
+  if(m_Y < 1)
   {
     // Do not move the text down if already at bottom
     return;
@@ -319,7 +319,7 @@ void DiffWindow::ScrollDownOneLine()
 
   m_Y--;
 
-  SimpleString* pLine = GetIndexedLine(m_Y - m_MaxWindowTextLines + 1);
+  SimpleString* pLine = GetIndexedLine(m_Y);
   displayLine(pLine, 0);
 
 
@@ -386,18 +386,18 @@ void DiffWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge)
 
 void DiffWindow::displayFile()
 {
-  SimpleString* pLine = GetFirstLine();
-  m_Y = 0;
+  size_t lineId = m_Y;
+  SimpleString* pLine = GetIndexedLine(lineId);
   while(pLine != NULL)
   {
-    displayLine(pLine, m_Y * m_FontHeight);
+    displayLine(pLine, lineId * m_FontHeight);
 
-    if(m_Y >= m_MaxWindowTextLines - 1)
+    if((lineId - m_Y) >= m_MaxWindowTextLines - 1)
     {
       break;
     }
 
-    m_Y++;
+    lineId++;
     pLine = GetNextLine();
   }
 }
