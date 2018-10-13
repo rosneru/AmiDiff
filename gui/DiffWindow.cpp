@@ -236,7 +236,7 @@ void DiffWindow::SetTitle(SimpleString p_NewTitle)
   m_Title = p_NewTitle;
 
   // Call intuition function to set the window title
-  // Note the ~0 inverts the value ang is a value of -1
+  // Note the ~0 inverts the value and is a value of -1
   SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
 }
 
@@ -285,13 +285,14 @@ void DiffWindow::ScrollUpOneLine()
 {
   if(NumLines() < m_MaxWindowTextLines)
   {
-    // Do not move down if all the text fits into the window
+    // Do not move the scroll area upward if all the text fits into
+    // the window
     return;
   }
 
-  if((m_Y + m_MaxWindowTextLines)  == (NumLines() - 1))
+  if((m_Y + m_MaxWindowTextLines)  == NumLines())
   {
-    // Do not move the text up if already at top
+    // Do not move the scroll area upward if text already at bottom
     return;
   }
 
@@ -313,12 +314,19 @@ void DiffWindow::ScrollDownOneLine()
     return;
   }
 
-  // Scroll upward one line by the current font height
+  // Move scroll area downward by the height of one text line
   ScrollRaster(m_pWindow->RPort, 0, -m_FontHeight,
     m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
 
+  // Delete the possible visible line below the scroll area which can
+  // be caused by the scroll operation above
+  EraseRect(m_pWindow->RPort,
+    m_ScrollXMin, m_MaxWindowTextLines * m_FontHeight,
+    m_ScrollXMax, m_ScrollYMax);
+
   m_Y--;
 
+  // Fill the first line at top with the indexed line at this position
   SimpleString* pLine = GetIndexedLine(m_Y);
   displayLine(pLine, 0);
 
@@ -390,9 +398,9 @@ void DiffWindow::displayFile()
   SimpleString* pLine = GetIndexedLine(lineId);
   while(pLine != NULL)
   {
-    displayLine(pLine, lineId * m_FontHeight);
+    displayLine(pLine, (lineId - m_Y ) * m_FontHeight);
 
-    if(lineId >= m_MaxWindowTextLines - 1)
+    if((lineId - m_Y) >= m_MaxWindowTextLines - 1)
     {
       break;
     }
