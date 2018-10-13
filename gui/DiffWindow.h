@@ -93,10 +93,9 @@ public:
    * the Y-proportional gadget attached to the window has been moved by
    * the user.
    */
-  void YChanged(size_t p_NewY);
-
-  void ScrollDownOneLine();
-  void ScrollUpOneLine();
+  void YChangedHandler(size_t p_NewY);
+  void YIncrease();
+  void YDecrease();
 
 private:
   AppScreen* m_pAppScreen;
@@ -126,6 +125,10 @@ private:
   SimpleString aslRequestFileName();
   void displayFile();
   void DiffWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge);
+
+  bool scrollDownOneLine();
+  bool scrollUpOneLine();
+
 };
 
 

@@ -245,11 +245,11 @@ void Application::intuiEventLoop()
 
               if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
               {
-                m_pLeftWin->YChanged(newY);
+                m_pLeftWin->YChangedHandler(newY);
               }
               else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
               {
-                m_pRightWin->YChanged(newY);
+                m_pRightWin->YChangedHandler(newY);
               }
               break;
             }
@@ -264,11 +264,11 @@ void Application::intuiEventLoop()
             // Cursor *down* => scroll the text *up* in according window
             if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
             {
-              m_pLeftWin->ScrollUpOneLine();
+              m_pLeftWin->YIncrease();
             }
             else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
             {
-              m_pRightWin->ScrollUpOneLine();
+              m_pRightWin->YIncrease();
             }
           }
           else if(pMsg->Code == CURSORUP)
@@ -276,11 +276,11 @@ void Application::intuiEventLoop()
             // Cursor *up* => scroll the text *down* in according window
             if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
             {
-              m_pLeftWin->ScrollDownOneLine();
+              m_pLeftWin->YDecrease();
             }
             else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
             {
-              m_pRightWin->ScrollDownOneLine();
+              m_pRightWin->YDecrease();
             }
           }
           break;
