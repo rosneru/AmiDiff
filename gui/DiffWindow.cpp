@@ -59,7 +59,7 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
 	m_pWinPropGadgetY = (struct Gadget*) NewObject(
 	  NULL, PROPGCLASS,
   	//GA_Previous,uarrowbutton,
-  	GA_ID, GID_YPROP,
+  	GA_ID, SYS_GADGET_YPROP,
   	GA_Top, titleBarHeight,
   	GA_Width, sizeGadgetWidth - 6,
   	GA_RelRight, -sizeGadgetWidth + 4,

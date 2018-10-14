@@ -13,17 +13,6 @@
 #include "DiffDocument.h"
 #include "SimpleString.h"
 
-/**
- * IDs to allow to interprete the events of this window's boopsi system
- * gadgets in the Application event loop.
- */
-#define GID_RARROW 911
-#define GID_LARROW 912
-#define GID_UARROW 913
-#define GID_DARROW 914
-#define GID_XPROP  915
-#define GID_YPROP  916
-
 
 class DiffWindow : public DiffDocument
 {
@@ -38,6 +27,15 @@ public:
   {
     LEFT,
     RIGHT,
+  };
+
+/**
+ * IDs to allow to interprete the events of this window's boopsi system
+ * gadgets in the Application event loop.
+ */
+  enum DW_SYSTEM_GADGET_ID
+  {
+    SYS_GADGET_YPROP,
   };
 
   /**
