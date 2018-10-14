@@ -87,15 +87,34 @@ public:
 
   /**
    * Moves the text **tbd with intelligence** upward or downward to the
-   * new y-Position. Should be called from Application event loop if
+   * new Y-Position. Should be called from Application event loop if
    * the Y-proportional gadget attached to the window has been moved by
    * the user.
    */
   void YChangedHandler(size_t p_NewY);
+
+  /**
+   * Increases the Y position of the text by 1 and performs a scrolling
+   * by one line.  Should be called from the Application event loop
+   * when the cursor down key was received.
+   */
   void YIncrease();
+
+  /**
+   * Decreases the Y position of the text by 1 and performs a scrolling
+   * by one line.  Should be called from the Application event loop
+   * when the cursor up key was received.
+   */
   void YDecrease();
 
 private:
+  enum LAST_SCROLL_DIRECTION
+  {
+    None,
+    Upward,
+    Downward,
+  };
+
   AppScreen* m_pAppScreen;
   struct Window* m_pWindow;
 
@@ -111,6 +130,7 @@ private:
   WORD m_ScrollYMin;  ///> Left y coordinate of scrolling area
   WORD m_ScrollXMax;  ///> Right x coordinate of scrolling area
   WORD m_ScrollYMax;  ///> Right y coordinate of scrolling area
+  LAST_SCROLL_DIRECTION m_LastScrollDirection;
 
   struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;

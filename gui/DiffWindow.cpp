@@ -24,7 +24,8 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
     m_ScrollXMin(0),
     m_ScrollYMin(0),
     m_ScrollXMax(0),
-    m_ScrollYMax(0)
+    m_ScrollYMax(0),
+    m_LastScrollDirection(None)
 {
   //
   // Calculate some basic values
@@ -295,8 +296,6 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     {
       scrollUpOneLine();
     }
-
-    m_Y = p_NewY;
   }
   else if(p_NewY < m_Y)
   {
@@ -305,8 +304,6 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     {
       scrollDownOneLine();
     }
-
-    m_Y = p_NewY;
   }
 }
 
@@ -447,11 +444,28 @@ bool DiffWindow::scrollUpOneLine()
   ScrollRaster(m_pWindow->RPort, 0, m_FontHeight,
     m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
 
+  // Get the line which at current scroll position has to be printed as
+  // the windows last line
+  SimpleString* pLine = NULL;
+  if(m_LastScrollDirection == Upward)
+  {
+    pLine = GetNextLine();
+  }
+  else
+  {
+    pLine = GetIndexedLine(m_Y + m_MaxWindowTextLines);
+    m_LastScrollDirection = Upward;
+  }
+
+  if(pLine == NULL)
+  {
+    return false;
+  }
+
   m_Y++;
 
-  SimpleString* pLine = GetIndexedLine(m_Y + m_MaxWindowTextLines - 1);
+  // Print the new last line
   displayLine(pLine, (m_MaxWindowTextLines - 1) * m_FontHeight);
-
   return true;
 }
 
@@ -459,7 +473,7 @@ bool DiffWindow::scrollDownOneLine()
 {
   if(m_Y < 1)
   {
-    // Do not move the text down if already at bottom
+    // Do not move the scroll area downward if text is already at top
     return false;
   }
 
@@ -473,11 +487,28 @@ bool DiffWindow::scrollDownOneLine()
     m_ScrollXMin, m_MaxWindowTextLines * m_FontHeight,
     m_ScrollXMax, m_ScrollYMax);
 
+  // Get the line which at current scroll position has to be printed as
+  // the windows first line
+  SimpleString* pLine = NULL;
+  if(m_LastScrollDirection == Downward)
+  {
+    pLine = GetPreviousLine();
+  }
+  else
+  {
+    pLine = GetIndexedLine(m_Y - 1);
+    m_LastScrollDirection = Downward;
+  }
+
+  if(pLine == NULL)
+  {
+    return false;
+  }
+
   m_Y--;
 
-  // Fill the first line at top with the indexed line at this position
-  SimpleString* pLine = GetIndexedLine(m_Y);
+  // Print the new first line
   displayLine(pLine, 0);
-
   return true;
+
 }

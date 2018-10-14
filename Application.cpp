@@ -182,7 +182,7 @@ bool Application::Run()
   //
   intuiEventLoop();
 
-  Dispose();
+  //Dispose();
   return true;
 
 }

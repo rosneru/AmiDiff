@@ -11,7 +11,10 @@
  *   NDK for AmigaOS 3.9
  *   StormC 4
  *
- * (C) Uwe Rosner, 18.09.2018
+ * Date of project start: 18.09.2018
+ * Date of version 1.0 : -
+ *
+ * Author: Uwe Rosner
  */
 #define INTUI_V36_NAMES_ONLY
 
