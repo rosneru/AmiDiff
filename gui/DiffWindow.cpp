@@ -11,7 +11,6 @@
 #include <intuition/icclass.h>
 #include <libraries/asl.h>
 #include <libraries/dos.h>
-
 #include "DiffWindow.h"
 
 DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
@@ -262,6 +261,8 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
     return false;
   }
 
+  m_Y = 0;
+
   // Clear the window completely
   EraseRect(m_pWindow->RPort,
     m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
@@ -286,25 +287,17 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
   return true;
 }
 
-// TODO Make it better and smother some day
 void DiffWindow::YChangedHandler(size_t p_NewY)
 {
-  if(p_NewY > m_Y)
-  {
-    size_t numLinesUp = p_NewY - m_Y;
-    for(size_t i = 0; i < numLinesUp; i++)
-    {
-      scrollUpOneLine();
-    }
-  }
-  else if(p_NewY < m_Y)
-  {
-    size_t numLinesDown = m_Y - p_NewY;
-    for(size_t i = 0; i < numLinesDown; i++)
-    {
-      scrollDownOneLine();
-    }
-  }
+  // set the new y-position
+  m_Y = p_NewY;
+
+  // Clear the window completely
+  EraseRect(m_pWindow->RPort,
+    m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+
+  // Display the beginning at new y-position
+  displayFile();
 }
 
 

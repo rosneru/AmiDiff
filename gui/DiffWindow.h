@@ -86,9 +86,12 @@ public:
   virtual bool ReadFile(SimpleString p_FileName = "");
 
   /**
-   * Moves the text **tbd with intelligence** upward or downward to the
-   * new Y-Position. Should be called from Application event loop if
-   * the Y-proportional gadget attached to the window has been moved by
+   * This handles the Y-Changes triggered by the vertical scrollbar
+   * of the window. It does so by completely re-drawing the text from
+   * beginning with p_NewY on the top line.
+   *
+   * This method should be called from Application event loop if the
+   * Y-proportional gadget attached to the window has been moved by
    * the user.
    */
   void YChangedHandler(size_t p_NewY);
