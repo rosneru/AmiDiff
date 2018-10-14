@@ -1,4 +1,18 @@
-
+/**
+ * AmiDiff
+ *
+ * This is me learning the basics of AMIGA programming.
+ *
+ * Maybe someday this develops into a graphical diff tool for OS2.04
+ * and above.
+ *
+ * Development environment
+ *   Amiga with OS3.9
+ *   NDK for AmigaOS 3.9
+ *   StormC 4
+ *
+ * (C) Uwe Rosner, 18.09.2018
+ */
 #define INTUI_V36_NAMES_ONLY
 
 #include <exec/types.h>
@@ -56,8 +70,3 @@ void closeLibs()
   CloseLibrary(DosBase);
   CloseLibrary(IntuitionBase);
 }
-
-
-
-
-

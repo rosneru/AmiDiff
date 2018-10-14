@@ -261,6 +261,11 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
     return false;
   }
 
+  // Clear the window completely
+  EraseRect(m_pWindow->RPort,
+    m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+
+
   // Set full path of opened file as window title
   SetTitle(p_FileName);
   displayFile();
