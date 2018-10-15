@@ -121,11 +121,9 @@ private:
   AppScreen* m_pAppScreen;
   struct Window* m_pWindow;
 
-  struct Gadget* m_pWinPropGadgetY;
-
   SimpleString m_Title;
   SimpleString m_FileRequesterTitle;
-  size_t m_MaxWindowTextLines;  ///> Number of text lines that would fit in window
+  size_t m_MaxWindowTextLines;  ///> Number of text lines that fit in window
   size_t m_Y;         ///> Index of currently first displayed text line
 
   WORD m_FontHeight;  ///> Height of current text font
@@ -133,8 +131,25 @@ private:
   WORD m_ScrollYMin;  ///> Left y coordinate of scrolling area
   WORD m_ScrollXMax;  ///> Right x coordinate of scrolling area
   WORD m_ScrollYMax;  ///> Right y coordinate of scrolling area
+  
+  /**
+   * Stores if the last scroll direction was upward or downward. Allows 
+   * the scroll methods scrollDownOneLine() and scrollUpOneLine() to
+   * use GetPrevious() and GetNext() instead of GetIndexed() if the 
+   * same scroll direction is used again.
+   *
+   * Possibly makes scrolling by cursor keys faster at the bottom of
+   * big files.
+   */
   LAST_SCROLL_DIRECTION m_LastScrollDirection;
 
+  struct Gadget* m_pWinPropGadgetX;       ///> horizontal scrollbar
+  struct Gadget* m_pWinPropGadgetY;       ///> vertical scrollbar
+  struct Gadget* m_pWinLeftArrowGadget;   ///> h-scrollbar left button
+  struct Gadget* m_pWinRightArrowGadget;  ///> h-scrollbar right button
+  struct Gadget* m_pWinUpArrowGadget;     ///> v-scrollbar up button
+  struct Gadget* m_pWinDownArrowGadget;   ///> v-scrollbar down button
+  
   struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;
 
@@ -143,13 +158,28 @@ private:
    * the member variable.
    */
   void calcMaxWindowTextLines();
+  
+  /**
+   * Opens an ASL request asking for a file name.
+   *
+   * @return The selected file name or an empty string
+   */
   SimpleString aslRequestFileName();
+
+  /**
+   * Displays the complete file from current m_Y position as firts line
+   */
   void displayFile();
-  void DiffWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge);
+  
+  /**
+   * Displays the given line at given y-position
+   */
+  void displayLine(SimpleString* p_pLine, WORD p_TopEdge);
 
   bool scrollDownOneLine();
   bool scrollUpOneLine();
 
+  bool calcSysImageSize(ULONG p_SysImageId, ULONG& p_Widht, ULONG& p_Height);
 };
 
 

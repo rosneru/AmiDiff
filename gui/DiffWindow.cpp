@@ -16,7 +16,6 @@
 DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   : m_pAppScreen(p_pAppScreen),
     m_pWindow(NULL),
-    m_pWinPropGadgetY(NULL),
     m_MaxWindowTextLines(0),
     m_Y(0),
     m_FontHeight(0),
@@ -24,7 +23,13 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
     m_ScrollYMin(0),
     m_ScrollXMax(0),
     m_ScrollYMax(0),
-    m_LastScrollDirection(None)
+    m_LastScrollDirection(None),
+    m_pWinPropGadgetX(NULL),
+    m_pWinPropGadgetY(NULL),
+    m_pWinLeftArrowGadget(NULL),
+    m_pWinRightArrowGadget(NULL),
+    m_pWinUpArrowGadget(NULL),
+    m_pWinDownArrowGadget(NULL)
 {
   //
   // Calculate some basic values
@@ -36,24 +41,42 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   // Setting up scroll bars and gadgets for the window. They will be
   // attached to the window at opening time
   //
-  ULONG sizeGadgetWidth = 18;
-  ULONG sizeGadgetHeight = 10;
+  ULONG sizeImageWidth = 18;  // the width of the size image
+  ULONG sizeImageHeight = 10; // the height of the size image
+  ULONG imageWidth = 0;   // to successively store the other images widths
+  ULONG imageHeight = 0;  // to successively store the other images heights
 
-  // Getting the width of the (currently hidden) size gadget of the window
-  struct Image* pSizeImage = (struct Image*) NewObject(
-      NULL, SYSICLASS,
-			SYSIA_Which, SIZEIMAGE,
-			SYSIA_Size, SYSISIZE_MEDRES,
-			SYSIA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-			TAG_END);
+  // Getting the current width of the size gadget of the window
+  calcSysImageSize(SIZEIMAGE, sizeImageWidth, sizeGadgetHeight);
+  calcSysImageSize(DOWNIMAGE, imageWidth, imageWidth);
 
-	if(pSizeImage != NULL)
-	{
-	  GetAttr(IA_Width, pSizeImage, &sizeGadgetWidth);
-	  GetAttr(IA_Width, pSizeImage, &sizeGadgetHeight);
-	}
-
-	DisposeObject(pSizeImage);
+//  struct Image* pSizeImage = (struct Image*) NewObject(
+//      NULL, SYSICLASS,
+//			SYSIA_Which, SIZEIMAGE,
+//			SYSIA_Size, SYSISIZE_MEDRES,
+//			SYSIA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+//			TAG_END);
+//
+//	if(pSizeImage != NULL)
+//	{
+//	  GetAttr(IA_Width, pSizeImage, &sizeImageWidth);
+//	  GetAttr(IA_Width, pSizeImage, &sizeGadgetHeight);
+//	}
+//
+//	DisposeObject(pSizeImage);
+  
+//  struct Image* pWinDownArrowImage = (struct Image*) NewObject(
+//    NULL, SYSICLASS,
+//    SYSIA_Which, DOWNIMAGE,
+//    SYSIA_Size, SYSISIZE_MEDRES,
+//    SYSIA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+//    TAG_END);
+//
+//	if(pWinDownArrowImage != NULL)
+//	{
+//	  GetAttr(IA_Width, pSizeImage, &imageWidth);
+//	  GetAttr(IA_Width, pSizeImage, &imageHeight);
+//	}
 
   //struct Gadget* pWinPropGadgetX;
 	m_pWinPropGadgetY = (struct Gadget*) NewObject(
@@ -61,8 +84,8 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   	//GA_Previous,uarrowbutton,
   	GA_ID, SYS_GADGET_YPROP,
   	GA_Top, titleBarHeight,
-  	GA_Width, sizeGadgetWidth - 6,
-  	GA_RelRight, -sizeGadgetWidth + 4,
+  	GA_Width, sizeImageWidth - 6,
+  	GA_RelRight, -sizeImageWidth + 4,
   	GA_RelHeight, -sizeGadgetHeight - titleBarHeight - 1,
   	GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
   	GA_GZZGadget, TRUE,
@@ -503,5 +526,22 @@ bool DiffWindow::scrollDownOneLine()
   // Print the new first line
   displayLine(pLine, 0);
   return true;
+}
 
+bool DiffWindow::calcSysImageSize(ULONG p_SysImageId, ULONG& p_Widht, ULONG& p_Height)
+{
+  struct Image* pImage = (struct Image*) NewObject(
+      NULL, SYSICLASS,
+			SYSIA_Which, p_SysImageId,
+			SYSIA_Size, SYSISIZE_MEDRES,
+			SYSIA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+			TAG_END);
+
+	if(pImage != NULL)
+	{
+	  GetAttr(IA_Width, pImage, &p_Widht);
+	  GetAttr(IA_Width, pImage, &p_Height);
+	}
+
+	DisposeObject(pImage);
 }
