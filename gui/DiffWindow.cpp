@@ -24,12 +24,16 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
     m_ScrollXMax(0),
     m_ScrollYMax(0),
     m_LastScrollDirection(None),
-    m_pWinPropGadgetX(NULL),
-    m_pWinPropGadgetY(NULL),
-    m_pWinLeftArrowGadget(NULL),
-    m_pWinRightArrowGadget(NULL),
-    m_pWinUpArrowGadget(NULL),
-    m_pWinDownArrowGadget(NULL)
+    m_pLeftArrowImage(NULL),
+    m_pRightArrowImage(NULL),
+    m_pUpArrowImage(NULL),
+    m_pDownArrowImage(NULL),
+    m_pXPropGadget(NULL),
+    m_pYPropGadget(NULL),
+    m_pLeftArrowButton(NULL),
+    m_pRightArrowButton(NULL),
+    m_pUpArrowButton(NULL),
+    m_pDownArrowButton(NULL)
 {
   //
   // Calculate some basic values
@@ -43,50 +47,66 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   //
   ULONG sizeImageWidth = 18;  // the width of the size image
   ULONG sizeImageHeight = 10; // the height of the size image
-  ULONG imageWidth = 0;   // to successively store the other images widths
-  ULONG imageHeight = 0;  // to successively store the other images heights
+  ULONG imageWidth = 0;   // to successfully store the other images widths
+  ULONG imageHeight = 0;  // to successfully store the other images heights
 
-  // Getting the current width of the size gadget of the window
-  calcSysImageSize(SIZEIMAGE, sizeImageWidth, sizeGadgetHeight);
-  calcSysImageSize(DOWNIMAGE, imageWidth, imageWidth);
+  // Getting the width and height of the current system size gadget
+  struct Image* pSizeImage = createImageObj(
+    SIZEIMAGE, sizeImageWidth, sizeImageHeight);
 
-//  struct Image* pSizeImage = (struct Image*) NewObject(
-//      NULL, SYSICLASS,
-//			SYSIA_Which, SIZEIMAGE,
-//			SYSIA_Size, SYSISIZE_MEDRES,
-//			SYSIA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-//			TAG_END);
-//
-//	if(pSizeImage != NULL)
-//	{
-//	  GetAttr(IA_Width, pSizeImage, &sizeImageWidth);
-//	  GetAttr(IA_Width, pSizeImage, &sizeGadgetHeight);
-//	}
-//
-//	DisposeObject(pSizeImage);
-  
-//  struct Image* pWinDownArrowImage = (struct Image*) NewObject(
-//    NULL, SYSICLASS,
-//    SYSIA_Which, DOWNIMAGE,
-//    SYSIA_Size, SYSISIZE_MEDRES,
-//    SYSIA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-//    TAG_END);
-//
-//	if(pWinDownArrowImage != NULL)
-//	{
-//	  GetAttr(IA_Width, pSizeImage, &imageWidth);
-//	  GetAttr(IA_Width, pSizeImage, &imageHeight);
-//	}
+  // the size image is only needed for getting its width and height so
+  // it can be disposed right now
+  if(pSizeImage != NULL)
+  {
+    DisposeObject(pSizeImage);
+  }
 
-  //struct Gadget* pWinPropGadgetX;
-	m_pWinPropGadgetY = (struct Gadget*) NewObject(
+  // Creating the arrow down image and getting its width and height
+  m_pDownArrowImage = createImageObj(DOWNIMAGE, imageWidth, imageHeight);
+
+  // Creating the arrow down gadget
+  m_pDownArrowButton = (struct Gadget*) NewObject(
+    NULL, BUTTONGCLASS,
+    GA_ID, DGID_DOWNARROW,
+    GA_RelRight, -imageWidth+1,
+    GA_RelBottom, -sizeImageHeight-imageHeight+1,
+    GA_Width, imageWidth,
+    GA_Height, imageHeight,
+    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+    GA_GZZGadget, TRUE,
+    GA_RightBorder, TRUE,
+    GA_Image, m_pDownArrowImage,
+    ICA_TARGET, ICTARGET_IDCMP,
+    TAG_END);
+
+  // Creating the arrow up image and getting its width and height
+  m_pUpArrowImage = createImageObj(UPIMAGE, imageWidth, imageHeight);
+
+  // Creating the arrow down gadget
+  m_pUpArrowButton = (struct Gadget*) NewObject(
+    NULL, BUTTONGCLASS,
+    GA_Previous, m_pDownArrowButton,
+    GA_ID, DGID_UPARROW,
+    GA_RelRight, -imageWidth+1,
+    GA_RelBottom, -sizeImageHeight-imageHeight-imageHeight+1,
+    GA_Width, imageWidth,
+    GA_Height, imageHeight,
+    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+    GA_GZZGadget, TRUE,
+    GA_RightBorder, TRUE,
+    GA_Image, m_pUpArrowImage,
+    ICA_TARGET, ICTARGET_IDCMP,
+    TAG_END);
+
+  // Creating the vertical proportional gadget / slider
+	m_pYPropGadget = (struct Gadget*) NewObject(
 	  NULL, PROPGCLASS,
-  	//GA_Previous,uarrowbutton,
-  	GA_ID, SYS_GADGET_YPROP,
-  	GA_Top, titleBarHeight,
-  	GA_Width, sizeImageWidth - 6,
-  	GA_RelRight, -sizeImageWidth + 4,
-  	GA_RelHeight, -sizeGadgetHeight - titleBarHeight - 1,
+  	GA_Previous, m_pUpArrowButton,
+  	GA_ID, DGID_YPROP,
+  	GA_Top, titleBarHeight+2,
+  	GA_Width, sizeImageWidth-6,
+  	GA_RelRight, -sizeImageWidth+4,
+  	GA_RelHeight, -sizeImageHeight-imageHeight-imageHeight-titleBarHeight-3,
   	GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
   	GA_GZZGadget, TRUE,
   	GA_RightBorder, TRUE,
@@ -111,9 +131,9 @@ void DiffWindow::Resized()
   calcMaxWindowTextLines();
 
   // Set scroll gadgets pot size in relation of new window size
-  if(m_pWinPropGadgetY != NULL)
+  if(m_pYPropGadget != NULL)
   {
-	  SetGadgetAttrs(m_pWinPropGadgetY, m_pWindow, NULL,
+	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
     	PGA_Visible, m_MaxWindowTextLines,
     	TAG_DONE
 	   );
@@ -201,7 +221,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
 		WA_MinHeight, 90,
 		WA_MaxWidth, -1,
 		WA_MaxHeight, -1,
-    WA_Gadgets, m_pWinPropGadgetY,
+    WA_Gadgets, m_pDownArrowButton,
     TAG_END);
 
   // Calculate values needed for text scrolling
@@ -236,9 +256,54 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
 
 void DiffWindow::Close()
 {
-  if(m_pWinPropGadgetY != NULL)
+  if(m_pLeftArrowButton != NULL)
   {
-    DisposeObject(m_pWinPropGadgetY);
+    DisposeObject(m_pLeftArrowButton);
+  }
+
+  if(m_pLeftArrowImage != NULL)
+  {
+    DisposeObject(m_pLeftArrowImage);
+  }
+
+  if(m_pRightArrowButton != NULL)
+  {
+    DisposeObject(m_pRightArrowButton);
+  }
+
+  if(m_pRightArrowImage != NULL)
+  {
+    DisposeObject(m_pRightArrowImage);
+  }
+
+  if(m_pXPropGadget != NULL)
+  {
+    DisposeObject(m_pXPropGadget);
+  }
+
+  if(m_pDownArrowButton != NULL)
+  {
+    DisposeObject(m_pDownArrowButton);
+  }
+
+  if(m_pDownArrowImage != NULL)
+  {
+    DisposeObject(m_pDownArrowImage);
+  }
+
+  if(m_pUpArrowButton != NULL)
+  {
+    DisposeObject(m_pUpArrowButton);
+  }
+
+  if(m_pUpArrowImage != NULL)
+  {
+    DisposeObject(m_pUpArrowImage);
+  }
+
+  if(m_pYPropGadget != NULL)
+  {
+    DisposeObject(m_pYPropGadget);
   }
 
   if(m_pWindow != NULL)
@@ -297,9 +362,9 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
 
   // Set scroll gadgets pot size dependend on window size and the number
   // of lines in opened file
-  if(m_pWinPropGadgetY != NULL)
+  if(m_pYPropGadget != NULL)
   {
-	  SetGadgetAttrs(m_pWinPropGadgetY, m_pWindow, NULL,
+	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
     	PGA_Total, NumLines(),
     	PGA_Top, 0,
     	PGA_Visible, m_MaxWindowTextLines,
@@ -334,9 +399,9 @@ void DiffWindow::YIncrease()
   }
 
   // Increase scroll gadgets TOP value
-  if(m_pWinPropGadgetY != NULL)
+  if(m_pYPropGadget != NULL)
   {
-	  SetGadgetAttrs(m_pWinPropGadgetY, m_pWindow, NULL,
+	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
     	PGA_Top, m_Y,
     	TAG_DONE
 	   );
@@ -354,9 +419,9 @@ void DiffWindow::YDecrease()
   }
 
   // Decrease scroll gadgets TOP value
-  if(m_pWinPropGadgetY != NULL)
+  if(m_pYPropGadget != NULL)
   {
-	  SetGadgetAttrs(m_pWinPropGadgetY, m_pWindow, NULL,
+	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
     	PGA_Top, m_Y,
     	TAG_DONE
 	   );
@@ -528,7 +593,7 @@ bool DiffWindow::scrollDownOneLine()
   return true;
 }
 
-bool DiffWindow::calcSysImageSize(ULONG p_SysImageId, ULONG& p_Widht, ULONG& p_Height)
+struct Image* DiffWindow::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
 {
   struct Image* pImage = (struct Image*) NewObject(
       NULL, SYSICLASS,
@@ -539,9 +604,9 @@ bool DiffWindow::calcSysImageSize(ULONG p_SysImageId, ULONG& p_Widht, ULONG& p_H
 
 	if(pImage != NULL)
 	{
-	  GetAttr(IA_Width, pImage, &p_Widht);
+	  GetAttr(IA_Width, pImage, &p_Width);
 	  GetAttr(IA_Width, pImage, &p_Height);
 	}
 
-	DisposeObject(pImage);
+  return pImage;
 }

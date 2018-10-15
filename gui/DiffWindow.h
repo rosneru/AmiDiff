@@ -33,9 +33,14 @@ public:
  * IDs to allow to interprete the events of this window's boopsi system
  * gadgets in the Application event loop.
  */
-  enum DW_SYSTEM_GADGET_ID
+  enum DW_GADGET_ID
   {
-    SYS_GADGET_YPROP,
+    DGID_XPROP,
+    DGID_YPROP,
+    DGID_UPARROW,
+    DGID_DOWNARROW,
+    DGID_LEFTARROW,
+    DGID_RIGHTARROW,
   };
 
   /**
@@ -131,11 +136,11 @@ private:
   WORD m_ScrollYMin;  ///> Left y coordinate of scrolling area
   WORD m_ScrollXMax;  ///> Right x coordinate of scrolling area
   WORD m_ScrollYMax;  ///> Right y coordinate of scrolling area
-  
+
   /**
-   * Stores if the last scroll direction was upward or downward. Allows 
+   * Stores if the last scroll direction was upward or downward. Allows
    * the scroll methods scrollDownOneLine() and scrollUpOneLine() to
-   * use GetPrevious() and GetNext() instead of GetIndexed() if the 
+   * use GetPrevious() and GetNext() instead of GetIndexed() if the
    * same scroll direction is used again.
    *
    * Possibly makes scrolling by cursor keys faster at the bottom of
@@ -143,13 +148,18 @@ private:
    */
   LAST_SCROLL_DIRECTION m_LastScrollDirection;
 
-  struct Gadget* m_pWinPropGadgetX;       ///> horizontal scrollbar
-  struct Gadget* m_pWinPropGadgetY;       ///> vertical scrollbar
-  struct Gadget* m_pWinLeftArrowGadget;   ///> h-scrollbar left button
-  struct Gadget* m_pWinRightArrowGadget;  ///> h-scrollbar right button
-  struct Gadget* m_pWinUpArrowGadget;     ///> v-scrollbar up button
-  struct Gadget* m_pWinDownArrowGadget;   ///> v-scrollbar down button
-  
+  struct Image* m_pLeftArrowImage;    ///> h-scrollbar left button image
+  struct Image* m_pRightArrowImage;   ///> h-scrollbar right button image
+  struct Image* m_pUpArrowImage;      ///> v-scrollbar up button image
+  struct Image* m_pDownArrowImage;    ///> v-scrollbar down button image
+
+  struct Gadget* m_pXPropGadget;      ///> horizontal scrollbar
+  struct Gadget* m_pYPropGadget;      ///> vertical scrollbar
+  struct Gadget* m_pLeftArrowButton;  ///> h-scrollbar left button
+  struct Gadget* m_pRightArrowButton; ///> h-scrollbar right button
+  struct Gadget* m_pUpArrowButton;    ///> v-scrollbar up button
+  struct Gadget* m_pDownArrowButton;  ///> v-scrollbar down button
+
   struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;
 
@@ -158,7 +168,7 @@ private:
    * the member variable.
    */
   void calcMaxWindowTextLines();
-  
+
   /**
    * Opens an ASL request asking for a file name.
    *
@@ -170,7 +180,7 @@ private:
    * Displays the complete file from current m_Y position as firts line
    */
   void displayFile();
-  
+
   /**
    * Displays the given line at given y-position
    */
@@ -179,7 +189,25 @@ private:
   bool scrollDownOneLine();
   bool scrollUpOneLine();
 
-  bool calcSysImageSize(ULONG p_SysImageId, ULONG& p_Widht, ULONG& p_Height);
+  /**
+   * Creates an BOOPSI image object of one of the system shipped with
+   * the operating system from OS2.04 onward.
+   *
+   * @param p_SysImageId
+   * Id of the sytsem image, see intuition/imageclass.h
+   *
+   * @param p_Width
+   * If image creation is successful the width of the image will be
+   * stored here.
+   *
+   * @param p_Height
+   * If image creation is successful the height of the image will be
+   * stored here.
+   *
+   * @returns
+   * A pointer to the image struct if successful or NULL if failed.
+   */
+  struct Image* createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height);
 };
 
 

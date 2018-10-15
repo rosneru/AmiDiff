@@ -237,7 +237,7 @@ void Application::intuiEventLoop()
             (struct TagItem *)pMsg->IAddress);
           switch(tagData)
           {
-            case DiffWindow::SYS_GADGET_YPROP:
+            case DiffWindow::DGID_YPROP:
             {
               size_t newY = GetTagData(PGA_Top, 0,
                 (struct TagItem *)pMsg->IAddress);
