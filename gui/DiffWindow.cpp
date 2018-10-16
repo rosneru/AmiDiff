@@ -114,10 +114,69 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   	PGA_Borderless, TRUE,
   	PGA_NewLook, TRUE,
   	PGA_Total, 100,
-  	PGA_Top, 0,
+  	PGA_Top, 0, // TODO remove??
   	PGA_Visible, 100,
   	ICA_TARGET, ICTARGET_IDCMP,
   	TAG_END);
+
+    // Creating the arrow left image and getting its width and height
+    m_pRightArrowImage = createImageObj(RIGHTIMAGE, imageWidth, imageHeight);
+
+    // Creating the arrow right gadget
+    m_pRightArrowButton = (struct Gadget*) NewObject(
+      NULL, BUTTONGCLASS,
+      GA_Previous, m_pYPropGadget,
+      GA_ID, DGID_RIGHTARROW,
+      GA_RelRight, -sizeImageWidth-imageWidth+1,
+      GA_RelBottom, -imageHeight+1,
+      GA_Width, imageWidth,
+      GA_Height, imageHeight,
+      GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+      GA_GZZGadget, TRUE,
+      GA_BottomBorder, TRUE,
+      GA_Image, m_pRightArrowImage,
+      ICA_TARGET, ICTARGET_IDCMP,
+      TAG_END);
+
+    // Creating the arrow left image and getting its width and height
+    m_pLeftArrowImage = createImageObj(LEFTIMAGE, imageWidth, imageHeight);
+
+    // Creating the arrow left gadget
+    m_pLeftArrowButton = (struct Gadget*) NewObject(
+      NULL, BUTTONGCLASS,
+      GA_Previous, m_pRightArrowButton,
+      GA_ID, DGID_LEFTARROW,
+      GA_RelRight, -sizeImageWidth-imageWidth-imageWidth+1,
+      GA_RelBottom, -imageHeight+1,
+      GA_Width, imageWidth,
+      GA_Height, imageHeight,
+      GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+      GA_GZZGadget, TRUE,
+      GA_BottomBorder, TRUE,
+      GA_Image, m_pLeftArrowImage,
+      ICA_TARGET, ICTARGET_IDCMP,
+      TAG_END);
+
+    // Creating the horizontal proportional gadget / slider
+    m_pXPropGadget = (struct Gadget*) NewObject(
+      NULL, PROPGCLASS,
+      GA_Previous, m_pLeftArrowButton,
+      GA_ID, DGID_XPROP,
+      GA_Left, m_pAppScreen->IntuiScreen()->WBorLeft,
+      GA_RelBottom, -sizeImageHeight+3,
+      GA_RelWidth, -sizeImageWidth-imageWidth-imageWidth-m_pAppScreen->IntuiScreen()->WBorLeft-1,
+      GA_Height, sizeImageHeight-4,
+      GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+      GA_GZZGadget, TRUE,
+      GA_BottomBorder, TRUE,
+      PGA_Freedom, FREEHORIZ,
+      PGA_Borderless, TRUE,
+      PGA_NewLook, TRUE,
+      PGA_Total, 100,
+      PGA_Left, 0,  // TODO remove??
+      PGA_Visible, 100,
+      ICA_TARGET, ICTARGET_IDCMP,
+      TAG_END);
 }
 
 DiffWindow::~DiffWindow()
