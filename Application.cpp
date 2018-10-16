@@ -252,6 +252,33 @@ void Application::intuiEventLoop()
               }
               break;
             }
+
+            case DiffWindow::DGID_UPARROW:
+            {
+              if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+              {
+                m_pLeftWin->YDecrease();
+              }
+              else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+              {
+                m_pRightWin->YDecrease();
+              }
+              break;
+            }
+
+            case DiffWindow::DGID_DOWNARROW:
+            {
+              if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+              {
+                m_pLeftWin->YIncrease();
+              }
+              else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+              {
+                m_pRightWin->YIncrease();
+              }
+              break;
+            }
+
           }
           break;
         }

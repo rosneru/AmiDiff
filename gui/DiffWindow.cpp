@@ -39,7 +39,7 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   // Calculate some basic values
   //
   m_FontHeight = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
-	//int titleBarHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 1; // TODO or +2?
+	int barHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
 
   //
   // Setting up scroll bars and gadgets for the window. They will be
@@ -97,9 +97,6 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
     GA_Image, m_pUpArrowImage,
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
-
-  int barHeight = m_pAppScreen->IntuiScreen()->WBorTop +
-    m_pAppScreen->IntuiScreen()->RastPort.TxHeight+2;
 
   // Creating the vertical proportional gadget / slider
 	m_pYPropGadget = (struct Gadget*) NewObject(
@@ -191,6 +188,11 @@ void DiffWindow::Resized()
 {
   // Calculate how many lines *now* can be displayed in the window
   calcMaxWindowTextLines();
+
+  if(NumLines() == 0)
+  {
+    return;
+  }
 
   // Set scroll gadgets pot size in relation of new window size
   if(m_pYPropGadget != NULL)
