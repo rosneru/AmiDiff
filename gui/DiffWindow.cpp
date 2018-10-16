@@ -39,7 +39,7 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
   // Calculate some basic values
   //
   m_FontHeight = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
-	int titleBarHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 1; // TODO or +2?
+	//int titleBarHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 1; // TODO or +2?
 
   //
   // Setting up scroll bars and gadgets for the window. They will be
@@ -98,15 +98,18 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
 
+  int barHeight = m_pAppScreen->IntuiScreen()->WBorTop +
+    m_pAppScreen->IntuiScreen()->RastPort.TxHeight+2;
+
   // Creating the vertical proportional gadget / slider
 	m_pYPropGadget = (struct Gadget*) NewObject(
 	  NULL, PROPGCLASS,
   	GA_Previous, m_pUpArrowButton,
   	GA_ID, DGID_YPROP,
-  	GA_Top, titleBarHeight+2,
-  	GA_Width, sizeImageWidth-6,
   	GA_RelRight, -sizeImageWidth+4,
-  	GA_RelHeight, -sizeImageHeight-imageHeight-imageHeight-titleBarHeight-3,
+  	GA_Top, barHeight,
+  	GA_Width, sizeImageWidth-6,
+  	GA_RelHeight, -sizeImageHeight-imageHeight-imageHeight-barHeight-1,
   	GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
   	GA_GZZGadget, TRUE,
   	GA_RightBorder, TRUE,
@@ -173,7 +176,7 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
       PGA_Borderless, TRUE,
       PGA_NewLook, TRUE,
       PGA_Total, 100,
-      PGA_Left, 0,  // TODO remove??
+      //PGA_Left, 0,  // TODO remove??
       PGA_Visible, 100,
       ICA_TARGET, ICTARGET_IDCMP,
       TAG_END);
