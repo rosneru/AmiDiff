@@ -667,7 +667,7 @@ struct Image* DiffWindow::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULO
 	if(pImage != NULL)
 	{
 	  GetAttr(IA_Width, pImage, &p_Width);
-	  GetAttr(IA_Width, pImage, &p_Height);
+	  GetAttr(IA_Height, pImage, &p_Height);
 	}
 
   return pImage;
