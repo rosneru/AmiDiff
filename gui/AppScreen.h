@@ -1,10 +1,3 @@
-/* AppScreen.h                                                       */
-/*-------------------------------------------------------------------*/
-/* Class for the applications main screen                            */
-/*                                                                   */
-/* Uwe Rosner                                                        */
-/* Created on 23/09/2018                                             */
-/*-------------------------------------------------------------------*/
 #ifndef APPSCREEN
 #define APPSCREEN
 
@@ -13,6 +6,13 @@
 
 #include "SimpleString.h"
 
+/**
+ * Class  for the application main screen. At the moment it simply makes
+ * an identical copy of the Workbench screen.
+ *
+ * @author Uwe Rosner
+ * @date 23/09/2018   
+ */
 class AppScreen
 {
 public:
@@ -23,7 +23,7 @@ public:
    * Opens a Workbench clone screen
    *
    * @returns
-   * false if opning fails
+   * false if oping fails
    */
   bool Open();
 
@@ -40,8 +40,8 @@ public:
   struct Screen* IntuiScreen();
 
   /**
-   * Gets the intuition screen draw info or NULL if it hadnt been
-   * akquired successfully
+   * Gets the intuition screen draw info or NULL if it hadn't been
+   * acquired successfully
    */
   struct DrawInfo* IntuiDrawInfo();
 

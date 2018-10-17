@@ -146,7 +146,7 @@ bool Application::Run()
   //
   // Installing menu to left window
   //
-  if(m_pMenu->BindToWindow(m_pLeftWin->IntuiWindow()) == FALSE)
+  if(m_pMenu->AttachToWindow(m_pLeftWin->IntuiWindow()) == FALSE)
   {
     Dispose();
     return false;
@@ -156,7 +156,7 @@ bool Application::Run()
   // Installing menu to left window
   //
 
-  if(m_pMenu->BindToWindow(m_pRightWin->IntuiWindow()) == FALSE)
+  if(m_pMenu->AttachToWindow(m_pRightWin->IntuiWindow()) == FALSE)
   {
     Dispose();
     return false;

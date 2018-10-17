@@ -63,7 +63,7 @@ void AppMenu::Dispose()
   }
 }
 
-bool AppMenu::BindToWindow(struct Window* p_pWindow)
+bool AppMenu::AttachToWindow(struct Window* p_pWindow)
 {
   if(SetMenuStrip(p_pWindow, m_pMenu) == FALSE)
   {

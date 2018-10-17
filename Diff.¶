@@ -94,7 +94,7 @@ File
 "Application.cpp"
 "Application.h"
 "oscottlibs/LinkedListNode.h"
-"commands/DiffDocument.h"
+"model/DiffDocument.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -104,7 +104,7 @@ File
 "commands/CmdFileOpen.cpp"
 "commands/CmdFileOpen.h"
 "commands/Command.h"
-"commands/DiffDocument.h"
+"model/DiffDocument.h"
 "oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdFileOpen.o" "objects_debug/CmdFileOpen.debug"
@@ -128,9 +128,9 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "commands/DiffDocument.cpp"
-"commands/DiffDocument.cpp"
-"commands/DiffDocument.h"
+1 "model/DiffDocument.cpp"
+"model/DiffDocument.cpp"
+"model/DiffDocument.h"
 "oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffDocument.o" "objects_debug/DiffDocument.debug"
@@ -229,8 +229,8 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "commands/DiffDocument.h"
-"commands/DiffDocument.h"
+2 "model/DiffDocument.h"
+"model/DiffDocument.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

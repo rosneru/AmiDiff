@@ -1,10 +1,3 @@
-/* DiffWindow.h                                                      */
-/*-------------------------------------------------------------------*/
-/* Class for the two application diff windows (left and right)       */
-/*                                                                   */
-/* Uwe Rosner                                                        */
-/* Created on 23/09/2018                                             */
-/*-------------------------------------------------------------------*/
 #ifndef DIFFWINDOW
 #define DIFFWINDOW
 
@@ -13,7 +6,21 @@
 #include "DiffDocument.h"
 #include "SimpleString.h"
 
-
+/**
+ * Class for a diff window object. Can be created multiple times, e.g.
+ * twice, to have a left and a right diff window.
+ *
+ * It extends DiffDocument so it inherits all of DiffDocuments public 
+ * methods.
+ * 
+ * In addition to this it now *is* an DiffDocument which means you can
+ * override the ReadFile() method of DiffDocument. If done so and when 
+ * an open command occurs on a DiffDocument the ReadFile() of this 
+ * window object will be called first.
+ *
+ * @author Uwe Rosner
+ * @date 23/09/2018   
+ */
 class DiffWindow : public DiffDocument
 {
 public:
@@ -29,10 +36,10 @@ public:
     RIGHT,
   };
 
-/**
- * IDs to allow to interprete the events of this window's boopsi system
- * gadgets in the Application event loop.
- */
+  /**
+   * IDs to allow to interpret the events of this window's BOOPSI system
+   * gadgets in the Application event loop.
+   */
   enum DW_GADGET_ID
   {
     DGID_XPROP,
@@ -44,10 +51,10 @@ public:
   };
 
   /**
-   * Reorganises the window including re-calculating scrollbars. If
+   * Reorganizes the window including re-calculating scrollbars. If
    * needed also re-drawing the obscured text areas.
    *
-   * This shoud be called from the application if the signal
+   * This should be called from the application if the signal
    * IDCMP_NEWSIZE for this window is received.
    */
   void Resized();
@@ -62,7 +69,7 @@ public:
    * the right side of the screen
    *
    * @returns
-   * false if opning fails
+   * false if opening fails
    */
   bool Open(DW_TYPE p_DwType);
 
@@ -177,7 +184,7 @@ private:
   SimpleString aslRequestFileName();
 
   /**
-   * Displays the complete file from current m_Y position as firts line
+   * Displays the complete file from current m_Y position as first line
    */
   void displayFile();
 
@@ -194,7 +201,9 @@ private:
    * the operating system from OS2.04 onward.
    *
    * @param p_SysImageId
-   * Id of the sytsem image, see intuition/imageclass.h
+   * Id of the system image
+   * 
+   * @see intuition/imageclass.h
    *
    * @param p_Width
    * If image creation is successful the width of the image will be

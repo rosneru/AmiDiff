@@ -1,17 +1,17 @@
-/* AppMenu.h                                                         */
-/*-------------------------------------------------------------------*/
-/* Class for the application menu                                    */
-/*                                                                   */
-/* Uwe Rosner                                                        */
-/* Created on 23/09/2018                                             */
-/*-------------------------------------------------------------------*/
-#ifndef APPMENU
-#define APPMENU
+#ifndef APPMENU_H
+#define APPMENU_H
 
 #include <intuition/intuition.h>
 #include <intuition/screens.h>
 #include <libraries/gadtools.h>
 
+/**
+ * Class for the application menu. It can be created with a GadTools
+ * struct NewMenu and the attached to an Intuition window.
+ *
+ * @author Uwe Rosner
+ * @date 23/09/2018   
+ */
 class AppMenu
 {
 public:
@@ -31,7 +31,7 @@ public:
   /**
    * Wire the menu strip to a window. Can be done for multiple windows.
    */
-  bool BindToWindow(struct Window* p_pWindow);
+  bool AttachToWindow(struct Window* p_pWindow);
 
   /**
    * Gets the intuition menu structure or NULL if menu is not open
@@ -42,6 +42,5 @@ private:
   APTR* m_pVisualInfo;
   struct Menu* m_pMenu;
 };
-
 
 #endif
