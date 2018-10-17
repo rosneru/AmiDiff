@@ -3,11 +3,15 @@ Settings (Start)
 C/C++ Environment
 "StormC:include"
 0
-"gui"
+"amigautils"
 0
 "oscottlibs"
 0
+"gui"
+0
 "commands"
+0
+"model"
 0
 Includepath (End)
 0 "" 80
@@ -90,11 +94,18 @@ Section
 0 1 1 0
 4
 File
+1 "amigautils/StopWatch.cpp"
+"amigautils/StopWatch.cpp"
+"amigautils/StopWatch.h"
+Storm Shell Project (Dependencies)
+"objects_debug/StopWatch.o" "objects_debug/StopWatch.debug"
+""
+1 1
+File
 1 "Application.cpp"
 "Application.cpp"
 "Application.h"
 "oscottlibs/LinkedListNode.h"
-"model/DiffDocument.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -104,7 +115,6 @@ File
 "commands/CmdFileOpen.cpp"
 "commands/CmdFileOpen.h"
 "commands/Command.h"
-"model/DiffDocument.h"
 "oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdFileOpen.o" "objects_debug/CmdFileOpen.debug"
@@ -125,15 +135,6 @@ File
 "commands/Command.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Command.o" "objects_debug/Command.debug"
-""
-1 1
-File
-1 "model/DiffDocument.cpp"
-"model/DiffDocument.cpp"
-"model/DiffDocument.h"
-"oscottlibs/LinkedListNode.h"
-Storm Shell Project (Dependencies)
-"objects_debug/DiffDocument.o" "objects_debug/DiffDocument.debug"
 ""
 1 1
 File
@@ -172,6 +173,15 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "model/DiffDocument.cpp"
+"model/DiffDocument.cpp"
+"model/DiffDocument.h"
+"oscottlibs/LinkedListNode.h"
+Storm Shell Project (Dependencies)
+"objects_debug/DiffDocument.o" "objects_debug/DiffDocument.debug"
+""
+1 1
+File
 1 "oscottlibs/LinkedList.cpp"
 "oscottlibs/LinkedList.cpp"
 "oscottlibs/LinkedList.h"
@@ -201,6 +211,13 @@ Section
 0 1 1 0
 2
 File
+2 "amigautils/StopWatch.h"
+"amigautils/StopWatch.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "Application.h"
 "Application.h"
 Storm Shell Project (Dependencies)
@@ -229,13 +246,6 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "model/DiffDocument.h"
-"model/DiffDocument.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
 2 "gui/AppMenu.h"
 "gui/AppMenu.h"
 Storm Shell Project (Dependencies)
@@ -252,6 +262,13 @@ Storm Shell Project (Dependencies)
 File
 2 "gui/DiffWindow.h"
 "gui/DiffWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "model/DiffDocument.h"
+"model/DiffDocument.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -283,6 +300,7 @@ Section
 7
 File
 10 "Diff"
+"Diff"
 Storm Shell Project (Dependencies)
 "" ""
 ""

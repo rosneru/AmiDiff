@@ -19,7 +19,7 @@ public:
    * opens the timer.device
    */
   StopWatch();
-  
+
   /**
    * Destroys the the stopwatch and disposed all opened resources
    */
@@ -29,7 +29,7 @@ public:
    * Starts or re-starts the stop watch.
    */
   void Start();
-  
+
   /**
    * Stops the stop watch and returns the elapsed time
    *

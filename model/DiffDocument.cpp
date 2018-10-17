@@ -1,8 +1,10 @@
 #include <clib/dos_protos.h>
 #include <libraries/dos.h>
 
+#include "StopWatch.h"
 #include "DiffDocument.h"
 
+#include <stdio.h>
 
 DiffDocument::DiffDocument()
   : MAX_LINE_LENGTH(512),
@@ -37,13 +39,22 @@ bool DiffDocument::ReadFile(SimpleString p_FileName)
                                             // bug in AmigaOS v36/37
   char* pBuf = NULL;
 
+  LONG numLines = 0;
+  StopWatch stopWatch;
+  stopWatch.Start();
+
   while( (pBuf = FGets(pFile, pLineBuf, readBufSize)) != NULL )
   {
     // Read the line into a string object
     SimpleString line(pBuf);
     SimpleString* pNewLineStr = new SimpleString(line.Trim());
     m_pLines->InsertTail(pNewLineStr);
+
+    numLines++;
   }
+
+  LONG elapsed = stopWatch.Stop();
+  printf("Loaded file with %d lines in %d milliseconds\n", numLines, elapsed);
 
   ::Close(pFile);
   return true;

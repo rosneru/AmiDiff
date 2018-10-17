@@ -1,5 +1,5 @@
 #include <clib/exec_protos.h>
-#include "StopWatch.hpp"
+#include "StopWatch.h"
 
 // Base address of timer device; has to be global
 struct Device* TimerBase = NULL;
@@ -15,17 +15,18 @@ StopWatch::StopWatch()
   {
     return;
   }
-  
+
   // Create an IORequest
-  m_pIORequest = CreateIORequest(m_pMsgPort, sizeof(struct timerequest));
+  m_pIORequest = (struct IORequest*)CreateIORequest(
+    m_pMsgPort, sizeof(struct timerequest));
   if(m_pIORequest == NULL)
   {
     DeleteMsgPort(m_pMsgPort);
     m_pMsgPort = NULL;
-    
+
     return;
   }
-  
+
   // Opening the timer.device
   BYTE res = OpenDevice(TIMERNAME, UNIT_ECLOCK, m_pIORequest , TR_GETSYSTIME);
   if(res != NULL)
@@ -35,13 +36,13 @@ StopWatch::StopWatch()
 
     DeleteMsgPort(m_pMsgPort);
     m_pMsgPort = NULL;
-    
+
     return;
   }
 
   // Setting the timer base
   TimerBase = m_pIORequest->io_Device;
-  
+
   m_bInitialized = true;
 }
 
@@ -51,11 +52,11 @@ StopWatch::~StopWatch()
   {
     CloseDevice(m_pIORequest);
     TimerBase = NULL;
-    
+
     DeleteIORequest(m_pIORequest);
     m_pIORequest = NULL;
   }
-  
+
   if(m_pMsgPort != NULL)
   {
     DeleteMsgPort(m_pMsgPort);
