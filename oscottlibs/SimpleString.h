@@ -17,6 +17,7 @@ public:
   SimpleString(const char* p_pTxt);
   SimpleString(const SimpleString& other);
   SimpleString(char p_Character, int p_Count);
+  SimpleString(long p_Number);
 
   ~SimpleString();
 
@@ -27,6 +28,7 @@ public:
   SimpleString operator+(const char* p_pOtherChar);
   SimpleString& operator+=(const SimpleString& p_Other);
   SimpleString& operator+=(const char* p_pOtherChar);
+  SimpleString& operator+=(long p_Number);
   bool operator==(const SimpleString& p_Other);
   bool operator<(const SimpleString& p_Other);
   bool operator>(const SimpleString& p_Other);
@@ -130,8 +132,8 @@ public:
 
   /**
    * @brief
-   * Returns a newly constructed string object with all occurences of
-   * '\r', '\r', '\t' and ' ' from the end of the string are removed.
+   * Returns a newly constructed string object with all occurrences of
+   * '\r', '\n', '\t' and ' ' from the end of the string are removed.
    *
    * Per Default the parameter p_bRemoveAlsoLeadingWhiteSp is set to
    * false so all leading and trailing white spaces are removed.

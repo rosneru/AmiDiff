@@ -1,5 +1,6 @@
 #include "SimpleString.h"
 #include <string.h>
+#include <stdio.h>
 
 
 SimpleString::SimpleString()
@@ -33,6 +34,31 @@ SimpleString::SimpleString(char p_Character, int p_Count)
   }
 
   m_pBuf[p_Count]='\0';
+}
+
+SimpleString::SimpleString(long p_Number)
+  : m_Len(0),
+    m_pBuf(NULL)
+{
+  // Get number of digits
+  int digits = 1;
+  long div = p_Number;
+  while(div /= 10)
+  {
+    digits++;
+  }
+
+  if(p_Number < 0)
+  {
+    // Space for '-' char
+    digits++;
+  }
+
+  m_Len = digits;
+  m_pBuf = new char[m_Len + 1];
+
+  sprintf(m_pBuf, "%ld", p_Number);
+  m_pBuf[m_Len] = '\0';
 }
 
 SimpleString::~SimpleString()
@@ -333,6 +359,21 @@ SimpleString& SimpleString::operator+=(const char* p_pOtherChar)
   m_pBuf = new char[m_Len + 1];
   strcpy(m_pBuf, pOldBuf);
   strcat(m_pBuf, p_pOtherChar);
+
+  delete[] pOldBuf;
+  return *this;
+}
+
+SimpleString& SimpleString::operator+=(long p_Number)
+{
+  SimpleString numberStr(p_Number);
+
+  m_Len = m_Len + numberStr.Length();
+
+  char* pOldBuf = m_pBuf;
+  m_pBuf = new char[m_Len + 1];
+  strcpy(m_pBuf, pOldBuf);
+  strcat(m_pBuf, numberStr.C_str());
 
   delete[] pOldBuf;
   return *this;
