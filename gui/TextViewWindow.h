@@ -3,7 +3,7 @@
 
 #include <intuition/screens.h>
 #include "AppScreen.h"
-#include "DiffDocument.h"
+//#include "DiffDocument.h" // TODO BaseWindow
 #include "SimpleString.h"
 
 /**
@@ -21,7 +21,7 @@
  * @author Uwe Rosner
  * @date 23/09/2018
  */
-class TextViewWindow : public DiffDocument
+class TextViewWindow // : public DiffDocument // TODO BaseWindow
 {
 public:
   TextViewWindow(AppScreen* p_pAppScreen);

@@ -1,9 +1,8 @@
 #include "CmdFileOpen.h"
 
 
-CmdFileOpen::CmdFileOpen(SimpleString p_Name, DiffDocument& p_pDocument)
-  : Command(p_Name),
-  m_Document(p_pDocument)
+CmdFileOpen::CmdFileOpen(SimpleString p_Name)
+  : Command(p_Name)
 {
 
 }
@@ -15,5 +14,6 @@ CmdFileOpen::~CmdFileOpen()
 
 void CmdFileOpen::Execute()
 {
-  m_Document.ReadFile();
+  //m_Document.ReadFile();
+  // TODO OpenFileWindow.Open() etc
 }

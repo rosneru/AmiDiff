@@ -141,7 +141,6 @@ File
 1 "Diff.cpp"
 "Diff.cpp"
 "Application.h"
-"oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Diff.o" "objects_debug/Diff.debug"
 ""
@@ -163,13 +162,12 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "gui/DiffWindow.cpp"
-"gui/DiffWindow.cpp"
-"gui/DiffWindow.h"
+1 "gui/TextViewWindow.cpp"
+"gui/TextViewWindow.cpp"
+"gui/TextViewWindow.h"
 "gui/AppScreen.h"
-"oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
-"objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
+"objects_debug/TextViewWindow.o" "objects_debug/TextViewWindow.debug"
 ""
 1 1
 File
@@ -260,8 +258,9 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "gui/DiffWindow.h"
+2 "gui/TextViewWindow.h"
 "gui/DiffWindow.h"
+"gui/TextViewWindow.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

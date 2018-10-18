@@ -408,6 +408,8 @@ bool TextViewWindow::ReadFile(SimpleString p_FileName)
     }
   }
 
+  return false;
+/*
   if(DiffDocument::ReadFile(p_FileName) == false)
   {
     return false;
@@ -437,6 +439,7 @@ bool TextViewWindow::ReadFile(SimpleString p_FileName)
   }
 
   return true;
+*/
 }
 
 void TextViewWindow::YChangedHandler(size_t p_NewY)

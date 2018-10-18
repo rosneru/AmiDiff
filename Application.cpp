@@ -117,8 +117,8 @@ bool Application::Run()
   // Instantiating the commands
   //
   m_pCmdQuit = new CmdQuit("Quit the application", m_bExitRequested);
-  m_pCmdOpenLeftFile = new CmdFileOpen("Open the left file", *m_pLeftWin);
-  m_pCmdOpenRightFile = new CmdFileOpen("Open the right file", *m_pRightWin);
+  m_pCmdOpenLeftFile = new CmdFileOpen("Open the left file");
+  m_pCmdOpenRightFile = new CmdFileOpen("Open the right file");
 
 
   // Fill the GadTools menu struct, supplying pointers to the commands
