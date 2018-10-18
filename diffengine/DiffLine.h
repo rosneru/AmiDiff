@@ -1,21 +1,21 @@
-/* DiffLine.h                                               */
-/*-------------------------------------------------------------------*/
-/* Class for storing a file line by line with diff information       */
-/*                                                                   */
-/* This is an adaption of Stephane Rodriguez source code on          */
-/* CodeProject: https://www.codeproject.com/Articles/3666/Diff-tool  */
-/*                                                                   */
-/* Uwe Rosner                                                        */
-/* 09/2018                                                           */
-/*-------------------------------------------------------------------*/
-
 #ifndef DIFF_LINE_H
 #define DIFF_LINE_H
 
 #include "LinkedList.h"
 #include "SimpleString.h"
 
-
+/**
+ * Represents a line in a Diff which contains of Text and a LineState.
+ *
+ * This is a port of Stephane Rodriguez source code on CodeProject:
+ * https://www.codeproject.com/Articles/3666/Diff-tool
+ *
+ * In 2005 he released an updated version:
+ * http://www.arstdesign.com/articles/difftool.html
+ *
+ * @author Uwe Rosner
+ * @date 28/09/2018
+ */
 class DiffLine
 {
 public:
@@ -31,8 +31,16 @@ public:
   DiffLine();
   ~DiffLine();
 
-  long SetLine(SimpleString* p_pString); ///> store string and build token
-  void SetLine(SimpleString* p_pString, LineState p_LineState); ///> store string and state (does not eval token)
+  /**
+   * Store a string and build its token
+   */
+  long SetLine(SimpleString* p_pString);
+  
+  /**
+   * Store a string and its state. Does not evaluate token.
+   */
+  void SetLine(SimpleString* p_pString, LineState p_LineState);
+  
   SimpleString* GetLine();
 
   void SetState(LineState p_LineState);
@@ -44,4 +52,3 @@ protected:
 };
 
 #endif
-
