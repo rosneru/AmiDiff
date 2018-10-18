@@ -1,7 +1,5 @@
-#include <clib/dos_protos.h>
-#include <libraries/dos.h>
-
 #include "StopWatch.h"
+#include "DosFile.h"
 #include "DiffDocument.h"
 
 DiffDocument::DiffDocument()
@@ -25,37 +23,14 @@ bool DiffDocument::ReadFile(SimpleString p_FileName)
   }
 
   // Open file and read line by line into window
-  // TODO Remove it to some better place
-  BPTR pFile = ::Open(p_FileName.C_str(), MODE_OLDFILE);
-  if(pFile == NULL)
+  DosFile dosFile;
+  if(dosFile.Open(p_FileName.C_str(), DosFile::AM_OldFile) == false)
   {
     return false;
   }
-
-  char pLineBuf[MAX_LINE_LENGTH];
-  size_t readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a
-                                            // bug in AmigaOS v36/37
-  char* pBuf = NULL;
-
-  LONG numLines = 0;
-  StopWatch stopWatch;
-  stopWatch.Start();
-
-  while( (pBuf = FGets(pFile, pLineBuf, readBufSize)) != NULL )
-  {
-    // Read the line into a string object
-    SimpleString line(pBuf);
-    SimpleString* pNewLineStr = new SimpleString(line.Trim());
-    m_pLines->InsertTail(pNewLineStr);
-
-    numLines++;
-  }
-
-  // TODO store it somewhere
-  LONG elapsed = stopWatch.Stop();
-
-  ::Close(pFile);
-  return true;
+  
+  m_TimeStatistics += dosFile.GetTimeStatistics();
+  return dosFile.ReadLines(*m_pLines);
 }
 
 void DiffDocument::Clear()

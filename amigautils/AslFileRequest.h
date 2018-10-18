@@ -19,7 +19,7 @@ public:
   /**
    * Opens a file requester and let the user select a file
    *
-   * @param p_pTitle
+   * @param p_Title
    * Text to be displayed in the file requesters title bar
    *
    * @returns

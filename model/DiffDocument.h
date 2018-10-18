@@ -25,7 +25,8 @@ protected:
   const size_t MAX_LINE_LENGTH;
 
 private:
-  LinkedList* m_pLines; ///> Pointer to a list containig the lines
+  SimpleString m_TimeStatistics;
+  LinkedList* m_pLines; ///> Pointer to a list containing the lines
 };
 
 #endif // DIFF_DOCUMENT_H
