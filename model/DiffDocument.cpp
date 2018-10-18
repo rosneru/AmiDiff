@@ -4,8 +4,6 @@
 #include "StopWatch.h"
 #include "DiffDocument.h"
 
-#include <stdio.h>
-
 DiffDocument::DiffDocument()
   : MAX_LINE_LENGTH(512),
     m_pLines(new LinkedList())
@@ -53,8 +51,8 @@ bool DiffDocument::ReadFile(SimpleString p_FileName)
     numLines++;
   }
 
+  // TODO store it somewhere
   LONG elapsed = stopWatch.Stop();
-  printf("Loaded file with %d lines in %d milliseconds\n", numLines, elapsed);
 
   ::Close(pFile);
   return true;

@@ -94,8 +94,8 @@ bool Application::Run()
   //
   // Opening the left window
   //
-  m_pLeftWin = new DiffWindow(m_pScreen);
-  if(!m_pLeftWin->Open(DiffWindow::LEFT))
+  m_pLeftWin = new TextViewWindow(m_pScreen);
+  if(!m_pLeftWin->Open(TextViewWindow::LEFT))
   {
     // Opening the window failed
     Dispose();
@@ -105,8 +105,8 @@ bool Application::Run()
   //
   // Opening the right window
   //
-  m_pRightWin = new DiffWindow(m_pScreen);
-  if(!m_pRightWin->Open(DiffWindow::RIGHT))
+  m_pRightWin = new TextViewWindow(m_pScreen);
+  if(!m_pRightWin->Open(TextViewWindow::RIGHT))
   {
     // Opening the window failed
     Dispose();
@@ -237,7 +237,7 @@ void Application::intuiEventLoop()
             (struct TagItem *)pMsg->IAddress);
           switch(tagData)
           {
-            case DiffWindow::DGID_YPROP:
+            case TextViewWindow::DGID_YPROP:
             {
               size_t newY = GetTagData(PGA_Top, 0,
                 (struct TagItem *)pMsg->IAddress);
@@ -253,7 +253,7 @@ void Application::intuiEventLoop()
               break;
             }
 
-            case DiffWindow::DGID_UPARROW:
+            case TextViewWindow::DGID_UPARROW:
             {
               if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
               {
@@ -266,7 +266,7 @@ void Application::intuiEventLoop()
               break;
             }
 
-            case DiffWindow::DGID_DOWNARROW:
+            case TextViewWindow::DGID_DOWNARROW:
             {
               if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
               {

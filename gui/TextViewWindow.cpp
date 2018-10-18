@@ -11,9 +11,9 @@
 #include <intuition/icclass.h>
 #include <libraries/asl.h>
 #include <libraries/dos.h>
-#include "DiffWindow.h"
+#include "TextViewWindow.h"
 
-DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
+TextViewWindow::TextViewWindow(AppScreen* p_pAppScreen)
   : m_pAppScreen(p_pAppScreen),
     m_pWindow(NULL),
     m_MaxWindowTextLines(0),
@@ -179,12 +179,12 @@ DiffWindow::DiffWindow(AppScreen* p_pAppScreen)
       TAG_END);
 }
 
-DiffWindow::~DiffWindow()
+TextViewWindow::~TextViewWindow()
 {
   Close();
 }
 
-void DiffWindow::Resized()
+void TextViewWindow::Resized()
 {
   // Calculate how many lines *now* can be displayed in the window
   calcMaxWindowTextLines();
@@ -207,14 +207,14 @@ void DiffWindow::Resized()
   Refresh();
 }
 
-void DiffWindow::Refresh()
+void TextViewWindow::Refresh()
 {
   BeginRefresh(m_pWindow);
   displayFile();
   EndRefresh(m_pWindow, TRUE);
 }
 
-bool DiffWindow::Open(DW_TYPE p_DwType)
+bool TextViewWindow::Open(DW_TYPE p_DwType)
 {
   //
   // Initial validations
@@ -318,7 +318,7 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
   return true;
 }
 
-void DiffWindow::Close()
+void TextViewWindow::Close()
 {
   if(m_pLeftArrowButton != NULL)
   {
@@ -377,12 +377,12 @@ void DiffWindow::Close()
   }
 }
 
-const char* DiffWindow::Title()
+const char* TextViewWindow::Title()
 {
   return m_Title.C_str();
 }
 
-void DiffWindow::SetTitle(SimpleString p_NewTitle)
+void TextViewWindow::SetTitle(SimpleString p_NewTitle)
 {
   m_Title = p_NewTitle;
 
@@ -391,12 +391,12 @@ void DiffWindow::SetTitle(SimpleString p_NewTitle)
   SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
 }
 
-struct Window* DiffWindow::IntuiWindow()
+struct Window* TextViewWindow::IntuiWindow()
 {
   return m_pWindow;
 }
 
-bool DiffWindow::ReadFile(SimpleString p_FileName)
+bool TextViewWindow::ReadFile(SimpleString p_FileName)
 {
   if(p_FileName.Length() == 0)
   {
@@ -439,7 +439,7 @@ bool DiffWindow::ReadFile(SimpleString p_FileName)
   return true;
 }
 
-void DiffWindow::YChangedHandler(size_t p_NewY)
+void TextViewWindow::YChangedHandler(size_t p_NewY)
 {
   // set the new y-position
   m_Y = p_NewY;
@@ -453,7 +453,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 }
 
 
-void DiffWindow::YIncrease()
+void TextViewWindow::YIncrease()
 {
   // Scroll the text
   if(scrollUpOneLine() == false)
@@ -473,7 +473,7 @@ void DiffWindow::YIncrease()
 }
 
 
-void DiffWindow::YDecrease()
+void TextViewWindow::YDecrease()
 {
   // Scroll the text
   if(scrollDownOneLine() == false)
@@ -493,7 +493,7 @@ void DiffWindow::YDecrease()
 }
 
 
-void DiffWindow::calcMaxWindowTextLines()
+void TextViewWindow::calcMaxWindowTextLines()
 {
   m_MaxWindowTextLines = m_pWindow->Height;
   m_MaxWindowTextLines -= m_pWindow->BorderTop;
@@ -502,7 +502,7 @@ void DiffWindow::calcMaxWindowTextLines()
   m_MaxWindowTextLines /= m_FontHeight;
 }
 
-SimpleString DiffWindow::aslRequestFileName()
+SimpleString TextViewWindow::aslRequestFileName()
 {
   SimpleString fileName = "";
 
@@ -545,14 +545,14 @@ SimpleString DiffWindow::aslRequestFileName()
   return fileName;
 }
 
-void DiffWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge)
+void TextViewWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge)
 {
   m_IntuiText.IText = (UBYTE*)p_pLine->C_str();
   m_IntuiText.TopEdge = p_TopEdge;
   PrintIText(m_pWindow->RPort, &m_IntuiText, m_ScrollXMin, m_ScrollYMin);
 }
 
-void DiffWindow::displayFile()
+void TextViewWindow::displayFile()
 {
   size_t lineId = m_Y;
   SimpleString* pLine = GetIndexedLine(lineId);
@@ -570,7 +570,7 @@ void DiffWindow::displayFile()
   }
 }
 
-bool DiffWindow::scrollUpOneLine()
+bool TextViewWindow::scrollUpOneLine()
 {
   if(NumLines() < m_MaxWindowTextLines)
   {
@@ -614,7 +614,7 @@ bool DiffWindow::scrollUpOneLine()
   return true;
 }
 
-bool DiffWindow::scrollDownOneLine()
+bool TextViewWindow::scrollDownOneLine()
 {
   if(m_Y < 1)
   {
@@ -657,7 +657,7 @@ bool DiffWindow::scrollDownOneLine()
   return true;
 }
 
-struct Image* DiffWindow::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
+struct Image* TextViewWindow::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
 {
   struct Image* pImage = (struct Image*) NewObject(
       NULL, SYSICLASS,
