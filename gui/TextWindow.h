@@ -1,10 +1,11 @@
-#ifndef TEXT_VIEW_WINDOW_H
-#define TEXT_VIEW_WINDOW_H
+#ifndef TEXT_WINDOW_H
+#define TEXT_WINDOW_H
 
 #include <intuition/screens.h>
 #include "AppScreen.h"
-//#include "DiffDocument.h" // TODO BaseWindow
 #include "SimpleString.h"
+#include "TextDocument.h"
+#include "Window.h"
 
 /**
  * Class for a text window object. Can be created multiple times, e.g.
@@ -21,20 +22,17 @@
  * @author Uwe Rosner
  * @date 23/09/2018
  */
-class TextViewWindow // : public DiffDocument // TODO BaseWindow
+class TextWindow : public Window
 {
 public:
-  TextViewWindow(AppScreen* p_pAppScreen);
-  virtual ~TextViewWindow();
-
+  TextWindow(AppScreen* p_pAppScreen);
+  virtual ~TextWindow();
+  
   /**
-   * Used to define if this window is the left or the right diff window
+   *
    */
-  enum DW_TYPE
-  {
-    LEFT,
-    RIGHT,
-  };
+  void HandleIdcmp(struct IntuiMessage* p_pMsg);
+
 
   /**
    * IDs to allow to interpret the events of this window's BOOPSI system
@@ -76,15 +74,8 @@ public:
   /**
    * Closes the window
    */
-  void Close();
+  virtual void Close();
 
-  const char* Title();
-  void SetTitle(SimpleString p_NewTitle);
-
-  /**
-   * Gets the intuition window structure or NULL if window is not open
-   */
-  struct Window* IntuiWindow();
 
   /**
    * Open a text file
@@ -95,7 +86,7 @@ public:
    * Full file name with path for to be opened file. If empty a ASL
    * request will be opened asking the user for the file name.
    */
-  virtual bool ReadFile(SimpleString p_FileName = "");
+  virtual bool SetContent(TextDocument* p_pTextDocument);
 
   /**
    * This handles the Y-Changes triggered by the vertical scrollbar
@@ -122,6 +113,11 @@ public:
    */
   void YDecrease();
 
+
+protected:
+  TextDocument* m_pDocument;
+
+
 private:
   enum LAST_SCROLL_DIRECTION
   {
@@ -130,11 +126,8 @@ private:
     Downward,
   };
 
-  AppScreen* m_pAppScreen;
-  struct Window* m_pWindow;
-
   SimpleString m_Title;
-  SimpleString m_FileRequesterTitle;
+
   size_t m_MaxWindowTextLines;  ///> Number of text lines that fit in window
   size_t m_Y;         ///> Index of currently first displayed text line
 
@@ -177,21 +170,14 @@ private:
   void calcMaxWindowTextLines();
 
   /**
-   * Opens an ASL request asking for a file name.
-   *
-   * @return The selected file name or an empty string
+   * Displays the given line at given y-position
    */
-  SimpleString aslRequestFileName();
+  void displayLine(SimpleString* p_pLine, WORD p_TopEdge);
 
   /**
    * Displays the complete file from current m_Y position as first line
    */
   void displayFile();
-
-  /**
-   * Displays the given line at given y-position
-   */
-  void displayLine(SimpleString* p_pLine, WORD p_TopEdge);
 
   bool scrollDownOneLine();
   bool scrollUpOneLine();

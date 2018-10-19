@@ -11,11 +11,10 @@
 #include <intuition/icclass.h>
 #include <libraries/asl.h>
 #include <libraries/dos.h>
-#include "TextViewWindow.h"
+#include "TextWindow.h"
 
-TextViewWindow::TextViewWindow(AppScreen* p_pAppScreen)
-  : m_pAppScreen(p_pAppScreen),
-    m_pWindow(NULL),
+TextWindow::TextWindow(AppScreen* p_pAppScreen)
+  : m_pDocument(NULL),
     m_MaxWindowTextLines(0),
     m_Y(0),
     m_FontHeight(0),
@@ -179,17 +178,23 @@ TextViewWindow::TextViewWindow(AppScreen* p_pAppScreen)
       TAG_END);
 }
 
-TextViewWindow::~TextViewWindow()
+TextWindow::~TextWindow()
 {
   Close();
 }
 
-void TextViewWindow::Resized()
+
+void TextWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
+{
+  
+}
+
+void TextWindow::Resized()
 {
   // Calculate how many lines *now* can be displayed in the window
   calcMaxWindowTextLines();
 
-  if(NumLines() == 0)
+  if(m_pDocument->NumLines() == 0)
   {
     return;
   }
@@ -207,14 +212,14 @@ void TextViewWindow::Resized()
   Refresh();
 }
 
-void TextViewWindow::Refresh()
+void TextWindow::Refresh()
 {
   BeginRefresh(m_pWindow);
   displayFile();
   EndRefresh(m_pWindow, TRUE);
 }
 
-bool TextViewWindow::Open(DW_TYPE p_DwType)
+bool TextWindow::Open(DW_TYPE p_DwType)
 {
   //
   // Initial validations
@@ -233,7 +238,7 @@ bool TextViewWindow::Open(DW_TYPE p_DwType)
   }
 
   //
-  // Calculating window size etc in depency of screen dimesions
+  // Calculating window size etc in dependency of screen dimensions
   //
   int screenWidth = m_pAppScreen->IntuiScreen()->Width;
   int screenHeight = m_pAppScreen->IntuiScreen()->Height;
@@ -318,7 +323,7 @@ bool TextViewWindow::Open(DW_TYPE p_DwType)
   return true;
 }
 
-void TextViewWindow::Close()
+void TextWindow::Close()
 {
   if(m_pLeftArrowButton != NULL)
   {
@@ -370,51 +375,14 @@ void TextViewWindow::Close()
     DisposeObject(m_pYPropGadget);
   }
 
-  if(m_pWindow != NULL)
-  {
-    CloseWindow(m_pWindow);
-    m_pWindow = NULL;
-  }
+  // Also call Close() in parent
+  // TODO debug if it really happens
+  Window::Close();
 }
 
-const char* TextViewWindow::Title()
+
+bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 {
-  return m_Title.C_str();
-}
-
-void TextViewWindow::SetTitle(SimpleString p_NewTitle)
-{
-  m_Title = p_NewTitle;
-
-  // Call intuition function to set the window title
-  // Note the ~0 inverts the value and is a value of -1
-  SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
-}
-
-struct Window* TextViewWindow::IntuiWindow()
-{
-  return m_pWindow;
-}
-
-bool TextViewWindow::ReadFile(SimpleString p_FileName)
-{
-  if(p_FileName.Length() == 0)
-  {
-    p_FileName = aslRequestFileName();
-
-    if(p_FileName.Length() == 0)
-    {
-      return false;
-    }
-  }
-
-  return false;
-/*
-  if(DiffDocument::ReadFile(p_FileName) == false)
-  {
-    return false;
-  }
-
   m_Y = 0;
 
   // Clear the window completely
@@ -426,12 +394,12 @@ bool TextViewWindow::ReadFile(SimpleString p_FileName)
   SetTitle(p_FileName);
   displayFile();
 
-  // Set scroll gadgets pot size dependend on window size and the number
+  // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
   if(m_pYPropGadget != NULL)
   {
 	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Total, NumLines(),
+    	PGA_Total, m_pDocument->NumLines(),
     	PGA_Top, 0,
     	PGA_Visible, m_MaxWindowTextLines,
     	TAG_DONE
@@ -439,10 +407,9 @@ bool TextViewWindow::ReadFile(SimpleString p_FileName)
   }
 
   return true;
-*/
 }
 
-void TextViewWindow::YChangedHandler(size_t p_NewY)
+void TextWindow::YChangedHandler(size_t p_NewY)
 {
   // set the new y-position
   m_Y = p_NewY;
@@ -456,7 +423,7 @@ void TextViewWindow::YChangedHandler(size_t p_NewY)
 }
 
 
-void TextViewWindow::YIncrease()
+void TextWindow::YIncrease()
 {
   // Scroll the text
   if(scrollUpOneLine() == false)
@@ -476,7 +443,7 @@ void TextViewWindow::YIncrease()
 }
 
 
-void TextViewWindow::YDecrease()
+void TextWindow::YDecrease()
 {
   // Scroll the text
   if(scrollDownOneLine() == false)
@@ -496,7 +463,7 @@ void TextViewWindow::YDecrease()
 }
 
 
-void TextViewWindow::calcMaxWindowTextLines()
+void TextWindow::calcMaxWindowTextLines()
 {
   m_MaxWindowTextLines = m_pWindow->Height;
   m_MaxWindowTextLines -= m_pWindow->BorderTop;
@@ -505,7 +472,7 @@ void TextViewWindow::calcMaxWindowTextLines()
   m_MaxWindowTextLines /= m_FontHeight;
 }
 
-SimpleString TextViewWindow::aslRequestFileName()
+SimpleString TextWindow::aslRequestFileName()
 {
   SimpleString fileName = "";
 
@@ -548,17 +515,17 @@ SimpleString TextViewWindow::aslRequestFileName()
   return fileName;
 }
 
-void TextViewWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge)
+void TextWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge)
 {
   m_IntuiText.IText = (UBYTE*)p_pLine->C_str();
   m_IntuiText.TopEdge = p_TopEdge;
   PrintIText(m_pWindow->RPort, &m_IntuiText, m_ScrollXMin, m_ScrollYMin);
 }
 
-void TextViewWindow::displayFile()
+void TextWindow::displayFile()
 {
   size_t lineId = m_Y;
-  SimpleString* pLine = GetIndexedLine(lineId);
+  SimpleString* pLine = m_pDocument->GetIndexedLine(lineId);
   while(pLine != NULL)
   {
     displayLine(pLine, (lineId - m_Y ) * m_FontHeight);
@@ -569,20 +536,20 @@ void TextViewWindow::displayFile()
     }
 
     lineId++;
-    pLine = GetNextLine();
+    pLine = m_pDocument->GetNextLine();
   }
 }
 
-bool TextViewWindow::scrollUpOneLine()
+bool TextWindow::scrollUpOneLine()
 {
-  if(NumLines() < m_MaxWindowTextLines)
+  if(m_pDocument->NumLines() < m_MaxWindowTextLines)
   {
     // Do not move the scroll area upward if all the text fits into
     // the window
     return false;
   }
 
-  if((m_Y + m_MaxWindowTextLines) == NumLines())
+  if((m_Y + m_MaxWindowTextLines) == m_pDocument->NumLines())
   {
     // Do not move the scroll area upward if text already at bottom
     return false;
@@ -597,11 +564,11 @@ bool TextViewWindow::scrollUpOneLine()
   SimpleString* pLine = NULL;
   if(m_LastScrollDirection == Upward)
   {
-    pLine = GetNextLine();
+    pLine = m_pDocument->GetNextLine();
   }
   else
   {
-    pLine = GetIndexedLine(m_Y + m_MaxWindowTextLines);
+    pLine = m_pDocument->GetIndexedLine(m_Y + m_MaxWindowTextLines);
     m_LastScrollDirection = Upward;
   }
 
@@ -617,7 +584,7 @@ bool TextViewWindow::scrollUpOneLine()
   return true;
 }
 
-bool TextViewWindow::scrollDownOneLine()
+bool TextWindow::scrollDownOneLine()
 {
   if(m_Y < 1)
   {
@@ -640,11 +607,11 @@ bool TextViewWindow::scrollDownOneLine()
   SimpleString* pLine = NULL;
   if(m_LastScrollDirection == Downward)
   {
-    pLine = GetPreviousLine();
+    pLine = m_pDocument->GetPreviousLine();
   }
   else
   {
-    pLine = GetIndexedLine(m_Y - 1);
+    pLine = m_pDocument->GetIndexedLine(m_Y - 1);
     m_LastScrollDirection = Downward;
   }
 
@@ -660,7 +627,7 @@ bool TextViewWindow::scrollDownOneLine()
   return true;
 }
 
-struct Image* TextViewWindow::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
+struct Image* TextWindow::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
 {
   struct Image* pImage = (struct Image*) NewObject(
       NULL, SYSICLASS,

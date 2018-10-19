@@ -10,7 +10,7 @@
 
 #include "AppMenu.h"
 #include "AppScreen.h"
-#include "TextViewWindow.h"
+#include "TextWindow.h"
 #include "Command.h"
 
 class Application
@@ -32,8 +32,8 @@ private:
 
   bool m_bExitRequested;
   AppScreen* m_pScreen;
-  TextViewWindow* m_pLeftWin;
-  TextViewWindow* m_pRightWin;
+  TextWindow* m_pLeftWin;
+  TextWindow* m_pRightWin;
 
   AppMenu* m_pMenu;
   Command* m_pCmdOpenLeftFile;
