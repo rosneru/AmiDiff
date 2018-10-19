@@ -62,11 +62,6 @@ void TextDocument::Clear()
   m_TimeStatistics = "";
 }
 
-const SimpleString& TextDocument::FileName()
-{
-  return m_FileName;
-}
-
 const size_t TextDocument::NumLines()
 {
   return m_pLines->Size();

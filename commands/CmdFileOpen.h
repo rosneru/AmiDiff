@@ -3,7 +3,7 @@
 
 #include "SimpleString.h"
 #include "Command.h"
-#include "DiffDocument.h"
+#include "Document.h"
 
 /**
  * Command for opening, reading and displaying an input file. Its
@@ -19,9 +19,12 @@
 class CmdFileOpen : public Command
 {
 public:
-  CmdFileOpen(SimpleString p_Name);
+  CmdFileOpen(SimpleString p_Name, Document& p_Document);
   virtual ~CmdFileOpen();
   virtual void Execute();
+
+private:
+  Document& m_Document;
 };
 
 #endif // CMD_FILEOPEN_H

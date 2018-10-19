@@ -10,6 +10,8 @@
 #include "CmdFileOpen.h"
 #include "CmdQuit.h"
 
+#include "TextDocument.h"
+
 #include "Application.h"
 
 Application::Application(int argc, char **argv)
@@ -117,8 +119,12 @@ bool Application::Run()
   // Instantiating the commands
   //
   m_pCmdQuit = new CmdQuit("Quit the application", m_bExitRequested);
-  m_pCmdOpenLeftFile = new CmdFileOpen("Open the left file");
-  m_pCmdOpenRightFile = new CmdFileOpen("Open the right file");
+
+  TextDocument leftDocument;
+  m_pCmdOpenLeftFile = new CmdFileOpen("Open left file", leftDocument);
+
+  TextDocument rightDocument;
+  m_pCmdOpenRightFile = new CmdFileOpen("Open right file", rightDocument);
 
 
   // Fill the GadTools menu struct, supplying pointers to the commands
@@ -126,8 +132,8 @@ bool Application::Run()
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open left file...",     "L", 0, 0, m_pCmdOpenLeftFile },
-    {  NM_ITEM,   "Open right file...",    "R", 0, 0, m_pCmdOpenRightFile },
+    {  NM_ITEM,   "Open left file...",     "O", 0, 0, m_pCmdOpenLeftFile },
+    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdOpenRightFile }, // TODO
     {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
     {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
     {  NM_END,    NULL,                     0 , 0, 0, 0 },
@@ -151,9 +157,9 @@ bool Application::Run()
     Dispose();
     return false;
   }
-
+/*
   //
-  // Installing menu to left window
+  // Installing menu to right window
   //
 
   if(m_pMenu->AttachToWindow(m_pRightWin->IntuiWindow()) == FALSE)
@@ -161,7 +167,7 @@ bool Application::Run()
     Dispose();
     return false;
   }
-
+*/
   //
   // If there are at least two command line arguments permitted,
   // (three for the if as the first one is the application name),
