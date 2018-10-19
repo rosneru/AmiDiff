@@ -13,15 +13,21 @@ public:
   bool Load(SimpleString p_FileName);
   void Clear();
 
+  const SimpleString& FileName();
+  const size_t NumLines();
+
+
   SimpleString* GetFirstLine();
   SimpleString* GetCurrentLine();
   SimpleString* GetPreviousLine();
   SimpleString* GetNextLine();
-  size_t NumLines();
+  SimpleString* GetIndexedLine(int p_LineIdx);
 
 private:
   LinkedList* m_pLines;
   SimpleString* m_pCurrentLine;
+  SimpleString m_FileName;
+  SimpleString m_TimeStatistics;
 };
 
 

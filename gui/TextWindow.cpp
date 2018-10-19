@@ -1,20 +1,17 @@
 #include <string.h>
 
 #include <clib/alib_protos.h>
-#include <clib/asl_protos.h>
-#include <clib/dos_protos.h>
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
 #include <intuition/icclass.h>
-#include <libraries/asl.h>
-#include <libraries/dos.h>
 #include "TextWindow.h"
 
 TextWindow::TextWindow(AppScreen* p_pAppScreen)
-  : m_pDocument(NULL),
+  : WindowBase(p_pAppScreen),
+    m_pDocument(NULL),
     m_MaxWindowTextLines(0),
     m_Y(0),
     m_FontHeight(0),
@@ -186,7 +183,7 @@ TextWindow::~TextWindow()
 
 void TextWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
 {
-  
+
 }
 
 void TextWindow::Resized()
@@ -219,7 +216,7 @@ void TextWindow::Refresh()
   EndRefresh(m_pWindow, TRUE);
 }
 
-bool TextWindow::Open(DW_TYPE p_DwType)
+bool TextWindow::Open()
 {
   //
   // Initial validations
@@ -250,8 +247,9 @@ bool TextWindow::Open(DW_TYPE p_DwType)
   int activateWin = TRUE;
   int winLeft = 0;
   m_Title = "Left Diff Window";
-  m_FileRequesterTitle = "Select left diff file";
 
+  winLeft = screenWidth / 4;
+/*
   if(p_DwType == RIGHT)
   {
     winLeft = winWidth; // begin one pixel after LEFT window ends
@@ -259,7 +257,7 @@ bool TextWindow::Open(DW_TYPE p_DwType)
     m_FileRequesterTitle = "Select right diff file";
     activateWin = FALSE;
   }
-
+*/
   //
   // Opening the window
   //
@@ -377,7 +375,7 @@ void TextWindow::Close()
 
   // Also call Close() in parent
   // TODO debug if it really happens
-  Window::Close();
+  WindowBase::Close();
 }
 
 
@@ -391,7 +389,7 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 
 
   // Set full path of opened file as window title
-  SetTitle(p_FileName);
+  SetTitle(p_pTextDocument->FileName());
   displayFile();
 
   // Set scroll gadgets pot size dependent on window size and the number
@@ -472,48 +470,6 @@ void TextWindow::calcMaxWindowTextLines()
   m_MaxWindowTextLines /= m_FontHeight;
 }
 
-SimpleString TextWindow::aslRequestFileName()
-{
-  SimpleString fileName = "";
-
-  struct TagItem fileRequestTags[] =
-  {
-    ASL_Hail, (ULONG)m_FileRequesterTitle.C_str(),
-    TAG_DONE
-  };
-
-  struct TagItem requestOpeningTags[] =
-  {
-    ASLFR_Window, (ULONG)m_pWindow,
-    TAG_DONE
-  };
-
-  struct FileRequester* pFileRequest;
-  pFileRequest = (struct FileRequester*)
-    AllocAslRequest(ASL_FileRequest, fileRequestTags);
-
-  if(pFileRequest == NULL)
-  {
-    return fileName;
-  }
-
-  if(AslRequest(pFileRequest,requestOpeningTags))
-  {
-    // Copying path name into a big enough buffer
-    char fullPathBuf[512];
-    strcpy(fullPathBuf, pFileRequest->rf_Dir);
-
-    // Calling a dos.library function to combine path and file name
-    if(AddPart(fullPathBuf, pFileRequest->fr_File, 512))
-    {
-     fileName = fullPathBuf;
-    }
-  }
-
-  FreeAslRequest(pFileRequest);
-
-  return fileName;
-}
 
 void TextWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge)
 {

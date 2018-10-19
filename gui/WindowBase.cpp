@@ -11,22 +11,22 @@
 #include <intuition/icclass.h>
 #include <libraries/asl.h>
 #include <libraries/dos.h>
-#include "Window.h"
+#include "WindowBase.h"
 
-Window::Window(AppScreen* p_pAppScreen)
+WindowBase::WindowBase(AppScreen* p_pAppScreen)
   : m_pAppScreen(p_pAppScreen),
     m_pWindow(NULL)
 {
 
 }
 
-Window::~Window()
+WindowBase::~WindowBase()
 {
   Close();
 }
 
 
-void Window::Close()
+void WindowBase::Close()
 {
   if(m_pWindow != NULL)
   {
@@ -35,12 +35,12 @@ void Window::Close()
   }
 }
 
-const char* Window::Title()
+const char* WindowBase::Title()
 {
   return m_Title.C_str();
 }
 
-void Window::SetTitle(SimpleString p_NewTitle)
+void WindowBase::SetTitle(SimpleString p_NewTitle)
 {
   m_Title = p_NewTitle;
 
@@ -49,7 +49,7 @@ void Window::SetTitle(SimpleString p_NewTitle)
   SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
 }
 
-struct Window* Window::IntuiWindow()
+struct Window* WindowBase::IntuiWindow()
 {
   return m_pWindow;
 }

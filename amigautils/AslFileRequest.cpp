@@ -18,19 +18,14 @@ AslFileRequest::~AslFileRequest()
 
 SimpleString AslFileRequest::SelectFileName(SimpleString p_Title)
 {
-  SimpleString fileName = ""
-
-  struct TagItem requestOpeningTags[] =
-  {
-    ASLFR_Window, (ULONG)m_pWindow,
-    TAG_DONE
-  };
+  SimpleString fileName = "";
 
   // Allocate data structure for the ASL requester
-  struct FileRequester* pFileRequest = (struct FileRequester*) AllocAslRequestTags(
-    ASL_FileRequest,
-    ASL_Hail, (ULONG)p_Title.C_str(),
-    TAG_DONE);
+  struct FileRequester* pFileRequest = (struct FileRequester*)
+    AllocAslRequestTags(
+      ASL_FileRequest,
+      ASL_Hail, (ULONG)p_Title.C_str(),
+      TAG_DONE);
 
   if(pFileRequest == NULL)
   {
@@ -46,9 +41,9 @@ SimpleString AslFileRequest::SelectFileName(SimpleString p_Title)
     FreeAslRequest(pFileRequest);
     return fileName;
   }
-  
+
   // Copying selected path name into a big enough buffer
-  // TODO Find something better than use a fixed buffer size. Is there 
+  // TODO Find something better than use a fixed buffer size. Is there
   //      e.g. a system max path length defined somewhere?
   char fullPathBuf[512];
   strcpy(fullPathBuf, pFileRequest->rf_Dir);

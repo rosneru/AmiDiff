@@ -26,7 +26,7 @@ TextDocument::~TextDocument()
  */
 bool TextDocument::Load(SimpleString p_FileName)
 {
-  if(p_FileName.Length)
+  if(p_FileName.Length() == 0)
   {
     return false;
   }
@@ -37,12 +37,13 @@ bool TextDocument::Load(SimpleString p_FileName)
   {
     return false;
   }
-  
+
   // Read line by line into list
   bool bSuccess = dosFile.ReadLines(*m_pLines);
   if(bSuccess == true)
   {
     GetFirstLine();
+    m_FileName = p_FileName;
   }
 
   m_TimeStatistics += dosFile.GetTimeStatistics();
@@ -56,7 +57,21 @@ void TextDocument::Clear()
     delete m_pCurrentLine;
     m_pLines->RemoveItem();
   }
+
+  m_FileName = "";
+  m_TimeStatistics = "";
 }
+
+const SimpleString& TextDocument::FileName()
+{
+  return m_FileName;
+}
+
+const size_t TextDocument::NumLines()
+{
+  return m_pLines->Size();
+}
+
 
 SimpleString* TextDocument::GetFirstLine()
 {
@@ -82,13 +97,8 @@ SimpleString* TextDocument::GetNextLine()
   return m_pCurrentLine;
 }
 
-SimpleString* TextDocument::GetIndexedLine(int p_lineIdx)
+SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
 {
-  m_pCurrentLine = static_cast<SimpleString*>(m_pLines->GetIndexed(p_lineIdx));
+  m_pCurrentLine = static_cast<SimpleString*>(m_pLines->GetIndexed(p_LineIdx));
   return m_pCurrentLine;
-}
-
-size_t TextDocument::NumLines()
-{
-  return m_pLines->Size();
 }

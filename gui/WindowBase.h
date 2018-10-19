@@ -1,5 +1,5 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef WINDOW_BASE_H
+#define WINDOW_BASE_H
 
 #include <intuition/screens.h>
 #include "AppScreen.h"
@@ -12,11 +12,11 @@
  * @author Uwe Rosner
  * @date 19/10/2018
  */
-class Window
+class WindowBase
 {
 public:
-  virtual ~Window();
-  
+  virtual ~WindowBase();
+
   virtual void HandleIdcmp(struct IntuiMessage* p_pMsg) = 0;
 
   /**
@@ -42,9 +42,9 @@ protected:
    *
    * @param p_pAppScreen
    * Screen on which the window will occur at opening time
-   * 
+   *
    */
-  Window(AppScreen* p_pAppScreen);
+  WindowBase(AppScreen* p_pAppScreen);
 };
 
 

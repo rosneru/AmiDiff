@@ -5,7 +5,7 @@
 #include "AppScreen.h"
 #include "SimpleString.h"
 #include "TextDocument.h"
-#include "Window.h"
+#include "WindowBase.h"
 
 /**
  * Class for a text window object. Can be created multiple times, e.g.
@@ -22,14 +22,14 @@
  * @author Uwe Rosner
  * @date 23/09/2018
  */
-class TextWindow : public Window
+class TextWindow : public WindowBase
 {
 public:
   TextWindow(AppScreen* p_pAppScreen);
   virtual ~TextWindow();
-  
+
   /**
-   *
+   * TODO make virtual?
    */
   void HandleIdcmp(struct IntuiMessage* p_pMsg);
 
@@ -69,7 +69,7 @@ public:
    * @returns
    * false if opening fails
    */
-  bool Open(DW_TYPE p_DwType);
+  bool Open();
 
   /**
    * Closes the window

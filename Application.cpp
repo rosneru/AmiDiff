@@ -95,24 +95,24 @@ bool Application::Run()
   // Opening the left window
   //
   m_pLeftWin = new TextWindow(m_pScreen);
-  if(!m_pLeftWin->Open(TextWindow::LEFT))
+  if(!m_pLeftWin->Open()) // TODO make it DiffWindow and give DiffWindow::LEFT
   {
     // Opening the window failed
     Dispose();
     return false;
   }
-
+/*
   //
   // Opening the right window
   //
   m_pRightWin = new TextWindow(m_pScreen);
-  if(!m_pRightWin->Open(TextWindow::RIGHT))
+  if(!m_pRightWin->Open()) // TODO make it DiffWindow and give DiffWindow::RIGHT
   {
     // Opening the window failed
     Dispose();
     return false;
   }
-
+*/
   //
   // Instantiating the commands
   //
@@ -172,9 +172,10 @@ bool Application::Run()
   {
     SimpleString fileNameLeft = m_Argv[1];
     SimpleString fileNameRight = m_Argv[2];
-
+/* TODO
     m_pLeftWin->ReadFile(fileNameLeft);
     m_pRightWin->ReadFile(fileNameRight);
+*/
   }
 
   //
