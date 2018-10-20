@@ -194,6 +194,7 @@ File
 "gui/AppScreen.h"
 "oscottlibs/LinkedListNode.h"
 "gui/WindowBase.h"
+"model/Document.h"
 Storm Shell Project (Dependencies)
 "objects_debug/TextWindow.o" "objects_debug/TextWindow.debug"
 ""
