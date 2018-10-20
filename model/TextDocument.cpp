@@ -3,17 +3,12 @@
 
 
 TextDocument::TextDocument()
-  : m_pLines(new LinkedList())
 {
-  SimpleString* pInitial = new SimpleString();
-  m_pLines->InsertHead(pInitial);
-  m_pCurrentLine = static_cast<SimpleString*>(GetCurrentLine());
 }
 
 TextDocument::~TextDocument()
 {
   Clear();
-  delete m_pLines;
 }
 
 /**
@@ -31,6 +26,8 @@ bool TextDocument::Load(SimpleString p_FileName)
     return false;
   }
 
+  Clear();
+
   // Open file
   DosFile dosFile;
   if(dosFile.Open(p_FileName.C_str(), DosFile::AM_OldFile) == false)
@@ -39,23 +36,25 @@ bool TextDocument::Load(SimpleString p_FileName)
   }
 
   // Read line by line into list
-  bool bSuccess = dosFile.ReadLines(*m_pLines);
+  bool bSuccess = dosFile.ReadLines(m_Lines);
   if(bSuccess == true)
   {
-    GetFirstLine();
     m_FileName = p_FileName;
   }
 
   m_TimeStatistics += dosFile.GetTimeStatistics();
+  dosFile.Close();
   return bSuccess;
 }
 
 void TextDocument::Clear()
 {
-  while (GetFirstLine())
+  SimpleString* pLine = GetFirstLine();
+  while (pLine != NULL)
   {
-    delete m_pCurrentLine;
-    m_pLines->RemoveItem();
+    delete pLine;
+    m_Lines.RemoveItem();
+    pLine = GetFirstLine();
   }
 
   m_FileName = "";
@@ -64,36 +63,31 @@ void TextDocument::Clear()
 
 const size_t TextDocument::NumLines()
 {
-  return m_pLines->Size();
+  return m_Lines.Size();
 }
 
 
 SimpleString* TextDocument::GetFirstLine()
 {
-  m_pCurrentLine = static_cast<SimpleString*>(m_pLines->GetFirst());
-  return m_pCurrentLine;
+  return static_cast<SimpleString*>(m_Lines.GetFirst());
 }
 
 SimpleString* TextDocument::GetCurrentLine()
 {
-  m_pCurrentLine = static_cast<SimpleString*>(m_pLines->GetSelected());
-  return m_pCurrentLine;
+  return static_cast<SimpleString*>(m_Lines.GetSelected());
 }
 
 SimpleString* TextDocument::GetPreviousLine()
 {
-  m_pCurrentLine = static_cast<SimpleString*>(m_pLines->GetPrev());
-  return m_pCurrentLine;
+  return static_cast<SimpleString*>(m_Lines.GetPrev());
 }
 
 SimpleString* TextDocument::GetNextLine()
 {
-  m_pCurrentLine = static_cast<SimpleString*>(m_pLines->GetNext());
-  return m_pCurrentLine;
+  return static_cast<SimpleString*>(m_Lines.GetNext());
 }
 
 SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
 {
-  m_pCurrentLine = static_cast<SimpleString*>(m_pLines->GetIndexed(p_LineIdx));
-  return m_pCurrentLine;
+  return static_cast<SimpleString*>(m_Lines.GetIndexed(p_LineIdx));
 }

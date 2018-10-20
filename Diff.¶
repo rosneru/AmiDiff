@@ -124,9 +124,9 @@ File
 "Application.cpp"
 "Application.h"
 "oscottlibs/LinkedListNode.h"
-"model/TextDocument.h"
 "gui/WindowBase.h"
 "model/Document.h"
+"gui/AppScreen.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -137,8 +137,9 @@ File
 "commands/CmdFileOpen.h"
 "commands/Command.h"
 "oscottlibs/LinkedListNode.h"
-"model/TextDocument.h"
 "model/Document.h"
+"gui/AppScreen.h"
+"gui/WindowBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdFileOpen.o" "objects_debug/CmdFileOpen.debug"
 ""

@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include <clib/alib_protos.h>
+#include <clib/dos_protos.h>
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <intuition/intuition.h>
@@ -381,6 +382,10 @@ void TextWindow::Close()
 
 bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 {
+  char* pFn[] = { p_pTextDocument->FileName().C_str() };
+  VPrintf("Dateiname = %s\n", pFn);
+  return true;
+
   m_Y = 0;
 
   // Clear the window completely

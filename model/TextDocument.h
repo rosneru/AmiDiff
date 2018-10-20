@@ -23,8 +23,7 @@ public:
   SimpleString* GetIndexedLine(int p_LineIdx);
 
 private:
-  LinkedList* m_pLines;
-  SimpleString* m_pCurrentLine;
+  LinkedList m_Lines;
   SimpleString m_FileName;
   SimpleString m_TimeStatistics;
 };

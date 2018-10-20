@@ -121,10 +121,10 @@ bool Application::Run()
   m_pCmdQuit = new CmdQuit("Quit the application", m_bExitRequested);
 
   TextDocument leftDocument;
-  m_pCmdOpenLeftFile = new CmdFileOpen("Open left file", leftDocument);
+  m_pCmdOpenLeftFile = new CmdFileOpen("Open left file", leftDocument, m_pLeftWin);
 
-  TextDocument rightDocument;
-  m_pCmdOpenRightFile = new CmdFileOpen("Open right file", rightDocument);
+//  TextDocument rightDocument;
+//  m_pCmdOpenRightFile = new CmdFileOpen("Open right file", rightDocument, *m_pRightWin);
 
 
   // Fill the GadTools menu struct, supplying pointers to the commands
@@ -132,8 +132,8 @@ bool Application::Run()
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open left file...",     "O", 0, 0, m_pCmdOpenLeftFile },
-    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdOpenRightFile }, // TODO
+    {  NM_ITEM,   "Open...",               "O", 0, 0, m_pCmdOpenLeftFile },
+//    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdOpenRightFile }, // TODO
     {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
     {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
     {  NM_END,    NULL,                     0 , 0, 0, 0 },
