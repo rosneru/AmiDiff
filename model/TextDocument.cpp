@@ -1,6 +1,6 @@
 #include "DosFile.h"
 #include "TextDocument.h"
-
+#include <stdio.h>
 
 TextDocument::TextDocument()
 {

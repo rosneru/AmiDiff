@@ -120,8 +120,8 @@ bool Application::Run()
   //
   m_pCmdQuit = new CmdQuit("Quit the application", m_bExitRequested);
 
-  TextDocument leftDocument;
-  m_pCmdOpenLeftFile = new CmdFileOpen("Open left file", leftDocument, m_pLeftWin);
+  TextDocument* leftDocument = new TextDocument();
+  m_pCmdOpenLeftFile = new CmdFileOpen("Open left file", *leftDocument, m_pLeftWin);
 
 //  TextDocument rightDocument;
 //  m_pCmdOpenRightFile = new CmdFileOpen("Open right file", rightDocument, *m_pRightWin);
@@ -200,20 +200,20 @@ void Application::intuiEventLoop()
   //
 
   struct Window* pWin1 = m_pLeftWin->IntuiWindow();
-  struct Window* pWin2 = m_pRightWin->IntuiWindow();
+  //struct Window* pWin2 = m_pRightWin->IntuiWindow();
   struct Menu* pMenu = m_pMenu->IntuiMenu();
 
 
   while (m_bExitRequested == false)
   {
     // Waiting for a signals from LeftWin or from RightWin
-    Wait(1L << pWin1->UserPort->mp_SigBit |
-         1L << pWin2->UserPort->mp_SigBit);
+    Wait(1L << pWin1->UserPort->mp_SigBit);// |
+         //1L << pWin2->UserPort->mp_SigBit);
 
     struct IntuiMessage* pMsg;
     while ((m_bExitRequested == false) &&
-          ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort))))
+          ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ))// ||
+//           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort))))
     {
       switch (pMsg->Class)
       {
@@ -253,10 +253,12 @@ void Application::intuiEventLoop()
               {
                 m_pLeftWin->YChangedHandler(newY);
               }
+              /*
               else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
               {
                 m_pRightWin->YChangedHandler(newY);
               }
+              */
               break;
             }
 
@@ -266,10 +268,12 @@ void Application::intuiEventLoop()
               {
                 m_pLeftWin->YDecrease();
               }
+              /*
               else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
               {
                 m_pRightWin->YDecrease();
               }
+              */
               break;
             }
 
@@ -279,10 +283,12 @@ void Application::intuiEventLoop()
               {
                 m_pLeftWin->YIncrease();
               }
+              /*
               else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
               {
                 m_pRightWin->YIncrease();
               }
+              */
               break;
             }
 
@@ -299,10 +305,12 @@ void Application::intuiEventLoop()
             {
               m_pLeftWin->YIncrease();
             }
+            /*
             else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
             {
               m_pRightWin->YIncrease();
             }
+            */
           }
           else if(pMsg->Code == CURSORUP)
           {
@@ -311,10 +319,12 @@ void Application::intuiEventLoop()
             {
               m_pLeftWin->YDecrease();
             }
+            /*
             else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
             {
               m_pRightWin->YDecrease();
             }
+            */
           }
           break;
         }
@@ -325,10 +335,12 @@ void Application::intuiEventLoop()
           {
             m_pLeftWin->Resized();
           }
+          /*
           else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
           {
             m_pRightWin->Resized();
           }
+          */
 
           break;
         }
@@ -339,10 +351,12 @@ void Application::intuiEventLoop()
           {
             m_pLeftWin->Refresh();
           }
+          /*
           else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
           {
             m_pRightWin->Refresh();
           }
+          */
 
           break;
         }

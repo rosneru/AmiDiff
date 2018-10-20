@@ -24,8 +24,6 @@ public:
 
 private:
   LinkedList m_Lines;
-  SimpleString m_FileName;
-  SimpleString m_TimeStatistics;
 };
 
 

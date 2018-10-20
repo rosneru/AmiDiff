@@ -382,10 +382,7 @@ void TextWindow::Close()
 
 bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 {
-  char* pFn[] = { p_pTextDocument->FileName().C_str() };
-  VPrintf("Dateiname = %s\n", pFn);
-  return true;
-
+  m_pDocument = p_pTextDocument;
   m_Y = 0;
 
   // Clear the window completely
