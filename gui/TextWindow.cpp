@@ -4,6 +4,7 @@
 #include <clib/dos_protos.h>
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
+#include <clib/utility_protos.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
@@ -182,10 +183,6 @@ TextWindow::~TextWindow()
 }
 
 
-void TextWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
-{
-
-}
 
 void TextWindow::Resized()
 {
@@ -601,4 +598,73 @@ struct Image* TextWindow::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULO
 	}
 
   return pImage;
+}
+
+
+void TextWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
+{
+  switch (p_pMsg->Class)
+  {
+    case IDCMP_IDCMPUPDATE:
+    {
+      ULONG tagData = GetTagData(GA_ID, 0,
+        (struct TagItem *)p_pMsg->IAddress);
+      switch(tagData)
+      {
+        case TextWindow::DGID_YPROP:
+        {
+          size_t newY = GetTagData(PGA_Top, 0, (struct TagItem *)
+            p_pMsg->IAddress);
+
+          YChangedHandler(newY);
+          break;
+        }
+
+        case TextWindow::DGID_UPARROW:
+        {
+          YDecrease();
+          break;
+        }
+
+        case TextWindow::DGID_DOWNARROW:
+        {
+          YIncrease();
+          break;
+        }
+
+      }
+      break;
+    }
+
+    case IDCMP_RAWKEY:
+    {
+      if(p_pMsg->Code == CURSORDOWN)
+      {
+        YIncrease();
+      }
+      else if(p_pMsg->Code == CURSORUP)
+      {
+        YDecrease();
+      }
+      break;
+    }
+
+    case IDCMP_NEWSIZE:
+    {
+      Resized();
+      break;
+    }
+
+    case IDCMP_REFRESHWINDOW:
+    {
+      Refresh();
+      break;
+    }
+
+    case IDCMP_CLOSEWINDOW:
+    {
+      //m_pCmdQuit->Execute(); TODO
+      break;
+    }
+  }
 }

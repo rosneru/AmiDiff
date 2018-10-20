@@ -2,7 +2,6 @@
 
 #include <clib/exec_protos.h>
 #include <clib/intuition_protos.h>
-#include <clib/utility_protos.h>
 
 #include "LinkedList.h"
 
@@ -215,160 +214,42 @@ void Application::intuiEventLoop()
           ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ))// ||
 //           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort))))
     {
-      switch (pMsg->Class)
+      if(pMsg->Class == IDCMP_MENUPICK)
       {
-        case IDCMP_MENUPICK:
+        //
+        // Menupick messages are handled here
+        //
+        UWORD menuNumber = pMsg->Code;
+        struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
+
+        if(pSelectedItem != NULL)
         {
-          UWORD menuNumber = pMsg->Code;
-          struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
-
-          if(pSelectedItem != NULL)
+          // Getting the user data from selected menu item
+          APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
+          if(pUserData != NULL)
           {
-            // Getting the user data from selected menu item
-            APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
-            if(pUserData != NULL)
-            {
-              // Our menu user data always contains a pointer to a Command
-              Command* pSelecedCommand = static_cast<Command*>(pUserData);
+            // Our menu user data always contains a pointer to a Command
+            Command* pSelecedCommand = static_cast<Command*>(pUserData);
 
-              // Execute this command
-              pSelecedCommand->Execute();
-            }
+            // Execute this command
+            pSelecedCommand->Execute();
           }
-          break;
         }
-
-        case IDCMP_IDCMPUPDATE:
+      }
+      else
+      {
+        //
+        // All other messages are handled in the appropriate window
+        //
+        if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
         {
-          ULONG tagData = GetTagData(GA_ID, 0,
-            (struct TagItem *)pMsg->IAddress);
-          switch(tagData)
-          {
-            case TextWindow::DGID_YPROP:
-            {
-              size_t newY = GetTagData(PGA_Top, 0,
-                (struct TagItem *)pMsg->IAddress);
-
-              if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-              {
-                m_pLeftWin->YChangedHandler(newY);
-              }
-              /*
-              else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-              {
-                m_pRightWin->YChangedHandler(newY);
-              }
-              */
-              break;
-            }
-
-            case TextWindow::DGID_UPARROW:
-            {
-              if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-              {
-                m_pLeftWin->YDecrease();
-              }
-              /*
-              else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-              {
-                m_pRightWin->YDecrease();
-              }
-              */
-              break;
-            }
-
-            case TextWindow::DGID_DOWNARROW:
-            {
-              if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-              {
-                m_pLeftWin->YIncrease();
-              }
-              /*
-              else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-              {
-                m_pRightWin->YIncrease();
-              }
-              */
-              break;
-            }
-
-          }
-          break;
+          m_pLeftWin->HandleIdcmp(pMsg);
         }
-
-        case IDCMP_RAWKEY:
-        {
-          if(pMsg->Code == CURSORDOWN)
-          {
-            // Cursor *down* => scroll the text *up* in according window
-            if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-            {
-              m_pLeftWin->YIncrease();
-            }
-            /*
-            else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-            {
-              m_pRightWin->YIncrease();
-            }
-            */
-          }
-          else if(pMsg->Code == CURSORUP)
-          {
-            // Cursor *up* => scroll the text *down* in according window
-            if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-            {
-              m_pLeftWin->YDecrease();
-            }
-            /*
-            else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-            {
-              m_pRightWin->YDecrease();
-            }
-            */
-          }
-          break;
-        }
-
-        case IDCMP_NEWSIZE:
-        {
-          if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-          {
-            m_pLeftWin->Resized();
-          }
-          /*
-          else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-          {
-            m_pRightWin->Resized();
-          }
-          */
-
-          break;
-        }
-
-        case IDCMP_REFRESHWINDOW:
-        {
-          if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-          {
-            m_pLeftWin->Refresh();
-          }
-          /*
-          else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-          {
-            m_pRightWin->Refresh();
-          }
-          */
-
-          break;
-        }
-
-        case IDCMP_CLOSEWINDOW:
-        {
-          m_pCmdQuit->Execute();
-          break;
-        }
-
       }
 
+      //
+      // Every IntuiMessage has to be replied
+      //
       ReplyMsg((struct Message *)pMsg);
     }
   }
