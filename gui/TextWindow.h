@@ -8,16 +8,7 @@
 #include "WindowBase.h"
 
 /**
- * Class for a text window object. Can be created multiple times, e.g.
- * twice, to have a left and a right diff window.
- *
- * It extends DiffDocument so it inherits all of DiffDocuments public
- * methods.
- *
- * In addition to this it now *is* an DiffDocument which means you can
- * override the ReadFile() method of DiffDocument. If done so and when
- * an open command occurs on a DiffDocument the ReadFile() of this
- * window object will be called first.
+ * Class for a text window object. Can be created multiple times.
  *
  * @author Uwe Rosner
  * @date 23/09/2018
@@ -49,7 +40,7 @@ public:
   };
 
   /**
-   * Reorganizes the window including re-calculating scrollbars. If
+   * Reorganizes the window including re-calculating the scrollbars. If
    * needed also re-drawing the obscured text areas.
    *
    * This should be called from the application if the signal
@@ -61,10 +52,6 @@ public:
 
   /**
    * Opens the window.
-   *
-   * @param dwType
-   * Regarding to this type the window will be opened on the left or on
-   * the right side of the screen
    *
    * @returns
    * false if opening fails
