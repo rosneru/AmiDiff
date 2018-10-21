@@ -45,6 +45,28 @@ protected:
    *
    */
   WindowBase(AppScreen* p_pAppScreen);
+
+  /**
+   * Creates an BOOPSI image object of one of the system shipped with
+   * the operating system from OS2.04 onward.
+   *
+   * @param p_SysImageId
+   * Id of the system image
+   *
+   * @see intuition/imageclass.h
+   *
+   * @param p_Width
+   * If image creation is successful the width of the image will be
+   * stored here.
+   *
+   * @param p_Height
+   * If image creation is successful the height of the image will be
+   * stored here.
+   *
+   * @returns
+   * A pointer to the image struct if successful or NULL if failed.
+   */
+  struct Image* createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height);
 };
 
 

@@ -582,24 +582,6 @@ bool TextWindow::scrollDownOneLine()
   return true;
 }
 
-struct Image* TextWindow::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
-{
-  struct Image* pImage = (struct Image*) NewObject(
-      NULL, SYSICLASS,
-			SYSIA_Which, p_SysImageId,
-			SYSIA_Size, SYSISIZE_MEDRES,
-			SYSIA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-			TAG_END);
-
-	if(pImage != NULL)
-	{
-	  GetAttr(IA_Width, pImage, &p_Width);
-	  GetAttr(IA_Height, pImage, &p_Height);
-	}
-
-  return pImage;
-}
-
 
 void TextWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
 {
