@@ -26,103 +26,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
   // Calculate some basic values
   //
   m_FontHeight = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
-	int barHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
 
-  WORD hSpace = 5;
-  WORD vSpace = 3;
-  WORD selectButtonWidth = m_FontHeight + 2; // shoud be square
-  WORD stringGadgetWidth = m_WinWidth - hSpace - hSpace - hSpace - selectButtonWidth;
-  WORD selectButtonLeft = hSpace + stringGadgetWidth + hSpace;
-  WORD buttonWidth = 60;
-  WORD buttonHeight = m_FontHeight + 2;
-  //m_WinHeight = vSpace + vSpace + 3 * (buttonHeight + vSpace);
-
-  // Creating the string gadget for the file name of the left file
-  m_pLeftFileStringGadget = (struct Gadget*) NewObject(
-    NULL, STRGCLASS,
-    GA_ID, OFW_LEFT_FILE_STRING,
-    GA_LEFT, hSpace,
-    GA_TOP, vSpace + barHeight,
-    GA_WIDTH, stringGadgetWidth,
-    GA_HEIGHT, buttonHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-//    GA_GZZGadget, TRUE,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Button for opening a file selector for left file
-  m_pOpenLeftFileButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pLeftFileStringGadget,
-    GA_ID, OFW_LEFT_FILE_BUTTON,
-    GA_LEFT, selectButtonLeft,
-    GA_TOP, vSpace + barHeight,
-    GA_WIDTH, selectButtonWidth,
-    GA_HEIGHT, buttonHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-//    GA_GZZGadget, TRUE,
-    GA_Text, (const char*) "...",
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the string gadget for the file name of the right file
-	m_pRightFileStringGadget = (struct Gadget*) NewObject(
-	  NULL, STRGCLASS,
-  	GA_Previous, m_pOpenLeftFileButton,
-  	GA_ID, OFW_RIGHT_FILE_STRING,
-    GA_LEFT, hSpace,
-    GA_TOP, vSpace + vSpace + buttonHeight + barHeight,
-    GA_WIDTH, stringGadgetWidth,
-    GA_HEIGHT, buttonHeight,
-  	GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-//  	GA_GZZGadget, TRUE,
-  	ICA_TARGET, ICTARGET_IDCMP,
-  	TAG_END);
-
-  // Button for opening a file selector for right file
-  m_pOpenRightFileButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pRightFileStringGadget,
-    GA_ID, OFW_RIGHT_FILE_BUTTON,
-    GA_LEFT, selectButtonLeft,
-    GA_TOP, vSpace + vSpace + buttonHeight + barHeight,
-    GA_WIDTH, selectButtonWidth,
-    GA_HEIGHT, buttonHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-//    GA_GZZGadget, TRUE,
-    GA_Text, (const char*) "...",
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the Diff button
-  m_pDiffButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pOpenRightFileButton,
-    GA_ID, OFW_DIFF_BUTTON,
-    GA_LEFT, hSpace,
-    GA_RELBOTTOM, - buttonHeight - 5,
-    GA_WIDTH, buttonWidth,
-    GA_HEIGHT, buttonHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-//    GA_GZZGadget, TRUE,
-    GA_Text, (const char*) "Diff",
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the Cancel button
-  m_pCancelButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pDiffButton,
-    GA_ID, OFW_CANCEL_BUTTON,
-    GA_RELRIGHT, -buttonWidth-hSpace,
-    GA_RELBOTTOM, -buttonHeight - 5,
-    GA_WIDTH, buttonWidth,
-    GA_HEIGHT, m_FontHeight + 4,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-//    GA_GZZGadget, TRUE,
-    GA_Text, (const char*) "Cancel",
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
 }
 
 OpenFilesWindow::~OpenFilesWindow()
@@ -186,7 +90,6 @@ bool OpenFilesWindow::Open()
               WFLG_DEPTHGADGET |    // Add a depth gadget
               WFLG_ACTIVATE,
     WA_SimpleRefresh, TRUE,
-    WA_Gadgets, m_pLeftFileStringGadget,
     TAG_END);
 
 
@@ -210,6 +113,158 @@ bool OpenFilesWindow::Open()
   m_IntuiText.ITextFont = &m_TextAttr;
   m_IntuiText.NextText  = NULL;
 
+  //
+  // Setting up the gadgets
+  //
+
+  WORD hSpace = 5;
+  WORD vSpace = 3;
+  WORD top = (m_pWindow->BorderTop) + 5L;
+  WORD left = (m_pWindow->BorderLeft) + 5L;
+  WORD right = (m_pWindow->BorderRight) + 5L;
+  WORD bottom = (m_pWindow->BorderBottom) + 5L;
+  WORD selectButtonWidth = m_FontHeight + 2; // shoud be square
+  WORD stringGadgetWidth = m_WinWidth - left - hSpace - hSpace - selectButtonWidth;
+  WORD selectButtonLeft = hSpace + stringGadgetWidth + hSpace;
+  WORD buttonWidth = 60;
+  WORD buttonHeight = m_FontHeight + 2;
+
+
+  // Creating the string gadget for the file name of the left file
+  m_pLeftFileStringGadget = (struct Gadget*) NewObject(
+    NULL, BUTTONGCLASS,
+    GA_ID, OFW_LEFT_FILE_STRING,
+    GA_TOP, top,
+    GA_LEFT, left,
+    GA_WIDTH, stringGadgetWidth,
+    GA_HEIGHT, buttonHeight,
+    GA_BORDER, TRUE,
+    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+//    STRINGA_MaxChars, 255,
+    GA_Text, (const char*) "...",
+    TAG_END);
+
+  // Button for opening a file selector for left file
+  m_pOpenLeftFileButton = (struct Gadget*) NewObject(
+    NULL, BUTTONGCLASS,
+    GA_Previous, m_pLeftFileStringGadget,
+    GA_ID, OFW_LEFT_FILE_BUTTON,
+    GA_LEFT, left + stringGadgetWidth + hSpace,
+    GA_TOP, top,
+    GA_WIDTH, selectButtonWidth,
+    GA_HEIGHT, buttonHeight,
+    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+    GA_Text, (const char*) "...",
+    ICA_TARGET, ICTARGET_IDCMP,
+    TAG_END);
+
+
+  AddGList(m_pWindow, m_pLeftFileStringGadget, 0, -1, NULL);
+  RefreshGList(m_pLeftFileStringGadget, m_pWindow, NULL, -1);
+
+
+/*
+  int barHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
+
+  WORD hSpace = 5;
+  WORD vSpace = 3;
+  WORD selectButtonWidth = m_FontHeight + 2; // shoud be square
+  WORD stringGadgetWidth = m_WinWidth - hSpace - hSpace - hSpace - selectButtonWidth;
+  WORD selectButtonLeft = hSpace + stringGadgetWidth + hSpace;
+  WORD buttonWidth = 60;
+  WORD buttonHeight = m_FontHeight + 2;
+  //m_WinHeight = vSpace + vSpace + 3 * (buttonHeight + vSpace);
+
+  // Creating the string gadget for the file name of the left file
+  m_pLeftFileStringGadget = (struct Gadget*) NewObject(
+    NULL, STRGCLASS,
+    GA_ID, OFW_LEFT_FILE_STRING,
+    GA_LEFT, hSpace,
+    GA_TOP, vSpace + barHeight,
+    GA_WIDTH, stringGadgetWidth,
+    GA_HEIGHT, buttonHeight,
+    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+    GA_GZZGadget, TRUE,
+    ICA_TARGET, ICTARGET_IDCMP,
+    TAG_END);
+
+  // Button for opening a file selector for left file
+  m_pOpenLeftFileButton = (struct Gadget*) NewObject(
+    NULL, BUTTONGCLASS,
+    GA_Previous, m_pLeftFileStringGadget,
+    GA_ID, OFW_LEFT_FILE_BUTTON,
+    GA_LEFT, selectButtonLeft,
+    GA_TOP, vSpace + barHeight,
+    GA_WIDTH, selectButtonWidth,
+    GA_HEIGHT, buttonHeight,
+    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+    GA_GZZGadget, TRUE,
+    GA_Text, (const char*) "...",
+    ICA_TARGET, ICTARGET_IDCMP,
+    TAG_END);
+
+  // Creating the string gadget for the file name of the right file
+	m_pRightFileStringGadget = (struct Gadget*) NewObject(
+	  NULL, STRGCLASS,
+  	GA_Previous, m_pOpenLeftFileButton,
+  	GA_ID, OFW_RIGHT_FILE_STRING,
+    GA_LEFT, hSpace,
+    GA_TOP, vSpace + vSpace + buttonHeight + barHeight,
+    GA_WIDTH, stringGadgetWidth,
+    GA_HEIGHT, buttonHeight,
+  	GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+  	GA_GZZGadget, TRUE,
+  	ICA_TARGET, ICTARGET_IDCMP,
+  	TAG_END);
+
+  // Button for opening a file selector for right file
+  m_pOpenRightFileButton = (struct Gadget*) NewObject(
+    NULL, BUTTONGCLASS,
+    GA_Previous, m_pRightFileStringGadget,
+    GA_ID, OFW_RIGHT_FILE_BUTTON,
+    GA_LEFT, selectButtonLeft,
+    GA_TOP, vSpace + vSpace + buttonHeight + barHeight,
+    GA_WIDTH, selectButtonWidth,
+    GA_HEIGHT, buttonHeight,
+    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+    GA_GZZGadget, TRUE,
+    GA_Text, (const char*) "...",
+    ICA_TARGET, ICTARGET_IDCMP,
+    TAG_END);
+
+  // Creating the Diff button
+  m_pDiffButton = (struct Gadget*) NewObject(
+    NULL, BUTTONGCLASS,
+    GA_Previous, m_pOpenRightFileButton,
+    GA_ID, OFW_DIFF_BUTTON,
+    GA_LEFT, hSpace,
+    GA_RELBOTTOM, - buttonHeight - 5,
+    GA_WIDTH, buttonWidth,
+    GA_HEIGHT, buttonHeight,
+    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+    GA_GZZGadget, TRUE,
+    GA_Text, (const char*) "Diff",
+    ICA_TARGET, ICTARGET_IDCMP,
+    TAG_END);
+
+  // Creating the Cancel button
+  m_pCancelButton = (struct Gadget*) NewObject(
+    NULL, BUTTONGCLASS,
+    GA_Previous, m_pDiffButton,
+    GA_ID, OFW_CANCEL_BUTTON,
+    GA_RELRIGHT, -buttonWidth-hSpace,
+    GA_RELBOTTOM, -buttonHeight - 5,
+    GA_WIDTH, buttonWidth,
+    GA_HEIGHT, m_FontHeight + 4,
+    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+    GA_GZZGadget, TRUE,
+    GA_Text, (const char*) "Cancel",
+    ICA_TARGET, ICTARGET_IDCMP,
+    TAG_END);
+
+  AddGList(m_pWindow, m_pLeftFileStringGadget, -1, -1, NULL);
+  RefreshGList(m_pLeftFileStringGadget, m_pWindow, NULL, -1);
+*/
   return true;
 }
 
@@ -217,32 +272,43 @@ void OpenFilesWindow::Close()
 {
   if(m_pOpenLeftFileButton != NULL)
   {
-    DisposeObject(m_pOpenLeftFileButton);
-  }
-
-  if(m_pOpenRightFileButton != NULL)
-  {
-    DisposeObject(m_pOpenRightFileButton);
-  }
-
-  if(m_pLeftFileStringGadget != NULL)
-  {
-    DisposeObject(m_pLeftFileStringGadget);
-  }
-
-  if(m_pRightFileStringGadget != NULL)
-  {
-    DisposeObject(m_pRightFileStringGadget);
+    RemoveGList(m_pWindow, m_pLeftFileStringGadget, -1);
   }
 
   if(m_pCancelButton != NULL)
   {
     DisposeObject(m_pCancelButton);
+    m_pCancelButton = NULL;
   }
 
   if(m_pDiffButton != NULL)
   {
     DisposeObject(m_pDiffButton);
+    m_pDiffButton = NULL;
+  }
+
+  if(m_pOpenRightFileButton != NULL)
+  {
+    DisposeObject(m_pOpenRightFileButton);
+    m_pOpenRightFileButton = NULL;
+  }
+
+  if(m_pRightFileStringGadget != NULL)
+  {
+    DisposeObject(m_pRightFileStringGadget);
+    m_pRightFileStringGadget = NULL;
+  }
+
+  if(m_pOpenLeftFileButton != NULL)
+  {
+    DisposeObject(m_pOpenLeftFileButton);
+    m_pOpenLeftFileButton = NULL;
+  }
+
+  if(m_pLeftFileStringGadget != NULL)
+  {
+    DisposeObject(m_pLeftFileStringGadget);
+    m_pLeftFileStringGadget = NULL;
   }
 
   // Also call Close() in parent

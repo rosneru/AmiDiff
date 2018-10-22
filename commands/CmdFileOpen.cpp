@@ -15,7 +15,7 @@ CmdFileOpen::CmdFileOpen(SimpleString p_Name, TextDocument& p_TextDocument, Text
 
 CmdFileOpen::~CmdFileOpen()
 {
-
+  m_OpenFilesWindow.Close();
 }
 
 void CmdFileOpen::Execute()
