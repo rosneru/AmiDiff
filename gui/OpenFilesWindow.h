@@ -62,7 +62,6 @@ private:
   WORD m_WinWidth;
   WORD m_WinHeight;
 
-  struct Image   *frameimage;
   struct Gadget* m_pLeftFileStringGadget;      ///> horizontal scrollbar
   struct Gadget* m_pRightFileStringGadget;      ///> vertical scrollbar
   struct Gadget* m_pOpenLeftFileButton;  ///> h-scrollbar left button

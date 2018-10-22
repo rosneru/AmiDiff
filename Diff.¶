@@ -176,6 +176,8 @@ File
 1 "gui/AppMenu.cpp"
 "gui/AppMenu.cpp"
 "gui/AppMenu.h"
+"gui/AppScreen.h"
+"gui/WindowBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AppMenu.o" "objects_debug/AppMenu.debug"
 ""
