@@ -47,12 +47,6 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
     GA_HEIGHT, buttonHeight,
     GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
     GA_BottomBorder, TRUE,
-    PGA_Freedom, FREEHORIZ,
-    PGA_Borderless, TRUE,
-    PGA_NewLook, TRUE,
-    PGA_Total, 100,
-    //PGA_Left, 0,  // TODO remove??
-    PGA_Visible, 100,
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
     
@@ -73,7 +67,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
 
   // Creating the string gadget for the file name of the right file
 	m_pRightFileStringGadget = (struct Gadget*) NewObject(
-	  NULL, BUTTONGCLASS,
+	  NULL, STRGCLASS,
   	GA_Previous, m_pOpenLeftFileButton,
   	GA_ID, OFW_RIGHT_FILE_STRING,
     GA_LEFT, hSpace,
@@ -82,12 +76,6 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
     GA_HEIGHT, buttonHeight,
   	GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
   	GA_RightBorder, TRUE,
-  	PGA_Freedom, FREEVERT,
-  	PGA_Borderless, TRUE,
-  	PGA_NewLook, TRUE,
-  	PGA_Total, 100,
-  	PGA_Top, 0, // TODO remove??
-  	PGA_Visible, 100,
   	ICA_TARGET, ICTARGET_IDCMP,
   	TAG_END);
 
