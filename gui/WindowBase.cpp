@@ -54,6 +54,11 @@ struct Window* WindowBase::IntuiWindow()
   return m_pWindow;
 }
 
+AppScreen* WindowBase::OnScreen()
+{
+  return m_pAppScreen;
+}
+
 
 struct Image* WindowBase::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
 {

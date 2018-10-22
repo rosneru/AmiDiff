@@ -3,6 +3,7 @@
 
 #include "SimpleString.h"
 #include "Command.h"
+#include "OpenFilesWindow.h"
 #include "TextDocument.h"
 #include "TextWindow.h"
 
@@ -25,6 +26,7 @@ public:
   virtual void Execute();
 
 private:
+  OpenFilesWindow m_OpenFilesWindow;
   TextDocument& m_TextDocument;
   TextWindow* m_pWindow;
 };

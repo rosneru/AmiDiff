@@ -28,9 +28,16 @@ public:
   void SetTitle(SimpleString p_NewTitle);
 
   /**
-   * Returns the intuition window structure or NULL if window is not open
+   * Returns the intuition window structure or NULL if window is not
+   * open.
    */
   struct Window* IntuiWindow();
+
+  /**
+   * Returns the app screen object on which the window is opened or
+   * NULL if window is not open.
+   */
+  AppScreen* OnScreen();
 
 protected:
   AppScreen* m_pAppScreen;

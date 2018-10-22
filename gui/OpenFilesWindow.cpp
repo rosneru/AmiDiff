@@ -35,32 +35,32 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
   WORD selectButtonLeft = hSpace + stringGadgetWidth + hSpace;
   WORD buttonWidth = 60;
   WORD buttonHeight = m_FontHeight + 2;
-  m_WinHeight = vSpace + vSpace + 3 * (buttonHeight + vSpace);
+  //m_WinHeight = vSpace + vSpace + 3 * (buttonHeight + vSpace);
 
   // Creating the string gadget for the file name of the left file
   m_pLeftFileStringGadget = (struct Gadget*) NewObject(
     NULL, STRGCLASS,
     GA_ID, OFW_LEFT_FILE_STRING,
     GA_LEFT, hSpace,
-    GA_TOP, vSpace,
+    GA_TOP, vSpace + barHeight,
     GA_WIDTH, stringGadgetWidth,
     GA_HEIGHT, buttonHeight,
     GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_BottomBorder, TRUE,
+//    GA_GZZGadget, TRUE,
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
-    
+
   // Button for opening a file selector for left file
   m_pOpenLeftFileButton = (struct Gadget*) NewObject(
     NULL, BUTTONGCLASS,
     GA_Previous, m_pLeftFileStringGadget,
     GA_ID, OFW_LEFT_FILE_BUTTON,
     GA_LEFT, selectButtonLeft,
-    GA_TOP, vSpace,
+    GA_TOP, vSpace + barHeight,
     GA_WIDTH, selectButtonWidth,
     GA_HEIGHT, buttonHeight,
     GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_BottomBorder, TRUE,
+//    GA_GZZGadget, TRUE,
     GA_Text, (const char*) "...",
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
@@ -71,11 +71,11 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
   	GA_Previous, m_pOpenLeftFileButton,
   	GA_ID, OFW_RIGHT_FILE_STRING,
     GA_LEFT, hSpace,
-    GA_TOP, vSpace + vSpace + buttonHeight,
+    GA_TOP, vSpace + vSpace + buttonHeight + barHeight,
     GA_WIDTH, stringGadgetWidth,
     GA_HEIGHT, buttonHeight,
   	GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-  	GA_RightBorder, TRUE,
+//  	GA_GZZGadget, TRUE,
   	ICA_TARGET, ICTARGET_IDCMP,
   	TAG_END);
 
@@ -85,11 +85,11 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
     GA_Previous, m_pRightFileStringGadget,
     GA_ID, OFW_RIGHT_FILE_BUTTON,
     GA_LEFT, selectButtonLeft,
-    GA_TOP, vSpace + vSpace + buttonHeight,
+    GA_TOP, vSpace + vSpace + buttonHeight + barHeight,
     GA_WIDTH, selectButtonWidth,
     GA_HEIGHT, buttonHeight,
     GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_BottomBorder, TRUE,
+//    GA_GZZGadget, TRUE,
     GA_Text, (const char*) "...",
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
@@ -100,11 +100,11 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
     GA_Previous, m_pOpenRightFileButton,
     GA_ID, OFW_DIFF_BUTTON,
     GA_LEFT, hSpace,
-    GA_RELBOTTOM, - buttonHeight,
+    GA_RELBOTTOM, - buttonHeight - 5,
     GA_WIDTH, buttonWidth,
     GA_HEIGHT, buttonHeight,
     GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_RightBorder, TRUE,
+//    GA_GZZGadget, TRUE,
     GA_Text, (const char*) "Diff",
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
@@ -115,11 +115,11 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
     GA_Previous, m_pDiffButton,
     GA_ID, OFW_CANCEL_BUTTON,
     GA_RELRIGHT, -buttonWidth-hSpace,
-    GA_RELBOTTOM, -buttonHeight,
+    GA_RELBOTTOM, -buttonHeight - 5,
     GA_WIDTH, buttonWidth,
     GA_HEIGHT, m_FontHeight + 4,
     GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_RightBorder, TRUE,
+//    GA_GZZGadget, TRUE,
     GA_Text, (const char*) "Cancel",
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);

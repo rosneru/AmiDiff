@@ -167,6 +167,7 @@ File
 "Application.h"
 "oscottlibs/LinkedListNode.h"
 "gui/WindowBase.h"
+"model/Document.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Diff.o" "objects_debug/Diff.debug"
 ""
@@ -185,6 +186,18 @@ File
 "gui/AppScreen.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AppScreen.o" "objects_debug/AppScreen.debug"
+""
+1 1
+File
+1 "gui/OpenFilesWindow.cpp"
+"gui/OpenFilesWindow.cpp"
+"gui/OpenFilesWindow.h"
+"gui/AppScreen.h"
+"model/Document.h"
+"oscottlibs/LinkedListNode.h"
+"gui/WindowBase.h"
+Storm Shell Project (Dependencies)
+"objects_debug/OpenFilesWindow.o" "objects_debug/OpenFilesWindow.debug"
 ""
 1 1
 File
@@ -326,6 +339,13 @@ Storm Shell Project (Dependencies)
 File
 2 "gui/AppScreen.h"
 "gui/AppScreen.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "gui/OpenFilesWindow.h"
+"gui/OpenFilesWindow.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
