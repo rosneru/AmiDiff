@@ -141,7 +141,7 @@ bool Application::Run()
   //
   // Creating the menu
   //
-  m_pMenu = new AppMenu(m_pScreen->IntuiScreen());
+  m_pMenu = new AppMenu(m_pScreen);
   if(m_pMenu->Create(menuDefinition) == FALSE)
   {
     Dispose();
@@ -151,7 +151,7 @@ bool Application::Run()
   //
   // Installing menu to left window
   //
-  if(m_pMenu->AttachToWindow(m_pLeftWin->IntuiWindow()) == FALSE)
+  if(m_pMenu->AttachToWindow(m_pLeftWin) == FALSE)
   {
     Dispose();
     return false;

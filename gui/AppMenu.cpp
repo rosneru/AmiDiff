@@ -1,10 +1,12 @@
+#include <clib/gadtools_protos.h>
 #include <clib/intuition_protos.h>
 
 #include "AppMenu.h"
 
 
-AppMenu::AppMenu(struct Screen* p_pScreen)
-  : m_pMenu(NULL)
+AppMenu::AppMenu(AppScreen* p_pScreen)
+  : m_pScreen(p_pScreen),
+    m_pMenu(NULL)
 {
 
 }
@@ -16,7 +18,7 @@ AppMenu::~AppMenu()
 
 bool AppMenu::Create(struct NewMenu* p_pMenuDefinition)
 {
-  if(m_pVisualInfo == NULL)
+  if(m_pScreen == NULL || m_pScreen->GadtoolsVisualInfo() == NULL)
   {
     // Without VisualInfo the menu can't be created
     return false;
@@ -31,7 +33,7 @@ bool AppMenu::Create(struct NewMenu* p_pMenuDefinition)
   }
 
   // Menu building step 2: Outlaying the menu
-  if(LayoutMenus(m_pMenu, m_pVisualInfo,
+  if(LayoutMenus(m_pMenu, m_pScreen->GadtoolsVisualInfo(),
                  GTMN_NewLookMenus, TRUE, // Ignored before v39
                  TAG_END) == FALSE)
   {
@@ -51,17 +53,11 @@ void AppMenu::Dispose()
     FreeMenus(m_pMenu);
     m_pMenu = NULL;
   }
-
-  if(m_pVisualInfo != NULL)
-  {
-    FreeVisualInfo(m_pVisualInfo);
-    m_pMenu = NULL;
-  }
 }
 
-bool AppMenu::AttachToWindow(struct Window* p_pWindow)
+bool AppMenu::AttachToWindow(WindowBase* p_pWindow)
 {
-  if(SetMenuStrip(p_pWindow, m_pMenu) == FALSE)
+  if(SetMenuStrip(p_pWindow->IntuiWindow(), m_pMenu) == FALSE)
   {
     // Binding the menu to given window failed
     return false;

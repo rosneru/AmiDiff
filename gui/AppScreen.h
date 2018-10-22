@@ -45,6 +45,11 @@ public:
    */
   struct DrawInfo* IntuiDrawInfo();
 
+  /**
+   * 
+   */
+  APTR* GadtoolsVisualInfo();
+
 private:
   struct TextAttr m_TextAttr;
   struct TextFont* m_pTextFont;

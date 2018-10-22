@@ -105,7 +105,7 @@ bool AppScreen::Open()
   }
 
   // Get visual info from screen
-  m_pVisualInfo = (APTR*)GetVisualInfo(p_pScreen, TAG_END);
+  m_pVisualInfo = (APTR*)GetVisualInfo(m_pScreen, TAG_END);
   if(m_pVisualInfo == false)
   {
 
@@ -116,6 +116,11 @@ bool AppScreen::Open()
 
 void AppScreen::Close()
 {
+  if(m_pVisualInfo != NULL)
+  {
+    FreeVisualInfo(m_pVisualInfo);
+  }
+
   if(m_pDrawInfo != NULL)
   {
     FreeScreenDrawInfo(m_pScreen, m_pDrawInfo);

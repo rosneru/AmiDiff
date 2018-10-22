@@ -4,6 +4,8 @@
 #include <intuition/intuition.h>
 #include <intuition/screens.h>
 #include <libraries/gadtools.h>
+#include "AppScreen.h"
+#include "WindowBase.h"
 
 /**
  * Class for the application menu. It can be created with a GadTools
@@ -15,7 +17,7 @@
 class AppMenu
 {
 public:
-  AppMenu(struct Screen* p_pScreen);
+  AppMenu(AppScreen* p_pScreen);
   ~AppMenu();
 
   /**
@@ -31,7 +33,7 @@ public:
   /**
    * Wire the menu strip to a window. Can be done for multiple windows.
    */
-  bool AttachToWindow(struct Window* p_pWindow);
+  bool AttachToWindow(WindowBase* p_pWindow);
 
   /**
    * Gets the intuition menu structure or NULL if menu is not open
@@ -39,6 +41,7 @@ public:
   struct Menu* IntuiMenu();
 
 private:
+  AppScreen* m_pScreen;
   struct Menu* m_pMenu;
 };
 
