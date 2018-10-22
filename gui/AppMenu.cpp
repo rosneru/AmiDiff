@@ -1,15 +1,11 @@
-#include <clib/gadtools_protos.h>
 #include <clib/intuition_protos.h>
 
 #include "AppMenu.h"
 
 
 AppMenu::AppMenu(struct Screen* p_pScreen)
+  : m_pMenu(NULL)
 {
-  m_pMenu = NULL;
-
-  // Get visual info from screen
-  m_pVisualInfo = (APTR*)GetVisualInfo(p_pScreen, TAG_END);
 
 }
 

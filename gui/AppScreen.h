@@ -52,6 +52,7 @@ private:
   SimpleString m_Title;
   struct Screen* m_pScreen;
   struct DrawInfo* m_pDrawInfo;
+  APTR* m_pVisualInfo;
 
 };
 

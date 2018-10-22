@@ -39,7 +39,6 @@ public:
   struct Menu* IntuiMenu();
 
 private:
-  APTR* m_pVisualInfo;
   struct Menu* m_pMenu;
 };
 
