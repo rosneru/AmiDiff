@@ -274,7 +274,6 @@ bool TextWindow::Open()
               IDCMP_NEWSIZE |       // Inform us about resizing
               IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
               IDCMP_IDCMPUPDATE,    // Inform us about TODO
-    WA_NewLookMenus, TRUE,          // Ignored before v39
     WA_Flags, WFLG_CLOSEGADGET |    // Add a close gadget
               WFLG_DRAGBAR |        // Add a drag gadget
               WFLG_DEPTHGADGET |    // Add a depth gadget
@@ -286,6 +285,7 @@ bool TextWindow::Open()
 		WA_MinHeight, 90,
 		WA_MaxWidth, -1,
 		WA_MaxHeight, -1,
+    WA_NewLookMenus, TRUE,          // Ignored before v39
     WA_Gadgets, m_pDownArrowButton,
     TAG_END);
 

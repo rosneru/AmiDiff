@@ -48,7 +48,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   //
   // Setting up the gadgets
   //
-
+/*
   // Create a place for GadTools context data
   struct Gadget* pContext;
   pContext = (struct Gadget*) CreateContext(&m_pGadgetList);
@@ -124,6 +124,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
 
   m_pCancelButton = CreateGadget(BUTTON_KIND,
     m_pDiffButton, &newGadget, TAG_END);
+*/
 }
 
 OpenFilesWindow::~OpenFilesWindow()
@@ -190,10 +191,11 @@ bool OpenFilesWindow::Open()
               WFLG_CLOSEGADGET |  // Add a close gadget
               WFLG_ACTIVATE,
     WA_SimpleRefresh, TRUE,
-    WA_Gadgets, m_pGadgetList,
+    WA_NewLookMenus, TRUE,          // Ignored before v39
+//    WA_Gadgets, m_pGadgetList,
     TAG_END);
 
-
+/*
   // Setup structs for text drawing
   // TODO Remove it if not needed here
   ULONG txtPen = m_pAppScreen->IntuiDrawInfo()->dri_Pens[TEXTPEN];
@@ -212,7 +214,7 @@ bool OpenFilesWindow::Open()
   m_IntuiText.TopEdge   = 0;
   m_IntuiText.ITextFont = &m_TextAttr;
   m_IntuiText.NextText  = NULL;
-
+*/
   return true;
 }
 
@@ -265,8 +267,8 @@ void OpenFilesWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
     case IDCMP_REFRESHWINDOW:
     {
       // This handling is REQUIRED with GadTools
-      GT_BeginRefresh(IntuiWindow());
-      GT_EndRefresh(IntuiWindow(), TRUE);
+//      GT_BeginRefresh(IntuiWindow());
+//      GT_EndRefresh(IntuiWindow(), TRUE);
       break;
     }
 

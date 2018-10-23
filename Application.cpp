@@ -125,20 +125,19 @@ bool Application::Run()
   // Opening the right window
   //
   m_pRightWin = new TextWindow(m_pScreen);
-//  if(!m_pRightWin->Open()) // TODO make it DiffWindow and give DiffWindow::RIGHT
-//  {
-//    // Opening the window failed
-//    Dispose();
-//    return false;
-//  }
+  if(!m_pRightWin->Open()) // TODO make it DiffWindow and give DiffWindow::RIGHT
+  {
+    // Opening the window failed
+    Dispose();
+    return false;
+  }
 
   //
   // Instantiating the commands
   //
   m_pCmdQuit = new CmdQuit(m_bExitRequested);
 
-  TextDocument* leftDocument = new TextDocument();
-  m_pCmdOpenLeftFile = new CmdOpenFilesWindow(*m_pOpenFilesWindow);
+//  m_pCmdOpenLeftFile = new CmdOpenFilesWindow(*m_pOpenFilesWindow);
                   // TODO How can the "Open..." in newMenuDefinition be
                   // disabled if the OpenFilesWindow is already open.
                   // Or can we "extend" the OpenCmd to bring the window
@@ -157,7 +156,7 @@ bool Application::Run()
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open...",               "O", 0, 0, m_pCmdOpenLeftFile },
+    {  NM_ITEM,   "Open...",               "O", 0, 0, m_pCmdQuit },
 //    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdOpenRightFile }, // TODO
     {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
     {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
@@ -176,29 +175,26 @@ bool Application::Run()
 
   //
   // Installing menu to all windows
+  //
   if(m_pMenu->AttachToWindow(m_pLeftWin) == FALSE)
   {
     Dispose();
     return false;
   }
-/*
-  //
-  // Installing menu to right window
-  //
 
-  if(m_pMenu->AttachToWindow(m_pRightWin->IntuiWindow()) == FALSE)
+  if(m_pMenu->AttachToWindow(m_pRightWin) == FALSE)
   {
     Dispose();
     return false;
   }
-*/
-/*
+
+
   if(m_pMenu->AttachToWindow(m_pOpenFilesWindow) == FALSE)
   {
     Dispose();
     return false;
   }
-*/
+
   //
   // If there are at least two command line arguments permitted,
   // (three for the if as the first one is the application name),

@@ -75,8 +75,8 @@ private:
   struct Gadget* m_pCancelButton;
 
 
-  struct TextAttr m_TextAttr;
-  struct IntuiText m_IntuiText;
+//  struct TextAttr m_TextAttr;
+//  struct IntuiText m_IntuiText;
 };
 
 

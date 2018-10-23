@@ -11,7 +11,7 @@
  * an identical copy of the Workbench screen.
  *
  * @author Uwe Rosner
- * @date 23/09/2018   
+ * @date 23/09/2018
  */
 class AppScreen
 {

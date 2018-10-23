@@ -12,7 +12,7 @@
  * struct NewMenu and the attached to an Intuition window.
  *
  * @author Uwe Rosner
- * @date 23/09/2018   
+ * @date 23/09/2018
  */
 class AppMenu
 {
