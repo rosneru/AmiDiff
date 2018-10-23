@@ -62,28 +62,28 @@ void Application::Dispose()
 
   if(m_pRightWin != NULL)
   {
-    m_pRightWin->Close();
+    //m_pRightWin->Close();
     delete m_pRightWin;
     m_pRightWin = NULL;
   }
 
   if(m_pLeftWin != NULL)
   {
-    m_pLeftWin->Close();
+    //m_pLeftWin->Close();
     delete m_pLeftWin;
     m_pLeftWin = NULL;
   }
 
   if(m_pOpenFilesWindow != NULL)
   {
-    m_pOpenFilesWindow->Close();
+    //m_pOpenFilesWindow->Close();
     delete m_pOpenFilesWindow;
     m_pOpenFilesWindow = NULL;
   }
 
   if(m_pScreen != NULL)
   {
-    m_pScreen->Close();
+    //m_pScreen->Close();
     delete m_pScreen;
     m_pScreen = NULL;
   }
@@ -207,12 +207,8 @@ bool Application::Run()
   //
   if(m_Argc >= 3)
   {
-    SimpleString fileNameLeft = m_Argv[1];
-    SimpleString fileNameRight = m_Argv[2];
-/* TODO
-    m_pLeftWin->ReadFile(fileNameLeft);
-    m_pRightWin->ReadFile(fileNameRight);
-*/
+    m_LeftFilePath = m_Argv[1];
+    m_RightFilePath = m_Argv[2];
   }
 
   //
@@ -240,14 +236,14 @@ void Application::intuiEventLoop()
   {
     // Waiting for a signals from the windows
     Wait(1L << pWin1->UserPort->mp_SigBit |
-         1L << pWin2->UserPort->mp_SigBit);// |
-         //1L << pWin3->UserPort->mp_SigBit);
+         1L << pWin2->UserPort->mp_SigBit |
+         1L << pWin3->UserPort->mp_SigBit);
 
     struct IntuiMessage* pMsg;
     while ((m_bExitRequested == false) &&
           ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort)) ))//||
-           //(pMsg = (struct IntuiMessage *)GetMsg(pWin3->UserPort)) ))
+           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(pWin3->UserPort)) ))
     {
       if(pMsg->Class == IDCMP_MENUPICK)
       {
