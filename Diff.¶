@@ -132,7 +132,7 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "commands/CmdFileOpen.cpp"
+1 "commands/CmdOpenFilesWindow.cpp"
 "commands/CmdFileOpen.cpp"
 "commands/CmdFileOpen.h"
 "commands/Command.h"
@@ -141,7 +141,7 @@ File
 "gui/AppScreen.h"
 "gui/WindowBase.h"
 Storm Shell Project (Dependencies)
-"objects_debug/CmdFileOpen.o" "objects_debug/CmdFileOpen.debug"
+"objects_debug/CmdOpenFilesWindow.o" "objects_debug/CmdOpenFilesWindow.debug"
 ""
 1 1
 File
@@ -311,7 +311,7 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "commands/CmdFileOpen.h"
+2 "commands/CmdOpenFilesWindow.h"
 "commands/CmdFileOpen.h"
 Storm Shell Project (Dependencies)
 "" ""
