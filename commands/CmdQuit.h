@@ -16,7 +16,7 @@ class CmdQuit : public Command
 {
 public:
   virtual ~CmdQuit();
-  CmdQuit(SimpleString p_Name, bool& p_bExitRequested);
+  CmdQuit(bool& p_bExitRequested);
   virtual void Execute();
 
 private:

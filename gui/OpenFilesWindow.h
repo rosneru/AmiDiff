@@ -18,7 +18,8 @@
 class OpenFilesWindow : public WindowBase
 {
 public:
-  OpenFilesWindow(AppScreen* p_pAppScreen);
+  OpenFilesWindow(AppScreen* p_pAppScreen,
+    SimpleString& p_LeftFilePath, SimpleString& p_RightFilePath);
   virtual ~OpenFilesWindow();
 
   /**
@@ -58,6 +59,9 @@ public:
   virtual void Close();
 
 private:
+  SimpleString& m_LeftFilePath;
+  SimpleString& m_RightFilePath;
+
   WORD m_FontHeight;  ///> Height of current text font
   WORD m_WinWidth;
   WORD m_WinHeight;

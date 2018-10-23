@@ -6,7 +6,7 @@
 #include "LinkedList.h"
 
 #include "Command.h"
-#include "CmdFileOpen.h"
+#include "CmdOpenFilesWindow.h"
 #include "CmdQuit.h"
 
 #include "TextDocument.h"
@@ -17,6 +17,7 @@ Application::Application(int argc, char **argv)
   : m_Argc(argc),
     m_Argv(argv),
     m_pScreen(NULL),
+    m_pOpenFilesWindow(NULL),
     m_pLeftWin(NULL),
     m_pRightWin(NULL),
     m_pMenu(NULL),
@@ -61,18 +62,28 @@ void Application::Dispose()
 
   if(m_pRightWin != NULL)
   {
+    m_pRightWin->Close();
     delete m_pRightWin;
     m_pRightWin = NULL;
   }
 
   if(m_pLeftWin != NULL)
   {
+    m_pLeftWin->Close();
     delete m_pLeftWin;
     m_pLeftWin = NULL;
   }
 
+  if(m_pOpenFilesWindow != NULL)
+  {
+    m_pOpenFilesWindow->Close();
+    delete m_pOpenFilesWindow;
+    m_pOpenFilesWindow = NULL;
+  }
+
   if(m_pScreen != NULL)
   {
+    m_pScreen->Close();
     delete m_pScreen;
     m_pScreen = NULL;
   }
@@ -93,6 +104,13 @@ bool Application::Run()
 
 
   //
+  // Creating the window to open the files to diff. Note: It's not 
+  // getting opened yet. It will be opened later by CmdOpenFilesWindow.
+  //
+  m_pOpenFilesWindow = new OpenFilesWindow(m_pScreen, m_LeftFilePath, 
+    m_RightFilePath);
+
+  //
   // Opening the left window
   //
   m_pLeftWin = new TextWindow(m_pScreen);
@@ -102,32 +120,40 @@ bool Application::Run()
     Dispose();
     return false;
   }
-/*
+
   //
   // Opening the right window
   //
   m_pRightWin = new TextWindow(m_pScreen);
-  if(!m_pRightWin->Open()) // TODO make it DiffWindow and give DiffWindow::RIGHT
-  {
-    // Opening the window failed
-    Dispose();
-    return false;
-  }
-*/
+//  if(!m_pRightWin->Open()) // TODO make it DiffWindow and give DiffWindow::RIGHT
+//  {
+//    // Opening the window failed
+//    Dispose();
+//    return false;
+//  }
+
   //
   // Instantiating the commands
   //
-  m_pCmdQuit = new CmdQuit("Quit the application", m_bExitRequested);
+  m_pCmdQuit = new CmdQuit(m_bExitRequested);
 
   TextDocument* leftDocument = new TextDocument();
-  m_pCmdOpenLeftFile = new CmdFileOpen("Open left file", *leftDocument, m_pLeftWin);
+  m_pCmdOpenLeftFile = new CmdOpenFilesWindow(*m_pOpenFilesWindow);
+                  // TODO How can the "Open..." in newMenuDefinition be 
+                  // disabled if the OpenFilesWindow is already open. 
+                  // Or can we "extend" the OpenCmd to bring the window 
+                  // in front then?
 
 //  TextDocument rightDocument;
 //  m_pCmdOpenRightFile = new CmdFileOpen("Open right file", rightDocument, *m_pRightWin);
 
 
+  //
   // Fill the GadTools menu struct, supplying pointers to the commands
-  // as nm_UserData
+  // as nm_UserData. With this behavior there is no complicated 
+  // evalution needed to detect which menu item was clicked. Just
+  // the ->Execute of the (by then anonymous) command has to be called.
+  //
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
@@ -149,8 +175,7 @@ bool Application::Run()
   }
 
   //
-  // Installing menu to left window
-  //
+  // Installing menu to all windows
   if(m_pMenu->AttachToWindow(m_pLeftWin) == FALSE)
   {
     Dispose();
@@ -167,6 +192,12 @@ bool Application::Run()
     return false;
   }
 */
+  if(m_pMenu->AttachToWindow(m_pOpenFilesWindow) == FALSE)
+  {
+    Dispose();
+    return false;
+  }
+
   //
   // If there are at least two command line arguments permitted,
   // (three for the if as the first one is the application name),
@@ -199,20 +230,23 @@ void Application::intuiEventLoop()
   //
 
   struct Window* pWin1 = m_pLeftWin->IntuiWindow();
-  //struct Window* pWin2 = m_pRightWin->IntuiWindow();
+  struct Window* pWin2 = m_pRightWin->IntuiWindow();
+  struct Window* pWin3 = m_pOpenFilesWindow->IntuiWindow();
   struct Menu* pMenu = m_pMenu->IntuiMenu();
 
 
   while (m_bExitRequested == false)
   {
-    // Waiting for a signals from LeftWin or from RightWin
-    Wait(1L << pWin1->UserPort->mp_SigBit);// |
-         //1L << pWin2->UserPort->mp_SigBit);
+    // Waiting for a signals from the windows
+    Wait(1L << pWin1->UserPort->mp_SigBit |
+         1L << pWin2->UserPort->mp_SigBit |
+         1L << pWin3->UserPort->mp_SigBit);
 
     struct IntuiMessage* pMsg;
     while ((m_bExitRequested == false) &&
-          ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ))// ||
-//           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort))))
+          ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(pWin3->UserPort)) ))
     {
       if(pMsg->Class == IDCMP_MENUPICK)
       {
@@ -244,6 +278,14 @@ void Application::intuiEventLoop()
         if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
         {
           m_pLeftWin->HandleIdcmp(pMsg);
+        }
+        else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+        {
+          m_pRightWin->HandleIdcmp(pMsg);
+        }
+        else if(pMsg->IDCMPWindow == m_pOpenFilesWindow->IntuiWindow())
+        {
+          m_pOpenFilesWindow->HandleIdcmp(pMsg);
         }
       }
 

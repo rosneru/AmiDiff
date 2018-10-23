@@ -1,11 +1,8 @@
-#ifndef CMD_FILEOPEN_H
-#define CMD_FILEOPEN_H
+#ifndef CMD_OPEN_FILES_WINDOW
+#define CMD_OPEN_FILES_WINDOW
 
-#include "SimpleString.h"
 #include "Command.h"
 #include "OpenFilesWindow.h"
-#include "TextDocument.h"
-#include "TextWindow.h"
 
 /**
  * Command for opening, reading and displaying an input file. Its
@@ -18,17 +15,15 @@
  * @author Uwe Rosner
  * @date 24/09/2018
  */
-class CmdFileOpen : public Command
+class CmdOpenFilesWindow : public Command
 {
 public:
-  CmdFileOpen(SimpleString p_Name, TextDocument& p_TextDocument, TextWindow* p_pWindow);
-  virtual ~CmdFileOpen();
+  CmdOpenFilesWindow(OpenFilesWindow& p_OpenFilesWindow);
+  virtual ~CmdOpenFilesWindow();
   virtual void Execute();
 
 private:
-  OpenFilesWindow m_OpenFilesWindow;
-  TextDocument& m_TextDocument;
-  TextWindow* m_pWindow;
+  OpenFilesWindow& m_OpenFilesWindow;
 };
 
-#endif // CMD_FILEOPEN_H
+#endif // CMD_OPEN_FILES_WINDOW

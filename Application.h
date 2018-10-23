@@ -10,8 +10,10 @@
 
 #include "AppMenu.h"
 #include "AppScreen.h"
-#include "TextWindow.h"
 #include "Command.h"
+#include "OpenFilesWindow.h"
+#include "SimpleString.h"
+#include "TextWindow.h"
 
 class Application
 {
@@ -30,8 +32,13 @@ private:
   int m_Argc;
   char** m_Argv;
 
+  SimpleString m_LeftFilePath;
+  SimpleString m_RightFilePath;
+
   bool m_bExitRequested;
+  
   AppScreen* m_pScreen;
+  OpenFilesWindow* m_pOpenFilesWindow;
   TextWindow* m_pLeftWin;
   TextWindow* m_pRightWin;
 

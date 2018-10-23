@@ -1,24 +1,22 @@
 #include <clib/dos_protos.h>
-#include "AslFilerequest.h"
+#include "AslFileRequest.h"
+#include "DosFile.h"
 #include "TextDocument.h"
-#include "CmdFileOpen.h"
+#include "CmdOpenFilesWindow.h"
 
 
-CmdFileOpen::CmdFileOpen(SimpleString p_Name, TextDocument& p_TextDocument, TextWindow* p_pWindow)
-  : m_OpenFilesWindow(p_pWindow->OnScreen()),
-    m_TextDocument(p_TextDocument),
-    m_pWindow(p_pWindow),
-    Command(p_Name)
+CmdOpenFilesWindow::CmdOpenFilesWindow(OpenFilesWindow& p_OpenFilesWindow)
+  : m_OpenFilesWindow(p_OpenFilesWindow)
 {
 
 }
 
-CmdFileOpen::~CmdFileOpen()
+CmdOpenFilesWindow::~CmdOpenFilesWindow()
 {
   m_OpenFilesWindow.Close();
 }
 
-void CmdFileOpen::Execute()
+void CmdOpenFilesWindow::Execute()
 {
   m_OpenFilesWindow.Open();
 /*
@@ -39,8 +37,4 @@ void CmdFileOpen::Execute()
   // Set the File into the Document's window
   m_pWindow->SetContent(&m_TextDocument);
 */
-
-
-
-  // TODO OpenFileWindow.Open() etc
 }

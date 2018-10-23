@@ -12,8 +12,11 @@
 
 #include "OpenFilesWindow.h"
 
-OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
+OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
+    SimpleString& p_LeftFilePath, SimpleString& p_RightFilePath)
   : WindowBase(p_pAppScreen),
+    m_LeftFilePath(p_LeftFilePath),
+    m_RightFilePath(p_RightFilePath),
     m_WinWidth(240),
     m_WinHeight(180),
     m_pGadgetList(NULL),

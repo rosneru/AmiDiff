@@ -1,8 +1,6 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
-#include "SimpleString.h"
-
 /**
  * Base class of all commands. Is an abstract class because of the
  * abstract Execute() method.
@@ -18,12 +16,9 @@ class Command
 public:
   virtual ~Command();
   virtual void Execute() = 0;
-  virtual SimpleString Name();
 
 protected:
-  Command(SimpleString p_Name);
-  SimpleString m_Name;
-
+  Command();
 };
 
 #endif // COMMAND_H
