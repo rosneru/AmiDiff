@@ -2,19 +2,21 @@
 
 #include <clib/alib_protos.h>
 #include <clib/dos_protos.h>
+#include <clib/gadtools_protos.h>
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
-#include <clib/utility_protos.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
 #include <intuition/icclass.h>
+
 #include "OpenFilesWindow.h"
 
 OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
   : WindowBase(p_pAppScreen),
     m_WinWidth(240),
     m_WinHeight(180),
+    m_pGadgetList(NULL),
     m_pLeftFileStringGadget(NULL),
     m_pRightFileStringGadget(NULL),
     m_pOpenLeftFileButton(NULL),
@@ -26,7 +28,98 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen)
   // Calculate some basic values
   //
   m_FontHeight = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
+  WORD barHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
 
+  WORD hSpace = 5;
+  WORD vSpace = 10;
+  WORD top = barHeight + vSpace;
+  WORD left = hSpace;
+  WORD right = m_WinWidth - hSpace;
+  WORD bottom = m_WinHeight - vSpace;
+  WORD selectButtonWidth = m_FontHeight + 2; // shoud be square
+  WORD stringGadgetWidth = right - left - hSpace - selectButtonWidth;
+  WORD selectButtonLeft = right - hSpace - selectButtonWidth;
+  WORD buttonWidth = 60;
+  WORD buttonHeight = m_FontHeight + 2;
+
+  //
+  // Setting up the gadgets
+  //
+
+  // Create a place for GadTools context data
+  m_pGadgetList = CreateContext(NULL);
+
+  // Declare the basic gadget structure
+  struct NewGadget newGadget;
+
+  // Creating the string gadget for the file name of the left file
+  newGadget.ng_TextAttr   = m_pAppScreen->GfxTextAttr();
+  newGadget.ng_VisualInfo = m_pAppScreen->GadtoolsVisualInfo();
+  newGadget.ng_LeftEdge   = left;
+  newGadget.ng_TopEdge    = top;
+  newGadget.ng_Width      = stringGadgetWidth;
+  newGadget.ng_Height     = buttonHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "Left file";
+  newGadget.ng_GadgetID   = GID_LeftFileString;
+  newGadget.ng_Flags      = 0;
+
+  m_pLeftFileStringGadget = CreateGadget(STRING_KIND, 
+    m_pGadgetList, &newGadget, TAG_END);
+
+  // Creating the Button for opening a file selector for left file
+  newGadget.ng_LeftEdge   = selectButtonLeft;
+  newGadget.ng_TopEdge    = top;
+  newGadget.ng_Width      = selectButtonWidth;
+  newGadget.ng_Height     = buttonHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "...";
+  newGadget.ng_GadgetID   = GID_LeftFileButton;
+
+  m_pOpenLeftFileButton = CreateGadget(BUTTON_KIND, 
+    m_pLeftFileStringGadget, &newGadget, TAG_END);
+
+  // Creating the string gadget for the file name of the right file
+  newGadget.ng_LeftEdge   = left;
+  newGadget.ng_TopEdge    = top +  1 * (buttonHeight + vSpace);
+  newGadget.ng_Width      = stringGadgetWidth;
+  newGadget.ng_Height     = buttonHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "Right file";
+  newGadget.ng_GadgetID   = GID_RightFileString;
+
+  m_pRightFileStringGadget = CreateGadget(STRING_KIND, 
+    m_pOpenLeftFileButton, &newGadget, TAG_END);
+
+  // Creating the Button for opening a file selector for left file
+  newGadget.ng_LeftEdge   = selectButtonLeft;
+  newGadget.ng_TopEdge    = top +  1 * (buttonHeight + vSpace);
+  newGadget.ng_Width      = selectButtonWidth;
+  newGadget.ng_Height     = buttonHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "...";
+  newGadget.ng_GadgetID   = GID_RightFileButton;
+
+  m_pOpenRightFileButton = CreateGadget(BUTTON_KIND, 
+    m_pRightFileStringGadget, &newGadget, TAG_END);
+
+  // Creating the Diff button
+  newGadget.ng_LeftEdge   = left + hSpace;
+  newGadget.ng_TopEdge    = bottom -  buttonHeight - vSpace;
+  newGadget.ng_Width      = buttonWidth;
+  newGadget.ng_Height     = buttonHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "Diff";
+  newGadget.ng_GadgetID   = GID_DiffButton;
+
+  m_pDiffButton = CreateGadget(BUTTON_KIND, 
+    m_pOpenRightFileButton, &newGadget, TAG_END);
+
+  // Creating the Cancel button
+  newGadget.ng_LeftEdge   = right - hSpace - buttonWidth;
+  newGadget.ng_TopEdge    = bottom -  buttonHeight - vSpace;
+  newGadget.ng_Width      = buttonWidth;
+  newGadget.ng_Height     = buttonHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "Cancel";
+  newGadget.ng_GadgetID   = GID_CancelButton;
+
+  m_pCancelButton = CreateGadget(BUTTON_KIND, 
+    m_pDiffButton, &newGadget, TAG_END);
 }
 
 OpenFilesWindow::~OpenFilesWindow()
@@ -84,18 +177,21 @@ bool OpenFilesWindow::Open()
     WA_Title, (ULONG) "Open the files to diff",
     WA_Activate, TRUE,
     WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
-    WA_IDCMP, IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
-              IDCMP_IDCMPUPDATE,    // Inform us about BOOPSI Gadget updates
-    WA_Flags, WFLG_DRAGBAR |        // Add a drag gadget
-              WFLG_DEPTHGADGET |    // Add a depth gadget
+    WA_IDCMP,
+      IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
+      IDCMP_CLOSEWINDOW |   // Inform us about Window close gadget click
+      IDCMP_GADGETUP,       // Inform us about GadTools button click
+    WA_Flags, WFLG_DRAGBAR |      // Add a drag gadget
+              WFLG_DEPTHGADGET |  // Add a depth gadget
+              WFLG_CLOSEGADGET |  // Add a close gadget
               WFLG_ACTIVATE,
     WA_SimpleRefresh, TRUE,
+    WA_Gadgets, m_pGadgetList,
     TAG_END);
 
 
   // Setup structs for text drawing
-    // Setup Pens, TextAttr and prepare IntuiText
-  // TODO Remove it to some better place
+  // TODO Remove it if not needed here
   ULONG txtPen = m_pAppScreen->IntuiDrawInfo()->dri_Pens[TEXTPEN];
   ULONG bgPen = m_pAppScreen->IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
 
@@ -113,202 +209,21 @@ bool OpenFilesWindow::Open()
   m_IntuiText.ITextFont = &m_TextAttr;
   m_IntuiText.NextText  = NULL;
 
-  //
-  // Setting up the gadgets
-  //
-
-  WORD hSpace = 5;
-  WORD vSpace = 3;
-  WORD top = (m_pWindow->BorderTop) + 5L;
-  WORD left = (m_pWindow->BorderLeft) + 5L;
-  WORD right = (m_pWindow->BorderRight) + 5L;
-  WORD bottom = (m_pWindow->BorderBottom) + 5L;
-  WORD selectButtonWidth = m_FontHeight + 2; // shoud be square
-  WORD stringGadgetWidth = m_WinWidth - left - hSpace - hSpace - selectButtonWidth;
-  WORD selectButtonLeft = hSpace + stringGadgetWidth + hSpace;
-  WORD buttonWidth = 60;
-  WORD buttonHeight = m_FontHeight + 2;
-
-
-  // Creating the string gadget for the file name of the left file
-  m_pLeftFileStringGadget = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_ID, OFW_LEFT_FILE_STRING,
-    GA_TOP, top,
-    GA_LEFT, left,
-    GA_WIDTH, stringGadgetWidth,
-    GA_HEIGHT, buttonHeight,
-    GA_BORDER, TRUE,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-//    STRINGA_MaxChars, 255,
-    GA_Text, (const char*) "...",
-    TAG_END);
-
-  // Button for opening a file selector for left file
-  m_pOpenLeftFileButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pLeftFileStringGadget,
-    GA_ID, OFW_LEFT_FILE_BUTTON,
-    GA_LEFT, left + stringGadgetWidth + hSpace,
-    GA_TOP, top,
-    GA_WIDTH, selectButtonWidth,
-    GA_HEIGHT, buttonHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_Text, (const char*) "...",
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-
-  AddGList(m_pWindow, m_pLeftFileStringGadget, 0, -1, NULL);
-  RefreshGList(m_pLeftFileStringGadget, m_pWindow, NULL, -1);
-
-
-/*
-  int barHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
-
-  WORD hSpace = 5;
-  WORD vSpace = 3;
-  WORD selectButtonWidth = m_FontHeight + 2; // shoud be square
-  WORD stringGadgetWidth = m_WinWidth - hSpace - hSpace - hSpace - selectButtonWidth;
-  WORD selectButtonLeft = hSpace + stringGadgetWidth + hSpace;
-  WORD buttonWidth = 60;
-  WORD buttonHeight = m_FontHeight + 2;
-  //m_WinHeight = vSpace + vSpace + 3 * (buttonHeight + vSpace);
-
-  // Creating the string gadget for the file name of the left file
-  m_pLeftFileStringGadget = (struct Gadget*) NewObject(
-    NULL, STRGCLASS,
-    GA_ID, OFW_LEFT_FILE_STRING,
-    GA_LEFT, hSpace,
-    GA_TOP, vSpace + barHeight,
-    GA_WIDTH, stringGadgetWidth,
-    GA_HEIGHT, buttonHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Button for opening a file selector for left file
-  m_pOpenLeftFileButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pLeftFileStringGadget,
-    GA_ID, OFW_LEFT_FILE_BUTTON,
-    GA_LEFT, selectButtonLeft,
-    GA_TOP, vSpace + barHeight,
-    GA_WIDTH, selectButtonWidth,
-    GA_HEIGHT, buttonHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_Text, (const char*) "...",
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the string gadget for the file name of the right file
-	m_pRightFileStringGadget = (struct Gadget*) NewObject(
-	  NULL, STRGCLASS,
-  	GA_Previous, m_pOpenLeftFileButton,
-  	GA_ID, OFW_RIGHT_FILE_STRING,
-    GA_LEFT, hSpace,
-    GA_TOP, vSpace + vSpace + buttonHeight + barHeight,
-    GA_WIDTH, stringGadgetWidth,
-    GA_HEIGHT, buttonHeight,
-  	GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-  	GA_GZZGadget, TRUE,
-  	ICA_TARGET, ICTARGET_IDCMP,
-  	TAG_END);
-
-  // Button for opening a file selector for right file
-  m_pOpenRightFileButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pRightFileStringGadget,
-    GA_ID, OFW_RIGHT_FILE_BUTTON,
-    GA_LEFT, selectButtonLeft,
-    GA_TOP, vSpace + vSpace + buttonHeight + barHeight,
-    GA_WIDTH, selectButtonWidth,
-    GA_HEIGHT, buttonHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_Text, (const char*) "...",
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the Diff button
-  m_pDiffButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pOpenRightFileButton,
-    GA_ID, OFW_DIFF_BUTTON,
-    GA_LEFT, hSpace,
-    GA_RELBOTTOM, - buttonHeight - 5,
-    GA_WIDTH, buttonWidth,
-    GA_HEIGHT, buttonHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_Text, (const char*) "Diff",
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the Cancel button
-  m_pCancelButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pDiffButton,
-    GA_ID, OFW_CANCEL_BUTTON,
-    GA_RELRIGHT, -buttonWidth-hSpace,
-    GA_RELBOTTOM, -buttonHeight - 5,
-    GA_WIDTH, buttonWidth,
-    GA_HEIGHT, m_FontHeight + 4,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_Text, (const char*) "Cancel",
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  AddGList(m_pWindow, m_pLeftFileStringGadget, -1, -1, NULL);
-  RefreshGList(m_pLeftFileStringGadget, m_pWindow, NULL, -1);
-*/
   return true;
 }
 
 void OpenFilesWindow::Close()
 {
-  if(m_pOpenLeftFileButton != NULL)
+  if(m_pGadgetList != NULL)
   {
-    RemoveGList(m_pWindow, m_pLeftFileStringGadget, -1);
-  }
-
-  if(m_pCancelButton != NULL)
-  {
-    DisposeObject(m_pCancelButton);
-    m_pCancelButton = NULL;
-  }
-
-  if(m_pDiffButton != NULL)
-  {
-    DisposeObject(m_pDiffButton);
-    m_pDiffButton = NULL;
-  }
-
-  if(m_pOpenRightFileButton != NULL)
-  {
-    DisposeObject(m_pOpenRightFileButton);
-    m_pOpenRightFileButton = NULL;
-  }
-
-  if(m_pRightFileStringGadget != NULL)
-  {
-    DisposeObject(m_pRightFileStringGadget);
-    m_pRightFileStringGadget = NULL;
-  }
-
-  if(m_pOpenLeftFileButton != NULL)
-  {
-    DisposeObject(m_pOpenLeftFileButton);
-    m_pOpenLeftFileButton = NULL;
-  }
-
-  if(m_pLeftFileStringGadget != NULL)
-  {
-    DisposeObject(m_pLeftFileStringGadget);
+    FreeGadgets(m_pGadgetList);
+    m_pGadgetList = NULL;
     m_pLeftFileStringGadget = NULL;
+    m_pRightFileStringGadget = NULL;
+    m_pOpenLeftFileButton = NULL;
+    m_pOpenRightFileButton = NULL;
+    m_pDiffButton = NULL;
+    m_pCancelButton = NULL;
   }
 
   // Also call Close() in parent
@@ -321,52 +236,39 @@ void OpenFilesWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
 {
   switch (p_pMsg->Class)
   {
-    case IDCMP_IDCMPUPDATE:
+    case IDCMP_GADGETUP:
     {
-      ULONG tagData = GetTagData(GA_ID, 0,
-        (struct TagItem *)p_pMsg->IAddress);
-      switch(tagData)
+      struct Gadget* pGadget = (struct Gadget*) p_pMsg->IAddress;
+      if(pGadget->GadgetID == GID_LeftFileButton)
       {
-        case OpenFilesWindow::OFW_LEFT_FILE_BUTTON:
-        {
-          size_t newY = GetTagData(PGA_Top, 0, (struct TagItem *)
-            p_pMsg->IAddress);
-
-          // YChangedHandler(newY);
-          break;
-        }
-
-        case OpenFilesWindow::OFW_RIGHT_FILE_BUTTON:
-        {
-          // YDecrease();
-          break;
-        }
-
-        case OpenFilesWindow::OFW_DIFF_BUTTON:
-        {
-          // YIncrease();
-          break;
-        }
-
-        case OpenFilesWindow::OFW_CANCEL_BUTTON:
-        {
-          // YIncrease();
-          break;
-        }
-
+        // TODO 1) ASL request
+        //      2) Fill string gadget
+        //      3) Enable Diff button if both string gadgets are filled
+      }
+      else if(pGadget->GadgetID == GID_RightFileButton)
+      {
+        // TODO 1) ASL request
+        //      2) Fill string gadget
+        //      3) Enable Diff button if both string gadgets are filled
+      }
+      else if(pGadget->GadgetID == GID_CancelButton)
+      {
+        Close();
       }
       break;
     }
 
     case IDCMP_REFRESHWINDOW:
     {
-      Refresh();
+      // This handling is REQUIRED with GadTools
+      GT_BeginRefresh(IntuiWindow());
+      GT_EndRefresh(IntuiWindow(), TRUE);
       break;
     }
 
     case IDCMP_CLOSEWINDOW:
     {
-      //m_pCmdQuit->Execute(); TODO
+      Close();
       break;
     }
   }

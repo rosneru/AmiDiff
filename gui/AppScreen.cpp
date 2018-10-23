@@ -158,6 +158,11 @@ struct DrawInfo* AppScreen::IntuiDrawInfo()
   return m_pDrawInfo;
 }
 
+struct TextAttr* AppScreen::GfxTextAttr()
+{
+  return &m_TextAttr;
+}
+
 APTR* AppScreen::GadtoolsVisualInfo()
 {
   return m_pVisualInfo;

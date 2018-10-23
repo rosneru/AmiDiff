@@ -31,14 +31,14 @@ public:
    * IDs to allow to interpret the events of this window's BOOPSI system
    * gadgets in the Application event loop.
    */
-  enum OFW_GADGET_ID
+  enum GadgetId
   {
-    OFW_LEFT_FILE_STRING,
-    OFW_RIGHT_FILE_STRING,
-    OFW_LEFT_FILE_BUTTON,
-    OFW_RIGHT_FILE_BUTTON,
-    OFW_DIFF_BUTTON,
-    OFW_CANCEL_BUTTON,
+    GID_LeftFileString,
+    GID_RightFileString,
+    GID_LeftFileButton,
+    GID_RightFileButton,
+    GID_DiffButton,
+    GID_CancelButton,
   };
 
 
@@ -62,12 +62,14 @@ private:
   WORD m_WinWidth;
   WORD m_WinHeight;
 
-  struct Gadget* m_pLeftFileStringGadget;      ///> horizontal scrollbar
-  struct Gadget* m_pRightFileStringGadget;      ///> vertical scrollbar
-  struct Gadget* m_pOpenLeftFileButton;  ///> h-scrollbar left button
-  struct Gadget* m_pOpenRightFileButton; ///> h-scrollbar right button
-  struct Gadget* m_pDiffButton;    ///> v-scrollbar up button
-  struct Gadget* m_pCancelButton;  ///> v-scrollbar down button
+  struct Gadget* m_pGadgetList;
+  struct Gadget* m_pLeftFileStringGadget;
+  struct Gadget* m_pRightFileStringGadget;
+  struct Gadget* m_pOpenLeftFileButton;
+  struct Gadget* m_pOpenRightFileButton;
+  struct Gadget* m_pDiffButton;
+  struct Gadget* m_pCancelButton;
+
 
   struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;
