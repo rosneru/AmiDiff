@@ -133,13 +133,13 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "commands/CmdOpenFilesWindow.cpp"
-"commands/CmdFileOpen.cpp"
-"commands/CmdFileOpen.h"
 "commands/Command.h"
 "oscottlibs/LinkedListNode.h"
 "model/Document.h"
 "gui/AppScreen.h"
 "gui/WindowBase.h"
+"commands/CmdOpenFilesWindow.cpp"
+"commands/CmdOpenFilesWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdOpenFilesWindow.o" "objects_debug/CmdOpenFilesWindow.debug"
 ""
@@ -168,6 +168,7 @@ File
 "oscottlibs/LinkedListNode.h"
 "gui/WindowBase.h"
 "model/Document.h"
+"gui/AppScreen.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Diff.o" "objects_debug/Diff.debug"
 ""
@@ -313,6 +314,7 @@ Storm Shell Project (Dependencies)
 File
 2 "commands/CmdOpenFilesWindow.h"
 "commands/CmdFileOpen.h"
+"commands/CmdOpenFilesWindow.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

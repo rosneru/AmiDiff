@@ -50,7 +50,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   //
 
   // Create a place for GadTools context data
-  m_pGadgetList = CreateContext(NULL);
+  struct Gadget* pContext;
+  pContext = (struct Gadget*) CreateContext(&m_pGadgetList);
 
   // Declare the basic gadget structure
   struct NewGadget newGadget;
@@ -66,8 +67,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_GadgetID   = GID_LeftFileString;
   newGadget.ng_Flags      = 0;
 
-  m_pLeftFileStringGadget = CreateGadget(STRING_KIND, 
-    m_pGadgetList, &newGadget, TAG_END);
+  m_pLeftFileStringGadget = CreateGadget(STRING_KIND,
+    pContext, &newGadget, TAG_END);
 
   // Creating the Button for opening a file selector for left file
   newGadget.ng_LeftEdge   = selectButtonLeft;
@@ -77,7 +78,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_GadgetText = (UBYTE*) "...";
   newGadget.ng_GadgetID   = GID_LeftFileButton;
 
-  m_pOpenLeftFileButton = CreateGadget(BUTTON_KIND, 
+  m_pOpenLeftFileButton = CreateGadget(BUTTON_KIND,
     m_pLeftFileStringGadget, &newGadget, TAG_END);
 
   // Creating the string gadget for the file name of the right file
@@ -88,7 +89,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_GadgetText = (UBYTE*) "Right file";
   newGadget.ng_GadgetID   = GID_RightFileString;
 
-  m_pRightFileStringGadget = CreateGadget(STRING_KIND, 
+  m_pRightFileStringGadget = CreateGadget(STRING_KIND,
     m_pOpenLeftFileButton, &newGadget, TAG_END);
 
   // Creating the Button for opening a file selector for left file
@@ -99,7 +100,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_GadgetText = (UBYTE*) "...";
   newGadget.ng_GadgetID   = GID_RightFileButton;
 
-  m_pOpenRightFileButton = CreateGadget(BUTTON_KIND, 
+  m_pOpenRightFileButton = CreateGadget(BUTTON_KIND,
     m_pRightFileStringGadget, &newGadget, TAG_END);
 
   // Creating the Diff button
@@ -110,7 +111,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_GadgetText = (UBYTE*) "Diff";
   newGadget.ng_GadgetID   = GID_DiffButton;
 
-  m_pDiffButton = CreateGadget(BUTTON_KIND, 
+  m_pDiffButton = CreateGadget(BUTTON_KIND,
     m_pOpenRightFileButton, &newGadget, TAG_END);
 
   // Creating the Cancel button
@@ -121,7 +122,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_GadgetText = (UBYTE*) "Cancel";
   newGadget.ng_GadgetID   = GID_CancelButton;
 
-  m_pCancelButton = CreateGadget(BUTTON_KIND, 
+  m_pCancelButton = CreateGadget(BUTTON_KIND,
     m_pDiffButton, &newGadget, TAG_END);
 }
 

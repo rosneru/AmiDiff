@@ -104,10 +104,10 @@ bool Application::Run()
 
 
   //
-  // Creating the window to open the files to diff. Note: It's not 
+  // Creating the window to open the files to diff. Note: It's not
   // getting opened yet. It will be opened later by CmdOpenFilesWindow.
   //
-  m_pOpenFilesWindow = new OpenFilesWindow(m_pScreen, m_LeftFilePath, 
+  m_pOpenFilesWindow = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
     m_RightFilePath);
 
   //
@@ -139,9 +139,9 @@ bool Application::Run()
 
   TextDocument* leftDocument = new TextDocument();
   m_pCmdOpenLeftFile = new CmdOpenFilesWindow(*m_pOpenFilesWindow);
-                  // TODO How can the "Open..." in newMenuDefinition be 
-                  // disabled if the OpenFilesWindow is already open. 
-                  // Or can we "extend" the OpenCmd to bring the window 
+                  // TODO How can the "Open..." in newMenuDefinition be
+                  // disabled if the OpenFilesWindow is already open.
+                  // Or can we "extend" the OpenCmd to bring the window
                   // in front then?
 
 //  TextDocument rightDocument;
@@ -150,7 +150,7 @@ bool Application::Run()
 
   //
   // Fill the GadTools menu struct, supplying pointers to the commands
-  // as nm_UserData. With this behavior there is no complicated 
+  // as nm_UserData. With this behavior there is no complicated
   // evalution needed to detect which menu item was clicked. Just
   // the ->Execute of the (by then anonymous) command has to be called.
   //
@@ -192,12 +192,13 @@ bool Application::Run()
     return false;
   }
 */
+/*
   if(m_pMenu->AttachToWindow(m_pOpenFilesWindow) == FALSE)
   {
     Dispose();
     return false;
   }
-
+*/
   //
   // If there are at least two command line arguments permitted,
   // (three for the if as the first one is the application name),
@@ -239,14 +240,14 @@ void Application::intuiEventLoop()
   {
     // Waiting for a signals from the windows
     Wait(1L << pWin1->UserPort->mp_SigBit |
-         1L << pWin2->UserPort->mp_SigBit |
-         1L << pWin3->UserPort->mp_SigBit);
+         1L << pWin2->UserPort->mp_SigBit);// |
+         //1L << pWin3->UserPort->mp_SigBit);
 
     struct IntuiMessage* pMsg;
     while ((m_bExitRequested == false) &&
           ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(pWin3->UserPort)) ))
+           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort)) ))//||
+           //(pMsg = (struct IntuiMessage *)GetMsg(pWin3->UserPort)) ))
     {
       if(pMsg->Class == IDCMP_MENUPICK)
       {
