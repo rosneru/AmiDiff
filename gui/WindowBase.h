@@ -20,6 +20,11 @@ public:
   virtual void HandleIdcmp(struct IntuiMessage* p_pMsg) = 0;
 
   /**
+   * Opening the window
+   */
+  virtual bool Open() = 0;
+
+  /**
    * Closes the window
    */
   virtual void Close();

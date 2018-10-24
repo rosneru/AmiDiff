@@ -1,29 +1,28 @@
-#ifndef CMD_OPEN_FILES_WINDOW
-#define CMD_OPEN_FILES_WINDOW
+#ifndef CMD_OPEN_WINDOW_H
+#define CMD_OPEN_WINDOW_H
 
+#include "AppMenu.h"
 #include "Command.h"
-#include "OpenFilesWindow.h"
+#include "WindowBase.h"
 
 /**
- * Command for opening, reading and displaying an input file. Its
- * second parameter is a DiffDocument on which the open command will
- * be performed.
+ * Command for opening a window.
  *
- * On Execute of this command the ReadFile() method of the DiffDocument
- * will be called.
+ * On Execute this will open the provided window and attach the provided
+ * menu to it
  *
  * @author Uwe Rosner
- * @date 24/09/2018
+ * @date 24/10/2018
  */
-class CmdOpenFilesWindow : public Command
+class CmdOpenWindow : public Command
 {
 public:
-  CmdOpenFilesWindow(OpenFilesWindow& p_OpenFilesWindow);
-  virtual ~CmdOpenFilesWindow();
+  CmdOpenWindow(WindowBase& p_Window, AppMenu& p_Menu);
+  virtual ~CmdOpenWindow();
   virtual void Execute();
 
 private:
-  OpenFilesWindow& m_OpenFilesWindow;
+  WindowBase& m_Window;
 };
 
-#endif // CMD_OPEN_FILES_WINDOW
+#endif // CMD_OPEN_WINDOW_H
