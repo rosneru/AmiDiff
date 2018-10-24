@@ -38,8 +38,7 @@ bool AppMenu::Create(struct NewMenu* p_pMenuDefinition)
                  TAG_END) == FALSE)
   {
     // Outlaying the menu failed
-    FreeMenus(m_pMenu);
-    m_pMenu = NULL;
+    Dispose();
     return false;
   }
 
@@ -64,6 +63,22 @@ bool AppMenu::AttachToWindow(WindowBase* p_pWindow)
   }
 
   return true;
+}
+
+bool AppMenu::UpdateInWindow(WindowBase* p_pWindow)
+{
+  if(ResetMenuStrip(p_pWindow->IntuiWindow(), m_pMenu) == FALSE)
+  {
+    // Binding the menu to given window failed
+    return false;
+  }
+
+  return true;
+}
+
+void AppMenu::DetachFromWindow(WindowBase* p_pWindow)
+{
+  ClearMenuStrip(p_pWindow->IntuiWindow());
 }
 
 struct Menu* AppMenu::IntuiMenu()

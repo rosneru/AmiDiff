@@ -17,7 +17,7 @@ Application::Application(int argc, char **argv)
   : m_Argc(argc),
     m_Argv(argv),
     m_pScreen(NULL),
-    m_pOpenFilesWindow(NULL),
+    m_pOpenFilesWin(NULL),
     m_pLeftWin(NULL),
     m_pRightWin(NULL),
     m_pMenu(NULL),
@@ -74,11 +74,11 @@ void Application::Dispose()
     m_pLeftWin = NULL;
   }
 
-  if(m_pOpenFilesWindow != NULL)
+  if(m_pOpenFilesWin != NULL)
   {
-    //m_pOpenFilesWindow->Close();
-    delete m_pOpenFilesWindow;
-    m_pOpenFilesWindow = NULL;
+    //m_pOpenFilesWin->Close();
+    delete m_pOpenFilesWin;
+    m_pOpenFilesWin = NULL;
   }
 
   if(m_pScreen != NULL)
@@ -107,7 +107,7 @@ bool Application::Run()
   // Creating the window to open the files to diff. Note: It's not
   // getting opened yet. It will be opened later by CmdOpenFilesWindow.
   //
-  m_pOpenFilesWindow = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
+  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
     m_RightFilePath);
 
   //
@@ -137,7 +137,7 @@ bool Application::Run()
   //
   m_pCmdQuit = new CmdQuit(m_bExitRequested);
 
-  m_pCmdOpenFilesWindow = new CmdOpenFilesWindow(*m_pOpenFilesWindow);
+  m_pCmdOpenFilesWindow = new CmdOpenFilesWindow(*m_pOpenFilesWin);
                   // TODO How can the "Open..." in newMenuDefinition be
                   // disabled if the OpenFilesWindow is already open.
                   // Or can we "extend" the OpenCmd to bring the window
@@ -186,7 +186,7 @@ bool Application::Run()
   }
 
 
-  if(m_pMenu->AttachToWindow(m_pOpenFilesWindow) == false)
+  if(m_pMenu->AttachToWindow(m_pOpenFilesWin) == false)
   {
     Dispose();
     return false;
@@ -209,6 +209,10 @@ bool Application::Run()
   //
   intuiEventLoop();
 
+  m_pMenu->DetachFromWindow(m_pOpenFilesWin);
+  m_pMenu->DetachFromWindow(m_pRightWin);
+  m_pMenu->DetachFromWindow(m_pLeftWin);
+
   return true;
 
 }
@@ -221,7 +225,7 @@ void Application::intuiEventLoop()
 
   struct Window* pWin1 = m_pLeftWin->IntuiWindow();
   struct Window* pWin2 = m_pRightWin->IntuiWindow();
-  struct Window* pWin3 = m_pOpenFilesWindow->IntuiWindow();
+  struct Window* pWin3 = m_pOpenFilesWin->IntuiWindow();
   struct Menu* pMenu = m_pMenu->IntuiMenu();
 
 
@@ -273,9 +277,9 @@ void Application::intuiEventLoop()
         {
           m_pRightWin->HandleIdcmp(pMsg);
         }
-        else if(pMsg->IDCMPWindow == m_pOpenFilesWindow->IntuiWindow())
+        else if(pMsg->IDCMPWindow == m_pOpenFilesWin->IntuiWindow())
         {
-          m_pOpenFilesWindow->HandleIdcmp(pMsg);
+          m_pOpenFilesWin->HandleIdcmp(pMsg);
         }
       }
 

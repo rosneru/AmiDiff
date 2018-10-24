@@ -36,6 +36,19 @@ public:
   bool AttachToWindow(WindowBase* p_pWindow);
 
   /**
+   * Update a previosly set attached menu. Call this if an checkbox has 
+   * changed or if a item has been enabled or disabled.
+   * 
+   */
+  bool UpdateInWindow(WindowBase* p_pWindow);
+
+  /**
+   *  Remove menu from window. Call this at least before closing the
+   *  window.
+   */
+  void DetachFromWindow(WindowBase* p_pWindow);
+
+  /**
    * Gets the intuition menu structure or NULL if menu is not open
    */
   struct Menu* IntuiMenu();

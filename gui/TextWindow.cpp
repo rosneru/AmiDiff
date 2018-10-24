@@ -267,19 +267,20 @@ bool TextWindow::Open()
     WA_Title, (ULONG) m_Title.C_str(),
     WA_Activate, activateWin,
     WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
-    WA_IDCMP, IDCMP_MENUPICK |      // Inform us about menu selection
-              IDCMP_VANILLAKEY |    // Inform us about RAW key press
-              IDCMP_RAWKEY |        // Inform us about printable key press
-              IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
-              IDCMP_NEWSIZE |       // Inform us about resizing
-              IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
-              IDCMP_IDCMPUPDATE,    // Inform us about TODO
-    WA_Flags, WFLG_CLOSEGADGET |    // Add a close gadget
-              WFLG_DRAGBAR |        // Add a drag gadget
-              WFLG_DEPTHGADGET |    // Add a depth gadget
-              WFLG_SIZEGADGET |     // Add a size gadget
-              WFLG_GIMMEZEROZERO |  // Different layers for border and content
-              WFLG_ACTIVATE,
+    WA_IDCMP, 
+      IDCMP_MENUPICK |      // Inform us about menu selection
+      IDCMP_VANILLAKEY |    // Inform us about RAW key press
+      IDCMP_RAWKEY |        // Inform us about printable key press
+      IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
+      IDCMP_NEWSIZE |       // Inform us about resizing
+      IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
+      IDCMP_IDCMPUPDATE,    // Inform us about TODO
+    WA_Flags, 
+      WFLG_CLOSEGADGET |    // Add a close gadget
+      WFLG_DRAGBAR |        // Add a drag gadget
+      WFLG_DEPTHGADGET |    // Add a depth gadget
+      WFLG_SIZEGADGET |     // Add a size gadget
+      WFLG_GIMMEZEROZERO,   // Different layers for border and content
     WA_SimpleRefresh, TRUE,
 		WA_MinWidth, 120,
 		WA_MinHeight, 90,

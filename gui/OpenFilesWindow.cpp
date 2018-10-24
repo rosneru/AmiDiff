@@ -182,17 +182,27 @@ bool OpenFilesWindow::Open()
     WA_Title, (ULONG) "Open the files to diff",
     WA_Activate, TRUE,
     WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
-    WA_IDCMP,
+    WA_IDCMP, 
+      IDCMP_MENUPICK |      // Inform us about menu selection
+      IDCMP_VANILLAKEY |    // Inform us about RAW key press
+      IDCMP_RAWKEY |        // Inform us about printable key press
+      IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
+      IDCMP_NEWSIZE |       // Inform us about resizing
       IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
-      IDCMP_CLOSEWINDOW |   // Inform us about Window close gadget click
-      IDCMP_GADGETUP,       // Inform us about GadTools button click
-    WA_Flags, WFLG_DRAGBAR |      // Add a drag gadget
-              WFLG_DEPTHGADGET |  // Add a depth gadget
-              WFLG_CLOSEGADGET |  // Add a close gadget
-              WFLG_ACTIVATE,
+      IDCMP_IDCMPUPDATE,    // Inform us about TODO
+    WA_Flags, 
+      WFLG_CLOSEGADGET |    // Add a close gadget
+      WFLG_DRAGBAR |        // Add a drag gadget
+      WFLG_DEPTHGADGET |    // Add a depth gadget
+      WFLG_SIZEGADGET |     // Add a size gadget
+      WFLG_GIMMEZEROZERO,   // Different layers for border and content
     WA_SimpleRefresh, TRUE,
+		WA_MinWidth, 120,
+		WA_MinHeight, 90,
+		WA_MaxWidth, -1,
+		WA_MaxHeight, -1,
     WA_NewLookMenus, TRUE,          // Ignored before v39
-//    WA_Gadgets, m_pGadgetList,
+//    WA_Gadgets, m_pDownArrowButton,
     TAG_END);
 
 /*

@@ -38,7 +38,7 @@ private:
   bool m_bExitRequested;
   
   AppScreen* m_pScreen;
-  OpenFilesWindow* m_pOpenFilesWindow;
+  OpenFilesWindow* m_pOpenFilesWin;
   TextWindow* m_pLeftWin;
   TextWindow* m_pRightWin;
 
