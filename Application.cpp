@@ -109,6 +109,7 @@ bool Application::Run()
   //
   m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
     m_RightFilePath);
+  m_pOpenFilesWin->Open();
 
   //
   // Opening the left window
@@ -137,7 +138,7 @@ bool Application::Run()
   //
   m_pCmdQuit = new CmdQuit(m_bExitRequested);
 
-  m_pCmdOpenFilesWindow = new CmdOpenFilesWindow(*m_pOpenFilesWin);
+//  m_pCmdOpenFilesWindow = new CmdOpenFilesWindow(*m_pOpenFilesWin);
                   // TODO How can the "Open..." in newMenuDefinition be
                   // disabled if the OpenFilesWindow is already open.
                   // Or can we "extend" the OpenCmd to bring the window
@@ -153,7 +154,7 @@ bool Application::Run()
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open files...",         "O", 0, 0, m_pCmdOpenFilesWindow },
+//    {  NM_ITEM,   "Open files...",         "O", 0, 0, m_pCmdOpenFilesWindow },
 //    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdOpenRightFile }, // TODO
     {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
     {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },

@@ -48,7 +48,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   //
   // Setting up the gadgets
   //
-/*
+
   // Create a place for GadTools context data
   struct Gadget* pContext;
   pContext = (struct Gadget*) CreateContext(&m_pGadgetList);
@@ -124,7 +124,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
 
   m_pCancelButton = CreateGadget(BUTTON_KIND,
     m_pDiffButton, &newGadget, TAG_END);
-*/
+
 }
 
 OpenFilesWindow::~OpenFilesWindow()
@@ -182,7 +182,7 @@ bool OpenFilesWindow::Open()
     WA_Title, (ULONG) "Open the files to diff",
     WA_Activate, TRUE,
     WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
-    WA_IDCMP, 
+    WA_IDCMP,
       IDCMP_MENUPICK |      // Inform us about menu selection
       IDCMP_VANILLAKEY |    // Inform us about RAW key press
       IDCMP_RAWKEY |        // Inform us about printable key press
@@ -190,7 +190,7 @@ bool OpenFilesWindow::Open()
       IDCMP_NEWSIZE |       // Inform us about resizing
       IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
       IDCMP_IDCMPUPDATE,    // Inform us about TODO
-    WA_Flags, 
+    WA_Flags,
       WFLG_CLOSEGADGET |    // Add a close gadget
       WFLG_DRAGBAR |        // Add a drag gadget
       WFLG_DEPTHGADGET |    // Add a depth gadget
@@ -202,7 +202,7 @@ bool OpenFilesWindow::Open()
 		WA_MaxWidth, -1,
 		WA_MaxHeight, -1,
     WA_NewLookMenus, TRUE,          // Ignored before v39
-//    WA_Gadgets, m_pDownArrowButton,
+    WA_Gadgets, m_pGadgetList,
     TAG_END);
 
 /*
