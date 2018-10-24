@@ -4,7 +4,6 @@
 #include <intuition/screens.h>
 #include "AppScreen.h"
 #include "SimpleString.h"
-#include "TextDocument.h"
 #include "WindowBase.h"
 
 /**
@@ -28,21 +27,6 @@ public:
   void HandleIdcmp(struct IntuiMessage* p_pMsg);
 
 
-  /**
-   * IDs to allow to interpret the events of this window's BOOPSI system
-   * gadgets in the Application event loop.
-   */
-  enum GadgetId
-  {
-    GID_LeftFileString,
-    GID_RightFileString,
-    GID_LeftFileButton,
-    GID_RightFileButton,
-    GID_DiffButton,
-    GID_CancelButton,
-  };
-
-
   void Refresh();
 
   /**
@@ -59,6 +43,20 @@ public:
   virtual void Close();
 
 private:
+  /**
+   * IDs to help to interpret the events of this window's Gadtools
+   * gadgets in the Application event loop.
+   */
+  enum GadgetId
+  {
+    GID_LeftFileString,
+    GID_RightFileString,
+    GID_LeftFileButton,
+    GID_RightFileButton,
+    GID_DiffButton,
+    GID_CancelButton,
+  };
+
   SimpleString& m_LeftFilePath;
   SimpleString& m_RightFilePath;
 

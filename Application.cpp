@@ -22,7 +22,7 @@ Application::Application(int argc, char **argv)
     m_pRightWin(NULL),
     m_pMenu(NULL),
     m_bExitRequested(false),
-    m_pCmdOpenLeftFile(NULL),
+    m_pCmdOpenFilesWindow(NULL),
     m_pCmdOpenRightFile(NULL),
     m_pCmdQuit(NULL)
 {
@@ -42,10 +42,10 @@ void Application::Dispose()
     m_pMenu = NULL;
   }
 
-  if(m_pCmdOpenLeftFile != NULL)
+  if(m_pCmdOpenFilesWindow != NULL)
   {
-    delete m_pCmdOpenLeftFile;
-    m_pCmdOpenLeftFile = NULL;
+    delete m_pCmdOpenFilesWindow;
+    m_pCmdOpenFilesWindow = NULL;
   }
 
   if(m_pCmdOpenRightFile != NULL)
@@ -137,14 +137,11 @@ bool Application::Run()
   //
   m_pCmdQuit = new CmdQuit(m_bExitRequested);
 
-//  m_pCmdOpenLeftFile = new CmdOpenFilesWindow(*m_pOpenFilesWindow);
+  m_pCmdOpenFilesWindow = new CmdOpenFilesWindow(*m_pOpenFilesWindow);
                   // TODO How can the "Open..." in newMenuDefinition be
                   // disabled if the OpenFilesWindow is already open.
                   // Or can we "extend" the OpenCmd to bring the window
                   // in front then?
-
-//  TextDocument rightDocument;
-//  m_pCmdOpenRightFile = new CmdFileOpen("Open right file", rightDocument, *m_pRightWin);
 
 
   //
@@ -156,7 +153,7 @@ bool Application::Run()
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open...",               "O", 0, 0, m_pCmdQuit },
+    {  NM_ITEM,   "Open files...",         "O", 0, 0, m_pCmdOpenFilesWindow },
 //    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdOpenRightFile }, // TODO
     {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
     {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
@@ -167,7 +164,7 @@ bool Application::Run()
   // Creating the menu
   //
   m_pMenu = new AppMenu(m_pScreen);
-  if(m_pMenu->Create(menuDefinition) == FALSE)
+  if(m_pMenu->Create(menuDefinition) == false)
   {
     Dispose();
     return false;
@@ -176,20 +173,20 @@ bool Application::Run()
   //
   // Installing menu to all windows
   //
-  if(m_pMenu->AttachToWindow(m_pLeftWin) == FALSE)
+  if(m_pMenu->AttachToWindow(m_pLeftWin) == false)
   {
     Dispose();
     return false;
   }
 
-  if(m_pMenu->AttachToWindow(m_pRightWin) == FALSE)
+  if(m_pMenu->AttachToWindow(m_pRightWin) == false)
   {
     Dispose();
     return false;
   }
 
 
-  if(m_pMenu->AttachToWindow(m_pOpenFilesWindow) == FALSE)
+  if(m_pMenu->AttachToWindow(m_pOpenFilesWindow) == false)
   {
     Dispose();
     return false;

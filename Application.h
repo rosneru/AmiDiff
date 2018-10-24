@@ -43,7 +43,7 @@ private:
   TextWindow* m_pRightWin;
 
   AppMenu* m_pMenu;
-  Command* m_pCmdOpenLeftFile;
+  Command* m_pCmdOpenFilesWindow;
   Command* m_pCmdOpenRightFile;
   Command* m_pCmdQuit;
 

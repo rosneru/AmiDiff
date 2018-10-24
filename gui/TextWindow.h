@@ -26,20 +26,6 @@ public:
 
 
   /**
-   * IDs to allow to interpret the events of this window's BOOPSI system
-   * gadgets in the Application event loop.
-   */
-  enum DW_GADGET_ID
-  {
-    DGID_XPROP,
-    DGID_YPROP,
-    DGID_UPARROW,
-    DGID_DOWNARROW,
-    DGID_LEFTARROW,
-    DGID_RIGHTARROW,
-  };
-
-  /**
    * Reorganizes the window including re-calculating the scrollbars. If
    * needed also re-drawing the obscured text areas.
    *
@@ -106,7 +92,21 @@ protected:
 
 
 private:
-  enum LAST_SCROLL_DIRECTION
+  /**
+   * IDs to help to interpret the events of this window's BOOPSI system
+   * gadgets in the Application event loop.
+   */
+  enum GadgetId
+  {
+    GID_PropX,
+    GID_PropY,
+    GID_ArrowUp,
+    GID_ArrowDown,
+    GID_ArrowLeft,
+    GID_ArrowRight,
+  };
+
+  enum LastScrollDirection
   {
     None,
     Upward,
@@ -133,7 +133,7 @@ private:
    * Possibly makes scrolling by cursor keys faster at the bottom of
    * big files.
    */
-  LAST_SCROLL_DIRECTION m_LastScrollDirection;
+  LastScrollDirection m_LastScrollDirection;
 
   struct Image* m_pLeftArrowImage;    ///> h-scrollbar left button image
   struct Image* m_pRightArrowImage;   ///> h-scrollbar right button image

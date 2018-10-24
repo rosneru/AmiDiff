@@ -65,7 +65,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen)
   // Creating the arrow down gadget
   m_pDownArrowButton = (struct Gadget*) NewObject(
     NULL, BUTTONGCLASS,
-    GA_ID, DGID_DOWNARROW,
+    GA_ID, GID_ArrowDown,
     GA_RelRight, -imageWidth+1,
     GA_RelBottom, -sizeImageHeight-imageHeight+1,
     GA_Width, imageWidth,
@@ -84,7 +84,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen)
   m_pUpArrowButton = (struct Gadget*) NewObject(
     NULL, BUTTONGCLASS,
     GA_Previous, m_pDownArrowButton,
-    GA_ID, DGID_UPARROW,
+    GA_ID, GID_ArrowUp,
     GA_RelRight, -imageWidth+1,
     GA_RelBottom, -sizeImageHeight-imageHeight-imageHeight+1,
     GA_Width, imageWidth,
@@ -100,7 +100,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen)
 	m_pYPropGadget = (struct Gadget*) NewObject(
 	  NULL, PROPGCLASS,
   	GA_Previous, m_pUpArrowButton,
-  	GA_ID, DGID_YPROP,
+  	GA_ID, GID_PropY,
   	GA_RelRight, -sizeImageWidth+4,
   	GA_Top, barHeight,
   	GA_Width, sizeImageWidth-6,
@@ -124,7 +124,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen)
     m_pRightArrowButton = (struct Gadget*) NewObject(
       NULL, BUTTONGCLASS,
       GA_Previous, m_pYPropGadget,
-      GA_ID, DGID_RIGHTARROW,
+      GA_ID, GID_ArrowRight,
       GA_RelRight, -sizeImageWidth-imageWidth+1,
       GA_RelBottom, -imageHeight+1,
       GA_Width, imageWidth,
@@ -143,7 +143,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen)
     m_pLeftArrowButton = (struct Gadget*) NewObject(
       NULL, BUTTONGCLASS,
       GA_Previous, m_pRightArrowButton,
-      GA_ID, DGID_LEFTARROW,
+      GA_ID, GID_ArrowLeft,
       GA_RelRight, -sizeImageWidth-imageWidth-imageWidth+1,
       GA_RelBottom, -imageHeight+1,
       GA_Width, imageWidth,
@@ -159,7 +159,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen)
     m_pXPropGadget = (struct Gadget*) NewObject(
       NULL, PROPGCLASS,
       GA_Previous, m_pLeftArrowButton,
-      GA_ID, DGID_XPROP,
+      GA_ID, GID_PropX,
       GA_Left, m_pAppScreen->IntuiScreen()->WBorLeft,
       GA_RelBottom, -sizeImageHeight+3,
       GA_RelWidth, -sizeImageWidth-imageWidth-imageWidth-m_pAppScreen->IntuiScreen()->WBorLeft-1,
@@ -603,7 +603,7 @@ void TextWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
         (struct TagItem *)p_pMsg->IAddress);
       switch(tagData)
       {
-        case TextWindow::DGID_YPROP:
+        case TextWindow::GID_PropY:
         {
           size_t newY = GetTagData(PGA_Top, 0, (struct TagItem *)
             p_pMsg->IAddress);
@@ -612,13 +612,13 @@ void TextWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
           break;
         }
 
-        case TextWindow::DGID_UPARROW:
+        case TextWindow::GID_ArrowUp:
         {
           YDecrease();
           break;
         }
 
-        case TextWindow::DGID_DOWNARROW:
+        case TextWindow::GID_ArrowDown:
         {
           YIncrease();
           break;
