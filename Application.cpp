@@ -109,7 +109,6 @@ bool Application::Run()
   //
   m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
     m_RightFilePath);
-  m_pOpenFilesWin->Open();
 
   //
   // Opening the left window
