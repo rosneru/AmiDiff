@@ -181,6 +181,7 @@ bool Application::Run()
 
   if(m_pMenu->AttachToWindow(m_pRightWin) == false)
   {
+    m_pMenu->DetachFromWindow(m_pLeftWin);
     Dispose();
     return false;
   }
@@ -188,6 +189,8 @@ bool Application::Run()
 
   if(m_pMenu->AttachToWindow(m_pOpenFilesWin) == false)
   {
+    m_pMenu->DetachFromWindow(m_pRightWin);
+    m_pMenu->DetachFromWindow(m_pLeftWin);
     Dispose();
     return false;
   }
