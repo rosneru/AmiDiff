@@ -18,7 +18,7 @@ CmdOpenWindow::~CmdOpenWindow()
 
 void CmdOpenWindow::Execute()
 {
-  m_Window.Open() == true
+  m_Window.Open();
 
 /*
   // Let the user select a file to open

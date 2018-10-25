@@ -36,7 +36,7 @@ private:
   SimpleString m_RightFilePath;
 
   bool m_bExitRequested;
-  
+
   AppScreen* m_pScreen;
   OpenFilesWindow* m_pOpenFilesWin;
   TextWindow* m_pLeftWin;
@@ -52,7 +52,7 @@ private:
    * Calculating the signal mask for intuiEventLoop in dependency of
    * which window is open and available
    */
-  uint32 signalMask();
+  ULONG signalMask();
 
   /**
    * Handling messages from Intuition

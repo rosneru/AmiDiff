@@ -6,7 +6,7 @@
 #include "LinkedList.h"
 
 #include "Command.h"
-#include "CmdOpenFilesWindow.h"
+#include "CmdOpenWindow.h"
 #include "CmdQuit.h"
 
 #include "TextDocument.h"
@@ -109,7 +109,7 @@ bool Application::Run()
   //
   m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
     m_RightFilePath);
-  
+
 
   //
   // Opening the left window
@@ -138,7 +138,7 @@ bool Application::Run()
   //
   m_pCmdQuit = new CmdQuit(m_bExitRequested);
 
- m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
+  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
                   // TODO How can the "Open..." in newMenuDefinition be
                   // disabled if the OpenFilesWindow is already open.
                   // Or can we "extend" the OpenCmd to bring the window
@@ -154,7 +154,7 @@ bool Application::Run()
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-//    {  NM_ITEM,   "Open files...",         "O", 0, 0, m_pCmdOpenFilesWindow },
+    {  NM_ITEM,   "Open files...",         "O", 0, 0, m_pCmdOpenFilesWindow },
 //    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdOpenRightFile }, // TODO
     {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
     {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
@@ -176,7 +176,7 @@ bool Application::Run()
   //
   m_pLeftWin->SetMenu(m_pMenu);
   m_pRightWin->SetMenu(m_pMenu);
-  m_pOpenFilesWin->SetMenu(m_pMenu)
+  m_pOpenFilesWin->SetMenu(m_pMenu);
 
   //
   // If there are at least two command line arguments permitted,
@@ -195,9 +195,9 @@ bool Application::Run()
   //
   intuiEventLoop();
 
-  m_pMenu->DetachFromWindow(m_pOpenFilesWin);
-  m_pMenu->DetachFromWindow(m_pRightWin);
-  m_pMenu->DetachFromWindow(m_pLeftWin);
+  m_pOpenFilesWin->Close();
+  m_pRightWin->Close();
+  m_pLeftWin->Close();
 
   return true;
 
@@ -205,7 +205,7 @@ bool Application::Run()
 
 ULONG Application::signalMask()
 {
-  uint32 signal = 0;
+  ULONG signal = 0;
 
   if(m_pLeftWin->IntuiWindow() != NULL)
   {
@@ -221,6 +221,8 @@ ULONG Application::signalMask()
   {
     signal |= 1L << m_pOpenFilesWin->IntuiWindow()->UserPort->mp_SigBit;
   }
+
+  return signal;
 }
 
 void Application::intuiEventLoop()
@@ -228,7 +230,7 @@ void Application::intuiEventLoop()
   //
   // Waiting for messages from Intuition
   //
-  
+
   struct Menu* pMenu = m_pMenu->IntuiMenu();
 
 
@@ -238,7 +240,7 @@ void Application::intuiEventLoop()
     // Wait(1L << pWin1->UserPort->mp_SigBit |
     //      1L << pWin2->UserPort->mp_SigBit |
     //      1L << pWin3->UserPort->mp_SigBit);
-    Wait(signalMask);
+    Wait(signalMask());
 
     struct IntuiMessage* pMsg;
     while ((m_bExitRequested == false) &&
