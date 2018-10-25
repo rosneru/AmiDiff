@@ -4,12 +4,10 @@
 #include "AppMenu.h"
 
 
-AppMenu::AppMenu(struct Screen* p_pScreen)
+AppMenu::AppMenu(AppScreen* p_pScreen)
+  : m_pScreen(p_pScreen),
+    m_pMenu(NULL)
 {
-  m_pMenu = NULL;
-
-  // Get visual info from screen
-  m_pVisualInfo = (APTR*)GetVisualInfo(p_pScreen, TAG_END);
 
 }
 
@@ -20,7 +18,7 @@ AppMenu::~AppMenu()
 
 bool AppMenu::Create(struct NewMenu* p_pMenuDefinition)
 {
-  if(m_pVisualInfo == NULL)
+  if(m_pScreen == NULL || m_pScreen->GadtoolsVisualInfo() == NULL)
   {
     // Without VisualInfo the menu can't be created
     return false;
@@ -35,13 +33,12 @@ bool AppMenu::Create(struct NewMenu* p_pMenuDefinition)
   }
 
   // Menu building step 2: Outlaying the menu
-  if(LayoutMenus(m_pMenu, m_pVisualInfo,
+  if(LayoutMenus(m_pMenu, m_pScreen->GadtoolsVisualInfo(),
                  GTMN_NewLookMenus, TRUE, // Ignored before v39
                  TAG_END) == FALSE)
   {
     // Outlaying the menu failed
-    FreeMenus(m_pMenu);
-    m_pMenu = NULL;
+    Dispose();
     return false;
   }
 
@@ -55,12 +52,6 @@ void AppMenu::Dispose()
     FreeMenus(m_pMenu);
     m_pMenu = NULL;
   }
-
-  if(m_pVisualInfo != NULL)
-  {
-    FreeVisualInfo(m_pVisualInfo);
-    m_pMenu = NULL;
-  }
 }
 
 bool AppMenu::AttachToWindow(struct Window* p_pWindow)
@@ -72,6 +63,22 @@ bool AppMenu::AttachToWindow(struct Window* p_pWindow)
   }
 
   return true;
+}
+
+bool AppMenu::UpdateInWindow(struct Window* p_pWindow)
+{
+  if(ResetMenuStrip(p_pWindow, m_pMenu) == FALSE)
+  {
+    // Binding the menu to given window failed
+    return false;
+  }
+
+  return true;
+}
+
+void AppMenu::DetachFromWindow(struct Window* p_pWindow)
+{
+  ClearMenuStrip(p_pWindow);
 }
 
 struct Menu* AppMenu::IntuiMenu()

@@ -11,7 +11,7 @@
  * an identical copy of the Workbench screen.
  *
  * @author Uwe Rosner
- * @date 23/09/2018   
+ * @date 23/09/2018
  */
 class AppScreen
 {
@@ -35,15 +35,25 @@ public:
   const char* Title();
 
   /**
-   * Gets the intuition screen structure or NULL if screen is not open
+   * Returns the intuition screen structure or NULL if screen is not open
    */
   struct Screen* IntuiScreen();
 
   /**
-   * Gets the intuition screen draw info or NULL if it hadn't been
+   * Returns the intuition screen draw info or NULL if it hadn't been
    * acquired successfully
    */
   struct DrawInfo* IntuiDrawInfo();
+
+  /**
+   * Returns the TextAttr of the screen
+   */
+  struct TextAttr* GfxTextAttr();
+
+  /**
+   * Returns the VisualInfo needed for GadTools menus and Gadgets
+   */
+  APTR* GadtoolsVisualInfo();
 
 private:
   struct TextAttr m_TextAttr;
@@ -52,6 +62,7 @@ private:
   SimpleString m_Title;
   struct Screen* m_pScreen;
   struct DrawInfo* m_pDrawInfo;
+  APTR* m_pVisualInfo;
 
 };
 

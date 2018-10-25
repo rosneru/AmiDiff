@@ -1,3 +1,4 @@
+#include <clib/gadtools_protos.h>
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <graphics/text.h>
@@ -9,7 +10,8 @@ AppScreen::AppScreen(SimpleString p_Title)
     m_FontName(""),
     m_Title(p_Title),
     m_pScreen(NULL),
-    m_pDrawInfo(NULL)
+    m_pDrawInfo(NULL),
+    m_pVisualInfo(NULL)
 {
 }
 
@@ -102,11 +104,24 @@ bool AppScreen::Open()
     return false;
   }
 
+  // Get visual info from screen
+  m_pVisualInfo = (APTR*) GetVisualInfo(m_pScreen, TAG_END);
+  if(m_pVisualInfo == false)
+  {
+    Close();
+    return false;
+  }
+
   return true;
 }
 
 void AppScreen::Close()
 {
+  if(m_pVisualInfo != NULL)
+  {
+    FreeVisualInfo(m_pVisualInfo);
+  }
+
   if(m_pDrawInfo != NULL)
   {
     FreeScreenDrawInfo(m_pScreen, m_pDrawInfo);
@@ -142,4 +157,14 @@ struct Screen* AppScreen::IntuiScreen()
 struct DrawInfo* AppScreen::IntuiDrawInfo()
 {
   return m_pDrawInfo;
+}
+
+struct TextAttr* AppScreen::GfxTextAttr()
+{
+  return &m_TextAttr;
+}
+
+APTR* AppScreen::GadtoolsVisualInfo()
+{
+  return m_pVisualInfo;
 }

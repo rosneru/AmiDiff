@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Amiga 68k",
+            "includePath": [
+                "/opt/amiga/m68k-amigaos/ndk-include/",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "/opt/amiga/bin/m68k-amigaos-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+}

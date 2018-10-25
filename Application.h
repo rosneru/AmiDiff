@@ -10,8 +10,10 @@
 
 #include "AppMenu.h"
 #include "AppScreen.h"
-#include "DiffWindow.h"
 #include "Command.h"
+#include "OpenFilesWindow.h"
+#include "SimpleString.h"
+#include "TextWindow.h"
 
 class Application
 {
@@ -30,16 +32,27 @@ private:
   int m_Argc;
   char** m_Argv;
 
+  SimpleString m_LeftFilePath;
+  SimpleString m_RightFilePath;
+
   bool m_bExitRequested;
+
   AppScreen* m_pScreen;
-  DiffWindow* m_pLeftWin;
-  DiffWindow* m_pRightWin;
+  OpenFilesWindow* m_pOpenFilesWin;
+  TextWindow* m_pLeftWin;
+  TextWindow* m_pRightWin;
 
   AppMenu* m_pMenu;
-  Command* m_pCmdOpenLeftFile;
+  Command* m_pCmdOpenFilesWindow;
   Command* m_pCmdOpenRightFile;
   Command* m_pCmdQuit;
 
+
+  /**
+   * Calculating the signal mask for intuiEventLoop in dependency of
+   * which window is open and available
+   */
+  ULONG signalMask();
 
   /**
    * Handling messages from Intuition

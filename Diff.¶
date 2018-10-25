@@ -94,6 +94,24 @@ Section
 0 1 1 0
 4
 File
+1 "amigautils/AslFileRequest.cpp"
+"amigautils/AslFileRequest.cpp"
+"amigautils/AslFileRequest.h"
+Storm Shell Project (Dependencies)
+"objects_debug/AslFileRequest.o" "objects_debug/AslFileRequest.debug"
+""
+1 1
+File
+1 "amigautils/DosFile.cpp"
+"amigautils/DosFile.cpp"
+"amigautils/StopWatch.h"
+"amigautils/DosFile.h"
+"oscottlibs/LinkedListNode.h"
+Storm Shell Project (Dependencies)
+"objects_debug/DosFile.o" "objects_debug/DosFile.debug"
+""
+1 1
+File
 1 "amigautils/StopWatch.cpp"
 "amigautils/StopWatch.cpp"
 "amigautils/StopWatch.h"
@@ -106,18 +124,24 @@ File
 "Application.cpp"
 "Application.h"
 "oscottlibs/LinkedListNode.h"
+"gui/WindowBase.h"
+"model/Document.h"
+"gui/AppScreen.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
 1 1
 File
-1 "commands/CmdFileOpen.cpp"
-"commands/CmdFileOpen.cpp"
-"commands/CmdFileOpen.h"
+1 "commands/CmdOpenWindow.cpp"
 "commands/Command.h"
 "oscottlibs/LinkedListNode.h"
+"model/Document.h"
+"gui/AppScreen.h"
+"gui/WindowBase.h"
+"commands/CmdOpenFilesWindow.cpp"
+"commands/CmdOpenFilesWindow.h"
 Storm Shell Project (Dependencies)
-"objects_debug/CmdFileOpen.o" "objects_debug/CmdFileOpen.debug"
+"objects_debug/CmdOpenWindow.o" "objects_debug/CmdOpenWindow.debug"
 ""
 1 1
 File
@@ -142,6 +166,9 @@ File
 "Diff.cpp"
 "Application.h"
 "oscottlibs/LinkedListNode.h"
+"gui/WindowBase.h"
+"model/Document.h"
+"gui/AppScreen.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Diff.o" "objects_debug/Diff.debug"
 ""
@@ -150,6 +177,8 @@ File
 1 "gui/AppMenu.cpp"
 "gui/AppMenu.cpp"
 "gui/AppMenu.h"
+"gui/AppScreen.h"
+"gui/WindowBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AppMenu.o" "objects_debug/AppMenu.debug"
 ""
@@ -163,13 +192,36 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "gui/DiffWindow.cpp"
-"gui/DiffWindow.cpp"
-"gui/DiffWindow.h"
+1 "gui/OpenFilesWindow.cpp"
+"gui/OpenFilesWindow.cpp"
+"gui/OpenFilesWindow.h"
+"gui/AppScreen.h"
+"model/Document.h"
+"oscottlibs/LinkedListNode.h"
+"gui/WindowBase.h"
+Storm Shell Project (Dependencies)
+"objects_debug/OpenFilesWindow.o" "objects_debug/OpenFilesWindow.debug"
+""
+1 1
+File
+1 "gui/TextWindow.cpp"
+"gui/TextWindow.cpp"
+"gui/TextWindow.h"
 "gui/AppScreen.h"
 "oscottlibs/LinkedListNode.h"
+"gui/WindowBase.h"
+"model/Document.h"
 Storm Shell Project (Dependencies)
-"objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
+"objects_debug/TextWindow.o" "objects_debug/TextWindow.debug"
+""
+1 1
+File
+1 "gui/WindowBase.cpp"
+"gui/AppScreen.h"
+"gui/WindowBase.cpp"
+"gui/WindowBase.h"
+Storm Shell Project (Dependencies)
+"objects_debug/WindowBase.o" "objects_debug/WindowBase.debug"
 ""
 1 1
 File
@@ -177,8 +229,29 @@ File
 "model/DiffDocument.cpp"
 "model/DiffDocument.h"
 "oscottlibs/LinkedListNode.h"
+"model/TextDocument.h"
+"model/Document.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffDocument.o" "objects_debug/DiffDocument.debug"
+""
+1 1
+File
+1 "model/Document.cpp"
+"model/Document.cpp"
+"oscottlibs/LinkedListNode.h"
+"model/Document.h"
+Storm Shell Project (Dependencies)
+"objects_debug/Document.o" "objects_debug/Document.debug"
+""
+1 1
+File
+1 "model/TextDocument.cpp"
+"model/TextDocument.cpp"
+"model/TextDocument.h"
+"oscottlibs/LinkedListNode.h"
+"model/Document.h"
+Storm Shell Project (Dependencies)
+"objects_debug/TextDocument.o" "objects_debug/TextDocument.debug"
 ""
 1 1
 File
@@ -211,6 +284,20 @@ Section
 0 1 1 0
 2
 File
+2 "amigautils/AslFileRequest.h"
+"amigautils/AslFileRequest.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "amigautils/DosFile.h"
+"amigautils/DosFile.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "amigautils/StopWatch.h"
 "amigautils/StopWatch.h"
 Storm Shell Project (Dependencies)
@@ -225,8 +312,9 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "commands/CmdFileOpen.h"
+2 "commands/CmdOpenWindow.h"
 "commands/CmdFileOpen.h"
+"commands/CmdOpenFilesWindow.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -260,8 +348,23 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "gui/DiffWindow.h"
-"gui/DiffWindow.h"
+2 "gui/OpenFilesWindow.h"
+"gui/OpenFilesWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "gui/TextWindow.h"
+"gui/TextWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "gui/WindowBase.h"
+"gui/Window.h"
+"gui/WindowBase.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -269,6 +372,20 @@ Storm Shell Project (Dependencies)
 File
 2 "model/DiffDocument.h"
 "model/DiffDocument.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "model/Document.h"
+"model/Document.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "model/TextDocument.h"
+"model/TextDocument.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -300,7 +417,6 @@ Section
 7
 File
 10 "Diff"
-"Diff"
 Storm Shell Project (Dependencies)
 "" ""
 ""

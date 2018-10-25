@@ -2,13 +2,14 @@
 
 #include <clib/exec_protos.h>
 #include <clib/intuition_protos.h>
-#include <clib/utility_protos.h>
 
 #include "LinkedList.h"
 
 #include "Command.h"
-#include "CmdFileOpen.h"
+#include "CmdOpenWindow.h"
 #include "CmdQuit.h"
+
+#include "TextDocument.h"
 
 #include "Application.h"
 
@@ -16,11 +17,12 @@ Application::Application(int argc, char **argv)
   : m_Argc(argc),
     m_Argv(argv),
     m_pScreen(NULL),
+    m_pOpenFilesWin(NULL),
     m_pLeftWin(NULL),
     m_pRightWin(NULL),
     m_pMenu(NULL),
     m_bExitRequested(false),
-    m_pCmdOpenLeftFile(NULL),
+    m_pCmdOpenFilesWindow(NULL),
     m_pCmdOpenRightFile(NULL),
     m_pCmdQuit(NULL)
 {
@@ -40,10 +42,10 @@ void Application::Dispose()
     m_pMenu = NULL;
   }
 
-  if(m_pCmdOpenLeftFile != NULL)
+  if(m_pCmdOpenFilesWindow != NULL)
   {
-    delete m_pCmdOpenLeftFile;
-    m_pCmdOpenLeftFile = NULL;
+    delete m_pCmdOpenFilesWindow;
+    m_pCmdOpenFilesWindow = NULL;
   }
 
   if(m_pCmdOpenRightFile != NULL)
@@ -60,18 +62,28 @@ void Application::Dispose()
 
   if(m_pRightWin != NULL)
   {
+    //m_pRightWin->Close();
     delete m_pRightWin;
     m_pRightWin = NULL;
   }
 
   if(m_pLeftWin != NULL)
   {
+    //m_pLeftWin->Close();
     delete m_pLeftWin;
     m_pLeftWin = NULL;
   }
 
+  if(m_pOpenFilesWin != NULL)
+  {
+    //m_pOpenFilesWin->Close();
+    delete m_pOpenFilesWin;
+    m_pOpenFilesWin = NULL;
+  }
+
   if(m_pScreen != NULL)
   {
+    //m_pScreen->Close();
     delete m_pScreen;
     m_pScreen = NULL;
   }
@@ -92,10 +104,18 @@ bool Application::Run()
 
 
   //
+  // Creating the window to open the files to diff. Note: It's not
+  // getting opened yet. It will be opened later by CmdOpenFilesWindow.
+  //
+  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
+    m_RightFilePath);
+
+
+  //
   // Opening the left window
   //
-  m_pLeftWin = new DiffWindow(m_pScreen);
-  if(!m_pLeftWin->Open(DiffWindow::LEFT))
+  m_pLeftWin = new TextWindow(m_pScreen);
+  if(!m_pLeftWin->Open()) // TODO make it DiffWindow and give DiffWindow::LEFT
   {
     // Opening the window failed
     Dispose();
@@ -105,8 +125,8 @@ bool Application::Run()
   //
   // Opening the right window
   //
-  m_pRightWin = new DiffWindow(m_pScreen);
-  if(!m_pRightWin->Open(DiffWindow::RIGHT))
+  m_pRightWin = new TextWindow(m_pScreen);
+  if(!m_pRightWin->Open()) // TODO make it DiffWindow and give DiffWindow::RIGHT
   {
     // Opening the window failed
     Dispose();
@@ -116,18 +136,26 @@ bool Application::Run()
   //
   // Instantiating the commands
   //
-  m_pCmdQuit = new CmdQuit("Quit the application", m_bExitRequested);
-  m_pCmdOpenLeftFile = new CmdFileOpen("Open the left file", *m_pLeftWin);
-  m_pCmdOpenRightFile = new CmdFileOpen("Open the right file", *m_pRightWin);
+  m_pCmdQuit = new CmdQuit(m_bExitRequested);
+
+  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
+                  // TODO How can the "Open..." in newMenuDefinition be
+                  // disabled if the OpenFilesWindow is already open.
+                  // Or can we "extend" the OpenCmd to bring the window
+                  // in front then?
 
 
+  //
   // Fill the GadTools menu struct, supplying pointers to the commands
-  // as nm_UserData
+  // as nm_UserData. With this behavior there is no complicated
+  // evalution needed to detect which menu item was clicked. Just
+  // the ->Execute of the (by then anonymous) command has to be called.
+  //
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open left file...",     "L", 0, 0, m_pCmdOpenLeftFile },
-    {  NM_ITEM,   "Open right file...",    "R", 0, 0, m_pCmdOpenRightFile },
+    {  NM_ITEM,   "Open files...",         "O", 0, 0, m_pCmdOpenFilesWindow },
+//    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdOpenRightFile }, // TODO
     {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
     {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
     {  NM_END,    NULL,                     0 , 0, 0, 0 },
@@ -136,31 +164,19 @@ bool Application::Run()
   //
   // Creating the menu
   //
-  m_pMenu = new AppMenu(m_pScreen->IntuiScreen());
-  if(m_pMenu->Create(menuDefinition) == FALSE)
+  m_pMenu = new AppMenu(m_pScreen);
+  if(m_pMenu->Create(menuDefinition) == false)
   {
     Dispose();
     return false;
   }
 
   //
-  // Installing menu to left window
+  // Installing menu to all windows
   //
-  if(m_pMenu->AttachToWindow(m_pLeftWin->IntuiWindow()) == FALSE)
-  {
-    Dispose();
-    return false;
-  }
-
-  //
-  // Installing menu to left window
-  //
-
-  if(m_pMenu->AttachToWindow(m_pRightWin->IntuiWindow()) == FALSE)
-  {
-    Dispose();
-    return false;
-  }
+  m_pLeftWin->SetMenu(m_pMenu);
+  m_pRightWin->SetMenu(m_pMenu);
+  m_pOpenFilesWin->SetMenu(m_pMenu);
 
   //
   // If there are at least two command line arguments permitted,
@@ -170,11 +186,8 @@ bool Application::Run()
   //
   if(m_Argc >= 3)
   {
-    SimpleString fileNameLeft = m_Argv[1];
-    SimpleString fileNameRight = m_Argv[2];
-
-    m_pLeftWin->ReadFile(fileNameLeft);
-    m_pRightWin->ReadFile(fileNameRight);
+    m_LeftFilePath = m_Argv[1];
+    m_RightFilePath = m_Argv[2];
   }
 
   //
@@ -182,8 +195,34 @@ bool Application::Run()
   //
   intuiEventLoop();
 
+  m_pOpenFilesWin->Close();
+  m_pRightWin->Close();
+  m_pLeftWin->Close();
+
   return true;
 
+}
+
+ULONG Application::signalMask()
+{
+  ULONG signal = 0;
+
+  if(m_pLeftWin->IntuiWindow() != NULL)
+  {
+    signal |= 1L << m_pLeftWin->IntuiWindow()->UserPort->mp_SigBit;
+  }
+
+  if(m_pRightWin->IntuiWindow() != NULL)
+  {
+    signal |= 1L << m_pRightWin->IntuiWindow()->UserPort->mp_SigBit;
+  }
+
+  if(m_pOpenFilesWin->IntuiWindow() != NULL)
+  {
+    signal |= 1L << m_pOpenFilesWin->IntuiWindow()->UserPort->mp_SigBit;
+  }
+
+  return signal;
 }
 
 void Application::intuiEventLoop()
@@ -192,162 +231,67 @@ void Application::intuiEventLoop()
   // Waiting for messages from Intuition
   //
 
-  struct Window* pWin1 = m_pLeftWin->IntuiWindow();
-  struct Window* pWin2 = m_pRightWin->IntuiWindow();
   struct Menu* pMenu = m_pMenu->IntuiMenu();
 
 
   while (m_bExitRequested == false)
   {
-    // Waiting for a signals from LeftWin or from RightWin
-    Wait(1L << pWin1->UserPort->mp_SigBit |
-         1L << pWin2->UserPort->mp_SigBit);
+    // Waiting for a signals from the windows
+    // Wait(1L << pWin1->UserPort->mp_SigBit |
+    //      1L << pWin2->UserPort->mp_SigBit |
+    //      1L << pWin3->UserPort->mp_SigBit);
+    Wait(signalMask());
 
     struct IntuiMessage* pMsg;
     while ((m_bExitRequested == false) &&
-          ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort))))
+          ((pMsg = (struct IntuiMessage *)GetMsg(m_pLeftWin->IntuiWindow()->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(m_pRightWin->IntuiWindow()->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(m_pOpenFilesWin->IntuiWindow()->UserPort)) ))
     {
-      switch (pMsg->Class)
+      if(pMsg->Class == IDCMP_MENUPICK)
       {
-        case IDCMP_MENUPICK:
+        //
+        // Menupick messages are handled here
+        //
+        UWORD menuNumber = pMsg->Code;
+        struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
+
+        if(pSelectedItem != NULL)
         {
-          UWORD menuNumber = pMsg->Code;
-          struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
-
-          if(pSelectedItem != NULL)
+          // Getting the user data from selected menu item
+          APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
+          if(pUserData != NULL)
           {
-            // Getting the user data from selected menu item
-            APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
-            if(pUserData != NULL)
-            {
-              // Our menu user data always contains a pointer to a Command
-              Command* pSelecedCommand = static_cast<Command*>(pUserData);
+            // Our menu user data always contains a pointer to a Command
+            Command* pSelecedCommand = static_cast<Command*>(pUserData);
 
-              // Execute this command
-              pSelecedCommand->Execute();
-            }
+            // Execute this command
+            pSelecedCommand->Execute();
           }
-          break;
         }
-
-        case IDCMP_IDCMPUPDATE:
+      }
+      else
+      {
+        //
+        // All other messages are handled in the appropriate window
+        //
+        if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
         {
-          ULONG tagData = GetTagData(GA_ID, 0,
-            (struct TagItem *)pMsg->IAddress);
-          switch(tagData)
-          {
-            case DiffWindow::DGID_YPROP:
-            {
-              size_t newY = GetTagData(PGA_Top, 0,
-                (struct TagItem *)pMsg->IAddress);
-
-              if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-              {
-                m_pLeftWin->YChangedHandler(newY);
-              }
-              else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-              {
-                m_pRightWin->YChangedHandler(newY);
-              }
-              break;
-            }
-
-            case DiffWindow::DGID_UPARROW:
-            {
-              if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-              {
-                m_pLeftWin->YDecrease();
-              }
-              else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-              {
-                m_pRightWin->YDecrease();
-              }
-              break;
-            }
-
-            case DiffWindow::DGID_DOWNARROW:
-            {
-              if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-              {
-                m_pLeftWin->YIncrease();
-              }
-              else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-              {
-                m_pRightWin->YIncrease();
-              }
-              break;
-            }
-
-          }
-          break;
+          m_pLeftWin->HandleIdcmp(pMsg);
         }
-
-        case IDCMP_RAWKEY:
+        else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
         {
-          if(pMsg->Code == CURSORDOWN)
-          {
-            // Cursor *down* => scroll the text *up* in according window
-            if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-            {
-              m_pLeftWin->YIncrease();
-            }
-            else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-            {
-              m_pRightWin->YIncrease();
-            }
-          }
-          else if(pMsg->Code == CURSORUP)
-          {
-            // Cursor *up* => scroll the text *down* in according window
-            if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-            {
-              m_pLeftWin->YDecrease();
-            }
-            else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-            {
-              m_pRightWin->YDecrease();
-            }
-          }
-          break;
+          m_pRightWin->HandleIdcmp(pMsg);
         }
-
-        case IDCMP_NEWSIZE:
+        else if(pMsg->IDCMPWindow == m_pOpenFilesWin->IntuiWindow())
         {
-          if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-          {
-            m_pLeftWin->Resized();
-          }
-          else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-          {
-            m_pRightWin->Resized();
-          }
-
-          break;
+          m_pOpenFilesWin->HandleIdcmp(pMsg);
         }
-
-        case IDCMP_REFRESHWINDOW:
-        {
-          if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-          {
-            m_pLeftWin->Refresh();
-          }
-          else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-          {
-            m_pRightWin->Refresh();
-          }
-
-          break;
-        }
-
-        case IDCMP_CLOSEWINDOW:
-        {
-          m_pCmdQuit->Execute();
-          break;
-        }
-
       }
 
+      //
+      // Every IntuiMessage has to be replied
+      //
       ReplyMsg((struct Message *)pMsg);
     }
   }

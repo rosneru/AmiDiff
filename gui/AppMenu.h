@@ -4,18 +4,19 @@
 #include <intuition/intuition.h>
 #include <intuition/screens.h>
 #include <libraries/gadtools.h>
+#include "AppScreen.h"
 
 /**
  * Class for the application menu. It can be created with a GadTools
  * struct NewMenu and the attached to an Intuition window.
  *
  * @author Uwe Rosner
- * @date 23/09/2018   
+ * @date 23/09/2018
  */
 class AppMenu
 {
 public:
-  AppMenu(struct Screen* p_pScreen);
+  AppMenu(AppScreen* p_pScreen);
   ~AppMenu();
 
   /**
@@ -34,12 +35,25 @@ public:
   bool AttachToWindow(struct Window* p_pWindow);
 
   /**
+   * Update a previosly set attached menu. Call this if an checkbox has 
+   * changed or if a item has been enabled or disabled.
+   * 
+   */
+  bool UpdateInWindow(struct Window* p_pWindow);
+
+  /**
+   *  Remove menu from window. Call this at least before closing the
+   *  window.
+   */
+  void DetachFromWindow(struct Window* p_pWindow);
+
+  /**
    * Gets the intuition menu structure or NULL if menu is not open
    */
   struct Menu* IntuiMenu();
 
 private:
-  APTR* m_pVisualInfo;
+  AppScreen* m_pScreen;
   struct Menu* m_pMenu;
 };
 
