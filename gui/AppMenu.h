@@ -5,7 +5,6 @@
 #include <intuition/screens.h>
 #include <libraries/gadtools.h>
 #include "AppScreen.h"
-#include "WindowBase.h"
 
 /**
  * Class for the application menu. It can be created with a GadTools
@@ -33,20 +32,20 @@ public:
   /**
    * Wire the menu strip to a window. Can be done for multiple windows.
    */
-  bool AttachToWindow(WindowBase* p_pWindow);
+  bool AttachToWindow(struct Window* p_pWindow);
 
   /**
    * Update a previosly set attached menu. Call this if an checkbox has 
    * changed or if a item has been enabled or disabled.
    * 
    */
-  bool UpdateInWindow(WindowBase* p_pWindow);
+  bool UpdateInWindow(struct Window* p_pWindow);
 
   /**
    *  Remove menu from window. Call this at least before closing the
    *  window.
    */
-  void DetachFromWindow(WindowBase* p_pWindow);
+  void DetachFromWindow(struct Window* p_pWindow);
 
   /**
    * Gets the intuition menu structure or NULL if menu is not open

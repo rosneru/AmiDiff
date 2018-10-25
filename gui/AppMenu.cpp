@@ -54,9 +54,9 @@ void AppMenu::Dispose()
   }
 }
 
-bool AppMenu::AttachToWindow(WindowBase* p_pWindow)
+bool AppMenu::AttachToWindow(struct Window* p_pWindow)
 {
-  if(SetMenuStrip(p_pWindow->IntuiWindow(), m_pMenu) == FALSE)
+  if(SetMenuStrip(p_pWindow, m_pMenu) == FALSE)
   {
     // Binding the menu to given window failed
     return false;
@@ -65,9 +65,9 @@ bool AppMenu::AttachToWindow(WindowBase* p_pWindow)
   return true;
 }
 
-bool AppMenu::UpdateInWindow(WindowBase* p_pWindow)
+bool AppMenu::UpdateInWindow(struct Window* p_pWindow)
 {
-  if(ResetMenuStrip(p_pWindow->IntuiWindow(), m_pMenu) == FALSE)
+  if(ResetMenuStrip(p_pWindow, m_pMenu) == FALSE)
   {
     // Binding the menu to given window failed
     return false;
@@ -76,9 +76,9 @@ bool AppMenu::UpdateInWindow(WindowBase* p_pWindow)
   return true;
 }
 
-void AppMenu::DetachFromWindow(WindowBase* p_pWindow)
+void AppMenu::DetachFromWindow(struct Window* p_pWindow)
 {
-  ClearMenuStrip(p_pWindow->IntuiWindow());
+  ClearMenuStrip(p_pWindow);
 }
 
 struct Menu* AppMenu::IntuiMenu()

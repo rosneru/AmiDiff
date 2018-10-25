@@ -47,7 +47,7 @@ bool WindowBase::Open()
   }
 
   // Set menu strip to the window
-  m_pMenu->AttachToWindow(this);
+  m_pMenu->AttachToWindow(m_pWindow);
   return true;
 }
 
@@ -111,7 +111,7 @@ void WindowBase::SetMenu(AppMenu* p_pMenu)
   }
 
   // The window is already open: attach the newly added menu to it
-  m_pMenu->AttachToWindow(this);
+  m_pMenu->AttachToWindow(m_pWindow);
   return;
 }
 
@@ -130,7 +130,7 @@ void WindowBase::UnsetMenu()
     return;
   }
 
-  m_pMenu->DetachFromWindow(this);
+  m_pMenu->DetachFromWindow(m_pWindow);
   m_pMenu = NULL;
 }
 
