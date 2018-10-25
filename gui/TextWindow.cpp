@@ -317,7 +317,7 @@ bool TextWindow::Open()
   m_IntuiText.ITextFont = &m_TextAttr;
   m_IntuiText.NextText  = NULL;
 
-  return true;
+  return WindowBase::Open();
 }
 
 void TextWindow::Close()

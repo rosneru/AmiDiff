@@ -5,9 +5,8 @@
 #include "CmdOpenWindow.h"
 
 
-CmdOpenWindow::CmdOpenWindow(WindowBase& p_Window, AppMenu& p_Menu)
-  : m_Window(p_Window),
-    m_Menu(p_Menu)
+CmdOpenWindow::CmdOpenWindow(WindowBase& p_Window)
+  : m_Window(p_Window)
 {
 
 }
@@ -19,13 +18,8 @@ CmdOpenWindow::~CmdOpenWindow()
 
 void CmdOpenWindow::Execute()
 {
-  if(m_Window.Open() == true)
-  {
-    if(m_Menu.IntuiMenu() != NULL)
-    {
-      m_Menu.AttachToWindow(&m_Window);
-    }
-  }
+  m_Window.Open() == true
+
 /*
   // Let the user select a file to open
   AslFileRequest request(m_pWindow->IntuiWindow());

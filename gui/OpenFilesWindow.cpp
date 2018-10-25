@@ -225,7 +225,8 @@ bool OpenFilesWindow::Open()
   m_IntuiText.ITextFont = &m_TextAttr;
   m_IntuiText.NextText  = NULL;
 */
-  return true;
+
+  return WindowBase::Open();
 }
 
 void OpenFilesWindow::Close()

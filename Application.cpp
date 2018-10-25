@@ -109,6 +109,7 @@ bool Application::Run()
   //
   m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
     m_RightFilePath);
+  
 
   //
   // Opening the left window
@@ -137,7 +138,7 @@ bool Application::Run()
   //
   m_pCmdQuit = new CmdQuit(m_bExitRequested);
 
-//  m_pCmdOpenFilesWindow = new CmdOpenFilesWindow(*m_pOpenFilesWin);
+ m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
                   // TODO How can the "Open..." in newMenuDefinition be
                   // disabled if the OpenFilesWindow is already open.
                   // Or can we "extend" the OpenCmd to bring the window
@@ -173,27 +174,9 @@ bool Application::Run()
   //
   // Installing menu to all windows
   //
-  if(m_pMenu->AttachToWindow(m_pLeftWin) == false)
-  {
-    Dispose();
-    return false;
-  }
-
-  if(m_pMenu->AttachToWindow(m_pRightWin) == false)
-  {
-    m_pMenu->DetachFromWindow(m_pLeftWin);
-    Dispose();
-    return false;
-  }
-
-
-  if(m_pMenu->AttachToWindow(m_pOpenFilesWin) == false)
-  {
-    m_pMenu->DetachFromWindow(m_pRightWin);
-    m_pMenu->DetachFromWindow(m_pLeftWin);
-    Dispose();
-    return false;
-  }
+  m_pLeftWin->SetMenu(m_pMenu);
+  m_pRightWin->SetMenu(m_pMenu);
+  m_pOpenFilesWin->SetMenu(m_pMenu)
 
   //
   // If there are at least two command line arguments permitted,
@@ -220,30 +203,48 @@ bool Application::Run()
 
 }
 
+ULONG Application::signalMask()
+{
+  uint32 signal = 0;
+
+  if(m_pLeftWin->IntuiWindow() != NULL)
+  {
+    signal |= 1L << m_pLeftWin->IntuiWindow()->UserPort->mp_SigBit;
+  }
+
+  if(m_pRightWin->IntuiWindow() != NULL)
+  {
+    signal |= 1L << m_pRightWin->IntuiWindow()->UserPort->mp_SigBit;
+  }
+
+  if(m_pOpenFilesWin->IntuiWindow() != NULL)
+  {
+    signal |= 1L << m_pOpenFilesWin->IntuiWindow()->UserPort->mp_SigBit;
+  }
+}
+
 void Application::intuiEventLoop()
 {
   //
   // Waiting for messages from Intuition
   //
-
-  struct Window* pWin1 = m_pLeftWin->IntuiWindow();
-  struct Window* pWin2 = m_pRightWin->IntuiWindow();
-  struct Window* pWin3 = m_pOpenFilesWin->IntuiWindow();
+  
   struct Menu* pMenu = m_pMenu->IntuiMenu();
 
 
   while (m_bExitRequested == false)
   {
     // Waiting for a signals from the windows
-    Wait(1L << pWin1->UserPort->mp_SigBit |
-         1L << pWin2->UserPort->mp_SigBit |
-         1L << pWin3->UserPort->mp_SigBit);
+    // Wait(1L << pWin1->UserPort->mp_SigBit |
+    //      1L << pWin2->UserPort->mp_SigBit |
+    //      1L << pWin3->UserPort->mp_SigBit);
+    Wait(signalMask);
 
     struct IntuiMessage* pMsg;
     while ((m_bExitRequested == false) &&
-          ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(pWin3->UserPort)) ))
+          ((pMsg = (struct IntuiMessage *)GetMsg(m_pLeftWin->IntuiWindow()->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(m_pRightWin->IntuiWindow()->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(m_pOpenFilesWin->IntuiWindow()->UserPort)) ))
     {
       if(pMsg->Class == IDCMP_MENUPICK)
       {

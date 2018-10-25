@@ -49,6 +49,12 @@ private:
 
 
   /**
+   * Calculating the signal mask for intuiEventLoop in dependency of
+   * which window is open and available
+   */
+  uint32 signalMask();
+
+  /**
    * Handling messages from Intuition
    */
   void intuiEventLoop();

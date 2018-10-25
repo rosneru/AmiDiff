@@ -2,6 +2,7 @@
 #define WINDOW_BASE_H
 
 #include <intuition/screens.h>
+#include "AppMenu.h"
 #include "AppScreen.h"
 #include "SimpleString.h"
 
@@ -44,9 +45,13 @@ public:
    */
   AppScreen* OnScreen();
 
+  void SetMenu(AppMenu* p_pMenu);
+  void UnsetMenu();
+
 protected:
   AppScreen* m_pAppScreen;
   struct Window* m_pWindow;
+  AppMenu* m_pMenu;
   SimpleString m_Title;
 
   /**

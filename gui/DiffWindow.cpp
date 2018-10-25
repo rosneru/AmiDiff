@@ -102,7 +102,10 @@ bool DiffWindow::Open(DW_TYPE p_DwType)
 //    WA_Gadgets, m_pDownArrowButton,
 //    TAG_END);
 
-  return true;
+// TODO
+//   return WindowBase::Open();
+// or
+//   return TextWindow::Open();
 }
 
 virtual bool SetContent(DiffDocument* p_pDiffDocument)
