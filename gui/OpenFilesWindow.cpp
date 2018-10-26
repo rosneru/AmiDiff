@@ -249,13 +249,13 @@ void OpenFilesWindow::Close()
 }
 
 
-void OpenFilesWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
+void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
-  switch (p_pMsg->Class)
+  switch (p_Class)
   {
     case IDCMP_GADGETUP:
     {
-      struct Gadget* pGadget = (struct Gadget*) p_pMsg->IAddress;
+      struct Gadget* pGadget = (struct Gadget*) p_IAddress;
       if(pGadget->GadgetID == GID_LeftFileButton)
       {
         // TODO 1) ASL request

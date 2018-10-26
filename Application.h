@@ -55,6 +55,14 @@ private:
   ULONG signalMask();
 
   /**
+   * Traverses all window's user ports checking for messages.
+   * 
+   * @returns
+   * A pointer to the first found message or NULL if none was found.
+   */
+  struct IntuiMessage* nextIntuiMessage();
+
+  /**
    * Handling messages from Intuition
    */
   void intuiEventLoop();

@@ -225,6 +225,49 @@ ULONG Application::signalMask()
   return signal;
 }
 
+struct IntuiMessage* Application::nextIntuiMessage()
+{
+  struct IntuiMessage* pIntuiMessage = NULL;
+
+  // Look for message in userport of left window
+  if(m_pLeftWin->IntuiWindow() != NULL)
+  {
+    pIntuiMessage = (struct IntuiMessage *)
+      GetMsg(m_pLeftWin->IntuiWindow()->UserPort);
+
+    if(pIntuiMessage != NULL)
+    {
+      return pIntuiMessage;
+    }
+  }
+
+  // Look for message in userport of right window
+  if(m_pRightWin->IntuiWindow() != NULL)
+  {
+    pIntuiMessage = (struct IntuiMessage *)
+      GetMsg(m_pRightWin->IntuiWindow()->UserPort);
+
+    if(pIntuiMessage != NULL)
+    {
+      return pIntuiMessage;
+    }
+  }
+
+    // Look for message in userport of open files window
+  if(m_pOpenFilesWin->IntuiWindow() != NULL)
+  {
+    pIntuiMessage = (struct IntuiMessage *)
+      GetMsg(m_pOpenFilesWin->IntuiWindow()->UserPort);
+
+    if(pIntuiMessage != NULL)
+    {
+      return pIntuiMessage;
+    }
+  }
+
+  return NULL;
+}
+
 void Application::intuiEventLoop()
 {
   //
@@ -234,27 +277,33 @@ void Application::intuiEventLoop()
   struct Menu* pMenu = m_pMenu->IntuiMenu();
 
 
-  while (m_bExitRequested == false)
+  do
   {
-    // Waiting for a signals from the windows
-    // Wait(1L << pWin1->UserPort->mp_SigBit |
-    //      1L << pWin2->UserPort->mp_SigBit |
-    //      1L << pWin3->UserPort->mp_SigBit);
     Wait(signalMask());
 
     struct IntuiMessage* pMsg;
-    while ((m_bExitRequested == false) &&
-          ((pMsg = (struct IntuiMessage *)GetMsg(m_pLeftWin->IntuiWindow()->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(m_pRightWin->IntuiWindow()->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(m_pOpenFilesWin->IntuiWindow()->UserPort)) ))
+    while ((pMsg = nextIntuiMessage) != NULL)
     {
-      if(pMsg->Class == IDCMP_MENUPICK)
+      // Get all data we need from message
+      ULONG msgClass = pMsg->Class;
+      UWORD msgCode = pMsg->Code;
+      APTR msgIAddress = pMsg->IAddress;
+
+      // When we're through with a message, reply
+      ReplyMsg((struct Message *)pMsg);
+
+      //
+      // Now see what events occurred
+      //
+
+      if(msgClass == IDCMP_MENUPICK)
       {
         //
         // Menupick messages are handled here
         //
-        UWORD menuNumber = pMsg->Code;
-        struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
+        UWORD menuNumber = msgCode;
+        struct MenuItem* pSelectedItem = ItemAddress(
+          m_pMenu->IntuiMenu(), menuNumber);
 
         if(pSelectedItem != NULL)
         {
@@ -273,22 +322,38 @@ void Application::intuiEventLoop()
       else
       {
         //
-        // All other messages are handled in the appropriate window
+        // All other messages are handled in the appropriate window if 
+        // the window is still open and available. If the window is 
+        // already been closed the message is only replied at the 
+        // bottom of this loop -- nothing else is done.
         //
-        if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+        if(m_pLeftWin != NULL && m_pLeftWin->IntuiWindow() != NULL)
         {
-          m_pLeftWin->HandleIdcmp(pMsg);
+          if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+          {
+            m_pLeftWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
+          }
         }
-        else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+
+        if(m_pRightWin != NULL && m_pRightWin->IntuiWindow() != NULL)
         {
-          m_pRightWin->HandleIdcmp(pMsg);
+          if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+          {
+            m_pRightWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
+          }
         }
-        else if(pMsg->IDCMPWindow == m_pOpenFilesWin->IntuiWindow())
+
+        if(m_pOpenFilesWin != NULL && m_pOpenFilesWin->IntuiWindow() != NULL)
         {
-          m_pOpenFilesWin->HandleIdcmp(pMsg);
+          if(pMsg->IDCMPWindow == m_pOpenFilesWin->IntuiWindow())
+          {
+            m_pOpenFilesWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
+          }
         }
+
       }
 
+      // Exit if all windows has been closed
       if( ((m_pLeftWin==NULL) || m_pLeftWin->IntuiWindow() == NULL) &&
           ((m_pRightWin==NULL) || m_pRightWin->IntuiWindow() == NULL) &&
           ((m_pOpenFilesWin==NULL) || m_pOpenFilesWin->IntuiWindow() == NULL) )
@@ -296,11 +361,7 @@ void Application::intuiEventLoop()
         // All Windows have been closed
         m_pCmdQuit->Execute();
       }
-
-      //
-      // Every IntuiMessage has to be replied
-      //
-      ReplyMsg((struct Message *)pMsg);
     }
   }
+  while (m_bExitRequested == false);
 }

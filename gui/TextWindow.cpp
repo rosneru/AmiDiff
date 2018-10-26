@@ -594,20 +594,20 @@ bool TextWindow::scrollDownOneLine()
 }
 
 
-void TextWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
+void TextWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
-  switch (p_pMsg->Class)
+  switch (p_Class)
   {
     case IDCMP_IDCMPUPDATE:
     {
       ULONG tagData = GetTagData(GA_ID, 0,
-        (struct TagItem *)p_pMsg->IAddress);
+        (struct TagItem *)p_IAddress);
       switch(tagData)
       {
         case TextWindow::GID_PropY:
         {
           size_t newY = GetTagData(PGA_Top, 0, (struct TagItem *)
-            p_pMsg->IAddress);
+            p_IAddress);
 
           YChangedHandler(newY);
           break;
@@ -631,11 +631,11 @@ void TextWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
 
     case IDCMP_RAWKEY:
     {
-      if(p_pMsg->Code == CURSORDOWN)
+      if(p_Code == CURSORDOWN)
       {
         YIncrease();
       }
-      else if(p_pMsg->Code == CURSORUP)
+      else if(p_Code == CURSORUP)
       {
         YDecrease();
       }

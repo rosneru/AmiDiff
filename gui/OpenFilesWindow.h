@@ -24,7 +24,7 @@ public:
   /**
    * TODO make virtual?
    */
-  void HandleIdcmp(struct IntuiMessage* p_pMsg);
+  void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
 
   void Refresh();

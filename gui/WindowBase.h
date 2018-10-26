@@ -18,7 +18,7 @@ class WindowBase
 public:
   virtual ~WindowBase();
 
-  virtual void HandleIdcmp(struct IntuiMessage* p_pMsg) = 0;
+  virtual void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
 
   /**
    * Opening the window
