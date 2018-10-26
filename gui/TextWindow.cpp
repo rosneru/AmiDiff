@@ -267,7 +267,7 @@ bool TextWindow::Open()
     WA_Title, (ULONG) m_Title.C_str(),
     WA_Activate, activateWin,
     WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
-    WA_IDCMP, 
+    WA_IDCMP,
       IDCMP_MENUPICK |      // Inform us about menu selection
       IDCMP_VANILLAKEY |    // Inform us about RAW key press
       IDCMP_RAWKEY |        // Inform us about printable key press
@@ -275,7 +275,7 @@ bool TextWindow::Open()
       IDCMP_NEWSIZE |       // Inform us about resizing
       IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
       IDCMP_IDCMPUPDATE,    // Inform us about TODO
-    WA_Flags, 
+    WA_Flags,
       WFLG_CLOSEGADGET |    // Add a close gadget
       WFLG_DRAGBAR |        // Add a drag gadget
       WFLG_DEPTHGADGET |    // Add a depth gadget
@@ -656,7 +656,7 @@ void TextWindow::HandleIdcmp(struct IntuiMessage* p_pMsg)
 
     case IDCMP_CLOSEWINDOW:
     {
-      //m_pCmdQuit->Execute(); TODO
+      Close();
       break;
     }
   }

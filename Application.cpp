@@ -289,6 +289,14 @@ void Application::intuiEventLoop()
         }
       }
 
+      if( ((m_pLeftWin==NULL) || m_pLeftWin->IntuiWindow() == NULL) &&
+          ((m_pRightWin==NULL) || m_pRightWin->IntuiWindow() == NULL) &&
+          ((m_pOpenFilesWin==NULL) || m_pOpenFilesWin->IntuiWindow() == NULL) )
+      {
+        // All Windows have been closed
+        m_pCmdQuit->Execute();
+      }
+
       //
       // Every IntuiMessage has to be replied
       //
