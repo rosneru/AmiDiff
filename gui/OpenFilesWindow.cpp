@@ -40,7 +40,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   WORD left = hSpace;
   WORD right = m_WinWidth - hSpace;
   WORD bottom = m_WinHeight - vSpace;
-  WORD selectButtonWidth = m_FontHeight + 2; // shoud be square
+  WORD selectButtonWidth = m_FontHeight + 2; // should be square
   WORD stringGadgetWidth = right - left - hSpace - selectButtonWidth;
   WORD selectButtonLeft = right - hSpace - selectButtonWidth;
   WORD buttonWidth = 60;
