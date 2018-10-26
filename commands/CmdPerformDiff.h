@@ -1,8 +1,8 @@
 #ifndef CMD_PERFORM_DIFF_H
 #define CMD_PERFORM_DIFF_H
 
+#include "AmigaDiffFacade.h"
 #include "Command.h"
-#include "DiffFacade.h"
 
 /**
  * Command for opening a window.
@@ -15,12 +15,12 @@
 class CmdPerformDiff : public Command
 {
 public:
-  CmdPerformDiff(DiffFacade& p_Facade);
+  CmdPerformDiff(AmigaDiffFacade& p_Facade);
   virtual ~CmdPerformDiff();
   virtual void Execute();
 
 private:
-  DiffFacade&  m_Facade;
+  AmigaDiffFacade&  m_Facade;
 };
 
 #endif // CMD_PERFORM_DIFF_H

@@ -5,7 +5,7 @@
 #include "CmdPerformDiff.h"
 
 
-CmdPerformDiff::CmdPerformDiff(DiffFacade& p_Facade)
+CmdPerformDiff::CmdPerformDiff(AmigaDiffFacade& p_Facade)
   : m_Facade(p_Facade)
 {
 

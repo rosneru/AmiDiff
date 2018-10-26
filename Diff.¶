@@ -13,6 +13,8 @@ C/C++ Environment
 0
 "model"
 0
+"diffengine"
+0
 Includepath (End)
 0 "" 80
 1 "objects_debug"
@@ -124,9 +126,9 @@ File
 "Application.cpp"
 "Application.h"
 "oscottlibs/LinkedListNode.h"
-"gui/WindowBase.h"
 "model/Document.h"
 "gui/AppScreen.h"
+"AmigaDiffFacade.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -137,11 +139,21 @@ File
 "oscottlibs/LinkedListNode.h"
 "model/Document.h"
 "gui/AppScreen.h"
-"gui/WindowBase.h"
-"commands/CmdOpenFilesWindow.cpp"
-"commands/CmdOpenFilesWindow.h"
+"commands/CmdOpenWindow.cpp"
+"commands/CmdOpenWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdOpenWindow.o" "objects_debug/CmdOpenWindow.debug"
+""
+1 1
+File
+1 "commands/CmdPerformDiff.cpp"
+"commands/CmdPerformDiff.cpp"
+"oscottlibs/LinkedListNode.h"
+"model/Document.h"
+"commands/CmdPerformDiff.h"
+"commands/Command.h"
+Storm Shell Project (Dependencies)
+"objects_debug/CmdPerformDiff.o" "objects_debug/CmdPerformDiff.debug"
 ""
 1 1
 File
@@ -169,8 +181,16 @@ File
 "gui/WindowBase.h"
 "model/Document.h"
 "gui/AppScreen.h"
+"AmigaDiffFacade.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Diff.o" "objects_debug/Diff.debug"
+""
+1 1
+File
+1 "diffengine/AmigaDiffFacade.cpp"
+"diffengine/AmigaDiffFacade.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/AmigaDiffFacade.o" "objects_debug/AmigaDiffFacade.debug"
 ""
 1 1
 File
@@ -284,6 +304,13 @@ Section
 0 1 1 0
 2
 File
+2 "AmigaDiffFacade.h"
+"AmigaDiffFacade.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "amigautils/AslFileRequest.h"
 "amigautils/AslFileRequest.h"
 Storm Shell Project (Dependencies)
@@ -315,6 +342,14 @@ File
 2 "commands/CmdOpenWindow.h"
 "commands/CmdFileOpen.h"
 "commands/CmdOpenFilesWindow.h"
+"commands/CmdOpenWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "commands/CmdPerformDiff.h"
+"commands/CmdPerformDiff.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -329,6 +364,13 @@ Storm Shell Project (Dependencies)
 File
 2 "commands/Command.h"
 "commands/Command.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "diffengine/AmigaDiffFacade.h"
+"diffengine/AmigaDiffFacade.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -417,6 +459,7 @@ Section
 7
 File
 10 "Diff"
+"Diff"
 Storm Shell Project (Dependencies)
 "" ""
 ""

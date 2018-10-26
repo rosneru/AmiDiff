@@ -110,7 +110,7 @@ bool Application::Run()
   //
   // Creating the DiffFacade TODO
   //
-  m_pDiffFacade = new DiffFacade();
+  m_pDiffFacade = new AmigaDiffFacade();
 
 
 
@@ -134,7 +134,7 @@ bool Application::Run()
   m_pCmdDiff = new CmdPerformDiff(*m_pDiffFacade);
 
   //
-  // Now that the CmdPerformDiff is available the OpenFilesWindow can 
+  // Now that the CmdPerformDiff is available the OpenFilesWindow can
   // be  created.
   //
   m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
@@ -185,6 +185,8 @@ bool Application::Run()
     m_RightFilePath = m_Argv[2];
   }
 
+  m_pOpenFilesWin->Open();
+
   //
   // Wait-in-loop for menu actions etc
   //
@@ -193,6 +195,7 @@ bool Application::Run()
   m_pOpenFilesWin->Close();
   m_pRightWin->Close();
   m_pLeftWin->Close();
+  m_pScreen->Close();
 
   return true;
 
@@ -265,19 +268,13 @@ struct IntuiMessage* Application::nextIntuiMessage()
 
 void Application::intuiEventLoop()
 {
-  //
-  // Waiting for messages from Intuition
-  //
-
-  struct Menu* pMenu = m_pMenu->IntuiMenu();
-
-
   do
   {
+    // Waiting for messages from Intuition
     Wait(signalMask());
 
     struct IntuiMessage* pMsg;
-    while ((pMsg = nextIntuiMessage) != NULL)
+    while ((pMsg = nextIntuiMessage()) != NULL)
     {
       // Get all data we need from message
       ULONG msgClass = pMsg->Class;
@@ -317,9 +314,9 @@ void Application::intuiEventLoop()
       else
       {
         //
-        // All other messages are handled in the appropriate window if 
-        // the window is still open and available. If the window is 
-        // already been closed the message is only replied at the 
+        // All other messages are handled in the appropriate window if
+        // the window is still open and available. If the window is
+        // already been closed the message is only replied at the
         // bottom of this loop -- nothing else is done.
         //
         if(m_pLeftWin != NULL && m_pLeftWin->IntuiWindow() != NULL)

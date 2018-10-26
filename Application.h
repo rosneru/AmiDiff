@@ -8,10 +8,11 @@
 #ifndef APPLICATION
 #define APPLICATION
 
+#include "AmigaDiffFacade.h"
 #include "AppMenu.h"
 #include "AppScreen.h"
 #include "Command.h"
-#include "DiffFacade.h"
+#include "AmigaDiffFacade.h"
 #include "OpenFilesWindow.h"
 #include "SimpleString.h"
 #include "TextWindow.h"
@@ -48,7 +49,7 @@ private:
   Command* m_pCmdDiff;
   Command* m_pCmdQuit;
 
-  DiffFacade* m_pDiffFacade;
+  AmigaDiffFacade* m_pDiffFacade;
 
 
   /**
@@ -59,7 +60,7 @@ private:
 
   /**
    * Traverses all window's user ports checking for messages.
-   * 
+   *
    * @returns
    * A pointer to the first found message or NULL if none was found.
    */
