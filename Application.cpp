@@ -80,7 +80,7 @@ void Application::Dispose()
     m_pOpenFilesWin = NULL;
   }
 
-    if(m_pDiffFacade != NULL)
+  if(m_pDiffFacade != NULL)
   {
     delete m_pDiffFacade;
     m_pDiffFacade = NULL;
@@ -110,7 +110,7 @@ bool Application::Run()
   //
   // Creating the DiffFacade TODO
   //
-  m_pDiffFacade = new AmigaDiffFacade();
+  //m_pDiffFacade = new AmigaDiffFacade();
 
 
 
@@ -130,7 +130,7 @@ bool Application::Run()
                   // disabled if the OpenFilesWindow is already open.
                   // Or can we "extend" the OpenCmd to bring the window
                   // in front then?
-
+/*
   m_pCmdDiff = new CmdPerformDiff(*m_pDiffFacade);
 
   //
@@ -139,7 +139,7 @@ bool Application::Run()
   //
   m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
     m_RightFilePath, *m_pCmdDiff);
-
+*/
   //
   // Fill the GadTools menu struct, supplying pointers to the commands
   // as nm_UserData. With this behavior there is no complicated
@@ -192,12 +192,12 @@ bool Application::Run()
   // Wait-in-loop for menu actions etc
   //
   intuiEventLoop();
-
+/*
   m_pOpenFilesWin->Close();
   m_pRightWin->Close();
   m_pLeftWin->Close();
   m_pScreen->Close();
-
+*/
   return true;
 
 }
