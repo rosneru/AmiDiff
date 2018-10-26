@@ -185,18 +185,19 @@ bool Application::Run()
     m_RightFilePath = m_Argv[2];
   }
 
-  m_pOpenFilesWin->Open();
+  //m_pOpenFilesWin->Open();
+  m_pLeftWin->Open();
 
   //
   // Wait-in-loop for menu actions etc
   //
   intuiEventLoop();
-
+/*
   m_pOpenFilesWin->Close();
   m_pRightWin->Close();
   m_pLeftWin->Close();
   m_pScreen->Close();
-
+*/
   return true;
 
 }
@@ -268,12 +269,13 @@ struct IntuiMessage* Application::nextIntuiMessage()
 
 void Application::intuiEventLoop()
 {
+  struct IntuiMessage* pMsg;
+
   do
   {
     // Waiting for messages from Intuition
     Wait(signalMask());
 
-    struct IntuiMessage* pMsg;
     while ((pMsg = nextIntuiMessage()) != NULL)
     {
       // Get all data we need from message
@@ -356,4 +358,11 @@ void Application::intuiEventLoop()
     }
   }
   while (m_bExitRequested == false);
+
+  // Clear all remaining messages; there should be none
+  // TODO obsolete; remove
+  while ((pMsg = nextIntuiMessage()) != NULL)
+  {
+    ReplyMsg((struct Message *)pMsg);
+  }
 }
