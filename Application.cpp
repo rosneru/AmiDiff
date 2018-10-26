@@ -192,12 +192,12 @@ bool Application::Run()
   // Wait-in-loop for menu actions etc
   //
   intuiEventLoop();
-/*
+
   m_pOpenFilesWin->Close();
   m_pRightWin->Close();
   m_pLeftWin->Close();
   m_pScreen->Close();
-*/
+
   return true;
 
 }
@@ -206,17 +206,17 @@ ULONG Application::signalMask()
 {
   ULONG signal = 0;
 
-  if(m_pLeftWin->IntuiWindow() != NULL)
+  if(m_pLeftWin != NULL && m_pLeftWin->IntuiWindow() != NULL)
   {
     signal |= 1L << m_pLeftWin->IntuiWindow()->UserPort->mp_SigBit;
   }
 
-  if(m_pRightWin->IntuiWindow() != NULL)
+  if(m_pRightWin != NULL && m_pRightWin->IntuiWindow() != NULL)
   {
     signal |= 1L << m_pRightWin->IntuiWindow()->UserPort->mp_SigBit;
   }
 
-  if(m_pOpenFilesWin->IntuiWindow() != NULL)
+  if(m_pOpenFilesWin != NULL && m_pOpenFilesWin->IntuiWindow() != NULL)
   {
     signal |= 1L << m_pOpenFilesWin->IntuiWindow()->UserPort->mp_SigBit;
   }
