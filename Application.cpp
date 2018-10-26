@@ -6,6 +6,7 @@
 #include "LinkedList.h"
 
 #include "Command.h"
+#include "CmdPerformDiff.h"
 #include "CmdOpenWindow.h"
 #include "CmdQuit.h"
 
@@ -23,8 +24,9 @@ Application::Application(int argc, char **argv)
     m_pMenu(NULL),
     m_bExitRequested(false),
     m_pCmdOpenFilesWindow(NULL),
-    m_pCmdOpenRightFile(NULL),
-    m_pCmdQuit(NULL)
+    m_pCmdDiff(NULL),
+    m_pCmdQuit(NULL),
+    m_pDiffFacade(NULL)
 {
 
 }
@@ -48,10 +50,10 @@ void Application::Dispose()
     m_pCmdOpenFilesWindow = NULL;
   }
 
-  if(m_pCmdOpenRightFile != NULL)
+  if(m_pCmdDiff != NULL)
   {
-    delete m_pCmdOpenRightFile;
-    m_pCmdOpenRightFile = NULL;
+    delete m_pCmdDiff;
+    m_pCmdDiff = NULL;
   }
 
   if(m_pCmdQuit != NULL)
@@ -62,28 +64,30 @@ void Application::Dispose()
 
   if(m_pRightWin != NULL)
   {
-    //m_pRightWin->Close();
     delete m_pRightWin;
     m_pRightWin = NULL;
   }
 
   if(m_pLeftWin != NULL)
   {
-    //m_pLeftWin->Close();
     delete m_pLeftWin;
     m_pLeftWin = NULL;
   }
 
   if(m_pOpenFilesWin != NULL)
   {
-    //m_pOpenFilesWin->Close();
     delete m_pOpenFilesWin;
     m_pOpenFilesWin = NULL;
   }
 
+    if(m_pDiffFacade != NULL)
+  {
+    delete m_pDiffFacade;
+    m_pDiffFacade = NULL;
+  }
+
   if(m_pScreen != NULL)
   {
-    //m_pScreen->Close();
     delete m_pScreen;
     m_pScreen = NULL;
   }
@@ -104,34 +108,17 @@ bool Application::Run()
 
 
   //
-  // Creating the window to open the files to diff. Note: It's not
-  // getting opened yet. It will be opened later by CmdOpenFilesWindow.
+  // Creating the DiffFacade TODO
   //
-  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
-    m_RightFilePath);
+  m_pDiffFacade = new DiffFacade();
 
 
+
   //
-  // Opening the left window
+  // Creating left and right diff windows but not opening them yet
   //
   m_pLeftWin = new TextWindow(m_pScreen);
-  if(!m_pLeftWin->Open()) // TODO make it DiffWindow and give DiffWindow::LEFT
-  {
-    // Opening the window failed
-    Dispose();
-    return false;
-  }
-
-  //
-  // Opening the right window
-  //
   m_pRightWin = new TextWindow(m_pScreen);
-  if(!m_pRightWin->Open()) // TODO make it DiffWindow and give DiffWindow::RIGHT
-  {
-    // Opening the window failed
-    Dispose();
-    return false;
-  }
 
   //
   // Instantiating the commands
@@ -144,6 +131,14 @@ bool Application::Run()
                   // Or can we "extend" the OpenCmd to bring the window
                   // in front then?
 
+  m_pCmdDiff = new CmdPerformDiff(*m_pDiffFacade);
+
+  //
+  // Now that the CmdPerformDiff is available the OpenFilesWindow can 
+  // be  created.
+  //
+  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
+    m_RightFilePath, *m_pCmdDiff);
 
   //
   // Fill the GadTools menu struct, supplying pointers to the commands
@@ -155,7 +150,7 @@ bool Application::Run()
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
     {  NM_ITEM,   "Open files...",         "O", 0, 0, m_pCmdOpenFilesWindow },
-//    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdOpenRightFile }, // TODO
+//    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdDiff }, // TODO
     {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
     {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
     {  NM_END,    NULL,                     0 , 0, 0, 0 },

@@ -3,6 +3,7 @@
 
 #include <intuition/screens.h>
 #include "AppScreen.h"
+#include "Command.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
 
@@ -18,7 +19,7 @@ class OpenFilesWindow : public WindowBase
 {
 public:
   OpenFilesWindow(AppScreen* p_pAppScreen,
-    SimpleString& p_LeftFilePath, SimpleString& p_RightFilePath);
+    SimpleString& p_LeftFilePath, SimpleString& p_RightFilePath, Command& p_DiffCommand);
   virtual ~OpenFilesWindow();
 
   /**
@@ -59,6 +60,7 @@ private:
 
   SimpleString& m_LeftFilePath;
   SimpleString& m_RightFilePath;
+  Command& m_DiffCommand;
 
   WORD m_FontHeight;  ///> Height of current text font
   WORD m_WinWidth;

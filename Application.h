@@ -11,6 +11,7 @@
 #include "AppMenu.h"
 #include "AppScreen.h"
 #include "Command.h"
+#include "DiffFacade.h"
 #include "OpenFilesWindow.h"
 #include "SimpleString.h"
 #include "TextWindow.h"
@@ -44,8 +45,10 @@ private:
 
   AppMenu* m_pMenu;
   Command* m_pCmdOpenFilesWindow;
-  Command* m_pCmdOpenRightFile;
+  Command* m_pCmdDiff;
   Command* m_pCmdQuit;
+
+  DiffFacade* m_pDiffFacade;
 
 
   /**
