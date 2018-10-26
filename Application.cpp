@@ -266,7 +266,7 @@ struct IntuiMessage* Application::nextIntuiMessage()
 
   return NULL;
 }
-
+/*
 void Application::intuiEventLoop()
 {
   struct IntuiMessage* pMsg;
@@ -364,5 +364,78 @@ void Application::intuiEventLoop()
   while ((pMsg = nextIntuiMessage()) != NULL)
   {
     ReplyMsg((struct Message *)pMsg);
+  }
+}
+*/
+
+void Application::intuiEventLoop()
+{
+  //
+  // Waiting for messages from Intuition
+  //
+
+  struct Menu* pMenu = m_pMenu->IntuiMenu();
+
+
+  while (m_bExitRequested == false)
+  {
+    // Waiting for a signals from the windows
+    // Wait(1L << pWin1->UserPort->mp_SigBit |
+    //      1L << pWin2->UserPort->mp_SigBit |
+    //      1L << pWin3->UserPort->mp_SigBit);
+    Wait(signalMask());
+
+    struct IntuiMessage* pMsg;
+    while ((m_bExitRequested == false) &&
+          ((pMsg = (struct IntuiMessage *)GetMsg(m_pLeftWin->IntuiWindow()->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(m_pRightWin->IntuiWindow()->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(m_pOpenFilesWin->IntuiWindow()->UserPort)) ))
+    {
+      if(pMsg->Class == IDCMP_MENUPICK)
+      {
+        //
+        // Menupick messages are handled here
+        //
+        UWORD menuNumber = pMsg->Code;
+        struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
+
+        if(pSelectedItem != NULL)
+        {
+          // Getting the user data from selected menu item
+          APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
+          if(pUserData != NULL)
+          {
+            // Our menu user data always contains a pointer to a Command
+            Command* pSelecedCommand = static_cast<Command*>(pUserData);
+
+            // Execute this command
+            pSelecedCommand->Execute();
+          }
+        }
+      }
+      else
+      {
+        //
+        // All other messages are handled in the appropriate window
+        //
+        if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+        {
+          m_pLeftWin->HandleIdcmp(pMsg->Class, pMsg->Code, pMsg->IAddress);
+        }
+        else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+        {
+          m_pRightWin->HandleIdcmp(pMsg->Class, pMsg->Code, pMsg->IAddress);
+        }
+        else if(pMsg->IDCMPWindow == m_pOpenFilesWin->IntuiWindow())
+        {
+          m_pOpenFilesWin->HandleIdcmp(pMsg->Class, pMsg->Code, pMsg->IAddress);
+        }
+      }
+
+      //
+      // Every IntuiMessage has to be replied
+      //
+      ReplyMsg((struct Message *)pMsg);
+    }
   }
 }
