@@ -41,7 +41,7 @@ bool WindowBase::Open()
 
   if(m_pMenu == NULL)
   {
-    // Opening succesfull, but at the moment there's no menu set to 
+    // Opening successful, but at the moment there's no menu set to 
     //the window
     return true;
   }
