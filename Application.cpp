@@ -388,12 +388,21 @@ void Application::intuiEventLoop()
            (pMsg = (struct IntuiMessage *)GetMsg(m_pRightWin->IntuiWindow()->UserPort)) ))// ||
           // (pMsg = (struct IntuiMessage *)GetMsg(m_pOpenFilesWin->IntuiWindow()->UserPort)) ))
     {
-      if(pMsg->Class == IDCMP_MENUPICK)
+      // Get all data we need from message
+      ULONG msgClass = pMsg->Class;
+      UWORD msgCode = pMsg->Code;
+      APTR msgIAddress = pMsg->IAddress;
+      struct Window* msgWindow = pMsg->IDCMPWindow;
+
+      // When we're through with a message, reply
+      ReplyMsg((struct Message *)pMsg);
+
+      if(msgClass == IDCMP_MENUPICK)
       {
         //
         // Menupick messages are handled here
         //
-        UWORD menuNumber = pMsg->Code;
+        UWORD menuNumber = msgCode;
         struct MenuItem* pSelectedItem = ItemAddress(pMenu, menuNumber);
 
         if(pSelectedItem != NULL)
@@ -415,24 +424,24 @@ void Application::intuiEventLoop()
         //
         // All other messages are handled in the appropriate window
         //
-        if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
+        if(msgWindow == m_pLeftWin->IntuiWindow())
         {
-          m_pLeftWin->HandleIdcmp(pMsg->Class, pMsg->Code, pMsg->IAddress);
+          m_pLeftWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
-        else if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
+        else if(msgWindow == m_pRightWin->IntuiWindow())
         {
-          m_pRightWin->HandleIdcmp(pMsg->Class, pMsg->Code, pMsg->IAddress);
+          m_pRightWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
-        else if(pMsg->IDCMPWindow == m_pOpenFilesWin->IntuiWindow())
+        else if(msgWindow == m_pOpenFilesWin->IntuiWindow())
         {
-          m_pOpenFilesWin->HandleIdcmp(pMsg->Class, pMsg->Code, pMsg->IAddress);
+          m_pOpenFilesWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
       }
 
       //
       // Every IntuiMessage has to be replied
       //
-      ReplyMsg((struct Message *)pMsg);
+      //ReplyMsg((struct Message *)pMsg);
     }
   }
 }
