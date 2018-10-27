@@ -110,7 +110,7 @@ bool Application::Run()
   //
   // Creating the DiffFacade TODO
   //
-  //m_pDiffFacade = new AmigaDiffFacade();
+  m_pDiffFacade = new AmigaDiffFacade();
 
 
 
@@ -125,12 +125,12 @@ bool Application::Run()
   //
   m_pCmdQuit = new CmdQuit(m_bExitRequested);
 
-//  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
+  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
                   // TODO How can the "Open..." in newMenuDefinition be
                   // disabled if the OpenFilesWindow is already open.
                   // Or can we "extend" the OpenCmd to bring the window
                   // in front then?
-/*
+
   m_pCmdDiff = new CmdPerformDiff(*m_pDiffFacade);
 
   //
@@ -139,7 +139,7 @@ bool Application::Run()
   //
   m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
     m_RightFilePath, *m_pCmdDiff);
-*/
+
   //
   // Fill the GadTools menu struct, supplying pointers to the commands
   // as nm_UserData. With this behavior there is no complicated
@@ -171,7 +171,7 @@ bool Application::Run()
   //
   m_pLeftWin->SetMenu(m_pMenu);
   m_pRightWin->SetMenu(m_pMenu);
-//  m_pOpenFilesWin->SetMenu(m_pMenu);
+  m_pOpenFilesWin->SetMenu(m_pMenu);
 
   //
   // If there are at least two command line arguments permitted,
@@ -185,8 +185,8 @@ bool Application::Run()
     m_RightFilePath = m_Argv[2];
   }
 
-  //m_pOpenFilesWin->Open();
-  m_pLeftWin->Open();
+  m_pOpenFilesWin->Open();
+  //m_pLeftWin->Open();
 
   //
   // Wait-in-loop for menu actions etc
@@ -266,127 +266,27 @@ struct IntuiMessage* Application::nextIntuiMessage()
 
   return NULL;
 }
-/*
+
+
 void Application::intuiEventLoop()
 {
-  struct IntuiMessage* pMsg;
+  struct Window* pWin1 = m_pLeftWin->IntuiWindow();
+  struct Window* pWin2 = m_pRightWin->IntuiWindow();
+  struct Window* pWin3 = m_pOpenFilesWin->IntuiWindow();
+  struct Menu* pMenu = m_pMenu->IntuiMenu();
 
-  do
+  while(m_bExitRequested == false)
   {
     // Waiting for messages from Intuition
-    Wait(signalMask());
-
-    while ((pMsg = nextIntuiMessage()) != NULL)
-    {
-      // Get all data we need from message
-      ULONG msgClass = pMsg->Class;
-      UWORD msgCode = pMsg->Code;
-      APTR msgIAddress = pMsg->IAddress;
-
-      // When we're through with a message, reply
-      ReplyMsg((struct Message *)pMsg);
-
-      //
-      // Now see what events occurred
-      //
-
-      if(msgClass == IDCMP_MENUPICK)
-      {
-        //
-        // Menupick messages are handled here
-        //
-        UWORD menuNumber = msgCode;
-        struct MenuItem* pSelectedItem = ItemAddress(
-          m_pMenu->IntuiMenu(), menuNumber);
-
-        if(pSelectedItem != NULL)
-        {
-          // Getting the user data from selected menu item
-          APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
-          if(pUserData != NULL)
-          {
-            // Our menu user data always contains a pointer to a Command
-            Command* pSelecedCommand = static_cast<Command*>(pUserData);
-
-            // Execute this command
-            pSelecedCommand->Execute();
-          }
-        }
-      }
-      else
-      {
-        //
-        // All other messages are handled in the appropriate window if
-        // the window is still open and available. If the window is
-        // already been closed the message is only replied at the
-        // bottom of this loop -- nothing else is done.
-        //
-        if(m_pLeftWin != NULL && m_pLeftWin->IntuiWindow() != NULL)
-        {
-          if(pMsg->IDCMPWindow == m_pLeftWin->IntuiWindow())
-          {
-            m_pLeftWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
-          }
-        }
-
-        if(m_pRightWin != NULL && m_pRightWin->IntuiWindow() != NULL)
-        {
-          if(pMsg->IDCMPWindow == m_pRightWin->IntuiWindow())
-          {
-            m_pRightWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
-          }
-        }
-
-        if(m_pOpenFilesWin != NULL && m_pOpenFilesWin->IntuiWindow() != NULL)
-        {
-          if(pMsg->IDCMPWindow == m_pOpenFilesWin->IntuiWindow())
-          {
-            m_pOpenFilesWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
-          }
-        }
-
-      }
-
-      // Exit if all windows has been closed
-      if( ((m_pLeftWin==NULL) || m_pLeftWin->IntuiWindow() == NULL) &&
-          ((m_pRightWin==NULL) || m_pRightWin->IntuiWindow() == NULL) &&
-          ((m_pOpenFilesWin==NULL) || m_pOpenFilesWin->IntuiWindow() == NULL) )
-      {
-        // All Windows have been closed
-        m_pCmdQuit->Execute();
-      }
-    }
-  }
-  while (m_bExitRequested == false);
-
-  // Clear all remaining messages; there should be none
-  // TODO obsolete; remove
-  while ((pMsg = nextIntuiMessage()) != NULL)
-  {
-    ReplyMsg((struct Message *)pMsg);
-  }
-}
-*/
-
-void Application::intuiEventLoop()
-{
-  //
-  // Waiting for messages from Intuition
-  //
-
-  struct Menu* pMenu = m_pMenu->IntuiMenu();
-  ULONG mask;
-
-  while ((mask = signalMask()) != 0 && m_bExitRequested == false)
-  {
-    // Waiting for signals from the windows
-    Wait(mask);
+    Wait(1L << pWin1->UserPort->mp_SigBit |
+         1L << pWin2->UserPort->mp_SigBit |
+         1L << pWin3->UserPort->mp_SigBit);
 
     struct IntuiMessage* pMsg;
-    while (//(m_bExitRequested == false) &&
-          ((pMsg = (struct IntuiMessage *)GetMsg(m_pLeftWin->IntuiWindow()->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(m_pRightWin->IntuiWindow()->UserPort)) ))// ||
-          // (pMsg = (struct IntuiMessage *)GetMsg(m_pOpenFilesWin->IntuiWindow()->UserPort)) ))
+
+    while ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort)) ||
+           (pMsg = (struct IntuiMessage *)GetMsg(pWin3->UserPort)) )
     {
       // Get all data we need from message
       ULONG msgClass = pMsg->Class;
@@ -411,7 +311,7 @@ void Application::intuiEventLoop()
           APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
           if(pUserData != NULL)
           {
-            // Our menu user data always contains a pointer to a Command
+            // Our menu user data always contain a pointer to a Command
             Command* pSelecedCommand = static_cast<Command*>(pUserData);
 
             // Execute this command
@@ -437,11 +337,6 @@ void Application::intuiEventLoop()
           m_pOpenFilesWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
       }
-
-      //
-      // Every IntuiMessage has to be replied
-      //
-      //ReplyMsg((struct Message *)pMsg);
     }
   }
 }

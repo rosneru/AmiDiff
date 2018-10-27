@@ -252,6 +252,11 @@ void OpenFilesWindow::Close()
 
 void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
+  if(m_pWindow == 0)
+  {
+    return;
+  }
+
   switch (p_Class)
   {
     case IDCMP_GADGETUP:
