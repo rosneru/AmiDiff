@@ -125,7 +125,7 @@ bool Application::Run()
   //
   m_pCmdQuit = new CmdQuit(m_bExitRequested);
 
-  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
+//  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
                   // TODO How can the "Open..." in newMenuDefinition be
                   // disabled if the OpenFilesWindow is already open.
                   // Or can we "extend" the OpenCmd to bring the window
@@ -171,7 +171,7 @@ bool Application::Run()
   //
   m_pLeftWin->SetMenu(m_pMenu);
   m_pRightWin->SetMenu(m_pMenu);
-  m_pOpenFilesWin->SetMenu(m_pMenu);
+//  m_pOpenFilesWin->SetMenu(m_pMenu);
 
   //
   // If there are at least two command line arguments permitted,
@@ -375,21 +375,18 @@ void Application::intuiEventLoop()
   //
 
   struct Menu* pMenu = m_pMenu->IntuiMenu();
+  ULONG mask;
 
-
-  while (m_bExitRequested == false)
+  while ((mask = signalMask()) != 0 && m_bExitRequested == false)
   {
-    // Waiting for a signals from the windows
-    // Wait(1L << pWin1->UserPort->mp_SigBit |
-    //      1L << pWin2->UserPort->mp_SigBit |
-    //      1L << pWin3->UserPort->mp_SigBit);
-    Wait(signalMask());
+    // Waiting for signals from the windows
+    Wait(mask);
 
     struct IntuiMessage* pMsg;
-    while ((m_bExitRequested == false) &&
+    while (//(m_bExitRequested == false) &&
           ((pMsg = (struct IntuiMessage *)GetMsg(m_pLeftWin->IntuiWindow()->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(m_pRightWin->IntuiWindow()->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(m_pOpenFilesWin->IntuiWindow()->UserPort)) ))
+           (pMsg = (struct IntuiMessage *)GetMsg(m_pRightWin->IntuiWindow()->UserPort)) ))// ||
+          // (pMsg = (struct IntuiMessage *)GetMsg(m_pOpenFilesWin->IntuiWindow()->UserPort)) ))
     {
       if(pMsg->Class == IDCMP_MENUPICK)
       {
