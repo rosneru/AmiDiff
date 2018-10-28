@@ -243,15 +243,15 @@ void Application::intuiEventLoop()
         //
         // All other messages are handled in the appropriate window
         //
-        if(msgWindow == m_pLeftWin->IntuiWindow())
+        if(m_pLeftWin->IsOpen() && msgWindow == m_pLeftWin->IntuiWindow())
         {
           m_pLeftWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
-        else if(msgWindow == m_pRightWin->IntuiWindow())
+        else if(m_pRightWin->IsOpen() && msgWindow == m_pRightWin->IntuiWindow())
         {
           m_pRightWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
-        else if(msgWindow == m_pOpenFilesWin->IntuiWindow())
+        else if(m_pOpenFilesWin->IsOpen() && msgWindow == m_pOpenFilesWin->IntuiWindow())
         {
           m_pOpenFilesWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
