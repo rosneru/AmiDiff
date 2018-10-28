@@ -53,13 +53,14 @@ private:
 
 
   /**
-   * Calculating the signal mask for intuiEventLoop in dependency of
-   * which window is open and available
+   * Calculating the signal mask for intuiEventLoop dependent on which
+   * window is open and available
    */
   ULONG signalMask();
 
   /**
-   * Traverses all window's user ports checking for messages.
+   * Traverses the user ports of all open windows and checking for
+   * messages.
    *
    * @returns
    * A pointer to the first found message or NULL if none was found.
