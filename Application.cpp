@@ -38,12 +38,6 @@ Application::~Application()
 
 void Application::Dispose()
 {
-  if(m_pMenu != NULL)
-  {
-    delete m_pMenu;
-    m_pMenu = NULL;
-  }
-
   if(m_pCmdOpenFilesWindow != NULL)
   {
     delete m_pCmdOpenFilesWindow;
@@ -60,6 +54,12 @@ void Application::Dispose()
   {
     delete m_pCmdQuit;
     m_pCmdQuit = NULL;
+  }
+
+  if(m_pDiffFacade != NULL)
+  {
+    delete m_pDiffFacade;
+    m_pDiffFacade = NULL;
   }
 
   if(m_pRightWin != NULL)
@@ -80,11 +80,12 @@ void Application::Dispose()
     m_pOpenFilesWin = NULL;
   }
 
-  if(m_pDiffFacade != NULL)
+  if(m_pMenu != NULL)
   {
-    delete m_pDiffFacade;
-    m_pDiffFacade = NULL;
+    delete m_pMenu;
+    m_pMenu = NULL;
   }
+
 
   if(m_pScreen != NULL)
   {
@@ -110,7 +111,7 @@ bool Application::Run()
   //
   // Creating the DiffFacade TODO
   //
-  m_pDiffFacade = new AmigaDiffFacade();
+//  m_pDiffFacade = new AmigaDiffFacade();
 
 
 
@@ -118,27 +119,27 @@ bool Application::Run()
   // Creating left and right diff windows but not opening them yet
   //
   m_pLeftWin = new TextWindow(m_pScreen);
-  m_pRightWin = new TextWindow(m_pScreen);
+//  m_pRightWin = new TextWindow(m_pScreen);
 
   //
   // Instantiating the commands
   //
   m_pCmdQuit = new CmdQuit(m_bExitRequested);
 
-  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
+//  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
                   // TODO How can the "Open..." in newMenuDefinition be
                   // disabled if the OpenFilesWindow is already open.
                   // Or can we "extend" the OpenCmd to bring the window
                   // in front then?
 
-  m_pCmdDiff = new CmdPerformDiff(*m_pDiffFacade);
+//  m_pCmdDiff = new CmdPerformDiff(*m_pDiffFacade);
 
   //
   // Now that the CmdPerformDiff is available the OpenFilesWindow can
   // be  created.
   //
-  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
-    m_RightFilePath, *m_pCmdDiff);
+//  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
+//    m_RightFilePath, *m_pCmdDiff);
 
   //
   // Fill the GadTools menu struct, supplying pointers to the commands
@@ -170,8 +171,8 @@ bool Application::Run()
   // Installing menu to all windows
   //
   m_pLeftWin->SetMenu(m_pMenu);
-  m_pRightWin->SetMenu(m_pMenu);
-  m_pOpenFilesWin->SetMenu(m_pMenu);
+//  m_pRightWin->SetMenu(m_pMenu);
+//  m_pOpenFilesWin->SetMenu(m_pMenu);
 
   //
   // If there are at least two command line arguments permitted,
@@ -185,19 +186,17 @@ bool Application::Run()
     m_RightFilePath = m_Argv[2];
   }
 
-  m_pOpenFilesWin->Open();
-  //m_pLeftWin->Open();
+  //m_pOpenFilesWin->Open();
+  m_pLeftWin->Open();
 
   //
   // Wait-in-loop for menu actions etc
   //
   intuiEventLoop();
-/*
-  m_pOpenFilesWin->Close();
-  m_pRightWin->Close();
+
   m_pLeftWin->Close();
   m_pScreen->Close();
-*/
+
   return true;
 
 }
@@ -267,26 +266,99 @@ struct IntuiMessage* Application::nextIntuiMessage()
   return NULL;
 }
 
+void Application::intuiEventLoop()
+{
+  ULONG mask = (1L << m_pLeftWin->IntuiWindow()->UserPort->mp_SigBit);
+  struct IntuiMessage* pMsg;
+  do
+  {
+    Wait(mask);
+    while (pMsg = (struct IntuiMessage *)GetMsg(m_pLeftWin->IntuiWindow()->UserPort))
+    {
+      // Get all data we need from message
+      ULONG msgClass = pMsg->Class;
+      UWORD msgCode = pMsg->Code;
+      APTR msgIAddress = pMsg->IAddress;
+      struct Window* msgWindow = pMsg->IDCMPWindow;
 
+      // When we're through with a message, reply
+      ReplyMsg((struct Message *)pMsg);
+
+      if(msgClass == IDCMP_MENUPICK)
+      {
+        //
+        // Menupick messages are handled here
+        //
+        UWORD menuNumber = msgCode;
+        struct MenuItem* pSelectedItem = ItemAddress(m_pMenu->IntuiMenu(), menuNumber);
+
+        if(pSelectedItem != NULL)
+        {
+          // Getting the user data from selected menu item
+          APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
+          if(pUserData != NULL)
+          {
+            // Our menu user data always contain a pointer to a Command
+            Command* pSelecedCommand = static_cast<Command*>(pUserData);
+
+            // Execute this command
+            pSelecedCommand->Execute();
+          }
+        }
+      }
+      else
+      {
+        //
+        // All other messages are handled in the appropriate window
+        //
+        m_pLeftWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
+      }
+
+      if(!m_pLeftWin->IsOpen())
+      {
+        m_bExitRequested = true;
+        break;
+      }
+    }
+  }
+  while(!m_bExitRequested);
+}
+/*
 void Application::intuiEventLoop()
 {
   struct Window* pWin1 = m_pLeftWin->IntuiWindow();
   struct Window* pWin2 = m_pRightWin->IntuiWindow();
   struct Window* pWin3 = m_pOpenFilesWin->IntuiWindow();
+
   struct Menu* pMenu = m_pMenu->IntuiMenu();
 
-  while(m_bExitRequested == false)
+  while((pWin1 != NULL || pWin2 != NULL || pWin3 != NULL) &&
+        m_bExitRequested == false)
   {
     // Waiting for messages from Intuition
-    Wait(1L << pWin1->UserPort->mp_SigBit |
-         1L << pWin2->UserPort->mp_SigBit |
-         1L << pWin3->UserPort->mp_SigBit);
+    ULONG mask = 0;
+    if(m_pLeftWin != NULL && m_pLeftWin->IntuiWindow() != NULL)
+    {
+      mask |= 1L << m_pLeftWin->IntuiWindow()->UserPort->mp_SigBit;
+    }
+
+    if(m_pRightWin != NULL && m_pRightWin->IntuiWindow() != NULL)
+    {
+      mask |= 1L << m_pRightWin->IntuiWindow()->UserPort->mp_SigBit;
+    }
+
+    if(m_pOpenFilesWin != NULL && m_pOpenFilesWin->IntuiWindow() != NULL)
+    {
+      mask |= 1L << m_pOpenFilesWin->IntuiWindow()->UserPort->mp_SigBit;
+    }
+
+    Wait(mask);
 
     struct IntuiMessage* pMsg;
 
-    while ((pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort)) ||
-           (pMsg = (struct IntuiMessage *)GetMsg(pWin3->UserPort)) )
+    while ((pWin1 != NULL) && (pMsg = (struct IntuiMessage *)GetMsg(pWin1->UserPort)) ||
+           (pWin2 != NULL) && (pMsg = (struct IntuiMessage *)GetMsg(pWin2->UserPort)) ||
+           (pWin3 != NULL) && (pMsg = (struct IntuiMessage *)GetMsg(pWin3->UserPort)))
     {
       // Get all data we need from message
       ULONG msgClass = pMsg->Class;
@@ -337,6 +409,17 @@ void Application::intuiEventLoop()
           m_pOpenFilesWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
       }
+
+      pWin1 = m_pLeftWin->IntuiWindow();
+      pWin2 = m_pRightWin->IntuiWindow();
+      pWin3 = m_pOpenFilesWin->IntuiWindow();
+
+      if(pWin1 == NULL && pWin2 == NULL && pWin3 == NULL)
+      {
+        // Exit because all windows are closed
+        m_bExitRequested = true;
+      }
     }
   }
 }
+*/

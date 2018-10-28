@@ -26,9 +26,14 @@ public:
   virtual bool Open() = 0;
 
   /**
-   * Closes the window
+   * Closes the window.
    */
   virtual void Close();
+
+  /**
+   * Returns true if the window is opened.
+   */
+  bool IsOpen();
 
   const char* Title();
   void SetTitle(SimpleString p_NewTitle);
@@ -43,7 +48,9 @@ public:
    * Returns the app screen object on which the window is opened or
    * NULL if window is not open.
    */
-  AppScreen* OnScreen();
+  AppScreen* WindowScreen();
+
+
 
   void SetMenu(AppMenu* p_pMenu);
   void UnsetMenu();

@@ -41,7 +41,7 @@ bool WindowBase::Open()
 
   if(m_pMenu == NULL)
   {
-    // Opening successful, but at the moment there's no menu set to 
+    // Opening successful, but at the moment there's no menu set to
     //the window
     return true;
   }
@@ -54,12 +54,17 @@ bool WindowBase::Open()
 void WindowBase::Close()
 {
   UnsetMenu();
-  
+
   if(m_pWindow != NULL)
   {
     CloseWindow(m_pWindow);
     m_pWindow = NULL;
   }
+}
+
+bool WindowBase::IsOpen()
+{
+  return m_pWindow != NULL;
 }
 
 const char* WindowBase::Title()
@@ -81,7 +86,7 @@ struct Window* WindowBase::IntuiWindow()
   return m_pWindow;
 }
 
-AppScreen* WindowBase::OnScreen()
+AppScreen* WindowBase::WindowScreen()
 {
   return m_pAppScreen;
 }
@@ -125,7 +130,7 @@ void WindowBase::UnsetMenu()
 
   if(m_pMenu == NULL)
   {
-    // No menu was provided nor has been attached or already has been 
+    // No menu was provided nor has been attached or already has been
     //detached
     return;
   }
