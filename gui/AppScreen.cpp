@@ -120,6 +120,7 @@ void AppScreen::Close()
   if(m_pVisualInfo != NULL)
   {
     FreeVisualInfo(m_pVisualInfo);
+    m_pVisualInfo = NULL;
   }
 
   if(m_pDrawInfo != NULL)
