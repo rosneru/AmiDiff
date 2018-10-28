@@ -86,7 +86,6 @@ void Application::Dispose()
     m_pMenu = NULL;
   }
 
-
   if(m_pScreen != NULL)
   {
     delete m_pScreen;
@@ -111,7 +110,7 @@ bool Application::Run()
   //
   // Creating the DiffFacade TODO
   //
-//  m_pDiffFacade = new AmigaDiffFacade();
+  m_pDiffFacade = new AmigaDiffFacade();
 
 
 
@@ -119,27 +118,27 @@ bool Application::Run()
   // Creating left and right diff windows but not opening them yet
   //
   m_pLeftWin = new TextWindow(m_pScreen);
-//  m_pRightWin = new TextWindow(m_pScreen);
+  m_pRightWin = new TextWindow(m_pScreen);
 
   //
   // Instantiating the commands
   //
   m_pCmdQuit = new CmdQuit(m_bExitRequested);
-
-//  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
-                  // TODO How can the "Open..." in newMenuDefinition be
-                  // disabled if the OpenFilesWindow is already open.
-                  // Or can we "extend" the OpenCmd to bring the window
-                  // in front then?
-
-//  m_pCmdDiff = new CmdPerformDiff(*m_pDiffFacade);
+  m_pCmdDiff = new CmdPerformDiff(*m_pDiffFacade);
 
   //
   // Now that the CmdPerformDiff is available the OpenFilesWindow can
   // be  created.
   //
-//  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
-//    m_RightFilePath, *m_pCmdDiff);
+  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
+    m_RightFilePath, *m_pCmdDiff);
+
+  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
+                  // TODO How can the "Open..." in newMenuDefinition be
+                  // disabled if the OpenFilesWindow is already open.
+                  // Or can we "extend" the OpenCmd to bring the window
+                  // in front then?
+
 
   //
   // Fill the GadTools menu struct, supplying pointers to the commands
@@ -171,8 +170,8 @@ bool Application::Run()
   // Installing menu to all windows
   //
   m_pLeftWin->SetMenu(m_pMenu);
-//  m_pRightWin->SetMenu(m_pMenu);
-//  m_pOpenFilesWin->SetMenu(m_pMenu);
+  m_pRightWin->SetMenu(m_pMenu);
+  m_pOpenFilesWin->SetMenu(m_pMenu);
 
   //
   // If there are at least two command line arguments permitted,
@@ -186,16 +185,13 @@ bool Application::Run()
     m_RightFilePath = m_Argv[2];
   }
 
-  //m_pOpenFilesWin->Open();
+//  m_pOpenFilesWin->Open();
   m_pLeftWin->Open();
 
   //
   // Wait-in-loop for menu actions etc
   //
   intuiEventLoop();
-
-  m_pLeftWin->Close();
-  m_pScreen->Close();
 
   return true;
 

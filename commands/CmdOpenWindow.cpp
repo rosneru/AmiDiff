@@ -13,29 +13,14 @@ CmdOpenWindow::CmdOpenWindow(WindowBase& p_Window)
 
 CmdOpenWindow::~CmdOpenWindow()
 {
-  m_Window.Close();
 }
 
 void CmdOpenWindow::Execute()
 {
+  if(m_Window.IsOpen())
+  {
+    return;
+  }
+
   m_Window.Open();
-
-/*
-  // Let the user select a file to open
-  AslFileRequest request(m_pWindow->IntuiWindow());
-  SimpleString fileName = request.SelectFileName("Select file to open");
-  if(fileName.Length() == 0)
-  {
-    return;
-  }
-
-  // Load the file into the Document's TextDocument
-  if(m_TextDocument.Load(fileName) == false)
-  {
-    return;
-  }
-
-  // Set the File into the Document's window
-  m_pWindow->SetContent(&m_TextDocument);
-*/
 }
