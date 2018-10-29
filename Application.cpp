@@ -144,7 +144,7 @@ bool Application::Run()
   // Now that the CmdPerformDiff is available the OpenFilesWindow can
   // be  created.
   //
-  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_pMsgPortAllWindows, 
+  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_pMsgPortAllWindows,
     m_LeftFilePath, m_RightFilePath, *m_pCmdDiff);
 
   m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
@@ -216,7 +216,7 @@ void Application::intuiEventLoop()
   struct IntuiMessage* pMsg;
   do
   {
-    Wait(m_pMsgPortAllWindows->mp_SigBit);
+    Wait(1L << m_pMsgPortAllWindows->mp_SigBit);
     while (pMsg = (struct IntuiMessage *) GetMsg(m_pMsgPortAllWindows))
     {
       // Get all data we need from message
