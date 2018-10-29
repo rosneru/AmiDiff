@@ -18,7 +18,7 @@
 class TextWindow : public WindowBase
 {
 public:
-  TextWindow(AppScreen* p_pAppScreen);
+  TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort);
   virtual ~TextWindow();
 
   /**
@@ -44,7 +44,7 @@ public:
    * @returns
    * false if opening fails
    */
-  bool Open(struct MsgPort* p_pMsgPort);
+  bool Open();
 
   /**
    * Closes the window

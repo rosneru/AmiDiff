@@ -1,6 +1,7 @@
 #ifndef WINDOW_BASE_H
 #define WINDOW_BASE_H
 
+#include <exec/ports.h>
 #include <intuition/screens.h>
 #include "AppMenu.h"
 #include "AppScreen.h"
@@ -57,6 +58,7 @@ public:
 
 protected:
   AppScreen* m_pAppScreen;
+  struct MsgPort* m_pMsgPort;
   struct Window* m_pWindow;
   AppMenu* m_pMenu;
   SimpleString m_Title;
@@ -66,9 +68,13 @@ protected:
    *
    * @param p_pAppScreen
    * Screen on which the window will occur at opening time
+   * 
+   * @param p_pMsgPort
+   * Message port which is used for this window. Can be shared
+   * with other windows-
    *
    */
-  WindowBase(AppScreen* p_pAppScreen);
+  WindowBase(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort);
 
   /**
    * Creates an BOOPSI image object of one of the system shipped with

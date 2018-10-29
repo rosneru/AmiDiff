@@ -11,8 +11,8 @@
 #include <intuition/icclass.h>
 #include "TextWindow.h"
 
-TextWindow::TextWindow(AppScreen* p_pAppScreen)
-  : WindowBase(p_pAppScreen),
+TextWindow::TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
+  : WindowBase(p_pAppScreen, p_pMsgPort),
     m_pDocument(NULL),
     m_MaxWindowTextLines(0),
     m_Y(0),
@@ -57,6 +57,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen)
   if(pSizeImage != NULL)
   {
     DisposeObject(pSizeImage);
+    pSizeImage = NULL;
   }
 
   // Creating the arrow down image and getting its width and height
@@ -214,7 +215,7 @@ void TextWindow::Refresh()
   EndRefresh(m_pWindow, TRUE);
 }
 
-bool TextWindow::Open(struct MsgPort* p_pMsgPort)
+bool TextWindow::Open()
 {
   //
   // Initial validations
@@ -289,7 +290,7 @@ bool TextWindow::Open(struct MsgPort* p_pMsgPort)
 
   // The window should be using this message port which might be shared 
   // with other windows
-  m_pWindow->UserPort = p_pMsgPort;
+  m_pWindow->UserPort = m_pMsgPort;
 
   // Setting up the window's IDCMP flags
   ULONG flags = IDCMP_MENUPICK |      // Inform us about menu selection

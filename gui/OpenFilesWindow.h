@@ -19,8 +19,9 @@
 class OpenFilesWindow : public WindowBase
 {
 public:
-  OpenFilesWindow(AppScreen* p_pAppScreen,
-    SimpleString& p_LeftFilePath, SimpleString& p_RightFilePath, Command& p_DiffCommand);
+  OpenFilesWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort,
+    SimpleString& p_LeftFilePath, SimpleString& p_RightFilePath, 
+    Command& p_DiffCommand);
   virtual ~OpenFilesWindow();
 
   /**
@@ -37,7 +38,7 @@ public:
    * @returns
    * false if opening fails
    */
-  bool Open(struct MsgPort* p_pMsgPort);
+  bool Open();
 
   /**
    * Closes the window

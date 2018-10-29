@@ -12,9 +12,10 @@
 
 #include "OpenFilesWindow.h"
 
-OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
-    SimpleString& p_LeftFilePath, SimpleString& p_RightFilePath, Command& p_DiffCommand)
-  : WindowBase(p_pAppScreen),
+OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen, 
+    struct MsgPort* p_pMsgPort, SimpleString& p_LeftFilePath,
+    SimpleString& p_RightFilePath, Command& p_DiffCommand)
+  : WindowBase(p_pAppScreen, p_pMsgPort),
     m_LeftFilePath(p_LeftFilePath),
     m_RightFilePath(p_RightFilePath),
     m_DiffCommand(p_DiffCommand),
@@ -144,7 +145,7 @@ void OpenFilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool OpenFilesWindow::Open(struct MsgPort* p_pMsgPort)
+bool OpenFilesWindow::Open()
 {
   //
   // Initial validations
@@ -213,7 +214,7 @@ bool OpenFilesWindow::Open(struct MsgPort* p_pMsgPort)
 
   // The window should be using this message port which might be shared 
   // with other windows
-  m_pWindow->UserPort = p_pMsgPort;
+  m_pWindow->UserPort = m_pMsgPort;
 
   // Setting up the window's IDCMP flags
   ULONG flags = IDCMP_MENUPICK |      // Inform us about menu selection

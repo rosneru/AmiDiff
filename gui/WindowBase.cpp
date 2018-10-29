@@ -14,8 +14,9 @@
 #include <libraries/dos.h>
 #include "WindowBase.h"
 
-WindowBase::WindowBase(AppScreen* p_pAppScreen)
+WindowBase::WindowBase(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
   : m_pAppScreen(p_pAppScreen),
+    m_pMsgPort(p_pMsgPort),
     m_pWindow(NULL),
     m_pMenu(NULL)
 {

@@ -131,8 +131,8 @@ bool Application::Run()
   //
   // Creating left and right diff windows but not opening them yet
   //
-  m_pLeftWin = new TextWindow(m_pScreen);
-  m_pRightWin = new TextWindow(m_pScreen);
+  m_pLeftWin = new TextWindow(m_pScreen, m_pMsgPortAllWindows);
+  m_pRightWin = new TextWindow(m_pScreen, m_pMsgPortAllWindows);
 
   //
   // Instantiating the commands
@@ -144,8 +144,8 @@ bool Application::Run()
   // Now that the CmdPerformDiff is available the OpenFilesWindow can
   // be  created.
   //
-  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_LeftFilePath,
-    m_RightFilePath, *m_pCmdDiff);
+  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_pMsgPortAllWindows, 
+    m_LeftFilePath, m_RightFilePath, *m_pCmdDiff);
 
   m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
                   // TODO How can the "Open..." in newMenuDefinition be
@@ -213,7 +213,6 @@ bool Application::Run()
 
 void Application::intuiEventLoop()
 {
-  ULONG mask;
   struct IntuiMessage* pMsg;
   do
   {
