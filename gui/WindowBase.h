@@ -91,6 +91,20 @@ protected:
    * A pointer to the image struct if successful or NULL if failed.
    */
   struct Image* createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height);
+
+  /**
+   * Use this method to close any windows that share an IDCMP port 
+   * with another window.
+   */
+  void closeWindowSafely();
+
+  /**
+   * Method to remove and reply all IntuiMessages on a port that have 
+   * been sent to a particular window (note that we don't rely on the 
+   * ln_Succ pointer of a message after we have replied it)
+   */
+  void stripIntuiMessages();
+
 };
 
 

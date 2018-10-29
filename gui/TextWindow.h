@@ -1,7 +1,9 @@
 #ifndef TEXT_WINDOW_H
 #define TEXT_WINDOW_H
 
+#include <exec/ports.h>
 #include <intuition/screens.h>
+
 #include "AppScreen.h"
 #include "SimpleString.h"
 #include "TextDocument.h"
@@ -42,7 +44,7 @@ public:
    * @returns
    * false if opening fails
    */
-  bool Open();
+  bool Open(struct MsgPort* p_pMsgPort);
 
   /**
    * Closes the window

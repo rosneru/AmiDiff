@@ -8,6 +8,8 @@
 #ifndef APPLICATION
 #define APPLICATION
 
+#include <exec/ports.h>
+
 #include "AmigaDiffFacade.h"
 #include "AppMenu.h"
 #include "AppScreen.h"
@@ -31,6 +33,7 @@ public:
   bool Run();
 
 private:
+  struct MsgPort* m_pMsgPortAllWindows;
   int m_Argc;
   char** m_Argv;
 
@@ -50,22 +53,6 @@ private:
   Command* m_pCmdQuit;
 
   AmigaDiffFacade* m_pDiffFacade;
-
-
-  /**
-   * Calculating the signal mask for intuiEventLoop dependent on which
-   * window is open and available
-   */
-  ULONG signalMask();
-
-  /**
-   * Traverses the user ports of all open windows and checking for
-   * messages.
-   *
-   * @returns
-   * A pointer to the first found message or NULL if none was found.
-   */
-  struct IntuiMessage* nextIntuiMessage();
 
   /**
    * Handling messages from Intuition

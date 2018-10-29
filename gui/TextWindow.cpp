@@ -214,7 +214,7 @@ void TextWindow::Refresh()
   EndRefresh(m_pWindow, TRUE);
 }
 
-bool TextWindow::Open()
+bool TextWindow::Open(struct MsgPort* p_pMsgPort)
 {
   //
   // Initial validations
@@ -267,14 +267,6 @@ bool TextWindow::Open()
     WA_Title, (ULONG) m_Title.C_str(),
     WA_Activate, activateWin,
     WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
-    WA_IDCMP,
-      IDCMP_MENUPICK |      // Inform us about menu selection
-      IDCMP_VANILLAKEY |    // Inform us about RAW key press
-      IDCMP_RAWKEY |        // Inform us about printable key press
-      IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
-      IDCMP_NEWSIZE |       // Inform us about resizing
-      IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
-      IDCMP_IDCMPUPDATE,    // Inform us about TODO
     WA_Flags,
       WFLG_CLOSEGADGET |    // Add a close gadget
       WFLG_DRAGBAR |        // Add a drag gadget
@@ -289,6 +281,26 @@ bool TextWindow::Open()
     WA_NewLookMenus, TRUE,          // Ignored before v39
     WA_Gadgets, m_pDownArrowButton,
     TAG_END);
+  
+  if(m_pWindow == NULL)
+  {
+    return false;
+  }
+
+  // The window should be using this message port which might be shared 
+  // with other windows
+  m_pWindow->UserPort = p_pMsgPort;
+
+  // Setting up the window's IDCMP flags
+  ULONG flags = IDCMP_MENUPICK |      // Inform us about menu selection
+                IDCMP_VANILLAKEY |    // Inform us about RAW key press
+                IDCMP_RAWKEY |        // Inform us about printable key press
+                IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
+                IDCMP_NEWSIZE |       // Inform us about resizing
+                IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
+                IDCMP_IDCMPUPDATE;    // Inform us about TODO
+
+  ModifyIDCMP(m_pWindow, flags);
 
   // Calculate values needed for text scrolling
   m_ScrollXMax = m_pWindow->Width; //- m_pWindow->BorderRight - m_ScrollXMin;

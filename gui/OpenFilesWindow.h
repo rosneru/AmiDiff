@@ -1,6 +1,7 @@
 #ifndef OPEN_FILES_WINDOW_H
 #define OPEN_FILES_WINDOW_H
 
+#include <exec/ports.h>
 #include <intuition/screens.h>
 #include "AppScreen.h"
 #include "Command.h"
@@ -36,7 +37,7 @@ public:
    * @returns
    * false if opening fails
    */
-  bool Open();
+  bool Open(struct MsgPort* p_pMsgPort);
 
   /**
    * Closes the window
@@ -73,10 +74,6 @@ private:
   struct Gadget* m_pOpenRightFileButton;
   struct Gadget* m_pDiffButton;
   struct Gadget* m_pCancelButton;
-
-
-//  struct TextAttr m_TextAttr;
-//  struct IntuiText m_IntuiText;
 };
 
 

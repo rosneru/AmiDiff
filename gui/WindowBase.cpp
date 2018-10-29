@@ -3,6 +3,7 @@
 #include <clib/alib_protos.h>
 #include <clib/asl_protos.h>
 #include <clib/dos_protos.h>
+#include <clib/exec_protos.h>
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <intuition/intuition.h>
@@ -54,12 +55,7 @@ bool WindowBase::Open()
 void WindowBase::Close()
 {
   UnsetMenu();
-
-  if(m_pWindow != NULL)
-  {
-    CloseWindow(m_pWindow);
-    m_pWindow = NULL;
-  }
+  closeWindowSafely();
 }
 
 bool WindowBase::IsOpen()
@@ -155,4 +151,53 @@ struct Image* WindowBase::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULO
 	}
 
   return pImage;
+}
+
+void WindowBase::closeWindowSafely()
+{
+  if(m_pWindow == NULL)
+  {
+    return;
+  }
+
+  // We forbid here to keep out of race conditions with Intuition.
+  Forbid();
+
+  // Send back any messages for this window  that have not yet been 
+  // processed.
+  stripIntuiMessages();
+
+  // Clear UserPort so Intuition will not free it.
+  m_pWindow->UserPort = NULL;
+
+  // Tell intuition to stop sending more messages
+  ModifyIDCMP(m_pWindow, 0L);
+
+  // Turn multitasking back on
+  Permit();
+
+  CloseWindow(m_pWindow);
+  m_pWindow = NULL;
+}
+
+void WindowBase::stripIntuiMessages()
+{
+  struct MsgPort* pMsgPort = m_pWindow->UserPort;
+  struct Node* pSuccessor;
+  struct IntuiMessage* pMessage;
+
+  pMessage = (struct IntuiMessage*) pMsgPort->mp_MsgList.lh_Head;
+
+  while(pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ)
+  {
+    if(pMessage->IDCMPWindow == m_pWindow)
+    {
+      // Intuition is about to free this message. Make sure that we 
+      // have politely sent it back.
+      Remove((struct Node*) pMessage);
+      ReplyMsg((struct Message*) pMessage);
+    }
+
+    pMessage = (struct IntuiMessage*) pSuccessor;
+  }
 }

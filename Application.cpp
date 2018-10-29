@@ -15,7 +15,8 @@
 #include "Application.h"
 
 Application::Application(int argc, char **argv)
-  : m_Argc(argc),
+  : m_pMsgPortAllWindows(NULL),
+    m_Argc(argc),
     m_Argv(argv),
     m_pScreen(NULL),
     m_pOpenFilesWin(NULL),
@@ -28,7 +29,8 @@ Application::Application(int argc, char **argv)
     m_pCmdQuit(NULL),
     m_pDiffFacade(NULL)
 {
-
+  // Create a message port for shared use with all windows
+  m_pMsgPortAllWindows = CreateMsgPort();
 }
 
 Application::~Application()
@@ -91,10 +93,22 @@ void Application::Dispose()
     delete m_pScreen;
     m_pScreen = NULL;
   }
+
+  if(m_pMsgPortAllWindows != NULL)
+  {
+    DeleteMsgPort(m_pMsgPortAllWindows);
+    m_pMsgPortAllWindows = NULL;
+  }
 }
 
 bool Application::Run()
 {
+  // If the message port has not been created, the app can't start.
+  if(m_pMsgPortAllWindows == NULL)
+  {
+    return false;
+  }
+
   //
   // Opening the screen
   //
@@ -203,9 +217,8 @@ void Application::intuiEventLoop()
   struct IntuiMessage* pMsg;
   do
   {
-    mask = signalMask();
-    Wait(mask);
-    while (pMsg = nextIntuiMessage())
+    Wait(m_pMsgPortAllWindows->mp_SigBit);
+    while (pMsg = (struct IntuiMessage *) GetMsg(m_pMsgPortAllWindows))
     {
       // Get all data we need from message
       ULONG msgClass = pMsg->Class;
@@ -267,71 +280,4 @@ void Application::intuiEventLoop()
     }
   }
   while(!m_bExitRequested);
-}
-
-
-ULONG Application::signalMask()
-{
-  ULONG signal = 0;
-
-  if(m_pLeftWin->IsOpen())
-  {
-    signal |= 1L << m_pLeftWin->IntuiWindow()->UserPort->mp_SigBit;
-  }
-
-  if(m_pRightWin->IsOpen())
-  {
-    signal |= 1L << m_pRightWin->IntuiWindow()->UserPort->mp_SigBit;
-  }
-
-  if(m_pOpenFilesWin->IsOpen())
-  {
-    signal |= 1L << m_pOpenFilesWin->IntuiWindow()->UserPort->mp_SigBit;
-  }
-
-  return signal;
-}
-
-
-struct IntuiMessage* Application::nextIntuiMessage()
-{
-  struct IntuiMessage* pIntuiMessage = NULL;
-
-  // Look for message in userport of left window
-  if(m_pLeftWin->IsOpen())
-  {
-    pIntuiMessage = (struct IntuiMessage *)
-      GetMsg(m_pLeftWin->IntuiWindow()->UserPort);
-
-    if(pIntuiMessage != NULL)
-    {
-      return pIntuiMessage;
-    }
-  }
-
-  // Look for message in userport of right window
-  if(m_pRightWin->IsOpen())
-  {
-    pIntuiMessage = (struct IntuiMessage *)
-      GetMsg(m_pRightWin->IntuiWindow()->UserPort);
-
-    if(pIntuiMessage != NULL)
-    {
-      return pIntuiMessage;
-    }
-  }
-
-    // Look for message in userport of open files window
-  if(m_pOpenFilesWin->IsOpen())
-  {
-    pIntuiMessage = (struct IntuiMessage *)
-      GetMsg(m_pOpenFilesWin->IntuiWindow()->UserPort);
-
-    if(pIntuiMessage != NULL)
-    {
-      return pIntuiMessage;
-    }
-  }
-
-  return NULL;
 }

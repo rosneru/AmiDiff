@@ -144,7 +144,7 @@ void OpenFilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool OpenFilesWindow::Open()
+bool OpenFilesWindow::Open(struct MsgPort* p_pMsgPort)
 {
   //
   // Initial validations
@@ -183,14 +183,14 @@ bool OpenFilesWindow::Open()
     WA_Title, (ULONG) "Open the files to diff",
     WA_Activate, TRUE,
     WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
-    WA_IDCMP,
-      IDCMP_MENUPICK |      // Inform us about menu selection
-      IDCMP_VANILLAKEY |    // Inform us about RAW key press
-      IDCMP_RAWKEY |        // Inform us about printable key press
-      IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
-      IDCMP_NEWSIZE |       // Inform us about resizing
-      IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
-      IDCMP_IDCMPUPDATE,    // Inform us about TODO
+//    WA_IDCMP,
+//      IDCMP_MENUPICK |      // Inform us about menu selection
+//      IDCMP_VANILLAKEY |    // Inform us about RAW key press
+//      IDCMP_RAWKEY |        // Inform us about printable key press
+//      IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
+//      IDCMP_NEWSIZE |       // Inform us about resizing
+//      IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
+//      IDCMP_IDCMPUPDATE,    // Inform us about TODO
     WA_Flags,
       WFLG_CLOSEGADGET |    // Add a close gadget
       WFLG_DRAGBAR |        // Add a drag gadget
@@ -206,26 +206,25 @@ bool OpenFilesWindow::Open()
     WA_Gadgets, m_pGadgetList,
     TAG_END);
 
-/*
-  // Setup structs for text drawing
-  // TODO Remove it if not needed here
-  ULONG txtPen = m_pAppScreen->IntuiDrawInfo()->dri_Pens[TEXTPEN];
-  ULONG bgPen = m_pAppScreen->IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
+  if(m_pWindow == NULL)
+  {
+    return false;
+  }
 
-  m_TextAttr.ta_Name = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
-  m_TextAttr.ta_YSize = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
-  m_TextAttr.ta_Style = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_Style;
-  m_TextAttr.ta_Flags = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_Flags;
+  // The window should be using this message port which might be shared 
+  // with other windows
+  m_pWindow->UserPort = p_pMsgPort;
 
-  // Prepare IntuiText for line-by-line printing
-  m_IntuiText.FrontPen  = txtPen;
-  m_IntuiText.BackPen   = bgPen;
-  m_IntuiText.DrawMode  = JAM2;
-  m_IntuiText.LeftEdge  = 0;
-  m_IntuiText.TopEdge   = 0;
-  m_IntuiText.ITextFont = &m_TextAttr;
-  m_IntuiText.NextText  = NULL;
-*/
+  // Setting up the window's IDCMP flags
+  ULONG flags = IDCMP_MENUPICK |      // Inform us about menu selection
+                IDCMP_VANILLAKEY |    // Inform us about RAW key press
+                IDCMP_RAWKEY |        // Inform us about printable key press
+                IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
+                IDCMP_NEWSIZE |       // Inform us about resizing
+                IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
+                IDCMP_IDCMPUPDATE;    // Inform us about TODO
+
+  ModifyIDCMP(m_pWindow, flags);
 
   return WindowBase::Open();
 }
