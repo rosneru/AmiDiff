@@ -1,6 +1,7 @@
 #include <libraries/gadtools.h>
 
 #include <clib/exec_protos.h>
+#include <clib/gadtools_protos.h>
 #include <clib/intuition_protos.h>
 
 #include "LinkedList.h"
@@ -217,7 +218,7 @@ void Application::intuiEventLoop()
   do
   {
     Wait(1L << m_pMsgPortAllWindows->mp_SigBit);
-    while (pMsg = (struct IntuiMessage *) GetMsg(m_pMsgPortAllWindows))
+    while (pMsg = (struct IntuiMessage *) GT_GetIMsg(m_pMsgPortAllWindows))
     {
       // Get all data we need from message
       ULONG msgClass = pMsg->Class;
@@ -226,7 +227,7 @@ void Application::intuiEventLoop()
       struct Window* msgWindow = pMsg->IDCMPWindow;
 
       // When we're through with a message, reply
-      ReplyMsg((struct Message *)pMsg);
+      GT_ReplyIMsg(pMsg);
 
       if(msgClass == IDCMP_MENUPICK)
       {
