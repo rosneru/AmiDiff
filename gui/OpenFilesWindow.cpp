@@ -12,7 +12,7 @@
 
 #include "OpenFilesWindow.h"
 
-OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen, 
+OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
     struct MsgPort* p_pMsgPort, SimpleString& p_LeftFilePath,
     SimpleString& p_RightFilePath, Command& p_DiffCommand)
   : WindowBase(p_pAppScreen, p_pMsgPort),
@@ -132,6 +132,18 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
 OpenFilesWindow::~OpenFilesWindow()
 {
   Close();
+
+  if(m_pGadgetList != NULL)
+  {
+    FreeGadgets(m_pGadgetList);
+    m_pGadgetList = NULL;
+    m_pLeftFileStringGadget = NULL;
+    m_pRightFileStringGadget = NULL;
+    m_pOpenLeftFileButton = NULL;
+    m_pOpenRightFileButton = NULL;
+    m_pDiffButton = NULL;
+    m_pCancelButton = NULL;
+  }
 }
 
 
@@ -204,7 +216,7 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
     return false;
   }
 
-  // The window should be using this message port which might be shared 
+  // The window should be using this message port which might be shared
   // with other windows
   m_pWindow->UserPort = m_pMsgPort;
 
@@ -224,18 +236,6 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
 
 void OpenFilesWindow::Close()
 {
-  if(m_pGadgetList != NULL)
-  {
-    FreeGadgets(m_pGadgetList);
-    m_pGadgetList = NULL;
-    m_pLeftFileStringGadget = NULL;
-    m_pRightFileStringGadget = NULL;
-    m_pOpenLeftFileButton = NULL;
-    m_pOpenRightFileButton = NULL;
-    m_pDiffButton = NULL;
-    m_pCancelButton = NULL;
-  }
-
   // Also call Close() in parent
   // TODO debug if it really happens
   WindowBase::Close();

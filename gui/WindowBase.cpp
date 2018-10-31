@@ -27,6 +27,7 @@ WindowBase::WindowBase(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
 WindowBase::~WindowBase()
 {
   Close();
+  UnsetMenu();
 }
 
 bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable)
@@ -67,8 +68,6 @@ bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable)
 void WindowBase::Close()
 {
   m_pMenu->EnableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
-
-  UnsetMenu();
   closeWindowSafely();
 }
 
@@ -177,7 +176,7 @@ void WindowBase::closeWindowSafely()
   // We forbid here to keep out of race conditions with Intuition.
   Forbid();
 
-  // Send back any messages for this window  that have not yet been 
+  // Send back any messages for this window  that have not yet been
   // processed.
   stripIntuiMessages();
 
@@ -206,7 +205,7 @@ void WindowBase::stripIntuiMessages()
   {
     if(pMessage->IDCMPWindow == m_pWindow)
     {
-      // Intuition is about to free this message. Make sure that we 
+      // Intuition is about to free this message. Make sure that we
       // have politely sent it back.
       Remove((struct Node*) pMessage);
       ReplyMsg((struct Message*) pMessage);
