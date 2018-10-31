@@ -20,7 +20,7 @@ class OpenFilesWindow : public WindowBase
 {
 public:
   OpenFilesWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort,
-    SimpleString& p_LeftFilePath, SimpleString& p_RightFilePath, 
+    SimpleString& p_LeftFilePath, SimpleString& p_RightFilePath,
     Command& p_DiffCommand);
   virtual ~OpenFilesWindow();
 
@@ -34,11 +34,11 @@ public:
 
   /**
    * Opening the window.
-   * 
+   *
    * @param p_pUserDataMenuItemToDisable
-   * A pointer to an user data field of a menu item which is associated 
-   * with this window. If the menu item is found by the given user data 
-   * it will be disabled at window opening time and enabled when the 
+   * A pointer to an user data field of a menu item which is associated
+   * with this window. If the menu item is found by the given user data
+   * it will be disabled at window opening time and enabled when the
    * window is closed. Provide NULL if no menu item should be disabled.
    *
    * @returns
@@ -81,6 +81,13 @@ private:
   struct Gadget* m_pOpenRightFileButton;
   struct Gadget* m_pDiffButton;
   struct Gadget* m_pCancelButton;
+
+  /**
+   * Enables or disables the buttons of this window in dependency of
+   * some conditions, e.g. is text in both string gadgets or is there
+   * an ASL request openened etc.
+   */
+  void setButtonsEnabled();
 };
 
 

@@ -9,6 +9,7 @@
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
 #include <intuition/icclass.h>
+#include <libraries/gadtools.h>
 
 #include "OpenFilesWindow.h"
 
@@ -127,6 +128,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   m_pCancelButton = CreateGadget(BUTTON_KIND,
     m_pDiffButton, &newGadget, TAG_END);
 
+  // Set the buttons to an initial enabled / disabled state
+  setButtonsEnabled();
 }
 
 OpenFilesWindow::~OpenFilesWindow()
@@ -266,6 +269,15 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       {
         Close();
       }
+      else if(pGadget->GadgetID == GID_LeftFileString)
+      {
+        setButtonsEnabled();
+      }
+      else if(pGadget->GadgetID == GID_RightFileString)
+      {
+        setButtonsEnabled();
+      }
+
       break;
     }
 
@@ -282,5 +294,42 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       Close();
       break;
     }
+  }
+}
+
+
+void OpenFilesWindow::setButtonsEnabled()
+{
+  /*
+  SimpleString leftTxt((char*)((struct StringInfo*)
+    m_pLeftFileStringGadget->SpecialInfo)->Buffer);
+
+  SimpleString rightTxt((char*)
+    ((struct StringInfo*) m_pRighFileStringGadget->SpecialInfo)->Buffer);
+  */
+
+  UBYTE* pLeftBuf = ((struct StringInfo*)
+    m_pLeftFileStringGadget->SpecialInfo)->Buffer;
+
+  UBYTE* pRightBuf = ((struct StringInfo*)
+    m_pRightFileStringGadget->SpecialInfo)->Buffer;
+
+  SimpleString leftText((const char*)pLeftBuf);
+  SimpleString rightText((const char*)pRightBuf);
+
+  if(leftText.Length() > 0 && rightText.Length() > 0)
+  {
+    // Enable "Diff" button
+    GT_SetGadgetAttrs(m_pDiffButton, m_pWindow, NULL,
+      GA_Disabled, FALSE,
+      TAG_END);
+  }
+  else
+  {
+    // Disable "Diff" button
+    GT_SetGadgetAttrs(m_pDiffButton, m_pWindow, NULL,
+      GA_Disabled, TRUE,
+      TAG_END);
+
   }
 }
