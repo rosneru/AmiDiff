@@ -85,3 +85,78 @@ struct Menu* AppMenu::IntuiMenu()
 {
   return m_pMenu;
 }
+
+
+void AppMenu::DisableMenuItem(struct Window* p_pWindow, 
+  APTR p_pUserDataMenuItemToDisable)
+{
+  WORD menuNumber = 0;
+  struct MenuItem* pFoundItem = findItemByUserData(p_pUserDataMenuItemToDisable, menuNumber);
+  if(pFoundItem == NULL)
+  {
+    return;
+  }
+
+  OffMenu(p_pWindow, menuNumber);
+}
+
+void AppMenu::EnableMenuItem(struct Window* p_pWindow, 
+  APTR p_pUserDataMenuItemToEnable)
+{
+  WORD menuNumber = 0;
+  struct MenuItem* pFoundItem = findItemByUserData(p_pUserDataMenuItemToEnable, menuNumber);
+  if(pFoundItem == NULL)
+  {
+    return;
+  }
+
+  OnMenu(p_pWindow, menuNumber);
+}
+
+struct MenuItem* AppMenu::findItemByUserData(APTR p_pUserDataToFind, WORD& p_FoundMenuNumber)
+{
+  if(m_pMenu == NULL)
+  {
+    return NULL;
+  }
+
+  p_FoundMenuNumber = 0;
+
+  struct Menu* pMenu = m_pMenu;
+  struct MenuItem* pItem = pMenu->FirstItem;
+  if(pItem == NULL)
+  {
+    return NULL;
+  }
+
+  int iMenu = 0;
+  int iItem = 0;
+
+  do
+  {
+    do
+    {
+      APTR pUserData = GTMENUITEM_USERDATA(pItem);
+      if(pUserData == p_pUserDataToFind)
+      {
+        p_FoundMenuNumber = FULLMENUNUM(iMenu, iItem, 0);
+        return pItem;
+      }
+
+      pItem = pItem->NextItem;
+      iItem++; 
+    }
+    while(pItem != NULL);
+
+    pMenu = pMenu->NextMenu;
+    if(pMenu != NULL)
+    {
+      pItem = pMenu->FirstItem;
+      iItem = 0;
+      iMenu++;
+    }
+  }
+  while(pItem != NULL);
+
+  return NULL;
+}

@@ -18,7 +18,8 @@ WindowBase::WindowBase(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
   : m_pAppScreen(p_pAppScreen),
     m_pMsgPort(p_pMsgPort),
     m_pWindow(NULL),
-    m_pMenu(NULL)
+    m_pMenu(NULL),
+    m_pUserDataMenuItemToDisable(NULL)
 {
 
 }
@@ -28,8 +29,9 @@ WindowBase::~WindowBase()
   Close();
 }
 
-bool WindowBase::Open()
+bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable)
 {
+  m_pUserDataMenuItemToDisable = p_pUserDataMenuItemToDisable;
   //
   // Opening the window has to be done in ::Open of the derived classes.
   // Then these classes have to call this to auto-add menus etc.
@@ -49,12 +51,23 @@ bool WindowBase::Open()
   }
 
   // Set menu strip to the window
-  m_pMenu->AttachToWindow(m_pWindow);
+  if(m_pMenu->AttachToWindow(m_pWindow) == false)
+  {
+    return false;
+  }
+
+  if(p_pUserDataMenuItemToDisable != NULL)
+  {
+     m_pMenu->DisableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
+  }
+
   return true;
 }
 
 void WindowBase::Close()
 {
+  m_pMenu->EnableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
+
   UnsetMenu();
   closeWindowSafely();
 }

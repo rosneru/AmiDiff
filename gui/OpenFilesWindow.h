@@ -33,12 +33,18 @@ public:
   void Refresh();
 
   /**
-   * Opens the window.
+   * Opening the window.
+   * 
+   * @param p_pUserDataMenuItemToDisable
+   * A pointer to an user data field of a menu item which is associated 
+   * with this window. If the menu item is found by the given user data 
+   * it will be disabled at window opening time and enabled when the 
+   * window is closed. Provide NULL if no menu item should be disabled.
    *
    * @returns
-   * false if opening fails
+   * When ok: true, false if opening fails
    */
-  bool Open();
+  bool Open(APTR p_pUserDataMenuItemToDisable = NULL);
 
   /**
    * Closes the window

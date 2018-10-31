@@ -44,7 +44,7 @@ public:
    * @returns
    * false if opening fails
    */
-  bool Open();
+  bool Open(APTR p_pUserDataMenuItemToDisable = NULL);
 
   /**
    * Closes the window

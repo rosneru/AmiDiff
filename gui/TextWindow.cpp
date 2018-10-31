@@ -215,7 +215,7 @@ void TextWindow::Refresh()
   EndRefresh(m_pWindow, TRUE);
 }
 
-bool TextWindow::Open()
+bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
 {
   //
   // Initial validations
@@ -330,7 +330,7 @@ bool TextWindow::Open()
   m_IntuiText.ITextFont = &m_TextAttr;
   m_IntuiText.NextText  = NULL;
 
-  return WindowBase::Open();
+  return WindowBase::Open(p_pUserDataMenuItemToDisable);
 }
 
 void TextWindow::Close()

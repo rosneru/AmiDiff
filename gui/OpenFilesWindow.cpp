@@ -145,7 +145,7 @@ void OpenFilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool OpenFilesWindow::Open()
+bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
 {
   //
   // Initial validations
@@ -184,14 +184,6 @@ bool OpenFilesWindow::Open()
     WA_Title, (ULONG) "Open the files to diff",
     WA_Activate, TRUE,
     WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
-//    WA_IDCMP,
-//      IDCMP_MENUPICK |      // Inform us about menu selection
-//      IDCMP_VANILLAKEY |    // Inform us about RAW key press
-//      IDCMP_RAWKEY |        // Inform us about printable key press
-//      IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
-//      IDCMP_NEWSIZE |       // Inform us about resizing
-//      IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
-//      IDCMP_IDCMPUPDATE,    // Inform us about TODO
     WA_Flags,
       WFLG_CLOSEGADGET |    // Add a close gadget
       WFLG_DRAGBAR |        // Add a drag gadget
@@ -227,7 +219,7 @@ bool OpenFilesWindow::Open()
 
   ModifyIDCMP(m_pWindow, flags);
 
-  return WindowBase::Open();
+  return WindowBase::Open(p_pUserDataMenuItemToDisable);
 }
 
 void OpenFilesWindow::Close()

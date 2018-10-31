@@ -52,9 +52,52 @@ public:
    */
   struct Menu* IntuiMenu();
 
+  /**
+   * Browses the menu associated to the given window for an item which 
+   * contains the given pointer in field userdata. If such an menu item
+   * is found, it is disabled.
+   * 
+   * NOTE At the moment subitems are skipped and won't be disabled.
+   * 
+   * @param p_pWindow
+   * Pointer to an intuition window the menu is associated with
+   * 
+   * @parem p_pUserDataMenuItemToDisable
+   * Pointer by which value the userdata field of the menu items are 
+   * browsed
+   * 
+   */
+  void DisableMenuItem(struct Window* p_pWindow, 
+    APTR p_pUserDataMenuItemToDisable);
+
+
+  /**
+   * Enables a previously disabled menu item.
+   * 
+   * @param p_pWindow
+   * Pointer to an intuition window the menu is associated with
+   * 
+   * @parem p_pMenuItemToEnable
+   * Pointer to the userdata field of the menu item to enable
+   */
+  void EnableMenuItem(struct Window* p_pWindow, 
+    APTR p_pUserDataMenuItemToEnable);
+
 private:
   AppScreen* m_pScreen;
   struct Menu* m_pMenu;
+
+
+  /**
+   * Browses all menu items trying to find the item with the given 
+   * userdata
+   * 
+   * @param 
+   * 
+   * NOTE At the moment subitems are skipped
+   */
+  struct MenuItem* findItemByUserData(APTR p_pUserDataToFind, 
+    WORD& p_FoundMenuNumber);
 };
 
 #endif

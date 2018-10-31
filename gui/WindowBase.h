@@ -22,9 +22,18 @@ public:
   virtual void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
 
   /**
-   * Opening the window
+   * Opening the window.
+   * 
+   * @param p_pUserDataMenuItemToDisable
+   * A pointer to an user data field of a menu item which is associated 
+   * with this window. If the menu item is found by the given user data 
+   * it will be disabled at window opening time and enabled when the 
+   * window is closed. Provide NULL if no menu item should be disabled.
+   *
+   * @returns
+   * When ok: true, false if opening fails
    */
-  virtual bool Open() = 0;
+  virtual bool Open(APTR p_pUserDataMenuItemToDisable) = 0;
 
   /**
    * Closes the window.
@@ -60,8 +69,12 @@ protected:
   AppScreen* m_pAppScreen;
   struct MsgPort* m_pMsgPort;
   struct Window* m_pWindow;
+  
   AppMenu* m_pMenu;
+  APTR m_pUserDataMenuItemToDisable;
+  
   SimpleString m_Title;
+
 
   /**
    * Creates a new window object
@@ -98,6 +111,7 @@ protected:
    */
   struct Image* createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height);
 
+private:
   /**
    * Use this method to close any windows that share an IDCMP port 
    * with another window.
