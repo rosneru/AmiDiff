@@ -223,7 +223,7 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
                 IDCMP_RAWKEY |        // Inform us about printable key press
                 IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
                 IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
-                IDCMP_IDCMPUPDATE;    // Inform us about TODO
+                BUTTONIDCMP;          // Inform us about GadTools button events
 
   ModifyIDCMP(m_pWindow, flags);
 
