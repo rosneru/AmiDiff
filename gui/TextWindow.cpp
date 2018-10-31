@@ -270,7 +270,6 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
     WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
     WA_Flags,
       WFLG_CLOSEGADGET |    // Add a close gadget
-      WFLG_DRAGBAR |        // Add a drag gadget
       WFLG_DEPTHGADGET |    // Add a depth gadget
       WFLG_SIZEGADGET |     // Add a size gadget
       WFLG_GIMMEZEROZERO,   // Different layers for border and content
@@ -282,13 +281,13 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
     WA_NewLookMenus, TRUE,          // Ignored before v39
     WA_Gadgets, m_pDownArrowButton,
     TAG_END);
-  
+
   if(m_pWindow == NULL)
   {
     return false;
   }
 
-  // The window should be using this message port which might be shared 
+  // The window should be using this message port which might be shared
   // with other windows
   m_pWindow->UserPort = m_pMsgPort;
 

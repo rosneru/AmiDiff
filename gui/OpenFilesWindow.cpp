@@ -19,8 +19,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
     m_LeftFilePath(p_LeftFilePath),
     m_RightFilePath(p_RightFilePath),
     m_DiffCommand(p_DiffCommand),
-    m_WinWidth(240),
-    m_WinHeight(180),
+    m_WinWidth((WORD)p_pAppScreen->IntuiScreen()->Width / 2),
+    m_WinHeight(120),
     m_pGadgetList(NULL),
     m_pLeftFileStringGadget(NULL),
     m_pRightFileStringGadget(NULL),
@@ -35,7 +35,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   m_FontHeight = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
   WORD barHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
 
-  WORD hSpace = 5;
+  WORD hSpace = 10;
   WORD vSpace = 10;
   WORD top = barHeight + vSpace;
   WORD left = hSpace;
@@ -180,7 +180,6 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
   //
   int screenWidth = m_pAppScreen->IntuiScreen()->Width;
   int screenHeight = m_pAppScreen->IntuiScreen()->Height;
-  int screenBarHeight = m_pAppScreen->IntuiScreen()->BarHeight;
 
   int winLeft = screenWidth / 2 - m_WinWidth / 2;
   int winTop = screenHeight / 2 - m_WinHeight / 2;
@@ -199,9 +198,7 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
     WA_Flags,
       WFLG_CLOSEGADGET |    // Add a close gadget
       WFLG_DRAGBAR |        // Add a drag gadget
-      WFLG_DEPTHGADGET |    // Add a depth gadget
-      WFLG_SIZEGADGET |     // Add a size gadget
-      WFLG_GIMMEZEROZERO,   // Different layers for border and content
+      WFLG_DEPTHGADGET,     // Add a depth gadget
     WA_SimpleRefresh, TRUE,
 		WA_MinWidth, 120,
 		WA_MinHeight, 90,
@@ -225,7 +222,6 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
                 IDCMP_VANILLAKEY |    // Inform us about RAW key press
                 IDCMP_RAWKEY |        // Inform us about printable key press
                 IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
-                IDCMP_NEWSIZE |       // Inform us about resizing
                 IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
                 IDCMP_IDCMPUPDATE;    // Inform us about TODO
 
@@ -276,8 +272,8 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
     case IDCMP_REFRESHWINDOW:
     {
       // This handling is REQUIRED with GadTools
-//      GT_BeginRefresh(IntuiWindow());
-//      GT_EndRefresh(IntuiWindow(), TRUE);
+      GT_BeginRefresh(IntuiWindow());
+      GT_EndRefresh(IntuiWindow(), TRUE);
       break;
     }
 

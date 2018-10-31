@@ -200,8 +200,8 @@ bool Application::Run()
     m_RightFilePath = m_Argv[2];
   }
 
-//  m_pOpenFilesWin->Open();
-  m_pLeftWin->Open();
+  m_pOpenFilesWin->Open(m_pCmdOpenFilesWindow);
+//  m_pLeftWin->Open();
 
   //
   // Wait-in-loop for menu actions etc
