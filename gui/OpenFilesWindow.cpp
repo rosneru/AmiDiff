@@ -14,12 +14,9 @@
 #include "OpenFilesWindow.h"
 
 OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
-    struct MsgPort* p_pMsgPort, SimpleString& p_LeftFilePath,
-    SimpleString& p_RightFilePath, Command& p_DiffCommand)
+    struct MsgPort* p_pMsgPort, AmigaDiffFacade& p_DiffFacade)
   : WindowBase(p_pAppScreen, p_pMsgPort),
-    m_LeftFilePath(p_LeftFilePath),
-    m_RightFilePath(p_RightFilePath),
-    m_DiffCommand(p_DiffCommand),
+    m_DiffFacade(p_DiffFacade),
     m_WinWidth((WORD)p_pAppScreen->IntuiScreen()->Width / 2),
     m_WinHeight(120),
     m_pGadgetList(NULL),
@@ -129,7 +126,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
     m_pDiffButton, &newGadget, TAG_END);
 
   // Set the buttons to an initial enabled / disabled state
-  setButtonsEnabled();
+  setButtonsState();
 }
 
 OpenFilesWindow::~OpenFilesWindow()
@@ -271,11 +268,11 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       }
       else if(pGadget->GadgetID == GID_LeftFileString)
       {
-        setButtonsEnabled();
+        setButtonsState();
       }
       else if(pGadget->GadgetID == GID_RightFileString)
       {
-        setButtonsEnabled();
+        setButtonsState();
       }
 
       break;
@@ -298,26 +295,21 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 }
 
 
-void OpenFilesWindow::setButtonsEnabled()
+void OpenFilesWindow::setButtonsState()
 {
-  /*
-  SimpleString leftTxt((char*)((struct StringInfo*)
-    m_pLeftFileStringGadget->SpecialInfo)->Buffer);
-
-  SimpleString rightTxt((char*)
-    ((struct StringInfo*) m_pRighFileStringGadget->SpecialInfo)->Buffer);
-  */
-
   UBYTE* pLeftBuf = ((struct StringInfo*)
     m_pLeftFileStringGadget->SpecialInfo)->Buffer;
 
   UBYTE* pRightBuf = ((struct StringInfo*)
     m_pRightFileStringGadget->SpecialInfo)->Buffer;
 
-  SimpleString leftText((const char*)pLeftBuf);
-  SimpleString rightText((const char*)pRightBuf);
+  // SimpleString leftText((const char*)pLeftBuf);
+  // SimpleString rightText((const char*)pRightBuf);
+  m_DiffFacade.SetLeftFilePath((const char*)pLeftBuf);
+  m_DiffFacade.SetRightFilePath((const char*)pLeftBuf);
 
-  if(leftText.Length() > 0 && rightText.Length() > 0)
+  if(m_DiffFacade.LeftFilePath.Length() > 0 && 
+     m_DiffFacade.RightFilePath.Length() > 0)
   {
     // Enable "Diff" button
     GT_SetGadgetAttrs(m_pDiffButton, m_pWindow, NULL,

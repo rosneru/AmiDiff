@@ -142,18 +142,13 @@ bool Application::Run()
   m_pCmdDiff = new CmdPerformDiff(*m_pDiffFacade);
 
   //
-  // Now that the CmdPerformDiff is available the OpenFilesWindow can
-  // be  created.
+  // Now that the CmdDiff is available the OpenFilesWindow can be
+  // created.
   //
   m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_pMsgPortAllWindows,
     m_LeftFilePath, m_RightFilePath, *m_pCmdDiff);
 
   m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
-                  // TODO How can the "Open..." in newMenuDefinition be
-                  // disabled if the OpenFilesWindow is already open.
-                  // Or can we "extend" the OpenCmd to bring the window
-                  // in front then?
-
 
   //
   // Fill the GadTools menu struct, supplying pointers to the commands
@@ -165,7 +160,7 @@ bool Application::Run()
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
     {  NM_ITEM,   "Open files...",         "O", 0, 0, m_pCmdOpenFilesWindow },
-//    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdDiff }, // TODO
+//    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdStatistics }, // TODO
     {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
     {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
     {  NM_END,    NULL,                     0 , 0, 0, 0 },

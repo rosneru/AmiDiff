@@ -37,9 +37,6 @@ private:
   int m_Argc;
   char** m_Argv;
 
-  SimpleString m_LeftFilePath;
-  SimpleString m_RightFilePath;
-
   bool m_bExitRequested;
 
   AppScreen* m_pScreen;

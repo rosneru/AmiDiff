@@ -3,6 +3,8 @@
 
 #include <exec/ports.h>
 #include <intuition/screens.h>
+
+#include "AmigaDiffFacade.h"
 #include "AppScreen.h"
 #include "Command.h"
 #include "SimpleString.h"
@@ -20,8 +22,7 @@ class OpenFilesWindow : public WindowBase
 {
 public:
   OpenFilesWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort,
-    SimpleString& p_LeftFilePath, SimpleString& p_RightFilePath,
-    Command& p_DiffCommand);
+    AmigaDiffFacade& p_DiffFacade);
   virtual ~OpenFilesWindow();
 
   /**
@@ -66,9 +67,8 @@ private:
     GID_CancelButton,
   };
 
-  SimpleString& m_LeftFilePath;
-  SimpleString& m_RightFilePath;
-  Command& m_DiffCommand;
+  AmigaDiffFacade& m_DiffFacade;
+
 
   WORD m_FontHeight;  ///> Height of current text font
   WORD m_WinWidth;
@@ -87,7 +87,7 @@ private:
    * some conditions, e.g. is text in both string gadgets or is there
    * an ASL request openened etc.
    */
-  void setButtonsEnabled();
+  void setButtonsState();
 };
 
 
