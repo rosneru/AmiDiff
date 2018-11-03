@@ -59,12 +59,6 @@ void Application::Dispose()
     m_pCmdQuit = NULL;
   }
 
-  if(m_pDiffFacade != NULL)
-  {
-    delete m_pDiffFacade;
-    m_pDiffFacade = NULL;
-  }
-
   if(m_pRightWin != NULL)
   {
     delete m_pRightWin;
@@ -95,6 +89,13 @@ void Application::Dispose()
     m_pScreen = NULL;
   }
 
+  if(m_pDiffFacade != NULL)
+  {
+    delete m_pDiffFacade;
+    m_pDiffFacade = NULL;
+  }
+
+
   if(m_pMsgPortAllWindows != NULL)
   {
     DeleteMsgPort(m_pMsgPortAllWindows);
@@ -110,6 +111,8 @@ bool Application::Run()
     return false;
   }
 
+  m_pDiffFacade = new AmigaDiffFacade();
+
   //
   // Opening the screen
   //
@@ -120,14 +123,6 @@ bool Application::Run()
     Dispose();
     return false;
   }
-
-
-  //
-  // Creating the DiffFacade TODO
-  //
-  m_pDiffFacade = new AmigaDiffFacade();
-
-
 
   //
   // Creating left and right diff windows but not opening them yet
@@ -146,7 +141,7 @@ bool Application::Run()
   // created.
   //
   m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_pMsgPortAllWindows,
-    m_LeftFilePath, m_RightFilePath, *m_pCmdDiff);
+    *m_pDiffFacade);
 
   m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
 
@@ -184,19 +179,17 @@ bool Application::Run()
   m_pOpenFilesWin->SetMenu(m_pMenu);
 
   //
-  // If there are at least two command line arguments permitted,
-  // (three for the if as the first one is the application name),
-  // try to take the first two of them as file names and load them
-  // into left and right window
+  // If there are at least two command line arguments permitted, take
+  // the first two of them (argv[1] and argv[2]  as file names and load
+  // them into left and right window.
   //
   if(m_Argc >= 3)
   {
-    m_LeftFilePath = m_Argv[1];
-    m_RightFilePath = m_Argv[2];
+    m_pDiffFacade->SetLeftFilePath(m_Argv[1]);
+    m_pDiffFacade->SetRightFilePath(m_Argv[2]);
   }
 
   m_pOpenFilesWin->Open(m_pCmdOpenFilesWindow);
-//  m_pLeftWin->Open();
 
   //
   // Wait-in-loop for menu actions etc

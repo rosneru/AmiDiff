@@ -306,10 +306,10 @@ void OpenFilesWindow::setButtonsState()
   // SimpleString leftText((const char*)pLeftBuf);
   // SimpleString rightText((const char*)pRightBuf);
   m_DiffFacade.SetLeftFilePath((const char*)pLeftBuf);
-  m_DiffFacade.SetRightFilePath((const char*)pLeftBuf);
+  m_DiffFacade.SetRightFilePath((const char*)pRightBuf);
 
-  if(m_DiffFacade.LeftFilePath.Length() > 0 && 
-     m_DiffFacade.RightFilePath.Length() > 0)
+  if(m_DiffFacade.LeftFilePath().Length() > 0 &&
+     m_DiffFacade.RightFilePath().Length() > 0)
   {
     // Enable "Diff" button
     GT_SetGadgetAttrs(m_pDiffButton, m_pWindow, NULL,
