@@ -7,8 +7,8 @@ above.
 
 After cloning this repository the needed submodules should be initialized:
 
-git submodule init
-git submodule update
+    git submodule init
+    git submodule update
 
 
 ### Development environment ###
