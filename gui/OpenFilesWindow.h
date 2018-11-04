@@ -87,7 +87,7 @@ private:
    * some conditions, e.g. is text in both string gadgets or is there
    * an ASL request openened etc.
    */
-  void setButtonsState();
+  void setDiffButtonState();
 };
 
 

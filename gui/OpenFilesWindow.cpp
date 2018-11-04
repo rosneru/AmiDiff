@@ -125,8 +125,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   m_pCancelButton = CreateGadget(BUTTON_KIND,
     m_pDiffButton, &newGadget, TAG_END);
 
-  // Set the buttons to an initial enabled / disabled state
-  setButtonsState();
+  // Set the Diff button to an initial enabled / disabled state
+  setDiffButtonState();
 }
 
 OpenFilesWindow::~OpenFilesWindow()
@@ -268,11 +268,23 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       }
       else if(pGadget->GadgetID == GID_LeftFileString)
       {
-        setButtonsState();
+        // Set the changed string gadget text as left file path
+        UBYTE* pBuf = ((struct StringInfo*)
+          m_pLeftFileStringGadget->SpecialInfo)->Buffer;
+
+        m_DiffFacade.SetLeftFilePath((const char*)pBuf);
+
+        setDiffButtonState();
       }
       else if(pGadget->GadgetID == GID_RightFileString)
       {
-        setButtonsState();
+        // Set the changed string gadget text as right file path
+        UBYTE* pBuf = ((struct StringInfo*)
+          m_pRightFileStringGadget->SpecialInfo)->Buffer;
+
+        m_DiffFacade.SetRightFilePath((const char*)pBuf);
+
+        setDiffButtonState();
       }
 
       break;
@@ -295,19 +307,8 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 }
 
 
-void OpenFilesWindow::setButtonsState()
+void OpenFilesWindow::setDiffButtonState()
 {
-  UBYTE* pLeftBuf = ((struct StringInfo*)
-    m_pLeftFileStringGadget->SpecialInfo)->Buffer;
-
-  UBYTE* pRightBuf = ((struct StringInfo*)
-    m_pRightFileStringGadget->SpecialInfo)->Buffer;
-
-  // SimpleString leftText((const char*)pLeftBuf);
-  // SimpleString rightText((const char*)pRightBuf);
-  m_DiffFacade.SetLeftFilePath((const char*)pLeftBuf);
-  m_DiffFacade.SetRightFilePath((const char*)pRightBuf);
-
   if(m_DiffFacade.LeftFilePath().Length() > 0 &&
      m_DiffFacade.RightFilePath().Length() > 0)
   {
