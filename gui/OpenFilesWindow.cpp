@@ -55,32 +55,25 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   // Declare the basic gadget structure
   struct NewGadget newGadget;
 
-  // Line 1: contains only a label
-  WORD lineIdx = 0;
-
-  WORD textWidth = TextLength(&m_pAppScreen->IntuiScreen()->RastPort,
-    "Left file", 9);
-
+  // Line 1  contains  a label
   newGadget.ng_TextAttr   = m_pAppScreen->GfxTextAttr();
   newGadget.ng_VisualInfo = m_pAppScreen->GadtoolsVisualInfo();
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace) + 4;
+  newGadget.ng_LeftEdge   = left + 2;
+  newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadgetWidth;
-  newGadget.ng_Height     = buttonHeight - 4;
+  newGadget.ng_Height     = m_FontHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Left file";
-  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT |
-                        NG_HIGHLABEL;
+  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
   struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
     pContext, &newGadget, TAG_END);
 
-  // Line 2: Contains a string gadget and selection button for the
+  // Line 2 contains a string gadget and selection button for the
   // filename of the left file
-  lineIdx++;
 
-  // Creating the string gadget for the file name of the left file
+  // Creating the string gadget
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
+  newGadget.ng_TopEdge    += m_FontHeight + 2;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Left file";
@@ -90,52 +83,59 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   m_pLeftFileStringGadget = CreateGadget(STRING_KIND,
     pLabelGadget, &newGadget, TAG_END);
 
-  // Creating the Button for opening a file selector for left file
+  // Creating the button
   newGadget.ng_LeftEdge   = selectButtonLeft;
-  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
   newGadget.ng_Width      = selectButtonWidth;
-  newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "...";
   newGadget.ng_GadgetID   = GID_LeftFileButton;
 
   m_pOpenLeftFileButton = CreateGadget(BUTTON_KIND,
     m_pLeftFileStringGadget, &newGadget, TAG_END);
 
-  // Line 3: Contains a string gadget and selection button for the
-  // filename of the right file
-  lineIdx++;
+  // Line 3  contains  a label
+  newGadget.ng_TextAttr   = m_pAppScreen->GfxTextAttr();
+  newGadget.ng_VisualInfo = m_pAppScreen->GadtoolsVisualInfo();
+  newGadget.ng_LeftEdge   = left + 2;
+  newGadget.ng_TopEdge    += vSpace;
+  newGadget.ng_Width      = stringGadgetWidth;
+  newGadget.ng_Height     = m_FontHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "Right file";
+  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
-  // Creating the string gadget for the file name of the right file
+  pLabelGadget = CreateGadget(TEXT_KIND, m_pOpenLeftFileButton,
+    &newGadget, TAG_END);
+
+
+  // Line 4 contains a string gadget and selection button for the
+  // filename of the right file
+
+  // Creating the string gadget
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
+  newGadget.ng_TopEdge    += m_FontHeight + 2;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Right file";
   newGadget.ng_GadgetID   = GID_RightFileString;
+  newGadget.ng_Flags      = 0;
 
   m_pRightFileStringGadget = CreateGadget(STRING_KIND,
-    m_pOpenLeftFileButton, &newGadget, TAG_END);
+    m_pLabelgadget, &newGadget, TAG_END);
 
   // Creating the Button for opening a file selector for left file
   newGadget.ng_LeftEdge   = selectButtonLeft;
-  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
   newGadget.ng_Width      = selectButtonWidth;
-  newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "...";
   newGadget.ng_GadgetID   = GID_RightFileButton;
 
   m_pOpenRightFileButton = CreateGadget(BUTTON_KIND,
     m_pRightFileStringGadget, &newGadget, TAG_END);
 
-  // Line 3: empty, Line4: conatins the Buttons Diff and cancel
-  lineIdx++;
-  lineIdx++;
+  // Line 5 conatins the buttons Diff and Cancel
 
   // Creating the Diff button
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
+  newGadget.ng_TopEdge    += vSpace + vSpace
   newGadget.ng_Width      = buttonWidth;
-  newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "_Diff";
   newGadget.ng_GadgetID   = GID_DiffButton;
 
