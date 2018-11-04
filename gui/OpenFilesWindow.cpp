@@ -38,16 +38,17 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   WORD top = barHeight + vSpace;
   WORD left = hSpace;
   WORD right = m_WinWidth - hSpace;
-  WORD bottom = m_WinHeight - vSpace;
   WORD buttonWidth = 60;
   WORD buttonHeight = m_FontHeight + 6;
-  WORD selectButtonWidth = buttonHeight; // should be square
-  WORD stringGadgetWidth = right - left - hSpace - 2 - selectButtonWidth;
-  WORD selectButtonLeft = right - hSpace - selectButtonWidth;
+  WORD selectButtonWidth = buttonHeight; // SelectButto should be square
+  WORD stringGadgetWidth = right - left - hSpace / 2 - selectButtonWidth;
+  WORD selectButtonLeft = right - selectButtonWidth;
 
   //
   // Setting up the gadgets
   //
+
+  WORD lineIdx = 0;
 
   // Create a place for GadTools context data
   struct Gadget* pContext;
@@ -60,7 +61,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_TextAttr   = m_pAppScreen->GfxTextAttr();
   newGadget.ng_VisualInfo = m_pAppScreen->GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    = top;
+  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Left file";
@@ -72,7 +73,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
 
   // Creating the Button for opening a file selector for left file
   newGadget.ng_LeftEdge   = selectButtonLeft;
-  newGadget.ng_TopEdge    = top;
+  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
   newGadget.ng_Width      = selectButtonWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "...";
@@ -81,9 +82,12 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   m_pOpenLeftFileButton = CreateGadget(BUTTON_KIND,
     m_pLeftFileStringGadget, &newGadget, TAG_END);
 
+
+  lineIdx++;
+
   // Creating the string gadget for the file name of the right file
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    = top +  1 * (buttonHeight + vSpace);
+  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Right file";
@@ -94,7 +98,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
 
   // Creating the Button for opening a file selector for left file
   newGadget.ng_LeftEdge   = selectButtonLeft;
-  newGadget.ng_TopEdge    = top +  1 * (buttonHeight + vSpace);
+  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
   newGadget.ng_Width      = selectButtonWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "...";
@@ -103,9 +107,12 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   m_pOpenRightFileButton = CreateGadget(BUTTON_KIND,
     m_pRightFileStringGadget, &newGadget, TAG_END);
 
+  lineIdx++;
+  lineIdx++;
+
   // Creating the Diff button
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    = bottom -  buttonHeight;
+  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
   newGadget.ng_Width      = buttonWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Diff";
@@ -115,8 +122,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
     m_pOpenRightFileButton, &newGadget, TAG_END);
 
   // Creating the Cancel button
-  newGadget.ng_LeftEdge   = right - hSpace - buttonWidth;
-  newGadget.ng_TopEdge    = bottom -  buttonHeight;
+  newGadget.ng_LeftEdge   = right - buttonWidth;
+  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
   newGadget.ng_Width      = buttonWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Cancel";
@@ -124,6 +131,10 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
 
   m_pCancelButton = CreateGadget(BUTTON_KIND,
     m_pDiffButton, &newGadget, TAG_END);
+
+  // Adjust the window height depending on the y-Pos and height of the
+  // last gadget
+  m_WinHeight = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
 
   // Set the Diff button to an initial enabled / disabled state
   setDiffButtonState();
