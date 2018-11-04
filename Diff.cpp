@@ -31,6 +31,8 @@ struct Library* GadToolsBase;
 struct Library* AslBase;
 struct Library* GfxBase;
 struct Library* UtilityBase;
+struct Library* MathIeeeDoubBasBase;
+struct Library* MathIeeeDoubTransBase;
 
 
 int main(int argc, char **argv)
@@ -41,9 +43,12 @@ int main(int argc, char **argv)
   AslBase = OpenLibrary("asl.library", 37);
   GfxBase = OpenLibrary("graphics.library", 37);
   UtilityBase = OpenLibrary("utility.library", 37);
+  MathIeeeDoubBasBase = OpenLibrary("mathieeedoubbas.library", 37);
+  MathIeeeDoubTransBase = OpenLibrary("mathieeedoubtrans.library", 37);
 
   if((!IntuitionBase) || (!DosBase) || (!GadToolsBase) ||
-     (!AslBase) || (!GfxBase) || (!UtilityBase))
+     (!AslBase) || (!GfxBase) || (!UtilityBase) ||
+     (!MathIeeeDoubBasBase) || (!MathIeeeDoubTransBase) )
   {
     closeLibs();
     return 20;
@@ -66,6 +71,8 @@ int main(int argc, char **argv)
 
 void closeLibs()
 {
+  CloseLibrary(MathIeeeDoubTransBase);
+  CloseLibrary(MathIeeeDoubBasBase);
   CloseLibrary(UtilityBase);
   CloseLibrary(GfxBase);
   CloseLibrary(AslBase);
