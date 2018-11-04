@@ -83,7 +83,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   m_pLeftFileStringGadget = CreateGadget(STRING_KIND,
     pLabelGadget, &newGadget, TAG_END);
 
-  // Creating the button
+  // Creating the Select button
   newGadget.ng_LeftEdge   = selectButtonLeft;
   newGadget.ng_Width      = selectButtonWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
@@ -92,11 +92,11 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   m_pOpenLeftFileButton = CreateGadget(BUTTON_KIND,
     m_pLeftFileStringGadget, &newGadget, TAG_END);
 
-  // Line 3  contains  a label
+  // Line 3  contains a label
   newGadget.ng_TextAttr   = m_pAppScreen->GfxTextAttr();
   newGadget.ng_VisualInfo = m_pAppScreen->GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
-  newGadget.ng_TopEdge    += vSpace;
+  newGadget.ng_TopEdge    += buttonHeight + vSpace;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = m_FontHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Right file";
@@ -119,9 +119,9 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_Flags      = 0;
 
   m_pRightFileStringGadget = CreateGadget(STRING_KIND,
-    m_pLabelgadget, &newGadget, TAG_END);
+    pLabelGadget, &newGadget, TAG_END);
 
-  // Creating the Button for opening a file selector for left file
+  // Creating the Select button
   newGadget.ng_LeftEdge   = selectButtonLeft;
   newGadget.ng_Width      = selectButtonWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
@@ -134,7 +134,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
 
   // Creating the Diff button
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += vSpace + vSpace
+  newGadget.ng_TopEdge    += buttonHeight + vSpace + vSpace;
   newGadget.ng_Width      = buttonWidth;
   newGadget.ng_GadgetText = (UBYTE*) "_Diff";
   newGadget.ng_GadgetID   = GID_DiffButton;
@@ -144,9 +144,6 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
 
   // Creating the Cancel button
   newGadget.ng_LeftEdge   = right - buttonWidth;
-  newGadget.ng_TopEdge    = top +  lineIdx * (buttonHeight + vSpace);
-  newGadget.ng_Width      = buttonWidth;
-  newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
   newGadget.ng_GadgetID   = GID_CancelButton;
 
