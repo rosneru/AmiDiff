@@ -39,11 +39,11 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   WORD left = hSpace;
   WORD right = m_WinWidth - hSpace;
   WORD bottom = m_WinHeight - vSpace;
-  WORD selectButtonWidth = m_FontHeight + 2; // should be square
-  WORD stringGadgetWidth = right - left - hSpace - selectButtonWidth;
-  WORD selectButtonLeft = right - hSpace - selectButtonWidth;
   WORD buttonWidth = 60;
-  WORD buttonHeight = m_FontHeight + 2;
+  WORD buttonHeight = m_FontHeight + 6;
+  WORD selectButtonWidth = buttonHeight; // should be square
+  WORD stringGadgetWidth = right - left - hSpace - 2 - selectButtonWidth;
+  WORD selectButtonLeft = right - hSpace - selectButtonWidth;
 
   //
   // Setting up the gadgets
@@ -104,8 +104,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
     m_pRightFileStringGadget, &newGadget, TAG_END);
 
   // Creating the Diff button
-  newGadget.ng_LeftEdge   = left + hSpace;
-  newGadget.ng_TopEdge    = bottom -  buttonHeight - vSpace;
+  newGadget.ng_LeftEdge   = left;
+  newGadget.ng_TopEdge    = bottom -  buttonHeight;
   newGadget.ng_Width      = buttonWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Diff";
@@ -116,7 +116,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
 
   // Creating the Cancel button
   newGadget.ng_LeftEdge   = right - hSpace - buttonWidth;
-  newGadget.ng_TopEdge    = bottom -  buttonHeight - vSpace;
+  newGadget.ng_TopEdge    = bottom -  buttonHeight;
   newGadget.ng_Width      = buttonWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Cancel";
