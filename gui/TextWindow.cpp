@@ -187,6 +187,11 @@ TextWindow::~TextWindow()
 
 void TextWindow::Resized()
 {
+  if(m_pDocument == NULL)
+  {
+    return; // TODO
+  }
+
   // Calculate how many lines *now* can be displayed in the window
   calcMaxWindowTextLines();
 
