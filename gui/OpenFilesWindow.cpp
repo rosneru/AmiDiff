@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 
 #include <clib/alib_protos.h>
 #include <clib/dos_protos.h>
@@ -105,7 +106,6 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   pLabelGadget = CreateGadget(TEXT_KIND, m_pOpenLeftFileButton,
     &newGadget, TAG_END);
 
-
   // Line 4 contains a string gadget and selection button for the
   // filename of the right file
 
@@ -153,9 +153,6 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
   m_WinHeight = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
-
-  // Set the Diff button to an initial enabled / disabled state
-  setDiffButtonState();
 }
 
 OpenFilesWindow::~OpenFilesWindow()
@@ -255,6 +252,10 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
                 BUTTONIDCMP;          // Inform us about GadTools button events
 
   ModifyIDCMP(m_pWindow, flags);
+
+  // Set the Diff button to an initial enabled / disabled state
+  setDiffButtonState();
+
 
   return WindowBase::Open(p_pUserDataMenuItemToDisable);
 }

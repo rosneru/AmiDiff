@@ -128,7 +128,6 @@ File
 "oscottlibs/LinkedListNode.h"
 "model/Document.h"
 "gui/AppScreen.h"
-"AmigaDiffFacade.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -181,7 +180,6 @@ File
 "gui/WindowBase.h"
 "model/Document.h"
 "gui/AppScreen.h"
-"AmigaDiffFacade.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Diff.o" "objects_debug/Diff.debug"
 ""
