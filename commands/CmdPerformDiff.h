@@ -15,12 +15,12 @@
 class CmdPerformDiff : public Command
 {
 public:
-  CmdPerformDiff(AmigaDiffFacade& p_Facade);
+  CmdPerformDiff(AmigaDiffFacade& p_DiffFacade);
   virtual ~CmdPerformDiff();
   virtual void Execute();
 
 private:
-  AmigaDiffFacade&  m_Facade;
+  AmigaDiffFacade&  m_DiffFacade;
 };
 
 #endif // CMD_PERFORM_DIFF_H
