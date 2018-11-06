@@ -20,6 +20,30 @@ public:
   virtual ~WindowBase();
 
   /**
+   * Base class method for opening the window. Derived classes should
+   * call this in their Open() method after the window has opened.
+   *
+   * Sets the menu strip to the window if one had been provided. If the
+   * given pointer to a menu items user data is not null, this menu
+   * item will be disabled.
+   *
+   * @param p_pUserDataMenuItemToDisable
+   * A pointer to an user data field of a menu item which is associated
+   * with this window. If the menu item is found by the given user data
+   * it will be disabled at window opening time and enabled when the
+   * window is closed. Provide NULL if no menu item should be disabled.
+   *
+   * @returns
+   * When ok: true, false if opening fails
+   */
+  virtual bool Open(APTR p_pUserDataMenuItemToDisable) = 0;
+
+  /**
+   * Closes the window.
+   */
+  virtual void Close();
+
+  /**
    * Returns true if the window is opened.
    */
   bool IsOpen();
@@ -48,35 +72,11 @@ protected:
   AppScreen* m_pAppScreen;
   struct MsgPort* m_pMsgPort;
   struct Window* m_pWindow;
-  
+
   AppMenu* m_pMenu;
   APTR m_pUserDataMenuItemToDisable;
-  
+
   SimpleString m_Title;
-
-  /**
-   * Base class method for opening the window. Derived classes should 
-   * call this in their Open() method after the window has opened.
-   * 
-   * Sets the menu strip to the window if one had been provided. If the
-   * given pointer to a menu items user data is not null, this menu 
-   * item will be disabled.
-   * 
-   * @param p_pUserDataMenuItemToDisable
-   * A pointer to an user data field of a menu item which is associated 
-   * with this window. If the menu item is found by the given user data 
-   * it will be disabled at window opening time and enabled when the 
-   * window is closed. Provide NULL if no menu item should be disabled.
-   *
-   * @returns
-   * When ok: true, false if opening fails
-   */
-  virtual bool Open(APTR p_pUserDataMenuItemToDisable) = 0;
-
-  /**
-   * Closes the window.
-   */
-  virtual void Close();
 
   virtual void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
 
@@ -85,7 +85,7 @@ protected:
    *
    * @param p_pAppScreen
    * Screen on which the window will occur at opening time
-   * 
+   *
    * @param p_pMsgPort
    * Message port which is used for this window. Can be shared
    * with other windows-
@@ -117,14 +117,14 @@ protected:
 
 private:
   /**
-   * Use this method to close any windows that share an IDCMP port 
+   * Use this method to close any windows that share an IDCMP port
    * with another window.
    */
   void closeWindowSafely();
 
   /**
-   * Method to remove and reply all IntuiMessages on a port that have 
-   * been sent to a particular window (note that we don't rely on the 
+   * Method to remove and reply all IntuiMessages on a port that have
+   * been sent to a particular window (note that we don't rely on the
    * ln_Succ pointer of a message after we have replied it)
    */
   void stripIntuiMessages();
