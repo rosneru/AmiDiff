@@ -159,10 +159,10 @@ bool Application::Run()
   m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
 
   //
-  // Fill the GadTools menu struct, supplying pointers to the commands
-  // as nm_UserData. With this behavior there is no complicated
-  // evalution needed to detect which menu item was clicked. Just
-  // the ->Execute of the (by then anonymous) command has to be called.
+  // Filling the GadTools menu struct, supplying pointers to the 
+  // commands as nm_UserData. So no complicated evalution needed to 
+  // detect which menu item was clicked. Only the ->Execute of the 
+  // (then anonymous) command has to be called.
   //
   struct NewMenu menuDefinition[] =
   {

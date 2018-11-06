@@ -22,25 +22,6 @@ public:
   virtual void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
 
   /**
-   * Opening the window.
-   * 
-   * @param p_pUserDataMenuItemToDisable
-   * A pointer to an user data field of a menu item which is associated 
-   * with this window. If the menu item is found by the given user data 
-   * it will be disabled at window opening time and enabled when the 
-   * window is closed. Provide NULL if no menu item should be disabled.
-   *
-   * @returns
-   * When ok: true, false if opening fails
-   */
-  virtual bool Open(APTR p_pUserDataMenuItemToDisable) = 0;
-
-  /**
-   * Closes the window.
-   */
-  virtual void Close();
-
-  /**
    * Returns true if the window is opened.
    */
   bool IsOpen();
@@ -75,6 +56,29 @@ protected:
   
   SimpleString m_Title;
 
+  /**
+   * Base class method for opening the window. Derived classes should 
+   * call this in their Open() method after the window has opened.
+   * 
+   * Sets the menu strip to the window if one had been provided. If the
+   * given pointer to a menu items user data is not null, this menu 
+   * item will be disabled.
+   * 
+   * @param p_pUserDataMenuItemToDisable
+   * A pointer to an user data field of a menu item which is associated 
+   * with this window. If the menu item is found by the given user data 
+   * it will be disabled at window opening time and enabled when the 
+   * window is closed. Provide NULL if no menu item should be disabled.
+   *
+   * @returns
+   * When ok: true, false if opening fails
+   */
+  virtual bool Open(APTR p_pUserDataMenuItemToDisable) = 0;
+
+  /**
+   * Closes the window.
+   */
+  virtual void Close();
 
   /**
    * Creates a new window object
