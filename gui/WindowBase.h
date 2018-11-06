@@ -19,8 +19,6 @@ class WindowBase
 public:
   virtual ~WindowBase();
 
-  virtual void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
-
   /**
    * Returns true if the window is opened.
    */
@@ -79,6 +77,8 @@ protected:
    * Closes the window.
    */
   virtual void Close();
+
+  virtual void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
 
   /**
    * Creates a new window object
