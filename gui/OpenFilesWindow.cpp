@@ -52,6 +52,10 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   // Create a place for GadTools context data
   struct Gadget* pContext;
   pContext = (struct Gadget*) CreateContext(&m_pGadgetList);
+  if(pContext == NULL)
+  {
+    return;
+  }
 
   // Declare the basic gadget structure
   struct NewGadget newGadget;
@@ -339,6 +343,11 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 
 void OpenFilesWindow::setDiffButtonState()
 {
+  if(m_pWindow == NULL || m_pDiffButton == NULL)
+  {
+    return;
+  }
+
   if(m_DiffFacade.LeftFilePath().Length() > 0 &&
      m_DiffFacade.RightFilePath().Length() > 0)
   {
