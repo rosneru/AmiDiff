@@ -41,7 +41,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   WORD right = m_WinWidth - hSpace;
   WORD buttonWidth = 60;
   WORD buttonHeight = m_FontHeight + 6;
-  WORD selectButtonWidth = 2 * m_FontHeight;
+  WORD selectButtonWidth = TextLength(
+    &m_pAppScreen->IntuiScreen()->RastPort, "...", 3) + 8;
   WORD stringGadgetWidth = right - left - hSpace / 2 - selectButtonWidth;
   WORD selectButtonLeft = right - selectButtonWidth;
 
@@ -98,8 +99,6 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
     m_pLeftFileStringGadget, &newGadget, TAG_END);
 
   // Line 3  contains a label
-  newGadget.ng_TextAttr   = m_pAppScreen->GfxTextAttr();
-  newGadget.ng_VisualInfo = m_pAppScreen->GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    += buttonHeight + vSpace;
   newGadget.ng_Width      = stringGadgetWidth;
