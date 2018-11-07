@@ -67,7 +67,12 @@ bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable)
 
 void WindowBase::Close()
 {
-  if(m_pMenu != NULL)
+  if(m_pWindow == NULL)
+  {
+    return;
+  }
+
+  if(m_pMenu != NULL && m_pUserDataMenuItemToDisable != NULL)
   {
     m_pMenu->EnableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
   }

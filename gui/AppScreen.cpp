@@ -106,7 +106,7 @@ bool AppScreen::Open()
 
   // Get visual info from screen
   m_pVisualInfo = (APTR*) GetVisualInfo(m_pScreen, TAG_END);
-  if(m_pVisualInfo == false)
+  if(m_pVisualInfo == NULL)
   {
     Close();
     return false;
