@@ -3,8 +3,8 @@
 #include <stdio.h>
 
 TextDocument::TextDocument()
-  : m_ColorNameBackground(DEFAULT),
-    m_ColorNameForeground(DEFAULT)
+  : m_ColorNameBackground(CN_Default),
+    m_ColorNameForeground(CN_Default)
 {
 }
 
