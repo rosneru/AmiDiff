@@ -19,20 +19,20 @@ public:
   AmigaDiffFacade();
 
   void SetLeftFilePath(const char* p_pLeftFilePath);
-  SimpleString LeftFilePath();
+  const SimpleString& LeftFilePath();
 
   void SetRightFilePath(const char* p_pRightFilePath);
-  SimpleString RightFilePath();
+  const SimpleString& RightFilePath();
 
   void SetLeftDiffWindow(DiffWindow* p_pLeftWindow);
   void SetRightDiffWindow(DiffWindow* p_pRightWindow);
 
   /**
-   * Performs the diff using LeftFilePath and RightFilePath as input 
+   * Performs the diff using LeftFilePath and RightFilePath as input
    * files. After the the diff is sucessfully created, the resulting
    * diff can be retrievced using LeftFileDiff and RightFileDiff in
    * the host application.
-   * 
+   *
    * @returns
    * When successful: true; false else.
    */

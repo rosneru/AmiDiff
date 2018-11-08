@@ -88,6 +88,9 @@ private:
    * an ASL request openened etc.
    */
   void setDiffButtonState();
+
+  void setStringGadgetText(struct Gadget* p_pGadget,
+    const SimpleString& p_Text);
 };
 
 

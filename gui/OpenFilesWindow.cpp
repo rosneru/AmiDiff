@@ -82,7 +82,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_TopEdge    += m_FontHeight + 2;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "Left file";
+  newGadget.ng_GadgetText = NULL;
   newGadget.ng_GadgetID   = GID_LeftFileString;
   newGadget.ng_Flags      = 0;
 
@@ -94,6 +94,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_Width      = selectButtonWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
   newGadget.ng_GadgetID   = GID_LeftFileButton;
+  newGadget.ng_Flags      = 0;
 
   m_pOpenLeftFileButton = CreateGadget(BUTTON_KIND,
     m_pLeftFileStringGadget, &newGadget, TAG_END);
@@ -117,7 +118,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_TopEdge    += m_FontHeight + 2;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "Right file";
+  newGadget.ng_GadgetText = NULL;
   newGadget.ng_GadgetID   = GID_RightFileString;
   newGadget.ng_Flags      = 0;
 
@@ -129,6 +130,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   newGadget.ng_Width      = selectButtonWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
   newGadget.ng_GadgetID   = GID_RightFileButton;
+  newGadget.ng_Flags      = 0;
 
   m_pOpenRightFileButton = CreateGadget(BUTTON_KIND,
     m_pRightFileStringGadget, &newGadget, TAG_END);
@@ -259,6 +261,8 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
   // Set the Diff button to an initial enabled / disabled state
   setDiffButtonState();
 
+  setStringGadgetText(m_pLeftFileStringGadget, m_DiffFacade.LeftFilePath());
+  setStringGadgetText(m_pRightFileStringGadget, m_DiffFacade.RightFilePath());
 
   return WindowBase::Open(p_pUserDataMenuItemToDisable);
 }
@@ -364,3 +368,18 @@ void OpenFilesWindow::setDiffButtonState()
 
   }
 }
+
+void OpenFilesWindow::setStringGadgetText(struct Gadget* p_pGadget,
+  const SimpleString& p_Text)
+{
+  if(m_pWindow == NULL || p_pGadget == NULL)
+  {
+    return;
+  }
+
+  GT_SetGadgetAttrs(p_pGadget, m_pWindow, NULL,
+    GTST_String, p_Text.C_str(),
+    TAG_END);
+
+}
+
