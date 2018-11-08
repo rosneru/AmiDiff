@@ -34,14 +34,14 @@ public:
   /**
    * Store a string and build its token
    */
-  long SetLine(SimpleString* p_pString);
+  long SetLine(const SimpleString* p_pString);
   
   /**
    * Store a string and its state. Does not evaluate token.
    */
-  void SetLine(SimpleString* p_pString, LineState p_LineState);
+  void SetLine(const SimpleString* p_pString, LineState p_LineState);
   
-  SimpleString* GetLine();
+  const SimpleString* GetLine() const;
 
   void SetState(LineState p_LineState);
   LineState GetState();

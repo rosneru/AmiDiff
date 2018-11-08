@@ -35,7 +35,7 @@ size_t DiffFilePartition::NumberOfLines()
   return m_pDiffLinesList->Size();
 }
 
-DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t p_Index)
+const DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t p_Index)
 {
   if(m_pDiffLinesList == NULL)
   {
@@ -51,7 +51,7 @@ DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t p_Index)
   return pDiffLine;
 }
 
-SimpleString* DiffFilePartition::GetIndexedRawLine(size_t p_Index)
+const SimpleString* DiffFilePartition::GetIndexedRawLine(size_t p_Index)
 {
   if(m_pDiffLinesList == NULL)
   {
@@ -121,7 +121,7 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
     return false;
   }
 
-  SimpleString* pLineThisFile = GetIndexedDiffLine(i1)->GetLine();
+  const SimpleString* pLineThisFile = GetIndexedDiffLine(i1)->GetLine();
 
   bool bFound = false;
   long i = 0;
@@ -134,7 +134,7 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
     if(thisFileToken == otherFileToken)  // Fast compare
     {
       // Make sure strings really match
-      SimpleString* pLineOtherFile = p_OtherFile.GetIndexedDiffLine(i2 + i)->GetLine();
+      const SimpleString* pLineOtherFile = p_OtherFile.GetIndexedDiffLine(i2 + i)->GetLine();
       bFound = ((*pLineThisFile) == (*pLineOtherFile));
     }
 
@@ -158,7 +158,7 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
   return false;
 }
 
-void DiffFilePartition::AddString(SimpleString* p_pString, DiffLine::LineState p_LineState)
+void DiffFilePartition::AddString(const SimpleString* p_pString, DiffLine::LineState p_LineState)
 {
   DiffLine* pDiffLine = new DiffLine();
   if(pDiffLine != NULL)
@@ -170,7 +170,7 @@ void DiffFilePartition::AddString(SimpleString* p_pString, DiffLine::LineState p
   m_pDiffLinesList->InsertTail(pDiffLine);
 }
 
-void DiffFilePartition::AddString(SimpleString* p_pString)
+void DiffFilePartition::AddString(const SimpleString* p_pString)
 {
   DiffLine* pDiffLine = new DiffLine();
   if(pDiffLine != NULL)

@@ -27,16 +27,16 @@ public:
   virtual ~DiffFilePartition();
 
   size_t NumberOfLines();
-  DiffLine* GetIndexedDiffLine(size_t p_Index);
-  SimpleString* GetIndexedRawLine(size_t p_Index);
+  const DiffLine* GetIndexedDiffLine(size_t p_Index);
+  const SimpleString* GetIndexedRawLine(size_t p_Index);
   DiffLine::LineState GetIndexedLineState(size_t p_Index);
   LinkedList* TokensList();
 
   bool PreProcess();
   bool MatchLine(long i1, DiffFilePartition& p_OtherFile, long& i2);
 
-  void AddString(SimpleString* p_pString, DiffLine::LineState p_LineState);
-  void AddString(SimpleString* p_pString);
+  void AddString(const SimpleString* p_pString, DiffLine::LineState p_LineState);
+  void AddString(const SimpleString* p_pString);
   void AddBlankLine();
 
 private:

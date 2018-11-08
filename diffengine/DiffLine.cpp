@@ -15,7 +15,7 @@ DiffLine::~DiffLine()
   }
 }
 
-long DiffLine::SetLine(SimpleString* p_String)
+long DiffLine::SetLine(const SimpleString* p_String)
 {
   if(m_pLineText != NULL)
   {
@@ -40,7 +40,7 @@ long DiffLine::SetLine(SimpleString* p_String)
   return nToken;
 }
 
-void DiffLine::SetLine(SimpleString* p_pString, DiffLine::LineState p_LineState)
+void DiffLine::SetLine(const SimpleString* p_pString, DiffLine::LineState p_LineState)
 {
   if(m_pLineText != NULL)
   {
@@ -60,7 +60,7 @@ void DiffLine::SetLine(SimpleString* p_pString, DiffLine::LineState p_LineState)
   SetState(p_LineState);
 }
 
-SimpleString* DiffLine::GetLine()
+const SimpleString* DiffLine::GetLine() const
 {
   return m_pLineText;
 }
