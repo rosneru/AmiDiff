@@ -16,11 +16,11 @@ public:
 
   const size_t NumLines() const;
 
-  const SimpleString* GetFirstLine();
-  const SimpleString* GetCurrentLine();
-  const SimpleString* GetPreviousLine();
-  const SimpleString* GetNextLine();
-  const SimpleString* GetIndexedLine(int p_LineIdx);
+  SimpleString* GetFirstLine();
+  SimpleString* GetCurrentLine();
+  SimpleString* GetPreviousLine();
+  SimpleString* GetNextLine();
+  SimpleString* GetIndexedLine(int p_LineIdx);
 
 private:
   LinkedList m_Lines;

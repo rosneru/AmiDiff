@@ -161,7 +161,7 @@ private:
   /**
    * Displays the given line at given y-position
    */
-  void displayLine(SimpleString* p_pLine, WORD p_TopEdge);
+  void displayLine(const SimpleString* p_pLine, WORD p_TopEdge);
 
   /**
    * Displays the complete file from current m_Y position as first line

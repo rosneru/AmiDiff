@@ -67,27 +67,27 @@ const size_t TextDocument::NumLines() const
 }
 
 
-const SimpleString* TextDocument::GetFirstLine() const
+SimpleString* TextDocument::GetFirstLine()
 {
   return static_cast<SimpleString*>(m_Lines.GetFirst());
 }
 
-const SimpleString* TextDocument::GetCurrentLine() const
+SimpleString* TextDocument::GetCurrentLine()
 {
   return static_cast<SimpleString*>(m_Lines.GetSelected());
 }
 
-const SimpleString* TextDocument::GetPreviousLine() const
+SimpleString* TextDocument::GetPreviousLine()
 {
   return static_cast<SimpleString*>(m_Lines.GetPrev());
 }
 
-const SimpleString* TextDocument::GetNextLine() const
+SimpleString* TextDocument::GetNextLine()
 {
   return static_cast<SimpleString*>(m_Lines.GetNext());
 }
 
-const SimpleString* TextDocument::GetIndexedLine(int p_LineIdx) const
+SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
 {
   return static_cast<SimpleString*>(m_Lines.GetIndexed(p_LineIdx));
 }

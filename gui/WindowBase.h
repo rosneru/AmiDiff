@@ -17,8 +17,6 @@
 class WindowBase
 {
 public:
-  virtual ~WindowBase();
-
   /**
    * Base class method for opening the window. Derived classes should
    * call this in their Open() method after the window has opened.
@@ -92,6 +90,8 @@ protected:
    *
    */
   WindowBase(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort);
+
+  virtual ~WindowBase();
 
   /**
    * Creates an BOOPSI image object of one of the system shipped with

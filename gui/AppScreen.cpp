@@ -60,7 +60,7 @@ bool AppScreen::Open()
   // Get font font name and other properties fro Workbench DrawInfo and
   // store it here
   m_FontName = pWbDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
-  m_TextAttr.ta_Name = m_FontName.C_str();
+  m_TextAttr.ta_Name = const_cast<STRPTR>(m_FontName.C_str());
   m_TextAttr.ta_YSize = pWbDrawInfo->dri_Font->tf_YSize;
   m_TextAttr.ta_Style = pWbDrawInfo->dri_Font->tf_Style;
   m_TextAttr.ta_Flags = pWbDrawInfo->dri_Font->tf_Flags;
