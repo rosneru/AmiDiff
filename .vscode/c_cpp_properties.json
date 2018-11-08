@@ -4,16 +4,12 @@
             "name": "Amiga 68k",
             "includePath": [
                 "/opt/amiga/m68k-amigaos/ndk-include/",
+                "/opt/amiga/m68k-amigaos/sys-include/",
+                "/opt/amiga/m68k-amigaos/include/",
                 "${workspaceFolder}/**"
             ],
-            "browse": {
-                "limitSymbolsToIncludedHeaders": false,
-                "path": [
-                    "/opt/amiga/m68k-amigaos/ndk-include/"
-                ]
-            },
             "defines": [],
-            "compilerPath": "/opt/amiga/bin/m68k-amigaos-gcc",
+            "compilerPath": "/opt/amiga/bin/m68k-amigaos-c++",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64"
