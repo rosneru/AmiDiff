@@ -26,11 +26,22 @@ public:
   DiffFilePartition(LinkedList* p_pLinesList);
   virtual ~DiffFilePartition();
 
+  LinkedList* TokensList();
+
   size_t NumberOfLines();
+
   const DiffLine* GetIndexedDiffLine(size_t p_Index);
+
+  const SimpleString* GetFirstRawLine();
+  DiffLine::LineState GetFirstLineState();
+  const SimpleString* GetCurrentRawLine();
+  DiffLine::LineState GetCurrentLineState();
+  const SimpleString* GetPreviousRawLine();
+  DiffLine::LineState GetPreviousLineState();
+  const SimpleString* GetNextRawLine();
+  DiffLine::LineState GetNextLineState();
   const SimpleString* GetIndexedRawLine(size_t p_Index);
   DiffLine::LineState GetIndexedLineState(size_t p_Index);
-  LinkedList* TokensList();
 
   bool PreProcess();
   bool MatchLine(long i1, DiffFilePartition& p_OtherFile, long& i2);

@@ -35,51 +35,174 @@ size_t DiffFilePartition::NumberOfLines()
   return m_pDiffLinesList->Size();
 }
 
+
 const DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t p_Index)
+{
+  if(m_pDiffLinesList == NULL || p_Index >= m_pDiffLinesList->Size())
+  {
+    return NULL;
+  }
+
+  return static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(p_Index));
+}
+
+const SimpleString* DiffFilePartition::GetFirstRawLine()
 {
   if(m_pDiffLinesList == NULL)
   {
     return NULL;
   }
 
-  if(p_Index >= m_pDiffLinesList->Size())
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetFirst());
+  if(pDiffLine == NULL)
   {
     return NULL;
   }
 
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(p_Index));
-  return pDiffLine;
+  return pDiffLine->GetLine();
+}
+
+DiffLine::LineState DiffFilePartition::GetFirstLineState()
+{
+  if(m_pDiffLinesList == NULL)
+  {
+    return DiffLine::Undefined;
+  }
+
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetFirst());
+  if(pDiffLine == NULL)
+  {
+    return DiffLine::Undefined;
+  }
+
+  return pDiffLine->GetState();
+}
+
+const SimpleString* DiffFilePartition::GetCurrentRawLine()
+{
+  if(m_pDiffLinesList == NULL)
+  {
+    return NULL;
+  }
+
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetSelected());
+  if(pDiffLine == NULL)
+  {
+    return NULL;
+  }
+
+  return pDiffLine->GetLine();
+}
+
+DiffLine::LineState DiffFilePartition::GetCurrentLineState()
+{
+  if(m_pDiffLinesList == NULL)
+  {
+    return DiffLine::Undefined;
+  }
+
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetSelected());
+  if(pDiffLine == NULL)
+  {
+    return DiffLine::Undefined;
+  }
+
+  return pDiffLine->GetState();
+}
+
+const SimpleString* DiffFilePartition::GetPreviousRawLine()
+{
+  if(m_pDiffLinesList == NULL)
+  {
+    return NULL;
+  }
+
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetPrev());
+  if(pDiffLine == NULL)
+  {
+    return NULL;
+  }
+
+  return pDiffLine->GetLine();
+}
+
+DiffLine::LineState DiffFilePartition::GetPreviousLineState()
+{
+  if(m_pDiffLinesList == NULL)
+  {
+    return DiffLine::Undefined;
+  }
+
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetPrev());
+  if(pDiffLine == NULL)
+  {
+    return DiffLine::Undefined;
+  }
+
+  return pDiffLine->GetState();
+}
+
+const SimpleString* DiffFilePartition::GetNextRawLine()
+{
+  if(m_pDiffLinesList == NULL)
+  {
+    return NULL;
+  }
+
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetNext());
+  if(pDiffLine == NULL)
+  {
+    return NULL;
+  }
+
+  return pDiffLine->GetLine();
+}
+
+DiffLine::LineState DiffFilePartition::GetNextLineState()
+{
+  if(m_pDiffLinesList == NULL)
+  {
+    return DiffLine::Undefined;
+  }
+
+  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetNext());
+  if(pDiffLine == NULL)
+  {
+    return DiffLine::Undefined;
+  }
+
+  return pDiffLine->GetState();
 }
 
 const SimpleString* DiffFilePartition::GetIndexedRawLine(size_t p_Index)
 {
-  if(m_pDiffLinesList == NULL)
-  {
-    return NULL;
-  }
-
-  if(p_Index >= m_pDiffLinesList->Size())
+  if(m_pDiffLinesList == NULL || p_Index >= m_pDiffLinesList->Size())
   {
     return NULL;
   }
 
   DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(p_Index));
+  if(pDiffLine == NULL)
+  {
+    return NULL;
+  }
+
   return pDiffLine->GetLine();
 }
 
 DiffLine::LineState DiffFilePartition::GetIndexedLineState(size_t p_Index)
 {
-  if(m_pDiffLinesList == NULL)
-  {
-    return DiffLine::Undefined;
-  }
-
-  if(p_Index >= m_pDiffLinesList->Size())
+  if(m_pDiffLinesList == NULL || p_Index >= m_pDiffLinesList->Size())
   {
     return DiffLine::Undefined;
   }
 
   DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(p_Index));
+  if(pDiffLine == NULL)
+  {
+    return DiffLine::Undefined;
+  }
+
   return pDiffLine->GetState();
 }
 
