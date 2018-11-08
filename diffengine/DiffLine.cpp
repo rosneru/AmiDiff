@@ -29,7 +29,7 @@ long DiffLine::SetLine(SimpleString* p_String)
   // TODO Would it go better?
   *m_pLineText = *p_String;
 
-  char* pBuf = p_String->C_str();
+  const char* pBuf = p_String->C_str();
 
   long nToken = 0;
   for(size_t i = 0; i < p_String->Length(); i++)
