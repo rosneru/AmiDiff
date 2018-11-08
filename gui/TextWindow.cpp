@@ -498,7 +498,7 @@ void TextWindow::calcMaxWindowTextLines()
 }
 
 
-void TextWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge)
+void TextWindow::displayLine(const SimpleString* p_pLine, WORD p_TopEdge)
 {
   m_IntuiText.IText = (UBYTE*)p_pLine->C_str();
   m_IntuiText.TopEdge = p_TopEdge;
@@ -508,7 +508,7 @@ void TextWindow::displayLine(SimpleString* p_pLine, WORD p_TopEdge)
 void TextWindow::displayFile()
 {
   size_t lineId = m_Y;
-  SimpleString* pLine = m_pDocument->GetIndexedLine(lineId);
+  const SimpleString* pLine = m_pDocument->GetIndexedLine(lineId);
   while(pLine != NULL)
   {
     displayLine(pLine, (lineId - m_Y ) * m_FontHeight);
@@ -545,7 +545,7 @@ bool TextWindow::scrollUpOneLine()
 
   // Get the line which at current scroll position has to be printed as
   // the windows last line
-  SimpleString* pLine = NULL;
+  const SimpleString* pLine = NULL;
   if(m_LastScrollDirection == Upward)
   {
     pLine = m_pDocument->GetNextLine();
@@ -588,7 +588,7 @@ bool TextWindow::scrollDownOneLine()
 
   // Get the line which at current scroll position has to be printed as
   // the windows first line
-  SimpleString* pLine = NULL;
+  const SimpleString* pLine = NULL;
   if(m_LastScrollDirection == Downward)
   {
     pLine = m_pDocument->GetPreviousLine();
