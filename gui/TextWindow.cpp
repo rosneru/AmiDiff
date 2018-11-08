@@ -515,6 +515,7 @@ void TextWindow::displayFile()
 
     if((lineId - m_Y) >= m_MaxWindowTextLines - 1)
     {
+      // Only display as many lines as fit into the window
       break;
     }
 

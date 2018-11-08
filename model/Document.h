@@ -9,7 +9,7 @@ class Document
 public:
   Document();
   virtual ~Document();
-  virtual bool Load(SimpleString p_FileName) = 0;
+  virtual bool Load(const SimpleString& p_FileName) = 0;
   virtual void Clear() = 0;
 
   const SimpleString& FileName();

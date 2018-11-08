@@ -19,7 +19,7 @@ TextDocument::~TextDocument()
  * Name of text file to load
  *
  */
-bool TextDocument::Load(SimpleString p_FileName)
+bool TextDocument::Load(const SimpleString& p_FileName)
 {
   if(p_FileName.Length() == 0)
   {
@@ -49,7 +49,7 @@ bool TextDocument::Load(SimpleString p_FileName)
 
 void TextDocument::Clear()
 {
-  SimpleString* pLine = GetFirstLine();
+  const SimpleString* pLine = GetFirstLine();
   while (pLine != NULL)
   {
     delete pLine;
@@ -61,33 +61,33 @@ void TextDocument::Clear()
   m_TimeStatistics = "";
 }
 
-const size_t TextDocument::NumLines()
+const size_t TextDocument::NumLines() const
 {
   return m_Lines.Size();
 }
 
 
-SimpleString* TextDocument::GetFirstLine()
+const SimpleString* TextDocument::GetFirstLine() const
 {
   return static_cast<SimpleString*>(m_Lines.GetFirst());
 }
 
-SimpleString* TextDocument::GetCurrentLine()
+const SimpleString* TextDocument::GetCurrentLine() const
 {
   return static_cast<SimpleString*>(m_Lines.GetSelected());
 }
 
-SimpleString* TextDocument::GetPreviousLine()
+const SimpleString* TextDocument::GetPreviousLine() const
 {
   return static_cast<SimpleString*>(m_Lines.GetPrev());
 }
 
-SimpleString* TextDocument::GetNextLine()
+const SimpleString* TextDocument::GetNextLine() const
 {
   return static_cast<SimpleString*>(m_Lines.GetNext());
 }
 
-SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
+const SimpleString* TextDocument::GetIndexedLine(int p_LineIdx) const
 {
   return static_cast<SimpleString*>(m_Lines.GetIndexed(p_LineIdx));
 }

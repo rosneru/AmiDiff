@@ -11,16 +11,16 @@ class TextDocument : public Document
 public:
   TextDocument();
   ~TextDocument();
-  bool Load(SimpleString p_FileName);
+  virtual bool Load(const SimpleString& p_FileName);
   void Clear();
 
-  const size_t NumLines();
+  const size_t NumLines() const;
 
-  SimpleString* GetFirstLine();
-  SimpleString* GetCurrentLine();
-  SimpleString* GetPreviousLine();
-  SimpleString* GetNextLine();
-  SimpleString* GetIndexedLine(int p_LineIdx);
+  const SimpleString* GetFirstLine();
+  const SimpleString* GetCurrentLine();
+  const SimpleString* GetPreviousLine();
+  const SimpleString* GetNextLine();
+  const SimpleString* GetIndexedLine(int p_LineIdx);
 
 private:
   LinkedList m_Lines;
