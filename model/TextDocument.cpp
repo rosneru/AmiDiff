@@ -3,6 +3,8 @@
 #include <stdio.h>
 
 TextDocument::TextDocument()
+  : m_ColorNameBackground(DEFAULT),
+    m_ColorNameForeground(DEFAULT)
 {
 }
 
@@ -67,27 +69,27 @@ const size_t TextDocument::NumLines() const
 }
 
 
-SimpleString* TextDocument::GetFirstLine()
+const SimpleString* TextDocument::GetFirstLine()
 {
   return static_cast<SimpleString*>(m_Lines.GetFirst());
 }
 
-SimpleString* TextDocument::GetCurrentLine()
+const SimpleString* TextDocument::GetCurrentLine()
 {
   return static_cast<SimpleString*>(m_Lines.GetSelected());
 }
 
-SimpleString* TextDocument::GetPreviousLine()
+const SimpleString* TextDocument::GetPreviousLine()
 {
   return static_cast<SimpleString*>(m_Lines.GetPrev());
 }
 
-SimpleString* TextDocument::GetNextLine()
+const SimpleString* TextDocument::GetNextLine()
 {
   return static_cast<SimpleString*>(m_Lines.GetNext());
 }
 
-SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
+const SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
 {
   return static_cast<SimpleString*>(m_Lines.GetIndexed(p_LineIdx));
 }

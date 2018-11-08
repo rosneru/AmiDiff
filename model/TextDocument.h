@@ -10,17 +10,35 @@ class TextDocument : public Document
 {
 public:
   TextDocument();
-  ~TextDocument();
-  virtual bool Load(const SimpleString& p_FileName);
+  virtual ~TextDocument();
+  bool Load(const SimpleString& p_FileName);
   void Clear();
 
-  const size_t NumLines() const;
+  /**
+   * Defines the text color names used to set foreground and 
+   * background pens for text rendering
+   */
+  enum ColorName
+  {
+    CN_Default,
+    CN_Red,
+    CN_Green,
+    CN_Yellow
+  };
 
-  SimpleString* GetFirstLine();
-  SimpleString* GetCurrentLine();
-  SimpleString* GetPreviousLine();
-  SimpleString* GetNextLine();
-  SimpleString* GetIndexedLine(int p_LineIdx);
+  virtual const size_t NumLines() const;
+
+  virtual const SimpleString* GetFirstLine();
+  virtual const SimpleString* GetCurrentLine();
+  virtual const SimpleString* GetPreviousLine();
+  virtual const SimpleString* GetNextLine();
+  virtual const SimpleString* GetIndexedLine(int p_LineIdx);
+
+
+
+protected:
+  ColorName m_ColorNameForeground;
+  ColorName m_ColorNameBackground;
 
 private:
   LinkedList m_Lines;
