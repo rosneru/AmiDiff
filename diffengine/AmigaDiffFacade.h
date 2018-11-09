@@ -3,7 +3,7 @@
 
 #include "DiffFilePartition.h"
 #include "SimpleString.h"
-#include "DiffWindow.h"
+#include "TextWindow.h"
 
 /**
  * Facade to hold all objects which are needed to perform a diff and
@@ -16,7 +16,7 @@
 class AmigaDiffFacade
 {
 public:
-  AmigaDiffFacade();
+  AmigaDiffFacade(TextWindow& p_LeftWindow, TextWindow& p_RightWindow);
 
   void SetLeftFilePath(const char* p_pLeftFilePath);
   const SimpleString& LeftFilePath();
@@ -24,8 +24,6 @@ public:
   void SetRightFilePath(const char* p_pRightFilePath);
   const SimpleString& RightFilePath();
 
-  void SetLeftDiffWindow(DiffWindow* p_pLeftWindow);
-  void SetRightDiffWindow(DiffWindow* p_pRightWindow);
 
   /**
    * Performs the diff using LeftFilePath and RightFilePath as input
@@ -55,8 +53,8 @@ private:
   SimpleString m_RightFilePath;
   DiffFilePartition* m_pLeftFileDiff;
   DiffFilePartition* m_pRightFileDiff;
-  DiffWindow* m_pLeftWindow;
-  DiffWindow* m_pRightWindow;
+  TextWindow& m_LeftWindow;
+  TextWindow& m_RightWindow;
 };
 
 #endif // AMIGA_DIFF_FACADE_H

@@ -30,7 +30,8 @@ WindowBase::~WindowBase()
   UnsetMenu();
 }
 
-bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable)
+bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
+    InitialWindowPosition p_pInitialPosition = IWP_Center)
 {
   m_pUserDataMenuItemToDisable = p_pUserDataMenuItemToDisable;
   //

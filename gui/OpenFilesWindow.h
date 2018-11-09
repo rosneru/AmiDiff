@@ -45,7 +45,8 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(APTR p_pUserDataMenuItemToDisable = NULL);
+  bool Open(APTR p_pUserDataMenuItemToDisable = NULL,
+    InitialWindowPosition p_pInitialPosition = IWP_Center);
 
   /**
    * Closes the window

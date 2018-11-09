@@ -1,7 +1,10 @@
 #include "AmigaDiffFacade.h"
 
-AmigaDiffFacade::AmigaDiffFacade()
-  : m_pLeftFileDiff(NULL),
+AmigaDiffFacade::AmigaDiffFacade(TextWindow& p_LeftWindow, 
+  TextWindow& p_RightWindow)
+  : m_LeftWindow(p_LeftWindow),
+    m_RightWindow(p_RightWindow),
+    m_pLeftFileDiff(NULL),
     m_pRightFileDiff(NULL)
 {
 }
@@ -26,15 +29,6 @@ const SimpleString& AmigaDiffFacade::RightFilePath()
   return m_RightFilePath;
 }
 
-void AmigaDiffFacade::SetLeftDiffWindow(DiffWindow* p_pLeftWindow)
-{
-  m_pLeftWindow = p_pLeftWindow;
-}
-
-void AmigaDiffFacade::SetRightDiffWindow(DiffWindow* p_pRightWindow)
-{
-  m_pRightWindow = p_pRightWindow;
-}
 
 bool AmigaDiffFacade::Diff()
 {

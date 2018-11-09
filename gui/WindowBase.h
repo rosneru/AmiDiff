@@ -18,6 +18,19 @@ class WindowBase
 {
 public:
   /**
+   * Used to define an initial position of the window on the screen
+   */
+  enum InitialWindowPosition
+  {
+    IWP_Center,       // Center of the screen
+    IWP_Left,         // Left half of the screen
+    IWP_Right,        // Right half of the screen
+    IWP_FixedCenter,  // Center of the screen; window not moveable
+    IWP_FixedLeft,    // Left half of the screen; window not moveable
+    IWP_FixedRight    // Right half of the screen; window  not moveable
+  };
+
+  /**
    * Base class method for opening the window. Derived classes should
    * call this in their Open() method after the window has opened.
    *
@@ -34,7 +47,8 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  virtual bool Open(APTR p_pUserDataMenuItemToDisable) = 0;
+  virtual bool Open(APTR p_pUserDataMenuItemToDisable = NULL,
+    InitialWindowPosition p_pInitialPosition = IWP_Center) = 0;
 
   /**
    * Closes the window.

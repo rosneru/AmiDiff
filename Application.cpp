@@ -111,21 +111,6 @@ bool Application::Run()
     return false;
   }
 
-  // Create DiffFacade
-  m_pDiffFacade = new AmigaDiffFacade();
-
-  //
-  // If there are at least two command line arguments permitted, take
-  // the first two of them (argv[1] and argv[2]  as file names and load
-  // them into left and right window.
-  //
-  if(m_Argc >= 3)
-  {
-    m_pDiffFacade->SetLeftFilePath(m_Argv[1]);
-    m_pDiffFacade->SetRightFilePath(m_Argv[2]);
-  }
-
-
   //
   // Opening the screen
   //
@@ -142,6 +127,20 @@ bool Application::Run()
   //
   m_pLeftWin = new TextWindow(m_pScreen, m_pMsgPortAllWindows);
   m_pRightWin = new TextWindow(m_pScreen, m_pMsgPortAllWindows);
+
+  // Create DiffFacade
+  m_pDiffFacade = new AmigaDiffFacade(*m_pLeftWin, *m_pRightWin);
+
+  //
+  // If there are at least two command line arguments permitted, take
+  // the first two of them (argv[1] and argv[2]  as file names and load
+  // them into left and right window.
+  //
+  if(m_Argc >= 3)
+  {
+    m_pDiffFacade->SetLeftFilePath(m_Argv[1]);
+    m_pDiffFacade->SetRightFilePath(m_Argv[2]);
+  }
 
   //
   // Instantiating the commands

@@ -220,7 +220,8 @@ void TextWindow::Refresh()
   EndRefresh(m_pWindow, TRUE);
 }
 
-bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
+bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
+    InitialWindowPosition p_pInitialPosition = IWP_Center)
 {
   //
   // Initial validations
@@ -252,16 +253,43 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
   int winLeft = 0;
   m_Title = "Left Diff Window";
 
-  winLeft = screenWidth / 4;
-/*
-  if(p_DwType == RIGHT)
+
+
+  bool addDragBar = true;
+
+  switch(p_pInitialPosition)
   {
-    winLeft = winWidth; // begin one pixel after LEFT window ends
-    m_Title = "Right Diff Window";
-    m_FileRequesterTitle = "Select right diff file";
-    activateWin = FALSE;
+    case IWP_FixedCenter:
+      addDragBar = false; // Window not moveable
+    case IWP_Center:
+      winLeft = winWidth;
+      break;
+
+    case IWP_FixedLeft:
+      addDragBar = false; // Window not moveable
+    case IWP_Left:
+      winLeft = screenWidth / 4;
+      break;
+    
+    case IWP_FixedRight: // Window not moveable
+      addDragBar = false;
+    case IWP_Right:
+      winLeft = 0;
+      break;
   }
-*/
+
+  long windowFlags = 
+    WFLG_CLOSEGADGET |    // Add a close gadget
+    WFLG_DEPTHGADGET |    // Add a depth gadget
+    WFLG_SIZEGADGET |     // Add a size gadget
+    WFLG_GIMMEZEROZERO;   // Different layers for border and content
+  
+  if(addDragBar == true)
+  {
+    // Add a dragbar -> make window moveable
+    windowFlags |= WFLG_DRAGBAR;
+  }
+
   //
   // Opening the window
   //
@@ -273,11 +301,7 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
     WA_Title, (ULONG) m_Title.C_str(),
     WA_Activate, activateWin,
     WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
-    WA_Flags,
-      WFLG_CLOSEGADGET |    // Add a close gadget
-      WFLG_DEPTHGADGET |    // Add a depth gadget
-      WFLG_SIZEGADGET |     // Add a size gadget
-      WFLG_GIMMEZEROZERO,   // Different layers for border and content
+    WA_Flags, windowFlags,
     WA_SimpleRefresh, TRUE,
 		WA_MinWidth, 120,
 		WA_MinHeight, 90,
@@ -334,7 +358,7 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
   m_IntuiText.ITextFont = &m_TextAttr;
   m_IntuiText.NextText  = NULL;
 
-  return WindowBase::Open(p_pUserDataMenuItemToDisable);
+  return WindowBase::Open(p_pUserDataMenuItemToDisable, p_pInitialPosition);
 }
 
 void TextWindow::Close()

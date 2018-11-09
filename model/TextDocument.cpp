@@ -93,3 +93,13 @@ const SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
 {
   return static_cast<SimpleString*>(m_Lines.GetIndexed(p_LineIdx));
 }
+
+TextDocument::ColorName TextDocument::ColorNameForeground()
+{
+  return m_ColorNameForeground;
+}
+
+TextDocument::ColorName TextDocument::ColorNameBackground()
+{
+  return m_ColorNameBackground;
+}

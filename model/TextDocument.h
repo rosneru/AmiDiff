@@ -34,6 +34,9 @@ public:
   virtual const SimpleString* GetNextLine();
   virtual const SimpleString* GetIndexedLine(int p_LineIdx);
 
+  ColorName ColorNameForeground();
+  ColorName ColorNameBackground();
+
 
 
 protected:

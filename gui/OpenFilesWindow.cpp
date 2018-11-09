@@ -188,7 +188,8 @@ void OpenFilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
+bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
+    InitialWindowPosition p_pInitialPosition = IWP_Center)
 {
   //
   // Initial validations
@@ -264,7 +265,7 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
   setStringGadgetText(m_pLeftFileStringGadget, m_DiffFacade.LeftFilePath());
   setStringGadgetText(m_pRightFileStringGadget, m_DiffFacade.RightFilePath());
 
-  return WindowBase::Open(p_pUserDataMenuItemToDisable);
+  return WindowBase::Open(p_pUserDataMenuItemToDisable, p_pInitialPosition);
 }
 
 void OpenFilesWindow::Close()

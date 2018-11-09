@@ -28,8 +28,8 @@ public:
 
 
   /**
-   * Reorganizes the window including re-calculating the scrollbars. If
-   * needed also re-drawing the obscured text areas.
+   * Reorganizes the window including re-calculating the scrollbars.
+   * If needed also re-drawing the obscured text areas.
    *
    * This should be called from the application if the signal
    * IDCMP_NEWSIZE for this window is received.
@@ -44,7 +44,8 @@ public:
    * @returns
    * false if opening fails
    */
-  bool Open(APTR p_pUserDataMenuItemToDisable = NULL);
+  bool Open(APTR p_pUserDataMenuItemToDisable = NULL,
+    InitialWindowPosition p_pInitialPosition = IWP_Center);
 
   /**
    * Closes the window
