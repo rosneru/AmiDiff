@@ -32,6 +32,14 @@ const SimpleString& AmigaDiffFacade::RightFilePath()
 
 bool AmigaDiffFacade::Diff()
 {
+  if(m_LeftFilePath.Length() == 0 ||
+     m_RightFilePath.Length() == 0)
+  {
+    return false;
+  }
+
+  //
+
   return false;
 }
 
