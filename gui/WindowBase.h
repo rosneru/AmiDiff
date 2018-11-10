@@ -73,7 +73,7 @@ public:
    * Returns the app screen object on which the window is opened or
    * NULL if window is not open.
    */
-  AppScreen* WindowScreen();
+  AppScreen& WindowScreen();
 
 
 
@@ -81,7 +81,7 @@ public:
   void UnsetMenu();
 
 protected:
-  AppScreen* m_pAppScreen;
+  AppScreen& m_AppScreen;
   struct MsgPort* m_pMsgPort;
   struct Window* m_pWindow;
 
@@ -103,7 +103,7 @@ protected:
    * with other windows-
    *
    */
-  WindowBase(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort);
+  WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort);
 
   virtual ~WindowBase();
 

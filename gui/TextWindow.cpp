@@ -11,8 +11,8 @@
 #include <intuition/icclass.h>
 #include "TextWindow.h"
 
-TextWindow::TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
-  : WindowBase(p_pAppScreen, p_pMsgPort),
+TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
+  : WindowBase(p_AppScreen, p_pMsgPort),
     m_pDocument(NULL),
     m_MaxWindowTextLines(0),
     m_Y(0),
@@ -36,8 +36,8 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
   //
   // Calculate some basic values
   //
-  m_FontHeight = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
-	int barHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
+  m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+	int barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
 
   //
   // Setting up scroll bars and gadgets for the window. They will be
@@ -71,7 +71,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
     GA_RelBottom, -sizeImageHeight-imageHeight+1,
     GA_Width, imageWidth,
     GA_Height, imageHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
     GA_GZZGadget, TRUE,
     GA_RightBorder, TRUE,
     GA_Image, m_pDownArrowImage,
@@ -90,7 +90,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
     GA_RelBottom, -sizeImageHeight-imageHeight-imageHeight+1,
     GA_Width, imageWidth,
     GA_Height, imageHeight,
-    GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
     GA_GZZGadget, TRUE,
     GA_RightBorder, TRUE,
     GA_Image, m_pUpArrowImage,
@@ -106,7 +106,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
   	GA_Top, barHeight,
   	GA_Width, sizeImageWidth-6,
   	GA_RelHeight, -sizeImageHeight-imageHeight-imageHeight-barHeight-1,
-  	GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+  	GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
   	GA_GZZGadget, TRUE,
   	GA_RightBorder, TRUE,
   	PGA_Freedom, FREEVERT,
@@ -130,7 +130,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
       GA_RelBottom, -imageHeight+1,
       GA_Width, imageWidth,
       GA_Height, imageHeight,
-      GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+      GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
       GA_GZZGadget, TRUE,
       GA_BottomBorder, TRUE,
       GA_Image, m_pRightArrowImage,
@@ -149,7 +149,7 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
       GA_RelBottom, -imageHeight+1,
       GA_Width, imageWidth,
       GA_Height, imageHeight,
-      GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+      GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
       GA_GZZGadget, TRUE,
       GA_BottomBorder, TRUE,
       GA_Image, m_pLeftArrowImage,
@@ -161,11 +161,11 @@ TextWindow::TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
       NULL, PROPGCLASS,
       GA_Previous, m_pLeftArrowButton,
       GA_ID, GID_PropX,
-      GA_Left, m_pAppScreen->IntuiScreen()->WBorLeft,
+      GA_Left, m_AppScreen.IntuiScreen()->WBorLeft,
       GA_RelBottom, -sizeImageHeight+3,
-      GA_RelWidth, -sizeImageWidth-imageWidth-imageWidth-m_pAppScreen->IntuiScreen()->WBorLeft-1,
+      GA_RelWidth, -sizeImageWidth-imageWidth-imageWidth-m_AppScreen.IntuiScreen()->WBorLeft-1,
       GA_Height, sizeImageHeight-4,
-      GA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+      GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
       GA_GZZGadget, TRUE,
       GA_BottomBorder, TRUE,
       PGA_Freedom, FREEHORIZ,
@@ -226,13 +226,6 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   //
   // Initial validations
   //
-
-  if(m_pAppScreen == NULL)
-  {
-    // In this design we need a screen to open the window
-    return false;
-  }
-
   if(m_pWindow != NULL)
   {
     // Not opening the window if it is already open
@@ -242,9 +235,9 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   //
   // Calculating window size etc in dependency of screen dimensions
   //
-  int screenWidth = m_pAppScreen->IntuiScreen()->Width;
-  int screenHeight = m_pAppScreen->IntuiScreen()->Height;
-  int screenBarHeight = m_pAppScreen->IntuiScreen()->BarHeight;
+  int screenWidth = m_AppScreen.IntuiScreen()->Width;
+  int screenHeight = m_AppScreen.IntuiScreen()->Height;
+  int screenBarHeight = m_AppScreen.IntuiScreen()->BarHeight;
 
   int winWidth = screenWidth / 2;
   int winHeight = screenHeight - screenBarHeight - 1;
@@ -300,7 +293,7 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
     WA_Height, winHeight,
     WA_Title, (ULONG) m_Title.C_str(),
     WA_Activate, activateWin,
-    WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
+    WA_PubScreen, (ULONG) m_AppScreen.IntuiScreen(),
     WA_Flags, windowFlags,
     WA_SimpleRefresh, TRUE,
 		WA_MinWidth, 120,
@@ -341,13 +334,13 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   // Setup structs for text drawing
     // Setup Pens, TextAttr and prepare IntuiText
   // TODO Remove it to some better place
-  ULONG txtPen = m_pAppScreen->IntuiDrawInfo()->dri_Pens[TEXTPEN];
-  ULONG bgPen = m_pAppScreen->IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
+  ULONG txtPen = m_AppScreen.IntuiDrawInfo()->dri_Pens[TEXTPEN];
+  ULONG bgPen = m_AppScreen.IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
 
-  m_TextAttr.ta_Name = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
-  m_TextAttr.ta_YSize = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
-  m_TextAttr.ta_Style = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_Style;
-  m_TextAttr.ta_Flags = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_Flags;
+  m_TextAttr.ta_Name = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
+  m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+  m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
+  m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
   // Prepare IntuiText for line-by-line printing
   m_IntuiText.FrontPen  = txtPen;

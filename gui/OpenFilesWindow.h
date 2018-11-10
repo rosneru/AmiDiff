@@ -21,7 +21,7 @@
 class OpenFilesWindow : public WindowBase
 {
 public:
-  OpenFilesWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort,
+  OpenFilesWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
     AmigaDiffFacade& p_DiffFacade);
   virtual ~OpenFilesWindow();
 

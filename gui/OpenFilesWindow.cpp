@@ -14,11 +14,11 @@
 
 #include "OpenFilesWindow.h"
 
-OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
+OpenFilesWindow::OpenFilesWindow(AppScreen& p_AppScreen,
     struct MsgPort* p_pMsgPort, AmigaDiffFacade& p_DiffFacade)
-  : WindowBase(p_pAppScreen, p_pMsgPort),
+  : WindowBase(p_AppScreen, p_pMsgPort),
     m_DiffFacade(p_DiffFacade),
-    m_WinWidth((WORD)p_pAppScreen->IntuiScreen()->Width / 2),
+    m_WinWidth((WORD)p_AppScreen.IntuiScreen()->Width / 2),
     m_WinHeight(120),
     m_pGadgetList(NULL),
     m_pLeftFileStringGadget(NULL),
@@ -31,8 +31,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   //
   // Calculate some basic values
   //
-  m_FontHeight = m_pAppScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
-  WORD barHeight = m_pAppScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
+  m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+  WORD barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
 
   WORD hSpace = 10;
   WORD vSpace = 10;
@@ -42,7 +42,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   WORD buttonWidth = 60;
   WORD buttonHeight = m_FontHeight + 6;
   WORD selectButtonWidth = TextLength(
-    &m_pAppScreen->IntuiScreen()->RastPort, "...", 3) + 8;
+    &m_AppScreen.IntuiScreen()->RastPort, "...", 3) + 8;
   WORD stringGadgetWidth = right - left - hSpace / 2 - selectButtonWidth;
   WORD selectButtonLeft = right - selectButtonWidth;
 
@@ -62,8 +62,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen* p_pAppScreen,
   struct NewGadget newGadget;
 
   // Line 1  contains  a label
-  newGadget.ng_TextAttr   = m_pAppScreen->GfxTextAttr();
-  newGadget.ng_VisualInfo = m_pAppScreen->GadtoolsVisualInfo();
+  newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
+  newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadgetWidth;
@@ -195,12 +195,6 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   // Initial validations
   //
 
-  if(m_pAppScreen == NULL)
-  {
-    // In this design we need a screen to open the window
-    return false;
-  }
-
   if(m_pWindow != NULL)
   {
     // Not opening the window if it is already open
@@ -210,8 +204,8 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   //
   // Calculating window size etc in dependency of screen dimensions
   //
-  int screenWidth = m_pAppScreen->IntuiScreen()->Width;
-  int screenHeight = m_pAppScreen->IntuiScreen()->Height;
+  int screenWidth = m_AppScreen.IntuiScreen()->Width;
+  int screenHeight = m_AppScreen.IntuiScreen()->Height;
 
   int winLeft = screenWidth / 2 - m_WinWidth / 2;
   int winTop = screenHeight / 2 - m_WinHeight / 2;
@@ -226,7 +220,7 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
     WA_Height, m_WinHeight,
     WA_Title, (ULONG) "Open the files to diff",
     WA_Activate, TRUE,
-    WA_PubScreen, (ULONG) m_pAppScreen->IntuiScreen(),
+    WA_PubScreen, (ULONG) m_AppScreen.IntuiScreen(),
     WA_Flags,
       WFLG_CLOSEGADGET |    // Add a close gadget
       WFLG_DRAGBAR |        // Add a drag gadget

@@ -14,8 +14,8 @@
 #include <libraries/dos.h>
 #include "WindowBase.h"
 
-WindowBase::WindowBase(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
-  : m_pAppScreen(p_pAppScreen),
+WindowBase::WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
+  : m_AppScreen(p_AppScreen),
     m_pMsgPort(p_pMsgPort),
     m_pWindow(NULL),
     m_pMenu(NULL),
@@ -105,9 +105,9 @@ struct Window* WindowBase::IntuiWindow()
   return m_pWindow;
 }
 
-AppScreen* WindowBase::WindowScreen()
+AppScreen& WindowBase::WindowScreen()
 {
-  return m_pAppScreen;
+  return m_AppScreen;
 }
 
 
@@ -164,7 +164,7 @@ struct Image* WindowBase::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULO
       NULL, SYSICLASS,
 			SYSIA_Which, p_SysImageId,
 			SYSIA_Size, SYSISIZE_MEDRES,
-			SYSIA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+			SYSIA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
 			TAG_END);
 
 	if(pImage != NULL)

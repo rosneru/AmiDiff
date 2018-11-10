@@ -16,7 +16,7 @@
 class AppMenu
 {
 public:
-  AppMenu(AppScreen* p_pScreen);
+  AppMenu(AppScreen& p_Screen);
   ~AppMenu();
 
   /**
@@ -84,7 +84,7 @@ public:
     APTR p_pUserDataMenuItemToEnable);
 
 private:
-  AppScreen* m_pScreen;
+  AppScreen& m_Screen;
   struct Menu* m_pMenu;
 
 

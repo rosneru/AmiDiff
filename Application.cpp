@@ -21,14 +21,14 @@ Application::Application(int argc, char **argv, struct MsgPort* p_pMsgPortAllWin
     m_Argv(argv),
     m_bExitRequested(false),
     m_Screen("AmiDiff (C) 2018 by Uwe Rosner."),
-    m_LeftWin(&m_Screen, m_pMsgPortAllWindows),
-    m_RightWin(&m_Screen, m_pMsgPortAllWindows),
+    m_LeftWin(m_Screen, m_pMsgPortAllWindows),
+    m_RightWin(m_Screen, m_pMsgPortAllWindows),
     m_DiffFacade(m_LeftWin, m_RightWin),
-    m_OpenFilesWin(&m_Screen, m_pMsgPortAllWindows, m_DiffFacade),
+    m_OpenFilesWin(m_Screen, m_pMsgPortAllWindows, m_DiffFacade),
     m_CmdDiff(m_DiffFacade),
     m_CmdQuit(m_bExitRequested),
     m_CmdOpenFilesWindow(m_OpenFilesWin),
-    m_Menu(&m_Screen)
+    m_Menu(m_Screen)
 {
 }
 
