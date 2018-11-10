@@ -96,6 +96,12 @@ Section
 0 1 1 0
 4
 File
+1 "AmigaDiff.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/AmigaDiff.o" "objects_debug/AmigaDiff.debug"
+""
+1 1
+File
 1 "amigautils/AslFileRequest.cpp"
 "amigautils/AslFileRequest.cpp"
 "amigautils/AslFileRequest.h"
@@ -182,40 +188,6 @@ File
 "commands/Command.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Command.o" "objects_debug/Command.debug"
-""
-1 1
-File
-1 "Diff.cpp"
-"Diff.cpp"
-"Application.h"
-"oscottlibs/LinkedListNode.h"
-"gui/WindowBase.h"
-"model/Document.h"
-"gui/AppScreen.h"
-"diffengine/DiffFilePartition.h"
-"diffengine/DiffLine.h"
-"model/TextDocument.h"
-"gui/TextWindow.h"
-"gui/AppMenu.h"
-Storm Shell Project (Dependencies)
-"objects_debug/Diff.o" "objects_debug/Diff.debug"
-""
-1 1
-File
-1 "diffengine/AmigaDiffFacade.cpp"
-"diffengine/AmigaDiffFacade.cpp"
-"diffengine/AmigaDiffFacade.h"
-"diffengine/DiffFilePartition.h"
-"oscottlibs/LinkedListNode.h"
-"diffengine/DiffLine.h"
-"model/TextDocument.h"
-"model/Document.h"
-"gui/TextWindow.h"
-"gui/AppScreen.h"
-"gui/WindowBase.h"
-"gui/AppMenu.h"
-Storm Shell Project (Dependencies)
-"objects_debug/AmigaDiffFacade.o" "objects_debug/AmigaDiffFacade.debug"
 ""
 1 1
 File
@@ -331,6 +303,12 @@ Storm Shell Project (Dependencies)
 "objects_debug/SimpleString.o" "objects_debug/SimpleString.debug"
 ""
 1 1
+File
+1 "model/AmigaDiffFacade.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/AmigaDiffFacade.o" "objects_debug/AmigaDiffFacade.debug"
+""
+1 1
 Section
 2 1 95
 0 1 1 0
@@ -389,13 +367,6 @@ Storm Shell Project (Dependencies)
 File
 2 "commands/Command.h"
 "commands/Command.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "diffengine/AmigaDiffFacade.h"
-"diffengine/AmigaDiffFacade.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -492,13 +463,18 @@ Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
+File
+2 "model/AmigaDiffFacade.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
 Section
 10 1 40
 0 0 0 0
 7
 File
 10 "Diff"
-"Diff"
 Storm Shell Project (Dependencies)
 "" ""
 ""
