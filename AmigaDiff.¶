@@ -97,6 +97,15 @@ Section
 4
 File
 1 "AmigaDiff.cpp"
+"AmigaDiff.cpp"
+"Application.h"
+"oscottlibs/LinkedListNode.h"
+"diffengine/DiffLine.h"
+"gui/AppScreen.h"
+"model/Document.h"
+"gui/WindowBase.h"
+"gui/AppMenu.h"
+"commands/Command.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AmigaDiff.o" "objects_debug/AmigaDiff.debug"
 ""
@@ -134,10 +143,7 @@ File
 "oscottlibs/LinkedListNode.h"
 "model/Document.h"
 "gui/AppScreen.h"
-"diffengine/DiffFilePartition.h"
 "diffengine/DiffLine.h"
-"model/TextDocument.h"
-"gui/TextWindow.h"
 "gui/WindowBase.h"
 "gui/AppMenu.h"
 Storm Shell Project (Dependencies)
@@ -163,9 +169,7 @@ File
 "model/Document.h"
 "commands/CmdPerformDiff.h"
 "commands/Command.h"
-"diffengine/DiffFilePartition.h"
 "diffengine/DiffLine.h"
-"gui/TextWindow.h"
 "gui/AppScreen.h"
 "gui/WindowBase.h"
 "gui/AppMenu.h"
@@ -214,12 +218,9 @@ File
 "gui/AppScreen.h"
 "gui/WindowBase.h"
 "gui/AppMenu.h"
-"diffengine/DiffFilePartition.h"
 "oscottlibs/LinkedListNode.h"
 "diffengine/DiffLine.h"
-"model/TextDocument.h"
 "model/Document.h"
-"gui/TextWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/OpenFilesWindow.o" "objects_debug/OpenFilesWindow.debug"
 ""
@@ -245,6 +246,20 @@ File
 "gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/WindowBase.o" "objects_debug/WindowBase.debug"
+""
+1 1
+File
+1 "model/AmigaDiffFacade.cpp"
+"model/AmigaDiffFacade.cpp"
+"model/AmigaDiffFacade.h"
+"oscottlibs/LinkedListNode.h"
+"diffengine/DiffLine.h"
+"gui/AppScreen.h"
+"model/Document.h"
+"gui/WindowBase.h"
+"gui/AppMenu.h"
+Storm Shell Project (Dependencies)
+"objects_debug/AmigaDiffFacade.o" "objects_debug/AmigaDiffFacade.debug"
 ""
 1 1
 File
@@ -301,12 +316,6 @@ File
 "oscottlibs/SimpleString.h"
 Storm Shell Project (Dependencies)
 "objects_debug/SimpleString.o" "objects_debug/SimpleString.debug"
-""
-1 1
-File
-1 "model/AmigaDiffFacade.cpp"
-Storm Shell Project (Dependencies)
-"objects_debug/AmigaDiffFacade.o" "objects_debug/AmigaDiffFacade.debug"
 ""
 1 1
 Section
@@ -372,6 +381,20 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "diffengine/DiffFilePartition.h"
+"diffengine/DiffFilePartition.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "diffengine/DiffLine.h"
+"diffengine/DiffLine.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "gui/AppMenu.h"
 "gui/AppMenu.h"
 Storm Shell Project (Dependencies)
@@ -403,6 +426,13 @@ File
 2 "gui/WindowBase.h"
 "gui/Window.h"
 "gui/WindowBase.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "model/AmigaDiffFacade.h"
+"model/AmigaDiffFacade.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -449,32 +479,12 @@ Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
-File
-2 "diffengine/DiffFilePartition.h"
-"diffengine/DiffFilePartition.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "diffengine/DiffLine.h"
-"diffengine/DiffLine.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "model/AmigaDiffFacade.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
 Section
 10 1 40
 0 0 0 0
 7
 File
-10 "Diff"
+10 "AmigaDiff"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -500,6 +510,16 @@ Storm Shell Project (Dependencies)
 File
 5 "debug.lib"
 "debug.lib"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+Section
+11 1 -120
+0 0 0 0
+7
+File
+11 "AmigaDiff"
 Storm Shell Project (Dependencies)
 "" ""
 ""

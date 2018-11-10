@@ -14,8 +14,8 @@
 #include <libraries/dos.h>
 #include "WindowBase.h"
 
-WindowBase::WindowBase(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
-  : m_pAppScreen(p_pAppScreen),
+WindowBase::WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
+  : m_AppScreen(p_AppScreen),
     m_pMsgPort(p_pMsgPort),
     m_pWindow(NULL),
     m_pMenu(NULL),
@@ -27,7 +27,6 @@ WindowBase::WindowBase(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort)
 WindowBase::~WindowBase()
 {
   Close();
-  UnsetMenu();
 }
 
 bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
@@ -39,7 +38,7 @@ bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   // Then these classes have to call this to auto-add menus etc.
   //
 
-  if(m_pWindow == NULL)
+  if(!IsOpen())
   {
     // Opening failed
     return false;
@@ -60,7 +59,7 @@ bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
 
   if(p_pUserDataMenuItemToDisable != NULL)
   {
-     m_pMenu->DisableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
+    m_pMenu->DisableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
   }
 
   return true;
@@ -68,7 +67,7 @@ bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
 
 void WindowBase::Close()
 {
-  if(m_pWindow == NULL)
+  if(!IsOpen())
   {
     return;
   }
@@ -78,15 +77,20 @@ void WindowBase::Close()
     m_pMenu->EnableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
   }
 
+  if(m_pMenu != NULL)
+  {
+    m_pMenu->DetachFromWindow(m_pWindow);
+  }
+
   closeWindowSafely();
 }
 
-bool WindowBase::IsOpen()
+bool WindowBase::IsOpen() const
 {
   return m_pWindow != NULL;
 }
 
-const char* WindowBase::Title()
+const char* WindowBase::Title() const
 {
   return m_Title.C_str();
 }
@@ -94,6 +98,12 @@ const char* WindowBase::Title()
 void WindowBase::SetTitle(SimpleString p_NewTitle)
 {
   m_Title = p_NewTitle;
+
+  if(!IsOpen())
+  {
+    // Window is not open, so we don't change its title dynamically
+    return;
+  }
 
   // Call intuition function to set the window title
   // Note the ~0 inverts the value and is a value of -1
@@ -105,9 +115,9 @@ struct Window* WindowBase::IntuiWindow()
   return m_pWindow;
 }
 
-AppScreen* WindowBase::WindowScreen()
+AppScreen& WindowBase::WindowScreen()
 {
-  return m_pAppScreen;
+  return m_AppScreen;
 }
 
 
@@ -128,7 +138,7 @@ void WindowBase::SetMenu(AppMenu* p_pMenu)
   m_pMenu = p_pMenu;
 
 
-  if(m_pWindow == NULL)
+  if(!IsOpen())
   {
     // The window isn't open yet: don't attach the menu now
     return;
@@ -139,32 +149,13 @@ void WindowBase::SetMenu(AppMenu* p_pMenu)
   return;
 }
 
-void WindowBase::UnsetMenu()
-{
-  if(m_pWindow == NULL)
-  {
-    // The window isn't open so no menu has been attached
-    return;
-  }
-
-  if(m_pMenu == NULL)
-  {
-    // No menu was provided nor has been attached or already has been
-    //detached
-    return;
-  }
-
-  m_pMenu->DetachFromWindow(m_pWindow);
-  m_pMenu = NULL;
-}
-
 struct Image* WindowBase::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
 {
   struct Image* pImage = (struct Image*) NewObject(
       NULL, SYSICLASS,
 			SYSIA_Which, p_SysImageId,
 			SYSIA_Size, SYSISIZE_MEDRES,
-			SYSIA_DrawInfo, m_pAppScreen->IntuiDrawInfo(),
+			SYSIA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
 			TAG_END);
 
 	if(pImage != NULL)
@@ -178,7 +169,7 @@ struct Image* WindowBase::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULO
 
 void WindowBase::closeWindowSafely()
 {
-  if(m_pWindow == NULL)
+  if(!IsOpen())
   {
     return;
   }

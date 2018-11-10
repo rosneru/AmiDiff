@@ -18,7 +18,7 @@
 class TextWindow : public WindowBase
 {
 public:
-  TextWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort);
+  TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort);
   virtual ~TextWindow();
 
   /**
@@ -46,12 +46,6 @@ public:
    */
   bool Open(APTR p_pUserDataMenuItemToDisable = NULL,
     InitialWindowPosition p_pInitialPosition = IWP_Center);
-
-  /**
-   * Closes the window
-   */
-  virtual void Close();
-
 
   /**
    * Open a text file
@@ -90,11 +84,10 @@ public:
   void YDecrease();
 
 
-protected:
+private:
+  bool m_bInitialized;
   TextDocument* m_pDocument;
 
-
-private:
   /**
    * IDs to help to interpret the events of this window's BOOPSI system
    * gadgets in the Application event loop.
@@ -115,8 +108,6 @@ private:
     Upward,
     Downward,
   };
-
-  SimpleString m_Title;
 
   size_t m_MaxWindowTextLines;  ///> Number of text lines that fit in window
   size_t m_Y;         ///> Index of currently first displayed text line
@@ -152,6 +143,11 @@ private:
 
   struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;
+
+  /**
+   * Initializes some window specific feature. Gadgets, etc.
+   */
+  void initialize();
 
   /**
    * Calculates how many lines fit into current window size and sets

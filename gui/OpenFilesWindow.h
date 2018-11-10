@@ -21,7 +21,7 @@
 class OpenFilesWindow : public WindowBase
 {
 public:
-  OpenFilesWindow(AppScreen* p_pAppScreen, struct MsgPort* p_pMsgPort,
+  OpenFilesWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
     AmigaDiffFacade& p_DiffFacade);
   virtual ~OpenFilesWindow();
 
@@ -48,12 +48,9 @@ public:
   bool Open(APTR p_pUserDataMenuItemToDisable = NULL,
     InitialWindowPosition p_pInitialPosition = IWP_Center);
 
-  /**
-   * Closes the window
-   */
-  virtual void Close();
-
 private:
+  bool m_bInitialized;
+
   /**
    * IDs to help to interpret the events of this window's Gadtools
    * gadgets in the Application event loop.
@@ -82,6 +79,11 @@ private:
   struct Gadget* m_pOpenRightFileButton;
   struct Gadget* m_pDiffButton;
   struct Gadget* m_pCancelButton;
+
+  /**
+   * Initializes some window specific feature. Gadgets, etc.
+   */
+  void initialize();
 
   /**
    * Enables or disables the buttons of this window in dependency of

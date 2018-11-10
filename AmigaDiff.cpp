@@ -61,9 +61,24 @@ int main(int argc, char **argv)
     return 20;
   }
 
-  Application app(argc, argv);
-  app.Run();
+  // Create a message port for shared use with all windows
+  struct MsgPort* pMsgPortAppWindows = CreateMsgPort();
+  if(pMsgPortAppWindows == NULL)
+  {
+    closeLibs();
+    return 20;
+  }
 
+  // Create the application dynamically, so we can destroy it later
+  // before de Message port is destroyed.
+  Application* pApp = new Application(argc, argv, pMsgPortAppWindows);
+  pApp->Run();
+
+  // Destroy app
+  delete pApp;
+
+  // Destroy message port
+  DeleteMsgPort(pMsgPortAppWindows);
   closeLibs();
 
   return 0;

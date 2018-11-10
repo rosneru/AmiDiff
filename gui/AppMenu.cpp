@@ -4,8 +4,8 @@
 #include "AppMenu.h"
 
 
-AppMenu::AppMenu(AppScreen* p_pScreen)
-  : m_pScreen(p_pScreen),
+AppMenu::AppMenu(AppScreen& p_Screen)
+  : m_Screen(p_Screen),
     m_pMenu(NULL)
 {
 
@@ -18,7 +18,7 @@ AppMenu::~AppMenu()
 
 bool AppMenu::Create(struct NewMenu* p_pMenuDefinition)
 {
-  if(m_pScreen == NULL || m_pScreen->GadtoolsVisualInfo() == NULL)
+  if(m_Screen.GadtoolsVisualInfo() == NULL)
   {
     // Without VisualInfo the menu can't be created
     return false;
@@ -33,7 +33,7 @@ bool AppMenu::Create(struct NewMenu* p_pMenuDefinition)
   }
 
   // Menu building step 2: Outlaying the menu
-  if(LayoutMenus(m_pMenu, m_pScreen->GadtoolsVisualInfo(),
+  if(LayoutMenus(m_pMenu, m_Screen.GadtoolsVisualInfo(),
                  GTMN_NewLookMenus, TRUE, // Ignored before v39
                  TAG_END) == FALSE)
   {
@@ -87,7 +87,7 @@ struct Menu* AppMenu::IntuiMenu()
 }
 
 
-void AppMenu::DisableMenuItem(struct Window* p_pWindow, 
+void AppMenu::DisableMenuItem(struct Window* p_pWindow,
   APTR p_pUserDataMenuItemToDisable)
 {
   if(p_pUserDataMenuItemToDisable == NULL)
@@ -105,14 +105,14 @@ void AppMenu::DisableMenuItem(struct Window* p_pWindow,
   OffMenu(p_pWindow, menuNumber);
 }
 
-void AppMenu::EnableMenuItem(struct Window* p_pWindow, 
+void AppMenu::EnableMenuItem(struct Window* p_pWindow,
   APTR p_pUserDataMenuItemToEnable)
 {
   if(p_pUserDataMenuItemToEnable == NULL)
   {
     return;
   }
-  
+
   WORD menuNumber = 0;
   struct MenuItem* pFoundItem = findItemByUserData(p_pUserDataMenuItemToEnable, menuNumber);
   if(pFoundItem == NULL)
@@ -154,7 +154,7 @@ struct MenuItem* AppMenu::findItemByUserData(APTR p_pUserDataToFind, WORD& p_Fou
       }
 
       pItem = pItem->NextItem;
-      iItem++; 
+      iItem++;
     }
     while(pItem != NULL);
 
