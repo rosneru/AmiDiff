@@ -90,11 +90,10 @@ public:
   void YDecrease();
 
 
-protected:
+private:
+  bool m_bInitialized;
   TextDocument* m_pDocument;
 
-
-private:
   /**
    * IDs to help to interpret the events of this window's BOOPSI system
    * gadgets in the Application event loop.
@@ -152,6 +151,11 @@ private:
 
   struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;
+
+  /**
+   * Initializes some window specific feature. Gadgets, etc.
+   */
+  void initialize();
 
   /**
    * Calculates how many lines fit into current window size and sets

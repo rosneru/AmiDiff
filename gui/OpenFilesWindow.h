@@ -54,6 +54,8 @@ public:
   virtual void Close();
 
 private:
+  bool m_bInitialized;
+
   /**
    * IDs to help to interpret the events of this window's Gadtools
    * gadgets in the Application event loop.
@@ -82,6 +84,11 @@ private:
   struct Gadget* m_pOpenRightFileButton;
   struct Gadget* m_pDiffButton;
   struct Gadget* m_pCancelButton;
+
+  /**
+   * Initializes some window specific feature. Gadgets, etc.
+   */
+  void initialize();
 
   /**
    * Enables or disables the buttons of this window in dependency of
