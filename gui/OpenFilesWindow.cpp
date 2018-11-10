@@ -139,14 +139,6 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   return WindowBase::Open(p_pUserDataMenuItemToDisable, p_pInitialPosition);
 }
 
-void OpenFilesWindow::Close()
-{
-  // Also call Close() in parent
-  // TODO debug if it really happens
-  WindowBase::Close();
-}
-
-
 void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
   if(m_pWindow == 0)

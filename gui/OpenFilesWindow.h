@@ -48,11 +48,6 @@ public:
   bool Open(APTR p_pUserDataMenuItemToDisable = NULL,
     InitialWindowPosition p_pInitialPosition = IWP_Center);
 
-  /**
-   * Closes the window
-   */
-  virtual void Close();
-
 private:
   bool m_bInitialized;
 

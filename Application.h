@@ -37,16 +37,15 @@ private:
   bool m_bExitRequested;
 
   AppScreen m_Screen;
-  OpenFilesWindow m_OpenFilesWin;
   TextWindow m_LeftWin;
   TextWindow m_RightWin;
-  AppMenu m_Menu;
-
-  CmdOpenWindow m_CmdOpenFilesWindow;
+  AmigaDiffFacade m_DiffFacade;
+  OpenFilesWindow m_OpenFilesWin;
   CmdPerformDiff m_CmdDiff;
   CmdQuit m_CmdQuit;
+  CmdOpenWindow m_CmdOpenFilesWindow;
+  AppMenu m_Menu;
 
-  AmigaDiffFacade m_DiffFacade;
 
   /**
    * Handling messages from Intuition

@@ -34,6 +34,27 @@ Application::Application(int argc, char **argv, struct MsgPort* p_pMsgPortAllWin
 
 Application::~Application()
 {
+  //
+  // Ensure that all windows are closed before the screen is closed
+  //
+
+  if(m_OpenFilesWin.IsOpen())
+  {
+    m_OpenFilesWin.Close();
+  }
+
+  if(m_LeftWin.IsOpen())
+  {
+    m_LeftWin.Close();
+  }
+
+  if(m_RightWin.IsOpen())
+  {
+    m_RightWin.Close();
+  }
+
+  m_Screen.Close();
+
 }
 
 
@@ -62,10 +83,10 @@ bool Application::Run()
   }
 
   //
-  // Filling the GadTools menu struct, supplying pointers to the 
-  // commands as nm_UserData. So no complicated evalution needed to 
-  // detect which menu item was clicked. Only the ->Execute of the 
-  // (then anonymous) command has to be called.
+  // Filling the GadTools menu struct, supplying pointers to the
+  // commands as nm_UserData. So no complicated evalution needed to
+  // detect which menu item was clicked. Only the Execute() method
+  // of the (then anonymous) command has to be called.
   //
   struct NewMenu menuDefinition[] =
   {
@@ -92,6 +113,8 @@ bool Application::Run()
   m_RightWin.SetMenu(&m_Menu);
   m_OpenFilesWin.SetMenu(&m_Menu);
 
+  m_LeftWin.Open(NULL, WindowBase::IWP_Left);
+  m_RightWin.Open(NULL, WindowBase::IWP_Right);
   m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
 
   //

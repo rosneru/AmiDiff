@@ -34,12 +34,72 @@ TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_pUpArrowButton(NULL),
     m_pDownArrowButton(NULL)
 {
- 
+
 }
 
 TextWindow::~TextWindow()
 {
   Close();
+
+  if(m_pLeftArrowButton != NULL)
+  {
+    DisposeObject(m_pLeftArrowButton);
+    m_pLeftArrowButton = NULL;
+  }
+
+  if(m_pLeftArrowImage != NULL)
+  {
+    DisposeObject(m_pLeftArrowImage);
+    m_pLeftArrowImage = NULL;
+  }
+
+  if(m_pRightArrowButton != NULL)
+  {
+    DisposeObject(m_pRightArrowButton);
+    m_pRightArrowButton = NULL;
+  }
+
+  if(m_pRightArrowImage != NULL)
+  {
+    DisposeObject(m_pRightArrowImage);
+    m_pRightArrowImage = NULL;
+  }
+
+  if(m_pXPropGadget != NULL)
+  {
+    DisposeObject(m_pXPropGadget);
+    m_pXPropGadget = NULL;
+  }
+
+  if(m_pDownArrowButton != NULL)
+  {
+    DisposeObject(m_pDownArrowButton);
+    m_pDownArrowButton = NULL;
+  }
+
+  if(m_pDownArrowImage != NULL)
+  {
+    DisposeObject(m_pDownArrowImage);
+    m_pDownArrowImage = NULL;
+  }
+
+  if(m_pUpArrowButton != NULL)
+  {
+    DisposeObject(m_pUpArrowButton);
+    m_pUpArrowButton = NULL;
+  }
+
+  if(m_pUpArrowImage != NULL)
+  {
+    DisposeObject(m_pUpArrowImage);
+    m_pUpArrowImage = NULL;
+  }
+
+  if(m_pYPropGadget != NULL)
+  {
+    DisposeObject(m_pYPropGadget);
+    m_pYPropGadget = NULL;
+  }
 }
 
 
@@ -126,7 +186,7 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
     case IWP_Left:
       winLeft = screenWidth / 4;
       break;
-    
+
     case IWP_FixedRight: // Window not moveable
       addDragBar = false;
     case IWP_Right:
@@ -134,12 +194,12 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
       break;
   }
 
-  long windowFlags = 
+  long windowFlags =
     WFLG_CLOSEGADGET |    // Add a close gadget
     WFLG_DEPTHGADGET |    // Add a depth gadget
     WFLG_SIZEGADGET |     // Add a size gadget
     WFLG_GIMMEZEROZERO;   // Different layers for border and content
-  
+
   if(addDragBar == true)
   {
     // Add a dragbar -> make window moveable
@@ -215,73 +275,6 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   m_IntuiText.NextText  = NULL;
 
   return WindowBase::Open(p_pUserDataMenuItemToDisable, p_pInitialPosition);
-}
-
-void TextWindow::Close()
-{
-  if(m_pLeftArrowButton != NULL)
-  {
-    DisposeObject(m_pLeftArrowButton);
-    m_pLeftArrowButton = NULL;
-  }
-
-  if(m_pLeftArrowImage != NULL)
-  {
-    DisposeObject(m_pLeftArrowImage);
-    m_pLeftArrowImage = NULL;
-  }
-
-  if(m_pRightArrowButton != NULL)
-  {
-    DisposeObject(m_pRightArrowButton);
-    m_pRightArrowButton = NULL;
-  }
-
-  if(m_pRightArrowImage != NULL)
-  {
-    DisposeObject(m_pRightArrowImage);
-    m_pRightArrowImage = NULL;
-  }
-
-  if(m_pXPropGadget != NULL)
-  {
-    DisposeObject(m_pXPropGadget);
-    m_pXPropGadget = NULL;
-  }
-
-  if(m_pDownArrowButton != NULL)
-  {
-    DisposeObject(m_pDownArrowButton);
-    m_pDownArrowButton = NULL;
-  }
-
-  if(m_pDownArrowImage != NULL)
-  {
-    DisposeObject(m_pDownArrowImage);
-    m_pDownArrowImage = NULL;
-  }
-
-  if(m_pUpArrowButton != NULL)
-  {
-    DisposeObject(m_pUpArrowButton);
-    m_pUpArrowButton = NULL;
-  }
-
-  if(m_pUpArrowImage != NULL)
-  {
-    DisposeObject(m_pUpArrowImage);
-    m_pUpArrowImage = NULL;
-  }
-
-  if(m_pYPropGadget != NULL)
-  {
-    DisposeObject(m_pYPropGadget);
-    m_pYPropGadget = NULL;
-  }
-
-  // Also call Close() in parent
-  // TODO debug if it really happens
-  WindowBase::Close();
 }
 
 
@@ -515,7 +508,7 @@ void TextWindow::initialize()
     TAG_END);
 
   m_bInitialized = true;
-  
+
 }
 
 
@@ -538,6 +531,11 @@ void TextWindow::displayLine(const SimpleString* p_pLine, WORD p_TopEdge)
 
 void TextWindow::displayFile()
 {
+  if(m_pDocument == NULL)
+  {
+    return;
+  }
+
   size_t lineId = m_Y;
   const SimpleString* pLine = m_pDocument->GetIndexedLine(lineId);
   while(pLine != NULL)

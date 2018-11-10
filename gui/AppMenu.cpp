@@ -87,7 +87,7 @@ struct Menu* AppMenu::IntuiMenu()
 }
 
 
-void AppMenu::DisableMenuItem(struct Window* p_pWindow, 
+void AppMenu::DisableMenuItem(struct Window* p_pWindow,
   APTR p_pUserDataMenuItemToDisable)
 {
   if(p_pUserDataMenuItemToDisable == NULL)
@@ -105,14 +105,14 @@ void AppMenu::DisableMenuItem(struct Window* p_pWindow,
   OffMenu(p_pWindow, menuNumber);
 }
 
-void AppMenu::EnableMenuItem(struct Window* p_pWindow, 
+void AppMenu::EnableMenuItem(struct Window* p_pWindow,
   APTR p_pUserDataMenuItemToEnable)
 {
   if(p_pUserDataMenuItemToEnable == NULL)
   {
     return;
   }
-  
+
   WORD menuNumber = 0;
   struct MenuItem* pFoundItem = findItemByUserData(p_pUserDataMenuItemToEnable, menuNumber);
   if(pFoundItem == NULL)
@@ -154,7 +154,7 @@ struct MenuItem* AppMenu::findItemByUserData(APTR p_pUserDataToFind, WORD& p_Fou
       }
 
       pItem = pItem->NextItem;
-      iItem++; 
+      iItem++;
     }
     while(pItem != NULL);
 

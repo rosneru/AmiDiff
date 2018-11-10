@@ -48,12 +48,6 @@ public:
     InitialWindowPosition p_pInitialPosition = IWP_Center);
 
   /**
-   * Closes the window
-   */
-  virtual void Close();
-
-
-  /**
    * Open a text file
    *
    * Extended method from base class DiffDocument

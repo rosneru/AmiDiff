@@ -53,14 +53,14 @@ public:
   /**
    * Closes the window.
    */
-  virtual void Close();
+  void Close();
 
   /**
    * Returns true if the window is opened.
    */
-  bool IsOpen();
+  bool IsOpen() const;
 
-  const char* Title();
+  const char* Title() const;
   void SetTitle(SimpleString p_NewTitle);
 
   /**

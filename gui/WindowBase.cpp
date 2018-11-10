@@ -26,8 +26,8 @@ WindowBase::WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
 
 WindowBase::~WindowBase()
 {
-  Close();
   UnsetMenu();
+  Close();
 }
 
 bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
@@ -39,7 +39,7 @@ bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   // Then these classes have to call this to auto-add menus etc.
   //
 
-  if(m_pWindow == NULL)
+  if(!IsOpen())
   {
     // Opening failed
     return false;
@@ -68,7 +68,7 @@ bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
 
 void WindowBase::Close()
 {
-  if(m_pWindow == NULL)
+  if(!IsOpen())
   {
     return;
   }
@@ -81,12 +81,12 @@ void WindowBase::Close()
   closeWindowSafely();
 }
 
-bool WindowBase::IsOpen()
+bool WindowBase::IsOpen() const
 {
   return m_pWindow != NULL;
 }
 
-const char* WindowBase::Title()
+const char* WindowBase::Title() const
 {
   return m_Title.C_str();
 }
@@ -128,7 +128,7 @@ void WindowBase::SetMenu(AppMenu* p_pMenu)
   m_pMenu = p_pMenu;
 
 
-  if(m_pWindow == NULL)
+  if(!IsOpen())
   {
     // The window isn't open yet: don't attach the menu now
     return;
@@ -141,7 +141,7 @@ void WindowBase::SetMenu(AppMenu* p_pMenu)
 
 void WindowBase::UnsetMenu()
 {
-  if(m_pWindow == NULL)
+  if(!IsOpen())
   {
     // The window isn't open so no menu has been attached
     return;
@@ -178,7 +178,7 @@ struct Image* WindowBase::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULO
 
 void WindowBase::closeWindowSafely()
 {
-  if(m_pWindow == NULL)
+  if(!IsOpen())
   {
     return;
   }
