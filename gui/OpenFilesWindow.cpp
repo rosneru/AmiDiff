@@ -67,9 +67,10 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   // Initial validations
   //
 
-  if(m_pWindow != NULL)
+  if(IsOpen())
   {
     // Not opening the window if it is already open
+    // TODO Alternatively: bring window to front and return true;
     return false;
   }
 
@@ -141,7 +142,7 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
 
 void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
-  if(m_pWindow == 0)
+  if(!IsOpen())
   {
     return;
   }
@@ -346,7 +347,7 @@ void OpenFilesWindow::initialize()
 
 void OpenFilesWindow::setDiffButtonState()
 {
-  if(m_pWindow == NULL || m_pDiffButton == NULL)
+  if(!IsOpen() || m_pDiffButton == NULL)
   {
     return;
   }
@@ -372,7 +373,7 @@ void OpenFilesWindow::setDiffButtonState()
 void OpenFilesWindow::setStringGadgetText(struct Gadget* p_pGadget,
   const SimpleString& p_Text)
 {
-  if(m_pWindow == NULL || p_pGadget == NULL)
+  if(!IsOpen() || p_pGadget == NULL)
   {
     return;
   }

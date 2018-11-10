@@ -109,8 +109,6 @@ private:
     Downward,
   };
 
-  SimpleString m_Title;
-
   size_t m_MaxWindowTextLines;  ///> Number of text lines that fit in window
   size_t m_Y;         ///> Index of currently first displayed text line
 

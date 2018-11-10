@@ -144,9 +144,10 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   //
   // Initial validations
   //
-  if(m_pWindow != NULL)
+  if(IsOpen())
   {
     // Not opening the window if it is already open
+    // TODO Alternatively: bring window to front and return true;
     return false;
   }
 
@@ -167,9 +168,12 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
 
   int activateWin = TRUE;
   int winLeft = 0;
-  m_Title = "Left Diff Window";
 
-
+  if(m_Title.Length() == 0)
+  {
+    // Default title if none has been set
+    m_Title = "TextWindow";
+  }
 
   bool addDragBar = true;
 
@@ -178,19 +182,19 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
     case IWP_FixedCenter:
       addDragBar = false; // Window not moveable
     case IWP_Center:
-      winLeft = winWidth;
+      winLeft = screenWidth / 4;
       break;
 
     case IWP_FixedLeft:
       addDragBar = false; // Window not moveable
     case IWP_Left:
-      winLeft = screenWidth / 4;
+      winLeft = 0;
       break;
 
     case IWP_FixedRight: // Window not moveable
       addDragBar = false;
     case IWP_Right:
-      winLeft = 0;
+      winLeft = winWidth;
       break;
   }
 
@@ -282,6 +286,11 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 {
   m_pDocument = p_pTextDocument;
   m_Y = 0;
+
+  if(!IsOpen())
+  {
+    return true;
+  }
 
   // Clear the window completely
   EraseRect(m_pWindow->RPort,
@@ -643,7 +652,7 @@ bool TextWindow::scrollDownOneLine()
 
 void TextWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
-  if(m_pWindow == 0)
+  if(!IsOpen())
   {
     return;
   }

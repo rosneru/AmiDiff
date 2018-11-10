@@ -78,7 +78,6 @@ public:
 
 
   void SetMenu(AppMenu* p_pMenu);
-  void UnsetMenu();
 
 protected:
   AppScreen& m_AppScreen;

@@ -113,9 +113,13 @@ bool Application::Run()
   m_RightWin.SetMenu(&m_Menu);
   m_OpenFilesWin.SetMenu(&m_Menu);
 
-  m_LeftWin.Open(NULL, WindowBase::IWP_Left);
-  m_RightWin.Open(NULL, WindowBase::IWP_Right);
-  m_OpenFilesWin.Open();
+//  m_LeftWin.SetTitle("Left diff win");
+//  m_LeftWin.Open(NULL, WindowBase::IWP_FixedLeft);
+
+//  m_RightWin.SetTitle("Right diff win");
+//  m_RightWin.Open(NULL, WindowBase::IWP_FixedRight);
+
+  m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
 
   //
   // Wait-in-loop for menu actions etc

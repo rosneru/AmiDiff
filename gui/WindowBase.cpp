@@ -26,7 +26,6 @@ WindowBase::WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
 
 WindowBase::~WindowBase()
 {
-  UnsetMenu();
   Close();
 }
 
@@ -60,7 +59,7 @@ bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
 
   if(p_pUserDataMenuItemToDisable != NULL)
   {
-     m_pMenu->DisableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
+    m_pMenu->DisableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
   }
 
   return true;
@@ -76,6 +75,11 @@ void WindowBase::Close()
   if(m_pMenu != NULL && m_pUserDataMenuItemToDisable != NULL)
   {
     m_pMenu->EnableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
+  }
+
+  if(m_pMenu != NULL)
+  {
+    m_pMenu->DetachFromWindow(m_pWindow);
   }
 
   closeWindowSafely();
@@ -94,6 +98,12 @@ const char* WindowBase::Title() const
 void WindowBase::SetTitle(SimpleString p_NewTitle)
 {
   m_Title = p_NewTitle;
+
+  if(!IsOpen())
+  {
+    // Window is not open, so we don't change its title dynamically
+    return;
+  }
 
   // Call intuition function to set the window title
   // Note the ~0 inverts the value and is a value of -1
@@ -137,25 +147,6 @@ void WindowBase::SetMenu(AppMenu* p_pMenu)
   // The window is already open: attach the newly added menu to it
   m_pMenu->AttachToWindow(m_pWindow);
   return;
-}
-
-void WindowBase::UnsetMenu()
-{
-  if(!IsOpen())
-  {
-    // The window isn't open so no menu has been attached
-    return;
-  }
-
-  if(m_pMenu == NULL)
-  {
-    // No menu was provided nor has been attached or already has been
-    //detached
-    return;
-  }
-
-  m_pMenu->DetachFromWindow(m_pWindow);
-  m_pMenu = NULL;
 }
 
 struct Image* WindowBase::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
