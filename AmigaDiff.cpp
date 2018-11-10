@@ -69,9 +69,15 @@ int main(int argc, char **argv)
     return 20;
   }
 
-  Application app(argc, argv, pMsgPortAppWindows);
-  app.Run();
+  // Create the application dynamically, so we can destroy it later
+  // before de Message port is destroyed.
+  Application* pApp = new Application(argc, argv, pMsgPortAppWindows);
+  pApp->Run();
 
+  // Destroy app
+  delete pApp;
+
+  // Destroy message port
   DeleteMsgPort(pMsgPortAppWindows);
   closeLibs();
 

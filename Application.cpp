@@ -115,7 +115,7 @@ bool Application::Run()
 
   m_LeftWin.Open(NULL, WindowBase::IWP_Left);
   m_RightWin.Open(NULL, WindowBase::IWP_Right);
-  m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
+  m_OpenFilesWin.Open();
 
   //
   // Wait-in-loop for menu actions etc
