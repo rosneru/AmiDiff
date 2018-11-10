@@ -19,7 +19,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen& p_AppScreen,
   : WindowBase(p_AppScreen, p_pMsgPort),
     m_bInitialized(false),
     m_DiffFacade(p_DiffFacade),
-    m_WinWidth((WORD)p_AppScreen.IntuiScreen()->Width / 2),
+    m_WinWidth(120),
     m_WinHeight(120),
     m_pGadgetList(NULL),
     m_pLeftFileStringGadget(NULL),
@@ -220,6 +220,7 @@ void OpenFilesWindow::initialize()
   //
   // Calculate some basic values
   //
+  m_WinWidth = (WORD)m_AppScreen.IntuiScreen()->Width / 2;
   m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
   WORD barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
 
