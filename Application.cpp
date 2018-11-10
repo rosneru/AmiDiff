@@ -15,121 +15,40 @@
 
 #include "Application.h"
 
-Application::Application(int argc, char **argv)
-  : m_pMsgPortAllWindows(NULL),
+Application::Application(int argc, char **argv, struct MsgPort* p_pMsgPortAllWindows)
+  : m_pMsgPortAllWindows(p_pMsgPortAllWindows),
     m_Argc(argc),
     m_Argv(argv),
-    m_pScreen(NULL),
-    m_pOpenFilesWin(NULL),
-    m_pLeftWin(NULL),
-    m_pRightWin(NULL),
-    m_pMenu(NULL),
     m_bExitRequested(false),
-    m_pCmdOpenFilesWindow(NULL),
-    m_pCmdDiff(NULL),
-    m_pCmdQuit(NULL),
-    m_pDiffFacade(NULL)
+    m_Screen("AmiDiff (C) 2018 by Uwe Rosner."),
+    m_LeftWin(&m_Screen, m_pMsgPortAllWindows),
+    m_RightWin(&m_Screen, m_pMsgPortAllWindows),
+    m_DiffFacade(m_LeftWin, m_RightWin),
+    m_OpenFilesWin(&m_Screen, m_pMsgPortAllWindows, m_DiffFacade),
+    m_CmdDiff(m_DiffFacade),
+    m_CmdQuit(m_bExitRequested),
+    m_CmdOpenFilesWindow(m_OpenFilesWin),
+    m_Menu(&m_Screen)
 {
-  // Create a message port for shared use with all windows
-  m_pMsgPortAllWindows = CreateMsgPort();
 }
 
 Application::~Application()
 {
-  Dispose();
 }
 
-void Application::Dispose()
-{
-  if(m_pCmdOpenFilesWindow != NULL)
-  {
-    delete m_pCmdOpenFilesWindow;
-    m_pCmdOpenFilesWindow = NULL;
-  }
-
-  if(m_pCmdDiff != NULL)
-  {
-    delete m_pCmdDiff;
-    m_pCmdDiff = NULL;
-  }
-
-  if(m_pCmdQuit != NULL)
-  {
-    delete m_pCmdQuit;
-    m_pCmdQuit = NULL;
-  }
-
-  if(m_pRightWin != NULL)
-  {
-    delete m_pRightWin;
-    m_pRightWin = NULL;
-  }
-
-  if(m_pLeftWin != NULL)
-  {
-    delete m_pLeftWin;
-    m_pLeftWin = NULL;
-  }
-
-  if(m_pOpenFilesWin != NULL)
-  {
-    delete m_pOpenFilesWin;
-    m_pOpenFilesWin = NULL;
-  }
-
-  if(m_pMenu != NULL)
-  {
-    delete m_pMenu;
-    m_pMenu = NULL;
-  }
-
-  if(m_pScreen != NULL)
-  {
-    delete m_pScreen;
-    m_pScreen = NULL;
-  }
-
-  if(m_pDiffFacade != NULL)
-  {
-    delete m_pDiffFacade;
-    m_pDiffFacade = NULL;
-  }
-
-
-  if(m_pMsgPortAllWindows != NULL)
-  {
-    DeleteMsgPort(m_pMsgPortAllWindows);
-    m_pMsgPortAllWindows = NULL;
-  }
-}
 
 bool Application::Run()
 {
-  // If the message port has not been created, the app can't start.
-  if(m_pMsgPortAllWindows == NULL)
-  {
-    return false;
-  }
 
   //
   // Opening the screen
   //
-  m_pScreen = new AppScreen("AmiDiff (C) 2018 by Uwe Rosner.");
-  if (!m_pScreen->Open())
+  if (!m_Screen.Open())
   {
     // Opening the screen failed
-    Dispose();
     return false;
   }
 
-  //
-  // Creating left and right diff windows but not opening them yet
-  //
-  m_pLeftWin = new TextWindow(m_pScreen, m_pMsgPortAllWindows);
-  m_pRightWin = new TextWindow(m_pScreen, m_pMsgPortAllWindows);
-
-  // Create DiffFacade
-  m_pDiffFacade = new AmigaDiffFacade(*m_pLeftWin, *m_pRightWin);
 
   //
   // If there are at least two command line arguments permitted, take
@@ -138,24 +57,9 @@ bool Application::Run()
   //
   if(m_Argc >= 3)
   {
-    m_pDiffFacade->SetLeftFilePath(m_Argv[1]);
-    m_pDiffFacade->SetRightFilePath(m_Argv[2]);
+    m_DiffFacade.SetLeftFilePath(m_Argv[1]);
+    m_DiffFacade.SetRightFilePath(m_Argv[2]);
   }
-
-  //
-  // Instantiating the commands
-  //
-  m_pCmdQuit = new CmdQuit(m_bExitRequested);
-  m_pCmdDiff = new CmdPerformDiff(*m_pDiffFacade);
-
-  //
-  // Now that the CmdDiff is available the OpenFilesWindow can be
-  // created.
-  //
-  m_pOpenFilesWin = new OpenFilesWindow(m_pScreen, m_pMsgPortAllWindows,
-    *m_pDiffFacade);
-
-  m_pCmdOpenFilesWindow = new CmdOpenWindow(*m_pOpenFilesWin);
 
   //
   // Filling the GadTools menu struct, supplying pointers to the 
@@ -166,31 +70,29 @@ bool Application::Run()
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open files...",         "O", 0, 0, m_pCmdOpenFilesWindow },
+    {  NM_ITEM,   "Open files...",         "O", 0, 0, &m_CmdOpenFilesWindow },
 //    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdStatistics }, // TODO
     {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
-    {  NM_ITEM,   "Quit",                  "Q", 0, 0, m_pCmdQuit },
+    {  NM_ITEM,   "Quit",                  "Q", 0, 0, &m_CmdQuit },
     {  NM_END,    NULL,                     0 , 0, 0, 0 },
   };
 
   //
   // Creating the menu
   //
-  m_pMenu = new AppMenu(m_pScreen);
-  if(m_pMenu->Create(menuDefinition) == false)
+  if(m_Menu.Create(menuDefinition) == false)
   {
-    Dispose();
     return false;
   }
 
   //
   // Installing menu to all windows
   //
-  m_pLeftWin->SetMenu(m_pMenu);
-  m_pRightWin->SetMenu(m_pMenu);
-  m_pOpenFilesWin->SetMenu(m_pMenu);
+  m_LeftWin.SetMenu(&m_Menu);
+  m_RightWin.SetMenu(&m_Menu);
+  m_OpenFilesWin.SetMenu(&m_Menu);
 
-  m_pOpenFilesWin->Open(m_pCmdOpenFilesWindow);
+  m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
 
   //
   // Wait-in-loop for menu actions etc
@@ -224,7 +126,7 @@ void Application::intuiEventLoop()
         // Menupick messages are handled here
         //
         UWORD menuNumber = msgCode;
-        struct MenuItem* pSelectedItem = ItemAddress(m_pMenu->IntuiMenu(), menuNumber);
+        struct MenuItem* pSelectedItem = ItemAddress(m_Menu.IntuiMenu(), menuNumber);
 
         if(pSelectedItem != NULL)
         {
@@ -245,22 +147,22 @@ void Application::intuiEventLoop()
         //
         // All other messages are handled in the appropriate window
         //
-        if(m_pLeftWin->IsOpen() && msgWindow == m_pLeftWin->IntuiWindow())
+        if(m_LeftWin.IsOpen() && msgWindow == m_LeftWin.IntuiWindow())
         {
-          m_pLeftWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
+          m_LeftWin.HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
-        else if(m_pRightWin->IsOpen() && msgWindow == m_pRightWin->IntuiWindow())
+        else if(m_RightWin.IsOpen() && msgWindow == m_RightWin.IntuiWindow())
         {
-          m_pRightWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
+          m_RightWin.HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
-        else if(m_pOpenFilesWin->IsOpen() && msgWindow == m_pOpenFilesWin->IntuiWindow())
+        else if(m_OpenFilesWin.IsOpen() && msgWindow == m_OpenFilesWin.IntuiWindow())
         {
-          m_pOpenFilesWin->HandleIdcmp(msgClass, msgCode, msgIAddress);
+          m_OpenFilesWin.HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
       }
 
-      if(!m_pLeftWin->IsOpen() && !m_pRightWin->IsOpen() &&
-         !m_pOpenFilesWin->IsOpen())
+      if(!m_LeftWin.IsOpen() && !m_RightWin.IsOpen() &&
+         !m_OpenFilesWin.IsOpen())
       {
         // All windows are close: exit
         m_bExitRequested = true;

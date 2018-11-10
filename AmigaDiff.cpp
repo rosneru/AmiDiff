@@ -61,9 +61,18 @@ int main(int argc, char **argv)
     return 20;
   }
 
-  Application app(argc, argv);
+  // Create a message port for shared use with all windows
+  struct MsgPort* pMsgPortAppWindows = CreateMsgPort();
+  if(pMsgPortAppWindows == NULL)
+  {
+    closeLibs();
+    return 20;
+  }
+
+  Application app(argc, argv, pMsgPortAppWindows);
   app.Run();
 
+  DeleteMsgPort(pMsgPortAppWindows);
   closeLibs();
 
   return 0;

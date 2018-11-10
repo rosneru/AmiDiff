@@ -13,7 +13,9 @@
 #include "AmigaDiffFacade.h"
 #include "AppMenu.h"
 #include "AppScreen.h"
-#include "Command.h"
+#include "CmdOpenWindow.h"
+#include "CmdPerformDiff.h"
+#include "CmdQuit.h"
 #include "AmigaDiffFacade.h"
 #include "OpenFilesWindow.h"
 #include "SimpleString.h"
@@ -22,13 +24,8 @@
 class Application
 {
 public:
-  Application(int argc, char **argv);
+  Application(int argc, char **argv, struct MsgPort* p_pMsgPortAllWindows);
   ~Application();
-
-  /**
-   * Deletes all created objects and frees all allocated memory
-   */
-  void Dispose();
 
   bool Run();
 
@@ -39,17 +36,17 @@ private:
 
   bool m_bExitRequested;
 
-  AppScreen* m_pScreen;
-  OpenFilesWindow* m_pOpenFilesWin;
-  TextWindow* m_pLeftWin;
-  TextWindow* m_pRightWin;
+  AppScreen m_Screen;
+  OpenFilesWindow m_OpenFilesWin;
+  TextWindow m_LeftWin;
+  TextWindow m_RightWin;
+  AppMenu m_Menu;
 
-  AppMenu* m_pMenu;
-  Command* m_pCmdOpenFilesWindow;
-  Command* m_pCmdDiff;
-  Command* m_pCmdQuit;
+  CmdOpenWindow m_CmdOpenFilesWindow;
+  CmdPerformDiff m_CmdDiff;
+  CmdQuit m_CmdQuit;
 
-  AmigaDiffFacade* m_pDiffFacade;
+  AmigaDiffFacade m_DiffFacade;
 
   /**
    * Handling messages from Intuition
