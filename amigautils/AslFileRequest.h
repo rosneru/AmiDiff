@@ -23,10 +23,10 @@ public:
    * Text to be displayed in the file requesters title bar
    *
    * @returns
-   * Selected filename or empty string if dialog was canceled by the 
+   * Selected filename or empty string if dialog was canceled by the
    * user
    */
-  SimpleString SelectFileName(SimpleString p_Title);
+  SimpleString SelectFileName(const SimpleString& p_Title);
 
 private:
   struct Window* m_pIntuiWindow;

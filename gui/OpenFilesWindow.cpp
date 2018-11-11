@@ -356,7 +356,7 @@ void OpenFilesWindow::initialize()
 }
 
 
-bool OpenFilesWindow::selectFile(SimpleString& p_FilePath, 
+bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
   const SimpleString& p_RequestTitle)
 {
   if(m_bFileRequestOpen)
@@ -370,8 +370,8 @@ bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
 
   AslFileRequest request(IntuiWindow());
   SimpleString selectedFile = request.SelectFileName(p_RequestTitle);
-  
-  if(selectedFile.Length == 0)
+
+  if(selectedFile.Length() == 0)
   {
     // Cancelled or nothing selected
     m_bFileRequestOpen = false;
@@ -380,7 +380,7 @@ bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
   }
 
   // TODO Is selectedFile copied or only referenced? If only referenced
-  //      this will crash probably because the selectedFile is 
+  //      this will crash probably because the selectedFile is
   //      destroyed after leaving the method scope.
   p_FilePath = selectedFile;
 
