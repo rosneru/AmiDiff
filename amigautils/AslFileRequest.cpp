@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include <clib/asl_protos.h>
 #include <clib/dos_protos.h>
 #include <libraries/asl.h>
@@ -16,7 +18,7 @@ AslFileRequest::~AslFileRequest()
 
 }
 
-SimpleString AslFileRequest::SelectFileName(SimpleString p_Title)
+SimpleString AslFileRequest::SelectFileName(const SimpleString& p_Title)
 {
   SimpleString fileName = "";
 

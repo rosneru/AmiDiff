@@ -50,6 +50,7 @@ public:
 
 private:
   bool m_bInitialized;
+  bool m_bFileRequestOpen;
 
   /**
    * IDs to help to interpret the events of this window's Gadtools
@@ -84,6 +85,27 @@ private:
    * Initializes some window specific feature. Gadgets, etc.
    */
   void initialize();
+
+  /**
+   * Opens a file requestor and lets the user select a file.
+   * 
+   * @param p_FilePath
+   * Reference to a string variable to set the text of the user 
+   * selected path/file into. If the user cancels the file requestor 
+   * this variable is not changed.
+   * 
+   * @param p_RequestTitle
+   * Title to set in the filer requestor window
+   * 
+   * @returns
+   * When user selected a file: true; when user cancelled the 
+   * requestor: false
+   */
+  bool selectFile(SimpleString& p_FilePath,
+    const SimpleString& p_RequestTitle);
+
+  void enableAllButtonsAndMenuQuit();
+  void disableAllButtonsAndMenuQuit();
 
   /**
    * Enables or disables the buttons of this window in dependency of

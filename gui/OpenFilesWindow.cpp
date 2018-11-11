@@ -12,12 +12,14 @@
 #include <intuition/icclass.h>
 #include <libraries/gadtools.h>
 
+#include "AslFileRequest.h"
 #include "OpenFilesWindow.h"
 
 OpenFilesWindow::OpenFilesWindow(AppScreen& p_AppScreen,
     struct MsgPort* p_pMsgPort, AmigaDiffFacade& p_DiffFacade)
   : WindowBase(p_AppScreen, p_pMsgPort),
     m_bInitialized(false),
+    m_bFileRequestOpen(false),
     m_DiffFacade(p_DiffFacade),
     m_WinWidth(120),
     m_WinHeight(120),
@@ -154,15 +156,23 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       struct Gadget* pGadget = (struct Gadget*) p_IAddress;
       if(pGadget->GadgetID == GID_LeftFileButton)
       {
-        // TODO 1) ASL request
-        //      2) Fill string gadget
-        //      3) Enable Diff button if both string gadgets are filled
+        SimpleString leftFilePath = m_DiffFacade.LeftFilePath();
+        if(selectFile(leftFilePath, "Select left (original) file"))
+        {
+          setStringGadgetText(m_pLeftFileStringGadget, leftFilePath);
+          m_DiffFacade.SetLeftFilePath(leftFilePath.C_str());
+          setDiffButtonState();
+        }
       }
       else if(pGadget->GadgetID == GID_RightFileButton)
       {
-        // TODO 1) ASL request
-        //      2) Fill string gadget
-        //      3) Enable Diff button if both string gadgets are filled
+        SimpleString rightFilePath = m_DiffFacade.RightFilePath();
+        if(selectFile(rightFilePath, "Select right (changed) file"))
+        {
+          setStringGadgetText(m_pRightFileStringGadget, rightFilePath);
+          m_DiffFacade.SetRightFilePath(rightFilePath.C_str());
+          setDiffButtonState();
+        }
       }
       else if(pGadget->GadgetID == GID_CancelButton)
       {
@@ -344,6 +354,51 @@ void OpenFilesWindow::initialize()
 
   m_bInitialized = true;
 }
+
+
+bool OpenFilesWindow::selectFile(SimpleString& p_FilePath, 
+  const SimpleString& p_RequestTitle)
+{
+  if(m_bFileRequestOpen)
+  {
+    // Shouldn't be possible, but anyhow
+    return false;
+  }
+
+  m_bFileRequestOpen = true;
+  disableAllButtonsAndMenuQuit();
+
+  AslFileRequest request(IntuiWindow());
+  SimpleString selectedFile = request.SelectFileName(p_RequestTitle);
+  
+  if(selectedFile.Length == 0)
+  {
+    // Cancelled or nothing selected
+    m_bFileRequestOpen = false;
+    enableAllButtonsAndMenuQuit();
+    return false;
+  }
+
+  // TODO Is selectedFile copied or only referenced? If only referenced
+  //      this will crash probably because the selectedFile is 
+  //      destroyed after leaving the method scope.
+  p_FilePath = selectedFile;
+
+  enableAllButtonsAndMenuQuit();
+  m_bFileRequestOpen = false;
+  return true;
+}
+
+void OpenFilesWindow::enableAllButtonsAndMenuQuit()
+{
+
+}
+
+void OpenFilesWindow::disableAllButtonsAndMenuQuit()
+{
+
+}
+
 
 void OpenFilesWindow::setDiffButtonState()
 {
