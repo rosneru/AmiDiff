@@ -157,21 +157,34 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       if(pGadget->GadgetID == GID_LeftFileButton)
       {
         // Button "..." to select left file was clicked
+
+        // Read latest string gadgets contents before continue
+        readStringGadgetsText();
+
+        // Open an ASL file request to let the user select the file
         SimpleString leftFilePath = m_DiffFacade.LeftFilePath();
         if(selectFile(leftFilePath, "Select left (original) file"))
         {
           setStringGadgetText(m_pLeftFileStringGadget, leftFilePath);
           m_DiffFacade.SetLeftFilePath(leftFilePath.C_str());
+          setDiffButtonState();
         }
       }
       else if(pGadget->GadgetID == GID_RightFileButton)
       {
         // Button "..." to select right file was clicked
+
+        // Read latest string gadgets contents before continue
+        readStringGadgetsText();
+
+        // Open an ASL file request to let the user select the file
         SimpleString rightFilePath = m_DiffFacade.RightFilePath();
         if(selectFile(rightFilePath, "Select right (changed) file"))
         {
           setStringGadgetText(m_pRightFileStringGadget, rightFilePath);
           m_DiffFacade.SetRightFilePath(rightFilePath.C_str());
+          setDiffButtonState();
+
         }
       }
       else if(pGadget->GadgetID == GID_CancelButton)
@@ -182,32 +195,43 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       else if(pGadget->GadgetID == GID_DiffButton)
       {
         // Button "Diff" was clicked
-        Close();
-        m_DiffFacade.Diff();
+
+        // Read latest string gadgets contents before continue
+        readStringGadgetsText();
+
+        // If now one of the texts is empty, do not perform the Diff
+        if(m_DiffFacade.LeftFilePath().Length() == 0 ||
+           m_DiffFacade.RightFilePath().Length() == 0)
+        {
+          return;
+        }
+
+        // Disable all gadgets while diff is performing
+        disableAll();
+
+        // Perform the diff
+        if(m_DiffFacade.Diff() == true)
+        {
+          // Diff was successful. Left and right diff windows should
+          // be open now, so this window can be closed
+          Close();
+        }
+        else
+        {
+          // TODO FileRequest to inform the user about diff error
+          // TODO enableAll();
+        }
       }
       else if(pGadget->GadgetID == GID_LeftFileString)
       {
         // Text in left file string gadget was changed
-        // Set the changed string gadget text as left file path
-        UBYTE* pBuf = ((struct StringInfo*)
-          m_pLeftFileStringGadget->SpecialInfo)->Buffer;
-
-        m_DiffFacade.SetLeftFilePath((const char*)pBuf);
-
-        setDiffButtonState();
+        readStringGadgetsText();
       }
       else if(pGadget->GadgetID == GID_RightFileString)
       {
         // Text in right file string gadget was changed
-        // Set the changed string gadget text as right file path
-        UBYTE* pBuf = ((struct StringInfo*)
-          m_pRightFileStringGadget->SpecialInfo)->Buffer;
-
-        m_DiffFacade.SetRightFilePath((const char*)pBuf);
-
-        setDiffButtonState();
+        readStringGadgetsText();
       }
-
       break;
     }
 
@@ -378,7 +402,7 @@ bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
   }
 
   m_bFileRequestOpen = true;
-  disableAllButtonsAndMenuQuit();
+  disableAll();
 
   AslFileRequest request(IntuiWindow());
   SimpleString selectedFile = request.SelectFile(p_RequestTitle, p_FilePath);
@@ -387,27 +411,27 @@ bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
   {
     // Cancelled or nothing selected
     m_bFileRequestOpen = false;
-    enableAllButtonsAndMenuQuit();
+    enableAll();
     return false;
   }
 
-  // Note: This will copy selectedFile to the target of p_FilePath 
+  // Note: This will copy selectedFile to the target of p_FilePath
   //       (the variable p_FilePath points to).
   //       @see  SimpleString& operator=(const SimpleString& p_Other);
   //
-  //       The reference itself is not rebound to p_FilePath as by  
+  //       The reference itself is not rebound to p_FilePath as by
   //       design refereces can't be rebound after initialization.
   //
-  //       Because of the copying p_FilePath will 'point to' the valid 
+  //       Because of the copying p_FilePath will 'point to' the valid
   //       copied value of selectedFile after leaving the method scope.
   p_FilePath = selectedFile;
 
-  enableAllButtonsAndMenuQuit();
+  enableAll();
   m_bFileRequestOpen = false;
   return true;
 }
 
-void OpenFilesWindow::enableAllButtonsAndMenuQuit()
+void OpenFilesWindow::enableAll()
 {
   GT_SetGadgetAttrs(m_pLeftFileStringGadget, IntuiWindow(), NULL,
     GA_Disabled, FALSE,
@@ -427,40 +451,40 @@ void OpenFilesWindow::enableAllButtonsAndMenuQuit()
 
   GT_SetGadgetAttrs(m_pCancelButton, IntuiWindow(), NULL,
     GA_Disabled, FALSE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pDiffButton, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_END);
-
-  // TODO enable menu item "Quit"
-}
-
-void OpenFilesWindow::disableAllButtonsAndMenuQuit()
-{
-  GT_SetGadgetAttrs(m_pLeftFileStringGadget, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pRightFileStringGadget, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pSelectLeftFileButton, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pSelectRightFileButton, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pCancelButton, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
     TAG_END);
 
   setDiffButtonState();
 
   // TODO enable menu item "Quit"
+}
+
+void OpenFilesWindow::disableAll()
+{
+  GT_SetGadgetAttrs(m_pLeftFileStringGadget, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pRightFileStringGadget, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pSelectLeftFileButton, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pSelectRightFileButton, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pCancelButton, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pDiffButton, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
+  // TODO disable menu item "Quit"
 }
 
 
@@ -500,6 +524,24 @@ void OpenFilesWindow::setStringGadgetText(struct Gadget* p_pGadget,
   GT_SetGadgetAttrs(p_pGadget, m_pWindow, NULL,
     GTST_String, p_Text.C_str(),
     TAG_END);
-
 }
 
+void OpenFilesWindow::readStringGadgetsText()
+{
+  // Set the changed string gadget text as left file path
+  UBYTE* pBuf = ((struct StringInfo*)
+    m_pLeftFileStringGadget->SpecialInfo)->Buffer;
+
+  m_DiffFacade.SetLeftFilePath((const char*)pBuf);
+
+  // Set the changed string gadget text as right file path
+  pBuf = ((struct StringInfo*)
+    m_pRightFileStringGadget->SpecialInfo)->Buffer;
+
+  m_DiffFacade.SetRightFilePath((const char*)pBuf);
+
+  // Enable the 'Diff' button when both string gadgets contain text.
+  // If not not: disable it.
+  setDiffButtonState();
+
+}

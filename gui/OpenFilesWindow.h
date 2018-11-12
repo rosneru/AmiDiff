@@ -88,24 +88,35 @@ private:
 
   /**
    * Opens a file requestor and lets the user select a file.
-   * 
+   *
    * @param p_FilePath
-   * Reference to a string variable to set the text of the user 
-   * selected path/file into. If the user cancels the file requestor 
+   * Reference to a string variable to set the text of the user
+   * selected path/file into. If the user cancels the file requestor
    * this variable is not changed.
-   * 
+   *
    * @param p_RequestTitle
    * Title to set in the filer requestor window
-   * 
+   *
    * @returns
-   * When user selected a file: true; when user cancelled the 
+   * When user selected a file: true; when user cancelled the
    * requestor: false
    */
   bool selectFile(SimpleString& p_FilePath,
     const SimpleString& p_RequestTitle);
 
-  void enableAllButtonsAndMenuQuit();
-  void disableAllButtonsAndMenuQuit();
+  /**
+   * Enables all gadgets in the window except the 'Diff' button which
+   * only is enabled when both string gadgets contain text.
+   */
+  void enableAll();
+
+  /**
+   * Disables all gadgets in the window.
+   *
+   * Should be called e.g. before an ASL reuest is opened to prevent
+   * from input during request is open.
+   */
+  void disableAll();
 
   /**
    * Enables or disables the buttons of this window in dependency of
@@ -116,6 +127,15 @@ private:
 
   void setStringGadgetText(struct Gadget* p_pGadget,
     const SimpleString& p_Text);
+
+  /**
+   * Reads the text from both string gadgets and updates the
+   * LeftFilePath and RightFilePath in m_DiffFacade accordingly.
+   *
+   * Also sets the 'Diff' button state to enabled or disabled
+   * depending if both string gadgets contain text.
+   */
+  void readStringGadgetsText();
 };
 
 

@@ -18,17 +18,27 @@ AslFileRequest::~AslFileRequest()
 
 }
 
-SimpleString AslFileRequest::SelectFile(const SimpleString& p_Title, 
+SimpleString AslFileRequest::SelectFile(const SimpleString& p_Title,
   const SimpleString& p_InitialFileFullPath)
 {
   SimpleString selectedFileFullPath = "";
-  
+
   SimpleString initialFilePart = "";
   SimpleString initialPathPart = "";
   if(p_InitialFileFullPath.Length() > 0)
   {
-    initialPathPart = PathPart(p_InitialFileFullPath.C_str());
-    initialFilePart = FilePart(p_InitialFileFullPath.C_str());
+    // Extract path and file name from initial full file name path
+    const char* pFullPath = p_InitialFileFullPath.C_str();
+    const char* pPathPart = PathPart(pFullPath);
+    const char* pFilePart = FilePart(pFullPath);
+
+    size_t pathLen = pPathPart - pFullPath;
+    if(pathLen > 0)
+    {
+      initialPathPart = p_InitialFileFullPath.SubStr(0, pathLen);
+    }
+
+    initialFilePart = pFilePart;
   }
 
   // Allocate data structure for the ASL requester
@@ -36,8 +46,8 @@ SimpleString AslFileRequest::SelectFile(const SimpleString& p_Title,
     AllocAslRequestTags(
       ASL_FileRequest,
       ASL_Hail, (ULONG) p_Title.C_str(),
-      ASL_Dir, (ULONG) initialPathPart.C_str(), 
-      ASL_File, (ULONG) initialFilePart.C_str(), 
+      ASL_Dir, (ULONG) initialPathPart.C_str(),
+      ASL_File, (ULONG) initialFilePart.C_str(),
       TAG_DONE);
 
   if(pFileRequest == NULL)
