@@ -26,8 +26,8 @@ OpenFilesWindow::OpenFilesWindow(AppScreen& p_AppScreen,
     m_pGadgetList(NULL),
     m_pLeftFileStringGadget(NULL),
     m_pRightFileStringGadget(NULL),
-    m_pOpenLeftFileButton(NULL),
-    m_pOpenRightFileButton(NULL),
+    m_pSelectLeftFileButton(NULL),
+    m_pSelectRightFileButton(NULL),
     m_pDiffButton(NULL),
     m_pCancelButton(NULL)
 {
@@ -44,8 +44,8 @@ OpenFilesWindow::~OpenFilesWindow()
     m_pGadgetList = NULL;
     m_pLeftFileStringGadget = NULL;
     m_pRightFileStringGadget = NULL;
-    m_pOpenLeftFileButton = NULL;
-    m_pOpenRightFileButton = NULL;
+    m_pSelectLeftFileButton = NULL;
+    m_pSelectRightFileButton = NULL;
     m_pDiffButton = NULL;
     m_pCancelButton = NULL;
   }
@@ -156,30 +156,38 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       struct Gadget* pGadget = (struct Gadget*) p_IAddress;
       if(pGadget->GadgetID == GID_LeftFileButton)
       {
+        // Button "..." to select left file was clicked
         SimpleString leftFilePath = m_DiffFacade.LeftFilePath();
         if(selectFile(leftFilePath, "Select left (original) file"))
         {
           setStringGadgetText(m_pLeftFileStringGadget, leftFilePath);
           m_DiffFacade.SetLeftFilePath(leftFilePath.C_str());
-          setDiffButtonState();
         }
       }
       else if(pGadget->GadgetID == GID_RightFileButton)
       {
+        // Button "..." to select right file was clicked
         SimpleString rightFilePath = m_DiffFacade.RightFilePath();
         if(selectFile(rightFilePath, "Select right (changed) file"))
         {
           setStringGadgetText(m_pRightFileStringGadget, rightFilePath);
           m_DiffFacade.SetRightFilePath(rightFilePath.C_str());
-          setDiffButtonState();
         }
       }
       else if(pGadget->GadgetID == GID_CancelButton)
       {
+        // Button "Cancel" was clicked
         Close();
+      }
+      else if(pGadget->GadgetID == GID_DiffButton)
+      {
+        // Button "Diff" was clicked
+        Close();
+        m_DiffFacade.Diff();
       }
       else if(pGadget->GadgetID == GID_LeftFileString)
       {
+        // Text in left file string gadget was changed
         // Set the changed string gadget text as left file path
         UBYTE* pBuf = ((struct StringInfo*)
           m_pLeftFileStringGadget->SpecialInfo)->Buffer;
@@ -190,6 +198,7 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       }
       else if(pGadget->GadgetID == GID_RightFileString)
       {
+        // Text in right file string gadget was changed
         // Set the changed string gadget text as right file path
         UBYTE* pBuf = ((struct StringInfo*)
           m_pRightFileStringGadget->SpecialInfo)->Buffer;
@@ -212,7 +221,10 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 
     case IDCMP_CLOSEWINDOW:
     {
-      Close();
+      if(!m_bFileRequestOpen)
+      {
+        Close();
+      }
       break;
     }
   }
@@ -289,7 +301,7 @@ void OpenFilesWindow::initialize()
   newGadget.ng_GadgetID   = GID_LeftFileButton;
   newGadget.ng_Flags      = 0;
 
-  m_pOpenLeftFileButton = CreateGadget(BUTTON_KIND,
+  m_pSelectLeftFileButton = CreateGadget(BUTTON_KIND,
     m_pLeftFileStringGadget, &newGadget, TAG_END);
 
   // Line 3  contains a label
@@ -300,7 +312,7 @@ void OpenFilesWindow::initialize()
   newGadget.ng_GadgetText = (UBYTE*) "Right file";
   newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
-  pLabelGadget = CreateGadget(TEXT_KIND, m_pOpenLeftFileButton,
+  pLabelGadget = CreateGadget(TEXT_KIND, m_pSelectLeftFileButton,
     &newGadget, TAG_END);
 
   // Line 4 contains a string gadget and selection button for the
@@ -325,7 +337,7 @@ void OpenFilesWindow::initialize()
   newGadget.ng_GadgetID   = GID_RightFileButton;
   newGadget.ng_Flags      = 0;
 
-  m_pOpenRightFileButton = CreateGadget(BUTTON_KIND,
+  m_pSelectRightFileButton = CreateGadget(BUTTON_KIND,
     m_pRightFileStringGadget, &newGadget, TAG_END);
 
   // Line 5 conatins the buttons Diff and Cancel
@@ -338,7 +350,7 @@ void OpenFilesWindow::initialize()
   newGadget.ng_GadgetID   = GID_DiffButton;
 
   m_pDiffButton = CreateGadget(BUTTON_KIND,
-    m_pOpenRightFileButton, &newGadget, GT_Underscore, '_', TAG_END);
+    m_pSelectRightFileButton, &newGadget, GT_Underscore, '_', TAG_END);
 
   // Creating the Cancel button
   newGadget.ng_LeftEdge   = right - buttonWidth;
@@ -397,12 +409,58 @@ bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
 
 void OpenFilesWindow::enableAllButtonsAndMenuQuit()
 {
+  GT_SetGadgetAttrs(m_pLeftFileStringGadget, IntuiWindow(), NULL,
+    GA_Disabled, FALSE,
+    TAG_END);
 
+  GT_SetGadgetAttrs(m_pRightFileStringGadget, IntuiWindow(), NULL,
+    GA_Disabled, FALSE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pSelectLeftFileButton, IntuiWindow(), NULL,
+    GA_Disabled, FALSE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pSelectRightFileButton, IntuiWindow(), NULL,
+    GA_Disabled, FALSE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pCancelButton, IntuiWindow(), NULL,
+    GA_Disabled, FALSE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pDiffButton, IntuiWindow(), NULL,
+    GA_Disabled, FALSE,
+    TAG_END);
+
+  // TODO enable menu item "Quit"
 }
 
 void OpenFilesWindow::disableAllButtonsAndMenuQuit()
 {
+  GT_SetGadgetAttrs(m_pLeftFileStringGadget, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
 
+  GT_SetGadgetAttrs(m_pRightFileStringGadget, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pSelectLeftFileButton, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pSelectRightFileButton, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
+  GT_SetGadgetAttrs(m_pCancelButton, IntuiWindow(), NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
+  setDiffButtonState();
+
+  // TODO enable menu item "Quit"
 }
 
 

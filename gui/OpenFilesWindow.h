@@ -76,8 +76,8 @@ private:
   struct Gadget* m_pGadgetList;
   struct Gadget* m_pLeftFileStringGadget;
   struct Gadget* m_pRightFileStringGadget;
-  struct Gadget* m_pOpenLeftFileButton;
-  struct Gadget* m_pOpenRightFileButton;
+  struct Gadget* m_pSelectLeftFileButton;
+  struct Gadget* m_pSelectRightFileButton;
   struct Gadget* m_pDiffButton;
   struct Gadget* m_pCancelButton;
 
