@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include <clib/asl_protos.h>
 #include <clib/dos_protos.h>
 #include <libraries/asl.h>
@@ -16,21 +18,42 @@ AslFileRequest::~AslFileRequest()
 
 }
 
-SimpleString AslFileRequest::SelectFileName(SimpleString p_Title)
+SimpleString AslFileRequest::SelectFile(const SimpleString& p_Title,
+  const SimpleString& p_InitialFileFullPath)
 {
-  SimpleString fileName = "";
+  SimpleString selectedFileFullPath = "";
+
+  SimpleString initialFilePart = "";
+  SimpleString initialPathPart = "";
+  if(p_InitialFileFullPath.Length() > 0)
+  {
+    // Extract path and file name from initial full file name path
+    const char* pFullPath = p_InitialFileFullPath.C_str();
+    const char* pPathPart = PathPart(pFullPath);
+    const char* pFilePart = FilePart(pFullPath);
+
+    size_t pathLen = pPathPart - pFullPath;
+    if(pathLen > 0)
+    {
+      initialPathPart = p_InitialFileFullPath.SubStr(0, pathLen);
+    }
+
+    initialFilePart = pFilePart;
+  }
 
   // Allocate data structure for the ASL requester
   struct FileRequester* pFileRequest = (struct FileRequester*)
     AllocAslRequestTags(
       ASL_FileRequest,
-      ASL_Hail, (ULONG)p_Title.C_str(),
+      ASL_Hail, (ULONG) p_Title.C_str(),
+      ASL_Dir, (ULONG) initialPathPart.C_str(),
+      ASL_File, (ULONG) initialFilePart.C_str(),
       TAG_DONE);
 
   if(pFileRequest == NULL)
   {
     // Data struct allocation failed
-    return fileName;
+    return selectedFileFullPath;
   }
 
   // Open the file requester and wait until the user selected a file
@@ -39,7 +62,7 @@ SimpleString AslFileRequest::SelectFileName(SimpleString p_Title)
   {
     // Requester opening failed
     FreeAslRequest(pFileRequest);
-    return fileName;
+    return selectedFileFullPath;
   }
 
   // Copying selected path name into a big enough buffer
@@ -51,10 +74,10 @@ SimpleString AslFileRequest::SelectFileName(SimpleString p_Title)
   // Calling a dos.library function to combine path and file name
   if(AddPart(fullPathBuf, pFileRequest->fr_File, 512))
   {
-   fileName = fullPathBuf;
+   selectedFileFullPath = fullPathBuf;
   }
 
   FreeAslRequest(pFileRequest);
 
-  return fileName;
+  return selectedFileFullPath;
 }

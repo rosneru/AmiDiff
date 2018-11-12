@@ -22,11 +22,17 @@ public:
    * @param p_Title
    * Text to be displayed in the file requesters title bar
    *
+   * @param p_InitialFileFullPath
+   * A string with a full path and file name to pre-select this file 
+   * at request opening time. If empty or invalid, no file is pre-
+   * selected.
+   *
    * @returns
-   * Selected filename or empty string if dialog was canceled by the 
-   * user
+   * Full path to the selected file or an empty string if dialog was 
+   * canceled by the user.
    */
-  SimpleString SelectFileName(SimpleString p_Title);
+  SimpleString SelectFile(const SimpleString& p_Title, 
+    const SimpleString& p_InitialFileFullPath);
 
 private:
   struct Window* m_pIntuiWindow;
