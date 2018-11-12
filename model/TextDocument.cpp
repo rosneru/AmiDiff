@@ -1,4 +1,4 @@
-#include "DosFile.h"
+#include "AmigaFile.h"
 #include "TextDocument.h"
 #include <stdio.h>
 
@@ -31,21 +31,21 @@ bool TextDocument::Load(const SimpleString& p_FileName)
   Clear();
 
   // Open file
-  DosFile dosFile;
-  if(dosFile.Open(p_FileName.C_str(), DosFile::AM_OldFile) == false)
+  AmigaFile file;
+  if(file.Open(p_FileName.C_str(), AmigaFile::AM_OldFile) == false)
   {
     return false;
   }
 
   // Read line by line into list
-  bool bSuccess = dosFile.ReadLines(m_Lines);
+  bool bSuccess = file.ReadLines(m_Lines);
   if(bSuccess == true)
   {
     m_FileName = p_FileName;
   }
 
-  m_TimeStatistics += dosFile.GetTimeStatistics();
-  dosFile.Close();
+  m_TimeStatistics += file.GetTimeStatistics();
+  file.Close();
   return bSuccess;
 }
 

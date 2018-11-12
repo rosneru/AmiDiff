@@ -1,6 +1,4 @@
-#include "DosFile.h"
 #include "Document.h"
-
 
 Document::Document()
 {

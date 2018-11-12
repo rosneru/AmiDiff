@@ -1,8 +1,8 @@
 #include <clib/dos_protos.h>
 #include "StopWatch.h"
-#include "DosFile.h"
+#include "AmigaFile.h"
 
-DosFile::DosFile()
+AmigaFile::AmigaFile()
   : MAX_LINE_LENGTH(512), // TODO A better solution needed?
     m_pLineBuf(new char[MAX_LINE_LENGTH]),
     m_pFile(NULL)
@@ -10,7 +10,7 @@ DosFile::DosFile()
 
 }
 
-DosFile::~DosFile()
+AmigaFile::~AmigaFile()
 {
   if(m_pLineBuf != NULL)
   {
@@ -18,7 +18,8 @@ DosFile::~DosFile()
   }
 }
 
-bool DosFile::Open(SimpleString p_FileName, AccessMode p_AccessMode)
+bool AmigaFile::Open(const SimpleString& p_FileName, 
+  AccessMode p_AccessMode)
 {
   if(m_pFile != NULL)
   {
@@ -62,7 +63,7 @@ bool DosFile::Open(SimpleString p_FileName, AccessMode p_AccessMode)
   return true;
 }
 
-void DosFile::Close()
+void AmigaFile::Close()
 {
   ::Close(m_pFile);
   m_pFile = NULL;
@@ -70,7 +71,7 @@ void DosFile::Close()
   m_TimeStatistics = "";
 }
 
-int DosFile::CountLines()
+int AmigaFile::CountLines()
 {
   if(m_pFile == NULL)
   {
@@ -106,16 +107,13 @@ int DosFile::CountLines()
 return numLines;
 }
 
-bool DosFile::ReadLines(LinkedList& p_List)
+bool AmigaFile::ReadLines(LinkedList& p_List)
 {
   if(m_pFile == NULL)
   {
     // File not opened
     return false;
   }
-
-  size_t readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a
-                                            // bug in AmigaOS v36/37
 
   // Rewind reading pointer to start of file
   Seek(m_pFile, 0, OFFSET_BEGINNING);
@@ -125,12 +123,10 @@ bool DosFile::ReadLines(LinkedList& p_List)
   stopWatch.Start();
 
   // Reading all lines and increment counter
-  while(FGets(m_pFile, m_pLineBuf, readBufSize) != NULL)
+  SimpleString line;
+  while(ReadLine(line))
   {
-    // Read the line into a string object
-    SimpleString line(m_pLineBuf);  // TODO optimize to save time
-    SimpleString* pNewLineStr = new SimpleString(line.Trim());
-    p_List.InsertTail(pNewLineStr);
+    p_List.InsertTail(new SimpleString(line));
   }
 
   // Stop StopWatch and store statistic informations
@@ -141,10 +137,35 @@ bool DosFile::ReadLines(LinkedList& p_List)
   m_TimeStatistics += elapsed;
   m_TimeStatistics += " milliseconds\n";
 
+  // Rewind reading pointer to start of file
+  Seek(m_pFile, 0, OFFSET_BEGINNING);
+
   return true;
 }
 
-SimpleString DosFile::GetTimeStatistics()
+bool AmigaFile::ReadLine(SimpleString& p_Line)
+{
+  if(m_pFile == NULL)
+  {
+    // File not opened
+    return false;
+  }
+
+  size_t readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a
+                                            // bug in AmigaOS v36/37
+
+  if(FGets(m_pFile, m_pLineBuf, readBufSize) == NULL)
+  {
+    return false;
+  }
+
+  SimpleString line(m_pLineBuf);  // TODO optimize to save time
+  p_Line = line.Trim();
+
+  return true;
+}
+
+SimpleString AmigaFile::GetTimeStatistics()
 {
   return m_TimeStatistics;
 }

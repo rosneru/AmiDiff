@@ -1,5 +1,5 @@
-#ifndef DOS_FILE_H
-#define DOS_FILE_H
+#ifndef AMIGA_FILE_H
+#define AMIGA_FILE_H
 
 #include <libraries/dos.h>
 #include "LinkedList.h"
@@ -11,11 +11,11 @@
  * @author Uwe Rosner
  * @date 18/10/2018
  */
-class DosFile
+class AmigaFile
 {
 public:
-  DosFile();
-  virtual ~DosFile();
+  AmigaFile();
+  virtual ~AmigaFile();
 
   /**
    * Wrapper for the AmigaOS Access modes
@@ -43,7 +43,8 @@ public:
    * @returns
    * If file successfully opened: true; if not: false
    */
-  bool Open(SimpleString p_FileName, AccessMode p_AccessMode = AM_OldFile);
+  bool Open(const SimpleString& p_FileName,
+    AccessMode p_AccessMode = AM_OldFile);
 
   /**
    * Closes the file
@@ -72,6 +73,17 @@ public:
    * List to store the lines
    */
   bool ReadLines(LinkedList& p_List);
+
+  /**
+   * Reads the next line from file
+   *
+   * @param p_Line
+   * Reference to a string variable to read into
+   *
+   * @returns
+   * true when reading was successful or false if eof or file not open
+   */
+  bool ReadLine(SimpleString& p_Line);
 
   /**
    * Returns a string with statistical informations about e.g. how long
