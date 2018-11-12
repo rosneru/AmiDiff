@@ -214,12 +214,13 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         {
           // Diff was successful. Left and right diff windows should
           // be open now, so this window can be closed
+          enableAll();
           Close();
         }
         else
         {
           // TODO FileRequest to inform the user about diff error
-          // TODO enableAll();
+          enableAll();
         }
       }
       else if(pGadget->GadgetID == GID_LeftFileString)

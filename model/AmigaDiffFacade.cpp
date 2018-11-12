@@ -1,7 +1,7 @@
 #include "DiffEngine.h"
 #include "AmigaDiffFacade.h"
 
-AmigaDiffFacade::AmigaDiffFacade(TextWindow& p_LeftWindow, 
+AmigaDiffFacade::AmigaDiffFacade(TextWindow& p_LeftWindow,
   TextWindow& p_RightWindow)
   : m_LeftWindow(p_LeftWindow),
     m_RightWindow(p_RightWindow),
@@ -68,10 +68,10 @@ bool AmigaDiffFacade::Diff()
   }
 
   DiffEngine diffEngine;
-  bool diffOk = diffEngine.Diff( 
+  bool diffOk = diffEngine.Diff(
     m_LeftSrcPartition, m_RightSrcPartition,
     m_LeftDiffPartition, m_RightDiffPartition);
-  
+
   if(!diffOk)
   {
     m_ErrorText = "Error while performing the diff.";
@@ -85,11 +85,15 @@ bool AmigaDiffFacade::Diff()
   m_pLeftDiffDocument = new DiffDocument(m_LeftDiffPartition);
   m_pRightDiffDocument = new DiffDocument(m_RightDiffPartition);
 
-  m_LeftWindow.SetContent(m_pLeftDiffDocument);
-  m_RightWindow.SetContent(m_pRightDiffDocument);
+  m_LeftWindow.SetTitle(LeftFilePath());
+  m_RightWindow.SetTitle(RightFilePath());
 
   m_LeftWindow.Open(NULL, WindowBase::IWP_Left);
   m_RightWindow.Open(NULL, WindowBase::IWP_Right);
+
+  m_LeftWindow.SetContent(m_pLeftDiffDocument);
+  m_RightWindow.SetContent(m_pRightDiffDocument);
+
 
   return true;
 }

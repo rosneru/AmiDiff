@@ -1,5 +1,5 @@
-#ifndef DOS_FILE_H
-#define DOS_FILE_H
+#ifndef AMIGA_FILE_H
+#define AMIGA_FILE_H
 
 #include <libraries/dos.h>
 #include "LinkedList.h"
@@ -43,7 +43,7 @@ public:
    * @returns
    * If file successfully opened: true; if not: false
    */
-  bool Open(const SimpleString& p_FileName, 
+  bool Open(const SimpleString& p_FileName,
     AccessMode p_AccessMode = AM_OldFile);
 
   /**
@@ -76,10 +76,10 @@ public:
 
   /**
    * Reads the next line from file
-   * 
+   *
    * @param p_Line
    * Reference to a string variable to read into
-   * 
+   *
    * @returns
    * true when reading was successful or false if eof or file not open
    */

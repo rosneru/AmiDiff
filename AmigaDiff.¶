@@ -74,7 +74,7 @@ Linker
 Run
 30 "" "" "" 0
 "Diff"
-linkesFile.txt rechtesFile.txt
+testfiles/Left02.txt testfiles/Right02.txt
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 1 0
 0 0 0 "" ""
@@ -113,21 +113,21 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "amigautils/AmigaFile.cpp"
+"amigautils/AmigaFile.cpp"
+"amigautils/StopWatch.h"
+"amigautils/AmigaFile.h"
+"oscottlibs/LinkedListNode.h"
+Storm Shell Project (Dependencies)
+"objects_debug/AmigaFile.o" "objects_debug/AmigaFile.debug"
+""
+1 1
+File
 1 "amigautils/AslFileRequest.cpp"
 "amigautils/AslFileRequest.cpp"
 "amigautils/AslFileRequest.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AslFileRequest.o" "objects_debug/AslFileRequest.debug"
-""
-1 1
-File
-1 "amigautils/DosFile.cpp"
-"amigautils/DosFile.cpp"
-"amigautils/StopWatch.h"
-"amigautils/DosFile.h"
-"oscottlibs/LinkedListNode.h"
-Storm Shell Project (Dependencies)
-"objects_debug/DosFile.o" "objects_debug/DosFile.debug"
 ""
 1 1
 File
@@ -157,8 +157,6 @@ Storm Shell Project (Dependencies)
 File
 1 "commands/CmdOpenWindow.cpp"
 "commands/Command.h"
-"oscottlibs/LinkedListNode.h"
-"model/Document.h"
 "gui/AppScreen.h"
 "commands/CmdOpenWindow.cpp"
 "commands/CmdOpenWindow.h"
@@ -178,6 +176,7 @@ File
 "gui/WindowBase.h"
 "gui/AppMenu.h"
 "model/DiffDocument.h"
+"model/TextDocument.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdPerformDiff.o" "objects_debug/CmdPerformDiff.debug"
 ""
@@ -328,7 +327,6 @@ Storm Shell Project (Dependencies)
 File
 1 "model/Document.cpp"
 "model/Document.cpp"
-"oscottlibs/LinkedListNode.h"
 "model/Document.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Document.o" "objects_debug/Document.debug"
@@ -374,15 +372,15 @@ Section
 0 1 1 0
 2
 File
-2 "amigautils/AslFileRequest.h"
-"amigautils/AslFileRequest.h"
+2 "amigautils/AmigaFile.h"
+"amigautils/AmigaFile.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
-2 "amigautils/DosFile.h"
-"amigautils/DosFile.h"
+2 "amigautils/AslFileRequest.h"
+"amigautils/AslFileRequest.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
