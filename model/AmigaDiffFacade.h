@@ -1,7 +1,9 @@
 #ifndef AMIGA_DIFF_FACADE_H
 #define AMIGA_DIFF_FACADE_H
 
+#include "DiffDocument.h"
 #include "DiffFilePartition.h"
+#include "DiffFilePartitionAmiga.h"
 #include "SimpleString.h"
 #include "TextWindow.h"
 
@@ -17,6 +19,7 @@ class AmigaDiffFacade
 {
 public:
   AmigaDiffFacade(TextWindow& p_LeftWindow, TextWindow& p_RightWindow);
+  ~AmigaDiffFacade();
 
   void SetLeftFilePath(const char* p_pLeftFilePath);
   const SimpleString& LeftFilePath();
@@ -40,21 +43,31 @@ public:
    * Returns the diff partition for left file or NULL if no diff was
    * performed.
    */
-  DiffFilePartition* LeftFileDiff();
+  DiffFilePartition& LeftFileDiff();
 
   /**
    * Returns the diff partition for right file or NULL if no diff was
    * performed.
    */
-  DiffFilePartition* RightFileDiff();
+  DiffFilePartition& RightFileDiff();
 
 private:
-  SimpleString m_LeftFilePath;
-  SimpleString m_RightFilePath;
-  DiffFilePartition* m_pLeftFileDiff;
-  DiffFilePartition* m_pRightFileDiff;
   TextWindow& m_LeftWindow;
   TextWindow& m_RightWindow;
+
+  SimpleString m_LeftFilePath;
+  SimpleString m_RightFilePath;
+
+  DiffFilePartitionAmiga m_LeftSrcPartition;
+  DiffFilePartitionAmiga m_RightSrcPartition;
+ 
+  DiffFilePartition m_LeftDiffPartition;
+  DiffFilePartition m_RightDiffPartition;
+
+  DiffDocument* m_pLeftDiffDocument;
+  DiffDocument* m_pRightDiffDocument;
+
+  void dispose();
 };
 
 #endif // AMIGA_DIFF_FACADE_H
