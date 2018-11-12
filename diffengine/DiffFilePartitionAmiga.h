@@ -15,7 +15,7 @@
 class DiffFilePartitionAmiga : public DiffFilePartition
 {
 public:
-  bool PreProcess(const SimpleString& p_fileName);
+  bool PreProcess(const SimpleString& p_FileName);
 };
 
 #endif // DIFF_FILE_PARTITION_AMIGA_H

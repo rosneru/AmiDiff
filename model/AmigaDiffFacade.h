@@ -27,6 +27,8 @@ public:
   void SetRightFilePath(const char* p_pRightFilePath);
   const SimpleString& RightFilePath();
 
+  const SimpleString& ErrorText();
+
 
   /**
    * Performs the diff using LeftFilePath and RightFilePath as input
@@ -66,6 +68,8 @@ private:
 
   DiffDocument* m_pLeftDiffDocument;
   DiffDocument* m_pRightDiffDocument;
+
+  SimpleString m_ErrorText;
 
   void disposeDocuments();
 };

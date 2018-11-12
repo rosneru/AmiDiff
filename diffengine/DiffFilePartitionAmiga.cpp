@@ -1,26 +1,21 @@
+#include "AmigaFile.h"
 #include "DiffFilePartitionAmiga.h"
 
-bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_fileName)
+bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
 {
+  AmigaFile file;
+  if(!file.Open(p_FileName, AmigaFile::AM_OldFile))
+  {
+  	return false;
+  }
 
-	// // read the file first,
-	// // and build the table of tokens
+  SimpleString line;
+  while(file.ReadLine(line))
+  {
+	AddString(new SimpleString(line));
+  }
 
-	// CStdioFile f;
-	// if ( !f.Open(szFilename, CFile::modeRead) )
-	// {
-	// 	TCHAR szError[MAX_PATH];
-	// 	sprintf(szError, "error : cannot open %s\r\n", szFilename.GetBuffer(0) );
-	// 	OutputDebugString(szError);
-	// 	return FALSE;
-	// }
+  file.Close();
 
-	// // 
-	// CString s;
-	// while ( f.ReadString(s) )
-	// 	AddString(s);
-
-	// f.Close();
-
-	return true;
+  return true;
 }

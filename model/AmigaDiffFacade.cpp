@@ -35,22 +35,35 @@ const SimpleString& AmigaDiffFacade::RightFilePath()
   return m_RightFilePath;
 }
 
+const SimpleString& AmigaDiffFacade::ErrorText()
+{
+  return m_ErrorText;
+}
+
 
 bool AmigaDiffFacade::Diff()
 {
-  if(m_LeftFilePath.Length() == 0 ||
-     m_RightFilePath.Length() == 0)
+  if(m_LeftFilePath.Length() == 0)
   {
+    m_ErrorText = "Left file is empty.";
+    return false;
+  }
+
+  if(m_RightFilePath.Length() == 0)
+  {
+    m_ErrorText = "Right file is empty.";
     return false;
   }
 
   if(m_LeftSrcPartition.PreProcess(m_LeftFilePath) == false)
   {
+    m_ErrorText = "Error in pre-processing the left file. Maybe a read/write error?";
     return false;
   }
 
   if(m_RightSrcPartition.PreProcess(m_RightFilePath) == false)
   {
+    m_ErrorText = "Error in pre-processing the right file. Maybe a read/write error?";
     return false;
   }
 
@@ -61,8 +74,11 @@ bool AmigaDiffFacade::Diff()
   
   if(!diffOk)
   {
+    m_ErrorText = "Error while performing the diff.";
     return false;
   }
+
+  m_ErrorText = "";
 
   disposeDocuments();
 
@@ -73,7 +89,7 @@ bool AmigaDiffFacade::Diff()
   m_RightWindow.SetContent(m_pRightDiffDocument);
 
   m_LeftWindow.Open(NULL, WindowBase::IWP_Left);
-  m_LeftWindow.Open(NULL, WindowBase::IWP_Right);
+  m_RightWindow.Open(NULL, WindowBase::IWP_Right);
 
   return true;
 }
