@@ -379,9 +379,15 @@ bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
     return false;
   }
 
-  // TODO Is selectedFile copied or only referenced? If only referenced
-  //      this will crash probably because the selectedFile is
-  //      destroyed after leaving the method scope.
+  // Note: This will copy selectedFile to the target of p_FilePath 
+  //       (the variable p_FilePath points to).
+  //       @see  SimpleString& operator=(const SimpleString& p_Other);
+  //
+  //       The reference itself is not rebound to p_FilePath as by  
+  //       design refereces can't be rebound after initialization.
+  //
+  //       Because of the copying p_FilePath will 'point to' the valid 
+  //       copied value of selectedFile after leaving the method scope.
   p_FilePath = selectedFile;
 
   enableAllButtonsAndMenuQuit();

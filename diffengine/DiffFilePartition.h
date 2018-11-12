@@ -44,7 +44,7 @@ public:
   DiffLine::LineState GetIndexedLineState(size_t p_Index);
 
   bool PreProcess();
-  virtual bool PreProcess(const SimpleString& p_fileName);
+  //virtual bool PreProcess(const SimpleString& p_fileName);
 
   bool MatchLine(long i1, DiffFilePartition& p_OtherFile, long& i2);
 
