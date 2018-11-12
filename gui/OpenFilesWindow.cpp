@@ -369,7 +369,7 @@ bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
   disableAllButtonsAndMenuQuit();
 
   AslFileRequest request(IntuiWindow());
-  SimpleString selectedFile = request.SelectFileName(p_RequestTitle);
+  SimpleString selectedFile = request.SelectFile(p_RequestTitle, p_FilePath);
 
   if(selectedFile.Length() == 0)
   {

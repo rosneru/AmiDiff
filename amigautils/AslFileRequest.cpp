@@ -18,21 +18,32 @@ AslFileRequest::~AslFileRequest()
 
 }
 
-SimpleString AslFileRequest::SelectFileName(const SimpleString& p_Title)
+SimpleString AslFileRequest::SelectFile(const SimpleString& p_Title, 
+  const SimpleString& p_InitialFileFullPath)
 {
-  SimpleString fileName = "";
+  SimpleString selectedFileFullPath = "";
+  
+  SimpleString initialFilePart = "";
+  SimpleString initialPathPart = "";
+  if(p_InitialFileFullPath.Length() > 0)
+  {
+    initialPathPart = PathPart(p_InitialFileFullPath.C_str());
+    initialFilePart = FilePart(p_InitialFileFullPath.C_str());
+  }
 
   // Allocate data structure for the ASL requester
   struct FileRequester* pFileRequest = (struct FileRequester*)
     AllocAslRequestTags(
       ASL_FileRequest,
-      ASL_Hail, (ULONG)p_Title.C_str(),
+      ASL_Hail, (ULONG) p_Title.C_str(),
+      ASL_Dir, (ULONG) initialPathPart.C_str(), 
+      ASL_File, (ULONG) initialFilePart.C_str(), 
       TAG_DONE);
 
   if(pFileRequest == NULL)
   {
     // Data struct allocation failed
-    return fileName;
+    return selectedFileFullPath;
   }
 
   // Open the file requester and wait until the user selected a file
@@ -41,7 +52,7 @@ SimpleString AslFileRequest::SelectFileName(const SimpleString& p_Title)
   {
     // Requester opening failed
     FreeAslRequest(pFileRequest);
-    return fileName;
+    return selectedFileFullPath;
   }
 
   // Copying selected path name into a big enough buffer
@@ -53,10 +64,10 @@ SimpleString AslFileRequest::SelectFileName(const SimpleString& p_Title)
   // Calling a dos.library function to combine path and file name
   if(AddPart(fullPathBuf, pFileRequest->fr_File, 512))
   {
-   fileName = fullPathBuf;
+   selectedFileFullPath = fullPathBuf;
   }
 
   FreeAslRequest(pFileRequest);
 
-  return fileName;
+  return selectedFileFullPath;
 }
