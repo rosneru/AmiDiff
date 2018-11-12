@@ -60,14 +60,14 @@ private:
 
   DiffFilePartitionAmiga m_LeftSrcPartition;
   DiffFilePartitionAmiga m_RightSrcPartition;
- 
+
   DiffFilePartition m_LeftDiffPartition;
   DiffFilePartition m_RightDiffPartition;
 
   DiffDocument* m_pLeftDiffDocument;
   DiffDocument* m_pRightDiffDocument;
 
-  void dispose();
+  void disposeDocuments();
 };
 
 #endif // AMIGA_DIFF_FACADE_H
