@@ -113,11 +113,15 @@ bool Application::Run()
   m_RightWin.SetMenu(&m_Menu);
   m_OpenFilesWin.SetMenu(&m_Menu);
 
-//  m_LeftWin.SetTitle("Left diff win");
-//  m_LeftWin.Open(NULL, WindowBase::IWP_FixedLeft);
+  //
+  // Prepare the left and right TextWindows and open the OpenFileWindow
+  //
+  m_LeftWin.SetInitialPosition(WindowBase::IP_Left);
+  m_LeftWin.SetFixed(true);
 
-//  m_RightWin.SetTitle("Right diff win");
-//  m_RightWin.Open(NULL, WindowBase::IWP_FixedRight);
+  m_RightWin.SetInitialPosition(WindowBase::IP_Right);
+  m_RightWin.SetFixed(true);
+
 
   m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
 

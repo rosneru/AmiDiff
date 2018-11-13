@@ -12,7 +12,7 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
   SimpleString line;
   while(file.ReadLine(line))
   {
-	AddString(new SimpleString(line));
+	  AddString(new SimpleString(line));
   }
 
   file.Close();
