@@ -12,8 +12,8 @@ public:
   virtual bool Load(const SimpleString& p_FileName) = 0;
   virtual void Clear() = 0;
 
-  const SimpleString& FileName();
-  const SimpleString& TimeStatistics();
+  const SimpleString& FileName() const;
+  void SetFileName(const SimpleString& p_FileName);
 
 protected:
   SimpleString m_FileName;
