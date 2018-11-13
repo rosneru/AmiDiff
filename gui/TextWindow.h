@@ -44,8 +44,7 @@ public:
    * @returns
    * false if opening fails
    */
-  bool Open(APTR p_pUserDataMenuItemToDisable = NULL,
-    InitialWindowPosition p_pInitialPosition = IWP_Center);
+  bool Open(APTR p_pMenuItemDisableAtOpen);
 
   /**
    * Open a text file
@@ -85,7 +84,6 @@ public:
 
 
 private:
-  bool m_bInitialized;
   TextDocument* m_pDocument;
 
   /**

@@ -18,8 +18,16 @@ WindowBase::WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : m_AppScreen(p_AppScreen),
     m_pMsgPort(p_pMsgPort),
     m_pWindow(NULL),
+    m_pFirstGadget(NULL),
+    m_WinWidth(160),
+    m_WinHeight(120),
     m_pMenu(NULL),
-    m_pUserDataMenuItemToDisable(NULL)
+    m_bInitialized(false),
+    m_bIsFixed(false),
+    m_InitialPosition(IP_Center),
+    m_WindowFlags(0),
+    m_WindowIdcmp(0),
+    m_pMenuItemDisableAtOpen(NULL)
 {
 
 }
@@ -29,20 +37,95 @@ WindowBase::~WindowBase()
   Close();
 }
 
-bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
-    InitialWindowPosition p_pInitialPosition = IWP_Center)
+bool WindowBase::Open(APTR p_pMenuItemDisableAtOpen)
 {
-  m_pUserDataMenuItemToDisable = p_pUserDataMenuItemToDisable;
+  m_pMenuItemDisableAtOpen = p_pMenuItemDisableAtOpen;
+
   //
-  // Opening the window has to be done in ::Open of the derived classes.
-  // Then these classes have to call this to auto-add menus etc.
+  // Initial validations
   //
+
+  if(IsOpen())
+  {
+    // Not opening the window if it is already open
+    // TODO Alternatively: bring window to front and return true;
+    return false;
+  }
+
+  if(!m_bInitialized)
+  {
+    initialize();
+  }
+
+  //
+  // Calculating window size etc in dependency of screen dimensions
+  //
+  int screenWidth = m_AppScreen.IntuiScreen()->Width;
+  int screenHeight = m_AppScreen.IntuiScreen()->Height;
+  int screenBarHeight = m_AppScreen.IntuiScreen()->BarHeight;
+
+  int winWidth = screenWidth / 2;
+  int winHeight = screenHeight - screenBarHeight - 1;
+
+  int winLeft = 0;
+  int winTop = 0;
+
+  switch(m_InitialPosition)
+  {
+    case IP_Center:
+      winTop = screenHeight / 2 - m_WinHeight / 2;
+      winLeft = screenWidth / 2 - m_WinWidth / 2;
+      break;
+
+    case IP_Left:
+      winTop = screenBarHeight + 1;
+      winLeft = 0;
+      break;
+
+    case IP_Right:
+      winTop = screenBarHeight + 1;
+      winLeft = winWidth;
+      break;
+  }
+
+  if(!m_bIsFixed)
+  {
+    // Add a dragbar -> make window moveable
+    m_WindowFlags |= WFLG_DRAGBAR;
+  }
+
+  //
+  // Opening the window 
+  //
+  m_pWindow = OpenWindowTags(NULL,
+    WA_Left, winLeft,
+    WA_Top, winTop,
+    WA_Width, m_WinWidth,
+    WA_Height, m_WinHeight,
+    WA_Title, (ULONG) m_Title.C_str(),
+    WA_Activate, TRUE,
+    WA_PubScreen, (ULONG) m_AppScreen.IntuiScreen(),
+    WA_Flags, m_WindowFlags,
+    WA_SimpleRefresh, TRUE,
+		WA_MinWidth, 120,
+		WA_MinHeight, 90,
+		WA_MaxWidth, -1,
+		WA_MaxHeight, -1,
+    WA_NewLookMenus, TRUE,          // Ignored before v39
+    WA_Gadgets, m_pFirstGadget,
+    TAG_END);
 
   if(!IsOpen())
   {
     // Opening failed
     return false;
   }
+
+    // The window should be using this message port which might be shared
+  // with other windows
+  m_pWindow->UserPort = m_pMsgPort;
+
+  ModifyIDCMP(m_pWindow, m_WindowIdcmp);
 
   if(m_pMenu == NULL)
   {
@@ -57,9 +140,9 @@ bool WindowBase::Open(APTR p_pUserDataMenuItemToDisable = NULL,
     return false;
   }
 
-  if(p_pUserDataMenuItemToDisable != NULL)
+  if(p_pMenuItemDisableAtOpen != NULL)
   {
-    m_pMenu->DisableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
+    m_pMenu->DisableMenuItem(m_pWindow, m_pMenuItemDisableAtOpen);
   }
 
   return true;
@@ -72,9 +155,9 @@ void WindowBase::Close()
     return;
   }
 
-  if(m_pMenu != NULL && m_pUserDataMenuItemToDisable != NULL)
+  if(m_pMenu != NULL && m_pMenuItemDisableAtOpen != NULL)
   {
-    m_pMenu->EnableMenuItem(m_pWindow, m_pUserDataMenuItemToDisable);
+    m_pMenu->EnableMenuItem(m_pWindow, m_pMenuItemDisableAtOpen);
   }
 
   if(m_pMenu != NULL)
@@ -108,6 +191,26 @@ void WindowBase::SetTitle(SimpleString p_NewTitle)
   // Call intuition function to set the window title
   // Note the ~0 inverts the value and is a value of -1
   SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
+}
+
+void WindowBase::SetInitialPosition(InitialPosition p_InitialPosition)
+{
+  if(IsOpen())
+  {
+    return;
+  }
+
+  m_InitialPosition = p_InitialPosition;
+}
+
+void WindowBase::SetFixed(bool p_bFixWindow)
+{
+  if(IsOpen())
+  {
+    return;
+  }
+
+  m_bIsFixed = p_bFixWindow;
 }
 
 struct Window* WindowBase::IntuiWindow()
@@ -148,6 +251,24 @@ void WindowBase::SetMenu(AppMenu* p_pMenu)
   m_pMenu->AttachToWindow(m_pWindow);
   return;
 }
+
+
+void WindowBase::setFlags(ULONG p_Flags)
+{
+  m_WindowFlags = p_Flags;
+}
+
+
+void WindowBase::setIDCMP(ULONG p_Idcmp)
+{
+  m_WindowIdcmp = p_Idcmp;
+}
+
+void WindowBase::setFirstGadget(struct Gadget* p_pFirstGadget)
+{
+  m_pFirstGadget = p_pFirstGadget;
+}
+
 
 struct Image* WindowBase::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
 {

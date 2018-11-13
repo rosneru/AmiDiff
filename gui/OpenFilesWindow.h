@@ -45,11 +45,9 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(APTR p_pUserDataMenuItemToDisable = NULL,
-    InitialWindowPosition p_pInitialPosition = IWP_Center);
+  bool Open(APTR p_pMenuItemDisableAtOpen);
 
 private:
-  bool m_bInitialized;
   bool m_bFileRequestOpen;
 
   /**
@@ -70,8 +68,6 @@ private:
 
 
   WORD m_FontHeight;  ///> Height of current text font
-  WORD m_WinWidth;
-  WORD m_WinHeight;
 
   struct Gadget* m_pGadgetList;
   struct Gadget* m_pLeftFileStringGadget;

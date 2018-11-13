@@ -18,11 +18,8 @@
 OpenFilesWindow::OpenFilesWindow(AppScreen& p_AppScreen,
     struct MsgPort* p_pMsgPort, AmigaDiffFacade& p_DiffFacade)
   : WindowBase(p_AppScreen, p_pMsgPort),
-    m_bInitialized(false),
     m_bFileRequestOpen(false),
     m_DiffFacade(p_DiffFacade),
-    m_WinWidth(120),
-    m_WinHeight(120),
     m_pGadgetList(NULL),
     m_pLeftFileStringGadget(NULL),
     m_pRightFileStringGadget(NULL),
@@ -62,76 +59,12 @@ void OpenFilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
-    InitialWindowPosition p_pInitialPosition = IWP_Center)
+bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
 {
-  //
-  // Initial validations
-  //
-
-  if(IsOpen())
-  {
-    // Not opening the window if it is already open
-    // TODO Alternatively: bring window to front and return true;
-    return false;
-  }
-
-  if(!m_bInitialized)
-  {
-    initialize();
-  }
-
-  //
-  // Calculating window size etc in dependency of screen dimensions
-  //
-  int screenWidth = m_AppScreen.IntuiScreen()->Width;
-  int screenHeight = m_AppScreen.IntuiScreen()->Height;
-
-  int winLeft = screenWidth / 2 - m_WinWidth / 2;
-  int winTop = screenHeight / 2 - m_WinHeight / 2;
-
-  //
-  // Opening the window
-  //
-  m_pWindow = OpenWindowTags(NULL,
-    WA_Left, winLeft,
-    WA_Top, winTop,
-    WA_Width, m_WinWidth,
-    WA_Height, m_WinHeight,
-    WA_Title, (ULONG) "Open the files to diff",
-    WA_Activate, TRUE,
-    WA_PubScreen, (ULONG) m_AppScreen.IntuiScreen(),
-    WA_Flags,
-      WFLG_CLOSEGADGET |    // Add a close gadget
-      WFLG_DRAGBAR |        // Add a drag gadget
-      WFLG_DEPTHGADGET,     // Add a depth gadget
-    WA_SimpleRefresh, TRUE,
-		WA_MinWidth, 120,
-		WA_MinHeight, 90,
-		WA_MaxWidth, -1,
-		WA_MaxHeight, -1,
-    WA_NewLookMenus, TRUE,          // Ignored before v39
-    WA_Gadgets, m_pGadgetList,
-    TAG_END);
-
-  if(m_pWindow == NULL)
+  if(WindowBase::Open(p_pUserDataMenuItemToDisable) == false)
   {
     return false;
   }
-
-  // The window should be using this message port which might be shared
-  // with other windows
-  m_pWindow->UserPort = m_pMsgPort;
-
-  // Setting up the window's IDCMP flags
-  ULONG flags = IDCMP_MENUPICK |      // Inform us about menu selection
-                IDCMP_VANILLAKEY |    // Inform us about RAW key press
-                IDCMP_RAWKEY |        // Inform us about printable key press
-                IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
-                IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
-                BUTTONIDCMP;          // Inform us about GadTools button events
-
-  ModifyIDCMP(m_pWindow, flags);
 
   // Set the Diff button to an initial enabled / disabled state
   setDiffButtonState();
@@ -139,7 +72,7 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   setStringGadgetText(m_pLeftFileStringGadget, m_DiffFacade.LeftFilePath());
   setStringGadgetText(m_pRightFileStringGadget, m_DiffFacade.RightFilePath());
 
-  return WindowBase::Open(p_pUserDataMenuItemToDisable, p_pInitialPosition);
+  return true;
 }
 
 void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
@@ -388,6 +321,25 @@ void OpenFilesWindow::initialize()
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
   m_WinHeight = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
+
+  // Setting window title
+  SetTitle("Open the files to diff");
+
+  // Setting the window flags
+  setFlags(WFLG_CLOSEGADGET |     // Add a close gadget
+           WFLG_DRAGBAR |         // Add a drag gadget
+           WFLG_DEPTHGADGET);     // Add a depth gadget
+
+  // Setting the IDCMP messages we want to receive for this window
+  setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
+           IDCMP_VANILLAKEY |     // Inform us about RAW key press
+           IDCMP_RAWKEY |         // Inform us about printable key press
+           IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
+           IDCMP_REFRESHWINDOW |  // Inform us when refreshing is necessary
+           BUTTONIDCMP);          // Inform us about GadTools button events
+
+  // Setting the first gadget of the gadet list for the window
+  setFirstGadget(m_pGadgetList);
 
   m_bInitialized = true;
 }

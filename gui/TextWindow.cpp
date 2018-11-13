@@ -13,7 +13,6 @@
 
 TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : WindowBase(p_AppScreen, p_pMsgPort),
-    m_bInitialized(false),
     m_pDocument(NULL),
     m_MaxWindowTextLines(0),
     m_Y(0),
@@ -138,118 +137,12 @@ void TextWindow::Refresh()
   EndRefresh(m_pWindow, TRUE);
 }
 
-bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
-    InitialWindowPosition p_pInitialPosition = IWP_Center)
+bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
 {
-  //
-  // Initial validations
-  //
-  if(IsOpen())
-  {
-    // Not opening the window if it is already open
-    // TODO Alternatively: bring window to front and return true;
-    return false;
-  }
-
-  if(!m_bInitialized)
-  {
-    initialize();
-  }
-
-  //
-  // Calculating window size etc in dependency of screen dimensions
-  //
-  int screenWidth = m_AppScreen.IntuiScreen()->Width;
-  int screenHeight = m_AppScreen.IntuiScreen()->Height;
-  int screenBarHeight = m_AppScreen.IntuiScreen()->BarHeight;
-
-  int winWidth = screenWidth / 2;
-  int winHeight = screenHeight - screenBarHeight - 1;
-
-  int activateWin = TRUE;
-  int winLeft = 0;
-
-  if(m_Title.Length() == 0)
-  {
-    // Default title if none has been set
-    m_Title = "TextWindow";
-  }
-
-  bool addDragBar = true;
-
-  switch(p_pInitialPosition)
-  {
-    case IWP_FixedCenter:
-      addDragBar = false; // Window not moveable
-    case IWP_Center:
-      winLeft = screenWidth / 4;
-      break;
-
-    case IWP_FixedLeft:
-      addDragBar = false; // Window not moveable
-    case IWP_Left:
-      winLeft = 0;
-      break;
-
-    case IWP_FixedRight: // Window not moveable
-      addDragBar = false;
-    case IWP_Right:
-      winLeft = winWidth;
-      break;
-  }
-
-  long windowFlags =
-    WFLG_CLOSEGADGET |    // Add a close gadget
-    WFLG_DEPTHGADGET |    // Add a depth gadget
-    WFLG_SIZEGADGET |     // Add a size gadget
-    WFLG_GIMMEZEROZERO;   // Different layers for border and content
-
-  if(addDragBar == true)
-  {
-    // Add a dragbar -> make window moveable
-    windowFlags |= WFLG_DRAGBAR;
-  }
-
-  //
-  // Opening the window
-  //
-  m_pWindow = OpenWindowTags(NULL,
-    WA_Left, winLeft,
-    WA_Top, screenBarHeight + 1,
-    WA_Width, winWidth,
-    WA_Height, winHeight,
-    WA_Title, (ULONG) m_Title.C_str(),
-    WA_Activate, activateWin,
-    WA_PubScreen, (ULONG) m_AppScreen.IntuiScreen(),
-    WA_Flags, windowFlags,
-    WA_SimpleRefresh, TRUE,
-		WA_MinWidth, 120,
-		WA_MinHeight, 90,
-		WA_MaxWidth, -1,
-		WA_MaxHeight, -1,
-    WA_NewLookMenus, TRUE,          // Ignored before v39
-    WA_Gadgets, m_pDownArrowButton,
-    TAG_END);
-
-  if(m_pWindow == NULL)
+  if(WindowBase::Open(p_pUserDataMenuItemToDisable) == false)
   {
     return false;
   }
-
-  // The window should be using this message port which might be shared
-  // with other windows
-  m_pWindow->UserPort = m_pMsgPort;
-
-  // Setting up the window's IDCMP flags
-  ULONG flags = IDCMP_MENUPICK |      // Inform us about menu selection
-                IDCMP_VANILLAKEY |    // Inform us about RAW key press
-                IDCMP_RAWKEY |        // Inform us about printable key press
-                IDCMP_CLOSEWINDOW |   // Inform us about click on close gadget
-                IDCMP_NEWSIZE |       // Inform us about resizing
-                IDCMP_REFRESHWINDOW | // Inform us when refreshing is necessary
-                IDCMP_IDCMPUPDATE;    // Inform us about TODO
-
-  ModifyIDCMP(m_pWindow, flags);
 
   // Calculate values needed for text scrolling
   m_ScrollXMax = m_pWindow->Width; //- m_pWindow->BorderRight - m_ScrollXMin;
@@ -278,7 +171,7 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable = NULL,
   m_IntuiText.ITextFont = &m_TextAttr;
   m_IntuiText.NextText  = NULL;
 
-  return WindowBase::Open(p_pUserDataMenuItemToDisable, p_pInitialPosition);
+  return WindowBase::Open(p_pUserDataMenuItemToDisable);
 }
 
 
@@ -515,6 +408,27 @@ void TextWindow::initialize()
     PGA_Visible, 100,
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
+
+  // Set the default title 
+  SetTitle("TextWindow");
+
+  // Setting the window flags
+  setFlags(WFLG_CLOSEGADGET |     // Add a close gadget
+           WFLG_DEPTHGADGET |     // Add a depth gadget
+           WFLG_SIZEGADGET |      // Add a size gadget
+           WFLG_GIMMEZEROZERO);   // Different layers for border and content
+
+  // Setting the IDCMP messages we want to receive for this window
+  setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
+           IDCMP_VANILLAKEY |     // Inform us about RAW key press
+           IDCMP_RAWKEY |         // Inform us about printable key press
+           IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
+           IDCMP_NEWSIZE |        // Inform us about resizing
+           IDCMP_REFRESHWINDOW |  // Inform us when refreshing is necessary
+           IDCMP_IDCMPUPDATE);    // Inform us about TODO
+
+  // Setting the first gadget of the gadet list for the window
+  setFirstGadget(m_pDownArrowButton);
 
   m_bInitialized = true;
 
