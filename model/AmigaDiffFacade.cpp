@@ -17,25 +17,25 @@ AmigaDiffFacade::~AmigaDiffFacade()
 
 void AmigaDiffFacade::SetLeftFilePath(const char* p_pLeftFilePath)
 {
-  m_LeftFilePath = SimpleString(p_pLeftFilePath);
+  m_LeftFilePath = p_pLeftFilePath;
 }
 
-const SimpleString& AmigaDiffFacade::LeftFilePath()
+const SimpleString& AmigaDiffFacade::LeftFilePath() const
 {
   return m_LeftFilePath;
 }
 
 void AmigaDiffFacade::SetRightFilePath(const char* p_pRightFilePath)
 {
-  m_RightFilePath = SimpleString(p_pRightFilePath);
+  m_RightFilePath = p_pRightFilePath;
 }
 
-const SimpleString& AmigaDiffFacade::RightFilePath()
+const SimpleString& AmigaDiffFacade::RightFilePath() const
 {
   return m_RightFilePath;
 }
 
-const SimpleString& AmigaDiffFacade::ErrorText()
+const SimpleString& AmigaDiffFacade::ErrorText() const
 {
   return m_ErrorText;
 }
@@ -45,13 +45,13 @@ bool AmigaDiffFacade::Diff()
 {
   if(m_LeftFilePath.Length() == 0)
   {
-    m_ErrorText = "Left file is empty.";
+    m_ErrorText = "Left file name not set.";
     return false;
   }
 
   if(m_RightFilePath.Length() == 0)
   {
-    m_ErrorText = "Right file is empty.";
+    m_ErrorText = "Right file iname not set.";
     return false;
   }
 

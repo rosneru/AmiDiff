@@ -22,12 +22,12 @@ public:
   ~AmigaDiffFacade();
 
   void SetLeftFilePath(const char* p_pLeftFilePath);
-  const SimpleString& LeftFilePath();
+  const SimpleString& LeftFilePath() const;
 
   void SetRightFilePath(const char* p_pRightFilePath);
-  const SimpleString& RightFilePath();
+  const SimpleString& RightFilePath() const;
 
-  const SimpleString& ErrorText();
+  const SimpleString& ErrorText() const;
 
 
   /**
