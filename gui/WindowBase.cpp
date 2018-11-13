@@ -64,9 +64,6 @@ bool WindowBase::Open(APTR p_pMenuItemDisableAtOpen)
   int screenHeight = m_AppScreen.IntuiScreen()->Height;
   int screenBarHeight = m_AppScreen.IntuiScreen()->BarHeight;
 
-  int winWidth = screenWidth / 2;
-  int winHeight = screenHeight - screenBarHeight - 1;
-
   int winLeft = 0;
   int winTop = 0;
 
@@ -78,13 +75,17 @@ bool WindowBase::Open(APTR p_pMenuItemDisableAtOpen)
       break;
 
     case IP_Left:
+      m_WinWidth = screenWidth / 2;
+      m_WinHeight = screenHeight - screenBarHeight - 1;
       winTop = screenBarHeight + 1;
       winLeft = 0;
       break;
 
     case IP_Right:
+      m_WinWidth = screenWidth / 2;
+      m_WinHeight = screenHeight - screenBarHeight - 1;
       winTop = screenBarHeight + 1;
-      winLeft = winWidth;
+      winLeft = m_WinWidth;
       break;
   }
 
@@ -95,7 +96,7 @@ bool WindowBase::Open(APTR p_pMenuItemDisableAtOpen)
   }
 
   //
-  // Opening the window 
+  // Opening the window
   //
   m_pWindow = OpenWindowTags(NULL,
     WA_Left, winLeft,

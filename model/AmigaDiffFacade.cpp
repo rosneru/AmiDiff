@@ -88,8 +88,13 @@ bool AmigaDiffFacade::Diff()
   m_pLeftDiffDocument->SetFileName(LeftFilePath());
   m_pRightDiffDocument->SetFileName(RightFilePath());
 
-  m_LeftWindow.Open(NULL, WindowBase::IWP_Left);
-  m_RightWindow.Open(NULL, WindowBase::IWP_Right);
+  m_LeftWindow.SetInitialPosition(WindowBase::IP_Left);
+  m_LeftWindow.SetFixed(true);
+  m_LeftWindow.Open();
+
+  m_RightWindow.SetInitialPosition(WindowBase::IP_Right);
+  m_RightWindow.SetFixed(true);
+  m_RightWindow.Open();
 
   m_LeftWindow.SetContent(m_pLeftDiffDocument);
   m_RightWindow.SetContent(m_pRightDiffDocument);
