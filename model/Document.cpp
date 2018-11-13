@@ -10,12 +10,12 @@ Document::~Document()
 
 }
 
-const SimpleString& Document::FileName()
+const SimpleString& Document::FileName() const
 {
   return m_FileName;
 }
 
-const SimpleString& Document::TimeStatistics()
+void Document::SetFileName(const SimpleString& p_FileName)
 {
-  return m_TimeStatistics;
+  m_FileName = p_FileName;
 }
