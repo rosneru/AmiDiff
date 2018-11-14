@@ -5,7 +5,7 @@
 #include "SimpleString.h"
 
 /**
- * Extends the DiffFilePartition::preprocess by Amiga file loading 
+ * Extends the DiffFilePartition::PreProcess with Amiga file loading 
  * functionality
  *
  *
