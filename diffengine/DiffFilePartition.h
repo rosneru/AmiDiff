@@ -30,18 +30,14 @@ public:
 
   size_t NumberOfLines();
 
-  const DiffLine* GetIndexedDiffLine(size_t p_Index);
-
-  const SimpleString* GetFirstRawLine();
-  DiffLine::LineState GetFirstLineState();
-  const SimpleString* GetCurrentRawLine();
-  DiffLine::LineState GetCurrentLineState();
-  const SimpleString* GetPreviousRawLine();
-  DiffLine::LineState GetPreviousLineState();
-  const SimpleString* GetNextRawLine();
-  DiffLine::LineState GetNextLineState();
   const SimpleString* GetIndexedRawLine(size_t p_Index);
   DiffLine::LineState GetIndexedLineState(size_t p_Index);
+
+  DiffLine* GetIndexedDiffLine(size_t p_Index);
+  DiffLine* GetFirstDiffLine();
+  DiffLine* GetNextDiffLine();
+  DiffLine* GetPreviousDiffLine();
+  DiffLine* GetCurrentDiffLine();
 
   bool PreProcess();
 

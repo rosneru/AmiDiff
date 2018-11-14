@@ -36,7 +36,7 @@ size_t DiffFilePartition::NumberOfLines()
 }
 
 
-const DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t p_Index)
+DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t p_Index)
 {
   if(m_pDiffLinesList == NULL || p_Index >= m_pDiffLinesList->Size())
   {
@@ -46,132 +46,44 @@ const DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t p_Index)
   return static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(p_Index));
 }
 
-const SimpleString* DiffFilePartition::GetFirstRawLine()
+DiffLine* DiffFilePartition::GetFirstDiffLine()
 {
   if(m_pDiffLinesList == NULL)
   {
     return NULL;
   }
 
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetFirst());
-  if(pDiffLine == NULL)
-  {
-    return NULL;
-  }
-
-  return pDiffLine->GetLine();
+  return static_cast<DiffLine*>(m_pDiffLinesList->GetFirst());
 }
 
-DiffLine::LineState DiffFilePartition::GetFirstLineState()
-{
-  if(m_pDiffLinesList == NULL)
-  {
-    return DiffLine::Undefined;
-  }
-
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetFirst());
-  if(pDiffLine == NULL)
-  {
-    return DiffLine::Undefined;
-  }
-
-  return pDiffLine->GetState();
-}
-
-const SimpleString* DiffFilePartition::GetCurrentRawLine()
+DiffLine* DiffFilePartition::GetNextDiffLine()
 {
   if(m_pDiffLinesList == NULL)
   {
     return NULL;
   }
 
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetSelected());
-  if(pDiffLine == NULL)
-  {
-    return NULL;
-  }
-
-  return pDiffLine->GetLine();
+  return static_cast<DiffLine*>(m_pDiffLinesList->GetNext());
 }
 
-DiffLine::LineState DiffFilePartition::GetCurrentLineState()
-{
-  if(m_pDiffLinesList == NULL)
-  {
-    return DiffLine::Undefined;
-  }
-
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetSelected());
-  if(pDiffLine == NULL)
-  {
-    return DiffLine::Undefined;
-  }
-
-  return pDiffLine->GetState();
-}
-
-const SimpleString* DiffFilePartition::GetPreviousRawLine()
+DiffLine* DiffFilePartition::GetPreviousDiffLine()
 {
   if(m_pDiffLinesList == NULL)
   {
     return NULL;
   }
 
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetPrev());
-  if(pDiffLine == NULL)
-  {
-    return NULL;
-  }
-
-  return pDiffLine->GetLine();
+  return static_cast<DiffLine*>(m_pDiffLinesList->GetPrev());
 }
 
-DiffLine::LineState DiffFilePartition::GetPreviousLineState()
-{
-  if(m_pDiffLinesList == NULL)
-  {
-    return DiffLine::Undefined;
-  }
-
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetPrev());
-  if(pDiffLine == NULL)
-  {
-    return DiffLine::Undefined;
-  }
-
-  return pDiffLine->GetState();
-}
-
-const SimpleString* DiffFilePartition::GetNextRawLine()
+DiffLine* DiffFilePartition::GetCurrentDiffLine()
 {
   if(m_pDiffLinesList == NULL)
   {
     return NULL;
   }
 
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetNext());
-  if(pDiffLine == NULL)
-  {
-    return NULL;
-  }
-
-  return pDiffLine->GetLine();
-}
-
-DiffLine::LineState DiffFilePartition::GetNextLineState()
-{
-  if(m_pDiffLinesList == NULL)
-  {
-    return DiffLine::Undefined;
-  }
-
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetNext());
-  if(pDiffLine == NULL)
-  {
-    return DiffLine::Undefined;
-  }
-
-  return pDiffLine->GetState();
+  return static_cast<DiffLine*>(m_pDiffLinesList->GetSelected());
 }
 
 const SimpleString* DiffFilePartition::GetIndexedRawLine(size_t p_Index)
@@ -181,13 +93,7 @@ const SimpleString* DiffFilePartition::GetIndexedRawLine(size_t p_Index)
     return NULL;
   }
 
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(p_Index));
-  if(pDiffLine == NULL)
-  {
-    return NULL;
-  }
-
-  return pDiffLine->GetLine();
+  return GetIndexedDiffLine(p_Index)->GetLine();
 }
 
 DiffLine::LineState DiffFilePartition::GetIndexedLineState(size_t p_Index)
@@ -197,13 +103,7 @@ DiffLine::LineState DiffFilePartition::GetIndexedLineState(size_t p_Index)
     return DiffLine::Undefined;
   }
 
-  DiffLine* pDiffLine = static_cast<DiffLine*>(m_pDiffLinesList->GetIndexed(p_Index));
-  if(pDiffLine == NULL)
-  {
-    return DiffLine::Undefined;
-  }
-
-  return pDiffLine->GetState();
+  return GetIndexedDiffLine(p_Index)->GetState();
 }
 
 LinkedList* DiffFilePartition::TokensList()

@@ -109,14 +109,14 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
 
   // Extra: Repeat test for left diff partition but use GetFirst../
   // GetNext.. instead of GetIndexed.. methods
-  BOOST_CHECK_EQUAL(leftDiffPartition1.GetFirstRawLine()->C_str(), "Line 1");
-  BOOST_CHECK_EQUAL(leftDiffPartition1.GetFirstLineState(), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextRawLine()->C_str(), "Line 2");
-  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextLineState(), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextRawLine()->C_str(), "Line 3");
-  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextLineState(), DiffLine::Deleted);
-  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextRawLine()->C_str(), "Line 4");
-  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextLineState(), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetFirstDiffLine()->GetLine()->C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetCurrentDiffLine()->GetState(), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextDiffLine()->GetLine()->C_str(), "Line 2");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetCurrentDiffLine()->GetState(), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextDiffLine()->GetLine()->C_str(), "Line 3");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetCurrentDiffLine()->GetState(), DiffLine::Deleted);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextDiffLine()->GetLine()->C_str(), "Line 4");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetCurrentDiffLine()->GetState(), DiffLine::Normal);
 
   //
   // Test case 4
