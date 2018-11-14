@@ -224,6 +224,11 @@ bool DiffFilePartition::PreProcess()
   return true;
 }
 
+bool DiffFilePartition::PreProcess(const SimpleString& p_fileName)
+{
+
+}
+
 bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long& i2)
 {
   if(m_pTokensList->Size() == 0)
