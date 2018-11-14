@@ -18,36 +18,36 @@ const size_t DiffDocument::NumLines() const
 
 const SimpleString* DiffDocument::GetFirstLine()
 {
-  const SimpleString* pLine =  m_DiffFilePartition.GetFirstRawLine();
-  DiffLine::LineState lineState = m_DiffFilePartition.GetFirstLineState();
+  const SimpleString* pLine =  m_DiffFilePartition.GetFirstDiffLine()->GetLine();
+  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentDiffLine()->GetState();
   return evaluateLine(pLine, lineState);
 }
 
 const SimpleString* DiffDocument::GetCurrentLine()
 {
-  const SimpleString* pLine =  m_DiffFilePartition.GetCurrentRawLine();
-  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentLineState();
+  const SimpleString* pLine =  m_DiffFilePartition.GetCurrentDiffLine()->GetLine();
+  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentDiffLine()->GetState();
   return evaluateLine(pLine, lineState);
 }
 
 const SimpleString* DiffDocument::GetPreviousLine()
 {
-  const SimpleString* pLine =  m_DiffFilePartition.GetPreviousRawLine();
-  DiffLine::LineState lineState = m_DiffFilePartition.GetPreviousLineState();
+  const SimpleString* pLine =  m_DiffFilePartition.GetPreviousDiffLine()->GetLine();
+  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentDiffLine()->GetState();
   return evaluateLine(pLine, lineState);
 }
 
 const SimpleString* DiffDocument::GetNextLine()
 {
-  const SimpleString* pLine =  m_DiffFilePartition.GetNextRawLine();
-  DiffLine::LineState lineState = m_DiffFilePartition.GetNextLineState();
+  const SimpleString* pLine =  m_DiffFilePartition.GetNextDiffLine()->GetLine();
+  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentDiffLine()->GetState();
   return evaluateLine(pLine, lineState);
 }
 
 const SimpleString* DiffDocument::GetIndexedLine(int p_LineIdx)
 {
-  const SimpleString* pLine =  m_DiffFilePartition.GetIndexedRawLine(p_LineIdx);
-  DiffLine::LineState lineState = m_DiffFilePartition.GetIndexedLineState(p_LineIdx);
+  const SimpleString* pLine =  m_DiffFilePartition.GetIndexedDiffLine(p_LineIdx)->GetLine();
+  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentDiffLine()->GetState();
   return evaluateLine(pLine, lineState);
 }
 
