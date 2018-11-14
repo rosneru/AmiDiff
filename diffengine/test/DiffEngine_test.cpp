@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
   DiffEngine diffEngine;
 
   //
-  // Test case 1
+  // Test case 3
   //
   // Left02.txt     |   Left02.txt
   // ------------------------------
@@ -67,9 +67,9 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
   // Line 2         |   Line 2
   // Line 3         |   Line 4
   // Line 4         |   <<empty line>>
-  // <<empty line>> |
+  //                |
   //
-  // >> Deleted Line 3 in right file.
+  // >> Deleted "Line 3" in right file.
 
   DiffFilePartitionLinux leftSrcPartition1;
   leftSrcPartition1.PreProcess("../../testfiles/Testcase_03_Left.txt");
@@ -106,6 +106,117 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
   BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(2), DiffLine::Normal);
   BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedRawLine(3)->C_str(), "Line 4");
   BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(3), DiffLine::Normal);
+
+  // Extra: Repeat test for left diff partition but use GetFirst../
+  // GetNext.. instead of GetIndexed.. methods
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetFirstRawLine()->C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetFirstLineState(), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextRawLine()->C_str(), "Line 2");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextLineState(), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextRawLine()->C_str(), "Line 3");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextLineState(), DiffLine::Deleted);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextRawLine()->C_str(), "Line 4");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetNextLineState(), DiffLine::Normal);
+
+  //
+  // Test case 4
+  //
+  // Left02.txt     |   Left02.txt
+  // ------------------------------
+  // Line 1         |   Line 1
+  // Line 2         |   Line 2
+  // Line 3         |
+  // Line 4         |   Line 4
+  //                |
+  //
+  // >> Cleared "Line 3" (set to empty) in right file
+
+  DiffFilePartitionLinux leftSrcPartition2;
+  leftSrcPartition2.PreProcess("../../testfiles/Testcase_04_Left.txt");
+
+  DiffFilePartitionLinux rightSrcPartition2;
+  rightSrcPartition2.PreProcess("../../testfiles/Testcase_04_Right.txt");
+
+  DiffFilePartition leftDiffPartition2;
+  DiffFilePartition rightDiffPartition2;
+
+  diffOk = diffEngine.Diff(leftSrcPartition2,
+                           rightSrcPartition2,
+                           leftDiffPartition2,
+                           rightDiffPartition2);
+
+  BOOST_CHECK_EQUAL(diffOk, true);
+
+  BOOST_CHECK_EQUAL(leftDiffPartition2.NumberOfLines(), 4);
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetIndexedRawLine(0)->C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetIndexedLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetIndexedRawLine(1)->C_str(), "Line 2");
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetIndexedLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetIndexedRawLine(2)->C_str(), "Line 3");
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetIndexedLineState(2), DiffLine::Changed);
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetIndexedRawLine(3)->C_str(), "Line 4");
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetIndexedLineState(3), DiffLine::Normal);
+
+  BOOST_CHECK_EQUAL(rightDiffPartition2.NumberOfLines(), 4);
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetIndexedRawLine(0)->C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetIndexedLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetIndexedRawLine(1)->C_str(), "Line 2");
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetIndexedLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetIndexedRawLine(2)->C_str(), "");
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetIndexedLineState(2), DiffLine::Changed);
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetIndexedRawLine(3)->C_str(), "Line 4");
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetIndexedLineState(3), DiffLine::Normal);
+
+
+
+  //
+  // Test case 5
+  //
+  // Left02.txt     |   Left02.txt
+  // ------------------------------
+  // Line 1         |   Line 1
+  // Line 3         |   Line 2
+  // Line 4         |   Line 3
+  //                |   Line 4
+  //                |
+  //
+  // >> Deleted "Line 2" in left file
+
+  DiffFilePartitionLinux leftSrcPartition3;
+  leftSrcPartition3.PreProcess("../../testfiles/Testcase_05_Left.txt");
+
+  DiffFilePartitionLinux rightSrcPartition3;
+  rightSrcPartition3.PreProcess("../../testfiles/Testcase_05_Right.txt");
+
+  DiffFilePartition leftDiffPartition3;
+  DiffFilePartition rightDiffPartition3;
+
+  diffOk = diffEngine.Diff(leftSrcPartition3,
+                           rightSrcPartition3,
+                           leftDiffPartition3,
+                           rightDiffPartition3);
+
+  BOOST_CHECK_EQUAL(diffOk, true);
+
+  BOOST_CHECK_EQUAL(leftDiffPartition3.NumberOfLines(), 4);
+  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedRawLine(0)->C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedRawLine(1)->C_str(), "");
+  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedRawLine(2)->C_str(), "Line 3");
+  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedLineState(2), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedRawLine(3)->C_str(), "Line 4");
+  BOOST_CHECK_EQUAL(leftDiffPartition3.GetIndexedLineState(3), DiffLine::Normal);
+
+  BOOST_CHECK_EQUAL(rightDiffPartition3.NumberOfLines(), 4);
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedRawLine(0)->C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedRawLine(1)->C_str(), "Line 2");
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedLineState(1), DiffLine::Added);
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedRawLine(2)->C_str(), "Line 3");
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedLineState(2), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedRawLine(3)->C_str(), "Line 4");
+  BOOST_CHECK_EQUAL(rightDiffPartition3.GetIndexedLineState(3), DiffLine::Normal);
 }
 
 BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
