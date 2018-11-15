@@ -40,7 +40,7 @@ void DiffLine::SetState(DiffLine::LineState p_LineState)
   m_LineState = p_LineState;
 }
 
-DiffLine::LineState DiffLine::GetState()
+DiffLine::LineState DiffLine::GetState() const
 {
   return m_LineState;
 }

@@ -23,7 +23,7 @@ public:
 private:
   DiffFilePartition& m_DiffFilePartition;
 
-  const SimpleString* evaluateLine(const SimpleString* p_pLine, DiffLine::LineState p_LineState);
+  const SimpleString* evaluateLine(const DiffLine* p_pDiffLine);
 };
 
 #endif // DIFF_DOCUMENT_H

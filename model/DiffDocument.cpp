@@ -18,48 +18,71 @@ const size_t DiffDocument::NumLines() const
 
 const SimpleString* DiffDocument::GetFirstLine()
 {
-  const SimpleString* pLine =  &m_DiffFilePartition.GetFirstDiffLine()->GetText();
-  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentDiffLine()->GetState();
-  return evaluateLine(pLine, lineState);
-}
-
-const SimpleString* DiffDocument::GetCurrentLine()
-{
-  const SimpleString* pLine =  &m_DiffFilePartition.GetCurrentDiffLine()->GetText();
-  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentDiffLine()->GetState();
-  return evaluateLine(pLine, lineState);
-}
-
-const SimpleString* DiffDocument::GetPreviousLine()
-{
-  const SimpleString* pLine =  &m_DiffFilePartition.GetPreviousDiffLine()->GetText();
-  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentDiffLine()->GetState();
-  return evaluateLine(pLine, lineState);
-}
-
-const SimpleString* DiffDocument::GetNextLine()
-{
-  const SimpleString* pLine =  &m_DiffFilePartition.GetNextDiffLine()->GetText();
-  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentDiffLine()->GetState();
-  return evaluateLine(pLine, lineState);
-}
-
-const SimpleString* DiffDocument::GetIndexedLine(int p_LineIdx)
-{
-  const SimpleString* pLine =  &m_DiffFilePartition.GetIndexedDiffLine(p_LineIdx)->GetText();
-  DiffLine::LineState lineState = m_DiffFilePartition.GetCurrentDiffLine()->GetState();
-  return evaluateLine(pLine, lineState);
-}
-
-const SimpleString* DiffDocument::evaluateLine(const SimpleString* p_pLine, DiffLine::LineState p_LineState)
-{
-  if(p_pLine == NULL)
+  DiffLine* pDiffLine = m_DiffFilePartition.GetFirstDiffLine();
+  if(pDiffLine == NULL)
   {
     m_ColorNameBackground = TextDocument::CN_Default;
     return NULL;
   }
 
-  switch(p_LineState)
+  return evaluateLine(pDiffLine);
+
+}
+
+const SimpleString* DiffDocument::GetCurrentLine()
+{
+  DiffLine* pDiffLine = m_DiffFilePartition.GetCurrentDiffLine();
+  if(pDiffLine == NULL)
+  {
+    m_ColorNameBackground = TextDocument::CN_Default;
+    return NULL;
+  }
+
+  return evaluateLine(pDiffLine);
+
+}
+
+const SimpleString* DiffDocument::GetPreviousLine()
+{
+  DiffLine* pDiffLine = m_DiffFilePartition.GetPreviousDiffLine();
+  if(pDiffLine == NULL)
+  {
+    m_ColorNameBackground = TextDocument::CN_Default;
+    return NULL;
+  }
+
+  return evaluateLine(pDiffLine);
+
+}
+
+const SimpleString* DiffDocument::GetNextLine()
+{
+  DiffLine* pDiffLine = m_DiffFilePartition.GetNextDiffLine();
+  if(pDiffLine == NULL)
+  {
+    m_ColorNameBackground = TextDocument::CN_Default;
+    return NULL;
+  }
+
+  return evaluateLine(pDiffLine);
+
+}
+
+const SimpleString* DiffDocument::GetIndexedLine(int p_LineIdx)
+{
+  DiffLine* pDiffLine = m_DiffFilePartition.GetIndexedDiffLine(p_LineIdx);
+  if(pDiffLine == NULL)
+  {
+    m_ColorNameBackground = TextDocument::CN_Default;
+    return NULL;
+  }
+
+  return evaluateLine(pDiffLine);
+}
+
+const SimpleString* DiffDocument::evaluateLine(const DiffLine* p_pDiffLine)
+{
+  switch(p_pDiffLine->GetState())
   {
     case DiffLine::Normal:
       m_ColorNameBackground = TextDocument::CN_Default;
@@ -82,5 +105,5 @@ const SimpleString* DiffDocument::evaluateLine(const SimpleString* p_pLine, Diff
       break;
   }
 
-  return p_pLine;
+  return &p_pDiffLine()->GetText();
 }
