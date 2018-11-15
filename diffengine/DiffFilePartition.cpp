@@ -184,33 +184,35 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
 void DiffFilePartition::AddString(const SimpleString& p_String, DiffLine::LineState p_LineState)
 {
   DiffLine* pDiffLine = new DiffLine();
-  if(pDiffLine != NULL)
+  if(pDiffLine == NULL)
   {
-    pDiffLine->SetLine(p_String, p_LineState);
+    return;
   }
 
-  // Append DiffLine to list
+  pDiffLine->SetLine(p_String, p_LineState);
   m_pDiffLinesList->InsertTail(pDiffLine);
 }
 
 void DiffFilePartition::AddString(const SimpleString& p_String)
 {
   DiffLine* pDiffLine = new DiffLine();
-  if(pDiffLine != NULL)
+  if(pDiffLine == NULL)
   {
-    // Set string in DiffLine gets us the token
-    long token = pDiffLine->SetLine(p_String);
-
-    // Dynamically allocate memory for the token
-    long* pToken = new long[1];
-    pToken[0] = token;
-
-    // Append token to list
-    m_pTokensList->InsertTail(pToken);
-
-    // Append DiffLine to list
-    m_pDiffLinesList->InsertTail(pDiffLine);
+    return;
   }
+
+  // Set string in DiffLine gets us the token
+  long token = pDiffLine->SetLine(p_String);
+
+  // Dynamically allocate memory for the token
+  long* pToken = new long[1];
+  pToken[0] = token;
+
+  // Append token to list
+  m_pTokensList->InsertTail(pToken);
+
+  // Append DiffLine to list
+  m_pDiffLinesList->InsertTail(pDiffLine);
 
 }
 
