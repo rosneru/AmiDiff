@@ -21,7 +21,7 @@ bool DiffFilePartitionLinux::PreProcess(const SimpleString& p_FileName)
   while(getline(inputFileStream, line))
   {
     SimpleString simpleString(line.c_str());
-    AddString(&simpleString);
+    AddString(simpleString);
   }
 
   inputFileStream.close();

@@ -30,7 +30,7 @@ public:
 
   size_t NumberOfLines();
 
-  const SimpleString* GetIndexedRawLine(size_t p_Index);
+  const SimpleString GetIndexedRawLine(size_t p_Index);
   DiffLine::LineState GetIndexedLineState(size_t p_Index);
 
   DiffLine* GetIndexedDiffLine(size_t p_Index);
@@ -43,8 +43,8 @@ public:
 
   bool MatchLine(long i1, DiffFilePartition& p_OtherFile, long& i2);
 
-  void AddString(const SimpleString* p_pString, DiffLine::LineState p_LineState);
-  void AddString(const SimpleString* p_pString);
+  void AddString(const SimpleString& p_String, DiffLine::LineState p_LineState);
+  void AddString(const SimpleString& p_String);
   void AddBlankLine();
 
 private:
