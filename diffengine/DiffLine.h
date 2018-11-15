@@ -41,7 +41,7 @@ public:
    */
   void SetLine(const SimpleString& p_String, LineState p_LineState);
   
-  SimpleString GetText() const;
+  const SimpleString& GetText() const;
 
   void SetState(LineState p_LineState);
   LineState GetState();

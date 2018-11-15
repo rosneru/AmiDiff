@@ -30,7 +30,7 @@ void DiffLine::SetLine(const SimpleString& p_String, DiffLine::LineState p_LineS
   SetState(p_LineState);
 }
 
-SimpleString DiffLine::GetText() const
+const SimpleString& DiffLine::GetText() const
 {
   return m_LineText;
 }
