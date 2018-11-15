@@ -25,7 +25,7 @@ DiffFilePartition::~DiffFilePartition()
   delete m_pDiffLinesList;
 }
 
-size_t DiffFilePartition::NumberOfLines()
+long DiffFilePartition::NumberOfLines() const
 {
   if(m_pDiffLinesList == NULL)
   {
@@ -90,7 +90,7 @@ const SimpleString DiffFilePartition::GetIndexedRawLine(size_t p_Index)
 {
   if(m_pDiffLinesList == NULL || p_Index >= m_pDiffLinesList->Size())
   {
-    return NULL;
+    return SimpleString();
   }
 
   return GetIndexedDiffLine(p_Index)->GetLine();
@@ -218,7 +218,7 @@ void DiffFilePartition::AddString(const SimpleString& p_String)
 
 void DiffFilePartition::AddBlankLine()
 {
-  AddString(SimpleString(""), DiffLine::Normal);
+  AddString(SimpleString(), DiffLine::Normal);
 }
 
 void DiffFilePartition::clearDiffLinesList()

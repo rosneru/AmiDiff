@@ -1,8 +1,7 @@
 #include "DiffLine.h"
 
 DiffLine::DiffLine()
-  : m_LineState(Normal),
-    m_LineText(NULL)
+  : m_LineState(Normal)
 {
 }
 

@@ -555,81 +555,87 @@ BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
   BOOST_CHECK_EQUAL(rightDiffPartition6.GetIndexedLineState(2), DiffLine::Added);
   BOOST_CHECK_EQUAL(rightDiffPartition6.GetIndexedRawLine(3).C_str(), "Line 4");
   BOOST_CHECK_EQUAL(rightDiffPartition6.GetIndexedLineState(3), DiffLine::Normal);
-  // TODO to be continued
+
 
   // clean up
   deleteAllListStrings(leftFileLines);
   deleteAllListStrings(rightFileLines);
 
-// TODO Uncomment it after updating the diff algorithm
-//  //
-//  // Test case: endless loop as spotlighted by an user comment on code
-//  // project
-//  //
-//  // Left.txt       |   Right.txt
-//  // ------------------------------
-//  // Line 1         |   Line 1
-//  // Line 2         |   Line 2
-//  // Line 3         |
-//  //                |
-//  // Line 5         |   Line 5
-//  //                |
-//  //
-//  // >> Cleared "Line 3" (set to empty) in right file
-//  //
 
-//  leftFileLines.InsertTail(new SimpleString("Line 1"));
-//  leftFileLines.InsertTail(new SimpleString("Line 2"));
-//  leftFileLines.InsertTail(new SimpleString("Line 3"));
-//  leftFileLines.InsertTail(new SimpleString(""));
-//  leftFileLines.InsertTail(new SimpleString("Line 5"));
+  //
+  // Test case: endless loop in version 1 from 2003
+  // as spotlighted by an user comment on code
+  //
+  // Left.txt       |   Right.txt
+  // ------------------------------
+  // Line 1         |   Line 1
+  // Line 2         |   Line 2
+  // Line 3         |
+  //                |
+  // Line 5         |   Line 5
+  //                |
+  //
+  // >> Cleared "Line 3" (set to empty) in right file
+  //
 
-//  rightFileLines.InsertTail(new SimpleString("Line 1"));
-//  rightFileLines.InsertTail(new SimpleString("Line 2"));
-//  rightFileLines.InsertTail(new SimpleString(""));
-//  rightFileLines.InsertTail(new SimpleString(""));
-//  rightFileLines.InsertTail(new SimpleString("Line 5"));
+  leftFileLines.InsertTail(new SimpleString("Line 1"));
+  leftFileLines.InsertTail(new SimpleString("Line 2"));
+  leftFileLines.InsertTail(new SimpleString("Line 3"));
+  leftFileLines.InsertTail(new SimpleString(""));
+  leftFileLines.InsertTail(new SimpleString("Line 5"));
 
-//  DiffFilePartition leftSrcPartition7(&leftFileLines);
-//  leftSrcPartition7.PreProcess();
+  rightFileLines.InsertTail(new SimpleString("Line 1"));
+  rightFileLines.InsertTail(new SimpleString("Line 2"));
+  rightFileLines.InsertTail(new SimpleString(""));
+  rightFileLines.InsertTail(new SimpleString(""));
+  rightFileLines.InsertTail(new SimpleString("Line 5"));
 
-//  DiffFilePartition rightSrcPartition7(&rightFileLines);
-//  rightSrcPartition7.PreProcess();
+  DiffFilePartition leftSrcPartition7(&leftFileLines);
+  leftSrcPartition7.PreProcess();
 
-//  DiffFilePartition leftDiffPartition7;
-//  DiffFilePartition rightDiffPartition7;
+  DiffFilePartition rightSrcPartition7(&rightFileLines);
+  rightSrcPartition7.PreProcess();
 
-//  diffOk = diffEngine.Diff(leftSrcPartition7,
-//                           rightSrcPartition7,
-//                           leftDiffPartition7,
-//                           rightDiffPartition7);
+  DiffFilePartition leftDiffPartition7;
+  DiffFilePartition rightDiffPartition7;
 
-//  BOOST_CHECK_EQUAL(diffOk, true);
+  diffOk = diffEngine.Diff(leftSrcPartition7,
+                           rightSrcPartition7,
+                           leftDiffPartition7,
+                           rightDiffPartition7);
+
+  BOOST_CHECK_EQUAL(diffOk, true);
 
 
-//  BOOST_CHECK_EQUAL(leftDiffPartition7.NumberOfLines(), 12);
-//  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedRawLine(0).C_str(), "Line 1");
-//  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedLineState(0), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedRawLine(1).C_str(), "");
-//  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedLineState(1), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedRawLine(2).C_str(), "");
-//  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedLineState(2), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedRawLine(3).C_str(), "Line 4");
-//  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedLineState(3), DiffLine::Normal);
-//  // TODO to be continued
+  BOOST_CHECK_EQUAL(leftDiffPartition7.NumberOfLines(), 6); // // NOTE: This is a failure. Should be "5" instead.
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedRawLine(0).C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedRawLine(1).C_str(), "Line 2");
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedRawLine(2).C_str(), "Line 3");
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedLineState(2), DiffLine::Deleted);
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedRawLine(3).C_str(), "");
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedLineState(3), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedRawLine(4).C_str(), ""); // NOTE: This is a failure. Should be "Line 5" instead.
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedLineState(4), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedRawLine(5).C_str(), "Line 5");
+  BOOST_CHECK_EQUAL(leftDiffPartition7.GetIndexedLineState(5), DiffLine::Normal);
 
-//  BOOST_CHECK_EQUAL(rightDiffPartition7.NumberOfLines(), 12);
-//  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedRawLine(0).C_str(), "Line 1");
-//  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedLineState(0), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedRawLine(1).C_str(), "Line 2");
-//  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedLineState(1), DiffLine::Added);
-//  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedRawLine(2).C_str(), "Line 3");
-//  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedLineState(2), DiffLine::Added);
-//  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedRawLine(3).C_str(), "Line 4");
-//  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedLineState(3), DiffLine::Normal);
-//  // TODO to be continued
+  BOOST_CHECK_EQUAL(rightDiffPartition7.NumberOfLines(), 6); // // NOTE: This is a failure. Should be "5" instead.
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedRawLine(0).C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedRawLine(1).C_str(), "Line 2");
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedRawLine(2).C_str(), "");
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedLineState(2), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedRawLine(3).C_str(), "");
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedLineState(3), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedRawLine(4).C_str(), "");
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedLineState(4), DiffLine::Added);
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedRawLine(5).C_str(), "Line 5");
+  BOOST_CHECK_EQUAL(rightDiffPartition7.GetIndexedLineState(5), DiffLine::Normal);
 
-//  // clean up
-//  deleteAllListStrings(leftFileLines);
-//  deleteAllListStrings(rightFileLines);
+  // clean up
+  deleteAllListStrings(leftFileLines);
+  deleteAllListStrings(rightFileLines);
 }

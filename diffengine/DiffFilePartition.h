@@ -28,7 +28,7 @@ public:
 
   LinkedList* TokensList();
 
-  size_t NumberOfLines();
+  long NumberOfLines() const;
 
   const SimpleString GetIndexedRawLine(size_t p_Index);
   DiffLine::LineState GetIndexedLineState(size_t p_Index);
