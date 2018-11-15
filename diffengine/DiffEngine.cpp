@@ -60,6 +60,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
           {
             p_File1Diff.AddString(pFile1DiffLine->GetLine(), DiffLine::Deleted);
             p_File2Diff.AddBlankLine();
+            i++;
             j--;
             pFile1DiffLine = p_File1Src.GetNextDiffLine();
           }
