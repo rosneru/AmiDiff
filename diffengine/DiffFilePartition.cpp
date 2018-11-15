@@ -25,7 +25,7 @@ DiffFilePartition::~DiffFilePartition()
   delete m_pDiffLinesList;
 }
 
-long DiffFilePartition::NumberOfLines() const
+long DiffFilePartition::NumLines() const
 {
   if(m_pDiffLinesList == NULL)
   {
@@ -86,14 +86,14 @@ DiffLine* DiffFilePartition::GetCurrentDiffLine()
   return static_cast<DiffLine*>(m_pDiffLinesList->GetSelected());
 }
 
-const SimpleString DiffFilePartition::GetIndexedRawLine(size_t p_Index)
+const SimpleString DiffFilePartition::GetIndexedLineText(size_t p_Index)
 {
   if(m_pDiffLinesList == NULL || p_Index >= m_pDiffLinesList->Size())
   {
     return SimpleString();
   }
 
-  return GetIndexedDiffLine(p_Index)->GetLine();
+  return GetIndexedDiffLine(p_Index)->GetText();
 }
 
 DiffLine::LineState DiffFilePartition::GetIndexedLineState(size_t p_Index)
@@ -131,7 +131,7 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
     return false;
   }
 
-  if((i1 < 0 ) || (i1 > NumberOfLines()))
+  if((i1 < 0 ) || (i1 > NumLines()))
   {
     return false;
   }
@@ -144,11 +144,11 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
     return false;
   }
 
-  const SimpleString lineThisFile = GetIndexedDiffLine(i1)->GetLine();
+  const SimpleString lineThisFile = GetIndexedDiffLine(i1)->GetText();
 
   bool bFound = false;
   long i = 0;
-  long otherFileSubsetLines = p_OtherFile.NumberOfLines() - i2;
+  long otherFileSubsetLines = p_OtherFile.NumLines() - i2;
 
   long otherFileToken = *static_cast<long*>(pOtherFileTokenList->GetIndexed(i2));
 
@@ -157,7 +157,7 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
     if(thisFileToken == otherFileToken)  // Fast compare
     {
       // Make sure strings really match
-      const SimpleString lineOtherFile = p_OtherFile.GetIndexedDiffLine(i2 + i)->GetLine();
+      const SimpleString lineOtherFile = p_OtherFile.GetIndexedDiffLine(i2 + i)->GetText();
       bFound = (lineThisFile == lineOtherFile);
     }
 
