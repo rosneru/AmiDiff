@@ -105,7 +105,5 @@ const SimpleString* DiffDocument::evaluateLine(const DiffLine* p_pDiffLine)
       break;
   }
 
-  SimpleString text = p_pDiffLine->GetText();
-
-  return &text;
+  return &(p_pDiffLine->GetText());
 }
