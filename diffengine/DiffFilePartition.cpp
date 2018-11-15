@@ -35,6 +35,35 @@ long DiffFilePartition::NumLines() const
   return m_pDiffLinesList->Size();
 }
 
+void DiffFilePartition::NumChanges(int& p_Added, int& p_Changed, int& p_Deleted)
+{
+  p_Added = p_Changed = p_Deleted = 0;
+  if(NumLines() == 0)
+  {
+    return;
+  }
+
+  DiffLine* pDiffLine = GetFirstDiffLine();
+  long i = 0;
+  while((i < NumLines()) && (pDiffLine != NULL))
+  {
+    DiffLine::LineState lineState = pDiffLine->GetState();
+    switch(lineState)
+    {
+      case DiffLine::Added: p_Added++; break;
+      case DiffLine::Changed: p_Changed++; break;
+      case DiffLine::Deleted: p_Deleted++; break;
+
+      case DiffLine::Normal:
+      case DiffLine::Undefined:
+       break;
+    }
+
+    pDiffLine = GetNextDiffLine();
+    i++;
+  }
+}
+
 
 DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t p_Index)
 {

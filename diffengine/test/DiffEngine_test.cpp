@@ -603,7 +603,13 @@ BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
   BOOST_CHECK_EQUAL(rightDiffPartition6.GetCurrentDiffLine()->GetState(), DiffLine::Normal);
   BOOST_CHECK_EQUAL(rightDiffPartition6.GetNextDiffLine(), (void*)NULL);
 
+  int leftAdded, leftChanged, leftDeleted, rightAdded, rightChanged, rightDeleted, sumChanges;
 
+  leftDiffPartition6.NumChanges(leftAdded, leftChanged, leftDeleted);
+  rightDiffPartition6.NumChanges(rightAdded, rightChanged, rightDeleted);
+
+  sumChanges = leftAdded + leftChanged + leftDeleted + rightAdded + rightChanged + rightDeleted;
+  BOOST_CHECK_EQUAL(sumChanges, 6);
 
 
   // clean up
