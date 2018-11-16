@@ -34,9 +34,9 @@ public:
    * This should be called from the application if the signal
    * IDCMP_NEWSIZE for this window is received.
    */
-  void Resized();
+  virtual void Resized();
 
-  void Refresh();
+  virtual void Refresh();
 
   /**
    * Opens the window.
@@ -55,7 +55,7 @@ public:
    * Full file name with path for to be opened file. If empty a ASL
    * request will be opened asking the user for the file name.
    */
-  virtual bool SetContent(TextDocument* p_pTextDocument);
+  bool SetContent(TextDocument* p_pTextDocument);
 
   /**
    * This handles the Y-Changes triggered by the vertical scrollbar
@@ -66,26 +66,24 @@ public:
    * Y-proportional gadget attached to the window has been moved by
    * the user.
    */
-  void YChangedHandler(size_t p_NewY);
+  virtual void YChangedHandler(size_t p_NewY);
 
   /**
    * Increases the Y position of the text by 1 and performs a scrolling
    * by one line.  Should be called from the Application event loop
    * when the cursor down key was received.
    */
-  void YIncrease();
+  virtual void YIncrease();
 
   /**
    * Decreases the Y position of the text by 1 and performs a scrolling
    * by one line.  Should be called from the Application event loop
    * when the cursor up key was received.
    */
-  void YDecrease();
+  virtual void YDecrease();
 
 
-private:
-  TextDocument* m_pDocument;
-
+protected:
   /**
    * IDs to help to interpret the events of this window's BOOPSI system
    * gadgets in the Application event loop.
@@ -165,6 +163,9 @@ private:
 
   bool scrollDownOneLine();
   bool scrollUpOneLine();
+
+private:
+  TextDocument* m_pDocument;
 };
 
 
