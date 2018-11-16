@@ -110,8 +110,9 @@ bool Application::Run()
   // Prepare the left and right TextWindows and open the OpenFileWindow
   //
   m_DiffWindow.SetInitialPosition(WindowBase::IP_Left);
+  m_DiffWindow.Open();
 
-  m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
+  //m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
 
   //
   // Wait-in-loop for menu actions etc
