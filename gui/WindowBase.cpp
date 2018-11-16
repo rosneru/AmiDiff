@@ -74,6 +74,13 @@ bool WindowBase::Open(APTR p_pMenuItemDisableAtOpen)
       winLeft = screenWidth / 2 - m_WinWidth / 2;
       break;
 
+    case IP_Fill:
+      m_WinWidth = screenWidth;
+      m_WinHeight = screenHeight - screenBarHeight - 1;
+      winTop = screenBarHeight + 1;
+      winLeft = 0;
+      break;
+
     case IP_Left:
       m_WinWidth = screenWidth / 2;
       m_WinHeight = screenHeight - screenBarHeight - 1;

@@ -22,9 +22,10 @@ public:
    */
   enum InitialPosition
   {
-    IP_Center,       // Center of the screen
-    IP_Left,         // Left half of the screen
-    IP_Right,        // Right half of the screen
+    IP_Center,  //> Center of the screen; depending on window dimensions
+    IP_Fill,    //> Fit to screen below title bar; changes window dimesions
+    IP_Left,    //> Left half of the screen; changes window dimesions
+    IP_Right,   //> Right half of the screen; changes window dimesions
   };
 
   /**
@@ -62,18 +63,18 @@ public:
   void SetTitle(SimpleString p_NewTitle);
 
   /**
-   * Sets the initial position of the window. Only is applied when 
+   * Sets the initial position of the window. Only is applied when
    * called before opening the window.
-   * 
+   *
    * @param p_InitialPosition
    * One of the positions defined in @see InitialPosition
    */
   void SetInitialPosition(InitialPosition p_InitialPosition);
 
   /**
-   * Sets if the window appears fixed or if it is draggable with the 
+   * Sets if the window appears fixed or if it is draggable with the
    * mouse. Only is applied when called before opening the window.
-   * 
+   *
    * @param p_bFixWindow
    * When true the window will not be moveable/draggable after opening.
    */
@@ -128,25 +129,25 @@ protected:
 
   /**
    * Setting the window flags. Should be done before window opening.
-   * 
+   *
    * Derived classes can and should set this inside their initialize()
    * implementation to set the needed window flags.
    */
   virtual void setFlags(ULONG p_Flags);
 
   /**
-   * Setting the window IDCMP flags. Should be done before window 
+   * Setting the window IDCMP flags. Should be done before window
    * opening.
-   * 
+   *
    * Derived classes can and should set this inside their initialize()
    * implementation to set the needed window idcmp messages.
    */
   virtual void setIDCMP(ULONG p_Idcmp);
 
   /**
-   * Setting the first gadget of a potential list of gadgets to be 
+   * Setting the first gadget of a potential list of gadgets to be
    * displayed by the window. Should be done before window opening.
-   * 
+   *
    * Derived classes can and should set this inside their initialize()
    * implementation to set the needed window idcmp messages.
    */
