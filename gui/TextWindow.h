@@ -44,7 +44,7 @@ public:
    * @returns
    * false if opening fails
    */
-  bool Open(APTR p_pMenuItemDisableAtOpen = NULL);
+  virtual bool Open(APTR p_pMenuItemDisableAtOpen = NULL);
 
   /**
    * Open a text file

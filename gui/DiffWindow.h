@@ -92,6 +92,8 @@ private:
    */
   void initialize();
 
+  void draw();
+
   /**
    * Calculates how many lines fit into current window size and sets
    * the member variable.

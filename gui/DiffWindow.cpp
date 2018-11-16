@@ -10,6 +10,7 @@
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
 #include <intuition/icclass.h>
+#include <libraries/gadtools.h>
 #include "DiffWindow.h"
 
 DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
@@ -119,6 +120,7 @@ void DiffWindow::Refresh()
 {
   BeginRefresh(m_pWindow);
 
+  draw();
   displayFile();
 
   EndRefresh(m_pWindow, TRUE);
@@ -131,13 +133,7 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
     return false;
   }
 
-  DrawBevelBox(m_pWindow->RPort,
-    50, 50,
-    m_WinWidth - 100, m_WinHeight - 100,
-    GT_Visuallnfo, m_AppScreen.GadtoolsVisualInfo(),
-    GTBB_Recessed, TRUE,
-    TAG_DONE);
-
+  draw();
   return true;
 }
 
@@ -405,6 +401,15 @@ void DiffWindow::initialize()
 
 }
 
+void DiffWindow::draw()
+{
+  DrawBevelBox(m_pWindow->RPort,
+    50, 50,
+    m_WinWidth - 100, m_WinHeight - 100,
+    GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
+    GTBB_Recessed, TRUE,
+    TAG_DONE);
+}
 
 void DiffWindow::calcMaxWindowTextLines()
 {
