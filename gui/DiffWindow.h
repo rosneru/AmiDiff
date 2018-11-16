@@ -33,6 +33,14 @@ public:
 
   void Refresh();
 
+  /**
+   * Opens the window.
+   *
+   * @returns
+   * false if opening fails
+   */
+  virtual bool Open(APTR p_pMenuItemDisableAtOpen = NULL);
+
 
   /**
    * Open a text file
@@ -43,7 +51,7 @@ public:
    * Full file name with path for to be opened file. If empty a ASL
    * request will be opened asking the user for the file name.
    */
-  bool SetContent(DiffDocument* p_pLeftDiffDocument, 
+  bool SetContent(DiffDocument* p_pLeftDiffDocument,
     DiffDocument* p_pRightDiffDocument);
 
   /**

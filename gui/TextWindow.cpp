@@ -137,9 +137,9 @@ void TextWindow::Refresh()
   EndRefresh(m_pWindow, TRUE);
 }
 
-bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
+bool TextWindow::Open(APTR p_pMenuItemDisableAtOpen)
 {
-  if(WindowBase::Open(p_pUserDataMenuItemToDisable) == false)
+  if(WindowBase::Open(p_pMenuItemDisableAtOpen) == false)
   {
     return false;
   }
@@ -171,7 +171,7 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
   m_IntuiText.ITextFont = &m_TextAttr;
   m_IntuiText.NextText  = NULL;
 
-  return WindowBase::Open(p_pUserDataMenuItemToDisable);
+  return true;
 }
 
 
@@ -409,7 +409,7 @@ void TextWindow::initialize()
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
 
-  // Set the default title 
+  // Set the default title
   SetTitle("TextWindow");
 
   // Setting the window flags

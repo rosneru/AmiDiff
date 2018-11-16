@@ -2,6 +2,7 @@
 
 #include <clib/alib_protos.h>
 #include <clib/dos_protos.h>
+#include <clib/gadtools_protos.h>
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <clib/utility_protos.h>
@@ -92,7 +93,7 @@ void DiffWindow::Resized()
     return; // TODO
   }
 
-  if(m_pLeftDiffDocument->NumLines() == 0 || 
+  if(m_pLeftDiffDocument->NumLines() == 0 ||
      m_pRightDiffDocument->NumLines() == 0)
   {
     return; // TODO
@@ -117,12 +118,30 @@ void DiffWindow::Resized()
 void DiffWindow::Refresh()
 {
   BeginRefresh(m_pWindow);
+
   displayFile();
+
   EndRefresh(m_pWindow, TRUE);
 }
 
+bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
+{
+  if(TextWindow::Open(p_pMenuItemDisableAtOpen) == false)
+  {
+    return false;
+  }
 
-bool DiffWindow::SetContent(DiffDocument* p_pLeftDiffDocument, 
+  DrawBevelBox(m_pWindow->RPort,
+    50, 50,
+    m_WinWidth - 100, m_WinHeight - 100,
+    GT_Visuallnfo, m_AppScreen.GadtoolsVisualInfo(),
+    GTBB_Recessed, TRUE,
+    TAG_DONE);
+
+  return true;
+}
+
+bool DiffWindow::SetContent(DiffDocument* p_pLeftDiffDocument,
     DiffDocument* p_pRightDiffDocument)
 {
   m_pLeftDiffDocument = p_pLeftDiffDocument;
@@ -231,6 +250,7 @@ void DiffWindow::initialize()
   ULONG imageWidth = 0;   // to successfully store the other images widths
   ULONG imageHeight = 0;  // to successfully store the other images heights
 
+/*
   // Getting the width and height of the current system size gadget
   struct Image* pSizeImage = createImageObj(
     SIZEIMAGE, sizeImageWidth, sizeImageHeight);
@@ -242,7 +262,6 @@ void DiffWindow::initialize()
     DisposeObject(pSizeImage);
     pSizeImage = NULL;
   }
-
   // Creating the arrow down image and getting its width and height
   m_pDownArrowImage = createImageObj(DOWNIMAGE, imageWidth, imageHeight);
 
@@ -359,8 +378,9 @@ void DiffWindow::initialize()
     PGA_Visible, 100,
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
+*/
 
-  // Set the default title 
+  // Set the default title
   SetTitle("DiffWindow");
 
   // Setting the window flags
@@ -379,7 +399,7 @@ void DiffWindow::initialize()
            IDCMP_IDCMPUPDATE);    // Inform us about TODO
 
   // Setting the first gadget of the gadet list for the window
-  setFirstGadget(m_pDownArrowButton);
+//  setFirstGadget(m_pDownArrowButton);
 
   m_bInitialized = true;
 
