@@ -19,7 +19,7 @@
 #include "AmigaDiffFacade.h"
 #include "OpenFilesWindow.h"
 #include "SimpleString.h"
-#include "TextWindow.h"
+#include "DiffWindow.h"
 
 class Application
 {
@@ -37,8 +37,7 @@ private:
   bool m_bExitRequested;
 
   AppScreen m_Screen;
-  TextWindow m_LeftWin;
-  TextWindow m_RightWin;
+  DiffWindow m_DiffWindow;
   AmigaDiffFacade m_DiffFacade;
   OpenFilesWindow m_OpenFilesWin;
   CmdPerformDiff m_CmdDiff;

@@ -105,7 +105,7 @@ protected:
     Downward,
   };
 
-  size_t m_MaxWindowTextLines;  ///> Number of text lines that fit in window
+  size_t m_MaxTextLines;  ///> Number of text lines that fit in window
   size_t m_Y;         ///> Index of currently first displayed text line
 
   WORD m_FontHeight;  ///> Height of current text font
@@ -143,26 +143,26 @@ protected:
   /**
    * Initializes some window specific feature. Gadgets, etc.
    */
-  void initialize();
+  virtual void initialize();
 
   /**
    * Calculates how many lines fit into current window size and sets
    * the member variable.
    */
-  void calcMaxWindowTextLines();
+  virtual void calcMaxWindowTextLines();
 
   /**
    * Displays the given line at given y-position
    */
-  void displayLine(const SimpleString* p_pLine, WORD p_TopEdge);
+  virtual void displayLine(const SimpleString* p_pLine, WORD p_TopEdge);
 
   /**
    * Displays the complete file from current m_Y position as first line
    */
-  void displayFile();
+  virtual void displayFile();
 
-  bool scrollDownOneLine();
-  bool scrollUpOneLine();
+  virtual bool scrollDownOneLine();
+  virtual bool scrollUpOneLine();
 
 private:
   TextDocument* m_pDocument;

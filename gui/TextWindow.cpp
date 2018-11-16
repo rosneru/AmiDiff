@@ -14,7 +14,7 @@
 TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : WindowBase(p_AppScreen, p_pMsgPort),
     m_pDocument(NULL),
-    m_MaxWindowTextLines(0),
+    m_MaxTextLines(0),
     m_Y(0),
     m_FontHeight(0),
     m_ScrollXMin(0),
@@ -121,7 +121,7 @@ void TextWindow::Resized()
   if(m_pYPropGadget != NULL)
   {
 	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Visible, m_MaxWindowTextLines,
+    	PGA_Visible, m_MaxTextLines,
     	TAG_DONE
 	   );
   }
@@ -201,7 +201,7 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
     	PGA_Total, m_pDocument->NumLines(),
     	PGA_Top, 0,
-    	PGA_Visible, m_MaxWindowTextLines,
+    	PGA_Visible, m_MaxTextLines,
     	TAG_DONE
 	   );
   }
@@ -437,11 +437,11 @@ void TextWindow::initialize()
 
 void TextWindow::calcMaxWindowTextLines()
 {
-  m_MaxWindowTextLines = m_pWindow->Height;
-  m_MaxWindowTextLines -= m_pWindow->BorderTop;
-  m_MaxWindowTextLines -= m_pWindow->BorderBottom;
-  m_MaxWindowTextLines -= m_ScrollYMin;
-  m_MaxWindowTextLines /= m_FontHeight;
+  m_MaxTextLines = m_pWindow->Height;
+  m_MaxTextLines -= m_pWindow->BorderTop;
+  m_MaxTextLines -= m_pWindow->BorderBottom;
+  m_MaxTextLines -= m_ScrollYMin;
+  m_MaxTextLines /= m_FontHeight;
 }
 
 
@@ -465,7 +465,7 @@ void TextWindow::displayFile()
   {
     displayLine(pLine, (lineId - m_Y ) * m_FontHeight);
 
-    if((lineId - m_Y) >= m_MaxWindowTextLines - 1)
+    if((lineId - m_Y) >= m_MaxTextLines - 1)
     {
       // Only display as many lines as fit into the window
       break;
@@ -478,14 +478,14 @@ void TextWindow::displayFile()
 
 bool TextWindow::scrollUpOneLine()
 {
-  if(m_pDocument->NumLines() < m_MaxWindowTextLines)
+  if(m_pDocument->NumLines() < m_MaxTextLines)
   {
     // Do not move the scroll area upward if all the text fits into
     // the window
     return false;
   }
 
-  if((m_Y + m_MaxWindowTextLines) == m_pDocument->NumLines())
+  if((m_Y + m_MaxTextLines) == m_pDocument->NumLines())
   {
     // Do not move the scroll area upward if text already at bottom
     return false;
@@ -504,7 +504,7 @@ bool TextWindow::scrollUpOneLine()
   }
   else
   {
-    pLine = m_pDocument->GetIndexedLine(m_Y + m_MaxWindowTextLines);
+    pLine = m_pDocument->GetIndexedLine(m_Y + m_MaxTextLines);
     m_LastScrollDirection = Upward;
   }
 
@@ -516,7 +516,7 @@ bool TextWindow::scrollUpOneLine()
   m_Y++;
 
   // Print the new last line
-  displayLine(pLine, (m_MaxWindowTextLines - 1) * m_FontHeight);
+  displayLine(pLine, (m_MaxTextLines - 1) * m_FontHeight);
   return true;
 }
 
@@ -535,7 +535,7 @@ bool TextWindow::scrollDownOneLine()
   // Delete the possible visible line below the scroll area which can
   // be caused by the scroll operation above
   EraseRect(m_pWindow->RPort,
-    m_ScrollXMin, m_MaxWindowTextLines * m_FontHeight,
+    m_ScrollXMin, m_MaxTextLines * m_FontHeight,
     m_ScrollXMax, m_ScrollYMax);
 
   // Get the line which at current scroll position has to be printed as

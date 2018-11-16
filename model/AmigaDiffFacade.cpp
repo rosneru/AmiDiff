@@ -1,10 +1,8 @@
 #include "DiffEngine.h"
 #include "AmigaDiffFacade.h"
 
-AmigaDiffFacade::AmigaDiffFacade(TextWindow& p_LeftWindow,
-  TextWindow& p_RightWindow)
-  : m_LeftWindow(p_LeftWindow),
-    m_RightWindow(p_RightWindow),
+AmigaDiffFacade::AmigaDiffFacade(DiffWindow& p_DiffWindow)
+  : m_DiffWindow(p_DiffWindow),
     m_pLeftDiffDocument(NULL),
     m_pRightDiffDocument(NULL)
 {
@@ -88,12 +86,9 @@ bool AmigaDiffFacade::Diff()
   m_pLeftDiffDocument->SetFileName(LeftFilePath());
   m_pRightDiffDocument->SetFileName(RightFilePath());
 
-  m_LeftWindow.Open();
-  m_RightWindow.Open();
+  m_DiffWindow.Open();
 
-  m_LeftWindow.SetContent(m_pLeftDiffDocument);
-  m_RightWindow.SetContent(m_pRightDiffDocument);
-
+  m_DiffWindow.SetContent(m_pLeftDiffDocument, m_pRightDiffDocument);
 
   return true;
 }
