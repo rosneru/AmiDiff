@@ -96,13 +96,11 @@ DiffWindow::~DiffWindow()
 
 void DiffWindow::Resized()
 {
-  if(m_pLeftDiffDocument == NULL || m_pRightDiffDocument == NULL)
-  {
-    return; // TODO
-  }
+  // store new window dimensions
+  m_WinWidth = m_pWindow->Width;
+  m_WinHeight = m_pWindow->Height;
 
-  if(m_pLeftDiffDocument->NumLines() == 0 ||
-     m_pRightDiffDocument->NumLines() == 0)
+  if(m_pLeftDiffDocument == NULL || m_pRightDiffDocument == NULL)
   {
     return; // TODO
   }
