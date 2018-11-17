@@ -18,7 +18,11 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_pLeftDiffDocument(NULL),
     m_pRightDiffDocument(NULL),
     m_SizeImageWidth(18),
-    m_BarHeight(0)
+    m_BarHeight(0),
+    m_InnerAreaLeft(0),
+    m_InnerAreaRight(0),
+    m_InnerAreaTop(0),
+    m_InnerAreaBottom(0)
 {
 
 }
@@ -399,15 +403,20 @@ void DiffWindow::initialize()
   // Setting the first gadget of the gadet list for the window
 //  setFirstGadget(m_pDownArrowButton);
 
+  m_InnerAreaLeft = m_AppScreen.IntuiScreen()->WBorLeft + 5;
+  m_InnerAreaTop = m_BarHeight + 5;
+
   m_bInitialized = true;
 
 }
 
 void DiffWindow::draw()
 {
+  m_InnerAreaRight = m_WinWidth - m_AppScreen.IntuiScreen()->WBorRight - 5;
+  m_InnerAreaBottom = m_WinHeight - m_AppScreen.IntuiScreen()->WBorBottom - 5;
   DrawBevelBox(m_pWindow->RPort,
-    5, 5,
-    m_WinWidth - m_SizeImageWidth - 10, m_WinHeight - m_BarHeight - 10,
+    m_InnerAreaLeft, m_InnerAreaRight,
+    m_InnerAreaRight - m_InnerAreaLeft, m_InnerAreaBottom - m_InnerAreaTop,
     GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
     GTBB_Recessed, TRUE,
     TAG_DONE);
