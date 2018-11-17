@@ -85,11 +85,11 @@ private:
   DiffDocument* m_pRightDiffDocument;
 
   ULONG m_SizeImageWidth;
-  int m_BarHeight;
-  int m_InnerAreaLeft;
-  int m_InnerAreaRight;
-  int m_InnerAreaTop;
-  int m_InnerAreaBottom;
+  WORD m_BarHeight;
+  WORD m_InnerAreaLeft;
+  WORD m_InnerAreaRight;
+  WORD m_InnerAreaTop;
+  WORD m_InnerAreaBottom;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.

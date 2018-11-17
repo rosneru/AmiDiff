@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 
 #include <clib/alib_protos.h>
 #include <clib/dos_protos.h>
@@ -403,8 +404,8 @@ void DiffWindow::initialize()
   // Setting the first gadget of the gadet list for the window
 //  setFirstGadget(m_pDownArrowButton);
 
-  m_InnerAreaLeft = m_AppScreen.IntuiScreen()->WBorLeft + 5;
-  m_InnerAreaTop = m_BarHeight + 5;
+  m_InnerAreaLeft = 5;
+  m_InnerAreaTop = 5;
 
   m_bInitialized = true;
 
@@ -412,14 +413,25 @@ void DiffWindow::initialize()
 
 void DiffWindow::draw()
 {
-  m_InnerAreaRight = m_WinWidth - m_AppScreen.IntuiScreen()->WBorRight - 5;
-  m_InnerAreaBottom = m_WinHeight - m_AppScreen.IntuiScreen()->WBorBottom - 5;
+  m_InnerAreaRight = m_WinWidth
+    - m_AppScreen.IntuiScreen()->WBorLeft
+    - m_AppScreen.IntuiScreen()->WBorRight
+    - m_SizeImageWidth - 5;
+
+  m_InnerAreaBottom = m_WinHeight
+    - m_BarHeight
+    - m_AppScreen.IntuiScreen()->WBorBottom - 5;
+
+  WORD iWidth = m_InnerAreaRight - m_InnerAreaLeft;
+  WORD iHeight = m_InnerAreaBottom - m_InnerAreaTop;
+
   DrawBevelBox(m_pWindow->RPort,
-    m_InnerAreaLeft, m_InnerAreaRight,
-    m_InnerAreaRight - m_InnerAreaLeft, m_InnerAreaBottom - m_InnerAreaTop,
+    m_InnerAreaLeft, m_InnerAreaTop,
+    iWidth, iHeight,
     GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
     GTBB_Recessed, TRUE,
     TAG_DONE);
+
 }
 
 void DiffWindow::calcMaxWindowTextLines()
