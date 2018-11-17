@@ -96,7 +96,7 @@ private:
    */
   void initialize();
 
-  void draw();
+  void draw(WORD p_WidthChanged = 0, WORD p_HeightChanged = 0);
 
   /**
    * Calculates how many lines fit into current window size and sets

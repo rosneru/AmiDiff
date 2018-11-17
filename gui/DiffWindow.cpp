@@ -96,14 +96,20 @@ DiffWindow::~DiffWindow()
 
 void DiffWindow::Resized()
 {
-  // store new window dimensions
-  m_WinWidth = m_pWindow->Width;
-  m_WinHeight = m_pWindow->Height;
-
-  if(m_pLeftDiffDocument == NULL || m_pRightDiffDocument == NULL)
+  if(m_pWindow == NULL)
   {
     return; // TODO
   }
+
+  if(m_pWindow->Width == m_WinWidth &&
+     m_pWindow->Height == m_WinHeight)
+  {
+    // nothing changed
+    return;
+  }
+
+  m_WinWidth = m_pWindow->Width;
+  m_WinHeight = m_pWindow->Height;
 
   // Calculate how many lines *now* can be displayed in the window
   calcMaxWindowTextLines();
@@ -117,8 +123,7 @@ void DiffWindow::Resized()
 	   );
   }
 
-  // Redraw obscured window regions
-  Refresh();
+  draw();
 }
 
 void DiffWindow::Refresh()
@@ -409,14 +414,18 @@ void DiffWindow::initialize()
 
 }
 
-void DiffWindow::draw()
+void DiffWindow::draw(WORD p_WidthChanged, WORD p_HeightChanged)
 {
-  m_InnerAreaRight = m_WinWidth
+  // Erase old rectbefore re-calculating and re-drawing it
+  EraseRect(m_pWindow->RPort,
+    0, 0, m_InnerAreaRight, m_InnerAreaBottom);
+
+  m_InnerAreaRight = m_pWindow->Width
     - m_AppScreen.IntuiScreen()->WBorLeft
     - m_AppScreen.IntuiScreen()->WBorRight
     - m_SizeImageWidth - 5;
 
-  m_InnerAreaBottom = m_WinHeight
+  m_InnerAreaBottom = m_pWindow->Height
     - m_BarHeight
     - m_AppScreen.IntuiScreen()->WBorBottom - 5;
 
