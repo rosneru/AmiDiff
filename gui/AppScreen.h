@@ -32,7 +32,14 @@ public:
    */
   void Close();
 
-  const char* Title();
+  const char* Title() const;
+
+
+  WORD FontHeight() const();
+
+  WORD BarHeight() const;
+
+  
 
   /**
    * Returns the intuition screen structure or NULL if screen is not open

@@ -108,7 +108,8 @@ protected:
   size_t m_MaxTextLines;  ///> Number of text lines that fit in window
   size_t m_Y;         ///> Index of currently first displayed text line
 
-  WORD m_FontHeight;  ///> Height of current text font
+  ULONG m_SizeImageWidth;
+
   WORD m_ScrollXMin;  ///> Left x coordinate of scrolling area
   WORD m_ScrollYMin;  ///> Left y coordinate of scrolling area
   WORD m_ScrollXMax;  ///> Right x coordinate of scrolling area

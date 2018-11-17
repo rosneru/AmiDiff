@@ -144,11 +144,30 @@ void AppScreen::Close()
 
 }
 
-const char* AppScreen::Title()
+const char* AppScreen::Title() const
 {
   return m_Title.C_str();
 }
 
+WORD AppScreen::FontHeight() const
+{
+  if(m_pDrawInfo == NULL)
+  {
+    return 0;
+  }
+
+  return m_pDrawInfo->dri_Font->tf_YSize;
+}
+
+WORD AppScreen::BarHeight() const
+{
+  if(m_pScreen == NULL)
+  {
+    return 0;
+  }
+
+	return m_pScreen->WBorTop + FontHeight() + 2;
+}
 
 struct Screen* AppScreen::IntuiScreen()
 {

@@ -84,9 +84,6 @@ private:
   DiffDocument* m_pLeftDiffDocument;
   DiffDocument* m_pRightDiffDocument;
 
-  ULONG m_SizeImageWidth;
-  WORD m_BarHeight;
-
   const WORD m_IndentX; ///> Distance of TextArea to left and right window border
   const WORD m_IndentY; ///> Distance of TextArea to window title bar and bottom border
 

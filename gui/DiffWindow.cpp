@@ -18,8 +18,6 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : TextWindow(p_AppScreen, p_pMsgPort),
     m_pLeftDiffDocument(NULL),
     m_pRightDiffDocument(NULL),
-    m_SizeImageWidth(18),
-    m_BarHeight(0),
     m_IndentX(30),
     m_IndentY(30),
     m_TextAreaLeft(0),
@@ -248,150 +246,6 @@ void DiffWindow::YDecrease()
 
 void DiffWindow::initialize()
 {
-  //
-  // Calculate some basic values
-  //
-  m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
-	m_BarHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
-
-  //
-  // Setting up scroll bars and gadgets for the window. They will be
-  // attached to the window at opening time
-  //
-  ULONG sizeImageHeight = 10; // the height of the size image
-  ULONG imageWidth = 0;   // to successfully store the other images widths
-  ULONG imageHeight = 0;  // to successfully store the other images heights
-
-
-  // Getting the width and height of the current system size gadget
-  struct Image* pSizeImage = createImageObj(
-    SIZEIMAGE, m_SizeImageWidth, sizeImageHeight);
-
-  // the size image is only needed for getting its width and height so
-  // it can be disposed right now
-  if(pSizeImage != NULL)
-  {
-    DisposeObject(pSizeImage);
-    pSizeImage = NULL;
-  }
-/*
-  // Creating the arrow down image and getting its width and height
-  m_pDownArrowImage = createImageObj(DOWNIMAGE, imageWidth, imageHeight);
-
-  // Creating the arrow down gadget
-  m_pDownArrowButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_ID, GID_ArrowDown,
-    GA_RelRight, -imageWidth+1,
-    GA_RelBottom, -sizeImageHeight-imageHeight+1,
-    GA_Width, imageWidth,
-    GA_Height, imageHeight,
-    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_RightBorder, TRUE,
-    GA_Image, m_pDownArrowImage,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the arrow up image and getting its width and height
-  m_pUpArrowImage = createImageObj(UPIMAGE, imageWidth, imageHeight);
-
-  // Creating the arrow down gadget
-  m_pUpArrowButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pDownArrowButton,
-    GA_ID, GID_ArrowUp,
-    GA_RelRight, -imageWidth+1,
-    GA_RelBottom, -sizeImageHeight-imageHeight-imageHeight+1,
-    GA_Width, imageWidth,
-    GA_Height, imageHeight,
-    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_RightBorder, TRUE,
-    GA_Image, m_pUpArrowImage,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the vertical proportional gadget / slider
-	m_pYPropGadget = (struct Gadget*) NewObject(
-	  NULL, PROPGCLASS,
-  	GA_Previous, m_pUpArrowButton,
-  	GA_ID, GID_PropY,
-  	GA_RelRight, -m_SizeImageWidth+4,
-  	GA_Top, barHeight,
-  	GA_Width, m_SizeImageWidth-6,
-  	GA_RelHeight, -sizeImageHeight-imageHeight-imageHeight-barHeight-1,
-  	GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-  	GA_GZZGadget, TRUE,
-  	GA_RightBorder, TRUE,
-  	PGA_Freedom, FREEVERT,
-  	PGA_Borderless, TRUE,
-  	PGA_NewLook, TRUE,
-  	PGA_Total, 100,
-  	PGA_Top, 0, // TODO remove??
-  	PGA_Visible, 100,
-  	ICA_TARGET, ICTARGET_IDCMP,
-  	TAG_END);
-
-  // Creating the arrow left image and getting its width and height
-  m_pRightArrowImage = createImageObj(RIGHTIMAGE, imageWidth, imageHeight);
-
-  // Creating the arrow right gadget
-  m_pRightArrowButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pYPropGadget,
-    GA_ID, GID_ArrowRight,
-    GA_RelRight, -m_SizeImageWidth-imageWidth+1,
-    GA_RelBottom, -imageHeight+1,
-    GA_Width, imageWidth,
-    GA_Height, imageHeight,
-    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_BottomBorder, TRUE,
-    GA_Image, m_pRightArrowImage,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the arrow left image and getting its width and height
-  m_pLeftArrowImage = createImageObj(LEFTIMAGE, imageWidth, imageHeight);
-
-  // Creating the arrow left gadget
-  m_pLeftArrowButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pRightArrowButton,
-    GA_ID, GID_ArrowLeft,
-    GA_RelRight, -m_SizeImageWidth-imageWidth-imageWidth+1,
-    GA_RelBottom, -imageHeight+1,
-    GA_Width, imageWidth,
-    GA_Height, imageHeight,
-    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_BottomBorder, TRUE,
-    GA_Image, m_pLeftArrowImage,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the horizontal proportional gadget / slider
-  m_pXPropGadget = (struct Gadget*) NewObject(
-    NULL, PROPGCLASS,
-    GA_Previous, m_pLeftArrowButton,
-    GA_ID, GID_PropX,
-    GA_Left, m_AppScreen.IntuiScreen()->WBorLeft,
-    GA_RelBottom, -sizeImageHeight+3,
-    GA_RelWidth, -m_SizeImageWidth-imageWidth-imageWidth-m_AppScreen.IntuiScreen()->WBorLeft-1,
-    GA_Height, sizeImageHeight-4,
-    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_BottomBorder, TRUE,
-    PGA_Freedom, FREEHORIZ,
-    PGA_Borderless, TRUE,
-    PGA_NewLook, TRUE,
-    PGA_Total, 100,
-    //PGA_Left, 0,  // TODO remove??
-    PGA_Visible, 100,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-*/
 
   // Set the default title
   SetTitle("DiffWindow");
@@ -432,7 +286,7 @@ void DiffWindow::draw(WORD p_WidthDiff, WORD p_HeightDiff)
     - m_SizeImageWidth;
 
   m_InnerWindowBottom = m_pWindow->Height
-    - m_BarHeight
+    - m_AppScreen.BarHeight()
     - m_AppScreen.IntuiScreen()->WBorBottom;
 
   m_TextAreaWidth = m_InnerWindowRight - m_TextAreaLeft - m_IndentX;
@@ -453,7 +307,7 @@ void DiffWindow::calcMaxWindowTextLines()
   m_MaxTextLines -= m_pWindow->BorderTop;
   m_MaxTextLines -= m_pWindow->BorderBottom;
   m_MaxTextLines -= m_ScrollYMin;
-  m_MaxTextLines /= m_FontHeight;
+  m_MaxTextLines /= m_AppScreen.FontHeight();
 }
 
 

@@ -16,7 +16,7 @@ TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_pDocument(NULL),
     m_MaxTextLines(0),
     m_Y(0),
-    m_FontHeight(0),
+    m_SizeImageWidth(18),
     m_ScrollXMin(0),
     m_ScrollYMin(0),
     m_ScrollXMax(0),
@@ -266,23 +266,16 @@ void TextWindow::YDecrease()
 void TextWindow::initialize()
 {
   //
-  // Calculate some basic values
-  //
-  m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
-	int barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
-
-  //
   // Setting up scroll bars and gadgets for the window. They will be
   // attached to the window at opening time
   //
-  ULONG sizeImageWidth = 18;  // the width of the size image
   ULONG sizeImageHeight = 10; // the height of the size image
   ULONG imageWidth = 0;   // to successfully store the other images widths
   ULONG imageHeight = 0;  // to successfully store the other images heights
 
   // Getting the width and height of the current system size gadget
   struct Image* pSizeImage = createImageObj(
-    SIZEIMAGE, sizeImageWidth, sizeImageHeight);
+    SIZEIMAGE, m_SizeImageWidth, sizeImageHeight);
 
   // the size image is only needed for getting its width and height so
   // it can be disposed right now
@@ -334,10 +327,10 @@ void TextWindow::initialize()
 	  NULL, PROPGCLASS,
   	GA_Previous, m_pUpArrowButton,
   	GA_ID, GID_PropY,
-  	GA_RelRight, -sizeImageWidth+4,
-  	GA_Top, barHeight,
-  	GA_Width, sizeImageWidth-6,
-  	GA_RelHeight, -sizeImageHeight-imageHeight-imageHeight-barHeight-1,
+  	GA_RelRight, -m_SizeImageWidth+4,
+  	GA_Top, m_AppScreen.BarHeight(),
+  	GA_Width, m_SizeImageWidth-6,
+  	GA_RelHeight, -sizeImageHeight-imageHeight-imageHeight-m_AppScreen.BarHeight()-1,
   	GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
   	GA_GZZGadget, TRUE,
   	GA_RightBorder, TRUE,
@@ -358,7 +351,7 @@ void TextWindow::initialize()
     NULL, BUTTONGCLASS,
     GA_Previous, m_pYPropGadget,
     GA_ID, GID_ArrowRight,
-    GA_RelRight, -sizeImageWidth-imageWidth+1,
+    GA_RelRight, -m_SizeImageWidth-imageWidth+1,
     GA_RelBottom, -imageHeight+1,
     GA_Width, imageWidth,
     GA_Height, imageHeight,
@@ -377,7 +370,7 @@ void TextWindow::initialize()
     NULL, BUTTONGCLASS,
     GA_Previous, m_pRightArrowButton,
     GA_ID, GID_ArrowLeft,
-    GA_RelRight, -sizeImageWidth-imageWidth-imageWidth+1,
+    GA_RelRight, -m_SizeImageWidth-imageWidth-imageWidth+1,
     GA_RelBottom, -imageHeight+1,
     GA_Width, imageWidth,
     GA_Height, imageHeight,
@@ -395,7 +388,7 @@ void TextWindow::initialize()
     GA_ID, GID_PropX,
     GA_Left, m_AppScreen.IntuiScreen()->WBorLeft,
     GA_RelBottom, -sizeImageHeight+3,
-    GA_RelWidth, -sizeImageWidth-imageWidth-imageWidth-m_AppScreen.IntuiScreen()->WBorLeft-1,
+    GA_RelWidth, -m_SizeImageWidth-imageWidth-imageWidth-m_AppScreen.IntuiScreen()->WBorLeft-1,
     GA_Height, sizeImageHeight-4,
     GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
     GA_GZZGadget, TRUE,
@@ -441,7 +434,7 @@ void TextWindow::calcMaxWindowTextLines()
   m_MaxTextLines -= m_pWindow->BorderTop;
   m_MaxTextLines -= m_pWindow->BorderBottom;
   m_MaxTextLines -= m_ScrollYMin;
-  m_MaxTextLines /= m_FontHeight;
+  m_MaxTextLines /= m_AppScreen.FontHeight();
 }
 
 
@@ -463,7 +456,7 @@ void TextWindow::displayFile()
   const SimpleString* pLine = m_pDocument->GetIndexedLine(lineId);
   while(pLine != NULL)
   {
-    displayLine(pLine, (lineId - m_Y ) * m_FontHeight);
+    displayLine(pLine, (lineId - m_Y ) * m_AppScreen.FontHeight());
 
     if((lineId - m_Y) >= m_MaxTextLines - 1)
     {
@@ -492,7 +485,7 @@ bool TextWindow::scrollUpOneLine()
   }
 
   // Scroll upward one line by the current font height
-  ScrollRaster(m_pWindow->RPort, 0, m_FontHeight,
+  ScrollRaster(m_pWindow->RPort, 0, m_AppScreen.FontHeight(),
     m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
 
   // Get the line which at current scroll position has to be printed as
@@ -516,7 +509,7 @@ bool TextWindow::scrollUpOneLine()
   m_Y++;
 
   // Print the new last line
-  displayLine(pLine, (m_MaxTextLines - 1) * m_FontHeight);
+  displayLine(pLine, (m_MaxTextLines - 1) * m_AppScreen.FontHeight());
   return true;
 }
 
@@ -529,13 +522,13 @@ bool TextWindow::scrollDownOneLine()
   }
 
   // Move scroll area downward by the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0, -m_FontHeight,
+  ScrollRaster(m_pWindow->RPort, 0, -m_AppScreen.FontHeight(),
     m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
 
   // Delete the possible visible line below the scroll area which can
   // be caused by the scroll operation above
   EraseRect(m_pWindow->RPort,
-    m_ScrollXMin, m_MaxTextLines * m_FontHeight,
+    m_ScrollXMin, m_MaxTextLines * m_AppScreen.FontHeight(),
     m_ScrollXMax, m_ScrollYMax);
 
   // Get the line which at current scroll position has to be printed as
