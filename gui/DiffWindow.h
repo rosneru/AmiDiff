@@ -84,8 +84,8 @@ private:
   DiffDocument* m_pLeftDiffDocument;
   DiffDocument* m_pRightDiffDocument;
 
-  struct TextAttr m_TextAttr;
-  struct IntuiText m_IntuiText;
+  ULONG m_SizeImageWidth;
+  short m_BarHeight;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.
