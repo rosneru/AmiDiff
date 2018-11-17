@@ -86,17 +86,25 @@ private:
 
   ULONG m_SizeImageWidth;
   WORD m_BarHeight;
-  WORD m_InnerAreaLeft;
-  WORD m_InnerAreaRight;
-  WORD m_InnerAreaTop;
-  WORD m_InnerAreaBottom;
+
+  const WORD m_IndentX; ///> Distance of TextArea to left and right window border
+  const WORD m_IndentY; ///> Distance of TextArea to window title bar and bottom border
+
+  WORD m_TextAreaLeft;    ///> X-position of the scrollable double-text-area
+  WORD m_TextAreaTop;     ///> Y-position of the scrollable double-text-area
+  WORD m_TextAreaWidth;   ///> Width of the scrollable double-text-area
+  WORD m_TextAreaHeight;  ///> Height of the scrollable double-text-area
+
+  WORD m_InnerWindowRight;
+  WORD m_InnerWindowBottom;
+
 
   /**
    * Initializes some window specific feature. Gadgets, etc.
    */
   void initialize();
 
-  void draw(WORD p_WidthChanged = 0, WORD p_HeightChanged = 0);
+  void draw(WORD p_WidthDiff = 0, WORD p_HeightDiff = 0);
 
   /**
    * Calculates how many lines fit into current window size and sets

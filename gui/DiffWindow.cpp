@@ -20,10 +20,14 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_pRightDiffDocument(NULL),
     m_SizeImageWidth(18),
     m_BarHeight(0),
-    m_InnerAreaLeft(0),
-    m_InnerAreaRight(0),
-    m_InnerAreaTop(0),
-    m_InnerAreaBottom(0)
+    m_IndentX(30),
+    m_IndentY(30),
+    m_TextAreaLeft(0),
+    m_TextAreaTop(0),
+    m_TextAreaWidth(0),
+    m_TextAreaHeight(0),
+    m_InnerWindowRight(0),
+    m_InnerWindowBottom(0)
 {
 
 }
@@ -108,6 +112,9 @@ void DiffWindow::Resized()
     return;
   }
 
+  WORD widthDiff = m_pWindow->Width - m_WinWidth;
+  WORD heightDiff = m_pWindow->Height - m_WinHeight;
+
   m_WinWidth = m_pWindow->Width;
   m_WinHeight = m_pWindow->Height;
 
@@ -123,7 +130,7 @@ void DiffWindow::Resized()
 	   );
   }
 
-  draw();
+  draw(widthDiff, heightDiff);
 }
 
 void DiffWindow::Refresh()
@@ -407,34 +414,33 @@ void DiffWindow::initialize()
   // Setting the first gadget of the gadet list for the window
 //  setFirstGadget(m_pDownArrowButton);
 
-  m_InnerAreaLeft = 5;
-  m_InnerAreaTop = 5;
+  m_TextAreaLeft = m_IndentX;
+  m_TextAreaTop = m_IndentY;
 
   m_bInitialized = true;
 
 }
 
-void DiffWindow::draw(WORD p_WidthChanged, WORD p_HeightChanged)
+void DiffWindow::draw(WORD p_WidthDiff, WORD p_HeightDiff)
 {
   // Erase old rectbefore re-calculating and re-drawing it
   EraseRect(m_pWindow->RPort,
-    0, 0, m_InnerAreaRight, m_InnerAreaBottom);
+    0, 0, m_InnerWindowRight, m_InnerWindowBottom);
 
-  m_InnerAreaRight = m_pWindow->Width
+  m_InnerWindowRight = m_pWindow->Width
     - m_AppScreen.IntuiScreen()->WBorLeft
-    - m_AppScreen.IntuiScreen()->WBorRight
-    - m_SizeImageWidth - 5;
+    - m_SizeImageWidth;
 
-  m_InnerAreaBottom = m_pWindow->Height
+  m_InnerWindowBottom = m_pWindow->Height
     - m_BarHeight
-    - m_AppScreen.IntuiScreen()->WBorBottom - 5;
+    - m_AppScreen.IntuiScreen()->WBorBottom;
 
-  WORD iWidth = m_InnerAreaRight - m_InnerAreaLeft;
-  WORD iHeight = m_InnerAreaBottom - m_InnerAreaTop;
+  m_TextAreaWidth = m_InnerWindowRight - m_TextAreaLeft - m_IndentX;
+  m_TextAreaHeight = m_InnerWindowBottom - m_TextAreaTop - m_IndentY;
 
   DrawBevelBox(m_pWindow->RPort,
-    m_InnerAreaLeft, m_InnerAreaTop,
-    iWidth, iHeight,
+    m_TextAreaLeft, m_TextAreaTop,
+    m_TextAreaWidth, m_TextAreaHeight,
     GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
     GTBB_Recessed, TRUE,
     TAG_DONE);
