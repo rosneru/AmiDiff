@@ -16,8 +16,8 @@
 
 DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : TextWindow(p_AppScreen, p_pMsgPort),
-    m_pLeftDiffDocument(NULL),
-    m_pRightDiffDocument(NULL),
+    m_pLeftDocument(NULL),
+    m_pRightDocument(NULL),
     m_IndentX(30),
     m_IndentY(30),
     m_TextAreaLeft(0),
@@ -33,66 +33,6 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
 DiffWindow::~DiffWindow()
 {
   Close();
-
-  if(m_pLeftArrowButton != NULL)
-  {
-    DisposeObject(m_pLeftArrowButton);
-    m_pLeftArrowButton = NULL;
-  }
-
-  if(m_pLeftArrowImage != NULL)
-  {
-    DisposeObject(m_pLeftArrowImage);
-    m_pLeftArrowImage = NULL;
-  }
-
-  if(m_pRightArrowButton != NULL)
-  {
-    DisposeObject(m_pRightArrowButton);
-    m_pRightArrowButton = NULL;
-  }
-
-  if(m_pRightArrowImage != NULL)
-  {
-    DisposeObject(m_pRightArrowImage);
-    m_pRightArrowImage = NULL;
-  }
-
-  if(m_pXPropGadget != NULL)
-  {
-    DisposeObject(m_pXPropGadget);
-    m_pXPropGadget = NULL;
-  }
-
-  if(m_pDownArrowButton != NULL)
-  {
-    DisposeObject(m_pDownArrowButton);
-    m_pDownArrowButton = NULL;
-  }
-
-  if(m_pDownArrowImage != NULL)
-  {
-    DisposeObject(m_pDownArrowImage);
-    m_pDownArrowImage = NULL;
-  }
-
-  if(m_pUpArrowButton != NULL)
-  {
-    DisposeObject(m_pUpArrowButton);
-    m_pUpArrowButton = NULL;
-  }
-
-  if(m_pUpArrowImage != NULL)
-  {
-    DisposeObject(m_pUpArrowImage);
-    m_pUpArrowImage = NULL;
-  }
-
-  if(m_pYPropGadget != NULL)
-  {
-    DisposeObject(m_pYPropGadget);
-    m_pYPropGadget = NULL;
-  }
 }
 
 
@@ -119,6 +59,13 @@ void DiffWindow::Resized()
   // Calculate how many lines *now* can be displayed in the window
   calcMaxWindowTextLines();
 
+  paint(widthDiff, heightDiff);
+
+  if((m_pLeftDocument == NULL) || m_pRightDocument == NULL)
+  {
+    return;
+  }
+
   // Set scroll gadgets pot size in relation of new window size
   if(m_pYPropGadget != NULL)
   {
@@ -128,14 +75,13 @@ void DiffWindow::Resized()
 	   );
   }
 
-  draw(widthDiff, heightDiff);
 }
 
 void DiffWindow::Refresh()
 {
   BeginRefresh(m_pWindow);
 
-  draw();
+  paint();
   displayFile();
 
   EndRefresh(m_pWindow, TRUE);
@@ -148,15 +94,15 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
     return false;
   }
 
-  draw();
+  paint();
   return true;
 }
 
-bool DiffWindow::SetContent(DiffDocument* p_pLeftDiffDocument,
-    DiffDocument* p_pRightDiffDocument)
+bool DiffWindow::SetContent(Document* p_pLeftDocument,
+    Document* p_pRightDocument)
 {
-  m_pLeftDiffDocument = p_pLeftDiffDocument;
-  m_pRightDiffDocument = p_pRightDiffDocument;
+  m_pLeftDocument = p_pLeftDocument;
+  m_pRightDocument = p_pRightDocument;
   m_Y = 0;
 
   if(!IsOpen())
@@ -246,6 +192,9 @@ void DiffWindow::YDecrease()
 
 void DiffWindow::initialize()
 {
+  // Call parent method to get to utilize scroll gadgets iside the
+  // window borders
+  TextWindow::initialize();
 
   // Set the default title
   SetTitle("DiffWindow");
@@ -275,7 +224,7 @@ void DiffWindow::initialize()
 
 }
 
-void DiffWindow::draw(WORD p_WidthDiff, WORD p_HeightDiff)
+void DiffWindow::paint(WORD p_WidthDiff, WORD p_HeightDiff)
 {
   // Erase old rectbefore re-calculating and re-drawing it
   EraseRect(m_pWindow->RPort,
@@ -320,7 +269,7 @@ void DiffWindow::displayLine(const SimpleString* p_pLine, WORD p_TopEdge)
 
 void DiffWindow::displayFile()
 {
-  if(m_pLeftDiffDocument == NULL || m_pRightDiffDocument == NULL)
+  if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {
     return; // TODO
   }

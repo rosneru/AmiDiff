@@ -6,7 +6,7 @@
 
 #include "AppScreen.h"
 #include "SimpleString.h"
-#include "DiffDocument.h"
+#include "Document.h"
 #include "TextWindow.h"
 
 /**
@@ -45,14 +45,14 @@ public:
   /**
    * Open a text file
    *
-   * Extended method from base class DiffDocument
+   * Extended method from base class Document
    *
    * @param p_FileName
    * Full file name with path for to be opened file. If empty a ASL
    * request will be opened asking the user for the file name.
    */
-  bool SetContent(DiffDocument* p_pLeftDiffDocument,
-    DiffDocument* p_pRightDiffDocument);
+  bool SetContent(Document* p_pLeftDocument,
+    Document* p_pRightDocument);
 
   /**
    * This handles the Y-Changes triggered by the vertical scrollbar
@@ -81,8 +81,8 @@ public:
 
 
 private:
-  DiffDocument* m_pLeftDiffDocument;
-  DiffDocument* m_pRightDiffDocument;
+  Document* m_pLeftDocument;
+  Document* m_pRightDocument;
 
   const WORD m_IndentX; ///> Distance of TextArea to left and right window border
   const WORD m_IndentY; ///> Distance of TextArea to window title bar and bottom border
@@ -101,7 +101,7 @@ private:
    */
   void initialize();
 
-  void draw(WORD p_WidthDiff = 0, WORD p_HeightDiff = 0);
+  void paint(WORD p_WidthDiff = 0, WORD p_HeightDiff = 0);
 
   /**
    * Calculates how many lines fit into current window size and sets
