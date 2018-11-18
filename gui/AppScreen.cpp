@@ -104,6 +104,13 @@ bool AppScreen::Open()
     return false;
   }
 
+  // Trying to initialize our four needed color pens starting from
+  // color number 4 (as 0..3 are definately system reserved)
+  if(m_Pens.Init(this, 4) == false)
+  {
+    return false;
+  }
+
   m_pDrawInfo = GetScreenDrawInfo(m_pScreen);
   if(m_pDrawInfo == NULL)
   {
@@ -116,13 +123,6 @@ bool AppScreen::Open()
   if(m_pVisualInfo == NULL)
   {
     Close();
-    return false;
-  }
-
-  // Trying to initialize our four needed color pens starting from
-  // color number 4 (as 0..3 are definately system reserved)
-  if(m_Pens.Init(this, 4) == false)
-  {
     return false;
   }
 
