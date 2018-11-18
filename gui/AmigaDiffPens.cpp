@@ -28,21 +28,24 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
   }
 
   m_pAppScreen = p_pAppScreen;
-  m_FirstColorNum = p_FirstFreeColorNum;
 
   struct ViewPort* pViewPort = &m_pAppScreen->IntuiScreen()->ViewPort;
 
   // Red for 'deleted'
-  SetRGB4(pViewPort, p_FirstFreeColorNum++, 12, 16, 12);
+  m_RedColorNum = p_FirstFreeColorNum++;
+  SetRGB4(pViewPort, m_RedColorNum, 12, 16, 12);
 
   // Yellow for 'changed'
-  SetRGB4(pViewPort, p_FirstFreeColorNum++, 16, 16, 12);
+  m_YellowColorNum = p_FirstFreeColorNum++;
+  SetRGB4(pViewPort, m_YellowColorNum, 16, 16, 12);
 
   // Green for 'added'
-  SetRGB4(pViewPort, p_FirstFreeColorNum++, 15, 11, 12);
+  m_GreenColorNum = p_FirstFreeColorNum++;
+  SetRGB4(pViewPort, m_GreenColorNum, 15, 11, 12);
 
   // Another grey for the background of the line numbers
-  SetRGB4(pViewPort, p_FirstFreeColorNum++, 10, 10, 10);
+  m_GreyColorNum = p_FirstFreeColorNum++;
+  SetRGB4(pViewPort, m_GreyColorNum, 10, 10, 10);
 
   return true;
 }
@@ -61,3 +64,23 @@ ULONG AmigaDiffPens::HighlightedText()  const
 {
   return m_pAppScreen->IntuiDrawInfo()->dri_Pens[HIGHLIGHTTEXTPEN];
 }
+
+  ULONG AmigaDiffPens::Red() const
+  {
+    return m_RedColorNum;
+  }
+
+  ULONG AmigaDiffPens::Yellow() const
+  {
+    return m_YellowColorNum;
+  }
+
+  ULONG AmigaDiffPens::Green() const
+  {
+    return m_GreenColorNum;
+  }
+
+  ULONG AmigaDiffPens::Grey() const
+  {
+    return m_GreyColorNum;
+  }

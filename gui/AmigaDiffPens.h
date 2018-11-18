@@ -29,9 +29,17 @@ public:
   ULONG Text() const;
   ULONG HighlightedText() const;
 
+  ULONG Red() const;
+  ULONG Yellow() const;
+  ULONG Green() const;
+  ULONG Grey() const;
+
 private:
   AppScreen* m_pAppScreen;
-  short m_FirstColorNum;
+  ULONG m_RedColorNum;
+  ULONG m_YellowColorNum;
+  ULONG m_GreenColorNum;
+  ULONG m_GreyColorNum;
 };
 
 #endif
