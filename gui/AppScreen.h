@@ -4,6 +4,7 @@
 #include <graphics/text.h>
 #include <intuition/screens.h>
 
+#include "AmigaDiffPens.h"
 #include "SimpleString.h"
 
 /**
@@ -40,7 +41,6 @@ public:
   WORD BarHeight() const;
 
 
-
   /**
    * Returns the intuition screen structure or NULL if screen is not open
    */
@@ -62,7 +62,14 @@ public:
    */
   APTR* GadtoolsVisualInfo();
 
+  /**
+   * Returns the pens to be used for drawing
+   */
+  const AmigaDiffPens& Pens() const;
+
+
 private:
+  AmigaDiffPens m_Pens;
   struct TextAttr m_TextAttr;
   struct TextFont* m_pTextFont;
   SimpleString m_FontName;

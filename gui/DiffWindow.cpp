@@ -291,12 +291,9 @@ void DiffWindow::displayDocumentNames()
     return;
   }
 
-  ULONG txtPen = m_AppScreen.IntuiDrawInfo()->dri_Pens[HIGHLIGHTTEXTPEN];
-  ULONG bgPen = m_AppScreen.IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
-
   struct IntuiText intuiText;
-  intuiText.FrontPen  = txtPen;
-  intuiText.BackPen   = bgPen;
+  intuiText.FrontPen  = m_AppScreen.Pens().HighlightedText();
+  intuiText.BackPen   = m_AppScreen.Pens().Background();
   intuiText.DrawMode  = JAM2;
   intuiText.ITextFont = &m_TextAttr;
   intuiText.NextText  = NULL;

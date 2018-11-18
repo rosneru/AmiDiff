@@ -152,20 +152,14 @@ bool TextWindow::Open(APTR p_pMenuItemDisableAtOpen)
   // Calculate how many lines can be displayed in the window
   calcMaxWindowTextLines();
 
-  // Setup structs for text drawing
-    // Setup Pens, TextAttr and prepare IntuiText
-  // TODO Remove it to some better place
-  ULONG txtPen = m_AppScreen.IntuiDrawInfo()->dri_Pens[TEXTPEN];
-  ULONG bgPen = m_AppScreen.IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
-
   m_TextAttr.ta_Name = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
   m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
   m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
   m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
   // Prepare IntuiText for line-by-line printing
-  m_IntuiText.FrontPen  = txtPen;
-  m_IntuiText.BackPen   = bgPen;
+  m_IntuiText.FrontPen  = m_AppScreen.Pens().Text();
+  m_IntuiText.BackPen   = m_AppScreen.Pens().Background();
   m_IntuiText.DrawMode  = JAM2;
   m_IntuiText.LeftEdge  = 0;
   m_IntuiText.TopEdge   = 0;
