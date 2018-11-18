@@ -277,6 +277,11 @@ void DiffWindow::paint(WORD p_WidthDiff, WORD p_HeightDiff)
 
 void DiffWindow::calcMaxWindowTextLines()
 {
+  if(m_AppScreen.FontHeight() == 0)
+  {
+    return;
+  }
+
   m_MaxTextLines = m_pWindow->Height;
   m_MaxTextLines -= m_pWindow->BorderTop;
   m_MaxTextLines -= m_pWindow->BorderBottom;
@@ -292,7 +297,7 @@ void DiffWindow::displayDocumentNames()
   }
 
   struct IntuiText intuiText;
-  intuiText.FrontPen  = m_AppScreen.Pens().Yellow();
+  intuiText.FrontPen  = m_AppScreen.Pens().HighlightedText();
   intuiText.BackPen   = m_AppScreen.Pens().Background();
   intuiText.DrawMode  = JAM2;
   intuiText.ITextFont = &m_TextAttr;

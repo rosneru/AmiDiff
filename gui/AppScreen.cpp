@@ -36,13 +36,13 @@ bool AppScreen::Open()
   // Get some data from the Workbench screen to open an own screen with
   // similar parameters
   //
-  struct Screen* pWbScreen = LockPubScreen("Workbench");
+  struct Screen* pWbScreen = m_pScreen = LockPubScreen("Workbench");
   if(pWbScreen == NULL)
   {
     return false;
   }
 
-  struct DrawInfo* pWbDrawInfo = GetScreenDrawInfo(pWbScreen);
+  struct DrawInfo* pWbDrawInfo = m_pDrawInfo = GetScreenDrawInfo(pWbScreen);
   if(pWbDrawInfo == NULL)
   {
     UnlockPubScreen(NULL, pWbScreen);
@@ -72,7 +72,7 @@ bool AppScreen::Open()
     UnlockPubScreen(NULL, pWbScreen);
     return false;
   }
-
+/*
   // Ensure that screen has at least 8 colors
   int screenDepth = pWbDrawInfo->dri_Depth;
   if(screenDepth < 3)
@@ -104,20 +104,23 @@ bool AppScreen::Open()
     return false;
   }
 
-  // Trying to initialize our four needed color pens starting from
-  // color number 4 (as 0..3 are definately system reserved)
-  if(m_Pens.Init(this, 4) == false)
-  {
-    return false;
-  }
-
   m_pDrawInfo = GetScreenDrawInfo(m_pScreen);
   if(m_pDrawInfo == NULL)
   {
     Close();
     return false;
   }
+*/
 
+
+/*
+  // Trying to initialize our four needed color pens starting from
+  // color number 4 (as 0..3 are definately system reserved)
+  if(m_Pens.Init(this, 4) == false)
+  {
+    return false;
+  }
+*/
   // Get visual info from screen
   m_pVisualInfo = (APTR*) GetVisualInfo(m_pScreen, TAG_END);
   if(m_pVisualInfo == NULL)
@@ -142,20 +145,20 @@ void AppScreen::Close()
     FreeScreenDrawInfo(m_pScreen, m_pDrawInfo);
     m_pDrawInfo = NULL;
   }
-
+/*
   if(m_pScreen != NULL)
   {
     CloseScreen(m_pScreen);
     m_pScreen = NULL;
   }
-
+*/
   if(m_pTextFont != NULL)
   {
     CloseFont(m_pTextFont);
     m_pTextFont = NULL;
   }
 
-
+  UnlockPubScreen(NULL, m_pScreen);
 }
 
 const char* AppScreen::Title() const

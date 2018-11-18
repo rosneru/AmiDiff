@@ -4,7 +4,7 @@
 #include "AppScreen.h"
 #include "AmigaDiffPens.h"
 
-extern struct Library* GfxBase;
+//extern struct Library* GfxBase;
 
 AmigaDiffPens::AmigaDiffPens()
   : m_pAppScreen(NULL),
@@ -15,13 +15,21 @@ AmigaDiffPens::AmigaDiffPens()
 
 AmigaDiffPens::~AmigaDiffPens()
 {
-  if(m_bInitialized)
+  if(!m_bInitialized)
   {
-    ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_RedPen);
-    ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_YellowPen);
-    ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_GreenPen);
-    ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_GreyPen);
+    return;
   }
+
+  if(m_pAppScreen == NULL || m_pAppScreen->IntuiScreen() == NULL)
+  {
+    return;
+  }
+
+  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_RedPen);
+  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_YellowPen);
+  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_GreenPen);
+  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_GreyPen);
+
 }
 
 bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
@@ -35,38 +43,53 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
   {
     return false;
   }
-
+/*
   if(p_FirstFreeColorNum < 4 || p_FirstFreeColorNum > 31)
   {
     return false;
   }
-
+*/
   m_pAppScreen = p_pAppScreen;
-
+/*
   if(GfxBase->lib_Version < 39)
   {
-    // We need to use the OptainBestPen function from OS3.0 and above. 
+    // We need to use the OptainBestPen function from OS3.0 and above.
     // So we leave here, if this requirement is not given.
     return;
   }
+*/
+  if(m_pAppScreen->IntuiScreen() == NULL)
+  {
+    return false;
+  }
 
+  struct ColorMap* pColorMap = m_pAppScreen->IntuiScreen()->ViewPort.ColorMap;
+  if(pColorMap == NULL)
+  {
+    return false;
+  }
+/*
+- Added: *Green* (193, 254, 189), 0xc1febd
+- Changed: *Yellow* (252, 255, 187), 0xfcffbb
+- Deleted: *Red* (243, 181, 185), 0xf3b5b9
+*/
   m_RedPen = ObtainBestPen(
-    m_pAppScreen->IntuiScreen()->ViewPort.ColorMap,
-    243, 181, 185,
+    pColorMap,
+    0xc1c1c1c1, 0xfefefefe, 0xbdbdbdbd,
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_GUI,
     TAG_END);
 
   m_YellowPen = ObtainBestPen(
     m_pAppScreen->IntuiScreen()->ViewPort.ColorMap,
-    252, 255, 187,
+    0xfcfcfcfc, 0xffffffff, 0xbbbbbbbb,
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_GUI,
     TAG_END);
 
   m_GreenPen = ObtainBestPen(
     m_pAppScreen->IntuiScreen()->ViewPort.ColorMap,
-    193, 254, 189,
+    0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9,
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_GUI,
     TAG_END);
@@ -103,35 +126,52 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
 
 ULONG AmigaDiffPens::Background() const
 {
+  if(m_pAppScreen == NULL || m_pAppScreen->IntuiDrawInfo() == NULL)
+  {
+    return 3;
+  }
+
   return m_pAppScreen->IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
 }
 
+/*
 ULONG AmigaDiffPens::Text()  const
 {
+  if(m_pAppScreen == NULL || m_pAppScreen->IntuiDrawInfo() == NULL)
+  {
+    return 3;
+  }
+
   return m_pAppScreen->IntuiDrawInfo()->dri_Pens[TEXTPEN];
 }
+*/
 
 ULONG AmigaDiffPens::HighlightedText()  const
 {
+  if(m_pAppScreen == NULL || m_pAppScreen->IntuiDrawInfo() == NULL)
+  {
+    return 3;
+  }
+
   return m_pAppScreen->IntuiDrawInfo()->dri_Pens[HIGHLIGHTTEXTPEN];
 }
 
-  ULONG AmigaDiffPens::Red() const
-  {
-    return m_RedPen;
-  }
+ULONG AmigaDiffPens::Red() const
+{
+  return m_RedPen;
+}
 
-  ULONG AmigaDiffPens::Yellow() const
-  {
-    return m_YellowPen;
-  }
+ULONG AmigaDiffPens::Yellow() const
+{
+  return m_YellowPen;
+}
 
-  ULONG AmigaDiffPens::Green() const
-  {
-    return m_GreenPen;
-  }
+ULONG AmigaDiffPens::Green() const
+{
+  return m_GreenPen;
+}
 
-  ULONG AmigaDiffPens::Grey() const
-  {
-    return m_GreyPen;
-  }
+ULONG AmigaDiffPens::Grey() const
+{
+  return m_GreyPen;
+}

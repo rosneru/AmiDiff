@@ -37,14 +37,14 @@ struct Library* MathIeeeDoubTransBase;
 
 int main(int argc, char **argv)
 {
-  IntuitionBase = OpenLibrary("intuition.library", 37);
-  DosBase = OpenLibrary("dos.library", 37);
-  GadToolsBase = OpenLibrary("gadtools.library", 37);
-  AslBase = OpenLibrary("asl.library", 37);
-  GfxBase = OpenLibrary("graphics.library", 37);
-  UtilityBase = OpenLibrary("utility.library", 37);
-  MathIeeeDoubBasBase = OpenLibrary("mathieeedoubbas.library", 37);
-  MathIeeeDoubTransBase = OpenLibrary("mathieeedoubtrans.library", 37);
+  IntuitionBase = OpenLibrary("intuition.library", 39);
+  DosBase = OpenLibrary("dos.library", 39);
+  GadToolsBase = OpenLibrary("gadtools.library", 39);
+  AslBase = OpenLibrary("asl.library", 39);
+  GfxBase = OpenLibrary("graphics.library", 39);
+  UtilityBase = OpenLibrary("utility.library", 39);
+  MathIeeeDoubBasBase = OpenLibrary("mathieeedoubbas.library", 39);
+  MathIeeeDoubTransBase = OpenLibrary("mathieeedoubtrans.library", 39);
 
   if((!IntuitionBase) || (!DosBase) || (!GadToolsBase) ||
      (!AslBase) || (!GfxBase) || (!UtilityBase) ||
@@ -54,8 +54,8 @@ int main(int argc, char **argv)
     return 20;
   }
 
-  if((IntuitionBase->lib_Version < 37) ||
-     (IntuitionBase->lib_Version < 37))
+  if((IntuitionBase->lib_Version < 39) ||
+     (IntuitionBase->lib_Version < 39))
   {
     closeLibs();
     return 20;

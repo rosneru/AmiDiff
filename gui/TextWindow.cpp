@@ -158,8 +158,8 @@ bool TextWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
   // Prepare IntuiText for line-by-line printing
-  m_IntuiText.FrontPen  = m_AppScreen.Pens().Text();
-  m_IntuiText.BackPen   = m_AppScreen.Pens().Background();
+//  m_IntuiText.FrontPen  = m_AppScreen.Pens().Text();
+//  m_IntuiText.BackPen   = m_AppScreen.Pens().Background();
   m_IntuiText.DrawMode  = JAM2;
   m_IntuiText.LeftEdge  = 0;
   m_IntuiText.TopEdge   = 0;
@@ -424,6 +424,11 @@ void TextWindow::initialize()
 
 void TextWindow::calcMaxWindowTextLines()
 {
+  if(m_AppScreen.FontHeight() == 0)
+  {
+    return;
+  }
+
   m_MaxTextLines = m_pWindow->Height;
   m_MaxTextLines -= m_pWindow->BorderTop;
   m_MaxTextLines -= m_pWindow->BorderBottom;

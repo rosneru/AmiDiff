@@ -26,7 +26,7 @@ public:
   bool Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum);
 
   ULONG Background() const;
-  ULONG Text() const;
+//  ULONG Text() const;
   ULONG HighlightedText() const;
 
   ULONG Red() const;
