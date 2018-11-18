@@ -73,13 +73,20 @@ bool AppScreen::Open()
     return false;
   }
 
+  // Ensure that screen has at least 8 colors
+  int screenDepth = pWbDrawInfo->dri_Depth;
+  if(screenDepth < 3)
+  {
+    screenDepth = 3;
+  }
+
   //
   // Opening the screen
   //
   m_pScreen = OpenScreenTags(NULL,
     SA_Width, pWbScreen->Width,
     SA_Height, pWbScreen->Height,
-    SA_Depth, pWbDrawInfo->dri_Depth,
+    SA_Depth, screenDepth,
     SA_Overscan, OSCAN_TEXT,
     SA_AutoScroll, TRUE,
     SA_Pens, (ULONG)pWbDrawInfo->dri_Pens,
