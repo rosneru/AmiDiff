@@ -84,16 +84,17 @@ private:
   Document* m_pLeftDocument;
   Document* m_pRightDocument;
 
-  WORD m_IndentX;         ///> Distance of TextArea to left and right window border
-  WORD m_IndentY;         ///> Distance of TextArea to window title bar and bottom border
+  WORD m_IndentX;           ///> Distance of TextArea to left and right window border
+  WORD m_IndentY;           ///> Distance of TextArea to window title bar and bottom border
 
-  WORD m_TextAreaLeft;    ///> X-position of the scrollable double-text-area
-  WORD m_TextAreaTop;     ///> Y-position of the scrollable double-text-area
-  WORD m_TextAreaWidth;   ///> Width of the scrollable double-text-area
-  WORD m_TextAreaHeight;  ///> Height of the scrollable double-text-area
+  WORD m_TextArea1Left;     ///> X-position of the 1st text area
+  WORD m_TextArea2Left;     ///> X-position of the 2nd text area
+  WORD m_TextAreaTop;       ///> Y-position of the text areas
+  WORD m_TextAreasWidth;    ///> Width of each text area
+  WORD m_TextAreasHeight;    ///> Height of the text areas (equally heigh)
 
-  WORD m_InnerWindowRight;
-  WORD m_InnerWindowBottom;
+  WORD m_InnerWindowRight;  ///> X-posiiton of the right-most pixel before the scrollbar
+  WORD m_InnerWindowBottom; ///> X-posiiton of the bottom-most pixel before the scrollbar
 
 
   /**
@@ -101,6 +102,11 @@ private:
    */
   void initialize();
 
+  /**
+   * Paints the basic window content: the 2 BevelBoxes for the original
+   * (left) and chnaged (right) diff file, the Document names and the
+   * state bar at the bottom.
+   */
   void paint(WORD p_WidthDiff = 0, WORD p_HeightDiff = 0);
 
   /**
@@ -108,6 +114,11 @@ private:
    * the member variable.
    */
   void calcMaxWindowTextLines();
+
+  /**
+   * Displays the names of the documents above the two BevelBoxes
+   */
+  void displayDocumentNames();
 
   /**
    * Displays the given line at given y-position

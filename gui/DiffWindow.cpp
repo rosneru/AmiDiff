@@ -20,10 +20,11 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_pRightDocument(NULL),
     m_IndentX(5),
     m_IndentY(0),
-    m_TextAreaLeft(0),
+    m_TextArea1Left(0),
+    m_TextArea2Left(0),
     m_TextAreaTop(0),
-    m_TextAreaWidth(0),
-    m_TextAreaHeight(0),
+    m_TextAreasWidth(0),
+    m_TextAreasHeight(0),
     m_InnerWindowRight(0),
     m_InnerWindowBottom(0)
 {
@@ -101,6 +102,11 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
 bool DiffWindow::SetContent(Document* p_pLeftDocument,
     Document* p_pRightDocument)
 {
+  if((p_pLeftDocument == NULL) || (p_pRightDocument == NULL))
+  {
+    return false;
+  }
+
   m_pLeftDocument = p_pLeftDocument;
   m_pRightDocument = p_pRightDocument;
   m_Y = 0;
@@ -109,6 +115,9 @@ bool DiffWindow::SetContent(Document* p_pLeftDocument,
   {
     return true;
   }
+
+  // Display the document titles above the text areas
+  displayDocumentNames();
 
   // !!TODO!!
 
@@ -217,7 +226,7 @@ void DiffWindow::initialize()
   // Calculate needed values
   m_IndentY = 2 * m_AppScreen.FontHeight();
 
-  m_TextAreaLeft = m_IndentX;
+  m_TextArea1Left = m_IndentX;
   m_TextAreaTop = m_IndentY;
 
   m_bInitialized = true;
@@ -226,10 +235,11 @@ void DiffWindow::initialize()
 
 void DiffWindow::paint(WORD p_WidthDiff, WORD p_HeightDiff)
 {
-  // Erase old rectbefore re-calculating and re-drawing it
+  // Erase old rect before re-calculating and re-drawing it
   EraseRect(m_pWindow->RPort,
     0, 0, m_InnerWindowRight, m_InnerWindowBottom);
 
+  // (Re-)calculate some values that may have be changed by re-sizing
   m_InnerWindowRight = m_pWindow->Width
     - m_AppScreen.IntuiScreen()->WBorLeft
     - m_SizeImageWidth;
@@ -238,24 +248,30 @@ void DiffWindow::paint(WORD p_WidthDiff, WORD p_HeightDiff)
     - m_AppScreen.BarHeight()
     - m_SizeImageHeight;
 
-  m_TextAreaWidth = m_InnerWindowRight - m_TextAreaLeft - m_IndentX;
-  m_TextAreaHeight = m_InnerWindowBottom - m_TextAreaTop - m_IndentY;
+  m_TextAreasWidth = m_InnerWindowRight - m_TextArea1Left - m_IndentX;
+  m_TextAreasWidth /= 2;
 
-  int halfX = m_TextAreaWidth / 2;
+  m_TextAreasHeight = m_InnerWindowBottom - m_TextAreaTop - m_IndentY;
 
+  m_TextArea2Left = m_TextArea1Left + m_TextAreasWidth;
+
+  // Create borders for the two text areas
   DrawBevelBox(m_pWindow->RPort,
-    m_TextAreaLeft, m_TextAreaTop,
-    halfX, m_TextAreaHeight,
+    m_TextArea1Left, m_TextAreaTop,
+    m_TextAreasWidth, m_TextAreasHeight,
     GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
     GTBB_Recessed, TRUE,
     TAG_DONE);
 
   DrawBevelBox(m_pWindow->RPort,
-    m_TextAreaLeft + halfX, m_TextAreaTop,
-    halfX, m_TextAreaHeight,
+    m_TextArea2Left, m_TextAreaTop,
+    m_TextAreasWidth, m_TextAreasHeight,
     GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
     GTBB_Recessed, TRUE,
     TAG_DONE);
+
+  // Display the document titles above the text areas
+  displayDocumentNames();
 
 }
 
@@ -268,6 +284,33 @@ void DiffWindow::calcMaxWindowTextLines()
   m_MaxTextLines /= m_AppScreen.FontHeight();
 }
 
+void DiffWindow::displayDocumentNames()
+{
+  if((m_pLeftDocument == NULL) || (m_pRightDocument == NULL))
+  {
+    return;
+  }
+
+  ULONG txtPen = m_AppScreen.IntuiDrawInfo()->dri_Pens[HIGHLIGHTTEXTPEN];
+  ULONG bgPen = m_AppScreen.IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
+
+  struct IntuiText intuiText;
+  intuiText.FrontPen  = txtPen;
+  intuiText.BackPen   = bgPen;
+  intuiText.DrawMode  = JAM2;
+  intuiText.ITextFont = &m_TextAttr;
+  intuiText.NextText  = NULL;
+
+  intuiText.TopEdge   = m_TextAreaTop - m_AppScreen.FontHeight() - 1;
+
+  intuiText.LeftEdge  = m_TextArea1Left + 2;
+  intuiText.IText = (UBYTE*)m_pLeftDocument->FileName().C_str();
+  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+
+  intuiText.LeftEdge  = m_TextArea2Left + 2;
+  intuiText.IText = (UBYTE*)m_pRightDocument->FileName().C_str();
+  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+}
 
 void DiffWindow::displayLine(const SimpleString* p_pLine, WORD p_TopEdge)
 {

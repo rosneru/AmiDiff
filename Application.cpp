@@ -107,12 +107,16 @@ bool Application::Run()
   m_OpenFilesWin.SetMenu(&m_Menu);
 
   //
-  // Prepare the left and right TextWindows and open the OpenFileWindow
+  // Prepare the position of the DiffWindow
   //
   m_DiffWindow.SetInitialPosition(WindowBase::IP_Fill);
-  m_DiffWindow.Open();
 
-  //m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
+  //
+  // Open the OpenFilesWindow.
+  //
+  // Giving the command ptr as argument, so the appropriate menu item
+  // is disabled after opening.
+  m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
 
   //
   // Wait-in-loop for menu actions etc
