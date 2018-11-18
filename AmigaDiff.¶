@@ -243,6 +243,12 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "gui/AmigaDiffPens.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/AmigaDiffPens.o" "objects_debug/AmigaDiffPens.debug"
+""
+1 1
+File
 1 "gui/AppMenu.cpp"
 "gui/AppMenu.cpp"
 "gui/AppMenu.h"
@@ -471,6 +477,12 @@ Storm Shell Project (Dependencies)
 File
 2 "diffengine/DiffLine.h"
 "diffengine/DiffLine.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
