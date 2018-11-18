@@ -108,8 +108,6 @@ protected:
   size_t m_MaxTextLines;  ///> Number of text lines that fit in window
   size_t m_Y;         ///> Index of currently first displayed text line
 
-  ULONG m_SizeImageWidth;
-
   WORD m_ScrollXMin;  ///> Left x coordinate of scrolling area
   WORD m_ScrollYMin;  ///> Left y coordinate of scrolling area
   WORD m_ScrollXMax;  ///> Right x coordinate of scrolling area
@@ -125,6 +123,9 @@ protected:
    * big files.
    */
   LastScrollDirection m_LastScrollDirection;
+
+  ULONG m_SizeImageWidth;
+  ULONG m_SizeImageHeight;
 
   struct Image* m_pLeftArrowImage;    ///> h-scrollbar left button image
   struct Image* m_pRightArrowImage;   ///> h-scrollbar right button image

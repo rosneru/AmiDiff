@@ -18,8 +18,8 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : TextWindow(p_AppScreen, p_pMsgPort),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
-    m_IndentX(30),
-    m_IndentY(30),
+    m_IndentX(5),
+    m_IndentY(0),
     m_TextAreaLeft(0),
     m_TextAreaTop(0),
     m_TextAreaWidth(0),
@@ -214,8 +214,8 @@ void DiffWindow::initialize()
            IDCMP_REFRESHWINDOW |  // Inform us when refreshing is necessary
            IDCMP_IDCMPUPDATE);    // Inform us about TODO
 
-  // Setting the first gadget of the gadet list for the window
-//  setFirstGadget(m_pDownArrowButton);
+  // Calculate needed values
+  m_IndentY = 2 * m_AppScreen.FontHeight();
 
   m_TextAreaLeft = m_IndentX;
   m_TextAreaTop = m_IndentY;
@@ -236,14 +236,23 @@ void DiffWindow::paint(WORD p_WidthDiff, WORD p_HeightDiff)
 
   m_InnerWindowBottom = m_pWindow->Height
     - m_AppScreen.BarHeight()
-    - m_AppScreen.IntuiScreen()->WBorBottom;
+    - m_SizeImageHeight;
 
   m_TextAreaWidth = m_InnerWindowRight - m_TextAreaLeft - m_IndentX;
   m_TextAreaHeight = m_InnerWindowBottom - m_TextAreaTop - m_IndentY;
 
+  int halfX = m_TextAreaWidth / 2;
+
   DrawBevelBox(m_pWindow->RPort,
     m_TextAreaLeft, m_TextAreaTop,
-    m_TextAreaWidth, m_TextAreaHeight,
+    halfX, m_TextAreaHeight,
+    GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
+    GTBB_Recessed, TRUE,
+    TAG_DONE);
+
+  DrawBevelBox(m_pWindow->RPort,
+    m_TextAreaLeft + halfX, m_TextAreaTop,
+    halfX, m_TextAreaHeight,
     GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
     GTBB_Recessed, TRUE,
     TAG_DONE);

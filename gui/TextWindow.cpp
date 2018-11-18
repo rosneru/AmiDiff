@@ -16,11 +16,12 @@ TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_pDocument(NULL),
     m_MaxTextLines(0),
     m_Y(0),
-    m_SizeImageWidth(18),
     m_ScrollXMin(0),
     m_ScrollYMin(0),
     m_ScrollXMax(0),
     m_ScrollYMax(0),
+    m_SizeImageWidth(18),
+    m_SizeImageHeight(10),
     m_LastScrollDirection(None),
     m_pLeftArrowImage(NULL),
     m_pRightArrowImage(NULL),
@@ -269,13 +270,12 @@ void TextWindow::initialize()
   // Setting up scroll bars and gadgets for the window. They will be
   // attached to the window at opening time
   //
-  ULONG sizeImageHeight = 10; // the height of the size image
   ULONG imageWidth = 0;   // to successfully store the other images widths
   ULONG imageHeight = 0;  // to successfully store the other images heights
 
   // Getting the width and height of the current system size gadget
   struct Image* pSizeImage = createImageObj(
-    SIZEIMAGE, m_SizeImageWidth, sizeImageHeight);
+    SIZEIMAGE, m_SizeImageWidth, m_SizeImageHeight);
 
   // the size image is only needed for getting its width and height so
   // it can be disposed right now
@@ -293,7 +293,7 @@ void TextWindow::initialize()
     NULL, BUTTONGCLASS,
     GA_ID, GID_ArrowDown,
     GA_RelRight, -imageWidth+1,
-    GA_RelBottom, -sizeImageHeight-imageHeight+1,
+    GA_RelBottom, -m_SizeImageHeight-imageHeight+1,
     GA_Width, imageWidth,
     GA_Height, imageHeight,
     GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
@@ -312,7 +312,7 @@ void TextWindow::initialize()
     GA_Previous, m_pDownArrowButton,
     GA_ID, GID_ArrowUp,
     GA_RelRight, -imageWidth+1,
-    GA_RelBottom, -sizeImageHeight-imageHeight-imageHeight+1,
+    GA_RelBottom, -m_SizeImageHeight-imageHeight-imageHeight+1,
     GA_Width, imageWidth,
     GA_Height, imageHeight,
     GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
@@ -330,7 +330,7 @@ void TextWindow::initialize()
   	GA_RelRight, -m_SizeImageWidth+4,
   	GA_Top, m_AppScreen.BarHeight(),
   	GA_Width, m_SizeImageWidth-6,
-  	GA_RelHeight, -sizeImageHeight-imageHeight-imageHeight-m_AppScreen.BarHeight()-1,
+  	GA_RelHeight, -m_SizeImageHeight-imageHeight-imageHeight-m_AppScreen.BarHeight()-1,
   	GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
   	GA_GZZGadget, TRUE,
   	GA_RightBorder, TRUE,
@@ -387,9 +387,9 @@ void TextWindow::initialize()
     GA_Previous, m_pLeftArrowButton,
     GA_ID, GID_PropX,
     GA_Left, m_AppScreen.IntuiScreen()->WBorLeft,
-    GA_RelBottom, -sizeImageHeight+3,
+    GA_RelBottom, -m_SizeImageHeight+3,
     GA_RelWidth, -m_SizeImageWidth-imageWidth-imageWidth-m_AppScreen.IntuiScreen()->WBorLeft-1,
-    GA_Height, sizeImageHeight-4,
+    GA_Height, m_SizeImageHeight-4,
     GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
     GA_GZZGadget, TRUE,
     GA_BottomBorder, TRUE,

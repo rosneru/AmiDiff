@@ -84,8 +84,8 @@ private:
   Document* m_pLeftDocument;
   Document* m_pRightDocument;
 
-  const WORD m_IndentX; ///> Distance of TextArea to left and right window border
-  const WORD m_IndentY; ///> Distance of TextArea to window title bar and bottom border
+  WORD m_IndentX;         ///> Distance of TextArea to left and right window border
+  WORD m_IndentY;         ///> Distance of TextArea to window title bar and bottom border
 
   WORD m_TextAreaLeft;    ///> X-position of the scrollable double-text-area
   WORD m_TextAreaTop;     ///> Y-position of the scrollable double-text-area
