@@ -23,7 +23,7 @@ public:
    * Starting with color number p_FirstFreeColorNum the needed 4 colors
    * will be assigned to color registers.
    */
-  bool Init(AppScreen* p_pAppScreen,short p_FirstFreeColorNum);
+  bool Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum);
 
   ULONG Background() const;
   ULONG Text() const;
@@ -36,10 +36,11 @@ public:
 
 private:
   AppScreen* m_pAppScreen;
-  ULONG m_RedColorNum;
-  ULONG m_YellowColorNum;
-  ULONG m_GreenColorNum;
-  ULONG m_GreyColorNum;
+  bool m_bInitialized;
+  ULONG m_RedPen;
+  ULONG m_YellowPen;
+  ULONG m_GreenPen;
+  ULONG m_GreyPen;
 };
 
 #endif
