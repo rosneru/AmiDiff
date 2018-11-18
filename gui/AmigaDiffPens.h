@@ -2,7 +2,8 @@
 #define AMIGA_DIFF_PENS_H
 
 #include <intuition/screens.h>
-#include "AppScreen.h"
+
+class AppScreen;
 
 /**
  * Class for the pens used by AmigaDiff
@@ -13,23 +14,23 @@
 class AmigaDiffPens
 {
 public:
-  AmigaDiffPens(AppScreen& p_AppScreen);
+  AmigaDiffPens();
   ~AmigaDiffPens();
 
   /**
    * Creates the colors needed by AmigaDiff.
-   * 
+   *
    * Starting with color number p_FirstFreeColorNum the needed 4 colors
    * will be assigned to color registers.
    */
-  bool Init(short p_FirstFreeColorNum);
+  bool Init(AppScreen* p_pAppScreen,short p_FirstFreeColorNum);
 
   ULONG Background() const;
   ULONG Text() const;
   ULONG HighlightedText() const;
 
 private:
-  AppScreen& m_AppScreen;
+  AppScreen* m_pAppScreen;
   short m_FirstColorNum;
 };
 

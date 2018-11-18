@@ -6,8 +6,7 @@
 
 
 AppScreen::AppScreen(SimpleString p_Title)
-  : m_Pens(*this),
-    m_pTextFont(NULL),
+  : m_pTextFont(NULL),
     m_FontName(""),
     m_Title(p_Title),
     m_pScreen(NULL),
@@ -120,9 +119,9 @@ bool AppScreen::Open()
     return false;
   }
 
-  // Trying to initialize our four needed color pens starting from 
+  // Trying to initialize our four needed color pens starting from
   // color number 4 (as 0..3 are definately system reserved)
-  if(m_Pens.Init(4) == false)
+  if(m_Pens.Init(this, 4) == false)
   {
     return false;
   }

@@ -1,9 +1,11 @@
 #include <clib/graphics_protos.h>
+
+#include "AppScreen.h"
 #include "AmigaDiffPens.h"
 
 
-AmigaDiffPens::AmigaDiffPens(AppScreen& p_AppScreen)
-  : m_AppScreen(p_AppScreen)
+AmigaDiffPens::AmigaDiffPens()
+  : m_pAppScreen(NULL)
 {
 
 }
@@ -13,16 +15,22 @@ AmigaDiffPens::~AmigaDiffPens()
 
 }
 
-bool AmigaDiffPens::Init(short p_FirstFreeColorNum)
+bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
 {
+  if(p_pAppScreen == NULL)
+  {
+    return false;
+  }
+
   if(p_FirstFreeColorNum < 4 || p_FirstFreeColorNum > 31)
   {
     return false;
   }
 
+  m_pAppScreen = p_pAppScreen;
   m_FirstColorNum = p_FirstFreeColorNum;
 
-  struct ViewPort* pViewPort = &m_AppScreen.IntuiScreen()->ViewPort;
+  struct ViewPort* pViewPort = &m_pAppScreen->IntuiScreen()->ViewPort;
 
   // Red for 'deleted'
   SetRGB4(pViewPort, p_FirstFreeColorNum++, 12, 16, 12);
@@ -35,20 +43,21 @@ bool AmigaDiffPens::Init(short p_FirstFreeColorNum)
 
   // Another grey for the background of the line numbers
   SetRGB4(pViewPort, p_FirstFreeColorNum++, 10, 10, 10);
+
+  return true;
 }
 
 ULONG AmigaDiffPens::Background() const
 {
-  return m_AppScreen.IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
+  return m_pAppScreen->IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
 }
 
 ULONG AmigaDiffPens::Text()  const
 {
-  return m_AppScreen.IntuiDrawInfo()->dri_Pens[TEXTPEN];
+  return m_pAppScreen->IntuiDrawInfo()->dri_Pens[TEXTPEN];
 }
-  
+
 ULONG AmigaDiffPens::HighlightedText()  const
 {
-  return m_AppScreen.IntuiDrawInfo()->dri_Pens[HIGHLIGHTTEXTPEN];
+  return m_pAppScreen->IntuiDrawInfo()->dri_Pens[HIGHLIGHTTEXTPEN];
 }
-  
