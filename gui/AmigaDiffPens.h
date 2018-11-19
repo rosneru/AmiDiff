@@ -25,22 +25,22 @@ public:
    */
   bool Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum);
 
-  ULONG Background() const;
-//  ULONG Text() const;
-  ULONG HighlightedText() const;
+  LONG Background() const;
+//  LONG Text() const;
+  LONG HighlightedText() const;
 
-  ULONG Red() const;
-  ULONG Yellow() const;
-  ULONG Green() const;
-  ULONG Grey() const;
+  LONG Red() const;
+  LONG Yellow() const;
+  LONG Green() const;
+  LONG Grey() const;
 
 private:
   AppScreen* m_pAppScreen;
   bool m_bInitialized;
-  ULONG m_RedPen;
-  ULONG m_YellowPen;
-  ULONG m_GreenPen;
-  ULONG m_GreyPen;
+  LONG m_RedPen;
+  LONG m_YellowPen;
+  LONG m_GreenPen;
+  LONG m_GreyPen;
 };
 
 #endif
