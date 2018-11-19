@@ -25,6 +25,11 @@ public:
    */
   bool Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum);
 
+  /**
+   * Freeing pens, allocated colormaps etc
+   */
+  void Dispose();
+
   LONG Background() const;
   LONG Text() const;
   LONG HighlightedText() const;

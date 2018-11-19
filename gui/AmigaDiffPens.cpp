@@ -15,21 +15,7 @@ AmigaDiffPens::AmigaDiffPens()
 
 AmigaDiffPens::~AmigaDiffPens()
 {
-  if(!m_bInitialized)
-  {
-    return;
-  }
-
-  if(m_pAppScreen == NULL || m_pAppScreen->IntuiScreen() == NULL)
-  {
-    return;
-  }
-
-  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_RedPen);
-  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_YellowPen);
-  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_GreenPen);
-  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_GreyPen);
-
+  Dispose();
 }
 
 bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
@@ -124,6 +110,25 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
   // SetRGB4(pViewPort, m_GreyColorNum, 10, 10, 10);
 
   return true;
+}
+
+void AmigaDiffPens::Dispose()
+{
+  if(!m_bInitialized)
+  {
+    return;
+  }
+
+  if(m_pAppScreen == NULL || !m_pAppScreen->IsOpen())
+  {
+    return;
+  }
+
+  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_RedPen);
+  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_YellowPen);
+  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_GreenPen);
+  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_GreyPen);
+  m_bInitialized = false;
 }
 
 LONG AmigaDiffPens::Background() const

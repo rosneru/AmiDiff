@@ -158,6 +158,9 @@ void AppScreen::Close()
     m_pTextFont = NULL;
   }
 
+  // Freeing the allocated pens etc
+  m_Pens.Dispose();
+
   if(m_pScreen != NULL)
   {
     UnlockPubScreen(NULL, m_pScreen);
