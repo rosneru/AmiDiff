@@ -124,7 +124,7 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
   return true;
 }
 
-ULONG AmigaDiffPens::Background() const
+LONG AmigaDiffPens::Background() const
 {
   if(m_pAppScreen == NULL || m_pAppScreen->IntuiDrawInfo() == NULL)
   {
@@ -135,7 +135,7 @@ ULONG AmigaDiffPens::Background() const
 }
 
 /*
-ULONG AmigaDiffPens::Text()  const
+LONG AmigaDiffPens::Text()  const
 {
   if(m_pAppScreen == NULL || m_pAppScreen->IntuiDrawInfo() == NULL)
   {
@@ -146,7 +146,7 @@ ULONG AmigaDiffPens::Text()  const
 }
 */
 
-ULONG AmigaDiffPens::HighlightedText()  const
+LONG AmigaDiffPens::HighlightedText()  const
 {
   if(m_pAppScreen == NULL || m_pAppScreen->IntuiDrawInfo() == NULL)
   {
@@ -156,22 +156,22 @@ ULONG AmigaDiffPens::HighlightedText()  const
   return m_pAppScreen->IntuiDrawInfo()->dri_Pens[HIGHLIGHTTEXTPEN];
 }
 
-ULONG AmigaDiffPens::Red() const
+LONG AmigaDiffPens::Red() const
 {
   return m_RedPen;
 }
 
-ULONG AmigaDiffPens::Yellow() const
+LONG AmigaDiffPens::Yellow() const
 {
   return m_YellowPen;
 }
 
-ULONG AmigaDiffPens::Green() const
+LONG AmigaDiffPens::Green() const
 {
   return m_GreenPen;
 }
 
-ULONG AmigaDiffPens::Grey() const
+LONG AmigaDiffPens::Grey() const
 {
   return m_GreyPen;
 }
