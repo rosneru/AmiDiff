@@ -55,35 +55,25 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
     return false;
   }
 
-/*
-- Added: *Green* (193, 254, 189), 0xc1febd
-- Changed: *Yellow* (252, 255, 187), 0xfcffbb
-- Deleted: *Red* (243, 181, 185), 0xf3b5b9
-*/
-
-  m_RedPen = ObtainBestPen(
-    m_pAppScreen->IntuiScreen()->ViewPort.ColorMap,
+  m_RedPen = ObtainBestPen(pColorMap,
     0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9,
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_GUI,
     TAG_END);
 
-  m_YellowPen = ObtainBestPen(
-    m_pAppScreen->IntuiScreen()->ViewPort.ColorMap,
+  m_YellowPen = ObtainBestPen(pColorMap,
     0xfcfcfcfc, 0xffffffff, 0xbbbbbbbb,
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_GUI,
     TAG_END);
 
-  m_GreenPen = ObtainBestPen(
-    pColorMap,
+  m_GreenPen = ObtainBestPen(pColorMap,
     0xc1c1c1c1, 0xfefefefe, 0xbdbdbdbd,
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_GUI,
     TAG_END);
 
-  m_GreyPen = ObtainBestPen(
-    m_pAppScreen->IntuiScreen()->ViewPort.ColorMap,
+  m_GreyPen = ObtainBestPen(pColorMap,
     0x28282828, 0x28282828, 0x28282828,
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_GUI,
