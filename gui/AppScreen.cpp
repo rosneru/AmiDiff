@@ -159,6 +159,12 @@ void AppScreen::Close()
   }
 
   UnlockPubScreen(NULL, m_pScreen);
+  m_pScreen = NULL;
+}
+
+bool AppScreen::IsOpen() const
+{
+  return (m_pScreen != NULL);
 }
 
 const char* AppScreen::Title() const

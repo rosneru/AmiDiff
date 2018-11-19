@@ -33,6 +33,8 @@ public:
    */
   void Close();
 
+  bool IsOpen() const;
+
   const char* Title() const;
 
 

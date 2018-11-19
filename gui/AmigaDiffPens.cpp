@@ -58,7 +58,7 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
     return;
   }
 */
-  if(m_pAppScreen->IntuiScreen() == NULL)
+  if(!m_pAppScreen->IsOpen())
   {
     return false;
   }
@@ -68,6 +68,7 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
   {
     return false;
   }
+
 /*
 - Added: *Green* (193, 254, 189), 0xc1febd
 - Changed: *Yellow* (252, 255, 187), 0xfcffbb
