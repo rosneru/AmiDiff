@@ -158,8 +158,11 @@ void AppScreen::Close()
     m_pTextFont = NULL;
   }
 
-  UnlockPubScreen(NULL, m_pScreen);
-  m_pScreen = NULL;
+  if(m_pScreen != NULL)
+  {
+    UnlockPubScreen(NULL, m_pScreen);
+    m_pScreen = NULL;
+  }
 }
 
 bool AppScreen::IsOpen() const
