@@ -17,7 +17,18 @@
 class AppScreen
 {
 public:
-  AppScreen(SimpleString p_Title);
+  /**
+   * Used to specify the needed screen mode without messing around with
+   * too many parameters. 
+   */
+  enum ObtainScreenMode
+  {
+    OSM_UseWb,      ///> Uses to Worbkbench public screen
+    OSM_CloneWb,    ///> Clones the workbench screen
+    OSM_CloneWb3Bp, ///> Clones the Workbench screen an ensures at least 3 bitplanes (8 colors)
+  };
+
+  AppScreen(ObtainScreenMode p_ObtainedScreenMode);
   ~AppScreen();
 
   /**
@@ -36,7 +47,7 @@ public:
   bool IsOpen() const;
 
   const char* Title() const;
-
+  void SetTitle(SimpleString p_NewTitle); ///> Not working when the screen is already open
 
   WORD FontHeight() const;
 
@@ -71,6 +82,7 @@ public:
 
 
 private:
+  ObtainScreenMode m_ObtainedScreenMode;
   AmigaDiffPens m_Pens;
   struct TextAttr m_TextAttr;
   struct TextFont* m_pTextFont;

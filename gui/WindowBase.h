@@ -18,14 +18,15 @@ class WindowBase
 {
 public:
   /**
-   * Used to define an initial position of the window on the screen
+   * Used to define an initial position of the window on the screen 
+   * without messing around with too many parameters. 
    */
   enum InitialPosition
   {
-    IP_Center,  //> Center of the screen; depending on window dimensions
-    IP_Fill,    //> Fit to screen below title bar; changes window dimesions
-    IP_Left,    //> Left half of the screen; changes window dimesions
-    IP_Right,   //> Right half of the screen; changes window dimesions
+    IP_Center,  ///> Center of the screen; depending on window dimensions
+    IP_Fill,    ///> Fit to screen below title bar; changes window dimesions
+    IP_Left,    ///> Left half of the screen; changes window dimesions
+    IP_Right,   ///> Right half of the screen; changes window dimesions
   };
 
   /**

@@ -20,7 +20,7 @@ Application::Application(int argc, char **argv, struct MsgPort* p_pMsgPortAllWin
     m_Argc(argc),
     m_Argv(argv),
     m_bExitRequested(false),
-    m_Screen("AmiDiff (C) 2018 by Uwe Rosner."),
+    m_Screen(AppScreen::OSM_UseWb),
     m_DiffWindow(m_Screen, m_pMsgPortAllWindows),
     m_DiffFacade(m_DiffWindow),
     m_OpenFilesWin(m_Screen, m_pMsgPortAllWindows, m_DiffFacade),
@@ -58,12 +58,12 @@ bool Application::Run()
   //
   // Opening the screen
   //
+  m_Screen.SetTitle("AmiDiff (C) 2018 by Uwe Rosner.");
   if (!m_Screen.Open())
   {
     // Opening the screen failed
     return false;
   }
-
 
   //
   // If there are at least two command line arguments permitted, take

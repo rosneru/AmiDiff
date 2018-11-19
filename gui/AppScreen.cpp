@@ -5,10 +5,11 @@
 #include "AppScreen.h"
 
 
-AppScreen::AppScreen(SimpleString p_Title)
-  : m_pTextFont(NULL),
+AppScreen::AppScreen(ObtainScreenMode p_ObtainedScreenMode)
+  : m_ObtainedScreenMode(p_ObtainedScreenMode),
+    m_pTextFont(NULL),
     m_FontName(""),
-    m_Title(p_Title),
+    m_Title("AppScreen"),
     m_pScreen(NULL),
     m_pDrawInfo(NULL),
     m_pVisualInfo(NULL)
@@ -72,45 +73,65 @@ bool AppScreen::Open()
     UnlockPubScreen(NULL, pWbScreen);
     return false;
   }
-/*
-  // Ensure that screen has at least 8 colors
-  int screenDepth = pWbDrawInfo->dri_Depth;
-  if(screenDepth < 3)
+
+  if(m_ObtainedScreenMode != AppScreen::OSM_UseWb)
   {
-    screenDepth = 3;
+    //
+    // Creating a copy of the Workbench screen
+    //
+
+    // Ensure that screen has at least 8 colors
+    int screenDepth = pWbDrawInfo->dri_Depth;
+
+    if(m_ObtainedScreenMode == AppScreen::OSM_CloneWb3Bp)
+    {
+      if(screenDepth < 3)
+      {
+        // Ensuring 3 bitplanes
+        screenDepth = 3;
+      }
+    }
+
+    //
+    // Opening the screen
+    //
+    m_pScreen = OpenScreenTags(NULL,
+      SA_Width, pWbScreen->Width,
+      SA_Height, pWbScreen->Height,
+      SA_Depth, screenDepth,
+      SA_Overscan, OSCAN_TEXT,
+      SA_AutoScroll, TRUE,
+      SA_Pens, (ULONG)pWbDrawInfo->dri_Pens,
+      SA_Font, (ULONG) &m_TextAttr,
+      SA_DisplayID, wbScreenModeId,
+      SA_Title, m_Title.C_str(),
+      TAG_DONE);
+
+    // We don't need them anymore
+    FreeScreenDrawInfo(pWbScreen, pWbDrawInfo);
+    UnlockPubScreen(NULL, pWbScreen);
+
+    if(m_pScreen == NULL)
+    {
+      return false;
+    }
+
+    m_pDrawInfo = GetScreenDrawInfo(m_pScreen);
+    if(m_pDrawInfo == NULL)
+    {
+      Close();
+      return false;
+    }
   }
-
-  //
-  // Opening the screen
-  //
-  m_pScreen = OpenScreenTags(NULL,
-    SA_Width, pWbScreen->Width,
-    SA_Height, pWbScreen->Height,
-    SA_Depth, screenDepth,
-    SA_Overscan, OSCAN_TEXT,
-    SA_AutoScroll, TRUE,
-    SA_Pens, (ULONG)pWbDrawInfo->dri_Pens,
-    SA_Font, (ULONG) &m_TextAttr,
-    SA_DisplayID, wbScreenModeId,
-    SA_Title, m_Title.C_str(),
-    TAG_DONE);
-
-  // We don't need them anymore
-  FreeScreenDrawInfo(pWbScreen, pWbDrawInfo);
-  UnlockPubScreen(NULL, pWbScreen);
-
-  if(m_pScreen == NULL)
+  else
   {
-    return false;
-  }
+    //
+    // Using the Workbench public screen
+    //
 
-  m_pDrawInfo = GetScreenDrawInfo(m_pScreen);
-  if(m_pDrawInfo == NULL)
-  {
-    Close();
-    return false;
+    m_pScreen = pWbScreen;
+    m_pDrawInfo = pWbDrawInfo;
   }
-*/
 
 
 
@@ -145,25 +166,29 @@ void AppScreen::Close()
     FreeScreenDrawInfo(m_pScreen, m_pDrawInfo);
     m_pDrawInfo = NULL;
   }
-/*
-  if(m_pScreen != NULL)
-  {
-    CloseScreen(m_pScreen);
-    m_pScreen = NULL;
-  }
-*/
+
   if(m_pTextFont != NULL)
   {
     CloseFont(m_pTextFont);
     m_pTextFont = NULL;
   }
 
-  // Freeing the allocated pens etc
+  // Freeing the allocated pens
   m_Pens.Dispose();
 
   if(m_pScreen != NULL)
   {
-    UnlockPubScreen(NULL, m_pScreen);
+    if(m_ObtainedScreenMode == AppScreen::OSM_UseWb)
+    {
+      // We had used the Workbench public screen
+      UnlockPubScreen(NULL, m_pScreen);
+    }
+    else
+    {
+      // We had created a copy of the workbench screen
+      CloseScreen(m_pScreen);
+    }
+
     m_pScreen = NULL;
   }
 }
@@ -176,6 +201,17 @@ bool AppScreen::IsOpen() const
 const char* AppScreen::Title() const
 {
   return m_Title.C_str();
+}
+
+void AppScreen::SetTitle(SimpleString p_NewTitle)
+{
+  if(IsOpen())
+  {
+    // Screen is already open, so we don't change its title dynamically
+    return;
+  }
+
+  m_Title = p_NewTitle;
 }
 
 WORD AppScreen::FontHeight() const
