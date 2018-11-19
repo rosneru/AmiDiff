@@ -113,14 +113,14 @@ bool AppScreen::Open()
 */
 
 
-/*
+
   // Trying to initialize our four needed color pens starting from
   // color number 4 (as 0..3 are definately system reserved)
   if(m_Pens.Init(this, 4) == false)
   {
     return false;
   }
-*/
+
   // Get visual info from screen
   m_pVisualInfo = (APTR*) GetVisualInfo(m_pScreen, TAG_END);
   if(m_pVisualInfo == NULL)

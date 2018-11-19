@@ -26,7 +26,7 @@ public:
   bool Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum);
 
   LONG Background() const;
-//  LONG Text() const;
+  LONG Text() const;
   LONG HighlightedText() const;
 
   LONG Red() const;

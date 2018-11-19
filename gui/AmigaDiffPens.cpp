@@ -74,9 +74,10 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
 - Changed: *Yellow* (252, 255, 187), 0xfcffbb
 - Deleted: *Red* (243, 181, 185), 0xf3b5b9
 */
+
   m_RedPen = ObtainBestPen(
-    pColorMap,
-    0xc1c1c1c1, 0xfefefefe, 0xbdbdbdbd,
+    m_pAppScreen->IntuiScreen()->ViewPort.ColorMap,
+    0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9,
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_GUI,
     TAG_END);
@@ -89,15 +90,15 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
     TAG_END);
 
   m_GreenPen = ObtainBestPen(
-    m_pAppScreen->IntuiScreen()->ViewPort.ColorMap,
-    0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9,
+    pColorMap,
+    0xc1c1c1c1, 0xfefefefe, 0xbdbdbdbd,
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_GUI,
     TAG_END);
 
   m_GreyPen = ObtainBestPen(
     m_pAppScreen->IntuiScreen()->ViewPort.ColorMap,
-    40, 40, 40,
+    0x28282828, 0x28282828, 0x28282828,
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_GUI,
     TAG_END);
@@ -135,7 +136,7 @@ LONG AmigaDiffPens::Background() const
   return m_pAppScreen->IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
 }
 
-/*
+
 LONG AmigaDiffPens::Text()  const
 {
   if(m_pAppScreen == NULL || m_pAppScreen->IntuiDrawInfo() == NULL)
@@ -145,7 +146,7 @@ LONG AmigaDiffPens::Text()  const
 
   return m_pAppScreen->IntuiDrawInfo()->dri_Pens[TEXTPEN];
 }
-*/
+
 
 LONG AmigaDiffPens::HighlightedText()  const
 {
