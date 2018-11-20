@@ -75,7 +75,12 @@ bool Application::Run()
     m_DiffFacade.SetLeftFilePath(m_Argv[1]);
     m_DiffFacade.SetRightFilePath(m_Argv[2]);
   }
-
+  else
+  {
+    // TODO Remove after debugging
+    m_DiffFacade.SetLeftFilePath("testfiles/Testcase_06_Left.txt");
+    m_DiffFacade.SetRightFilePath("testfiles/Testcase_06_Right.txt");
+  }
   //
   // Filling the GadTools menu struct, supplying pointers to the
   // commands as nm_UserData. So no complicated evalution needed to

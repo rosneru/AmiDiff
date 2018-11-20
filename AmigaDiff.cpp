@@ -54,8 +54,8 @@ int main(int argc, char **argv)
     return 20;
   }
 
-  if((IntuitionBase->lib_Version < 39) ||
-     (IntuitionBase->lib_Version < 39))
+  if((IntuitionBase->lib_Version < 37) ||
+     (IntuitionBase->lib_Version < 37))
   {
     closeLibs();
     return 20;
