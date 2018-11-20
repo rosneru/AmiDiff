@@ -59,7 +59,7 @@ bool Application::Run()
   // Opening the screen
   //
   m_Screen.SetTitle("AmiDiff (C) 2018 by Uwe Rosner.");
-  if (!m_Screen.Open())
+  if (!m_Screen.Open(AppScreen::SME_CloneWorkbenchMin8Col))
   {
     // Opening the screen failed
     return false;

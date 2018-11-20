@@ -298,7 +298,7 @@ void DiffWindow::displayDocumentNames()
 
   struct IntuiText intuiText;
   intuiText.FrontPen  = m_AppScreen.Pens().HighlightedText();
-  intuiText.BackPen   = m_AppScreen.Pens().Red();
+  intuiText.BackPen   = m_AppScreen.Pens().Background();
   intuiText.DrawMode  = JAM2;
   intuiText.ITextFont = &m_TextAttr;
   intuiText.NextText  = NULL;

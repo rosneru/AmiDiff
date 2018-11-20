@@ -46,7 +46,8 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen)
   switch(m_pAppScreen->ScreenMode())
   {
     case AppScreen::SME_CloneWorkbenchMin8Col:
-      // Case 1 - We use a Workbench screen clone with at least 
+    {
+      // Case 1 - We use a Workbench screen clone with at least
       // 8 colors, so we try to set pens 4..7 to our needed values
 
       // Starting with color number 4 as 0..3 are system reserved
@@ -54,30 +55,36 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen)
 
       // Red for 'deleted'
       m_RedPen = colorNum++;
-      SetRGB4CM(pColorMap, m_RedPen, 15, 11, 12);
+      SetRGB4(&m_pAppScreen->IntuiScreen()->ViewPort,
+        m_RedPen, 14, 11, 11);
 
       // Yellow for 'changed'
       m_YellowPen = colorNum++;
-      SetRGB4CM(pColorMap, m_YellowPen, 16, 16, 12);
+      SetRGB4(&m_pAppScreen->IntuiScreen()->ViewPort,
+        m_YellowPen, 15, 15, 11);
 
       // Green for 'added'
       m_GreenPen = colorNum++;
-      SetRGB4CM(pColorMap, m_GreenPen, 12, 16, 12);
+      SetRGB4(&m_pAppScreen->IntuiScreen()->ViewPort,
+        m_GreenPen, 12, 15, 12);
 
       // Another grey for the background of the line numbers
       m_GreyPen = colorNum++;
-      SetRGB4CM(pColorMap, m_GreyPen, 10, 10, 10);
-      break;
+      SetRGB4(&m_pAppScreen->IntuiScreen()->ViewPort,
+        m_GreyPen, 10, 10, 10);
 
+      break;
+    }
     case AppScreen::SME_UseWorkbench:
-      // Case 2 - We use the Workbench screen and have Workbench 
-      // version >= 3.0, so we try to use pen sharing to get our 
+    {
+      // Case 2 - We use the Workbench screen and have Workbench
+      // version >= 3.0, so we try to use pen sharing to get our
       // needed pens
 
       if(GfxBase->lib_Version < 39)
       {
-        // We need to use the ObtainBestPen function from OS3.0 and 
-        // above. So we stop here, if this requirement is not given, 
+        // We need to use the ObtainBestPen function from OS3.0 and
+        // above. So we stop here, if this requirement is not given,
         // setting all our special colors to pen 3 (blue in most cases)
         m_RedPen = 3;
         m_YellowPen = 3;
@@ -113,15 +120,17 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen)
       m_bObtainedPens = true;
 
       break;
-
+    }
     default:
-      // All other screenmodes / cases: Setting all our special colors 
+    {
+      // All other screenmodes / cases: Setting all our special colors
       // to pen 3 (blue in most cases)
       m_RedPen = 3;
       m_YellowPen = 3;
       m_GreenPen = 3;
       m_GreyPen = 3;
       break;
+    }
   }
 
   m_bInitialized = true;
@@ -143,7 +152,7 @@ void AmigaDiffPens::Dispose()
 
   if(m_bObtainedPens == true)
   {
-    struct ColorMap* pColorMap = 
+    struct ColorMap* pColorMap =
       m_pAppScreen->IntuiScreen()->ViewPort.ColorMap;
 
     ReleasePen(pColorMap, m_RedPen);
