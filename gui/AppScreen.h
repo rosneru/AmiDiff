@@ -80,6 +80,8 @@ public:
    */
   const AmigaDiffPens& Pens() const;
 
+  ScreenModeEasy ScreenMode() const;
+
 
 private:
   ScreenModeEasy m_ScreenModeEasy;

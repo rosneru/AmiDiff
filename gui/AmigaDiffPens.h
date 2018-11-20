@@ -23,7 +23,7 @@ public:
    * Starting with color number p_FirstFreeColorNum the needed 4 colors
    * will be assigned to color registers.
    */
-  bool Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum);
+  bool Init(AppScreen* p_pAppScreen);
 
   /**
    * Freeing pens, allocated colormaps etc
@@ -42,6 +42,7 @@ public:
 private:
   AppScreen* m_pAppScreen;
   bool m_bInitialized;
+  bool m_bObtainedPens;
   LONG m_RedPen;
   LONG m_YellowPen;
   LONG m_GreenPen;

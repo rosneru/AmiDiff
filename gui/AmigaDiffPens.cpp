@@ -4,11 +4,12 @@
 #include "AppScreen.h"
 #include "AmigaDiffPens.h"
 
-//extern struct Library* GfxBase;
+extern struct Library* GfxBase;
 
 AmigaDiffPens::AmigaDiffPens()
   : m_pAppScreen(NULL),
-    m_bInitialized(false)
+    m_bInitialized(false),
+    m_bObtainedPens(false)
 {
 
 }
@@ -18,7 +19,7 @@ AmigaDiffPens::~AmigaDiffPens()
   Dispose();
 }
 
-bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
+bool AmigaDiffPens::Init(AppScreen* p_pAppScreen)
 {
   if(m_bInitialized)
   {
@@ -29,76 +30,101 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen, short p_FirstFreeColorNum)
   {
     return false;
   }
-/*
-  if(p_FirstFreeColorNum < 4 || p_FirstFreeColorNum > 31)
-  {
-    return false;
-  }
-*/
-  m_pAppScreen = p_pAppScreen;
-/*
-  if(GfxBase->lib_Version < 39)
-  {
-    // We need to use the OptainBestPen function from OS3.0 and above.
-    // So we leave here, if this requirement is not given.
-    return;
-  }
-*/
-  if(!m_pAppScreen->IsOpen())
+
+  if(!p_pAppScreen->IsOpen())
   {
     return false;
   }
 
+  m_pAppScreen = p_pAppScreen;
   struct ColorMap* pColorMap = m_pAppScreen->IntuiScreen()->ViewPort.ColorMap;
   if(pColorMap == NULL)
   {
     return false;
   }
 
-  m_RedPen = ObtainBestPen(pColorMap,
-    0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9,
-    OBP_FailIfBad, FALSE,
-    OBP_Precision, PRECISION_GUI,
-    TAG_END);
+  switch(m_pAppScreen->ScreenMode())
+  {
+    case AppScreen::SME_CloneWorkbenchMin8Col:
+      // Case 1 - We use a Workbench screen clone with at least 
+      // 8 colors, so we try to set pens 4..7 to our needed values
 
-  m_YellowPen = ObtainBestPen(pColorMap,
-    0xfcfcfcfc, 0xffffffff, 0xbbbbbbbb,
-    OBP_FailIfBad, FALSE,
-    OBP_Precision, PRECISION_GUI,
-    TAG_END);
+      // Starting with color number 4 as 0..3 are system reserved
+      int colorNum = 4;
 
-  m_GreenPen = ObtainBestPen(pColorMap,
-    0xc1c1c1c1, 0xfefefefe, 0xbdbdbdbd,
-    OBP_FailIfBad, FALSE,
-    OBP_Precision, PRECISION_GUI,
-    TAG_END);
+      // Red for 'deleted'
+      m_RedPen = colorNum++;
+      SetRGB4CM(pColorMap, m_RedPen, 15, 11, 12);
 
-  m_GreyPen = ObtainBestPen(pColorMap,
-    0x28282828, 0x28282828, 0x28282828,
-    OBP_FailIfBad, FALSE,
-    OBP_Precision, PRECISION_GUI,
-    TAG_END);
+      // Yellow for 'changed'
+      m_YellowPen = colorNum++;
+      SetRGB4CM(pColorMap, m_YellowPen, 16, 16, 12);
+
+      // Green for 'added'
+      m_GreenPen = colorNum++;
+      SetRGB4CM(pColorMap, m_GreenPen, 12, 16, 12);
+
+      // Another grey for the background of the line numbers
+      m_GreyPen = colorNum++;
+      SetRGB4CM(pColorMap, m_GreyPen, 10, 10, 10);
+      break;
+
+    case AppScreen::SME_UseWorkbench:
+      // Case 2 - We use the Workbench screen and have Workbench 
+      // version >= 3.0, so we try to use pen sharing to get our 
+      // needed pens
+
+      if(GfxBase->lib_Version < 39)
+      {
+        // We need to use the ObtainBestPen function from OS3.0 and 
+        // above. So we stop here, if this requirement is not given, 
+        // setting all our special colors to pen 3 (blue in most cases)
+        m_RedPen = 3;
+        m_YellowPen = 3;
+        m_GreenPen = 3;
+        m_GreyPen = 3;
+        break;
+      }
+
+      m_RedPen = ObtainBestPen(pColorMap,
+        0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9,
+        OBP_FailIfBad, FALSE,
+        OBP_Precision, PRECISION_GUI,
+        TAG_END);
+
+      m_YellowPen = ObtainBestPen(pColorMap,
+        0xfcfcfcfc, 0xffffffff, 0xbbbbbbbb,
+        OBP_FailIfBad, FALSE,
+        OBP_Precision, PRECISION_GUI,
+        TAG_END);
+
+      m_GreenPen = ObtainBestPen(pColorMap,
+        0xc1c1c1c1, 0xfefefefe, 0xbdbdbdbd,
+        OBP_FailIfBad, FALSE,
+        OBP_Precision, PRECISION_GUI,
+        TAG_END);
+
+      m_GreyPen = ObtainBestPen(pColorMap,
+        0x28282828, 0x28282828, 0x28282828,
+        OBP_FailIfBad, FALSE,
+        OBP_Precision, PRECISION_GUI,
+        TAG_END);
+
+      m_bObtainedPens = true;
+
+      break;
+
+    default:
+      // All other screenmodes / cases: Setting all our special colors 
+      // to pen 3 (blue in most cases)
+      m_RedPen = 3;
+      m_YellowPen = 3;
+      m_GreenPen = 3;
+      m_GreyPen = 3;
+      break;
+  }
 
   m_bInitialized = true;
-
-  // struct ViewPort* pViewPort = &m_pAppScreen->IntuiScreen()->ViewPort;
-
-  // // Red for 'deleted'
-  // m_RedColorNum = p_FirstFreeColorNum++;
-  // SetRGB4(pViewPort, m_RedColorNum, 12, 16, 12);
-
-  // // Yellow for 'changed'
-  // m_YellowColorNum = p_FirstFreeColorNum++;
-  // SetRGB4(pViewPort, m_YellowColorNum, 16, 16, 12);
-
-  // // Green for 'added'
-  // m_GreenColorNum = p_FirstFreeColorNum++;
-  // SetRGB4(pViewPort, m_GreenColorNum, 15, 11, 12);
-
-  // // Another grey for the background of the line numbers
-  // m_GreyColorNum = p_FirstFreeColorNum++;
-  // SetRGB4(pViewPort, m_GreyColorNum, 10, 10, 10);
-
   return true;
 }
 
@@ -114,10 +140,19 @@ void AmigaDiffPens::Dispose()
     return;
   }
 
-  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_RedPen);
-  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_YellowPen);
-  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_GreenPen);
-  ReleasePen(m_pAppScreen->IntuiScreen()->ViewPort.ColorMap, m_GreyPen);
+
+  if(m_bObtainedPens == true)
+  {
+    struct ColorMap* pColorMap = 
+      m_pAppScreen->IntuiScreen()->ViewPort.ColorMap;
+
+    ReleasePen(pColorMap, m_RedPen);
+    ReleasePen(pColorMap, m_YellowPen);
+    ReleasePen(pColorMap, m_GreenPen);
+    ReleasePen(pColorMap, m_GreyPen);
+  }
+
+  m_bObtainedPens = false;
   m_bInitialized = false;
 }
 

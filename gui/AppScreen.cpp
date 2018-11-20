@@ -134,9 +134,8 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy)
     m_pDrawInfo = pWbDrawInfo;
   }
 
-  // Trying to initialize our four needed color pens starting from
-  // color number 4 (as 0..3 are definately system reserved)
-  if(m_Pens.Init(this, 4) == false)
+  // Trying to initialize our four needed color pens
+  if(m_Pens.Init(this) == false)
   {
     return false;
   }
@@ -257,4 +256,9 @@ APTR* AppScreen::GadtoolsVisualInfo()
 const AmigaDiffPens& AppScreen::Pens() const
 {
   return m_Pens;
+}
+
+AppScreen::ScreenModeEasy AppScreen::ScreenMode() const
+{
+  return m_ScreenModeEasy;
 }
