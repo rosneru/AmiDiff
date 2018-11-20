@@ -20,7 +20,7 @@ Application::Application(int argc, char **argv, struct MsgPort* p_pMsgPortAllWin
     m_Argc(argc),
     m_Argv(argv),
     m_bExitRequested(false),
-    m_Screen(AppScreen::OSM_UseWb),
+    m_Screen(),
     m_DiffWindow(m_Screen, m_pMsgPortAllWindows),
     m_DiffFacade(m_DiffWindow),
     m_OpenFilesWin(m_Screen, m_pMsgPortAllWindows, m_DiffFacade),

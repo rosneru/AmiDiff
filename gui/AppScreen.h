@@ -21,14 +21,14 @@ public:
    * Used to specify the needed screen mode without messing around with
    * too many parameters. 
    */
-  enum ObtainScreenMode
+  enum ScreenModeEasy
   {
-    OSM_UseWb,      ///> Uses to Worbkbench public screen
-    OSM_CloneWb,    ///> Clones the workbench screen
-    OSM_CloneWb3Bp, ///> Clones the Workbench screen an ensures at least 3 bitplanes (8 colors)
+    SME_UseWorkbench,         ///> Uses to Worbkbench public screen
+    SME_CloneWorkbench,       ///> Clones the Workbench screen
+    SME_CloneWorkbenchMin8Col ///> Creates a Workbench screen clone with at 8 colors
   };
 
-  AppScreen(ObtainScreenMode p_ObtainedScreenMode);
+  AppScreen();
   ~AppScreen();
 
   /**
@@ -37,7 +37,7 @@ public:
    * @returns
    * false if oping fails
    */
-  bool Open();
+  bool Open(ScreenModeEasy p_ScreenModeEasy = SME_UseWorkbench);
 
   /**
    * Closes the screen
@@ -82,7 +82,7 @@ public:
 
 
 private:
-  ObtainScreenMode m_ObtainedScreenMode;
+  ScreenModeEasy m_ScreenModeEasy;
   AmigaDiffPens m_Pens;
   struct TextAttr m_TextAttr;
   struct TextFont* m_pTextFont;

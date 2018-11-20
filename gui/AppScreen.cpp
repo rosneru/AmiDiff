@@ -5,9 +5,8 @@
 #include "AppScreen.h"
 
 
-AppScreen::AppScreen(ObtainScreenMode p_ObtainedScreenMode)
-  : m_ObtainedScreenMode(p_ObtainedScreenMode),
-    m_pTextFont(NULL),
+AppScreen::AppScreen()
+  : m_pTextFont(NULL),
     m_FontName(""),
     m_Title("AppScreen"),
     m_pScreen(NULL),
@@ -21,8 +20,10 @@ AppScreen::~AppScreen()
   Close();
 }
 
-bool AppScreen::Open()
+bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy)
 {
+  m_ScreenModeEasy = p_ScreenModeEasy;
+
   //
   // Initial validations
   //
@@ -74,7 +75,7 @@ bool AppScreen::Open()
     return false;
   }
 
-  if(m_ObtainedScreenMode != AppScreen::OSM_UseWb)
+  if(m_ScreenModeEasy != AppScreen::SME_UseWorkbench)
   {
     //
     // Creating a copy of the Workbench screen
@@ -83,7 +84,7 @@ bool AppScreen::Open()
     // Ensure that screen has at least 8 colors
     int screenDepth = pWbDrawInfo->dri_Depth;
 
-    if(m_ObtainedScreenMode == AppScreen::OSM_CloneWb3Bp)
+    if(m_ScreenModeEasy == AppScreen::SME_CloneWorkbenchMin8Col)
     {
       if(screenDepth < 3)
       {
@@ -133,8 +134,6 @@ bool AppScreen::Open()
     m_pDrawInfo = pWbDrawInfo;
   }
 
-
-
   // Trying to initialize our four needed color pens starting from
   // color number 4 (as 0..3 are definately system reserved)
   if(m_Pens.Init(this, 4) == false)
@@ -173,12 +172,13 @@ void AppScreen::Close()
     m_pTextFont = NULL;
   }
 
-  // Freeing the allocated pens
+  // Freeing the allocated pens before closing the screen as the intui
+  // screen is needed there
   m_Pens.Dispose();
 
   if(m_pScreen != NULL)
   {
-    if(m_ObtainedScreenMode == AppScreen::OSM_UseWb)
+    if(m_ScreenModeEasy == AppScreen::SME_UseWorkbench)
     {
       // We had used the Workbench public screen
       UnlockPubScreen(NULL, m_pScreen);
