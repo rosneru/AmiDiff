@@ -154,11 +154,6 @@ protected:
   virtual void calcMaxWindowTextLines();
 
   /**
-   * Displays the given line at given y-position
-   */
-  virtual void displayLine(const SimpleString* p_pLine, WORD p_TopEdge);
-
-  /**
    * Displays the complete file from current m_Y position as first line
    */
   virtual void displayFile();
@@ -168,6 +163,11 @@ protected:
 
 private:
   TextDocument* m_pDocument;
+
+  /**
+   * Displays the given line at given y-position
+   */
+  void displayLine(const SimpleString* p_pLine, WORD p_TopEdge);
 };
 
 

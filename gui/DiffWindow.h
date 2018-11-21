@@ -122,10 +122,17 @@ private:
   void displayDocumentNames();
 
   /**
-   * Displays the given line at given y-position
+   * Displays the currently selected line at given y-position. The line
+   * is composed from the left diff document and right diff documents
+   * currently selected lines.
    */
-  void displayLine(const SimpleString* p_pLine, WORD p_TopEdge);
+  void displayCurrentDiffLine(const SimpleString* p_pLeftLine, 
+    const SimpleString* p_pRightLine, WORD p_TopEdge);
 
+  /**
+   * Gets an appropriate pen from a given ColorName
+   */
+  LONG colorName2Pen(DiffDocument::ColorName p_pColorName);
   /**
    * Displays the complete file from current m_Y position as first line
    */

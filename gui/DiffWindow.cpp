@@ -318,11 +318,44 @@ void DiffWindow::displayDocumentNames()
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
 
-void DiffWindow::displayLine(const SimpleString* p_pLine, WORD p_TopEdge)
+void DiffWindow::displayCurrentDiffLine(const SimpleString* p_pLeftLine, 
+    const SimpleString* p_pRightLine, WORD p_TopEdge)
 {
-  m_IntuiText.IText = (UBYTE*)p_pLine->C_str();
   m_IntuiText.TopEdge = p_TopEdge;
-  PrintIText(m_pWindow->RPort, &m_IntuiText, m_ScrollXMin, m_ScrollYMin);
+
+  //
+  // Print left line
+  //
+  m_IntuiText.BackPen = colorName2Pen(m_pLeftDocument->LineColor);
+  m_IntuiText.IText = (UBYTE*)p_pLeftLine->C_str();
+  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea1Left, m_TextAreaTop);
+
+  //
+  // Print right line
+  //
+  m_IntuiText.BackPen = colorName2Pen(m_pRightDocument->LineColor);
+  m_IntuiText.IText = (UBYTE*)p_pRightLine->C_str();
+  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea2Left, m_TextAreaTop);
+}
+
+LONG DiffWindow::colorName2Pen(DiffDocument::ColorName p_pColorName)
+{
+  if(p_pColorName == DiffDocument::CN_Green)
+  {
+    return m_AppScreen.Pens().Green();
+  }
+  else if(p_pColorName== DiffDocument::CN_Yellow)
+  {
+    return m_AppScreen.Pens().Yellow();
+  }
+  else if(p_pColorName == DiffDocument::CN_Red)
+  {
+    return m_AppScreen.Pens().Red();
+  }
+  else
+  {
+    return m_AppScreen.Pens().Background();
+  }
 }
 
 void DiffWindow::displayFile()
@@ -332,19 +365,26 @@ void DiffWindow::displayFile()
     return; // TODO
   }
 
-  size_t lineId = m_Y;
-  const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(lineId);
-  const SimpleString* pRightLine = m_pLeftDocument->GetIndexedLine(lineId);
+  size_t i = m_Y;
+  const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
+  const SimpleString* pRightLine = m_pLeftDocument->GetIndexedLine(i);
   while((pLeftLine != NULL) && (pRightLine !=NULL))
   {
-  //   displayLine(pLine, (lineId - m_Y ) * m_FontHeight);
+    WORD lineNum = i - m_Y;
 
-  //   if((lineId - m_Y) >= m_MaxTextLines - 1)
-  //   {
-  //     // Only display as many lines as fit into the window
-  //     break;
-  //   }
+    displayCurrentDiffLine(pLeftLine, pRightLine, 
+      lineNum * m_AppScreen.FontHeight());
 
+    if(lineNum >= m_MaxTextLines - 1)
+    {
+      // Only display as many lines as fit into the window
+      break;
+    }
+
+    i++;
+
+    pLeftLine = m_pLeftDocument->GetNextLine();
+    pRightLine = m_pLeftDocument->GetNextLine();
   //   lineId++;
   //   pLine = m_pDocument->GetNextLine();
   }
