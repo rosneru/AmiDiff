@@ -181,12 +181,12 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
   }
 
   // Clear the window completely
-  EraseRect(m_pWindow->RPort,
-    m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
-
+  SetRast(m_pWindow->RPort,1L);
 
   // Set full path of opened file as window title
   SetTitle(p_pTextDocument->FileName());
+
+  // Display the first [1; m_MaxTextLines] lines
   displayFile();
 
   // Set scroll gadgets pot size dependent on window size and the number

@@ -61,6 +61,7 @@ void DiffWindow::Resized()
   // Calculate how many lines *now* can be displayed in the window
   calcMaxWindowTextLines();
 
+  // Paint the window decoration
   paint(widthDiff, heightDiff);
 
   if((m_pLeftDocument == NULL) || m_pRightDocument == NULL)
@@ -83,6 +84,7 @@ void DiffWindow::Refresh()
 {
   BeginRefresh(m_pWindow);
 
+  // Paint the window decoration
   paint();
   displayFile();
 
@@ -104,11 +106,12 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
 
   // Paint the window decoration
   paint();
+
   return true;
 }
 
-bool DiffWindow::SetContent(Document* p_pLeftDocument,
-    Document* p_pRightDocument)
+bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
+  DiffDocument* p_pRightDocument)
 {
   if((p_pLeftDocument == NULL) || (p_pRightDocument == NULL))
   {
@@ -127,28 +130,25 @@ bool DiffWindow::SetContent(Document* p_pLeftDocument,
   // Display the document titles above the text areas
   displayDocumentNames();
 
-  // !!TODO!!
+  // Clear the window completely
+  SetRast(m_pWindow->RPort,1L);
 
-  // // Clear the window completely
-  // EraseRect(m_pWindow->RPort,
-  //   m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+  // Display the first [1; m_MaxTextLines] lines
+  displayFile();
 
+  // Set scroll gadgets pot size dependent on window size and the number
+  // of lines in opened file
+  if(m_pYPropGadget != NULL)
+  {
+	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
+      PGA_Total, m_pLeftDocument->NumLines(),
+      PGA_Top, 0,
+      PGA_Visible, m_MaxTextLines,
+      TAG_DONE);
+  }
 
-  // // Set full path of opened file as window title
-  // SetTitle(p_pTextDocument->FileName());
-  // displayFile();
-
-  // // Set scroll gadgets pot size dependent on window size and the number
-  // // of lines in opened file
-  // if(m_pYPropGadget != NULL)
-  // {
-	//   SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-  //   	PGA_Total, m_pDocument->NumLines(),
-  //   	PGA_Top, 0,
-  //   	PGA_Visible, m_MaxTextLines,
-  //   	TAG_DONE
-	//    );
-  // }
+  // Paint the window decoration
+  paint();
 
   return true;
 }
@@ -290,11 +290,7 @@ void DiffWindow::calcMaxWindowTextLines()
     return;
   }
 
-  m_MaxTextLines = m_pWindow->Height;
-  m_MaxTextLines -= m_pWindow->BorderTop;
-  m_MaxTextLines -= m_pWindow->BorderBottom;
-  m_MaxTextLines -= m_ScrollYMin;
-  m_MaxTextLines /= m_AppScreen.FontHeight();
+  m_MaxTextLines = m_TextAreasHeight /  m_AppScreen.FontHeight();
 }
 
 void DiffWindow::displayDocumentNames()
@@ -336,12 +332,11 @@ void DiffWindow::displayFile()
     return; // TODO
   }
 
-  // !!TODO!!
-
-  // size_t lineId = m_Y;
-  // const SimpleString* pLine = m_pDocument->GetIndexedLine(lineId);
-  // while(pLine != NULL)
-  // {
+  size_t lineId = m_Y;
+  const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(lineId);
+  const SimpleString* pRightLine = m_pLeftDocument->GetIndexedLine(lineId);
+  while((pLeftLine != NULL) && (pRightLine !=NULL))
+  {
   //   displayLine(pLine, (lineId - m_Y ) * m_FontHeight);
 
   //   if((lineId - m_Y) >= m_MaxTextLines - 1)
@@ -352,7 +347,7 @@ void DiffWindow::displayFile()
 
   //   lineId++;
   //   pLine = m_pDocument->GetNextLine();
-  // }
+  }
 }
 
 bool DiffWindow::scrollUpOneLine()

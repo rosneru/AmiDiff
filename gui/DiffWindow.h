@@ -6,7 +6,7 @@
 
 #include "AppScreen.h"
 #include "SimpleString.h"
-#include "Document.h"
+#include "DiffDocument.h"
 #include "TextWindow.h"
 
 /**
@@ -51,8 +51,8 @@ public:
    * Full file name with path for to be opened file. If empty a ASL
    * request will be opened asking the user for the file name.
    */
-  bool SetContent(Document* p_pLeftDocument,
-    Document* p_pRightDocument);
+  bool SetContent(DiffDocument* p_pLeftDocument,
+    DiffDocument* p_pRightDocument);
 
   /**
    * This handles the Y-Changes triggered by the vertical scrollbar
@@ -81,8 +81,8 @@ public:
 
 
 private:
-  Document* m_pLeftDocument;
-  Document* m_pRightDocument;
+  DiffDocument* m_pLeftDocument;
+  DiffDocument* m_pRightDocument;
 
   WORD m_IndentX;           ///> Distance of TextArea to left and right window border
   WORD m_IndentY;           ///> Distance of TextArea to window title bar and bottom border
