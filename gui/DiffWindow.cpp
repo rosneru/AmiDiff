@@ -338,7 +338,7 @@ void DiffWindow::displayLine(const SimpleString* p_pLeftLine,
   m_IntuiText.BackPen = colorNameToPen(m_pLeftDocument->LineColor());
   m_IntuiText.IText = (UBYTE*)p_pLeftLine->C_str();
   PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea1Left + 3,
-    m_TextAreaTop + 1);
+    m_TextAreaTop + 2);
 
   //
   // Print right line
@@ -346,7 +346,7 @@ void DiffWindow::displayLine(const SimpleString* p_pLeftLine,
   m_IntuiText.BackPen = colorNameToPen(m_pRightDocument->LineColor());
   m_IntuiText.IText = (UBYTE*)p_pRightLine->C_str();
   PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea2Left + 3,
-    m_TextAreaTop + 1);
+    m_TextAreaTop + 2);
 }
 
 LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
