@@ -102,7 +102,8 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   // Calculate some initial values which cant be obtained in before
   // window opening in initialize()
   //
-  m_LineNumbersWidth = TextLength(m_pWindow->RPort, "9999", 4);
+
+  m_IntuiText.FrontPen  = m_AppScreen.Pens().Text();
 
   // Paint the window decoration
   paint();
@@ -127,11 +128,17 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
     return true;
   }
 
+  // TODO Instead 9999 use some algorithm to use exactly as many 9s as
+  //      the m_LeftDocument.NumLines digits has. MAybe sprintf numLines
+  //      to a buf and use this?
+  m_LineNumbersWidth = TextLength(m_pWindow->RPort, "9999", 4);
+
+
   // Display the document titles above the text areas
   displayDocumentNames();
 
   // Clear the window completely
-  SetRast(m_pWindow->RPort,1L);
+  SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
   // Display the first [1; m_MaxTextLines] lines
   displayFile();
@@ -243,10 +250,11 @@ void DiffWindow::initialize()
 
 void DiffWindow::paint(WORD p_WidthDiff, WORD p_HeightDiff)
 {
+/*
   // Erase old rect before re-calculating and re-drawing it
   EraseRect(m_pWindow->RPort,
     0, 0, m_InnerWindowRight, m_InnerWindowBottom);
-
+*/
   // (Re-)calculate some values that may have be changed by re-sizing
   m_InnerWindowRight = m_pWindow->Width
     - m_AppScreen.IntuiScreen()->WBorLeft
@@ -318,7 +326,8 @@ void DiffWindow::displayDocumentNames()
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
 
-void DiffWindow::displayCurrentDiffLine(const SimpleString* p_pLeftLine, 
+
+void DiffWindow::displayLine(const SimpleString* p_pLeftLine,
     const SimpleString* p_pRightLine, WORD p_TopEdge)
 {
   m_IntuiText.TopEdge = p_TopEdge;
@@ -326,19 +335,21 @@ void DiffWindow::displayCurrentDiffLine(const SimpleString* p_pLeftLine,
   //
   // Print left line
   //
-  m_IntuiText.BackPen = colorName2Pen(m_pLeftDocument->LineColor);
+  m_IntuiText.BackPen = colorNameToPen(m_pLeftDocument->LineColor());
   m_IntuiText.IText = (UBYTE*)p_pLeftLine->C_str();
-  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea1Left, m_TextAreaTop);
+  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea1Left + 3,
+    m_TextAreaTop + 1);
 
   //
   // Print right line
   //
-  m_IntuiText.BackPen = colorName2Pen(m_pRightDocument->LineColor);
+  m_IntuiText.BackPen = colorNameToPen(m_pRightDocument->LineColor());
   m_IntuiText.IText = (UBYTE*)p_pRightLine->C_str();
-  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea2Left, m_TextAreaTop);
+  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea2Left + 3,
+    m_TextAreaTop + 1);
 }
 
-LONG DiffWindow::colorName2Pen(DiffDocument::ColorName p_pColorName)
+LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
 {
   if(p_pColorName == DiffDocument::CN_Green)
   {
@@ -367,12 +378,12 @@ void DiffWindow::displayFile()
 
   size_t i = m_Y;
   const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
-  const SimpleString* pRightLine = m_pLeftDocument->GetIndexedLine(i);
+  const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
   while((pLeftLine != NULL) && (pRightLine !=NULL))
   {
     WORD lineNum = i - m_Y;
 
-    displayCurrentDiffLine(pLeftLine, pRightLine, 
+    displayLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
 
     if(lineNum >= m_MaxTextLines - 1)
@@ -384,7 +395,7 @@ void DiffWindow::displayFile()
     i++;
 
     pLeftLine = m_pLeftDocument->GetNextLine();
-    pRightLine = m_pLeftDocument->GetNextLine();
+    pRightLine = m_pRightDocument->GetNextLine();
   //   lineId++;
   //   pLine = m_pDocument->GetNextLine();
   }

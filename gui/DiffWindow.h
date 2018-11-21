@@ -126,13 +126,13 @@ private:
    * is composed from the left diff document and right diff documents
    * currently selected lines.
    */
-  void displayCurrentDiffLine(const SimpleString* p_pLeftLine, 
+  void displayLine(const SimpleString* p_pLeftLine,
     const SimpleString* p_pRightLine, WORD p_TopEdge);
 
   /**
    * Gets an appropriate pen from a given ColorName
    */
-  LONG colorName2Pen(DiffDocument::ColorName p_pColorName);
+  LONG colorNameToPen(DiffDocument::ColorName p_pColorName);
   /**
    * Displays the complete file from current m_Y position as first line
    */
