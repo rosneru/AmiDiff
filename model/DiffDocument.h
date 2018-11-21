@@ -9,6 +9,18 @@
 class DiffDocument : public TextDocument
 {
 public:
+  /**
+   * Defines the text color names used to set foreground and 
+   * background pens for text rendering
+   */
+  enum ColorName
+  {
+    CN_Default,
+    CN_Red,
+    CN_Green,
+    CN_Yellow
+  };
+
   DiffDocument(DiffFilePartition& p_DiffFilePartition);
   virtual ~DiffDocument();
 
@@ -20,7 +32,13 @@ public:
   const SimpleString* GetNextLine();
   const SimpleString* GetIndexedLine(int p_LineIdx);
 
+  ColorName LineColor() const;
+
+
+
 private:
+  ColorName m_LineColor;
+
   DiffFilePartition& m_DiffFilePartition;
 
   const SimpleString* evaluateLine(const DiffLine* p_pDiffLine);
