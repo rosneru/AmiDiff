@@ -26,7 +26,8 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_TextAreasWidth(0),
     m_TextAreasHeight(0),
     m_InnerWindowRight(0),
-    m_InnerWindowBottom(0)
+    m_InnerWindowBottom(0),
+    m_LineNumbersWidth(0)
 {
 
 }
@@ -95,6 +96,13 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
     return false;
   }
 
+  //
+  // Calculate some initial values which cant be obtained in before
+  // window opening in initialize()
+  //
+  m_LineNumbersWidth = TextLength(m_pWindow->RPort, "9999", 4);
+
+  // Paint the window decoration
   paint();
   return true;
 }

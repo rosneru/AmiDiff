@@ -96,6 +96,7 @@ private:
   WORD m_InnerWindowRight;  ///> X-posiiton of the right-most pixel before the scrollbar
   WORD m_InnerWindowBottom; ///> X-posiiton of the bottom-most pixel before the scrollbar
 
+  WORD m_LineNumbersWidth;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.
