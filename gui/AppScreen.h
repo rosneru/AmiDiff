@@ -4,6 +4,7 @@
 #include <graphics/text.h>
 #include <intuition/screens.h>
 
+#include "AmigaDiffPens.h"
 #include "SimpleString.h"
 
 /**
@@ -16,7 +17,18 @@
 class AppScreen
 {
 public:
-  AppScreen(SimpleString p_Title);
+  /**
+   * Used to specify the needed screen mode without messing around with
+   * too many parameters. 
+   */
+  enum ScreenModeEasy
+  {
+    SME_UseWorkbench,         ///> Uses to Worbkbench public screen
+    SME_CloneWorkbench,       ///> Clones the Workbench screen
+    SME_CloneWorkbenchMin8Col ///> Creates a Workbench screen clone with at 8 colors
+  };
+
+  AppScreen();
   ~AppScreen();
 
   /**
@@ -25,14 +37,22 @@ public:
    * @returns
    * false if oping fails
    */
-  bool Open();
+  bool Open(ScreenModeEasy p_ScreenModeEasy = SME_UseWorkbench);
 
   /**
    * Closes the screen
    */
   void Close();
 
-  const char* Title();
+  bool IsOpen() const;
+
+  const char* Title() const;
+  void SetTitle(SimpleString p_NewTitle); ///> Not working when the screen is already open
+
+  WORD FontHeight() const;
+
+  WORD BarHeight() const;
+
 
   /**
    * Returns the intuition screen structure or NULL if screen is not open
@@ -55,7 +75,17 @@ public:
    */
   APTR* GadtoolsVisualInfo();
 
+  /**
+   * Returns the pens to be used for drawing
+   */
+  const AmigaDiffPens& Pens() const;
+
+  ScreenModeEasy ScreenMode() const;
+
+
 private:
+  ScreenModeEasy m_ScreenModeEasy;
+  AmigaDiffPens m_Pens;
   struct TextAttr m_TextAttr;
   struct TextFont* m_pTextFont;
   SimpleString m_FontName;

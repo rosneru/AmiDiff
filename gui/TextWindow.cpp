@@ -14,13 +14,14 @@
 TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : WindowBase(p_AppScreen, p_pMsgPort),
     m_pDocument(NULL),
-    m_MaxWindowTextLines(0),
+    m_MaxTextLines(0),
     m_Y(0),
-    m_FontHeight(0),
     m_ScrollXMin(0),
     m_ScrollYMin(0),
     m_ScrollXMax(0),
     m_ScrollYMax(0),
+    m_SizeImageWidth(18),
+    m_SizeImageHeight(10),
     m_LastScrollDirection(None),
     m_pLeftArrowImage(NULL),
     m_pRightArrowImage(NULL),
@@ -121,7 +122,7 @@ void TextWindow::Resized()
   if(m_pYPropGadget != NULL)
   {
 	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Visible, m_MaxWindowTextLines,
+    	PGA_Visible, m_MaxTextLines,
     	TAG_DONE
 	   );
   }
@@ -137,9 +138,9 @@ void TextWindow::Refresh()
   EndRefresh(m_pWindow, TRUE);
 }
 
-bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
+bool TextWindow::Open(APTR p_pMenuItemDisableAtOpen)
 {
-  if(WindowBase::Open(p_pUserDataMenuItemToDisable) == false)
+  if(WindowBase::Open(p_pMenuItemDisableAtOpen) == false)
   {
     return false;
   }
@@ -151,27 +152,21 @@ bool TextWindow::Open(APTR p_pUserDataMenuItemToDisable)
   // Calculate how many lines can be displayed in the window
   calcMaxWindowTextLines();
 
-  // Setup structs for text drawing
-    // Setup Pens, TextAttr and prepare IntuiText
-  // TODO Remove it to some better place
-  ULONG txtPen = m_AppScreen.IntuiDrawInfo()->dri_Pens[TEXTPEN];
-  ULONG bgPen = m_AppScreen.IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
-
   m_TextAttr.ta_Name = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
   m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
   m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
   m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
   // Prepare IntuiText for line-by-line printing
-  m_IntuiText.FrontPen  = txtPen;
-  m_IntuiText.BackPen   = bgPen;
+//  m_IntuiText.FrontPen  = m_AppScreen.Pens().Text();
+//  m_IntuiText.BackPen   = m_AppScreen.Pens().Background();
   m_IntuiText.DrawMode  = JAM2;
   m_IntuiText.LeftEdge  = 0;
   m_IntuiText.TopEdge   = 0;
   m_IntuiText.ITextFont = &m_TextAttr;
   m_IntuiText.NextText  = NULL;
 
-  return WindowBase::Open(p_pUserDataMenuItemToDisable);
+  return true;
 }
 
 
@@ -186,12 +181,12 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
   }
 
   // Clear the window completely
-  EraseRect(m_pWindow->RPort,
-    m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
-
+  SetRast(m_pWindow->RPort,1L);
 
   // Set full path of opened file as window title
   SetTitle(p_pTextDocument->FileName());
+
+  // Display the first [1; m_MaxTextLines] lines
   displayFile();
 
   // Set scroll gadgets pot size dependent on window size and the number
@@ -201,7 +196,7 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
     	PGA_Total, m_pDocument->NumLines(),
     	PGA_Top, 0,
-    	PGA_Visible, m_MaxWindowTextLines,
+    	PGA_Visible, m_MaxTextLines,
     	TAG_DONE
 	   );
   }
@@ -266,23 +261,15 @@ void TextWindow::YDecrease()
 void TextWindow::initialize()
 {
   //
-  // Calculate some basic values
-  //
-  m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
-	int barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
-
-  //
   // Setting up scroll bars and gadgets for the window. They will be
   // attached to the window at opening time
   //
-  ULONG sizeImageWidth = 18;  // the width of the size image
-  ULONG sizeImageHeight = 10; // the height of the size image
   ULONG imageWidth = 0;   // to successfully store the other images widths
   ULONG imageHeight = 0;  // to successfully store the other images heights
 
   // Getting the width and height of the current system size gadget
   struct Image* pSizeImage = createImageObj(
-    SIZEIMAGE, sizeImageWidth, sizeImageHeight);
+    SIZEIMAGE, m_SizeImageWidth, m_SizeImageHeight);
 
   // the size image is only needed for getting its width and height so
   // it can be disposed right now
@@ -300,7 +287,7 @@ void TextWindow::initialize()
     NULL, BUTTONGCLASS,
     GA_ID, GID_ArrowDown,
     GA_RelRight, -imageWidth+1,
-    GA_RelBottom, -sizeImageHeight-imageHeight+1,
+    GA_RelBottom, -m_SizeImageHeight-imageHeight+1,
     GA_Width, imageWidth,
     GA_Height, imageHeight,
     GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
@@ -319,7 +306,7 @@ void TextWindow::initialize()
     GA_Previous, m_pDownArrowButton,
     GA_ID, GID_ArrowUp,
     GA_RelRight, -imageWidth+1,
-    GA_RelBottom, -sizeImageHeight-imageHeight-imageHeight+1,
+    GA_RelBottom, -m_SizeImageHeight-imageHeight-imageHeight+1,
     GA_Width, imageWidth,
     GA_Height, imageHeight,
     GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
@@ -334,10 +321,10 @@ void TextWindow::initialize()
 	  NULL, PROPGCLASS,
   	GA_Previous, m_pUpArrowButton,
   	GA_ID, GID_PropY,
-  	GA_RelRight, -sizeImageWidth+4,
-  	GA_Top, barHeight,
-  	GA_Width, sizeImageWidth-6,
-  	GA_RelHeight, -sizeImageHeight-imageHeight-imageHeight-barHeight-1,
+  	GA_RelRight, -m_SizeImageWidth+4,
+  	GA_Top, m_AppScreen.BarHeight(),
+  	GA_Width, m_SizeImageWidth-6,
+  	GA_RelHeight, -m_SizeImageHeight-imageHeight-imageHeight-m_AppScreen.BarHeight()-1,
   	GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
   	GA_GZZGadget, TRUE,
   	GA_RightBorder, TRUE,
@@ -358,7 +345,7 @@ void TextWindow::initialize()
     NULL, BUTTONGCLASS,
     GA_Previous, m_pYPropGadget,
     GA_ID, GID_ArrowRight,
-    GA_RelRight, -sizeImageWidth-imageWidth+1,
+    GA_RelRight, -m_SizeImageWidth-imageWidth+1,
     GA_RelBottom, -imageHeight+1,
     GA_Width, imageWidth,
     GA_Height, imageHeight,
@@ -377,7 +364,7 @@ void TextWindow::initialize()
     NULL, BUTTONGCLASS,
     GA_Previous, m_pRightArrowButton,
     GA_ID, GID_ArrowLeft,
-    GA_RelRight, -sizeImageWidth-imageWidth-imageWidth+1,
+    GA_RelRight, -m_SizeImageWidth-imageWidth-imageWidth+1,
     GA_RelBottom, -imageHeight+1,
     GA_Width, imageWidth,
     GA_Height, imageHeight,
@@ -394,9 +381,9 @@ void TextWindow::initialize()
     GA_Previous, m_pLeftArrowButton,
     GA_ID, GID_PropX,
     GA_Left, m_AppScreen.IntuiScreen()->WBorLeft,
-    GA_RelBottom, -sizeImageHeight+3,
-    GA_RelWidth, -sizeImageWidth-imageWidth-imageWidth-m_AppScreen.IntuiScreen()->WBorLeft-1,
-    GA_Height, sizeImageHeight-4,
+    GA_RelBottom, -m_SizeImageHeight+3,
+    GA_RelWidth, -m_SizeImageWidth-imageWidth-imageWidth-m_AppScreen.IntuiScreen()->WBorLeft-1,
+    GA_Height, m_SizeImageHeight-4,
     GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
     GA_GZZGadget, TRUE,
     GA_BottomBorder, TRUE,
@@ -409,7 +396,7 @@ void TextWindow::initialize()
     ICA_TARGET, ICTARGET_IDCMP,
     TAG_END);
 
-  // Set the default title 
+  // Set the default title
   SetTitle("TextWindow");
 
   // Setting the window flags
@@ -437,11 +424,16 @@ void TextWindow::initialize()
 
 void TextWindow::calcMaxWindowTextLines()
 {
-  m_MaxWindowTextLines = m_pWindow->Height;
-  m_MaxWindowTextLines -= m_pWindow->BorderTop;
-  m_MaxWindowTextLines -= m_pWindow->BorderBottom;
-  m_MaxWindowTextLines -= m_ScrollYMin;
-  m_MaxWindowTextLines /= m_FontHeight;
+  if(m_AppScreen.FontHeight() == 0)
+  {
+    return;
+  }
+
+  m_MaxTextLines = m_pWindow->Height;
+  m_MaxTextLines -= m_pWindow->BorderTop;
+  m_MaxTextLines -= m_pWindow->BorderBottom;
+  m_MaxTextLines -= m_ScrollYMin;
+  m_MaxTextLines /= m_AppScreen.FontHeight();
 }
 
 
@@ -463,9 +455,9 @@ void TextWindow::displayFile()
   const SimpleString* pLine = m_pDocument->GetIndexedLine(lineId);
   while(pLine != NULL)
   {
-    displayLine(pLine, (lineId - m_Y ) * m_FontHeight);
+    displayLine(pLine, (lineId - m_Y ) * m_AppScreen.FontHeight());
 
-    if((lineId - m_Y) >= m_MaxWindowTextLines - 1)
+    if((lineId - m_Y) >= m_MaxTextLines - 1)
     {
       // Only display as many lines as fit into the window
       break;
@@ -478,21 +470,21 @@ void TextWindow::displayFile()
 
 bool TextWindow::scrollUpOneLine()
 {
-  if(m_pDocument->NumLines() < m_MaxWindowTextLines)
+  if(m_pDocument->NumLines() < m_MaxTextLines)
   {
     // Do not move the scroll area upward if all the text fits into
     // the window
     return false;
   }
 
-  if((m_Y + m_MaxWindowTextLines) == m_pDocument->NumLines())
+  if((m_Y + m_MaxTextLines) == m_pDocument->NumLines())
   {
     // Do not move the scroll area upward if text already at bottom
     return false;
   }
 
   // Scroll upward one line by the current font height
-  ScrollRaster(m_pWindow->RPort, 0, m_FontHeight,
+  ScrollRaster(m_pWindow->RPort, 0, m_AppScreen.FontHeight(),
     m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
 
   // Get the line which at current scroll position has to be printed as
@@ -504,7 +496,7 @@ bool TextWindow::scrollUpOneLine()
   }
   else
   {
-    pLine = m_pDocument->GetIndexedLine(m_Y + m_MaxWindowTextLines);
+    pLine = m_pDocument->GetIndexedLine(m_Y + m_MaxTextLines);
     m_LastScrollDirection = Upward;
   }
 
@@ -516,7 +508,7 @@ bool TextWindow::scrollUpOneLine()
   m_Y++;
 
   // Print the new last line
-  displayLine(pLine, (m_MaxWindowTextLines - 1) * m_FontHeight);
+  displayLine(pLine, (m_MaxTextLines - 1) * m_AppScreen.FontHeight());
   return true;
 }
 
@@ -529,13 +521,13 @@ bool TextWindow::scrollDownOneLine()
   }
 
   // Move scroll area downward by the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0, -m_FontHeight,
+  ScrollRaster(m_pWindow->RPort, 0, -m_AppScreen.FontHeight(),
     m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
 
   // Delete the possible visible line below the scroll area which can
   // be caused by the scroll operation above
   EraseRect(m_pWindow->RPort,
-    m_ScrollXMin, m_MaxWindowTextLines * m_FontHeight,
+    m_ScrollXMin, m_MaxTextLines * m_AppScreen.FontHeight(),
     m_ScrollXMax, m_ScrollYMax);
 
   // Get the line which at current scroll position has to be printed as

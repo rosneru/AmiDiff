@@ -21,7 +21,7 @@ const SimpleString* DiffDocument::GetFirstLine()
   DiffLine* pDiffLine = m_DiffFilePartition.GetFirstDiffLine();
   if(pDiffLine == NULL)
   {
-    m_ColorNameBackground = TextDocument::CN_Default;
+    m_LineColor = DiffDocument::CN_Default;
     return NULL;
   }
 
@@ -34,7 +34,7 @@ const SimpleString* DiffDocument::GetCurrentLine()
   DiffLine* pDiffLine = m_DiffFilePartition.GetCurrentDiffLine();
   if(pDiffLine == NULL)
   {
-    m_ColorNameBackground = TextDocument::CN_Default;
+    m_LineColor = DiffDocument::CN_Default;
     return NULL;
   }
 
@@ -47,7 +47,7 @@ const SimpleString* DiffDocument::GetPreviousLine()
   DiffLine* pDiffLine = m_DiffFilePartition.GetPreviousDiffLine();
   if(pDiffLine == NULL)
   {
-    m_ColorNameBackground = TextDocument::CN_Default;
+    m_LineColor = DiffDocument::CN_Default;
     return NULL;
   }
 
@@ -60,7 +60,7 @@ const SimpleString* DiffDocument::GetNextLine()
   DiffLine* pDiffLine = m_DiffFilePartition.GetNextDiffLine();
   if(pDiffLine == NULL)
   {
-    m_ColorNameBackground = TextDocument::CN_Default;
+    m_LineColor = DiffDocument::CN_Default;
     return NULL;
   }
 
@@ -73,11 +73,16 @@ const SimpleString* DiffDocument::GetIndexedLine(int p_LineIdx)
   DiffLine* pDiffLine = m_DiffFilePartition.GetIndexedDiffLine(p_LineIdx);
   if(pDiffLine == NULL)
   {
-    m_ColorNameBackground = TextDocument::CN_Default;
+    m_LineColor = DiffDocument::CN_Default;
     return NULL;
   }
 
   return evaluateLine(pDiffLine);
+}
+
+DiffDocument::ColorName DiffDocument::LineColor() const
+{
+  return m_LineColor;
 }
 
 const SimpleString* DiffDocument::evaluateLine(const DiffLine* p_pDiffLine)
@@ -85,23 +90,23 @@ const SimpleString* DiffDocument::evaluateLine(const DiffLine* p_pDiffLine)
   switch(p_pDiffLine->GetState())
   {
     case DiffLine::Normal:
-      m_ColorNameBackground = TextDocument::CN_Default;
+      m_LineColor = DiffDocument::CN_Default;
       break;
 
     case DiffLine::Changed:
-      m_ColorNameBackground = TextDocument::CN_Yellow;
+      m_LineColor = DiffDocument::CN_Yellow;
       break;
 
     case DiffLine::Added:
-      m_ColorNameBackground = TextDocument::CN_Green;
+      m_LineColor = DiffDocument::CN_Green;
       break;
 
     case DiffLine::Deleted:
-      m_ColorNameBackground = TextDocument::CN_Red;
+      m_LineColor = DiffDocument::CN_Red;
       break;
 
     case DiffLine::Undefined:
-      m_ColorNameBackground = TextDocument::CN_Default;
+      m_LineColor = DiffDocument::CN_Default;
       break;
   }
 

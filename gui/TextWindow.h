@@ -34,9 +34,9 @@ public:
    * This should be called from the application if the signal
    * IDCMP_NEWSIZE for this window is received.
    */
-  void Resized();
+  virtual void Resized();
 
-  void Refresh();
+  virtual void Refresh();
 
   /**
    * Opens the window.
@@ -44,7 +44,7 @@ public:
    * @returns
    * false if opening fails
    */
-  bool Open(APTR p_pMenuItemDisableAtOpen = NULL);
+  virtual bool Open(APTR p_pMenuItemDisableAtOpen = NULL);
 
   /**
    * Open a text file
@@ -55,7 +55,7 @@ public:
    * Full file name with path for to be opened file. If empty a ASL
    * request will be opened asking the user for the file name.
    */
-  virtual bool SetContent(TextDocument* p_pTextDocument);
+  bool SetContent(TextDocument* p_pTextDocument);
 
   /**
    * This handles the Y-Changes triggered by the vertical scrollbar
@@ -66,26 +66,24 @@ public:
    * Y-proportional gadget attached to the window has been moved by
    * the user.
    */
-  void YChangedHandler(size_t p_NewY);
+  virtual void YChangedHandler(size_t p_NewY);
 
   /**
    * Increases the Y position of the text by 1 and performs a scrolling
    * by one line.  Should be called from the Application event loop
    * when the cursor down key was received.
    */
-  void YIncrease();
+  virtual void YIncrease();
 
   /**
    * Decreases the Y position of the text by 1 and performs a scrolling
    * by one line.  Should be called from the Application event loop
    * when the cursor up key was received.
    */
-  void YDecrease();
+  virtual void YDecrease();
 
 
-private:
-  TextDocument* m_pDocument;
-
+protected:
   /**
    * IDs to help to interpret the events of this window's BOOPSI system
    * gadgets in the Application event loop.
@@ -107,10 +105,9 @@ private:
     Downward,
   };
 
-  size_t m_MaxWindowTextLines;  ///> Number of text lines that fit in window
+  size_t m_MaxTextLines;  ///> Number of text lines that fit in window
   size_t m_Y;         ///> Index of currently first displayed text line
 
-  WORD m_FontHeight;  ///> Height of current text font
   WORD m_ScrollXMin;  ///> Left x coordinate of scrolling area
   WORD m_ScrollYMin;  ///> Left y coordinate of scrolling area
   WORD m_ScrollXMax;  ///> Right x coordinate of scrolling area
@@ -126,6 +123,9 @@ private:
    * big files.
    */
   LastScrollDirection m_LastScrollDirection;
+
+  ULONG m_SizeImageWidth;
+  ULONG m_SizeImageHeight;
 
   struct Image* m_pLeftArrowImage;    ///> h-scrollbar left button image
   struct Image* m_pRightArrowImage;   ///> h-scrollbar right button image
@@ -145,26 +145,29 @@ private:
   /**
    * Initializes some window specific feature. Gadgets, etc.
    */
-  void initialize();
+  virtual void initialize();
 
   /**
    * Calculates how many lines fit into current window size and sets
    * the member variable.
    */
-  void calcMaxWindowTextLines();
+  virtual void calcMaxWindowTextLines();
+
+  /**
+   * Displays the complete file from current m_Y position as first line
+   */
+  virtual void displayFile();
+
+  virtual bool scrollDownOneLine();
+  virtual bool scrollUpOneLine();
+
+private:
+  TextDocument* m_pDocument;
 
   /**
    * Displays the given line at given y-position
    */
   void displayLine(const SimpleString* p_pLine, WORD p_TopEdge);
-
-  /**
-   * Displays the complete file from current m_Y position as first line
-   */
-  void displayFile();
-
-  bool scrollDownOneLine();
-  bool scrollUpOneLine();
 };
 
 

@@ -20,10 +20,9 @@ Application::Application(int argc, char **argv, struct MsgPort* p_pMsgPortAllWin
     m_Argc(argc),
     m_Argv(argv),
     m_bExitRequested(false),
-    m_Screen("AmiDiff (C) 2018 by Uwe Rosner."),
-    m_LeftWin(m_Screen, m_pMsgPortAllWindows),
-    m_RightWin(m_Screen, m_pMsgPortAllWindows),
-    m_DiffFacade(m_LeftWin, m_RightWin),
+    m_Screen(),
+    m_DiffWindow(m_Screen, m_pMsgPortAllWindows),
+    m_DiffFacade(m_DiffWindow),
     m_OpenFilesWin(m_Screen, m_pMsgPortAllWindows, m_DiffFacade),
     m_CmdDiff(m_DiffFacade),
     m_CmdQuit(m_bExitRequested),
@@ -43,14 +42,9 @@ Application::~Application()
     m_OpenFilesWin.Close();
   }
 
-  if(m_LeftWin.IsOpen())
+  if(m_DiffWindow.IsOpen())
   {
-    m_LeftWin.Close();
-  }
-
-  if(m_RightWin.IsOpen())
-  {
-    m_RightWin.Close();
+    m_DiffWindow.Close();
   }
 
   m_Screen.Close();
@@ -64,12 +58,12 @@ bool Application::Run()
   //
   // Opening the screen
   //
-  if (!m_Screen.Open())
+  m_Screen.SetTitle("AmiDiff (C) 2018 by Uwe Rosner.");
+  if (!m_Screen.Open(AppScreen::SME_CloneWorkbenchMin8Col))
   {
     // Opening the screen failed
     return false;
   }
-
 
   //
   // If there are at least two command line arguments permitted, take
@@ -81,7 +75,12 @@ bool Application::Run()
     m_DiffFacade.SetLeftFilePath(m_Argv[1]);
     m_DiffFacade.SetRightFilePath(m_Argv[2]);
   }
-
+  else
+  {
+    // TODO Remove after debugging
+    m_DiffFacade.SetLeftFilePath("testfiles/Testcase_06_Left.txt");
+    m_DiffFacade.SetRightFilePath("testfiles/Testcase_06_Right.txt");
+  }
   //
   // Filling the GadTools menu struct, supplying pointers to the
   // commands as nm_UserData. So no complicated evalution needed to
@@ -109,20 +108,19 @@ bool Application::Run()
   //
   // Installing menu to all windows
   //
-  m_LeftWin.SetMenu(&m_Menu);
-  m_RightWin.SetMenu(&m_Menu);
+  m_DiffWindow.SetMenu(&m_Menu);
   m_OpenFilesWin.SetMenu(&m_Menu);
 
   //
-  // Prepare the left and right TextWindows and open the OpenFileWindow
+  // Prepare the position of the DiffWindow
   //
-  m_LeftWin.SetInitialPosition(WindowBase::IP_Left);
-  m_LeftWin.SetFixed(true);
+  m_DiffWindow.SetInitialPosition(WindowBase::IP_Fill);
 
-  m_RightWin.SetInitialPosition(WindowBase::IP_Right);
-  m_RightWin.SetFixed(true);
-
-
+  //
+  // Open the OpenFilesWindow.
+  //
+  // Giving the command ptr as argument, so the appropriate menu item
+  // is disabled after opening.
   m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
 
   //
@@ -178,13 +176,9 @@ void Application::intuiEventLoop()
         //
         // All other messages are handled in the appropriate window
         //
-        if(m_LeftWin.IsOpen() && msgWindow == m_LeftWin.IntuiWindow())
+        if(m_DiffWindow.IsOpen() && msgWindow == m_DiffWindow.IntuiWindow())
         {
-          m_LeftWin.HandleIdcmp(msgClass, msgCode, msgIAddress);
-        }
-        else if(m_RightWin.IsOpen() && msgWindow == m_RightWin.IntuiWindow())
-        {
-          m_RightWin.HandleIdcmp(msgClass, msgCode, msgIAddress);
+          m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
         }
         else if(m_OpenFilesWin.IsOpen() && msgWindow == m_OpenFilesWin.IntuiWindow())
         {
@@ -192,8 +186,7 @@ void Application::intuiEventLoop()
         }
       }
 
-      if(!m_LeftWin.IsOpen() && !m_RightWin.IsOpen() &&
-         !m_OpenFilesWin.IsOpen())
+      if(!m_DiffWindow.IsOpen() && !m_OpenFilesWin.IsOpen())
       {
         // All windows are close: exit
         m_bExitRequested = true;
