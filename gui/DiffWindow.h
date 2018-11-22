@@ -99,16 +99,10 @@ private:
   WORD m_LineNumbersWidth;
 
   /**
-   * Initializes some window specific feature. Gadgets, etc.
+   * Initializes some window specific features. Gadgets, etc.
    */
   void initialize();
 
-  /**
-   * Paints the basic window content: the 2 BevelBoxes for the original
-   * (left) and chnaged (right) diff file, the Document names and the
-   * state bar at the bottom.
-   */
-  void paint(WORD p_WidthDiff = 0, WORD p_HeightDiff = 0);
 
   /**
    * Calculates how many lines fit into current window size and sets
@@ -117,26 +111,42 @@ private:
   void calcMaxWindowTextLines();
 
   /**
+   * Calculates some inner window sizes which is needed after window
+   * opening and after resizing.
+   */
+  void calcSizes();
+
+  /**
    * Displays the names of the documents above the two BevelBoxes
    */
-  void displayDocumentNames();
+  void paintDocumentNames();
+
+  /**
+   * Displays the left and right diff file inside the main text area. 
+   * The file is displayed starting from current text position m_Y as 
+   * first line at the very top of the text area.
+   */
+  void paintFile();
 
   /**
    * Displays the currently selected line at given y-position. The line
    * is composed from the left diff document and right diff documents
    * currently selected lines.
    */
-  void displayLine(const SimpleString* p_pLeftLine,
+  void paintLine(const SimpleString* p_pLeftLine,
     const SimpleString* p_pRightLine, WORD p_TopEdge);
+
+  /**
+   * Paints the basic window content: the 2 BevelBoxes for the original
+   * (left) and changed (right) diff file, the Document names and the
+   * state bar at the bottom.
+   */
+  void paintWindowDecoration();
 
   /**
    * Gets an appropriate pen from a given ColorName
    */
   LONG colorNameToPen(DiffDocument::ColorName p_pColorName);
-  /**
-   * Displays the complete file from current m_Y position as first line
-   */
-  void displayFile();
 
   bool scrollDownOneLine();
   bool scrollUpOneLine();

@@ -19,7 +19,7 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
     m_IndentX(5),
-    m_IndentY(0),
+    m_IndentY(2 * p_AppScreen.FontHeight()),
     m_TextArea1Left(0),
     m_TextArea2Left(0),
     m_TextAreaTop(0),
@@ -52,8 +52,8 @@ void DiffWindow::Resized()
     return;
   }
 
-  WORD widthDiff = m_pWindow->Width - m_WinWidth;
-  WORD heightDiff = m_pWindow->Height - m_WinHeight;
+  // WORD widthDiff = m_pWindow->Width - m_WinWidth;
+  // WORD heightDiff = m_pWindow->Height - m_WinHeight;
 
   m_WinWidth = m_pWindow->Width;
   m_WinHeight = m_pWindow->Height;
@@ -61,13 +61,21 @@ void DiffWindow::Resized()
   // Calculate how many lines *now* can be displayed in the window
   calcMaxWindowTextLines();
 
+  // Calculate some values which have to calculated after window 
+  // opening and after resizing
+  calcSizes();
+
+
   // Paint the window decoration
-  paint(widthDiff, heightDiff);
+  paintWindowDecoration();
 
   if((m_pLeftDocument == NULL) || m_pRightDocument == NULL)
   {
     return;
   }
+
+  // Paint the document names
+  paintDocumentNames();
 
   // Set scroll gadgets pot size in relation of new window size
   if(m_pYPropGadget != NULL)
@@ -78,6 +86,7 @@ void DiffWindow::Resized()
 	   );
   }
 
+  // TODO paintFile
 }
 
 void DiffWindow::Refresh()
@@ -85,8 +94,8 @@ void DiffWindow::Refresh()
   BeginRefresh(m_pWindow);
 
   // Paint the window decoration
-  paint();
-  displayFile();
+  paintWindowDecoration();
+  paintFile();
 
   EndRefresh(m_pWindow, TRUE);
 }
@@ -99,14 +108,27 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   }
 
   //
-  // Calculate some initial values which cant be obtained in before
-  // window opening in initialize()
+  // Calculate some initial values which only have to be calculated 
+  // unique
   //
+  
+  // TODO Remove as soon a constructor initilization works.
+  //  AND then m_IndentY can be made const
+  //m_IndentY = 2 * m_AppScreen.FontHeight();
 
-  m_IntuiText.FrontPen  = m_AppScreen.Pens().Text();
+  m_TextArea1Left = m_IndentX;
+  m_TextAreaTop = m_IndentY;
+
+
+  // Calculate some values which have to calculated after window 
+  // opening and after resizing
+  calcSizes();
 
   // Paint the window decoration
-  paint();
+  paintWindowDecoration();
+
+  // Set main text pen for main diff/text display
+  m_IntuiText.FrontPen  = m_AppScreen.Pens().Text();
 
   return true;
 }
@@ -135,13 +157,13 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
 
 
   // Display the document titles above the text areas
-  displayDocumentNames();
+  paintDocumentNames();
 
   // Clear the window completely
   SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
   // Display the first [1; m_MaxTextLines] lines
-  displayFile();
+  paintFile();
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
@@ -155,7 +177,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   }
 
   // Paint the window decoration
-  paint();
+  paintWindowDecoration();
 
   return true;
 }
@@ -238,38 +260,17 @@ void DiffWindow::initialize()
            IDCMP_REFRESHWINDOW |  // Inform us when refreshing is necessary
            IDCMP_IDCMPUPDATE);    // Inform us about TODO
 
-  // Calculate needed values
-  m_IndentY = 2 * m_AppScreen.FontHeight();
-
-  m_TextArea1Left = m_IndentX;
-  m_TextAreaTop = m_IndentY;
-
   m_bInitialized = true;
 
 }
 
-void DiffWindow::paint(WORD p_WidthDiff, WORD p_HeightDiff)
+void DiffWindow::paintWindowDecoration()
 {
 /*
   // Erase old rect before re-calculating and re-drawing it
   EraseRect(m_pWindow->RPort,
     0, 0, m_InnerWindowRight, m_InnerWindowBottom);
 */
-  // (Re-)calculate some values that may have be changed by re-sizing
-  m_InnerWindowRight = m_pWindow->Width
-    - m_AppScreen.IntuiScreen()->WBorLeft
-    - m_SizeImageWidth;
-
-  m_InnerWindowBottom = m_pWindow->Height
-    - m_AppScreen.BarHeight()
-    - m_SizeImageHeight;
-
-  m_TextAreasWidth = m_InnerWindowRight - m_TextArea1Left - m_IndentX;
-  m_TextAreasWidth /= 2;
-
-  m_TextAreasHeight = m_InnerWindowBottom - m_TextAreaTop - m_IndentY;
-
-  m_TextArea2Left = m_TextArea1Left + m_TextAreasWidth;
 
   // Create borders for the two text areas
   DrawBevelBox(m_pWindow->RPort,
@@ -285,10 +286,6 @@ void DiffWindow::paint(WORD p_WidthDiff, WORD p_HeightDiff)
     GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
     GTBB_Recessed, TRUE,
     TAG_DONE);
-
-  // Display the document titles above the text areas
-  displayDocumentNames();
-
 }
 
 void DiffWindow::calcMaxWindowTextLines()
@@ -301,7 +298,26 @@ void DiffWindow::calcMaxWindowTextLines()
   m_MaxTextLines = m_TextAreasHeight /  m_AppScreen.FontHeight();
 }
 
-void DiffWindow::displayDocumentNames()
+void DiffWindow::calcSizes()
+{
+  // (Re-)calculate some values that may have be changed by re-sizing
+  m_InnerWindowRight = m_pWindow->Width
+    - m_AppScreen.IntuiScreen()->WBorLeft
+    - m_SizeImageWidth;
+
+  m_InnerWindowBottom = m_pWindow->Height
+    - m_AppScreen.BarHeight()
+    - m_SizeImageHeight;
+
+  m_TextAreasWidth = m_InnerWindowRight - m_TextArea1Left - m_IndentX;
+  m_TextAreasWidth /= 2;
+
+  m_TextAreasHeight = m_InnerWindowBottom - m_TextAreaTop - m_IndentY;
+
+  m_TextArea2Left = m_TextArea1Left + m_TextAreasWidth;
+}
+
+void DiffWindow::paintDocumentNames()
 {
   if((m_pLeftDocument == NULL) || (m_pRightDocument == NULL))
   {
@@ -327,7 +343,7 @@ void DiffWindow::displayDocumentNames()
 }
 
 
-void DiffWindow::displayLine(const SimpleString* p_pLeftLine,
+void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
     const SimpleString* p_pRightLine, WORD p_TopEdge)
 {
   m_IntuiText.TopEdge = p_TopEdge;
@@ -369,7 +385,7 @@ LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
   }
 }
 
-void DiffWindow::displayFile()
+void DiffWindow::paintFile()
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {
@@ -383,7 +399,7 @@ void DiffWindow::displayFile()
   {
     WORD lineNum = i - m_Y;
 
-    displayLine(pLeftLine, pRightLine,
+    paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
 
     if(lineNum >= m_MaxTextLines - 1)
@@ -443,7 +459,7 @@ bool DiffWindow::scrollUpOneLine()
   // m_Y++;
 
   // // Print the new last line
-  // displayLine(pLine, (m_MaxTextLines - 1) * m_FontHeight);
+  // paintLine(pLine, (m_MaxTextLines - 1) * m_FontHeight);
   return true;
 }
 
@@ -488,6 +504,6 @@ bool DiffWindow::scrollDownOneLine()
   // m_Y--;
 
   // // Print the new first line
-  // displayLine(pLine, 0);
+  // paintLine(pLine, 0);
   return true;
 }
