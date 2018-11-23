@@ -19,7 +19,7 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
     m_IndentX(5),
-    m_IndentY(2 * p_AppScreen.FontHeight()),
+    m_IndentY(0),
     m_TextArea1Left(0),
     m_TextArea2Left(0),
     m_TextAreaTop(0),
@@ -58,13 +58,12 @@ void DiffWindow::Resized()
   m_WinWidth = m_pWindow->Width;
   m_WinHeight = m_pWindow->Height;
 
-  // Calculate how many lines *now* can be displayed in the window
-  calcMaxWindowTextLines();
-
-  // Calculate some values which have to calculated after window 
+  // Calculate some values which have to calculated after window
   // opening and after resizing
   calcSizes();
 
+  // Clear the window completely
+  SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
   // Paint the window decoration
   paintWindowDecoration();
@@ -77,14 +76,6 @@ void DiffWindow::Resized()
   // Paint the document names
   paintDocumentNames();
 
-  // Set scroll gadgets pot size in relation of new window size
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Visible, m_MaxTextLines,
-    	TAG_DONE
-	   );
-  }
 
   // TODO paintFile
 }
@@ -108,19 +99,17 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   }
 
   //
-  // Calculate some initial values which only have to be calculated 
-  // unique
+  // Calculate some initial values which only have to be calculated
+  // once after window opening
   //
-  
-  // TODO Remove as soon a constructor initilization works.
-  //  AND then m_IndentY can be made const
-  //m_IndentY = 2 * m_AppScreen.FontHeight();
+
+  m_IndentY = 2 * m_AppScreen.FontHeight();
 
   m_TextArea1Left = m_IndentX;
   m_TextAreaTop = m_IndentY;
 
 
-  // Calculate some values which have to calculated after window 
+  // Calculate some values which have to calculated after window
   // opening and after resizing
   calcSizes();
 
@@ -156,11 +145,11 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   m_LineNumbersWidth = TextLength(m_pWindow->RPort, "9999", 4);
 
 
-  // Display the document titles above the text areas
-  paintDocumentNames();
-
   // Clear the window completely
   SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
+
+  // Display the document titles above the text areas
+  paintDocumentNames();
 
   // Display the first [1; m_MaxTextLines] lines
   paintFile();
@@ -264,16 +253,6 @@ void DiffWindow::initialize()
 
 }
 
-void DiffWindow::calcMaxWindowTextLines()
-{
-  if(m_AppScreen.FontHeight() == 0)
-  {
-    return;
-  }
-
-  m_MaxTextLines = m_TextAreasHeight /  m_AppScreen.FontHeight();
-}
-
 void DiffWindow::calcSizes()
 {
   // (Re-)calculate some values that may have be changed by re-sizing
@@ -291,6 +270,24 @@ void DiffWindow::calcSizes()
   m_TextAreasHeight = m_InnerWindowBottom - m_TextAreaTop - m_IndentY;
 
   m_TextArea2Left = m_TextArea1Left + m_TextAreasWidth;
+
+  if(m_AppScreen.FontHeight() == 0)
+  {
+    return;
+  }
+
+  // Calculates how many lines fit into current window size
+  m_MaxTextLines = m_TextAreasHeight /  m_AppScreen.FontHeight();
+
+  // Set y-scroll-gadget's pot size in relation of new window size
+  if(m_pYPropGadget != NULL)
+  {
+	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
+    	PGA_Visible, m_MaxTextLines,
+    	TAG_DONE
+	   );
+  }
+
 }
 
 void DiffWindow::paintFile()

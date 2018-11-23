@@ -111,20 +111,14 @@ private:
 
 
   /**
-   * Calculates how many lines fit into current window size and sets
-   * the member variable.
-   */
-  void calcMaxWindowTextLines();
-
-  /**
    * Calculates some inner window sizes which is needed after window
    * opening and after resizing.
    */
   void calcSizes();
 
   /**
-   * Displays the left and right diff file inside the main text area. 
-   * The file is displayed starting from current text position m_Y as 
+   * Displays the left and right diff file inside the main text area.
+   * The file is displayed starting from current text position m_Y as
    * first line at the very top of the text area.
    */
   void paintFile();

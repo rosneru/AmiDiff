@@ -109,6 +109,7 @@ File
 "model/DiffDocument.h"
 "model/TextDocument.h"
 "gui/TextWindow.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AmigaDiff.o" "objects_debug/AmigaDiff.debug"
 ""
@@ -152,6 +153,7 @@ File
 "model/DiffDocument.h"
 "model/TextDocument.h"
 "gui/TextWindow.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -162,6 +164,7 @@ File
 "gui/AppScreen.h"
 "commands/CmdOpenWindow.cpp"
 "commands/CmdOpenWindow.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdOpenWindow.o" "objects_debug/CmdOpenWindow.debug"
 ""
@@ -180,6 +183,7 @@ File
 "model/DiffDocument.h"
 "model/TextDocument.h"
 "gui/TextWindow.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdPerformDiff.o" "objects_debug/CmdPerformDiff.debug"
 ""
@@ -256,6 +260,7 @@ File
 "gui/AppMenu.cpp"
 "gui/AppMenu.h"
 "gui/AppScreen.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AppMenu.o" "objects_debug/AppMenu.debug"
 ""
@@ -264,6 +269,7 @@ File
 1 "gui/AppScreen.cpp"
 "gui/AppScreen.cpp"
 "gui/AppScreen.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AppScreen.o" "objects_debug/AppScreen.debug"
 ""
@@ -277,6 +283,10 @@ File
 "gui/TextWindow.h"
 "gui/WindowBase.h"
 "gui/AppMenu.h"
+"gui/AmigaDiffPens.h"
+"diffengine/DiffLine.h"
+"model/TextDocument.h"
+"model/Document.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
 ""
@@ -294,6 +304,7 @@ File
 "model/DiffDocument.h"
 "model/TextDocument.h"
 "gui/TextWindow.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/OpenFilesWindow.o" "objects_debug/OpenFilesWindow.debug"
 ""
@@ -307,6 +318,7 @@ File
 "gui/WindowBase.h"
 "model/Document.h"
 "gui/AppMenu.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/TextWindow.o" "objects_debug/TextWindow.debug"
 ""
@@ -317,6 +329,7 @@ File
 "gui/WindowBase.cpp"
 "gui/WindowBase.h"
 "gui/AppMenu.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/WindowBase.o" "objects_debug/WindowBase.debug"
 ""
@@ -335,6 +348,7 @@ File
 "model/DiffDocument.h"
 "model/TextDocument.h"
 "gui/TextWindow.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AmigaDiffFacade.o" "objects_debug/AmigaDiffFacade.debug"
 ""
