@@ -31,6 +31,12 @@ public:
    */
   void Resized();
 
+  /**
+   * Re-drawing the obscured window areas.
+   *
+   * This should be called from the application if the signal
+   * IDCMP_REFRESHWINDOW for this window is received.
+   */
   void Refresh();
 
   /**
@@ -117,11 +123,6 @@ private:
   void calcSizes();
 
   /**
-   * Displays the names of the documents above the two BevelBoxes
-   */
-  void paintDocumentNames();
-
-  /**
    * Displays the left and right diff file inside the main text area. 
    * The file is displayed starting from current text position m_Y as 
    * first line at the very top of the text area.
@@ -142,6 +143,11 @@ private:
    * state bar at the bottom.
    */
   void paintWindowDecoration();
+
+  /**
+   * Displays the names of the documents above the two BevelBoxes
+   */
+  void paintDocumentNames();
 
   /**
    * Gets an appropriate pen from a given ColorName

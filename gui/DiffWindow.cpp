@@ -264,30 +264,6 @@ void DiffWindow::initialize()
 
 }
 
-void DiffWindow::paintWindowDecoration()
-{
-/*
-  // Erase old rect before re-calculating and re-drawing it
-  EraseRect(m_pWindow->RPort,
-    0, 0, m_InnerWindowRight, m_InnerWindowBottom);
-*/
-
-  // Create borders for the two text areas
-  DrawBevelBox(m_pWindow->RPort,
-    m_TextArea1Left, m_TextAreaTop,
-    m_TextAreasWidth, m_TextAreasHeight,
-    GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
-    GTBB_Recessed, TRUE,
-    TAG_DONE);
-
-  DrawBevelBox(m_pWindow->RPort,
-    m_TextArea2Left, m_TextAreaTop,
-    m_TextAreasWidth, m_TextAreasHeight,
-    GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
-    GTBB_Recessed, TRUE,
-    TAG_DONE);
-}
-
 void DiffWindow::calcMaxWindowTextLines()
 {
   if(m_AppScreen.FontHeight() == 0)
@@ -315,74 +291,6 @@ void DiffWindow::calcSizes()
   m_TextAreasHeight = m_InnerWindowBottom - m_TextAreaTop - m_IndentY;
 
   m_TextArea2Left = m_TextArea1Left + m_TextAreasWidth;
-}
-
-void DiffWindow::paintDocumentNames()
-{
-  if((m_pLeftDocument == NULL) || (m_pRightDocument == NULL))
-  {
-    return;
-  }
-
-  struct IntuiText intuiText;
-  intuiText.FrontPen  = m_AppScreen.Pens().HighlightedText();
-  intuiText.BackPen   = m_AppScreen.Pens().Background();
-  intuiText.DrawMode  = JAM2;
-  intuiText.ITextFont = &m_TextAttr;
-  intuiText.NextText  = NULL;
-
-  intuiText.TopEdge   = m_TextAreaTop - m_AppScreen.FontHeight() - 1;
-
-  intuiText.LeftEdge  = m_TextArea1Left + 2;
-  intuiText.IText = (UBYTE*)m_pLeftDocument->FileName().C_str();
-  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
-
-  intuiText.LeftEdge  = m_TextArea2Left + 2;
-  intuiText.IText = (UBYTE*)m_pRightDocument->FileName().C_str();
-  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
-}
-
-
-void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
-    const SimpleString* p_pRightLine, WORD p_TopEdge)
-{
-  m_IntuiText.TopEdge = p_TopEdge;
-
-  //
-  // Print left line
-  //
-  m_IntuiText.BackPen = colorNameToPen(m_pLeftDocument->LineColor());
-  m_IntuiText.IText = (UBYTE*)p_pLeftLine->C_str();
-  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea1Left + 3,
-    m_TextAreaTop + 2);
-
-  //
-  // Print right line
-  //
-  m_IntuiText.BackPen = colorNameToPen(m_pRightDocument->LineColor());
-  m_IntuiText.IText = (UBYTE*)p_pRightLine->C_str();
-  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea2Left + 3,
-    m_TextAreaTop + 2);
-}
-
-LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
-{
-  if(p_pColorName == DiffDocument::CN_Green)
-  {
-    return m_AppScreen.Pens().Green();
-  }
-  else if(p_pColorName== DiffDocument::CN_Yellow)
-  {
-    return m_AppScreen.Pens().Yellow();
-  }
-  else if(p_pColorName == DiffDocument::CN_Red)
-  {
-    return m_AppScreen.Pens().Red();
-  }
-  else
-  {
-    return m_AppScreen.Pens().Background();
-  }
 }
 
 void DiffWindow::paintFile()
@@ -416,6 +324,98 @@ void DiffWindow::paintFile()
   //   pLine = m_pDocument->GetNextLine();
   }
 }
+
+void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
+    const SimpleString* p_pRightLine, WORD p_TopEdge)
+{
+  m_IntuiText.TopEdge = p_TopEdge;
+
+  //
+  // Print left line
+  //
+  m_IntuiText.BackPen = colorNameToPen(m_pLeftDocument->LineColor());
+  m_IntuiText.IText = (UBYTE*)p_pLeftLine->C_str();
+  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea1Left + 3,
+    m_TextAreaTop + 2);
+
+  //
+  // Print right line
+  //
+  m_IntuiText.BackPen = colorNameToPen(m_pRightDocument->LineColor());
+  m_IntuiText.IText = (UBYTE*)p_pRightLine->C_str();
+  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea2Left + 3,
+    m_TextAreaTop + 2);
+}
+
+void DiffWindow::paintWindowDecoration()
+{
+/*
+  // Erase old rect before re-calculating and re-drawing it
+  EraseRect(m_pWindow->RPort,
+    0, 0, m_InnerWindowRight, m_InnerWindowBottom);
+*/
+
+  // Create borders for the two text areas
+  DrawBevelBox(m_pWindow->RPort,
+    m_TextArea1Left, m_TextAreaTop,
+    m_TextAreasWidth, m_TextAreasHeight,
+    GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
+    GTBB_Recessed, TRUE,
+    TAG_DONE);
+
+  DrawBevelBox(m_pWindow->RPort,
+    m_TextArea2Left, m_TextAreaTop,
+    m_TextAreasWidth, m_TextAreasHeight,
+    GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
+    GTBB_Recessed, TRUE,
+    TAG_DONE);
+}
+
+void DiffWindow::paintDocumentNames()
+{
+  if((m_pLeftDocument == NULL) || (m_pRightDocument == NULL))
+  {
+    return;
+  }
+
+  struct IntuiText intuiText;
+  intuiText.FrontPen  = m_AppScreen.Pens().HighlightedText();
+  intuiText.BackPen   = m_AppScreen.Pens().Background();
+  intuiText.DrawMode  = JAM2;
+  intuiText.ITextFont = &m_TextAttr;
+  intuiText.NextText  = NULL;
+
+  intuiText.TopEdge   = m_TextAreaTop - m_AppScreen.FontHeight() - 1;
+
+  intuiText.LeftEdge  = m_TextArea1Left + 2;
+  intuiText.IText = (UBYTE*)m_pLeftDocument->FileName().C_str();
+  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+
+  intuiText.LeftEdge  = m_TextArea2Left + 2;
+  intuiText.IText = (UBYTE*)m_pRightDocument->FileName().C_str();
+  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+}
+
+LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
+{
+  if(p_pColorName == DiffDocument::CN_Green)
+  {
+    return m_AppScreen.Pens().Green();
+  }
+  else if(p_pColorName== DiffDocument::CN_Yellow)
+  {
+    return m_AppScreen.Pens().Yellow();
+  }
+  else if(p_pColorName == DiffDocument::CN_Red)
+  {
+    return m_AppScreen.Pens().Red();
+  }
+  else
+  {
+    return m_AppScreen.Pens().Background();
+  }
+}
+
 
 bool DiffWindow::scrollUpOneLine()
 {
