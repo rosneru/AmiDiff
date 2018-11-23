@@ -40,7 +40,7 @@ DiffWindow::~DiffWindow()
 
 void DiffWindow::Resized()
 {
-  if(m_pWindow == NULL)
+  if(!IsOpen())
   {
     return; // TODO
   }
@@ -65,19 +65,18 @@ void DiffWindow::Resized()
   // Clear the window completely
   SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
+  if((m_pLeftDocument != NULL) && m_pRightDocument != NULL)
+  {
+    // Paint the document names
+    paintDocumentNames();
+
+    // Paint the content of the two documents
+    paintDocument();
+  }
+
   // Paint the window decoration
   paintWindowDecoration();
 
-  if((m_pLeftDocument == NULL) || m_pRightDocument == NULL)
-  {
-    return;
-  }
-
-  // Paint the document names
-  paintDocumentNames();
-
-
-  // TODO paintFile
 }
 
 void DiffWindow::Refresh()
@@ -86,7 +85,7 @@ void DiffWindow::Refresh()
 
   // Paint the window decoration
   paintWindowDecoration();
-  paintFile();
+  paintDocument();
 
   EndRefresh(m_pWindow, TRUE);
 }
@@ -152,7 +151,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   paintDocumentNames();
 
   // Display the first [1; m_MaxTextLines] lines
-  paintFile();
+  paintDocument();
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
@@ -290,7 +289,7 @@ void DiffWindow::calcSizes()
 
 }
 
-void DiffWindow::paintFile()
+void DiffWindow::paintDocument()
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {
@@ -382,7 +381,7 @@ void DiffWindow::paintDocumentNames()
   intuiText.ITextFont = &m_TextAttr;
   intuiText.NextText  = NULL;
 
-  intuiText.TopEdge   = m_TextAreaTop - m_AppScreen.FontHeight() - 1;
+  intuiText.TopEdge   = m_TextAreaTop - m_AppScreen.FontHeight() - 2;
 
   intuiText.LeftEdge  = m_TextArea1Left + 2;
   intuiText.IText = (UBYTE*)m_pLeftDocument->FileName().C_str();

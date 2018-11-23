@@ -121,7 +121,7 @@ private:
    * The file is displayed starting from current text position m_Y as
    * first line at the very top of the text area.
    */
-  void paintFile();
+  void paintDocument();
 
   /**
    * Displays the currently selected line at given y-position. The line
