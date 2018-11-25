@@ -18,8 +18,8 @@ class WindowBase
 {
 public:
   /**
-   * Used to define an initial position of the window on the screen 
-   * without messing around with too many parameters. 
+   * Used to define an initial position of the window on the screen
+   * without messing around with too many parameters.
    */
   enum InitialPosition
   {
@@ -27,6 +27,8 @@ public:
     IP_Fill,    ///> Fit to screen below title bar; changes window dimesions
     IP_Left,    ///> Left half of the screen; changes window dimesions
     IP_Right,   ///> Right half of the screen; changes window dimesions
+    IP_Explicit,///> The position is explicitly given by the user with
+                ///> the four last parameters of SetInitialPosition
   };
 
   /**
@@ -48,12 +50,11 @@ public:
    */
   virtual bool Open(APTR p_pMenuItemDisableAtOpen) = 0;
 
-  virtual void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
-
   /**
    * Closes the window.
    */
   void Close();
+
 
   /**
    * Returns true if the window is opened.
@@ -63,14 +64,31 @@ public:
   const char* Title() const;
   void SetTitle(SimpleString p_NewTitle);
 
+
+
   /**
    * Sets the initial position of the window. Only is applied when
    * called before opening the window.
    *
    * @param p_InitialPosition
    * One of the positions defined in @see InitialPosition
+   *
+   * @param p_Left
+   * Left edge of the Window. Only used in IP_Explicit mode.
+   *
+   * @param p_Top
+   * Top edge of the Window. Only used in IP_Explicit mode.
+   *
+   * @param p_Width
+   * Width of the Window. Only used in IP_Explicit mode.
+   *
+   * @param p_Height
+   * Height of the Window. Only used in IP_Explicit mode.
+   *
    */
-  void SetInitialPosition(InitialPosition p_InitialPosition);
+  void SetInitialPosition(InitialPosition p_InitialPosition,
+    long p_Left = 0, long p_Top = 0, long p_Width = 0,
+    long p_Height = 0);
 
   /**
    * Sets if the window appears fixed or if it is draggable with the
@@ -80,6 +98,54 @@ public:
    * When true the window will not be moveable/draggable after opening.
    */
   void SetFixed(bool p_bFixWindow);
+
+  /**
+   * Sets if the window is without border. Only is applied when
+   * called before opening the window.
+   *
+   * @param p_bFixWindow
+   * When true the window will have no border.
+   */
+  void SetBorderless(bool p_bBorderless);
+
+  /**
+   * Sets if the window is a smart refresh window. Only is applied when
+   * called before opening the window.
+   *
+   * @param p_bFixWindow
+   * When true the window will be a smart refresh window after opening.
+   * When false it will be simple refresh.
+   */
+  void SetSmartRefresh(bool p_bSmartRefresh);
+
+  /**
+   * Moves an opened window to new position
+   *
+   * @param p_DX
+   * Delta of window position on x-axis. Can be pos. or neg.
+   *
+   * @param p_DY
+   * Delta of window position on y-axis. Can be pos. or neg.
+   */
+  void Move(long p_DX, long p_DY);
+
+  /**
+   * Resizes an opened window.
+   *
+   * @param p_DX
+   * Delta of window size on x-axis. Can be pos. or neg.
+   *
+   * @param p_DY
+   * Delta of window size on y-axis. Can be pos. or neg.
+   */
+  void Size(long p_DX, long p_DY);
+
+  /**
+   * Resizes an opened window and moves it to a new position.
+   * Coordinates are absolute and no deltas.
+   */
+  void ChangeWindowBox(long p_Left, long p_Top, long p_Width,
+    long p_Height);
 
   /**
    * Returns the intuition window structure or NULL if window is not
@@ -93,16 +159,20 @@ public:
    */
   AppScreen& WindowScreen();
 
-
-
   void SetMenu(AppMenu* p_pMenu);
+
+  virtual void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
 
 protected:
   AppScreen& m_AppScreen;
   struct MsgPort* m_pMsgPort;
   struct Window* m_pWindow;
-  WORD m_WinWidth;
-  WORD m_WinHeight;
+  bool m_bBorderless;
+  bool m_bSmartRefresh;
+  long m_WinLeft;
+  long m_WinTop;
+  long m_WinWidth;
+  long m_WinHeight;
   bool m_bInitialized;
   AppMenu* m_pMenu;
   SimpleString m_Title;

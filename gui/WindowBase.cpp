@@ -18,9 +18,13 @@ WindowBase::WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : m_AppScreen(p_AppScreen),
     m_pMsgPort(p_pMsgPort),
     m_pWindow(NULL),
-    m_pFirstGadget(NULL),
+    m_bBorderless(false),
+    m_bSmartRefresh(false),
+    m_WinLeft(0),
+    m_WinTop(0),
     m_WinWidth(160),
     m_WinHeight(120),
+    m_pFirstGadget(NULL),
     m_pMenu(NULL),
     m_bInitialized(false),
     m_bIsFixed(false),
@@ -64,64 +68,90 @@ bool WindowBase::Open(APTR p_pMenuItemDisableAtOpen)
   int screenHeight = m_AppScreen.IntuiScreen()->Height;
   int screenBarHeight = m_AppScreen.IntuiScreen()->BarHeight;
 
-  int winLeft = 0;
-  int winTop = 0;
-
   switch(m_InitialPosition)
   {
     case IP_Center:
-      winTop = screenHeight / 2 - m_WinHeight / 2;
-      winLeft = screenWidth / 2 - m_WinWidth / 2;
+      m_WinTop = screenHeight / 2 - m_WinHeight / 2;
+      m_WinLeft = screenWidth / 2 - m_WinWidth / 2;
       break;
 
     case IP_Fill:
       m_WinWidth = screenWidth;
       m_WinHeight = screenHeight - screenBarHeight - 1;
-      winTop = screenBarHeight + 1;
-      winLeft = 0;
+      m_WinTop = screenBarHeight + 1;
+      m_WinLeft = 0;
       break;
 
     case IP_Left:
       m_WinWidth = screenWidth / 2;
       m_WinHeight = screenHeight - screenBarHeight - 1;
-      winTop = screenBarHeight + 1;
-      winLeft = 0;
+      m_WinTop = screenBarHeight + 1;
+      m_WinLeft = 0;
       break;
 
     case IP_Right:
       m_WinWidth = screenWidth / 2;
       m_WinHeight = screenHeight - screenBarHeight - 1;
-      winTop = screenBarHeight + 1;
-      winLeft = m_WinWidth;
+      m_WinTop = screenBarHeight + 1;
+      m_WinLeft = m_WinWidth;
       break;
   }
 
   if(!m_bIsFixed)
   {
-    // Add a dragbar -> make window moveable
+    // Add a dragbar -> make window movable
     m_WindowFlags |= WFLG_DRAGBAR;
   }
 
   //
   // Opening the window
+  // 
+  // NOTE: Two separate calls because WA_SmartRefresh and 
+  //       WA_SimpleRefresh mutually excluding each other and should
+  //       only be permitted if true.
   //
-  m_pWindow = OpenWindowTags(NULL,
-    WA_Left, winLeft,
-    WA_Top, winTop,
-    WA_Width, m_WinWidth,
-    WA_Height, m_WinHeight,
-    WA_Title, (ULONG) m_Title.C_str(),
-    WA_Activate, TRUE,
-    WA_PubScreen, (ULONG) m_AppScreen.IntuiScreen(),
-    WA_Flags, m_WindowFlags,
-    WA_SimpleRefresh, TRUE,
-		WA_MinWidth, 120,
-		WA_MinHeight, 90,
-		WA_MaxWidth, -1,
-		WA_MaxHeight, -1,
-    WA_NewLookMenus, TRUE,          // Ignored before v39
-    WA_Gadgets, m_pFirstGadget,
-    TAG_END);
+  if(m_bSmartRefresh == true)
+  {
+    m_pWindow = OpenWindowTags(NULL,
+      WA_Left, m_WinLeft,
+      WA_Top, m_WinTop,
+      WA_Width, m_WinWidth,
+      WA_Height, m_WinHeight,
+      WA_Title, (ULONG) m_Title.C_str(),
+      WA_Activate, TRUE,
+      WA_PubScreen, (ULONG) m_AppScreen.IntuiScreen(),
+      WA_Flags, m_WindowFlags,
+      WA_MinWidth, 120,
+      WA_MinHeight, 90,
+      WA_MaxWidth, -1,
+      WA_MaxHeight, -1,
+      WA_NewLookMenus, TRUE,          // Ignored before v39
+      WA_Borderless, m_bBorderless,
+      WA_Gadgets, m_pFirstGadget,
+      WA_SmartRefresh, TRUE,
+      TAG_END);
+  }
+  else
+  {
+    m_pWindow = OpenWindowTags(NULL,
+      WA_Left, m_WinLeft,
+      WA_Top, m_WinTop,
+      WA_Width, m_WinWidth,
+      WA_Height, m_WinHeight,
+      WA_Title, (ULONG) m_Title.C_str(),
+      WA_Activate, TRUE,
+      WA_PubScreen, (ULONG) m_AppScreen.IntuiScreen(),
+      WA_Flags, m_WindowFlags,
+      WA_MinWidth, 120,
+      WA_MinHeight, 90,
+      WA_MaxWidth, -1,
+      WA_MaxHeight, -1,
+      WA_NewLookMenus, TRUE,          // Ignored before v39
+      WA_Borderless, m_bBorderless,
+      WA_Gadgets, m_pFirstGadget,
+      WA_SimpleRefresh, TRUE,
+      TAG_END);
+  }
 
   if(!IsOpen())
   {
@@ -129,7 +159,7 @@ bool WindowBase::Open(APTR p_pMenuItemDisableAtOpen)
     return false;
   }
 
-    // The window should be using this message port which might be shared
+  // The window should be using this message port which might be shared
   // with other windows
   m_pWindow->UserPort = m_pMsgPort;
 
@@ -201,7 +231,8 @@ void WindowBase::SetTitle(SimpleString p_NewTitle)
   SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
 }
 
-void WindowBase::SetInitialPosition(InitialPosition p_InitialPosition)
+void WindowBase::SetInitialPosition(InitialPosition p_InitialPosition, 
+  long p_Left, long p_Top, long p_Width, long p_Height)
 {
   if(IsOpen())
   {
@@ -209,6 +240,14 @@ void WindowBase::SetInitialPosition(InitialPosition p_InitialPosition)
   }
 
   m_InitialPosition = p_InitialPosition;
+
+  if(p_InitialPosition == WindowBase::IP_Explicit)
+  {
+    m_WinLeft = p_Left;
+    m_WinTop = p_Top;
+    m_WinWidth = p_Width;
+    m_WinHeight = p_Height;
+  }
 }
 
 void WindowBase::SetFixed(bool p_bFixWindow)
@@ -219,6 +258,66 @@ void WindowBase::SetFixed(bool p_bFixWindow)
   }
 
   m_bIsFixed = p_bFixWindow;
+}
+
+
+void WindowBase::SetBorderless(bool p_bBorderless)
+{
+  if(IsOpen())
+  {
+    return;
+  }
+
+  m_bBorderless = p_bBorderless;
+}
+
+void WindowBase::SetSmartRefresh(bool p_bSmartRefresh)
+{
+  if(IsOpen())
+  {
+    return;
+  }
+
+  m_bSmartRefresh = p_bSmartRefresh;
+}
+
+void WindowBase::Move(long p_DX, long p_DY)
+{
+  if(!IsOpen())
+  {
+    return;
+  }
+
+  MoveWindow(m_pWindow, p_DX, p_DY);
+  m_WinLeft = m_pWindow->LeftEdge;
+  m_WinTop = m_pWindow->TopEdge;
+}
+
+void WindowBase::Size(long p_DX, long p_DY)
+{
+  if(!IsOpen())
+  {
+    return;
+  }
+
+  SizeWindow(m_pWindow, p_DX, p_DY);
+  m_WinWidth = m_pWindow->Width;
+  m_WinHeight = m_pWindow->Height;
+}
+
+void WindowBase::ChangeWindowBox(long p_Left, long p_Top,
+  long p_Width, long p_Height)
+{
+  if(!IsOpen())
+  {
+    return;
+  }
+
+  ChangeWindowBox(p_Left, p_Top, p_Width, p_Height);
+  m_WinLeft = m_pWindow->LeftEdge;
+  m_WinTop = m_pWindow->TopEdge;
+  m_WinWidth = m_pWindow->Width;
+  m_WinHeight = m_pWindow->Height;
 }
 
 struct Window* WindowBase::IntuiWindow()
