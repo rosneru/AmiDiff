@@ -334,6 +334,13 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea1Left + 3,
     m_TextAreaTop + 2);
 
+  // Erase the area right of the left line
+  EraseRect(m_pWindow->RPort,
+    m_TextArea2Left + 2,
+    m_TextAreaTop + p_TopEdge + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreaTop + p_TopEdge + m_AppScreen.FontHeight() + 2);
+
   //
   // Print right line
   //
@@ -341,6 +348,14 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   m_IntuiText.IText = (UBYTE*)p_pRightLine->C_str();
   PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea2Left + 3,
     m_TextAreaTop + 2);
+
+  // Erase the area right of the left line
+  EraseRect(m_pWindow->RPort,
+    m_TextArea2Left + m_TextAreasWidth,
+    m_TextAreaTop + p_TopEdge + 2,
+    m_InnerWindowRight,
+    m_TextAreaTop + p_TopEdge + m_AppScreen.FontHeight() + 2);
+
 }
 
 void DiffWindow::paintWindowDecoration()
