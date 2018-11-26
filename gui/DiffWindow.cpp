@@ -22,7 +22,7 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_IndentY(0),
     m_TextArea1Left(0),
     m_TextArea2Left(0),
-    m_TextAreaTop(0),
+    m_TextAreasTop(0),
     m_TextAreasWidth(0),
     m_TextAreasHeight(0),
     m_InnerWindowRight(0),
@@ -105,7 +105,7 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_IndentY = 2 * m_AppScreen.FontHeight();
 
   m_TextArea1Left = m_IndentX;
-  m_TextAreaTop = m_IndentY;
+  m_TextAreasTop = m_IndentY;
 
 
   // Calculate some values which have to calculated after window
@@ -153,6 +153,9 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   // Display the first [1; m_MaxTextLines] lines
   paintDocument();
 
+  // Paint the window decoration
+  paintWindowDecoration();
+
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
   if(m_pYPropGadget != NULL)
@@ -164,8 +167,6 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
       TAG_DONE);
   }
 
-  // Paint the window decoration
-  paintWindowDecoration();
 
   return true;
 }
@@ -175,12 +176,23 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   // set the new y-position
   m_Y = p_NewY;
 
-  // Clear the window completely
+  // Clear both text areas completely
   EraseRect(m_pWindow->RPort,
-    m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+    m_TextArea1Left + 2, m_TextAreasTop + 2,
+    m_TextArea1Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 4);
 
-  // Display the beginning at new y-position
-  displayFile();
+  EraseRect(m_pWindow->RPort,
+    m_TextArea2Left + 2, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 4);
+
+
+  // Display the first [1; m_MaxTextLines] lines
+  paintDocument();
+
+  // Paint the window decoration
+  paintWindowDecoration();
 }
 
 
@@ -266,7 +278,7 @@ void DiffWindow::calcSizes()
   m_TextAreasWidth = m_InnerWindowRight - m_TextArea1Left - m_IndentX;
   m_TextAreasWidth /= 2;
 
-  m_TextAreasHeight = m_InnerWindowBottom - m_TextAreaTop - m_IndentY;
+  m_TextAreasHeight = m_InnerWindowBottom - m_TextAreasTop - m_IndentY;
 
   m_TextArea2Left = m_TextArea1Left + m_TextAreasWidth;
 
@@ -276,7 +288,7 @@ void DiffWindow::calcSizes()
   }
 
   // Calculates how many lines fit into current window size
-  m_MaxTextLines = m_TextAreasHeight /  m_AppScreen.FontHeight();
+  m_MaxTextLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
 
   // Set y-scroll-gadget's pot size in relation of new window size
   if(m_pYPropGadget != NULL)
@@ -332,14 +344,16 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   m_IntuiText.BackPen = colorNameToPen(m_pLeftDocument->LineColor());
   m_IntuiText.IText = (UBYTE*)p_pLeftLine->C_str();
   PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea1Left + 3,
-    m_TextAreaTop + 2);
+    m_TextAreasTop + 2);
 
-  // Erase the area right of the left line
+  // Erase the area right of the left line.
+  // This is made to avoid drawing into the right text area in case
+  // left line is too long
   EraseRect(m_pWindow->RPort,
     m_TextArea2Left + 2,
-    m_TextAreaTop + p_TopEdge + 2,
+    m_TextAreasTop + p_TopEdge + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreaTop + p_TopEdge + m_AppScreen.FontHeight() + 2);
+    m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 2);
 
   //
   // Print right line
@@ -347,35 +361,31 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   m_IntuiText.BackPen = colorNameToPen(m_pRightDocument->LineColor());
   m_IntuiText.IText = (UBYTE*)p_pRightLine->C_str();
   PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea2Left + 3,
-    m_TextAreaTop + 2);
+    m_TextAreasTop + 2);
 
-  // Erase the area right of the left line
+  // Erase the area right of the right line
+  // This is made to avoid drawing into the empty area in right of the
+  // right text area in case right line is too long
   EraseRect(m_pWindow->RPort,
     m_TextArea2Left + m_TextAreasWidth,
-    m_TextAreaTop + p_TopEdge + 2,
+    m_TextAreasTop + p_TopEdge + 2,
     m_InnerWindowRight,
-    m_TextAreaTop + p_TopEdge + m_AppScreen.FontHeight() + 2);
+    m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 2);
 
 }
 
 void DiffWindow::paintWindowDecoration()
 {
-/*
-  // Erase old rect before re-calculating and re-drawing it
-  EraseRect(m_pWindow->RPort,
-    0, 0, m_InnerWindowRight, m_InnerWindowBottom);
-*/
-
   // Create borders for the two text areas
   DrawBevelBox(m_pWindow->RPort,
-    m_TextArea1Left, m_TextAreaTop,
+    m_TextArea1Left, m_TextAreasTop,
     m_TextAreasWidth, m_TextAreasHeight,
     GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
     GTBB_Recessed, TRUE,
     TAG_DONE);
 
   DrawBevelBox(m_pWindow->RPort,
-    m_TextArea2Left, m_TextAreaTop,
+    m_TextArea2Left, m_TextAreasTop,
     m_TextAreasWidth, m_TextAreasHeight,
     GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
     GTBB_Recessed, TRUE,
@@ -396,7 +406,7 @@ void DiffWindow::paintDocumentNames()
   intuiText.ITextFont = &m_TextAttr;
   intuiText.NextText  = NULL;
 
-  intuiText.TopEdge   = m_TextAreaTop - m_AppScreen.FontHeight() - 2;
+  intuiText.TopEdge   = m_TextAreasTop - m_AppScreen.FontHeight() - 2;
 
   intuiText.LeftEdge  = m_TextArea1Left + 2;
   intuiText.IText = (UBYTE*)m_pLeftDocument->FileName().C_str();
@@ -430,91 +440,101 @@ LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
 
 bool DiffWindow::scrollUpOneLine()
 {
-  // !!TODO!!
+  if(m_pLeftDocument->NumLines() < m_MaxTextLines)
+  {
+    // Do not move the scroll area upward if all the text fits into
+    // the window
+    return false;
+  }
 
-  // if(m_pDocument->NumLines() < m_MaxTextLines)
-  // {
-  //   // Do not move the scroll area upward if all the text fits into
-  //   // the window
-  //   return false;
-  // }
+  if((m_Y + m_MaxTextLines) == m_pLeftDocument->NumLines())
+  {
+    // Do not move the scroll area upward if text already at bottom
+    return false;
+  }
 
-  // if((m_Y + m_MaxTextLines) == m_pDocument->NumLines())
-  // {
-  //   // Do not move the scroll area upward if text already at bottom
-  //   return false;
-  // }
+  // Get the line which at current scroll position has to be printed as
+  // the windows last line
+  const SimpleString* pLeftLine = NULL;
+  const SimpleString* pRightLine = NULL;
+  if(m_LastScrollDirection == Upward)
+  {
+    pLeftLine = m_pLeftDocument->GetNextLine();
+    pRightLine = m_pRightDocument->GetNextLine();
+  }
+  else
+  {
+    pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y + m_MaxTextLines);
+    pRightLine = m_pRightDocument->GetIndexedLine(m_Y + m_MaxTextLines);
+    m_LastScrollDirection = Upward;
+  }
 
-  // // Scroll upward one line by the current font height
-  // ScrollRaster(m_pWindow->RPort, 0, m_FontHeight,
-  //   m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+  if(pLeftLine == NULL || pRightLine == NULL)
+  {
+    return false;
+  }
 
-  // // Get the line which at current scroll position has to be printed as
-  // // the windows last line
-  // const SimpleString* pLine = NULL;
-  // if(m_LastScrollDirection == Upward)
-  // {
-  //   pLine = m_pDocument->GetNextLine();
-  // }
-  // else
-  // {
-  //   pLine = m_pDocument->GetIndexedLine(m_Y + m_MaxTextLines);
-  //   m_LastScrollDirection = Upward;
-  // }
+  m_Y++;
 
-  // if(pLine == NULL)
-  // {
-  //   return false;
-  // }
+  // Scroll upward one line by the current font height
+  ScrollRaster(m_pWindow->RPort, 0, m_AppScreen.FontHeight(),
+    m_TextArea1Left + 3, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 2);
 
-  // m_Y++;
+  // Print the new last line
+  paintLine(pLeftLine, pRightLine,
+    (m_MaxTextLines - 1) * m_AppScreen.FontHeight());
 
-  // // Print the new last line
-  // paintLine(pLine, (m_MaxTextLines - 1) * m_FontHeight);
+  // Repaint window decoration
+  paintWindowDecoration();
+
   return true;
 }
 
 bool DiffWindow::scrollDownOneLine()
 {
-  // !!TODO!!
+  if(m_Y < 1)
+  {
+    // Do not move the scroll area downward if text is already at top
+    return false;
+  }
 
-  // if(m_Y < 1)
-  // {
-  //   // Do not move the scroll area downward if text is already at top
-  //   return false;
-  // }
+  // Get the line which at current scroll position has to be printed as
+  // the windows first line
+  const SimpleString* pLeftLine = NULL;
+  const SimpleString* pRightLine = NULL;
+  if(m_LastScrollDirection == Downward)
+  {
+    pLeftLine = m_pLeftDocument->GetPreviousLine();
+    pRightLine = m_pRightDocument->GetPreviousLine();
+  }
+  else
+  {
+    pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y - 1);
+    pRightLine = m_pRightDocument->GetIndexedLine(m_Y -1);
 
-  // // Move scroll area downward by the height of one text line
-  // ScrollRaster(m_pWindow->RPort, 0, -m_FontHeight,
-  //   m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+    m_LastScrollDirection = Downward;
+  }
 
-  // // Delete the possible visible line below the scroll area which can
-  // // be caused by the scroll operation above
-  // EraseRect(m_pWindow->RPort,
-  //   m_ScrollXMin, m_MaxTextLines * m_FontHeight,
-  //   m_ScrollXMax, m_ScrollYMax);
+  if(pLeftLine == NULL || pRightLine == NULL)
+  {
+    return false;
+  }
 
-  // // Get the line which at current scroll position has to be printed as
-  // // the windows first line
-  // const SimpleString* pLine = NULL;
-  // if(m_LastScrollDirection == Downward)
-  // {
-  //   pLine = m_pDocument->GetPreviousLine();
-  // }
-  // else
-  // {
-  //   pLine = m_pDocument->GetIndexedLine(m_Y - 1);
-  //   m_LastScrollDirection = Downward;
-  // }
+  m_Y--;
 
-  // if(pLine == NULL)
-  // {
-  //   return false;
-  // }
+  // Move scroll area downward by the height of one text line
+  ScrollRaster(m_pWindow->RPort, 0, -m_AppScreen.FontHeight(),
+    m_TextArea1Left + 3, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 2);
 
-  // m_Y--;
+  // Print the new first line
+  paintLine(pLeftLine, pRightLine, 0);
 
-  // // Print the new first line
-  // paintLine(pLine, 0);
+  // Repaint window decoration
+  paintWindowDecoration();
+
   return true;
 }

@@ -95,12 +95,12 @@ private:
 
   WORD m_TextArea1Left;     ///> X-position of the 1st text area
   WORD m_TextArea2Left;     ///> X-position of the 2nd text area
-  WORD m_TextAreaTop;       ///> Y-position of the text areas
+  WORD m_TextAreasTop;       ///> Y-position of the text areas
   WORD m_TextAreasWidth;    ///> Width of each text area
   WORD m_TextAreasHeight;    ///> Height of the text areas (equally heigh)
 
-  WORD m_InnerWindowRight;  ///> X-posiiton of the right-most pixel before the scrollbar
-  WORD m_InnerWindowBottom; ///> X-posiiton of the bottom-most pixel before the scrollbar
+  WORD m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
+  WORD m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar
 
   WORD m_LineNumbersWidth;
 
