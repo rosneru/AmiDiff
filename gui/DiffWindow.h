@@ -71,21 +71,6 @@ public:
    */
   void YChangedHandler(size_t p_NewY);
 
-  /**
-   * Increases the Y position of the text by 1 and performs a scrolling
-   * by one line.  Should be called from the Application event loop
-   * when the cursor down key was received.
-   */
-  void YIncrease();
-
-  /**
-   * Decreases the Y position of the text by 1 and performs a scrolling
-   * by one line.  Should be called from the Application event loop
-   * when the cursor up key was received.
-   */
-  void YDecrease();
-
-
 private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
@@ -95,9 +80,9 @@ private:
 
   WORD m_TextArea1Left;     ///> X-position of the 1st text area
   WORD m_TextArea2Left;     ///> X-position of the 2nd text area
-  WORD m_TextAreasTop;       ///> Y-position of the text areas
+  WORD m_TextAreasTop;      ///> Y-position of the text areas
   WORD m_TextAreasWidth;    ///> Width of each text area
-  WORD m_TextAreasHeight;    ///> Height of the text areas (equally heigh)
+  WORD m_TextAreasHeight;   ///> Height of the text areas (equally heigh)
 
   WORD m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
   WORD m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar

@@ -195,47 +195,6 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   paintWindowDecoration();
 }
 
-
-void DiffWindow::YIncrease()
-{
-  // Scroll the text
-  if(scrollUpOneLine() == false)
-  {
-    // No scrolling possible
-    return;
-  }
-
-  // Increase scroll gadgets TOP value
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Top, m_Y,
-    	TAG_DONE
-	   );
-  }
-}
-
-
-void DiffWindow::YDecrease()
-{
-  // Scroll the text
-  if(scrollDownOneLine() == false)
-  {
-    // No scrolling possible
-    return;
-  }
-
-  // Decrease scroll gadgets TOP value
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Top, m_Y,
-    	TAG_DONE
-	   );
-  }
-}
-
-
 void DiffWindow::initialize()
 {
   // Call parent method to get to utilize scroll gadgets iside the

@@ -16,10 +16,10 @@ TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_pDocument(NULL),
     m_MaxTextLines(0),
     m_Y(0),
-    m_ScrollXMin(0),
-    m_ScrollYMin(0),
-    m_ScrollXMax(0),
-    m_ScrollYMax(0),
+    m_TextAreaLeft(0),
+    m_TextAreaTop(0),
+    m_TextAreaRight(0),
+    m_TextAreaBottom(0),
     m_SizeImageWidth(18),
     m_SizeImageHeight(10),
     m_LastScrollDirection(None),
@@ -146,8 +146,8 @@ bool TextWindow::Open(APTR p_pMenuItemDisableAtOpen)
   }
 
   // Calculate values needed for text scrolling
-  m_ScrollXMax = m_pWindow->Width; //- m_pWindow->BorderRight - m_ScrollXMin;
-  m_ScrollYMax = m_pWindow->Height; // - m_pWindow->BorderBottom - m_ScrollYMin;
+  m_TextAreaRight = m_pWindow->Width; //- m_pWindow->BorderRight - m_TextAreaLeft;
+  m_TextAreaBottom = m_pWindow->Height; // - m_pWindow->BorderBottom - m_TextAreaTop;
 
   // Calculate how many lines can be displayed in the window
   calcMaxWindowTextLines();
@@ -211,7 +211,7 @@ void TextWindow::YChangedHandler(size_t p_NewY)
 
   // Clear the window completely
   EraseRect(m_pWindow->RPort,
-    m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+    m_TextAreaLeft, m_TextAreaTop, m_TextAreaRight, m_TextAreaBottom);
 
   // Display the beginning at new y-position
   displayFile();
@@ -432,7 +432,7 @@ void TextWindow::calcMaxWindowTextLines()
   m_MaxTextLines = m_pWindow->Height;
   m_MaxTextLines -= m_pWindow->BorderTop;
   m_MaxTextLines -= m_pWindow->BorderBottom;
-  m_MaxTextLines -= m_ScrollYMin;
+  m_MaxTextLines -= m_TextAreaTop;
   m_MaxTextLines /= m_AppScreen.FontHeight();
 }
 
@@ -441,7 +441,7 @@ void TextWindow::displayLine(const SimpleString* p_pLine, WORD p_TopEdge)
 {
   m_IntuiText.IText = (UBYTE*)p_pLine->C_str();
   m_IntuiText.TopEdge = p_TopEdge;
-  PrintIText(m_pWindow->RPort, &m_IntuiText, m_ScrollXMin, m_ScrollYMin);
+  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextAreaLeft, m_TextAreaTop);
 }
 
 void TextWindow::displayFile()
@@ -485,7 +485,7 @@ bool TextWindow::scrollUpOneLine()
 
   // Scroll upward one line by the current font height
   ScrollRaster(m_pWindow->RPort, 0, m_AppScreen.FontHeight(),
-    m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+    m_TextAreaLeft, m_TextAreaTop, m_TextAreaRight, m_TextAreaBottom);
 
   // Get the line which at current scroll position has to be printed as
   // the windows last line
@@ -522,13 +522,13 @@ bool TextWindow::scrollDownOneLine()
 
   // Move scroll area downward by the height of one text line
   ScrollRaster(m_pWindow->RPort, 0, -m_AppScreen.FontHeight(),
-    m_ScrollXMin, m_ScrollYMin, m_ScrollXMax, m_ScrollYMax);
+    m_TextAreaLeft, m_TextAreaTop, m_TextAreaRight, m_TextAreaBottom);
 
   // Delete the possible visible line below the scroll area which can
   // be caused by the scroll operation above
   EraseRect(m_pWindow->RPort,
-    m_ScrollXMin, m_MaxTextLines * m_AppScreen.FontHeight(),
-    m_ScrollXMax, m_ScrollYMax);
+    m_TextAreaLeft, m_MaxTextLines * m_AppScreen.FontHeight(),
+    m_TextAreaRight, m_TextAreaBottom);
 
   // Get the line which at current scroll position has to be printed as
   // the windows first line

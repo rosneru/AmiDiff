@@ -66,14 +66,14 @@ public:
    * Y-proportional gadget attached to the window has been moved by
    * the user.
    */
-  virtual void YChangedHandler(size_t p_NewY);
+  void YChangedHandler(size_t p_NewY);
 
   /**
    * Increases the Y position of the text by 1 and performs a scrolling
    * by one line.  Should be called from the Application event loop
    * when the cursor down key was received.
    */
-  virtual void YIncrease();
+  void YIncrease();
 
   /**
    * Decreases the Y position of the text by 1 and performs a scrolling
@@ -107,11 +107,6 @@ protected:
 
   size_t m_MaxTextLines;  ///> Number of text lines that fit in window
   size_t m_Y;         ///> Index of currently first displayed text line
-
-  WORD m_ScrollXMin;  ///> Left x coordinate of scrolling area
-  WORD m_ScrollYMin;  ///> Left y coordinate of scrolling area
-  WORD m_ScrollXMax;  ///> Right x coordinate of scrolling area
-  WORD m_ScrollYMax;  ///> Right y coordinate of scrolling area
 
   /**
    * Stores if the last scroll direction was upward or downward. Allows
@@ -163,6 +158,11 @@ protected:
 
 private:
   TextDocument* m_pDocument;
+
+  WORD m_TextAreaLeft;    ///> Left x coordinate of text area
+  WORD m_TextAreaTop;     ///> Top y coordinate of text area
+  WORD m_TextAreaRight;   ///> Right x coordinate of text area
+  WORD m_TextAreaBottom;  ///> Bottom y coordinate of text area
 
   /**
    * Displays the given line at given y-position
