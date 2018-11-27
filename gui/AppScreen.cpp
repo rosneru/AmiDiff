@@ -103,7 +103,8 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy)
       SA_Overscan, OSCAN_TEXT,
       SA_AutoScroll, TRUE,
       SA_Pens, (ULONG)pWbDrawInfo->dri_Pens,
-      SA_Font, (ULONG) &m_TextAttr,
+      // SA_Font, (ULONG) &m_TextAttr,
+      SA_SysFont, 1,  // Check if this fits
       SA_DisplayID, wbScreenModeId,
       SA_Title, m_Title.C_str(),
       TAG_DONE);
