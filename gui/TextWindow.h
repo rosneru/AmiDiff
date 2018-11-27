@@ -66,7 +66,7 @@ public:
    * Y-proportional gadget attached to the window has been moved by
    * the user.
    */
-  void YChangedHandler(size_t p_NewY);
+  virtual void YChangedHandler(size_t p_NewY);
 
   /**
    * Increases the Y position of the text by 1 and performs a scrolling
@@ -80,7 +80,7 @@ public:
    * by one line.  Should be called from the Application event loop
    * when the cursor up key was received.
    */
-  virtual void YDecrease();
+  void YDecrease();
 
 
 protected:
