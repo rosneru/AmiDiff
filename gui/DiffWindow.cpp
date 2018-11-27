@@ -173,6 +173,27 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
 
 void DiffWindow::YChangedHandler(size_t p_NewY)
 {
+  int delta = p_NewY - m_Y;
+  if(delta == 0)
+  {
+    return;
+  }
+
+  if(delta > 0)
+  {
+    for(int i = 0; i < delta; i++)
+    {
+      scrollUpOneLine();
+    }
+  }
+  else
+  {
+    for(int i = delta; i < 0; i++)
+    {
+      scrollDownOneLine();
+    }
+  }
+/*
   // set the new y-position
   m_Y = p_NewY;
 
@@ -193,6 +214,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
   // Paint the window decoration
   paintWindowDecoration();
+*/
 }
 
 void DiffWindow::initialize()
