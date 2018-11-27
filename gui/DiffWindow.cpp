@@ -312,7 +312,7 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
     m_TextArea2Left + 2,
     m_TextAreasTop + p_TopEdge + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 2);
+    m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 1);
 
   //
   // Print right line
