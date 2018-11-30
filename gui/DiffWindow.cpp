@@ -314,6 +314,60 @@ void DiffWindow::paintDocument()
   }
 }
 
+void DiffWindow::paintPrevLines(int p_pNumPrevLines)
+{
+  if(p_pNumPrevLines < 1)
+  {
+    return;
+  }
+
+  for(int i = 0; i < p_pNumPrevLines; i++)
+  {
+    const SimpleString* pLeftLine = NULL;
+    const SimpleString* pRightLine = NULL;
+    
+    getPreviousLineAtTop(pLeftLine, pRightLine);
+    if(pLeftLine == NULL || pRightLine == NULL)
+    {
+      break;
+    }
+
+    WORD lineNum = p_pNumPrevLines - i; // TODO add -1 ??
+
+    paintLine(pLeftLine, pRightLine,
+      lineNum * m_AppScreen.FontHeight());
+
+    m_Y--;
+  }
+}
+
+void DiffWindow::paintNextLines(int p_pNumNextLines)
+{
+  if(p_pNumNextLines < 1)
+  {
+    return;
+  }
+
+  for(int i = 0; i < p_pNumNextLines; i++)
+  {
+    const SimpleString* pLeftLine = NULL;
+    const SimpleString* pRightLine = NULL;
+    
+    getNextLineAtBottom(pLeftLine, pRightLine);
+    if(pLeftLine == NULL || pRightLine == NULL)
+    {
+      break;
+    }
+
+    WORD lineNum = m_MaxTextLines - p_pNumNextLines + i; // TODO add -1 ??
+
+    paintLine(pLeftLine, pRightLine,
+      lineNum * m_AppScreen.FontHeight());
+
+    m_Y++;
+  }
+}
+
 void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
     const SimpleString* p_pRightLine, WORD p_TopEdge)
 {

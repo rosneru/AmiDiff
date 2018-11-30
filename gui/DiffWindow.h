@@ -109,9 +109,20 @@ private:
   void paintDocument();
 
   /**
-   * Displays the currently selected line at given y-position. The line
-   * is composed from the left diff document and right diff documents
-   * currently selected lines.
+   * Prints the given number of previous (to the current first line in 
+   * text area) lines at top
+   */
+  void DiffWindow::paintPrevLines(int p_pNumPrevLines);
+
+  /**
+   * Prints the given number of next (to the current last line in 
+   * text area) lines at bottom
+   */
+  void DiffWindow::paintNextLines(int p_pNumNextLines);
+
+  /**
+   * Prints the given line (p_pLeftLine and p_pRightLine) at given 
+   * y-position p_TopEdge.
    */
   void paintLine(const SimpleString* p_pLeftLine,
     const SimpleString* p_pRightLine, WORD p_TopEdge);
