@@ -157,11 +157,11 @@ private:
    * 
    * @param p_pLeftLine
    * After success this points to the next left line. Will be NULL
-   * if no previous left line exists.
+   * if no next left line exists.
    * 
    * @param p_pRightLine
    * After success this points to the next right line. Will be NULL
-   * if no previous right line exists.
+   * if no next right line exists.
    */
   void getNextLineAtBottom(const SimpleString* p_pLeftLine, 
     const SimpleString* p_pRightLine);
