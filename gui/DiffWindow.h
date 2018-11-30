@@ -109,18 +109,6 @@ private:
   void paintDocument();
 
   /**
-   * Prints the given number of previous (to the current first line in 
-   * text area) lines at top
-   */
-  void DiffWindow::paintPrevLines(int p_pNumPrevLines);
-
-  /**
-   * Prints the given number of next (to the current last line in 
-   * text area) lines at bottom
-   */
-  void DiffWindow::paintNextLines(int p_pNumNextLines);
-
-  /**
    * Prints the given line (p_pLeftLine and p_pRightLine) at given 
    * y-position p_TopEdge.
    */
@@ -146,6 +134,18 @@ private:
 
   bool scrollDownOneLine();
   bool scrollUpOneLine();
+
+  /**
+   * Scrolls the current text in the text area down by p_pNumLinesDown 
+   * lines and fills the gap at top with the previous lines
+   */
+  void scrollNLinesDown(int p_pNumLinesDown);
+
+  /**
+   * Prints the given number of next (to the current last line in 
+   * text area) lines at bottom
+   */
+  void scrollNLinesUp(int p_pNumLinesUp);
 
   /**
    * Gets the line (left and right) which at current text position m_Y

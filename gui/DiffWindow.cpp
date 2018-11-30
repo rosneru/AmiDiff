@@ -181,40 +181,17 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
   if(delta > 0)
   {
-    for(int i = 0; i < delta; i++)
-    {
-      scrollUpOneLine();
-    }
+    scrollNLinesUp(delta);
   }
-  else
+  else if(delta < 0)
   {
+    delta = -delta;
+
     for(int i = delta; i < 0; i++)
     {
-      scrollDownOneLine();
+      scrollNLinesDown(delta);
     }
   }
-/*
-  // set the new y-position
-  m_Y = p_NewY;
-
-  // Clear both text areas completely
-  EraseRect(m_pWindow->RPort,
-    m_TextArea1Left + 2, m_TextAreasTop + 2,
-    m_TextArea1Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 4);
-
-  EraseRect(m_pWindow->RPort,
-    m_TextArea2Left + 2, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 4);
-
-
-  // Display the first [1; m_MaxTextLines] lines
-  paintDocument();
-
-  // Paint the window decoration
-  paintWindowDecoration();
-*/
 }
 
 void DiffWindow::initialize()
@@ -311,60 +288,6 @@ void DiffWindow::paintDocument()
     pRightLine = m_pRightDocument->GetNextLine();
   //   lineId++;
   //   pLine = m_pDocument->GetNextLine();
-  }
-}
-
-void DiffWindow::paintPrevLines(int p_pNumPrevLines)
-{
-  if(p_pNumPrevLines < 1)
-  {
-    return;
-  }
-
-  for(int i = 0; i < p_pNumPrevLines; i++)
-  {
-    const SimpleString* pLeftLine = NULL;
-    const SimpleString* pRightLine = NULL;
-    
-    getPreviousLineAtTop(pLeftLine, pRightLine);
-    if(pLeftLine == NULL || pRightLine == NULL)
-    {
-      break;
-    }
-
-    WORD lineNum = p_pNumPrevLines - i; // TODO add -1 ??
-
-    paintLine(pLeftLine, pRightLine,
-      lineNum * m_AppScreen.FontHeight());
-
-    m_Y--;
-  }
-}
-
-void DiffWindow::paintNextLines(int p_pNumNextLines)
-{
-  if(p_pNumNextLines < 1)
-  {
-    return;
-  }
-
-  for(int i = 0; i < p_pNumNextLines; i++)
-  {
-    const SimpleString* pLeftLine = NULL;
-    const SimpleString* pRightLine = NULL;
-    
-    getNextLineAtBottom(pLeftLine, pRightLine);
-    if(pLeftLine == NULL || pRightLine == NULL)
-    {
-      break;
-    }
-
-    WORD lineNum = m_MaxTextLines - p_pNumNextLines + i; // TODO add -1 ??
-
-    paintLine(pLeftLine, pRightLine,
-      lineNum * m_AppScreen.FontHeight());
-
-    m_Y++;
   }
 }
 
@@ -472,6 +395,41 @@ LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
   }
 }
 
+bool DiffWindow::scrollDownOneLine()
+{
+  if(m_Y < 1)
+  {
+    // Do not move the scroll area downward if text is already at top
+    return false;
+  }
+
+  // Get the line which at current scroll position has to be printed as
+  // the windows first line
+  const SimpleString* pLeftLine = NULL;
+  const SimpleString* pRightLine = NULL;
+
+  getPreviousLineAtTop(pLeftLine, pRightLine);
+  if(pLeftLine == NULL || pRightLine == NULL)
+  {
+    return false;
+  }
+
+  m_Y--;
+
+  // Move scroll area downward by the height of one text line
+  ScrollRaster(m_pWindow->RPort, 0, -m_AppScreen.FontHeight(),
+    m_TextArea1Left + 3, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 2);
+
+  // Print the new first line
+  paintLine(pLeftLine, pRightLine, 0);
+
+  // Repaint window decoration
+  paintWindowDecoration();
+
+  return true;
+}
 
 bool DiffWindow::scrollUpOneLine()
 {
@@ -517,41 +475,115 @@ bool DiffWindow::scrollUpOneLine()
   return true;
 }
 
-bool DiffWindow::scrollDownOneLine()
+void DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
 {
+  if(p_pNumLinesDown < 1)
+  {
+    // Nothing to do
+    return;
+  }
+  
   if(m_Y < 1)
   {
-    // Do not move the scroll area downward if text is already at top
-    return false;
+    // Do not move the text area downward if text is already at top
+    return;
   }
 
-  // Get the line which at current scroll position has to be printed as
-  // the windows first line
-  const SimpleString* pLeftLine = NULL;
-  const SimpleString* pRightLine = NULL;
-
-  getPreviousLineAtTop(pLeftLine, pRightLine);
-  if(pLeftLine == NULL || pRightLine == NULL)
+  if(p_pNumLinesDown > m_Y)
   {
-    return false;
+    // Scroll only as many lines as necessary
+    p_pNumLinesDown = m_Y;
   }
 
-  m_Y--;
-
-  // Move scroll area downward by the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0, -m_AppScreen.FontHeight(),
+  // Move text area downward by n * the height of one text line
+  ScrollRaster(m_pWindow->RPort, 0, 
+    -p_pNumLinesDown * m_AppScreen.FontHeight(),  // n * height
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
 
-  // Print the new first line
-  paintLine(pLeftLine, pRightLine, 0);
+  // fill the gap with the previous text lines
+  for(int i = 0; i < p_pNumLinesDown; i++)
+  {
+    const SimpleString* pLeftLine = NULL;
+    const SimpleString* pRightLine = NULL;
+    
+    getPreviousLineAtTop(pLeftLine, pRightLine);
+    if(pLeftLine == NULL || pRightLine == NULL)
+    {
+      break;
+    }
+
+    WORD lineNum = p_pNumLinesDown - i; // TODO add -1 ??
+
+    paintLine(pLeftLine, pRightLine,
+      lineNum * m_AppScreen.FontHeight());
+
+    m_Y--;
+  }
 
   // Repaint window decoration
   paintWindowDecoration();
-
-  return true;
 }
+
+void DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
+{
+  if(p_pNumLinesUp < 1)
+  {
+    // Noting to do
+    return;
+  }
+
+  if(m_pLeftDocument->NumLines() < m_MaxTextLines)
+  {
+    // Do not move the scroll area upward if all the text fits into
+    // the window
+    return;
+  }
+
+  if((m_Y + m_MaxTextLines) == m_pLeftDocument->NumLines())
+  {
+    // Do not move the scroll area upward if text already at bottom
+    return;
+  }
+
+  if((m_Y + m_MaxTextLines + p_pNumLinesUp) > m_pLeftDocument->NumLines())
+  {
+    // Scroll only as many lines as necessary
+    p_pNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextLines);
+  }
+
+  // Move text area upward by n * the height of one text line
+  ScrollRaster(m_pWindow->RPort, 0, 
+    p_pNumLinesUp * m_AppScreen.FontHeight(),
+    m_TextArea1Left + 3, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 2);
+
+  for(int i = 0; i < p_pNumLinesUp; i++)
+  {
+    const SimpleString* pLeftLine = NULL;
+    const SimpleString* pRightLine = NULL;
+    
+    getNextLineAtBottom(pLeftLine, pRightLine);
+    if(pLeftLine == NULL || pRightLine == NULL)
+    {
+      break;
+    }
+
+    WORD lineNum = m_MaxTextLines - p_pNumLinesUp + i; // TODO add -1 ??
+
+    paintLine(pLeftLine, pRightLine,
+      lineNum * m_AppScreen.FontHeight());
+
+    m_Y++;
+  }
+
+  // Repaint window decoration
+  paintWindowDecoration();
+}
+
+
 
 
 void DiffWindow::getPreviousLineAtTop(const SimpleString* p_pLeftLine, 
