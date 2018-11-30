@@ -438,18 +438,8 @@ bool DiffWindow::scrollUpOneLine()
   // the windows last line
   const SimpleString* pLeftLine = NULL;
   const SimpleString* pRightLine = NULL;
-  if(m_LastScrollDirection == Upward)
-  {
-    pLeftLine = m_pLeftDocument->GetNextLine();
-    pRightLine = m_pRightDocument->GetNextLine();
-  }
-  else
-  {
-    pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y + m_MaxTextLines);
-    pRightLine = m_pRightDocument->GetIndexedLine(m_Y + m_MaxTextLines);
-    m_LastScrollDirection = Upward;
-  }
 
+  getNextLineAtBottom(pLeftLine, pRightLine);
   if(pLeftLine == NULL || pRightLine == NULL)
   {
     return false;
@@ -485,19 +475,8 @@ bool DiffWindow::scrollDownOneLine()
   // the windows first line
   const SimpleString* pLeftLine = NULL;
   const SimpleString* pRightLine = NULL;
-  if(m_LastScrollDirection == Downward)
-  {
-    pLeftLine = m_pLeftDocument->GetPreviousLine();
-    pRightLine = m_pRightDocument->GetPreviousLine();
-  }
-  else
-  {
-    pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y - 1);
-    pRightLine = m_pRightDocument->GetIndexedLine(m_Y -1);
 
-    m_LastScrollDirection = Downward;
-  }
-
+  getPreviousLineAtTop(pLeftLine, pRightLine);
   if(pLeftLine == NULL || pRightLine == NULL)
   {
     return false;
@@ -518,4 +497,38 @@ bool DiffWindow::scrollDownOneLine()
   paintWindowDecoration();
 
   return true;
+}
+
+
+void DiffWindow::getPreviousLineAtTop(const SimpleString* p_pLeftLine, 
+    const SimpleString* p_pRightLine)
+{
+  if(m_LastScrollDirection == Downward)
+  {
+    p_pLeftLine = m_pLeftDocument->GetPreviousLine();
+    p_pRightLine = m_pRightDocument->GetPreviousLine();
+  }
+  else
+  {
+    p_pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y - 1);
+    p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y -1);
+
+    m_LastScrollDirection = Downward;
+  }
+}
+
+void DiffWindow::getNextLineAtBottom(const SimpleString* p_pLeftLine, 
+    const SimpleString* p_pRightLine)
+{
+  if(m_LastScrollDirection == Upward)
+  {
+    p_pLeftLine = m_pLeftDocument->GetNextLine();
+    p_pRightLine = m_pRightDocument->GetNextLine();
+  }
+  else
+  {
+    p_pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y + m_MaxTextLines);
+    p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y + m_MaxTextLines);
+    m_LastScrollDirection = Upward;
+  }
 }

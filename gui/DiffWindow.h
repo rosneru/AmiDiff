@@ -135,6 +135,37 @@ private:
 
   bool scrollDownOneLine();
   bool scrollUpOneLine();
+
+  /**
+   * Gets the line (left and right) which at current text position m_Y
+   * is the previous to the first line in window
+   * 
+   * @param p_pLeftLine
+   * After success this points to the prevoius left line. Will be NULL
+   * if no previous left line exists.
+   * 
+   * @param p_pRightLine
+   * After success this points to the prevoius right line. Will be NULL
+   * if no previous right line exists.
+   */
+  void getPreviousLineAtTop(const SimpleString* p_pLeftLine, 
+    const SimpleString* p_pRightLine);
+
+  /**
+   * Gets the line (left and right) which at current text position m_Y
+   * is the following to the last line in window
+   * 
+   * @param p_pLeftLine
+   * After success this points to the next left line. Will be NULL
+   * if no previous left line exists.
+   * 
+   * @param p_pRightLine
+   * After success this points to the next right line. Will be NULL
+   * if no previous right line exists.
+   */
+  void getNextLineAtBottom(const SimpleString* p_pLeftLine, 
+    const SimpleString* p_pRightLine);
+
 };
 
 
