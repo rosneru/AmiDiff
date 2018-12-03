@@ -482,7 +482,7 @@ void DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
     // Nothing to do
     return;
   }
-  
+
   if(m_Y < 1)
   {
     // Do not move the text area downward if text is already at top
@@ -496,7 +496,7 @@ void DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
   }
 
   // Move text area downward by n * the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0, 
+  ScrollRaster(m_pWindow->RPort, 0,
     -p_pNumLinesDown * m_AppScreen.FontHeight(),  // n * height
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
@@ -507,7 +507,7 @@ void DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
   {
     const SimpleString* pLeftLine = NULL;
     const SimpleString* pRightLine = NULL;
-    
+
     getPreviousLineAtTop(pLeftLine, pRightLine);
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -554,7 +554,7 @@ void DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
   }
 
   // Move text area upward by n * the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0, 
+  ScrollRaster(m_pWindow->RPort, 0,
     p_pNumLinesUp * m_AppScreen.FontHeight(),
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
@@ -564,7 +564,7 @@ void DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
   {
     const SimpleString* pLeftLine = NULL;
     const SimpleString* pRightLine = NULL;
-    
+
     getNextLineAtBottom(pLeftLine, pRightLine);
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -586,8 +586,8 @@ void DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
 
 
 
-void DiffWindow::getPreviousLineAtTop(const SimpleString* p_pLeftLine, 
-    const SimpleString* p_pRightLine)
+void DiffWindow::getPreviousLineAtTop(const SimpleString*& p_pLeftLine,
+    const SimpleString*& p_pRightLine)
 {
   if(m_LastScrollDirection == Downward)
   {
@@ -603,8 +603,8 @@ void DiffWindow::getPreviousLineAtTop(const SimpleString* p_pLeftLine,
   }
 }
 
-void DiffWindow::getNextLineAtBottom(const SimpleString* p_pLeftLine, 
-    const SimpleString* p_pRightLine)
+void DiffWindow::getNextLineAtBottom(const SimpleString*& p_pLeftLine,
+    const SimpleString*& p_pRightLine)
 {
   if(m_LastScrollDirection == Upward)
   {

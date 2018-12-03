@@ -109,7 +109,7 @@ private:
   void paintDocument();
 
   /**
-   * Prints the given line (p_pLeftLine and p_pRightLine) at given 
+   * Prints the given line (p_pLeftLine and p_pRightLine) at given
    * y-position p_TopEdge.
    */
   void paintLine(const SimpleString* p_pLeftLine,
@@ -136,13 +136,13 @@ private:
   bool scrollUpOneLine();
 
   /**
-   * Scrolls the current text in the text area down by p_pNumLinesDown 
+   * Scrolls the current text in the text area down by p_pNumLinesDown
    * lines and fills the gap at top with the previous lines
    */
   void scrollNLinesDown(int p_pNumLinesDown);
 
   /**
-   * Prints the given number of next (to the current last line in 
+   * Prints the given number of next (to the current last line in
    * text area) lines at bottom
    */
   void scrollNLinesUp(int p_pNumLinesUp);
@@ -150,32 +150,32 @@ private:
   /**
    * Gets the line (left and right) which at current text position m_Y
    * is the previous to the first line in window
-   * 
+   *
    * @param p_pLeftLine
-   * After success this points to the prevoius left line. Will be NULL
-   * if no previous left line exists.
-   * 
+   * Reference to a pointer to SimpleString. After success this points
+   * to the previous line. Will be NULL if no previous left line exists.
+   *
    * @param p_pRightLine
-   * After success this points to the prevoius right line. Will be NULL
-   * if no previous right line exists.
+   * Reference to a pointer to SimpleString. After success this points
+   * to the previous right line. Will be NULL if no previous right line exists.
    */
-  void getPreviousLineAtTop(const SimpleString* p_pLeftLine, 
-    const SimpleString* p_pRightLine);
+  void getPreviousLineAtTop(const SimpleString*& p_pLeftLine,
+    const SimpleString*& p_pRightLine);
 
   /**
    * Gets the line (left and right) which at current text position m_Y
    * is the following to the last line in window
-   * 
+   *
    * @param p_pLeftLine
-   * After success this points to the next left line. Will be NULL
-   * if no next left line exists.
-   * 
+   * Reference to a pointer to SimpleString. After success this points
+   * to the next left line. Will be NULL if no next left line exists.
+   *
    * @param p_pRightLine
-   * After success this points to the next right line. Will be NULL
-   * if no next right line exists.
+   * Reference to a pointer to SimpleString. After success this points
+   * to the next right line. Will be NULL if no next right line exists.
    */
-  void getNextLineAtBottom(const SimpleString* p_pLeftLine, 
-    const SimpleString* p_pRightLine);
+  void getNextLineAtBottom(const SimpleString*& p_pLeftLine,
+    const SimpleString*& p_pRightLine);
 
 };
 
