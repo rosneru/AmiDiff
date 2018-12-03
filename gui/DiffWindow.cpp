@@ -185,12 +185,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   }
   else if(delta < 0)
   {
-    delta = -delta;
-
-    for(int i = delta; i < 0; i++)
-    {
-      scrollNLinesDown(delta);
-    }
+    scrollNLinesDown(-delta);
   }
 }
 
