@@ -392,81 +392,13 @@ LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
 
 bool DiffWindow::scrollDownOneLine()
 {
-  if(m_Y < 1)
-  {
-    // Do not move the scroll area downward if text is already at top
-    return false;
-  }
-
-  // Get the line which at current scroll position has to be printed as
-  // the windows first line
-  const SimpleString* pLeftLine = NULL;
-  const SimpleString* pRightLine = NULL;
-
-  getPreviousLineAtTop(pLeftLine, pRightLine);
-  if(pLeftLine == NULL || pRightLine == NULL)
-  {
-    return false;
-  }
-
-  m_Y--;
-
-  // Move scroll area downward by the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0, -m_AppScreen.FontHeight(),
-    m_TextArea1Left + 3, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 2);
-
-  // Print the new first line
-  paintLine(pLeftLine, pRightLine, 0);
-
-  // Repaint window decoration
-  paintWindowDecoration();
-
+  scrollNLinesDown(1);
   return true;
 }
 
 bool DiffWindow::scrollUpOneLine()
 {
-  if(m_pLeftDocument->NumLines() < m_MaxTextLines)
-  {
-    // Do not move the scroll area upward if all the text fits into
-    // the window
-    return false;
-  }
-
-  if((m_Y + m_MaxTextLines) == m_pLeftDocument->NumLines())
-  {
-    // Do not move the scroll area upward if text already at bottom
-    return false;
-  }
-
-  // Get the line which at current scroll position has to be printed as
-  // the windows last line
-  const SimpleString* pLeftLine = NULL;
-  const SimpleString* pRightLine = NULL;
-
-  getNextLineAtBottom(pLeftLine, pRightLine);
-  if(pLeftLine == NULL || pRightLine == NULL)
-  {
-    return false;
-  }
-
-  m_Y++;
-
-  // Scroll upward one line by the current font height
-  ScrollRaster(m_pWindow->RPort, 0, m_AppScreen.FontHeight(),
-    m_TextArea1Left + 3, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 2);
-
-  // Print the new last line
-  paintLine(pLeftLine, pRightLine,
-    (m_MaxTextLines - 1) * m_AppScreen.FontHeight());
-
-  // Repaint window decoration
-  paintWindowDecoration();
-
+  scrollNLinesUp(1);
   return true;
 }
 
