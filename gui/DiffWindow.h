@@ -32,14 +32,6 @@ public:
   void Resized();
 
   /**
-   * Re-drawing the obscured window areas.
-   *
-   * This should be called from the application if the signal
-   * IDCMP_REFRESHWINDOW for this window is received.
-   */
-  void Refresh();
-
-  /**
    * Opens the window.
    *
    * @returns

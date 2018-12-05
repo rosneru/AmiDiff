@@ -79,17 +79,6 @@ void DiffWindow::Resized()
 
 }
 
-void DiffWindow::Refresh()
-{
-  BeginRefresh(m_pWindow);
-
-  // Paint the window decoration
-  paintWindowDecoration();
-  paintDocument();
-
-  EndRefresh(m_pWindow, TRUE);
-}
-
 bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
 {
   if(TextWindow::Open(p_pMenuItemDisableAtOpen) == false)
