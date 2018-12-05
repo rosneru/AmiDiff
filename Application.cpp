@@ -112,9 +112,10 @@ bool Application::Run()
   m_OpenFilesWin.SetMenu(&m_Menu);
 
   //
-  // Prepare the position of the DiffWindow
+  // Prepare the DiffWindow
   //
   m_DiffWindow.SetInitialPosition(WindowBase::IP_Fill);
+  m_DiffWindow.SetSmartRefresh(true);
 
   //
   // Open the OpenFilesWindow.

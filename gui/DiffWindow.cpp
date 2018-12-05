@@ -210,7 +210,6 @@ void DiffWindow::initialize()
            IDCMP_RAWKEY |         // Inform us about printable key press
            IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
            IDCMP_NEWSIZE |        // Inform us about resizing
-           IDCMP_REFRESHWINDOW |  // Inform us when refreshing is necessary
            IDCMP_IDCMPUPDATE);    // Inform us about TODO
 
   m_bInitialized = true;
