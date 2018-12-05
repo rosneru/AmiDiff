@@ -97,8 +97,14 @@ private:
    * Displays the left and right diff file inside the main text area.
    * The file is displayed starting from current text position m_Y as
    * first line at the very top of the text area.
+   *
+   * @param p_bStartFromCurrentY
+   * When true: no GetIndexed() is done to left and right document to
+   * find the start position. Instead it is assumed that the right y-
+   * position is set already ang acn be get with GetCurrent for left
+   * and right document.
    */
-  void paintDocument();
+  void paintDocument(bool p_bStartFromCurrentY = false);
 
   /**
    * Prints the given line (p_pLeftLine and p_pRightLine) at given

@@ -10,7 +10,7 @@ class DiffDocument : public TextDocument
 {
 public:
   /**
-   * Defines the text color names used to set foreground and 
+   * Defines the text color names used to set foreground and
    * background pens for text rendering
    */
   enum ColorName

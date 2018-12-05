@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <clib/alib_protos.h>
 #include <clib/dos_protos.h>
@@ -168,14 +169,53 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     return;
   }
 
-  if(delta > 0)
+  int deltaAbs = abs(delta);
+
+  if(deltaAbs < m_MaxTextLines / 4)
   {
-    scrollNLinesUp(delta);
+    if(delta > 0)
+    {
+      scrollNLinesUp(deltaAbs);
+    }
+    else if(delta < 0)
+    {
+      scrollNLinesDown(deltaAbs);
+    }
+
+    return;
   }
-  else if(delta < 0)
+
+  if(m_LastScrollDirection == TextWindow::Upward)
   {
-    scrollNLinesDown(-delta);
+    while(m_Y < p_NewY)
+    {
+      m_pLeftDocument->GetNextLine();
+      m_pRightDocument->GetNextLine();
+      m_Y++;
+    }
   }
+  else
+  {
+    while(m_Y > p_NewY)
+    {
+      m_pLeftDocument->GetPreviousLine();
+      m_pRightDocument->GetPreviousLine();
+      m_Y--;
+    }
+  }
+
+  // Clear both text areas completely
+  EraseRect(m_pWindow->RPort,
+    m_TextArea1Left + 2, m_TextAreasTop + 2,
+    m_TextArea1Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 4);
+
+  EraseRect(m_pWindow->RPort,
+    m_TextArea2Left + 2, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 4);
+
+  paintDocument();
 }
 
 void DiffWindow::initialize()
@@ -242,7 +282,7 @@ void DiffWindow::calcSizes()
 
 }
 
-void DiffWindow::paintDocument()
+void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {
@@ -250,8 +290,20 @@ void DiffWindow::paintDocument()
   }
 
   size_t i = m_Y;
-  const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
-  const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
+  const SimpleString* pLeftLine = NULL;
+  const SimpleString* pRightLine = NULL;
+
+  if(p_bStartFromCurrentY == true)
+  {
+    pLeftLine = m_pLeftDocument->GetCurrentLine();
+    pRightLine = m_pRightDocument->GetCurrentLine();
+  }
+  else
+  {
+    pLeftLine = m_pLeftDocument->GetIndexedLine(i);
+    pRightLine = m_pRightDocument->GetIndexedLine(i);
+  }
+
   while((pLeftLine != NULL) && (pRightLine !=NULL))
   {
     WORD lineNum = i - m_Y;
