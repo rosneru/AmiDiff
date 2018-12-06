@@ -170,9 +170,12 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   }
 
   int deltaAbs = abs(delta);
+  int deltaLimit = m_MaxTextLines / 4;
 
-  if(deltaAbs < m_MaxTextLines / 4)
+  if(deltaAbs < deltaLimit)
   {
+    // Scroll small amounts (1/4 window height) line by line
+
     if(delta > 0)
     {
       scrollNLinesUp(deltaAbs);
@@ -184,6 +187,8 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
     return;
   }
+
+  // Scroll bigger amounts by re-painting the whole page
 
   if(m_LastScrollDirection == TextWindow::Upward)
   {
@@ -215,7 +220,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 4);
 
-  paintDocument();
+  paintDocument(true);
 }
 
 void DiffWindow::initialize()
