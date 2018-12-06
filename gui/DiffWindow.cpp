@@ -190,7 +190,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
   // Scroll bigger amounts by re-painting the whole page
 
-  if(m_LastScrollDirection == TextWindow::Upward)
+  if(delta > 0)
   {
     while(m_Y < p_NewY)
     {
@@ -198,6 +198,8 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
       m_pRightDocument->GetNextLine();
       m_Y++;
     }
+
+    m_LastScrollDirection = TextWindow::Upward;
   }
   else
   {
@@ -207,6 +209,8 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
       m_pRightDocument->GetPreviousLine();
       m_Y--;
     }
+    
+    m_LastScrollDirection = TextWindow::Upward;
   }
 
   // Clear both text areas completely
@@ -221,6 +225,8 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     m_TextAreasTop + m_TextAreasHeight - 4);
 
   paintDocument(true);
+
+  paintWindowDecoration();
 }
 
 void DiffWindow::initialize()
