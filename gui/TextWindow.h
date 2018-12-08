@@ -98,10 +98,10 @@ protected:
     GID_ArrowRight,
   };
 
-  enum LastScrollDirection
+  enum LastDocumentScrollDirection
   {
     None,
-    Upward,
+    NextLine,
     Downward,
   };
 
@@ -117,7 +117,7 @@ protected:
    * Possibly makes scrolling by cursor keys faster at the bottom of
    * big files.
    */
-  LastScrollDirection m_LastScrollDirection;
+  LastDocumentScrollDirection m_LastDocumentScrollDirection;
 
   ULONG m_SizeImageWidth;
   ULONG m_SizeImageHeight;

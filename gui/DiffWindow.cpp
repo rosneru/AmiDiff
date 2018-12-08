@@ -583,7 +583,7 @@ void DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
 void DiffWindow::getPreviousLineAtTop(const SimpleString*& p_pLeftLine,
     const SimpleString*& p_pRightLine)
 {
-  if(m_LastScrollDirection == Downward)
+  if(m_LastDocumentScrollDirection == PreviousLine)
   {
     p_pLeftLine = m_pLeftDocument->GetPreviousLine();
     p_pRightLine = m_pRightDocument->GetPreviousLine();
@@ -593,14 +593,14 @@ void DiffWindow::getPreviousLineAtTop(const SimpleString*& p_pLeftLine,
     p_pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y - 1);
     p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y -1);
 
-    m_LastScrollDirection = Downward;
+    m_LastDocumentScrollDirection = PreviousLine;
   }
 }
 
 void DiffWindow::getNextLineAtBottom(const SimpleString*& p_pLeftLine,
     const SimpleString*& p_pRightLine)
 {
-  if(m_LastScrollDirection == Upward)
+  if(m_LastDocumentScrollDirection == NextLine)
   {
     p_pLeftLine = m_pLeftDocument->GetNextLine();
     p_pRightLine = m_pRightDocument->GetNextLine();
@@ -609,6 +609,6 @@ void DiffWindow::getNextLineAtBottom(const SimpleString*& p_pLeftLine,
   {
     p_pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y + m_MaxTextLines);
     p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y + m_MaxTextLines);
-    m_LastScrollDirection = Upward;
+    m_LastDocumentScrollDirection = NextLine;
   }
 }

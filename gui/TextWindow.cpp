@@ -22,7 +22,7 @@ TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_TextAreaBottom(0),
     m_SizeImageWidth(18),
     m_SizeImageHeight(10),
-    m_LastScrollDirection(None),
+    m_LastDocumentScrollDirection(None),
     m_pLeftArrowImage(NULL),
     m_pRightArrowImage(NULL),
     m_pUpArrowImage(NULL),
@@ -490,14 +490,14 @@ bool TextWindow::scrollUpOneLine()
   // Get the line which at current scroll position has to be printed as
   // the windows last line
   const SimpleString* pLine = NULL;
-  if(m_LastScrollDirection == Upward)
+  if(m_LastDocumentScrollDirection == NextLine)
   {
     pLine = m_pDocument->GetNextLine();
   }
   else
   {
     pLine = m_pDocument->GetIndexedLine(m_Y + m_MaxTextLines);
-    m_LastScrollDirection = Upward;
+    m_LastDocumentScrollDirection = NextLine;
   }
 
   if(pLine == NULL)
@@ -533,14 +533,14 @@ bool TextWindow::scrollDownOneLine()
   // Get the line which at current scroll position has to be printed as
   // the windows first line
   const SimpleString* pLine = NULL;
-  if(m_LastScrollDirection == Downward)
+  if(m_LastDocumentScrollDirection == PreviousLine)
   {
     pLine = m_pDocument->GetPreviousLine();
   }
   else
   {
     pLine = m_pDocument->GetIndexedLine(m_Y - 1);
-    m_LastScrollDirection = Downward;
+    m_LastDocumentScrollDirection = PreviousLine;
   }
 
   if(pLine == NULL)
