@@ -78,8 +78,8 @@ bool Application::Run()
   else
   {
     // TODO Remove after debugging
-    m_DiffFacade.SetLeftFilePath("testfiles/Testcase_06_Left.txt");
-    m_DiffFacade.SetRightFilePath("testfiles/Testcase_06_Right.txt");
+    m_DiffFacade.SetLeftFilePath("testfiles/Testcase_10_Left.txt");
+    m_DiffFacade.SetRightFilePath("testfiles/Testcase_10_Right.txt");
   }
   //
   // Filling the GadTools menu struct, supplying pointers to the
