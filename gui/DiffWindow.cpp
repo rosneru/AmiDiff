@@ -171,10 +171,12 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
   int deltaAbs = abs(delta);
   int deltaLimit = m_MaxTextLines / 4;
-
+/*
   if(deltaAbs < deltaLimit)
   {
+    //
     // Scroll small amounts (1/4 window height) line by line
+    //
 
     if(delta > 0)
     {
@@ -187,30 +189,35 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
     return;
   }
-
+*/
+  //
   // Scroll bigger amounts by re-painting the whole page
+  //
 
-  if(delta > 0)
-  {
-    while(m_Y < p_NewY)
-    {
-      m_pLeftDocument->GetNextLine();
-      m_pRightDocument->GetNextLine();
-      m_Y++;
-    }
+  // Determine how often getPrev or getNext must be called to set the
+  // left and right documents to the new start point for page redrawing
+  int numListTraverses = delta - m_MaxTextLines + 1;
 
-    m_LastScrollDirection = TextWindow::Upward;
-  }
-  else
+  // Depending on numListTraverses call getPrev and getNext as often
+  // as needed
+  if(numListTraverses < 0)
   {
-    while(m_Y > p_NewY)
+    for(int i = 0; i < -numListTraverses; i++)
     {
       m_pLeftDocument->GetPreviousLine();
       m_pRightDocument->GetPreviousLine();
       m_Y--;
     }
-    
-    m_LastScrollDirection = TextWindow::Upward;
+
+  }
+  else if(numListTraverses > 0)
+  {
+    for(int i = 0; i < numListTraverses; i++)
+    {
+      m_pLeftDocument->GetNextLine();
+      m_pRightDocument->GetNextLine();
+      m_Y++;
+    }
   }
 
   // Clear both text areas completely
@@ -455,6 +462,11 @@ bool DiffWindow::scrollUpOneLine()
 
 void DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
 {
+  // TODO remove after debugging
+  YChangedHandler(m_Y-p_pNumLinesDown);
+  return;
+
+
   if(p_pNumLinesDown < 1)
   {
     // Nothing to do
@@ -506,6 +518,10 @@ void DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
 
 void DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
 {
+  // TODO remove after debugging
+  YChangedHandler(m_Y+p_pNumLinesUp);
+  return;
+
   if(p_pNumLinesUp < 1)
   {
     // Noting to do
