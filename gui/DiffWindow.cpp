@@ -592,7 +592,6 @@ void DiffWindow::getPreviousLineAtTop(const SimpleString*& p_pLeftLine,
   {
     p_pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y - 1);
     p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y -1);
-
     m_LastDocumentScrollDirection = PreviousLine;
   }
 }

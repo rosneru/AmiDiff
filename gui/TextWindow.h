@@ -102,7 +102,7 @@ protected:
   {
     None,
     NextLine,
-    Downward,
+    PreviousLine,
   };
 
   size_t m_MaxTextLines;  ///> Number of text lines that fit in window
