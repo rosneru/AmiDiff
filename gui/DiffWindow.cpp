@@ -91,12 +91,9 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   // Calculate some initial values which only have to be calculated
   // once after window opening
   //
-
   m_IndentY = 2 * m_AppScreen.FontHeight();
-
   m_TextArea1Left = m_IndentX;
   m_TextAreasTop = m_IndentY;
-
 
   // Calculate some values which have to calculated after window
   // opening and after resizing
@@ -105,8 +102,19 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   // Paint the window decoration
   paintWindowDecoration();
 
-  // Set main text pen for main diff/text display
-  m_IntuiText.FrontPen  = m_AppScreen.Pens().Text();
+  // Set the fixed properties for the left and right line parts
+  m_LeftIText.FrontPen   = m_AppScreen.Pens().Text();
+  m_LeftIText.DrawMode   = JAM2;
+  m_LeftIText.LeftEdge   = m_TextArea1Left + 3;
+  m_LeftIText.ITextFont  = &m_TextAttr;
+  m_LeftIText.NextText   = &m_RightIText;
+
+  m_RightIText.FrontPen  = m_AppScreen.Pens().Text();
+  m_RightIText.DrawMode  = JAM2;
+  m_RightIText.LeftEdge  = 0;
+  m_RightIText.ITextFont = &m_TextAttr;
+  m_RightIText.NextText  = NULL;
+
 
   return true;
 }
@@ -347,41 +355,42 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
 void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
     const SimpleString* p_pRightLine, WORD p_TopEdge)
 {
-  m_IntuiText.TopEdge = p_TopEdge;
+  // Set left text
+  m_LeftIText.TopEdge = p_TopEdge + m_TextAreasTop + 2;
+  m_LeftIText.BackPen = colorNameToPen(m_pLeftDocument->LineColor());
+  m_LeftIText.IText = (UBYTE*)p_pLeftLine->C_str();
 
-  //
-  // Print left line
-  //
-  m_IntuiText.BackPen = colorNameToPen(m_pLeftDocument->LineColor());
-  m_IntuiText.IText = (UBYTE*)p_pLeftLine->C_str();
-  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea1Left + 3,
-    m_TextAreasTop + 2);
+  // Set right text
+  m_RightIText.LeftEdge = m_TextArea2Left + 3;
+  m_RightIText.TopEdge = p_TopEdge + m_TextAreasTop + 2;
+  m_RightIText.BackPen = colorNameToPen(m_pRightDocument->LineColor());
+  m_RightIText.IText = (UBYTE*)p_pRightLine->C_str();
 
-  // Erase the area right of the left line.
-  // This is made to avoid drawing into the right text area in case
-  // left line is too long
+  // Print both lines (as ITexts are connected)
+  PrintIText(m_pWindow->RPort, &m_LeftIText, 0, 0);
+
+  // Erase a small area around the center vertical line / start of the
+  // right text area in case left line was too long
   EraseRect(m_pWindow->RPort,
-    m_TextArea2Left + 2,
+    m_TextArea2Left - 2,
     m_TextAreasTop + p_TopEdge + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextArea2Left + 2,
     m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 1);
 
-  //
-  // Print right line
-  //
-  m_IntuiText.BackPen = colorNameToPen(m_pRightDocument->LineColor());
-  m_IntuiText.IText = (UBYTE*)p_pRightLine->C_str();
-  PrintIText(m_pWindow->RPort, &m_IntuiText, m_TextArea2Left + 3,
-    m_TextAreasTop + 2);
+  // Determine how long in pixels the right line is
+  int rightTextLen_pix = m_pWindow->RPort->Font->tf_XSize * p_pRightLine->Length();
+  if(rightTextLen_pix > m_TextAreasWidth)
+  {
+    // limit the value to max possible (displayable) value
+    rightTextLen_pix = m_TextAreasWidth - 3;
+  }
 
-  // Erase the area right of the right line
-  // This is made to avoid drawing into the empty area in right of the
-  // right text area in case right line is too long
+  // Erase the area after right line text to window border
   EraseRect(m_pWindow->RPort,
-    m_TextArea2Left + m_TextAreasWidth,
+    m_TextArea2Left + 3 + rightTextLen_pix,
     m_TextAreasTop + p_TopEdge + 2,
     m_InnerWindowRight,
-    m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 2);
+    m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 1);
 
 }
 

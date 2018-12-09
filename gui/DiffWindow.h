@@ -66,6 +66,9 @@ public:
 private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
+  struct IntuiText m_LeftIText;
+  struct IntuiText m_RightIText;
+
 
   WORD m_IndentX;           ///> Distance of TextArea to left and right window border
   WORD m_IndentY;           ///> Distance of TextArea to window title bar and bottom border

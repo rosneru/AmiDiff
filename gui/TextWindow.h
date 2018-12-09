@@ -135,7 +135,6 @@ protected:
   struct Gadget* m_pDownArrowButton;  ///> v-scrollbar down button
 
   struct TextAttr m_TextAttr;
-  struct IntuiText m_IntuiText;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.
@@ -158,6 +157,7 @@ protected:
 
 private:
   TextDocument* m_pDocument;
+  struct IntuiText m_IntuiText;
 
   WORD m_TextAreaLeft;    ///> Left x coordinate of text area
   WORD m_TextAreaTop;     ///> Top y coordinate of text area
