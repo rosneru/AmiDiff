@@ -137,7 +137,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   }
 
   // TODO Instead 9999 use some algorithm to use exactly as many 9s as
-  //      the m_LeftDocument.NumLines digits has. MAybe sprintf numLines
+  //      the m_LeftDocument.NumLines digits has. Maybe sprintf numLines
   //      to a buf and use this?
   m_LineNumbersWidth = TextLength(m_pWindow->RPort, "9999", 4);
 
@@ -177,9 +177,11 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     return;
   }
 
+  m_Y = p_NewY;
+
   int deltaAbs = abs(delta);
   int deltaLimit = m_MaxTextLines / 4;
-/*
+
   if(deltaAbs < deltaLimit)
   {
     //
@@ -197,7 +199,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
     return;
   }
-*/
+
   //
   // Scroll bigger amounts by re-painting the whole page
   //
@@ -214,7 +216,6 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     {
       m_pLeftDocument->GetPreviousLine();
       m_pRightDocument->GetPreviousLine();
-      m_Y--;
     }
 
   }
@@ -224,7 +225,6 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     {
       m_pLeftDocument->GetNextLine();
       m_pRightDocument->GetNextLine();
-      m_Y++;
     }
   }
 
@@ -471,11 +471,6 @@ bool DiffWindow::scrollUpOneLine()
 
 void DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
 {
-  // TODO remove after debugging
-  YChangedHandler(m_Y-p_pNumLinesDown);
-  return;
-
-
   if(p_pNumLinesDown < 1)
   {
     // Nothing to do
@@ -527,10 +522,6 @@ void DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
 
 void DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
 {
-  // TODO remove after debugging
-  YChangedHandler(m_Y+p_pNumLinesUp);
-  return;
-
   if(p_pNumLinesUp < 1)
   {
     // Noting to do
