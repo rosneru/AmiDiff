@@ -177,32 +177,31 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     return;
   }
 
-  m_Y = p_NewY;
-
   int deltaAbs = abs(delta);
-  int deltaLimit = m_MaxTextLines / 4;
+  int deltaLimit = m_MaxTextLines / 2;
 
+  //
+  // Scroll small amounts (1/2 window height) line by line
+  //
   if(deltaAbs < deltaLimit)
   {
-    //
-    // Scroll small amounts (1/4 window height) line by line
-    //
-
     if(delta > 0)
     {
-      scrollNLinesUp(deltaAbs);
+      m_Y += scrollNLinesUp(deltaAbs);
     }
     else if(delta < 0)
     {
-      scrollNLinesDown(deltaAbs);
+      m_Y -= scrollNLinesDown(deltaAbs);
     }
 
     return;
   }
 
   //
-  // Scroll bigger amounts by re-painting the whole page
+  // Scroll bigger amounts by re-paintting the whole page at the new
+  // y-position
   //
+  m_Y = p_NewY;
 
   // Determine how often getPrev or getNext must be called to set the
   // left and right documents to the new start point for page redrawing
@@ -218,6 +217,8 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
       m_pRightDocument->GetPreviousLine();
     }
 
+    m_LastDocumentScrollDirection = PreviousLine;
+
   }
   else if(numListTraverses > 0)
   {
@@ -226,6 +227,8 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
       m_pLeftDocument->GetNextLine();
       m_pRightDocument->GetNextLine();
     }
+
+    m_LastDocumentScrollDirection = NextLine;
   }
 
   // Clear both text areas completely
@@ -242,6 +245,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   paintDocument(true);
 
   paintWindowDecoration();
+
 }
 
 void DiffWindow::initialize()
@@ -347,9 +351,9 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
 
     pLeftLine = m_pLeftDocument->GetNextLine();
     pRightLine = m_pRightDocument->GetNextLine();
-  //   lineId++;
-  //   pLine = m_pDocument->GetNextLine();
   }
+
+  m_LastDocumentScrollDirection = NextLine;
 }
 
 void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
@@ -459,28 +463,28 @@ LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
 
 bool DiffWindow::scrollDownOneLine()
 {
-  scrollNLinesDown(1);
+  m_Y -= scrollNLinesDown(1);
   return true;
 }
 
 bool DiffWindow::scrollUpOneLine()
 {
-  scrollNLinesUp(1);
+  m_Y += scrollNLinesUp(1);
   return true;
 }
 
-void DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
+size_t DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
 {
   if(p_pNumLinesDown < 1)
   {
     // Nothing to do
-    return;
+    return 0;
   }
 
   if(m_Y < 1)
   {
     // Do not move the text area downward if text is already at top
-    return;
+    return 0;
   }
 
   if(p_pNumLinesDown > m_Y)
@@ -508,37 +512,37 @@ void DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
       break;
     }
 
-    WORD lineNum = p_pNumLinesDown - i; // TODO add -1 ??
+    WORD lineNum = p_pNumLinesDown - i - 1;
 
     paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
-
-    m_Y--;
   }
 
   // Repaint window decoration
   paintWindowDecoration();
+
+  return p_pNumLinesDown;
 }
 
-void DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
+size_t DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
 {
   if(p_pNumLinesUp < 1)
   {
     // Noting to do
-    return;
+    return 0;
   }
 
   if(m_pLeftDocument->NumLines() < m_MaxTextLines)
   {
     // Do not move the scroll area upward if all the text fits into
     // the window
-    return;
+    return 0;
   }
 
   if((m_Y + m_MaxTextLines) == m_pLeftDocument->NumLines())
   {
     // Do not move the scroll area upward if text already at bottom
-    return;
+    return 0;
   }
 
   if((m_Y + m_MaxTextLines + p_pNumLinesUp) > m_pLeftDocument->NumLines())
@@ -565,16 +569,16 @@ void DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
       break;
     }
 
-    WORD lineNum = m_MaxTextLines - p_pNumLinesUp + i; // TODO add -1 ??
+    WORD lineNum = m_MaxTextLines - p_pNumLinesUp + i;
 
     paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
-
-    m_Y++;
   }
 
   // Repaint window decoration
   paintWindowDecoration();
+
+  return p_pNumLinesUp;
 }
 
 
@@ -591,7 +595,7 @@ void DiffWindow::getPreviousLineAtTop(const SimpleString*& p_pLeftLine,
   else
   {
     p_pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y - 1);
-    p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y -1);
+    p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y - 1);
     m_LastDocumentScrollDirection = PreviousLine;
   }
 }

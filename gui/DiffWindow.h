@@ -139,14 +139,24 @@ private:
   /**
    * Scrolls the current text in the text area down by p_pNumLinesDown
    * lines and fills the gap at top with the previous lines
+   *
+   * NOTE: Does *not* change the current top line position m_Y!
+   *
+   * @returns Number of lines scrolled. Can be smaller than expected
+   * when start of text reached.
    */
-  void scrollNLinesDown(int p_pNumLinesDown);
+  size_t scrollNLinesDown(int p_pNumLinesDown);
 
   /**
-   * Prints the given number of next (to the current last line in
-   * text area) lines at bottom
+   * Scrolls the current text in the text area up by p_pNumLinesUp
+   * lines and fills the gap at bottom with the next lines
+   *
+   * NOTE: Does *not* change the current top line position m_Y!
+   *
+   * @returns Number of lines scrolled. Can be smaller than expected
+   * when end of text reached.
    */
-  void scrollNLinesUp(int p_pNumLinesUp);
+  size_t scrollNLinesUp(int p_pNumLinesUp);
 
   /**
    * Gets the line (left and right) which at current text position m_Y
