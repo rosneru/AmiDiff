@@ -1,17 +1,20 @@
 Line    1
-Line    2
+Line    2 Next line will be empty
+
 Line    3
 Line    4
-Line    5
+Line    5 Is an extremely long line. It is used to determine if the left/right-text is overlapping when lines are 132 columns long.
 Line    6
-Line    7
+Line    7 Next two lines are empty
+
+
 Line    8
 Line    9
-Line   10
+Line   10 Is an long line too but not as long as line 5. The left/right - scrolling should work.
 Line   11
-Line   12
+Line   12 Yeah, the left/right - scrolling should work properly.
 Line   13
-Line   14
+Line   14 But what if only the left line is such a long line that it's not fitting into the window?
 Line   15
 Line   16
 Line   17
