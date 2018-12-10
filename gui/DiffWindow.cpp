@@ -16,7 +16,7 @@
 #include "DiffWindow.h"
 
 DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
-  : TextWindow(p_AppScreen, p_pMsgPort),
+  : ScrollbarWindow(p_AppScreen, p_pMsgPort),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
     m_IndentX(5),
@@ -53,9 +53,6 @@ void DiffWindow::Resized()
     return;
   }
 
-  // WORD widthDiff = m_pWindow->Width - m_WinWidth;
-  // WORD heightDiff = m_pWindow->Height - m_WinHeight;
-
   m_WinWidth = m_pWindow->Width;
   m_WinHeight = m_pWindow->Height;
 
@@ -82,7 +79,7 @@ void DiffWindow::Resized()
 
 bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
 {
-  if(TextWindow::Open(p_pMenuItemDisableAtOpen) == false)
+  if(ScrollbarWindow::Open(p_pMenuItemDisableAtOpen) == false)
   {
     return false;
   }
@@ -99,8 +96,10 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   // opening and after resizing
   calcSizes();
 
-  // Paint the window decoration
-  paintWindowDecoration();
+  m_TextAttr.ta_Name = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
+  m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+  m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
+  m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
   // Set the fixed properties for the left and right line parts
   m_LeftIText.FrontPen   = m_AppScreen.Pens().Text();
@@ -115,6 +114,8 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_RightIText.ITextFont = &m_TextAttr;
   m_RightIText.NextText  = NULL;
 
+  // Paint the window decoration
+  paintWindowDecoration();
 
   return true;
 }
@@ -252,7 +253,7 @@ void DiffWindow::initialize()
 {
   // Call parent method to get to utilize scroll gadgets iside the
   // window borders
-  TextWindow::initialize();
+  ScrollbarWindow::initialize();
 
   // Set the default title
   SetTitle("DiffWindow");
@@ -265,8 +266,6 @@ void DiffWindow::initialize()
 
   // Setting the IDCMP messages we want to receive for this window
   setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
-           IDCMP_VANILLAKEY |     // Inform us about RAW key press
-           IDCMP_RAWKEY |         // Inform us about printable key press
            IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
            IDCMP_NEWSIZE |        // Inform us about resizing
            IDCMP_IDCMPUPDATE);    // Inform us about TODO
@@ -274,6 +273,35 @@ void DiffWindow::initialize()
   m_bInitialized = true;
 
 }
+
+bool DiffWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+{
+  if(ScrollbarWindow::handleIdcmp(p_Class, p_Code, p_IAddress) == true)
+  {
+    return true;
+  }
+
+  switch (p_Class)
+  {
+    case IDCMP_NEWSIZE:
+    {
+      Resized();
+      return true;
+      break;
+    }
+
+    case IDCMP_CLOSEWINDOW:
+    {
+      Close();
+      return true;
+      break;
+    }
+  }
+
+  return false;
+}
+
+
 
 void DiffWindow::calcSizes()
 {

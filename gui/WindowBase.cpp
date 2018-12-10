@@ -362,18 +362,37 @@ void WindowBase::SetMenu(AppMenu* p_pMenu)
 
 void WindowBase::setFlags(ULONG p_Flags)
 {
-  m_WindowFlags = p_Flags;
+  m_WindowFlags |= p_Flags;
 }
 
 
 void WindowBase::setIDCMP(ULONG p_Idcmp)
 {
-  m_WindowIdcmp = p_Idcmp;
+  m_WindowIdcmp |= p_Idcmp;
 }
 
 void WindowBase::setFirstGadget(struct Gadget* p_pFirstGadget)
 {
-  m_pFirstGadget = p_pFirstGadget;
+  if(m_pFirstGadget == NULL)
+  {
+    m_pFirstGadget = p_pFirstGadget;
+  }
+  else
+  {
+    struct Gadget* pGadget = m_pFirstGadget->NextGadget;
+    while(pGadget != NULL)
+    {
+      if(pGadget->NextGadget == NULL)
+      {
+        pGadget->NextGadget = p_pFirstGadget;
+        break;
+      }
+      else
+      {
+        pGadget = pGadget->NextGadget;
+      }
+    }
+  }
 }
 
 

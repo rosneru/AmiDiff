@@ -12,7 +12,7 @@
 #include "TextWindow.h"
 
 TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
-  : WindowBase(p_AppScreen, p_pMsgPort),
+  : ScrollbarWindow(p_AppScreen, p_pMsgPort),
     m_pDocument(NULL),
     m_MaxTextLines(0),
     m_Y(0),
@@ -140,7 +140,7 @@ void TextWindow::Refresh()
 
 bool TextWindow::Open(APTR p_pMenuItemDisableAtOpen)
 {
-  if(WindowBase::Open(p_pMenuItemDisableAtOpen) == false)
+  if(ScrollbarWindow::Open(p_pMenuItemDisableAtOpen) == false)
   {
     return false;
   }
@@ -420,6 +420,40 @@ void TextWindow::initialize()
 }
 
 
+bool TextWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+{
+  if(ScrollbarWindow::handleIdcmp(p_Class, p_Code, p_IAddress) == true)
+  {
+    return true;
+  }
+
+  switch (p_Class)
+  {
+    case IDCMP_NEWSIZE:
+    {
+      Resized();
+      return true;
+      break;
+    }
+
+    case IDCMP_REFRESHWINDOW:
+    {
+      Refresh();
+      return true;
+      break;
+    }
+
+    case IDCMP_CLOSEWINDOW:
+    {
+      Close();
+      return true;
+      break;
+    }
+  }
+
+  return false;
+}
+
 void TextWindow::calcMaxWindowTextLines()
 {
   if(m_AppScreen.FontHeight() == 0)
@@ -554,75 +588,3 @@ bool TextWindow::scrollDownOneLine()
 }
 
 
-void TextWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
-{
-  if(!IsOpen())
-  {
-    return;
-  }
-
-  switch (p_Class)
-  {
-    case IDCMP_IDCMPUPDATE:
-    {
-      ULONG tagData = GetTagData(GA_ID, 0,
-        (struct TagItem *)p_IAddress);
-      switch(tagData)
-      {
-        case TextWindow::GID_PropY:
-        {
-          size_t newY = GetTagData(PGA_Top, 0, (struct TagItem *)
-            p_IAddress);
-
-          YChangedHandler(newY);
-          break;
-        }
-
-        case TextWindow::GID_ArrowUp:
-        {
-          YDecrease();
-          break;
-        }
-
-        case TextWindow::GID_ArrowDown:
-        {
-          YIncrease();
-          break;
-        }
-
-      }
-      break;
-    }
-
-    case IDCMP_RAWKEY:
-    {
-      if(p_Code == CURSORDOWN)
-      {
-        YIncrease();
-      }
-      else if(p_Code == CURSORUP)
-      {
-        YDecrease();
-      }
-      break;
-    }
-
-    case IDCMP_NEWSIZE:
-    {
-      Resized();
-      break;
-    }
-
-    case IDCMP_REFRESHWINDOW:
-    {
-      Refresh();
-      break;
-    }
-
-    case IDCMP_CLOSEWINDOW:
-    {
-      Close();
-      break;
-    }
-  }
-}

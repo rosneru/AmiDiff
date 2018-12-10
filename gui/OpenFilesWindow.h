@@ -25,12 +25,6 @@ public:
     AmigaDiffFacade& p_DiffFacade);
   virtual ~OpenFilesWindow();
 
-  /**
-   * TODO make virtual?
-   */
-  void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
-
-
   void Refresh();
 
   /**
@@ -81,6 +75,13 @@ private:
    * Initializes some window specific feature. Gadgets, etc.
    */
   void initialize();
+
+  /**
+   * Handles given IDCMP event.
+   * 
+   * @returns If this event was handled: true; else: false.
+   */
+  bool handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
   /**
    * Opens a file requestor and lets the user select a file.

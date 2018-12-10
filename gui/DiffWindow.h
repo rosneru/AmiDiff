@@ -7,7 +7,7 @@
 #include "AppScreen.h"
 #include "SimpleString.h"
 #include "DiffDocument.h"
-#include "TextWindow.h"
+#include "ScrollbarWindow.h"
 
 /**
  * Class for a diff window object. Can be created multiple times.
@@ -15,7 +15,7 @@
  * @author Uwe Rosner
  * @date 16/11/2018
  */
-class DiffWindow : public TextWindow
+class DiffWindow : public ScrollbarWindow
 {
 public:
   DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort);
@@ -66,6 +66,8 @@ public:
 private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
+
+  struct TextAttr m_TextAttr;
   struct IntuiText m_LeftIText;
   struct IntuiText m_RightIText;
 
@@ -88,6 +90,13 @@ private:
    * Initializes some window specific features. Gadgets, etc.
    */
   void initialize();
+
+  /**
+   * Handles given IDCMP event.
+   * 
+   * @returns If this event was handled: true; else: false.
+   */
+  virtual bool handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
 
   /**

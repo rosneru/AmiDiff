@@ -7,7 +7,7 @@
 #include "AppScreen.h"
 #include "SimpleString.h"
 #include "TextDocument.h"
-#include "WindowBase.h"
+#include "ScrollbarWindow.h"
 
 /**
  * Class for a text window object. Can be created multiple times.
@@ -15,17 +15,11 @@
  * @author Uwe Rosner
  * @date 23/09/2018
  */
-class TextWindow : public WindowBase
+class TextWindow : public ScrollbarWindow
 {
 public:
   TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort);
   virtual ~TextWindow();
-
-  /**
-   * TODO make virtual?
-   */
-  void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
-
 
   /**
    * Reorganizes the window including re-calculating the scrollbars.
@@ -83,63 +77,24 @@ public:
   void YDecrease();
 
 
-protected:
-  /**
-   * IDs to help to interpret the events of this window's BOOPSI system
-   * gadgets in the Application event loop.
-   */
-  enum GadgetId
-  {
-    GID_PropX,
-    GID_PropY,
-    GID_ArrowUp,
-    GID_ArrowDown,
-    GID_ArrowLeft,
-    GID_ArrowRight,
-  };
+private:
 
-  enum LastDocumentScrollDirection
-  {
-    None,
-    NextLine,
-    PreviousLine,
-  };
 
-  size_t m_MaxTextLines;  ///> Number of text lines that fit in window
-  size_t m_Y;         ///> Index of currently first displayed text line
 
-  /**
-   * Stores if the last scroll direction was upward or downward. Allows
-   * the scroll methods scrollDownOneLine() and scrollUpOneLine() to
-   * use GetPrevious() and GetNext() instead of GetIndexed() if the
-   * same scroll direction is used again.
-   *
-   * Possibly makes scrolling by cursor keys faster at the bottom of
-   * big files.
-   */
-  LastDocumentScrollDirection m_LastDocumentScrollDirection;
 
-  ULONG m_SizeImageWidth;
-  ULONG m_SizeImageHeight;
 
-  struct Image* m_pLeftArrowImage;    ///> h-scrollbar left button image
-  struct Image* m_pRightArrowImage;   ///> h-scrollbar right button image
-  struct Image* m_pUpArrowImage;      ///> v-scrollbar up button image
-  struct Image* m_pDownArrowImage;    ///> v-scrollbar down button image
-
-  struct Gadget* m_pXPropGadget;      ///> horizontal scrollbar
-  struct Gadget* m_pYPropGadget;      ///> vertical scrollbar
-  struct Gadget* m_pLeftArrowButton;  ///> h-scrollbar left button
-  struct Gadget* m_pRightArrowButton; ///> h-scrollbar right button
-  struct Gadget* m_pUpArrowButton;    ///> v-scrollbar up button
-  struct Gadget* m_pDownArrowButton;  ///> v-scrollbar down button
-
-  struct TextAttr m_TextAttr;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.
    */
   virtual void initialize();
+
+  /**
+   * Handles given IDCMP event.
+   * 
+   * @returns If this event was handled: true; else: false.
+   */
+  virtual bool handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
   /**
    * Calculates how many lines fit into current window size and sets
@@ -157,6 +112,8 @@ protected:
 
 private:
   TextDocument* m_pDocument;
+  
+  struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;
 
   WORD m_TextAreaLeft;    ///> Left x coordinate of text area
