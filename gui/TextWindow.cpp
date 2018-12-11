@@ -19,20 +19,7 @@ TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_TextAreaLeft(0),
     m_TextAreaTop(0),
     m_TextAreaRight(0),
-    m_TextAreaBottom(0),
-    m_SizeImageWidth(18),
-    m_SizeImageHeight(10),
-    m_LastDocumentScrollDirection(None),
-    m_pLeftArrowImage(NULL),
-    m_pRightArrowImage(NULL),
-    m_pUpArrowImage(NULL),
-    m_pDownArrowImage(NULL),
-    m_pXPropGadget(NULL),
-    m_pYPropGadget(NULL),
-    m_pLeftArrowButton(NULL),
-    m_pRightArrowButton(NULL),
-    m_pUpArrowButton(NULL),
-    m_pDownArrowButton(NULL)
+    m_TextAreaBottom(0)
 {
 
 }
@@ -40,66 +27,6 @@ TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
 TextWindow::~TextWindow()
 {
   Close();
-
-  if(m_pLeftArrowButton != NULL)
-  {
-    DisposeObject(m_pLeftArrowButton);
-    m_pLeftArrowButton = NULL;
-  }
-
-  if(m_pLeftArrowImage != NULL)
-  {
-    DisposeObject(m_pLeftArrowImage);
-    m_pLeftArrowImage = NULL;
-  }
-
-  if(m_pRightArrowButton != NULL)
-  {
-    DisposeObject(m_pRightArrowButton);
-    m_pRightArrowButton = NULL;
-  }
-
-  if(m_pRightArrowImage != NULL)
-  {
-    DisposeObject(m_pRightArrowImage);
-    m_pRightArrowImage = NULL;
-  }
-
-  if(m_pXPropGadget != NULL)
-  {
-    DisposeObject(m_pXPropGadget);
-    m_pXPropGadget = NULL;
-  }
-
-  if(m_pDownArrowButton != NULL)
-  {
-    DisposeObject(m_pDownArrowButton);
-    m_pDownArrowButton = NULL;
-  }
-
-  if(m_pDownArrowImage != NULL)
-  {
-    DisposeObject(m_pDownArrowImage);
-    m_pDownArrowImage = NULL;
-  }
-
-  if(m_pUpArrowButton != NULL)
-  {
-    DisposeObject(m_pUpArrowButton);
-    m_pUpArrowButton = NULL;
-  }
-
-  if(m_pUpArrowImage != NULL)
-  {
-    DisposeObject(m_pUpArrowImage);
-    m_pUpArrowImage = NULL;
-  }
-
-  if(m_pYPropGadget != NULL)
-  {
-    DisposeObject(m_pYPropGadget);
-    m_pYPropGadget = NULL;
-  }
 }
 
 
@@ -111,7 +38,7 @@ void TextWindow::Resized()
   }
 
   // Calculate how many lines *now* can be displayed in the window
-  calcMaxWindowTextLines();
+  calcSizes();
 
   if(m_pDocument->NumLines() == 0)
   {
@@ -119,13 +46,7 @@ void TextWindow::Resized()
   }
 
   // Set scroll gadgets pot size in relation of new window size
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Visible, m_MaxTextLines,
-    	TAG_DONE
-	   );
-  }
+  setYScrollPot(m_MaxTextLines);
 
   // Redraw obscured window regions
   Refresh();
@@ -150,7 +71,7 @@ bool TextWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_TextAreaBottom = m_pWindow->Height; // - m_pWindow->BorderBottom - m_TextAreaTop;
 
   // Calculate how many lines can be displayed in the window
-  calcMaxWindowTextLines();
+  calcSizes();
 
   m_TextAttr.ta_Name = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
   m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
@@ -189,15 +110,7 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Total, m_pDocument->NumLines(),
-    	PGA_Top, 0,
-    	PGA_Visible, m_MaxTextLines,
-    	TAG_DONE
-	   );
-  }
+  setYScrollPot(m_MaxTextLines, m_pDocument->NumLines());
 
   return true;
 }
@@ -225,14 +138,8 @@ void TextWindow::YIncrease()
     return;
   }
 
-  // Increase scroll gadgets TOP value
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Top, m_Y,
-    	TAG_DONE
-	   );
-  }
+  // Set the  y-scroll gadgets new TOP value
+  setYScrollTop(m_Y);
 }
 
 
@@ -245,154 +152,16 @@ void TextWindow::YDecrease()
     return;
   }
 
-  // Decrease scroll gadgets TOP value
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Top, m_Y,
-    	TAG_DONE
-	   );
-  }
+  // Set the  y-scroll gadgets new TOP value
+  setYScrollTop(m_Y);
 }
 
 
 void TextWindow::initialize()
 {
-  //
-  // Setting up scroll bars and gadgets for the window. They will be
-  // attached to the window at opening time
-  //
-  ULONG imageWidth = 0;   // to successfully store the other images widths
-  ULONG imageHeight = 0;  // to successfully store the other images heights
-
-  // Getting the width and height of the current system size gadget
-  struct Image* pSizeImage = createImageObj(
-    SIZEIMAGE, m_SizeImageWidth, m_SizeImageHeight);
-
-  // the size image is only needed for getting its width and height so
-  // it can be disposed right now
-  if(pSizeImage != NULL)
-  {
-    DisposeObject(pSizeImage);
-    pSizeImage = NULL;
-  }
-
-  // Creating the arrow down image and getting its width and height
-  m_pDownArrowImage = createImageObj(DOWNIMAGE, imageWidth, imageHeight);
-
-  // Creating the arrow down gadget
-  m_pDownArrowButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_ID, GID_ArrowDown,
-    GA_RelRight, -imageWidth+1,
-    GA_RelBottom, -m_SizeImageHeight-imageHeight+1,
-    GA_Width, imageWidth,
-    GA_Height, imageHeight,
-    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_RightBorder, TRUE,
-    GA_Image, m_pDownArrowImage,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the arrow up image and getting its width and height
-  m_pUpArrowImage = createImageObj(UPIMAGE, imageWidth, imageHeight);
-
-  // Creating the arrow down gadget
-  m_pUpArrowButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pDownArrowButton,
-    GA_ID, GID_ArrowUp,
-    GA_RelRight, -imageWidth+1,
-    GA_RelBottom, -m_SizeImageHeight-imageHeight-imageHeight+1,
-    GA_Width, imageWidth,
-    GA_Height, imageHeight,
-    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_RightBorder, TRUE,
-    GA_Image, m_pUpArrowImage,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the vertical proportional gadget / slider
-	m_pYPropGadget = (struct Gadget*) NewObject(
-	  NULL, PROPGCLASS,
-  	GA_Previous, m_pUpArrowButton,
-  	GA_ID, GID_PropY,
-  	GA_RelRight, -m_SizeImageWidth+4,
-  	GA_Top, m_AppScreen.BarHeight(),
-  	GA_Width, m_SizeImageWidth-6,
-  	GA_RelHeight, -m_SizeImageHeight-imageHeight-imageHeight-m_AppScreen.BarHeight()-1,
-  	GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-  	GA_GZZGadget, TRUE,
-  	GA_RightBorder, TRUE,
-  	PGA_Freedom, FREEVERT,
-  	PGA_Borderless, TRUE,
-  	PGA_NewLook, TRUE,
-  	PGA_Total, 100,
-  	PGA_Top, 0, // TODO remove??
-  	PGA_Visible, 100,
-  	ICA_TARGET, ICTARGET_IDCMP,
-  	TAG_END);
-
-  // Creating the arrow left image and getting its width and height
-  m_pRightArrowImage = createImageObj(RIGHTIMAGE, imageWidth, imageHeight);
-
-  // Creating the arrow right gadget
-  m_pRightArrowButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pYPropGadget,
-    GA_ID, GID_ArrowRight,
-    GA_RelRight, -m_SizeImageWidth-imageWidth+1,
-    GA_RelBottom, -imageHeight+1,
-    GA_Width, imageWidth,
-    GA_Height, imageHeight,
-    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_BottomBorder, TRUE,
-    GA_Image, m_pRightArrowImage,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the arrow left image and getting its width and height
-  m_pLeftArrowImage = createImageObj(LEFTIMAGE, imageWidth, imageHeight);
-
-  // Creating the arrow left gadget
-  m_pLeftArrowButton = (struct Gadget*) NewObject(
-    NULL, BUTTONGCLASS,
-    GA_Previous, m_pRightArrowButton,
-    GA_ID, GID_ArrowLeft,
-    GA_RelRight, -m_SizeImageWidth-imageWidth-imageWidth+1,
-    GA_RelBottom, -imageHeight+1,
-    GA_Width, imageWidth,
-    GA_Height, imageHeight,
-    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_BottomBorder, TRUE,
-    GA_Image, m_pLeftArrowImage,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
-
-  // Creating the horizontal proportional gadget / slider
-  m_pXPropGadget = (struct Gadget*) NewObject(
-    NULL, PROPGCLASS,
-    GA_Previous, m_pLeftArrowButton,
-    GA_ID, GID_PropX,
-    GA_Left, m_AppScreen.IntuiScreen()->WBorLeft,
-    GA_RelBottom, -m_SizeImageHeight+3,
-    GA_RelWidth, -m_SizeImageWidth-imageWidth-imageWidth-m_AppScreen.IntuiScreen()->WBorLeft-1,
-    GA_Height, m_SizeImageHeight-4,
-    GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-    GA_GZZGadget, TRUE,
-    GA_BottomBorder, TRUE,
-    PGA_Freedom, FREEHORIZ,
-    PGA_Borderless, TRUE,
-    PGA_NewLook, TRUE,
-    PGA_Total, 100,
-    //PGA_Left, 0,  // TODO remove??
-    PGA_Visible, 100,
-    ICA_TARGET, ICTARGET_IDCMP,
-    TAG_END);
+  // Call parent method to get to utilize scroll gadgets iside the
+  // window borders
+  ScrollbarWindow::initialize();
 
   // Set the default title
   SetTitle("TextWindow");
@@ -405,18 +174,11 @@ void TextWindow::initialize()
 
   // Setting the IDCMP messages we want to receive for this window
   setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
-           IDCMP_VANILLAKEY |     // Inform us about RAW key press
-           IDCMP_RAWKEY |         // Inform us about printable key press
            IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
            IDCMP_NEWSIZE |        // Inform us about resizing
-           IDCMP_REFRESHWINDOW |  // Inform us when refreshing is necessary
            IDCMP_IDCMPUPDATE);    // Inform us about TODO
 
-  // Setting the first gadget of the gadet list for the window
-  setFirstGadget(m_pDownArrowButton);
-
   m_bInitialized = true;
-
 }
 
 
@@ -454,8 +216,11 @@ bool TextWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
   return false;
 }
 
-void TextWindow::calcMaxWindowTextLines()
+void TextWindow::calcSizes()
 {
+  // (Re-)calculate some values that may have be changed by re-sizing
+  ScrollbarWindow::calcSizes();
+
   if(m_AppScreen.FontHeight() == 0)
   {
     return;

@@ -63,6 +63,20 @@ public:
    */
   void YChangedHandler(size_t p_NewY);
 
+  /**
+   * Increases the Y position of the text by 1 and performs a scrolling
+   * by one line.  Should be called from the Application event loop
+   * when the cursor down key was received.
+   */
+  virtual void YIncrease();
+
+  /**
+   * Decreases the Y position of the text by 1 and performs a scrolling
+   * by one line.  Should be called from the Application event loop
+   * when the cursor up key was received.
+   */
+  virtual void YDecrease();
+
 private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
@@ -71,20 +85,22 @@ private:
   struct IntuiText m_LeftIText;
   struct IntuiText m_RightIText;
 
+  int m_MaxTextLines;       ///> Number of text lines that fit in window
+  int m_Y;                  ///> Index of currently first displayed text line
 
-  WORD m_IndentX;           ///> Distance of TextArea to left and right window border
-  WORD m_IndentY;           ///> Distance of TextArea to window title bar and bottom border
+  int m_IndentX;            ///> Distance of TextArea to left and right window border
+  int m_IndentY;            ///> Distance of TextArea to window title bar and bottom border
 
-  WORD m_TextArea1Left;     ///> X-position of the 1st text area
-  WORD m_TextArea2Left;     ///> X-position of the 2nd text area
-  WORD m_TextAreasTop;      ///> Y-position of the text areas
-  WORD m_TextAreasWidth;    ///> Width of each text area
-  WORD m_TextAreasHeight;   ///> Height of the text areas (equally heigh)
+  int m_TextArea1Left;      ///> X-position of the 1st text area
+  int m_TextArea2Left;      ///> X-position of the 2nd text area
+  int m_TextAreasTop;       ///> Y-position of the text areas
+  int m_TextAreasWidth;     ///> Width of each text area
+  int m_TextAreasHeight;    ///> Height of the text areas (equally heigh)
 
-  WORD m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
-  WORD m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar
+  int m_InnerWindowRight;   ///> X-position of the right-most pixel before the scrollbar
+  int m_InnerWindowBottom;  ///> Y-position of the bottom-most pixel before the scrollbar
 
-  WORD m_LineNumbersWidth;
+  int m_LineNumbersWidth;
 
   /**
    * Initializes some window specific features. Gadgets, etc.

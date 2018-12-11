@@ -100,7 +100,7 @@ private:
    * Calculates how many lines fit into current window size and sets
    * the member variable.
    */
-  virtual void calcMaxWindowTextLines();
+  void calcSizes();
 
   /**
    * Displays the complete file from current m_Y position as first line
@@ -116,10 +116,13 @@ private:
   struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;
 
-  WORD m_TextAreaLeft;    ///> Left x coordinate of text area
-  WORD m_TextAreaTop;     ///> Top y coordinate of text area
-  WORD m_TextAreaRight;   ///> Right x coordinate of text area
-  WORD m_TextAreaBottom;  ///> Bottom y coordinate of text area
+  int m_MaxTextLines;   ///> Number of text lines that fit in window
+  int m_Y;              ///> Index of currently first displayed text line
+
+  int m_TextAreaLeft;   ///> Left x coordinate of text area
+  int m_TextAreaTop;    ///> Top y coordinate of text area
+  int m_TextAreaRight;  ///> Right x coordinate of text area
+  int m_TextAreaBottom; ///> Bottom y coordinate of text area
 
   /**
    * Displays the given line at given y-position

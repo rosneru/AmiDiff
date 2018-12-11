@@ -13,10 +13,10 @@
 
 ScrollbarWindow::ScrollbarWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : WindowBase(p_AppScreen, p_pMsgPort),
-    m_MaxTextLines(0),
-    m_Y(0),
     m_SizeImageWidth(18),
     m_SizeImageHeight(10),
+    m_InnerWindowRight(0),
+    m_InnerWindowBottom(0),
     m_LastDocumentScrollDirection(None),
     m_pLeftArrowImage(NULL),
     m_pRightArrowImage(NULL),
@@ -322,4 +322,60 @@ bool ScrollbarWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
   }
   
   return false;
+}
+
+void ScrollbarWindow::calcSizes()
+{
+  // (Re-)calculate some values that may have be changed by re-sizing
+  m_InnerWindowRight = m_pWindow->Width
+    - m_AppScreen.IntuiScreen()->WBorLeft
+    - m_SizeImageWidth;
+
+  m_InnerWindowBottom = m_pWindow->Height
+    - m_AppScreen.BarHeight()
+    - m_SizeImageHeight;
+}
+
+void ScrollbarWindow::setYScrollPot(int p_MaxVisible, int p_Total)
+{
+  if(m_pYPropGadget == NULL)
+  {
+    return;
+  }
+
+  if(p_Total < 0)
+  {
+    // Only max visible lines  provided
+	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
+    	PGA_Visible, p_MaxVisible,
+    	TAG_DONE
+	   );
+  }
+  else if(p_MaxVisible >= 0)
+  {
+    // Number of total lines and number of max visible lines provided: 
+    // Set the y-scrollbar to an initial state
+    SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
+      PGA_Total, p_Total,
+      PGA_Top, 0,
+      PGA_Visible, p_MaxVisible,
+      TAG_DONE);
+  }
+}
+
+void ScrollbarWindow::setYScrollTop(int p_Top)
+{
+  if(m_pYPropGadget == NULL)
+  {
+    return;
+  }
+
+  if(p_Top < 0)
+  {
+    return;
+  }
+
+  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
+    PGA_Top, p_Top,
+    TAG_DONE);
 }

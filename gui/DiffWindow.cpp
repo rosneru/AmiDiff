@@ -19,6 +19,8 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : ScrollbarWindow(p_AppScreen, p_pMsgPort),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
+    m_MaxTextLines(0),
+    m_Y(0),
     m_IndentX(5),
     m_IndentY(0),
     m_TextArea1Left(0),
@@ -157,15 +159,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-      PGA_Total, m_pLeftDocument->NumLines(),
-      PGA_Top, 0,
-      PGA_Visible, m_MaxTextLines,
-      TAG_DONE);
-  }
-
+  setYScrollPot(m_MaxTextLines, m_pLeftDocument->NumLines());
 
   return true;
 }
@@ -249,6 +243,32 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
 }
 
+void DiffWindow::YIncrease()
+{
+  // Scroll the text
+  if(scrollUpOneLine() == false)
+  {
+    // No scrolling possible
+    return;
+  }
+
+  // Set the  y-scroll gadgets new TOP value
+  setYScrollTop(m_Y);
+}
+
+void DiffWindow::YDecrease()
+{
+  // Scroll the text
+  if(scrollDownOneLine() == false)
+  {
+    // No scrolling possible
+    return;
+  }
+
+  // Set the  y-scroll gadgets new TOP value
+  setYScrollTop(m_Y);
+}
+
 void DiffWindow::initialize()
 {
   // Call parent method to get to utilize scroll gadgets iside the
@@ -306,13 +326,7 @@ bool DiffWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 void DiffWindow::calcSizes()
 {
   // (Re-)calculate some values that may have be changed by re-sizing
-  m_InnerWindowRight = m_pWindow->Width
-    - m_AppScreen.IntuiScreen()->WBorLeft
-    - m_SizeImageWidth;
-
-  m_InnerWindowBottom = m_pWindow->Height
-    - m_AppScreen.BarHeight()
-    - m_SizeImageHeight;
+  ScrollbarWindow::calcSizes();
 
   m_TextAreasWidth = m_InnerWindowRight - m_TextArea1Left - m_IndentX;
   m_TextAreasWidth /= 2;
@@ -330,14 +344,7 @@ void DiffWindow::calcSizes()
   m_MaxTextLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Visible, m_MaxTextLines,
-    	TAG_DONE
-	   );
-  }
-
+  setYScrollPot(m_MaxTextLines);
 }
 
 void DiffWindow::paintDocument(bool p_bStartFromCurrentY)

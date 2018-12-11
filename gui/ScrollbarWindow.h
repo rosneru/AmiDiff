@@ -81,9 +81,6 @@ protected:
     PreviousLine,
   };
 
-  size_t m_MaxTextLines;  ///> Number of text lines that fit in window
-  size_t m_Y;             ///> Index of currently first displayed text line
-
   /**
    * Stores if the last scroll direction was upward or downward. Allows
    * the scroll methods scrollDownOneLine() and scrollUpOneLine() to
@@ -107,12 +104,41 @@ protected:
    */
   virtual bool handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
+  /**
+   * Calculates some inner window sizes which is needed after window
+   * opening and after resizing.
+   */
+  virtual void calcSizes();
+  
+  /**
+   * Setting the pot size of the y-scrollbar.
+   * 
+   * @param p_MaxVisible
+   * Number of max visible lines / points / etc in window. Has to be 
+   * updated e.g. after the window resizes.
+   * 
+   * @param p_Total
+   * Optional parameter. Number of total visible lines / points / etc 
+   * in document. Has to be set once after opening the document and can
+   * then left untouched (or skipped by giving -1).
+   */
+  void setYScrollPot(int p_MaxVisible, int p_Total = - 1);
+
+  /**
+   * Setting a new top position to the y-scrollbar pot.
+   */
+  void setYScrollTop(int p_Top);
+
   virtual bool scrollDownOneLine();
   virtual bool scrollUpOneLine();
+
 
 private:
   ULONG m_SizeImageWidth;
   ULONG m_SizeImageHeight;
+
+  long m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
+  long m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar
 
   struct Image* m_pLeftArrowImage;    ///> h-scrollbar left button image
   struct Image* m_pRightArrowImage;   ///> h-scrollbar right button image
