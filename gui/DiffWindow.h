@@ -7,7 +7,7 @@
 #include "AppScreen.h"
 #include "SimpleString.h"
 #include "DiffDocument.h"
-#include "TextWindow.h"
+#include "ScrollbarWindow.h"
 
 /**
  * Class for a diff window object. Can be created multiple times.
@@ -15,7 +15,7 @@
  * @author Uwe Rosner
  * @date 16/11/2018
  */
-class DiffWindow : public TextWindow
+class DiffWindow : public ScrollbarWindow
 {
 public:
   DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort);
@@ -53,6 +53,14 @@ public:
     DiffDocument* p_pRightDocument);
 
   /**
+   * Handles given IDCMP event.
+   *
+   * @returns If this event was handled: true; else: false.
+   */
+  virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
+
+
+  /**
    * This handles the Y-Changes triggered by the vertical scrollbar
    * of the window. It does so by completely re-drawing the text from
    * beginning with p_NewY on the top line.
@@ -63,32 +71,58 @@ public:
    */
   void YChangedHandler(size_t p_NewY);
 
+  /**
+   * Increases the Y position of the text by the given amount and
+   * performs a scrolling as needed.
+   *
+   * @param p_IncreaseBy
+   * Amount to increase the y-position by
+   *
+   * @param p_bTriggeredByArrowGadget
+   * If the call is triggered by the down-arrow-gadget: true
+   * If the call is triggered by other sources: false
+   */
+  void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByArrowGadget);
+
+  /**
+   * Decreases the Y position of the text by the given amount and
+   * performs a scrolling as needed.
+   *
+   * @param p_DecreaseBy
+   * Amount to decrease the y-position by
+   *
+   * @param p_bTriggeredByArrowGadget
+   * If the call is triggered by the up-arrow-gadget: true
+   * If the call is triggered by other sources: false
+   */
+  void YDecrease(size_t p_DecreaseBy, bool p_bTriggeredByArrowGadget);
+
 private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
+
+  struct TextAttr m_TextAttr;
   struct IntuiText m_LeftIText;
   struct IntuiText m_RightIText;
 
+  int m_MaxTextLines;       ///> Number of text lines that fit in window
+  int m_Y;                  ///> Index of currently first displayed text line
 
-  WORD m_IndentX;           ///> Distance of TextArea to left and right window border
-  WORD m_IndentY;           ///> Distance of TextArea to window title bar and bottom border
+  int m_IndentX;            ///> Distance of TextArea to left and right window border
+  int m_IndentY;            ///> Distance of TextArea to window title bar and bottom border
 
-  WORD m_TextArea1Left;     ///> X-position of the 1st text area
-  WORD m_TextArea2Left;     ///> X-position of the 2nd text area
-  WORD m_TextAreasTop;      ///> Y-position of the text areas
-  WORD m_TextAreasWidth;    ///> Width of each text area
-  WORD m_TextAreasHeight;   ///> Height of the text areas (equally heigh)
+  int m_TextArea1Left;      ///> X-position of the 1st text area
+  int m_TextArea2Left;      ///> X-position of the 2nd text area
+  int m_TextAreasTop;       ///> Y-position of the text areas
+  int m_TextAreasWidth;     ///> Width of each text area
+  int m_TextAreasHeight;    ///> Height of the text areas (equally heigh)
 
-  WORD m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
-  WORD m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar
-
-  WORD m_LineNumbersWidth;
+  int m_LineNumbersWidth;
 
   /**
    * Initializes some window specific features. Gadgets, etc.
    */
   void initialize();
-
 
   /**
    * Calculates some inner window sizes which is needed after window
@@ -133,61 +167,29 @@ private:
    */
   LONG colorNameToPen(DiffDocument::ColorName p_pColorName);
 
-  bool scrollDownOneLine();
-  bool scrollUpOneLine();
-
   /**
-   * Scrolls the current text in the text area down by p_pNumLinesDown
-   * lines and fills the gap at top with the previous lines
+   * Scrolls the current text in the text area down by
+   * p_ScrollNumLinesDown lines and fills the gap at top with the
+   * previous lines
    *
    * NOTE: Does *not* change the current top line position m_Y!
    *
    * @returns Number of lines scrolled. Can be smaller than expected
    * when start of text reached.
    */
-  size_t scrollNLinesDown(int p_pNumLinesDown);
+  size_t scrollNLinesDown(int p_ScrollNumLinesDown);
 
   /**
-   * Scrolls the current text in the text area up by p_pNumLinesUp
-   * lines and fills the gap at bottom with the next lines
+   * Scrolls the current text in the text area up by
+   * p_ScrollUpNumLinesUp lines and fills the gap at bottom with the
+   * next lines
    *
    * NOTE: Does *not* change the current top line position m_Y!
    *
    * @returns Number of lines scrolled. Can be smaller than expected
    * when end of text reached.
    */
-  size_t scrollNLinesUp(int p_pNumLinesUp);
-
-  /**
-   * Gets the line (left and right) which at current text position m_Y
-   * is the previous to the first line in window
-   *
-   * @param p_pLeftLine
-   * Reference to a pointer to SimpleString. After success this points
-   * to the previous line. Will be NULL if no previous left line exists.
-   *
-   * @param p_pRightLine
-   * Reference to a pointer to SimpleString. After success this points
-   * to the previous right line. Will be NULL if no previous right line exists.
-   */
-  void getPreviousLineAtTop(const SimpleString*& p_pLeftLine,
-    const SimpleString*& p_pRightLine);
-
-  /**
-   * Gets the line (left and right) which at current text position m_Y
-   * is the following to the last line in window
-   *
-   * @param p_pLeftLine
-   * Reference to a pointer to SimpleString. After success this points
-   * to the next left line. Will be NULL if no next left line exists.
-   *
-   * @param p_pRightLine
-   * Reference to a pointer to SimpleString. After success this points
-   * to the next right line. Will be NULL if no next right line exists.
-   */
-  void getNextLineAtBottom(const SimpleString*& p_pLeftLine,
-    const SimpleString*& p_pRightLine);
-
+  size_t scrollNLinesUp(int p_ScrollUpNumLinesUp);
 };
 
 

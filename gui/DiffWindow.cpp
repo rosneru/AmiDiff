@@ -16,9 +16,11 @@
 #include "DiffWindow.h"
 
 DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
-  : TextWindow(p_AppScreen, p_pMsgPort),
+  : ScrollbarWindow(p_AppScreen, p_pMsgPort),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
+    m_MaxTextLines(0),
+    m_Y(0),
     m_IndentX(5),
     m_IndentY(0),
     m_TextArea1Left(0),
@@ -26,8 +28,6 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_TextAreasTop(0),
     m_TextAreasWidth(0),
     m_TextAreasHeight(0),
-    m_InnerWindowRight(0),
-    m_InnerWindowBottom(0),
     m_LineNumbersWidth(0)
 {
 
@@ -52,9 +52,6 @@ void DiffWindow::Resized()
     // nothing changed
     return;
   }
-
-  // WORD widthDiff = m_pWindow->Width - m_WinWidth;
-  // WORD heightDiff = m_pWindow->Height - m_WinHeight;
 
   m_WinWidth = m_pWindow->Width;
   m_WinHeight = m_pWindow->Height;
@@ -82,7 +79,7 @@ void DiffWindow::Resized()
 
 bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
 {
-  if(TextWindow::Open(p_pMenuItemDisableAtOpen) == false)
+  if(ScrollbarWindow::Open(p_pMenuItemDisableAtOpen) == false)
   {
     return false;
   }
@@ -99,8 +96,10 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   // opening and after resizing
   calcSizes();
 
-  // Paint the window decoration
-  paintWindowDecoration();
+  m_TextAttr.ta_Name = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
+  m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+  m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
+  m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
   // Set the fixed properties for the left and right line parts
   m_LeftIText.FrontPen   = m_AppScreen.Pens().Text();
@@ -115,6 +114,8 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_RightIText.ITextFont = &m_TextAttr;
   m_RightIText.NextText  = NULL;
 
+  // Paint the window decoration
+  paintWindowDecoration();
 
   return true;
 }
@@ -156,15 +157,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-      PGA_Total, m_pLeftDocument->NumLines(),
-      PGA_Top, 0,
-      PGA_Visible, m_MaxTextLines,
-      TAG_DONE);
-  }
-
+  setYScrollPotSize(m_MaxTextLines, m_pLeftDocument->NumLines());
 
   return true;
 }
@@ -216,9 +209,6 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
       m_pLeftDocument->GetPreviousLine();
       m_pRightDocument->GetPreviousLine();
     }
-
-    m_LastDocumentScrollDirection = PreviousLine;
-
   }
   else if(numListTraverses > 0)
   {
@@ -227,8 +217,6 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
       m_pLeftDocument->GetNextLine();
       m_pRightDocument->GetNextLine();
     }
-
-    m_LastDocumentScrollDirection = NextLine;
   }
 
   // Clear both text areas completely
@@ -248,11 +236,37 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
 }
 
+void DiffWindow::YIncrease(size_t p_IncreaseBy,
+  bool p_bTriggeredByArrowGadget)
+{
+  m_Y += scrollNLinesUp(p_IncreaseBy);
+
+  if(!p_bTriggeredByArrowGadget)
+  {
+    // Y-position-decrease was not triggered by the up-arrow-gadget:
+    // Manually det the new TOP value for the y-scrollbar
+    setYScrollTop(m_Y);
+  }
+}
+
+void DiffWindow::YDecrease(size_t p_DecreaseBy,
+  bool p_bTriggeredByArrowGadget)
+{
+  m_Y -= scrollNLinesDown(p_DecreaseBy);
+
+  if(!p_bTriggeredByArrowGadget)
+  {
+    // Y-position-decrease was not triggered by the up-arrow-gadget:
+    // Manually det the new TOP value for the y-scrollbar
+    setYScrollTop(m_Y);
+  }
+}
+
 void DiffWindow::initialize()
 {
   // Call parent method to get to utilize scroll gadgets iside the
   // window borders
-  TextWindow::initialize();
+  ScrollbarWindow::initialize();
 
   // Set the default title
   SetTitle("DiffWindow");
@@ -265,8 +279,6 @@ void DiffWindow::initialize()
 
   // Setting the IDCMP messages we want to receive for this window
   setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
-           IDCMP_VANILLAKEY |     // Inform us about RAW key press
-           IDCMP_RAWKEY |         // Inform us about printable key press
            IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
            IDCMP_NEWSIZE |        // Inform us about resizing
            IDCMP_IDCMPUPDATE);    // Inform us about TODO
@@ -275,16 +287,39 @@ void DiffWindow::initialize()
 
 }
 
+bool DiffWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+{
+  if(ScrollbarWindow::HandleIdcmp(p_Class, p_Code, p_IAddress) == true)
+  {
+    return true;
+  }
+
+  switch (p_Class)
+  {
+    case IDCMP_NEWSIZE:
+    {
+      Resized();
+      return true;
+      break;
+    }
+
+    case IDCMP_CLOSEWINDOW:
+    {
+      Close();
+      return true;
+      break;
+    }
+  }
+
+  return false;
+}
+
+
+
 void DiffWindow::calcSizes()
 {
   // (Re-)calculate some values that may have be changed by re-sizing
-  m_InnerWindowRight = m_pWindow->Width
-    - m_AppScreen.IntuiScreen()->WBorLeft
-    - m_SizeImageWidth;
-
-  m_InnerWindowBottom = m_pWindow->Height
-    - m_AppScreen.BarHeight()
-    - m_SizeImageHeight;
+  ScrollbarWindow::calcSizes();
 
   m_TextAreasWidth = m_InnerWindowRight - m_TextArea1Left - m_IndentX;
   m_TextAreasWidth /= 2;
@@ -302,14 +337,7 @@ void DiffWindow::calcSizes()
   m_MaxTextLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  if(m_pYPropGadget != NULL)
-  {
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Visible, m_MaxTextLines,
-    	TAG_DONE
-	   );
-  }
-
+  setYScrollPotSize(m_MaxTextLines);
 }
 
 void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
@@ -336,7 +364,7 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
 
   while((pLeftLine != NULL) && (pRightLine !=NULL))
   {
-    WORD lineNum = i - m_Y;
+    int lineNum = i - m_Y;
 
     paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
@@ -352,8 +380,6 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
     pLeftLine = m_pLeftDocument->GetNextLine();
     pRightLine = m_pRightDocument->GetNextLine();
   }
-
-  m_LastDocumentScrollDirection = NextLine;
 }
 
 void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
@@ -461,21 +487,9 @@ LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
   }
 }
 
-bool DiffWindow::scrollDownOneLine()
+size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
 {
-  m_Y -= scrollNLinesDown(1);
-  return true;
-}
-
-bool DiffWindow::scrollUpOneLine()
-{
-  m_Y += scrollNLinesUp(1);
-  return true;
-}
-
-size_t DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
-{
-  if(p_pNumLinesDown < 1)
+  if(p_ScrollNumLinesDown < 1)
   {
     // Nothing to do
     return 0;
@@ -487,46 +501,54 @@ size_t DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
     return 0;
   }
 
-  if(p_pNumLinesDown > m_Y)
+  if(p_ScrollNumLinesDown > m_Y)
   {
-    // Scroll only as many lines as necessary
-    p_pNumLinesDown = m_Y;
+    // Limit the scrolling to only scroll only as many lines as necessary
+    p_ScrollNumLinesDown = m_Y;
   }
 
   // Move text area downward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
-    -p_pNumLinesDown * m_AppScreen.FontHeight(),  // n * height
+    -p_ScrollNumLinesDown * m_AppScreen.FontHeight(),  // n * height
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
 
+  // This id only is used in the first call of
+  // GetPreviousOrIndexedLine() in the loop below. The next calls don't
+  // use the index, instead they use GetPrevious(). Because of this it
+  // is no problem that weather the index itself nor m_Y etc are
+  // updated in the loop.
+  int previousLineId = m_Y - 1;
+
   // fill the gap with the previous text lines
-  for(int i = 0; i < p_pNumLinesDown; i++)
+  for(int i = 0; i < p_ScrollNumLinesDown; i++)
   {
     const SimpleString* pLeftLine = NULL;
     const SimpleString* pRightLine = NULL;
 
-    getPreviousLineAtTop(pLeftLine, pRightLine);
+    pLeftLine = m_pLeftDocument->GetPreviousOrIndexedLine(previousLineId);
+    pRightLine = m_pRightDocument->GetPreviousOrIndexedLine(previousLineId);
+
     if(pLeftLine == NULL || pRightLine == NULL)
     {
       break;
     }
 
-    WORD lineNum = p_pNumLinesDown - i - 1;
+    int lineNum = p_ScrollNumLinesDown - i - 1;
 
-    paintLine(pLeftLine, pRightLine,
-      lineNum * m_AppScreen.FontHeight());
+    paintLine(pLeftLine, pRightLine, lineNum * m_AppScreen.FontHeight());
   }
 
   // Repaint window decoration
   paintWindowDecoration();
 
-  return p_pNumLinesDown;
+  return p_ScrollNumLinesDown;
 }
 
-size_t DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
+size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
 {
-  if(p_pNumLinesUp < 1)
+  if(p_ScrollUpNumLinesUp < 1)
   {
     // Noting to do
     return 0;
@@ -545,31 +567,40 @@ size_t DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
     return 0;
   }
 
-  if((m_Y + m_MaxTextLines + p_pNumLinesUp) > m_pLeftDocument->NumLines())
+  if((m_Y + m_MaxTextLines + p_ScrollUpNumLinesUp) > m_pLeftDocument->NumLines())
   {
-    // Scroll only as many lines as necessary
-    p_pNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextLines);
+    // Limit the scrolling to only scroll only as many lines as necessary
+    p_ScrollUpNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextLines);
   }
 
   // Move text area upward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
-    p_pNumLinesUp * m_AppScreen.FontHeight(),
+    p_ScrollUpNumLinesUp * m_AppScreen.FontHeight(),
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
 
-  for(int i = 0; i < p_pNumLinesUp; i++)
+  // This id only is used in the first call of GetNextOrIndexedLine()
+  // in the loop below. The next calls don't use the index, instead
+  // they use GetNext(). Because of this it is no problem that weather
+  // the index itself nor m_Y etc are updated in the loop.
+  int nextLineId = m_Y + m_MaxTextLines;
+
+  for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
     const SimpleString* pLeftLine = NULL;
     const SimpleString* pRightLine = NULL;
 
-    getNextLineAtBottom(pLeftLine, pRightLine);
+
+    pLeftLine = m_pLeftDocument->GetNextOrIndexedLine(nextLineId);
+    pRightLine = m_pRightDocument->GetNextOrIndexedLine(nextLineId);
+
     if(pLeftLine == NULL || pRightLine == NULL)
     {
       break;
     }
 
-    WORD lineNum = m_MaxTextLines - p_pNumLinesUp + i;
+    int lineNum = m_MaxTextLines - p_ScrollUpNumLinesUp + i;
 
     paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
@@ -578,40 +609,5 @@ size_t DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
   // Repaint window decoration
   paintWindowDecoration();
 
-  return p_pNumLinesUp;
-}
-
-
-
-
-void DiffWindow::getPreviousLineAtTop(const SimpleString*& p_pLeftLine,
-    const SimpleString*& p_pRightLine)
-{
-  if(m_LastDocumentScrollDirection == PreviousLine)
-  {
-    p_pLeftLine = m_pLeftDocument->GetPreviousLine();
-    p_pRightLine = m_pRightDocument->GetPreviousLine();
-  }
-  else
-  {
-    p_pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y - 1);
-    p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y - 1);
-    m_LastDocumentScrollDirection = PreviousLine;
-  }
-}
-
-void DiffWindow::getNextLineAtBottom(const SimpleString*& p_pLeftLine,
-    const SimpleString*& p_pRightLine)
-{
-  if(m_LastDocumentScrollDirection == NextLine)
-  {
-    p_pLeftLine = m_pLeftDocument->GetNextLine();
-    p_pRightLine = m_pRightDocument->GetNextLine();
-  }
-  else
-  {
-    p_pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y + m_MaxTextLines);
-    p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y + m_MaxTextLines);
-    m_LastDocumentScrollDirection = NextLine;
-  }
+  return p_ScrollUpNumLinesUp;
 }

@@ -25,12 +25,6 @@ public:
     AmigaDiffFacade& p_DiffFacade);
   virtual ~OpenFilesWindow();
 
-  /**
-   * TODO make virtual?
-   */
-  void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
-
-
   void Refresh();
 
   /**
@@ -46,6 +40,13 @@ public:
    * When ok: true, false if opening fails
    */
   bool Open(APTR p_pMenuItemDisableAtOpen);
+
+  /**
+   * Handles given IDCMP event.
+   *
+   * @returns If this event was handled: true; else: false.
+   */
+  bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
 private:
   bool m_bFileRequestOpen;

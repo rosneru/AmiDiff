@@ -7,7 +7,7 @@
 #include "AppScreen.h"
 #include "SimpleString.h"
 #include "TextDocument.h"
-#include "WindowBase.h"
+#include "ScrollbarWindow.h"
 
 /**
  * Class for a text window object. Can be created multiple times.
@@ -15,17 +15,11 @@
  * @author Uwe Rosner
  * @date 23/09/2018
  */
-class TextWindow : public WindowBase
+class TextWindow : public ScrollbarWindow
 {
 public:
   TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort);
   virtual ~TextWindow();
-
-  /**
-   * TODO make virtual?
-   */
-  void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
-
 
   /**
    * Reorganizes the window including re-calculating the scrollbars.
@@ -45,6 +39,14 @@ public:
    * false if opening fails
    */
   virtual bool Open(APTR p_pMenuItemDisableAtOpen = NULL);
+
+  /**
+   * Handles given IDCMP event.
+   *
+   * @returns If this event was handled: true; else: false.
+   */
+  virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
+
 
   /**
    * Open a text file
@@ -69,72 +71,45 @@ public:
   virtual void YChangedHandler(size_t p_NewY);
 
   /**
-   * Increases the Y position of the text by 1 and performs a scrolling
-   * by one line.  Should be called from the Application event loop
-   * when the cursor down key was received.
-   */
-  void YIncrease();
-
-  /**
-   * Decreases the Y position of the text by 1 and performs a scrolling
-   * by one line.  Should be called from the Application event loop
-   * when the cursor up key was received.
-   */
-  void YDecrease();
-
-
-protected:
-  /**
-   * IDs to help to interpret the events of this window's BOOPSI system
-   * gadgets in the Application event loop.
-   */
-  enum GadgetId
-  {
-    GID_PropX,
-    GID_PropY,
-    GID_ArrowUp,
-    GID_ArrowDown,
-    GID_ArrowLeft,
-    GID_ArrowRight,
-  };
-
-  enum LastDocumentScrollDirection
-  {
-    None,
-    NextLine,
-    PreviousLine,
-  };
-
-  size_t m_MaxTextLines;  ///> Number of text lines that fit in window
-  size_t m_Y;         ///> Index of currently first displayed text line
-
-  /**
-   * Stores if the last scroll direction was upward or downward. Allows
-   * the scroll methods scrollDownOneLine() and scrollUpOneLine() to
-   * use GetPrevious() and GetNext() instead of GetIndexed() if the
-   * same scroll direction is used again.
+   * Increases the Y position of the text by the given amount and
+   * performs a scrolling as needed.
    *
-   * Possibly makes scrolling by cursor keys faster at the bottom of
-   * big files.
+   * @param p_IncreaseBy
+   * Amount to increase the y-position by
+   *
+   * @param p_bTriggeredByArrowGadget
+   * If the call is triggered by the down-arrow-gadget: true
+   * If the call is triggered by other sources: false
    */
-  LastDocumentScrollDirection m_LastDocumentScrollDirection;
+  void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByArrowGadget);
 
-  ULONG m_SizeImageWidth;
-  ULONG m_SizeImageHeight;
+  /**
+   * Decreases the Y position of the text by the given amount and
+   * performs a scrolling as needed.
+   *
+   * @param p_DecreaseBy
+   * Amount to decrease the y-position by
+   *
+   * @param p_bTriggeredByArrowGadget
+   * If the call is triggered by the up-arrow-gadget: true
+   * If the call is triggered by other sources: false
+   */
+  void YDecrease(size_t p_DecreaseBy, bool p_bTriggeredByArrowGadget);
 
-  struct Image* m_pLeftArrowImage;    ///> h-scrollbar left button image
-  struct Image* m_pRightArrowImage;   ///> h-scrollbar right button image
-  struct Image* m_pUpArrowImage;      ///> v-scrollbar up button image
-  struct Image* m_pDownArrowImage;    ///> v-scrollbar down button image
 
-  struct Gadget* m_pXPropGadget;      ///> horizontal scrollbar
-  struct Gadget* m_pYPropGadget;      ///> vertical scrollbar
-  struct Gadget* m_pLeftArrowButton;  ///> h-scrollbar left button
-  struct Gadget* m_pRightArrowButton; ///> h-scrollbar right button
-  struct Gadget* m_pUpArrowButton;    ///> v-scrollbar up button
-  struct Gadget* m_pDownArrowButton;  ///> v-scrollbar down button
+private:
+  TextDocument* m_pDocument;
 
   struct TextAttr m_TextAttr;
+  struct IntuiText m_IntuiText;
+
+  int m_MaxTextLines;   ///> Number of text lines that fit in window
+  int m_Y;              ///> Index of currently first displayed text line
+
+  int m_TextAreaLeft;   ///> Left x coordinate of text area
+  int m_TextAreaTop;    ///> Top y coordinate of text area
+  int m_TextAreaRight;  ///> Right x coordinate of text area
+  int m_TextAreaBottom; ///> Bottom y coordinate of text area
 
   /**
    * Initializes some window specific feature. Gadgets, etc.
@@ -145,29 +120,47 @@ protected:
    * Calculates how many lines fit into current window size and sets
    * the member variable.
    */
-  virtual void calcMaxWindowTextLines();
+  void calcSizes();
 
   /**
    * Displays the complete file from current m_Y position as first line
+   *
+   * @param p_bStartFromCurrentY
+   * When true: no GetIndexed() is done to left and right document to
+   * find the start position. Instead it is assumed that the right y-
+   * position is set already ang acn be get with GetCurrent for left
+   * and right document.
    */
-  virtual void displayFile();
-
-  virtual bool scrollDownOneLine();
-  virtual bool scrollUpOneLine();
-
-private:
-  TextDocument* m_pDocument;
-  struct IntuiText m_IntuiText;
-
-  WORD m_TextAreaLeft;    ///> Left x coordinate of text area
-  WORD m_TextAreaTop;     ///> Top y coordinate of text area
-  WORD m_TextAreaRight;   ///> Right x coordinate of text area
-  WORD m_TextAreaBottom;  ///> Bottom y coordinate of text area
+  void paintDocument(bool p_bStartFromCurrentY = false);
 
   /**
-   * Displays the given line at given y-position
+   * Prints the given line at given y-position p_TopEdge.
    */
-  void displayLine(const SimpleString* p_pLine, WORD p_TopEdge);
+    void paintLine(const SimpleString* p_pLine, WORD p_TopEdge);
+
+  /**
+   * Scrolls the current text in the text area down by
+   * p_ScrollNumLinesDown lines and fills the gap at top with the
+   * previous lines
+   *
+   * NOTE: Does *not* change the current top line position m_Y!
+   *
+   * @returns Number of lines scrolled. Can be smaller than expected
+   * when start of text reached.
+   */
+  size_t scrollNLinesDown(int p_ScrollNumLinesDown);
+
+  /**
+   * Scrolls the current text in the text area up by
+   * p_ScrollUpNumLinesUp lines and fills the gap at bottom with the
+   * next lines
+   *
+   * NOTE: Does *not* change the current top line position m_Y!
+   *
+   * @returns Number of lines scrolled. Can be smaller than expected
+   * when end of text reached.
+   */
+  size_t scrollNLinesUp(int p_ScrollUpNumLinesUp);
 };
 
 

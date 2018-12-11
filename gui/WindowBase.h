@@ -51,6 +51,14 @@ public:
   virtual bool Open(APTR p_pMenuItemDisableAtOpen) = 0;
 
   /**
+   * Handles given IDCMP event.
+   *
+   * @returns If this event was handled: true; else: false.
+   */
+  virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
+
+
+  /**
    * Closes the window.
    */
   void Close();
@@ -74,16 +82,20 @@ public:
    * One of the positions defined in @see InitialPosition
    *
    * @param p_Left
-   * Left edge of the Window. Only used in IP_Explicit mode.
+   * Left edge of the Window. Only used when InitialPosition is set to
+   * IP_Explicit.
    *
    * @param p_Top
-   * Top edge of the Window. Only used in IP_Explicit mode.
+   * Top edge of the Window. Only used when InitialPosition is set to
+   * IP_Explicit.
    *
    * @param p_Width
-   * Width of the Window. Only used in IP_Explicit mode.
+   * Width of the Window. Only used when InitialPosition is set to
+   * IP_Explicit.
    *
    * @param p_Height
-   * Height of the Window. Only used in IP_Explicit mode.
+   * Height of the Window. Only used when InitialPosition is set to
+   * IP_Explicit.
    *
    */
   void SetInitialPosition(InitialPosition p_InitialPosition,
@@ -161,8 +173,6 @@ public:
 
   void SetMenu(AppMenu* p_pMenu);
 
-  virtual void HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
-
 protected:
   AppScreen& m_AppScreen;
   struct MsgPort* m_pMsgPort;
@@ -202,13 +212,16 @@ protected:
    * Setting the window flags. Should be done before window opening.
    *
    * Derived classes can and should set this inside their initialize()
-   * implementation to set the needed window flags.
+   * implementation to set the needed window flags. Can be called
+   * multiple times. the given p_Flags are then added by performing an
+   * OR-operation.
    */
   virtual void setFlags(ULONG p_Flags);
 
   /**
    * Setting the window IDCMP flags. Should be done before window
-   * opening.
+   * opening. Can be called multiple times. the given p_Idcmp are
+   * then added by performing an OR-operation.
    *
    * Derived classes can and should set this inside their initialize()
    * implementation to set the needed window idcmp messages.

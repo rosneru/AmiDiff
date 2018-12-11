@@ -108,8 +108,8 @@ File
 "commands/Command.h"
 "model/DiffDocument.h"
 "model/TextDocument.h"
-"gui/TextWindow.h"
 "gui/AmigaDiffPens.h"
+"gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AmigaDiff.o" "objects_debug/AmigaDiff.debug"
 ""
@@ -152,8 +152,8 @@ File
 "gui/AppMenu.h"
 "model/DiffDocument.h"
 "model/TextDocument.h"
-"gui/TextWindow.h"
 "gui/AmigaDiffPens.h"
+"gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -182,8 +182,8 @@ File
 "gui/AppMenu.h"
 "model/DiffDocument.h"
 "model/TextDocument.h"
-"gui/TextWindow.h"
 "gui/AmigaDiffPens.h"
+"gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdPerformDiff.o" "objects_debug/CmdPerformDiff.debug"
 ""
@@ -280,13 +280,13 @@ File
 "gui/DiffWindow.h"
 "gui/AppScreen.h"
 "oscottlibs/LinkedListNode.h"
-"gui/TextWindow.h"
 "gui/WindowBase.h"
 "gui/AppMenu.h"
 "gui/AmigaDiffPens.h"
 "diffengine/DiffLine.h"
 "model/TextDocument.h"
 "model/Document.h"
+"gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
 ""
@@ -303,10 +303,24 @@ File
 "model/Document.h"
 "model/DiffDocument.h"
 "model/TextDocument.h"
-"gui/TextWindow.h"
 "gui/AmigaDiffPens.h"
+"gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/OpenFilesWindow.o" "objects_debug/OpenFilesWindow.debug"
+""
+1 1
+File
+1 "gui/ScrollbarWindow.cpp"
+"gui/ScrollbarWindow.cpp"
+"gui/ScrollbarWindow.h"
+"gui/AppScreen.h"
+"gui/AmigaDiffPens.h"
+"model/Document.h"
+"oscottlibs/LinkedListNode.h"
+"gui/WindowBase.h"
+"gui/AppMenu.h"
+Storm Shell Project (Dependencies)
+"objects_debug/ScrollbarWindow.o" "objects_debug/ScrollbarWindow.debug"
 ""
 1 1
 File
@@ -319,6 +333,7 @@ File
 "model/Document.h"
 "gui/AppMenu.h"
 "gui/AmigaDiffPens.h"
+"gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/TextWindow.o" "objects_debug/TextWindow.debug"
 ""
@@ -347,8 +362,8 @@ File
 "diffengine/DiffFilePartition.h"
 "model/DiffDocument.h"
 "model/TextDocument.h"
-"gui/TextWindow.h"
 "gui/AmigaDiffPens.h"
+"gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AmigaDiffFacade.o" "objects_debug/AmigaDiffFacade.debug"
 ""
@@ -529,6 +544,13 @@ Storm Shell Project (Dependencies)
 File
 2 "gui/OpenFilesWindow.h"
 "gui/OpenFilesWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "gui/ScrollbarWindow.h"
+"gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
