@@ -162,57 +162,28 @@ private:
   bool scrollUpOneLine();
 
   /**
-   * Scrolls the current text in the text area down by p_pNumLinesDown
-   * lines and fills the gap at top with the previous lines
+   * Scrolls the current text in the text area down by 
+   * p_ScrollNumLinesDown lines and fills the gap at top with the 
+   * previous lines
    *
    * NOTE: Does *not* change the current top line position m_Y!
    *
    * @returns Number of lines scrolled. Can be smaller than expected
    * when start of text reached.
    */
-  size_t scrollNLinesDown(int p_pNumLinesDown);
+  size_t scrollNLinesDown(int p_ScrollNumLinesDown);
 
   /**
-   * Scrolls the current text in the text area up by p_pNumLinesUp
-   * lines and fills the gap at bottom with the next lines
+   * Scrolls the current text in the text area up by 
+   * p_ScrollUpNumLinesUp lines and fills the gap at bottom with the 
+   * next lines
    *
    * NOTE: Does *not* change the current top line position m_Y!
    *
    * @returns Number of lines scrolled. Can be smaller than expected
    * when end of text reached.
    */
-  size_t scrollNLinesUp(int p_pNumLinesUp);
-
-  /**
-   * Gets the line (left and right) which at current text position m_Y
-   * is the previous to the first line in window
-   *
-   * @param p_pLeftLine
-   * Reference to a pointer to SimpleString. After success this points
-   * to the previous line. Will be NULL if no previous left line exists.
-   *
-   * @param p_pRightLine
-   * Reference to a pointer to SimpleString. After success this points
-   * to the previous right line. Will be NULL if no previous right line exists.
-   */
-  void getPreviousLineAtTop(const SimpleString*& p_pLeftLine,
-    const SimpleString*& p_pRightLine);
-
-  /**
-   * Gets the line (left and right) which at current text position m_Y
-   * is the following to the last line in window
-   *
-   * @param p_pLeftLine
-   * Reference to a pointer to SimpleString. After success this points
-   * to the next left line. Will be NULL if no next left line exists.
-   *
-   * @param p_pRightLine
-   * Reference to a pointer to SimpleString. After success this points
-   * to the next right line. Will be NULL if no next right line exists.
-   */
-  void getNextLineAtBottom(const SimpleString*& p_pLeftLine,
-    const SimpleString*& p_pRightLine);
-
+  size_t scrollNLinesUp(int p_ScrollUpNumLinesUp);
 };
 
 

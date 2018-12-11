@@ -17,7 +17,6 @@ ScrollbarWindow::ScrollbarWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgP
     m_SizeImageHeight(10),
     m_InnerWindowRight(0),
     m_InnerWindowBottom(0),
-    m_LastDocumentScrollDirection(None),
     m_pLeftArrowImage(NULL),
     m_pRightArrowImage(NULL),
     m_pUpArrowImage(NULL),

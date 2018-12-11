@@ -46,7 +46,7 @@ void TextWindow::Resized()
   }
 
   // Set scroll gadgets pot size in relation of new window size
-  setYScrollPotSizeSize(m_MaxTextLines);
+  setYScrollPotSize(m_MaxTextLines);
 
   // Redraw obscured window regions
   Refresh();
@@ -110,7 +110,7 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  setYScrollPotSizeSize(m_MaxTextLines, m_pDocument->NumLines());
+  setYScrollPotSize(m_MaxTextLines, m_pDocument->NumLines());
 
   return true;
 }
@@ -267,89 +267,125 @@ void TextWindow::displayFile()
 
 bool TextWindow::scrollUpOneLine()
 {
-  if(m_pDocument->NumLines() < m_MaxTextLines)
-  {
-    // Do not move the scroll area upward if all the text fits into
-    // the window
-    return false;
-  }
-
-  if((m_Y + m_MaxTextLines) == m_pDocument->NumLines())
-  {
-    // Do not move the scroll area upward if text already at bottom
-    return false;
-  }
-
-  // Scroll upward one line by the current font height
-  ScrollRaster(m_pWindow->RPort, 0, m_AppScreen.FontHeight(),
-    m_TextAreaLeft, m_TextAreaTop, m_TextAreaRight, m_TextAreaBottom);
-
-  // Get the line which at current scroll position has to be printed as
-  // the windows last line
-  const SimpleString* pLine = NULL;
-  if(m_LastDocumentScrollDirection == NextLine)
-  {
-    pLine = m_pDocument->GetNextLine();
-  }
-  else
-  {
-    pLine = m_pDocument->GetIndexedLine(m_Y + m_MaxTextLines);
-    m_LastDocumentScrollDirection = NextLine;
-  }
-
-  if(pLine == NULL)
-  {
-    return false;
-  }
-
-  m_Y++;
-
-  // Print the new last line
-  displayLine(pLine, (m_MaxTextLines - 1) * m_AppScreen.FontHeight());
+  m_Y += scrollNLinesUp(1);
   return true;
 }
 
 bool TextWindow::scrollDownOneLine()
 {
-  if(m_Y < 1)
-  {
-    // Do not move the scroll area downward if text is already at top
-    return false;
-  }
-
-  // Move scroll area downward by the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0, -m_AppScreen.FontHeight(),
-    m_TextAreaLeft, m_TextAreaTop, m_TextAreaRight, m_TextAreaBottom);
-
-  // Delete the possible visible line below the scroll area which can
-  // be caused by the scroll operation above
-  EraseRect(m_pWindow->RPort,
-    m_TextAreaLeft, m_MaxTextLines * m_AppScreen.FontHeight(),
-    m_TextAreaRight, m_TextAreaBottom);
-
-  // Get the line which at current scroll position has to be printed as
-  // the windows first line
-  const SimpleString* pLine = NULL;
-  if(m_LastDocumentScrollDirection == PreviousLine)
-  {
-    pLine = m_pDocument->GetPreviousLine();
-  }
-  else
-  {
-    pLine = m_pDocument->GetIndexedLine(m_Y - 1);
-    m_LastDocumentScrollDirection = PreviousLine;
-  }
-
-  if(pLine == NULL)
-  {
-    return false;
-  }
-
-  m_Y--;
-
-  // Print the new first line
-  displayLine(pLine, 0);
+  m_Y -= scrollNLinesDown(1);
   return true;
 }
 
+size_t TextWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
+{
+  if(p_ScrollNumLinesDown < 1)
+  {
+    // Nothing to do
+    return 0;
+  }
 
+  if(m_Y < 1)
+  {
+    // Do not move the text area downward if text is already at top
+    return 0;
+  }
+
+  if(p_ScrollNumLinesDown > m_Y)
+  {
+    // Limit the scrolling to only scroll only as many lines as necessary
+    p_ScrollNumLinesDown = m_Y;
+  }
+
+  // Move text area downward by n * the height of one text line
+  ScrollRaster(m_pWindow->RPort, 0,
+    -p_ScrollNumLinesDown * m_AppScreen.FontHeight(),  // n * height
+    m_TextAreaLeft, m_TextAreaTop,
+    m_TextAreaRight, m_TextAreaBottom);
+
+  // This id only is used in the first call of 
+  // GetPreviousOrIndexedLine() in the loop below. The next calls don't
+  // use the index, instead they use GetPrevious(). Because of this it 
+  // is no problem that weather the index itself nor m_Y etc are 
+  // updated in the loop.
+  int previousLineId = m_Y - 1;
+
+  // fill the gap with the previous text lines
+  for(int i = 0; i < p_ScrollNumLinesDown; i++)
+  {
+    const SimpleString* pLine = NULL;
+
+    pLine = m_pDocument->GetPreviousOrIndexedLine(previousLineId);
+
+    if(pLine == NULL)
+    {
+      break;
+    }
+
+    int lineNum = p_ScrollNumLinesDown - i - 1;
+
+    displayLine(pLine, lineNum * m_AppScreen.FontHeight());
+  }
+
+  return p_ScrollNumLinesDown;
+}
+
+size_t TextWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
+{
+  if(p_ScrollUpNumLinesUp < 1)
+  {
+    // Noting to do
+    return 0;
+  }
+
+  if(m_pDocument->NumLines() < m_MaxTextLines)
+  {
+    // Do not move the scroll area upward if all the text fits into
+    // the window
+    return 0;
+  }
+
+  if((m_Y + m_MaxTextLines) == m_pDocument->NumLines())
+  {
+    // Do not move the scroll area upward if text already at bottom
+    return 0;
+  }
+
+  if((m_Y + m_MaxTextLines + p_ScrollUpNumLinesUp) > m_pDocument->NumLines())
+  {
+    // Limit the scrolling to only scroll only as many lines as necessary
+    p_ScrollUpNumLinesUp = m_pDocument->NumLines() - (m_Y + m_MaxTextLines);
+  }
+
+  // Move text area upward by n * the height of one text line
+  ScrollRaster(m_pWindow->RPort, 0,
+    p_ScrollUpNumLinesUp * m_AppScreen.FontHeight(),
+    m_TextAreaLeft, m_TextAreaTop,
+    m_TextAreaRight, m_TextAreaBottom);
+
+  // This id only is used in the first call of GetNextOrIndexedLine()
+  // in the loop below. The next calls don't use the index, instead 
+  // they use GetNext(). Because of this it is no problem that weather
+  // the index itself nor m_Y etc are updated in the loop.
+  int nextLineId = m_Y + m_MaxTextLines;
+
+  for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
+  {
+    const SimpleString* pLine = NULL;
+    const SimpleString* pRightLine = NULL;
+
+
+    pLine = m_pDocument->GetNextOrIndexedLine(nextLineId);
+
+    if(pLine == NULL)
+    {
+      break;
+    }
+
+    WORD lineNum = m_MaxTextLines - p_ScrollUpNumLinesUp + i;
+
+    displayLine(pLine, lineNum * m_AppScreen.FontHeight());
+  }
+
+  return p_ScrollUpNumLinesUp;
+}

@@ -74,24 +74,6 @@ protected:
     GID_ArrowRight,
   };
 
-  enum LastDocumentScrollDirection
-  {
-    None,
-    NextLine,
-    PreviousLine,
-  };
-
-  /**
-   * Stores if the last scroll direction was upward or downward. Allows
-   * the scroll methods scrollDownOneLine() and scrollUpOneLine() to
-   * use GetPrevious() and GetNext() instead of GetIndexed() if the
-   * same scroll direction is used again.
-   *
-   * Possibly makes scrolling by cursor keys faster at the bottom of
-   * big files.
-   */
-  LastDocumentScrollDirection m_LastDocumentScrollDirection;
-
   /**
    * Initializes some window specific feature. Gadgets, etc.
    */

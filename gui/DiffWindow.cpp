@@ -211,9 +211,6 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
       m_pLeftDocument->GetPreviousLine();
       m_pRightDocument->GetPreviousLine();
     }
-
-    m_LastDocumentScrollDirection = PreviousLine;
-
   }
   else if(numListTraverses > 0)
   {
@@ -222,8 +219,6 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
       m_pLeftDocument->GetNextLine();
       m_pRightDocument->GetNextLine();
     }
-
-    m_LastDocumentScrollDirection = NextLine;
   }
 
   // Clear both text areas completely
@@ -387,8 +382,6 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
     pLeftLine = m_pLeftDocument->GetNextLine();
     pRightLine = m_pRightDocument->GetNextLine();
   }
-
-  m_LastDocumentScrollDirection = NextLine;
 }
 
 void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
@@ -508,9 +501,9 @@ bool DiffWindow::scrollUpOneLine()
   return true;
 }
 
-size_t DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
+size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
 {
-  if(p_pNumLinesDown < 1)
+  if(p_ScrollNumLinesDown < 1)
   {
     // Nothing to do
     return 0;
@@ -522,46 +515,54 @@ size_t DiffWindow::scrollNLinesDown(int p_pNumLinesDown)
     return 0;
   }
 
-  if(p_pNumLinesDown > m_Y)
+  if(p_ScrollNumLinesDown > m_Y)
   {
-    // Scroll only as many lines as necessary
-    p_pNumLinesDown = m_Y;
+    // Limit the scrolling to only scroll only as many lines as necessary
+    p_ScrollNumLinesDown = m_Y;
   }
 
   // Move text area downward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
-    -p_pNumLinesDown * m_AppScreen.FontHeight(),  // n * height
+    -p_ScrollNumLinesDown * m_AppScreen.FontHeight(),  // n * height
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
 
+  // This id only is used in the first call of 
+  // GetPreviousOrIndexedLine() in the loop below. The next calls don't
+  // use the index, instead they use GetPrevious(). Because of this it 
+  // is no problem that weather the index itself nor m_Y etc are 
+  // updated in the loop.
+  int previousLineId = m_Y - 1;
+
   // fill the gap with the previous text lines
-  for(int i = 0; i < p_pNumLinesDown; i++)
+  for(int i = 0; i < p_ScrollNumLinesDown; i++)
   {
     const SimpleString* pLeftLine = NULL;
     const SimpleString* pRightLine = NULL;
 
-    getPreviousLineAtTop(pLeftLine, pRightLine);
+    pLeftLine = m_pLeftDocument->GetPreviousOrIndexedLine(previousLineId);
+    pRightLine = m_pRightDocument->GetPreviousOrIndexedLine(previousLineId);
+
     if(pLeftLine == NULL || pRightLine == NULL)
     {
       break;
     }
 
-    WORD lineNum = p_pNumLinesDown - i - 1;
+    int lineNum = p_ScrollNumLinesDown - i - 1;
 
-    paintLine(pLeftLine, pRightLine,
-      lineNum * m_AppScreen.FontHeight());
+    paintLine(pLeftLine, pRightLine, lineNum * m_AppScreen.FontHeight());
   }
 
   // Repaint window decoration
   paintWindowDecoration();
 
-  return p_pNumLinesDown;
+  return p_ScrollNumLinesDown;
 }
 
-size_t DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
+size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
 {
-  if(p_pNumLinesUp < 1)
+  if(p_ScrollUpNumLinesUp < 1)
   {
     // Noting to do
     return 0;
@@ -580,31 +581,40 @@ size_t DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
     return 0;
   }
 
-  if((m_Y + m_MaxTextLines + p_pNumLinesUp) > m_pLeftDocument->NumLines())
+  if((m_Y + m_MaxTextLines + p_ScrollUpNumLinesUp) > m_pLeftDocument->NumLines())
   {
-    // Scroll only as many lines as necessary
-    p_pNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextLines);
+    // Limit the scrolling to only scroll only as many lines as necessary
+    p_ScrollUpNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextLines);
   }
 
   // Move text area upward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
-    p_pNumLinesUp * m_AppScreen.FontHeight(),
+    p_ScrollUpNumLinesUp * m_AppScreen.FontHeight(),
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
 
-  for(int i = 0; i < p_pNumLinesUp; i++)
+  // This id only is used in the first call of GetNextOrIndexedLine()
+  // in the loop below. The next calls don't use the index, instead 
+  // they use GetNext(). Because of this it is no problem that weather
+  // the index itself nor m_Y etc are updated in the loop.
+  int nextLineId = m_Y + m_MaxTextLines;
+
+  for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
     const SimpleString* pLeftLine = NULL;
     const SimpleString* pRightLine = NULL;
 
-    getNextLineAtBottom(pLeftLine, pRightLine);
+
+    pLeftLine = m_pLeftDocument->GetNextOrIndexedLine(nextLineId);
+    pRightLine = m_pRightDocument->GetNextOrIndexedLine(nextLineId);
+
     if(pLeftLine == NULL || pRightLine == NULL)
     {
       break;
     }
 
-    WORD lineNum = m_MaxTextLines - p_pNumLinesUp + i;
+    int lineNum = m_MaxTextLines - p_ScrollUpNumLinesUp + i;
 
     paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
@@ -613,40 +623,5 @@ size_t DiffWindow::scrollNLinesUp(int p_pNumLinesUp)
   // Repaint window decoration
   paintWindowDecoration();
 
-  return p_pNumLinesUp;
-}
-
-
-
-
-void DiffWindow::getPreviousLineAtTop(const SimpleString*& p_pLeftLine,
-    const SimpleString*& p_pRightLine)
-{
-  if(m_LastDocumentScrollDirection == PreviousLine)
-  {
-    p_pLeftLine = m_pLeftDocument->GetPreviousLine();
-    p_pRightLine = m_pRightDocument->GetPreviousLine();
-  }
-  else
-  {
-    p_pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y - 1);
-    p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y - 1);
-    m_LastDocumentScrollDirection = PreviousLine;
-  }
-}
-
-void DiffWindow::getNextLineAtBottom(const SimpleString*& p_pLeftLine,
-    const SimpleString*& p_pRightLine)
-{
-  if(m_LastDocumentScrollDirection == NextLine)
-  {
-    p_pLeftLine = m_pLeftDocument->GetNextLine();
-    p_pRightLine = m_pRightDocument->GetNextLine();
-  }
-  else
-  {
-    p_pLeftLine = m_pLeftDocument->GetIndexedLine(m_Y + m_MaxTextLines);
-    p_pRightLine = m_pRightDocument->GetIndexedLine(m_Y + m_MaxTextLines);
-    m_LastDocumentScrollDirection = NextLine;
-  }
+  return p_ScrollUpNumLinesUp;
 }

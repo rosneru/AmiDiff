@@ -78,12 +78,6 @@ public:
 
 
 private:
-
-
-
-
-
-
   /**
    * Initializes some window specific feature. Gadgets, etc.
    */
@@ -107,8 +101,32 @@ private:
    */
   virtual void displayFile();
 
-  virtual bool scrollDownOneLine();
-  virtual bool scrollUpOneLine();
+  bool scrollDownOneLine();
+  bool scrollUpOneLine();
+
+  /**
+   * Scrolls the current text in the text area down by 
+   * p_ScrollNumLinesDown lines and fills the gap at top with the 
+   * previous lines
+   *
+   * NOTE: Does *not* change the current top line position m_Y!
+   *
+   * @returns Number of lines scrolled. Can be smaller than expected
+   * when start of text reached.
+   */
+  size_t scrollNLinesDown(int p_ScrollNumLinesDown);
+
+  /**
+   * Scrolls the current text in the text area up by 
+   * p_ScrollUpNumLinesUp lines and fills the gap at bottom with the 
+   * next lines
+   *
+   * NOTE: Does *not* change the current top line position m_Y!
+   *
+   * @returns Number of lines scrolled. Can be smaller than expected
+   * when end of text reached.
+   */
+  size_t scrollNLinesUp(int p_ScrollUpNumLinesUp);
 
 private:
   TextDocument* m_pDocument;
