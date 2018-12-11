@@ -129,10 +129,6 @@ protected:
    */
   void setYScrollTop(int p_Top);
 
-  virtual bool scrollDownOneLine();
-  virtual bool scrollUpOneLine();
-
-
 private:
   ULONG m_SizeImageWidth;
   ULONG m_SizeImageHeight;
