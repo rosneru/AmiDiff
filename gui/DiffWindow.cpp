@@ -159,7 +159,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  setYScrollPot(m_MaxTextLines, m_pLeftDocument->NumLines());
+  setYScrollPotSize(m_MaxTextLines, m_pLeftDocument->NumLines());
 
   return true;
 }
@@ -344,7 +344,7 @@ void DiffWindow::calcSizes()
   m_MaxTextLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPot(m_MaxTextLines);
+  setYScrollPotSize(m_MaxTextLines);
 }
 
 void DiffWindow::paintDocument(bool p_bStartFromCurrentY)

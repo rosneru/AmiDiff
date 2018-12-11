@@ -46,7 +46,7 @@ void TextWindow::Resized()
   }
 
   // Set scroll gadgets pot size in relation of new window size
-  setYScrollPot(m_MaxTextLines);
+  setYScrollPotSizeSize(m_MaxTextLines);
 
   // Redraw obscured window regions
   Refresh();
@@ -110,7 +110,7 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  setYScrollPot(m_MaxTextLines, m_pDocument->NumLines());
+  setYScrollPotSizeSize(m_MaxTextLines, m_pDocument->NumLines());
 
   return true;
 }

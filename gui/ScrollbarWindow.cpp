@@ -336,7 +336,7 @@ void ScrollbarWindow::calcSizes()
     - m_SizeImageHeight;
 }
 
-void ScrollbarWindow::setYScrollPot(int p_MaxVisible, int p_Total)
+void ScrollbarWindow::setYScrollPotSize(int p_MaxVisible, int p_Total)
 {
   if(m_pYPropGadget == NULL)
   {
