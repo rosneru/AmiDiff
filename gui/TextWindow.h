@@ -90,6 +90,19 @@ public:
 
 
 private:
+  TextDocument* m_pDocument;
+  
+  struct TextAttr m_TextAttr;
+  struct IntuiText m_IntuiText;
+
+  int m_MaxTextLines;   ///> Number of text lines that fit in window
+  int m_Y;              ///> Index of currently first displayed text line
+
+  int m_TextAreaLeft;   ///> Left x coordinate of text area
+  int m_TextAreaTop;    ///> Top y coordinate of text area
+  int m_TextAreaRight;  ///> Right x coordinate of text area
+  int m_TextAreaBottom; ///> Bottom y coordinate of text area
+
   /**
    * Initializes some window specific feature. Gadgets, etc.
    */
@@ -110,8 +123,19 @@ private:
 
   /**
    * Displays the complete file from current m_Y position as first line
+   *
+   * @param p_bStartFromCurrentY
+   * When true: no GetIndexed() is done to left and right document to
+   * find the start position. Instead it is assumed that the right y-
+   * position is set already ang acn be get with GetCurrent for left
+   * and right document.
    */
-  virtual void displayFile();
+  void paintDocument(bool p_bStartFromCurrentY = false);
+
+  /**
+   * Prints the given line at given y-position p_TopEdge.
+   */
+    void paintLine(const SimpleString* p_pLine, WORD p_TopEdge);
 
   /**
    * Scrolls the current text in the text area down by 
@@ -136,25 +160,6 @@ private:
    * when end of text reached.
    */
   size_t scrollNLinesUp(int p_ScrollUpNumLinesUp);
-
-private:
-  TextDocument* m_pDocument;
-  
-  struct TextAttr m_TextAttr;
-  struct IntuiText m_IntuiText;
-
-  int m_MaxTextLines;   ///> Number of text lines that fit in window
-  int m_Y;              ///> Index of currently first displayed text line
-
-  int m_TextAreaLeft;   ///> Left x coordinate of text area
-  int m_TextAreaTop;    ///> Top y coordinate of text area
-  int m_TextAreaRight;  ///> Right x coordinate of text area
-  int m_TextAreaBottom; ///> Bottom y coordinate of text area
-
-  /**
-   * Displays the given line at given y-position
-   */
-  void displayLine(const SimpleString* p_pLine, WORD p_TopEdge);
 };
 
 

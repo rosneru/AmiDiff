@@ -366,7 +366,7 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
 
   while((pLeftLine != NULL) && (pRightLine !=NULL))
   {
-    WORD lineNum = i - m_Y;
+    int lineNum = i - m_Y;
 
     paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
