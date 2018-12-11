@@ -232,7 +232,7 @@ void OpenFilesWindow::initialize()
   m_bInitialized = true;
 }
 
-bool OpenFilesWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+bool OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
   if(!IsOpen())
   {
@@ -293,7 +293,7 @@ bool OpenFilesWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         if(m_DiffFacade.LeftFilePath().Length() == 0 ||
            m_DiffFacade.RightFilePath().Length() == 0)
         {
-          // Note: true marks that the *event* was handled properly, 
+          // Note: true marks that the *event* was handled properly,
           //       regardless of the diff not being performed
           return true;
         }

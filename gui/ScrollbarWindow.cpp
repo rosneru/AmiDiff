@@ -261,7 +261,7 @@ void ScrollbarWindow::initialize()
 
 }
 
-bool ScrollbarWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
   if(!IsOpen())
   {
@@ -319,7 +319,7 @@ bool ScrollbarWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       break;
     }
   }
-  
+
   return false;
 }
 
@@ -352,7 +352,7 @@ void ScrollbarWindow::setYScrollPotSize(int p_MaxVisible, int p_Total)
   }
   else if(p_MaxVisible >= 0)
   {
-    // Number of total lines and number of max visible lines provided: 
+    // Number of total lines and number of max visible lines provided:
     // Set the y-scrollbar to an initial state
     SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
       PGA_Total, p_Total,

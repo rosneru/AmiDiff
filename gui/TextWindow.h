@@ -41,6 +41,14 @@ public:
   virtual bool Open(APTR p_pMenuItemDisableAtOpen = NULL);
 
   /**
+   * Handles given IDCMP event.
+   *
+   * @returns If this event was handled: true; else: false.
+   */
+  virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
+
+
+  /**
    * Open a text file
    *
    * Extended method from base class DiffDocument
@@ -63,12 +71,12 @@ public:
   virtual void YChangedHandler(size_t p_NewY);
 
   /**
-   * Increases the Y position of the text by the given amount and 
+   * Increases the Y position of the text by the given amount and
    * performs a scrolling as needed.
-   * 
+   *
    * @param p_IncreaseBy
    * Amount to increase the y-position by
-   * 
+   *
    * @param p_bTriggeredByArrowGadget
    * If the call is triggered by the down-arrow-gadget: true
    * If the call is triggered by other sources: false
@@ -76,12 +84,12 @@ public:
   void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByArrowGadget);
 
   /**
-   * Decreases the Y position of the text by the given amount and 
+   * Decreases the Y position of the text by the given amount and
    * performs a scrolling as needed.
-   * 
+   *
    * @param p_DecreaseBy
    * Amount to decrease the y-position by
-   * 
+   *
    * @param p_bTriggeredByArrowGadget
    * If the call is triggered by the up-arrow-gadget: true
    * If the call is triggered by other sources: false
@@ -91,7 +99,7 @@ public:
 
 private:
   TextDocument* m_pDocument;
-  
+
   struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;
 
@@ -107,13 +115,6 @@ private:
    * Initializes some window specific feature. Gadgets, etc.
    */
   virtual void initialize();
-
-  /**
-   * Handles given IDCMP event.
-   * 
-   * @returns If this event was handled: true; else: false.
-   */
-  virtual bool handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
   /**
    * Calculates how many lines fit into current window size and sets
@@ -138,8 +139,8 @@ private:
     void paintLine(const SimpleString* p_pLine, WORD p_TopEdge);
 
   /**
-   * Scrolls the current text in the text area down by 
-   * p_ScrollNumLinesDown lines and fills the gap at top with the 
+   * Scrolls the current text in the text area down by
+   * p_ScrollNumLinesDown lines and fills the gap at top with the
    * previous lines
    *
    * NOTE: Does *not* change the current top line position m_Y!
@@ -150,8 +151,8 @@ private:
   size_t scrollNLinesDown(int p_ScrollNumLinesDown);
 
   /**
-   * Scrolls the current text in the text area up by 
-   * p_ScrollUpNumLinesUp lines and fills the gap at bottom with the 
+   * Scrolls the current text in the text area up by
+   * p_ScrollUpNumLinesUp lines and fills the gap at bottom with the
    * next lines
    *
    * NOTE: Does *not* change the current top line position m_Y!

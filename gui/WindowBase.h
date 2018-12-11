@@ -51,6 +51,14 @@ public:
   virtual bool Open(APTR p_pMenuItemDisableAtOpen) = 0;
 
   /**
+   * Handles given IDCMP event.
+   *
+   * @returns If this event was handled: true; else: false.
+   */
+  virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
+
+
+  /**
    * Closes the window.
    */
   void Close();
@@ -201,18 +209,11 @@ protected:
   virtual void initialize() = 0;
 
   /**
-   * Handles given IDCMP event.
-   * 
-   * @returns If this event was handled: true; else: false.
-   */
-  virtual bool handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
-
-  /**
    * Setting the window flags. Should be done before window opening.
    *
    * Derived classes can and should set this inside their initialize()
-   * implementation to set the needed window flags. Can be called 
-   * multiple times. the given p_Flags are then added by performing an 
+   * implementation to set the needed window flags. Can be called
+   * multiple times. the given p_Flags are then added by performing an
    * OR-operation.
    */
   virtual void setFlags(ULONG p_Flags);

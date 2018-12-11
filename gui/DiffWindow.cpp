@@ -238,7 +238,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
 }
 
-void DiffWindow::YIncrease(size_t p_IncreaseBy, 
+void DiffWindow::YIncrease(size_t p_IncreaseBy,
   bool p_bTriggeredByArrowGadget)
 {
   m_Y += scrollNLinesUp(p_IncreaseBy);
@@ -251,7 +251,7 @@ void DiffWindow::YIncrease(size_t p_IncreaseBy,
   }
 }
 
-void DiffWindow::YDecrease(size_t p_DecreaseBy, 
+void DiffWindow::YDecrease(size_t p_DecreaseBy,
   bool p_bTriggeredByArrowGadget)
 {
   m_Y -= scrollNLinesDown(p_DecreaseBy);
@@ -289,9 +289,9 @@ void DiffWindow::initialize()
 
 }
 
-bool DiffWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+bool DiffWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
-  if(ScrollbarWindow::handleIdcmp(p_Class, p_Code, p_IAddress) == true)
+  if(ScrollbarWindow::HandleIdcmp(p_Class, p_Code, p_IAddress) == true)
   {
     return true;
   }
@@ -516,10 +516,10 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
 
-  // This id only is used in the first call of 
+  // This id only is used in the first call of
   // GetPreviousOrIndexedLine() in the loop below. The next calls don't
-  // use the index, instead they use GetPrevious(). Because of this it 
-  // is no problem that weather the index itself nor m_Y etc are 
+  // use the index, instead they use GetPrevious(). Because of this it
+  // is no problem that weather the index itself nor m_Y etc are
   // updated in the loop.
   int previousLineId = m_Y - 1;
 
@@ -583,7 +583,7 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     m_TextAreasTop + m_TextAreasHeight - 2);
 
   // This id only is used in the first call of GetNextOrIndexedLine()
-  // in the loop below. The next calls don't use the index, instead 
+  // in the loop below. The next calls don't use the index, instead
   // they use GetNext(). Because of this it is no problem that weather
   // the index itself nor m_Y etc are updated in the loop.
   int nextLineId = m_Y + m_MaxTextLines;

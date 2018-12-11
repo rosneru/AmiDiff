@@ -178,7 +178,7 @@ void TextWindow::YChangedHandler(size_t p_NewY)
 }
 
 
-void TextWindow::YIncrease(size_t p_IncreaseBy, 
+void TextWindow::YIncrease(size_t p_IncreaseBy,
   bool p_bTriggeredByArrowGadget)
 {
   m_Y += scrollNLinesUp(p_IncreaseBy);
@@ -192,7 +192,7 @@ void TextWindow::YIncrease(size_t p_IncreaseBy,
 }
 
 
-void TextWindow::YDecrease(size_t p_DecreaseBy, 
+void TextWindow::YDecrease(size_t p_DecreaseBy,
   bool p_bTriggeredByArrowGadget)
 {
   m_Y -= scrollNLinesDown(p_DecreaseBy);
@@ -231,9 +231,9 @@ void TextWindow::initialize()
 }
 
 
-bool TextWindow::handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+bool TextWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
-  if(ScrollbarWindow::handleIdcmp(p_Class, p_Code, p_IAddress) == true)
+  if(ScrollbarWindow::HandleIdcmp(p_Class, p_Code, p_IAddress) == true)
   {
     return true;
   }
@@ -351,10 +351,10 @@ size_t TextWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     m_TextAreaLeft, m_TextAreaTop,
     m_TextAreaRight, m_TextAreaBottom);
 
-  // This id only is used in the first call of 
+  // This id only is used in the first call of
   // GetPreviousOrIndexedLine() in the loop below. The next calls don't
-  // use the index, instead they use GetPrevious(). Because of this it 
-  // is no problem that weather the index itself nor m_Y etc are 
+  // use the index, instead they use GetPrevious(). Because of this it
+  // is no problem that weather the index itself nor m_Y etc are
   // updated in the loop.
   int previousLineId = m_Y - 1;
 
@@ -412,7 +412,7 @@ size_t TextWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     m_TextAreaRight, m_TextAreaBottom);
 
   // This id only is used in the first call of GetNextOrIndexedLine()
-  // in the loop below. The next calls don't use the index, instead 
+  // in the loop below. The next calls don't use the index, instead
   // they use GetNext(). Because of this it is no problem that weather
   // the index itself nor m_Y etc are updated in the loop.
   int nextLineId = m_Y + m_MaxTextLines;
@@ -420,9 +420,6 @@ size_t TextWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
   for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
     const SimpleString* pLine = NULL;
-    const SimpleString* pRightLine = NULL;
-
-
     pLine = m_pDocument->GetNextOrIndexedLine(nextLineId);
 
     if(pLine == NULL)
@@ -430,7 +427,7 @@ size_t TextWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
       break;
     }
 
-    WORD lineNum = m_MaxTextLines - p_ScrollUpNumLinesUp + i;
+    int lineNum = m_MaxTextLines - p_ScrollUpNumLinesUp + i;
 
     paintLine(pLine, lineNum * m_AppScreen.FontHeight());
   }

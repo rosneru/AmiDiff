@@ -53,6 +53,14 @@ public:
     DiffDocument* p_pRightDocument);
 
   /**
+   * Handles given IDCMP event.
+   *
+   * @returns If this event was handled: true; else: false.
+   */
+  virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
+
+
+  /**
    * This handles the Y-Changes triggered by the vertical scrollbar
    * of the window. It does so by completely re-drawing the text from
    * beginning with p_NewY on the top line.
@@ -64,12 +72,12 @@ public:
   void YChangedHandler(size_t p_NewY);
 
   /**
-   * Increases the Y position of the text by the given amount and 
+   * Increases the Y position of the text by the given amount and
    * performs a scrolling as needed.
-   * 
+   *
    * @param p_IncreaseBy
    * Amount to increase the y-position by
-   * 
+   *
    * @param p_bTriggeredByArrowGadget
    * If the call is triggered by the down-arrow-gadget: true
    * If the call is triggered by other sources: false
@@ -77,12 +85,12 @@ public:
   void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByArrowGadget);
 
   /**
-   * Decreases the Y position of the text by the given amount and 
+   * Decreases the Y position of the text by the given amount and
    * performs a scrolling as needed.
-   * 
+   *
    * @param p_DecreaseBy
    * Amount to decrease the y-position by
-   * 
+   *
    * @param p_bTriggeredByArrowGadget
    * If the call is triggered by the up-arrow-gadget: true
    * If the call is triggered by other sources: false
@@ -118,14 +126,6 @@ private:
    * Initializes some window specific features. Gadgets, etc.
    */
   void initialize();
-
-  /**
-   * Handles given IDCMP event.
-   * 
-   * @returns If this event was handled: true; else: false.
-   */
-  virtual bool handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
-
 
   /**
    * Calculates some inner window sizes which is needed after window
@@ -171,8 +171,8 @@ private:
   LONG colorNameToPen(DiffDocument::ColorName p_pColorName);
 
   /**
-   * Scrolls the current text in the text area down by 
-   * p_ScrollNumLinesDown lines and fills the gap at top with the 
+   * Scrolls the current text in the text area down by
+   * p_ScrollNumLinesDown lines and fills the gap at top with the
    * previous lines
    *
    * NOTE: Does *not* change the current top line position m_Y!
@@ -183,8 +183,8 @@ private:
   size_t scrollNLinesDown(int p_ScrollNumLinesDown);
 
   /**
-   * Scrolls the current text in the text area up by 
-   * p_ScrollUpNumLinesUp lines and fills the gap at bottom with the 
+   * Scrolls the current text in the text area up by
+   * p_ScrollUpNumLinesUp lines and fills the gap at bottom with the
    * next lines
    *
    * NOTE: Does *not* change the current top line position m_Y!

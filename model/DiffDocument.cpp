@@ -44,7 +44,7 @@ const SimpleString* DiffDocument::GetCurrentLine()
 
 const SimpleString* DiffDocument::GetPreviousLine()
 {
-  m_LastDocumentScrollDirection = PreviousLine;
+  m_LastScrollDirection = PreviousLine;
   DiffLine* pDiffLine = m_DiffFilePartition.GetPreviousDiffLine();
   if(pDiffLine == NULL)
   {
@@ -58,7 +58,7 @@ const SimpleString* DiffDocument::GetPreviousLine()
 
 const SimpleString* DiffDocument::GetNextLine()
 {
-  m_LastDocumentScrollDirection = NextLine;
+  m_LastScrollDirection = NextLine;
   DiffLine* pDiffLine = m_DiffFilePartition.GetNextDiffLine();
   if(pDiffLine == NULL)
   {
@@ -72,7 +72,7 @@ const SimpleString* DiffDocument::GetNextLine()
 
 const SimpleString* DiffDocument::GetIndexedLine(int p_LineIdx)
 {
-  m_LastDocumentScrollDirection = None;
+  m_LastScrollDirection = None;
   DiffLine* pDiffLine = m_DiffFilePartition.GetIndexedDiffLine(p_LineIdx);
   if(pDiffLine == NULL)
   {

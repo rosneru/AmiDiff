@@ -31,6 +31,12 @@ public:
    */
   virtual bool Open(APTR p_pMenuItemDisableAtOpen = NULL);
 
+  /**
+   * Handles given IDCMP event.
+   *
+   * @returns If this event was handled: true; else: false.
+   */
+  virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
 
   /**
@@ -38,45 +44,45 @@ public:
    * of the window. It is called from the handleIDCMP method of this
    * class.
    *
-   * Child classes must implement it and therin should perform the 
+   * Child classes must implement it and therin should perform the
    * scrolling to the new y-position.
    */
   virtual void YChangedHandler(size_t p_NewY) = 0;
 
   /**
-   * This handles the increase by 1 of the y-position triggered by the 
-   * cursor-down-key or the down-arrow-gadget. It is called from the 
+   * This handles the increase by 1 of the y-position triggered by the
+   * cursor-down-key or the down-arrow-gadget. It is called from the
    * handleIDCMP method of this class.
-   * 
-   * Child classes must implement it and therein should perform the 
+   *
+   * Child classes must implement it and therein should perform the
    * scrolling to y+1.
-   * 
+   *
    * @param p_IncreaseBy
    * Amount to increase the y-position by
-   * 
+   *
    * @param p_bTriggeredByArrowGadget
    * If the call is triggered by the down-arrow-gadget: true
    * If the call is triggered by other sources: false
    */
-  virtual void YIncrease(size_t p_IncreaseBy, 
+  virtual void YIncrease(size_t p_IncreaseBy,
     bool p_bTriggeredByArrowGadget = false) = 0;
 
   /**
-   * This handles the decrease by 1 of the y-position triggered by the 
-   * cursor-up-key or the up-arrow-gadget. It is called from the 
+   * This handles the decrease by 1 of the y-position triggered by the
+   * cursor-up-key or the up-arrow-gadget. It is called from the
    * handleIDCMP method of this class.
-   * 
-   * Child classes must implement it and therein should perform the 
+   *
+   * Child classes must implement it and therein should perform the
    * scrolling to y-1.
-   * 
+   *
    * @param p_DecreaseBy
    * Amount to decrease the y-position by
-   * 
+   *
    * @param p_bTriggeredByArrowGadget
    * If the call is triggered by the up-arrow-gadget: true
    * If the call is triggered by other sources: false
    */
-  virtual void YDecrease(size_t p_DecreaseBy, 
+  virtual void YDecrease(size_t p_DecreaseBy,
     bool p_bTriggeredByArrowGadget = false) = 0;
 
 
@@ -101,27 +107,20 @@ protected:
   virtual void initialize();
 
   /**
-   * Handles given IDCMP event.
-   * 
-   * @returns If this event was handled: true; else: false.
-   */
-  virtual bool handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
-
-  /**
    * Calculates some inner window sizes which is needed after window
    * opening and after resizing.
    */
   virtual void calcSizes();
-  
+
   /**
    * Setting the pot size of the y-scrollbar.
-   * 
+   *
    * @param p_MaxVisible
-   * Number of max visible lines / points / etc in window. Has to be 
+   * Number of max visible lines / points / etc in window. Has to be
    * updated e.g. after the window resizes.
-   * 
+   *
    * @param p_Total
-   * Optional parameter. Number of total visible lines / points / etc 
+   * Optional parameter. Number of total visible lines / points / etc
    * in document. Has to be set once after opening the document and can
    * then left untouched (or skipped by giving -1).
    */

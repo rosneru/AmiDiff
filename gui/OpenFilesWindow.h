@@ -41,6 +41,13 @@ public:
    */
   bool Open(APTR p_pMenuItemDisableAtOpen);
 
+  /**
+   * Handles given IDCMP event.
+   *
+   * @returns If this event was handled: true; else: false.
+   */
+  bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
+
 private:
   bool m_bFileRequestOpen;
 
@@ -75,13 +82,6 @@ private:
    * Initializes some window specific feature. Gadgets, etc.
    */
   void initialize();
-
-  /**
-   * Handles given IDCMP event.
-   * 
-   * @returns If this event was handled: true; else: false.
-   */
-  bool handleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
   /**
    * Opens a file requestor and lets the user select a file.
