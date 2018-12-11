@@ -101,6 +101,9 @@ protected:
     GID_ArrowRight,
   };
 
+  long m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
+  long m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar
+
   /**
    * Initializes some window specific feature. Gadgets, etc.
    */
@@ -134,9 +137,6 @@ protected:
 private:
   ULONG m_SizeImageWidth;
   ULONG m_SizeImageHeight;
-
-  long m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
-  long m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar
 
   struct Image* m_pLeftArrowImage;    ///> h-scrollbar left button image
   struct Image* m_pRightArrowImage;   ///> h-scrollbar right button image

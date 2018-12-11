@@ -117,9 +117,6 @@ private:
   int m_TextAreasWidth;     ///> Width of each text area
   int m_TextAreasHeight;    ///> Height of the text areas (equally heigh)
 
-  int m_InnerWindowRight;   ///> X-position of the right-most pixel before the scrollbar
-  int m_InnerWindowBottom;  ///> Y-position of the bottom-most pixel before the scrollbar
-
   int m_LineNumbersWidth;
 
   /**

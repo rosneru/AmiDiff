@@ -28,8 +28,6 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_TextAreasTop(0),
     m_TextAreasWidth(0),
     m_TextAreasHeight(0),
-    m_InnerWindowRight(0),
-    m_InnerWindowBottom(0),
     m_LineNumbersWidth(0)
 {
 
