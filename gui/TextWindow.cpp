@@ -129,31 +129,31 @@ void TextWindow::YChangedHandler(size_t p_NewY)
 }
 
 
-void TextWindow::YIncrease()
+void TextWindow::YIncrease(size_t p_IncreaseBy, 
+  bool p_bTriggeredByArrowGadget)
 {
-  // Scroll the text
-  if(scrollUpOneLine() == false)
-  {
-    // No scrolling possible
-    return;
-  }
+  m_Y += scrollNLinesUp(p_IncreaseBy);
 
-  // Set the  y-scroll gadgets new TOP value
-  setYScrollTop(m_Y);
+  if(!p_bTriggeredByArrowGadget)
+  {
+    // Y-position-decrease was not triggered by the up-arrow-gadget:
+    // Manually det the new TOP value for the y-scrollbar
+    setYScrollTop(m_Y);
+  }
 }
 
 
-void TextWindow::YDecrease()
+void TextWindow::YDecrease(size_t p_DecreaseBy, 
+  bool p_bTriggeredByArrowGadget)
 {
-  // Scroll the text
-  if(scrollDownOneLine() == false)
-  {
-    // No scrolling possible
-    return;
-  }
+  m_Y -= scrollNLinesDown(p_DecreaseBy);
 
-  // Set the  y-scroll gadgets new TOP value
-  setYScrollTop(m_Y);
+  if(!p_bTriggeredByArrowGadget)
+  {
+    // Y-position-decrease was not triggered by the up-arrow-gadget:
+    // Manually det the new TOP value for the y-scrollbar
+    setYScrollTop(m_Y);
+  }
 }
 
 
@@ -263,18 +263,6 @@ void TextWindow::displayFile()
     lineId++;
     pLine = m_pDocument->GetNextLine();
   }
-}
-
-bool TextWindow::scrollUpOneLine()
-{
-  m_Y += scrollNLinesUp(1);
-  return true;
-}
-
-bool TextWindow::scrollDownOneLine()
-{
-  m_Y -= scrollNLinesDown(1);
-  return true;
 }
 
 size_t TextWindow::scrollNLinesDown(int p_ScrollNumLinesDown)

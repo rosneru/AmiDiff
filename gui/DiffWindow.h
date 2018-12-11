@@ -64,18 +64,30 @@ public:
   void YChangedHandler(size_t p_NewY);
 
   /**
-   * Increases the Y position of the text by 1 and performs a scrolling
-   * by one line.  Should be called from the Application event loop
-   * when the cursor down key was received.
+   * Increases the Y position of the text by the given amount and 
+   * performs a scrolling as needed.
+   * 
+   * @param p_IncreaseBy
+   * Amount to increase the y-position by
+   * 
+   * @param p_bTriggeredByArrowGadget
+   * If the call is triggered by the down-arrow-gadget: true
+   * If the call is triggered by other sources: false
    */
-  virtual void YIncrease();
+  void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByArrowGadget);
 
   /**
-   * Decreases the Y position of the text by 1 and performs a scrolling
-   * by one line.  Should be called from the Application event loop
-   * when the cursor up key was received.
+   * Decreases the Y position of the text by the given amount and 
+   * performs a scrolling as needed.
+   * 
+   * @param p_DecreaseBy
+   * Amount to decrease the y-position by
+   * 
+   * @param p_bTriggeredByArrowGadget
+   * If the call is triggered by the up-arrow-gadget: true
+   * If the call is triggered by other sources: false
    */
-  virtual void YDecrease();
+  void YDecrease(size_t p_DecreaseBy, bool p_bTriggeredByArrowGadget);
 
 private:
   DiffDocument* m_pLeftDocument;
@@ -157,9 +169,6 @@ private:
    * Gets an appropriate pen from a given ColorName
    */
   LONG colorNameToPen(DiffDocument::ColorName p_pColorName);
-
-  bool scrollDownOneLine();
-  bool scrollUpOneLine();
 
   /**
    * Scrolls the current text in the text area down by 

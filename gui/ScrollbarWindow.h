@@ -34,29 +34,50 @@ public:
 
 
   /**
-   * This handles the Y-Changes triggered by the vertical scrollbar
-   * of the window. It does so by completely re-drawing the text from
-   * beginning with p_NewY on the top line.
+   * This handles the y-changes triggered by the vertical scrollbar
+   * of the window. It is called from the handleIDCMP method of this
+   * class.
    *
-   * This method should be called from Application event loop if the
-   * Y-proportional gadget attached to the window has been moved by
-   * the user.
+   * Child classes must implement it and therin should perform the 
+   * scrolling to the new y-position.
    */
   virtual void YChangedHandler(size_t p_NewY) = 0;
 
   /**
-   * Increases the Y position of the text by 1 and performs a scrolling
-   * by one line.  Should be called from the Application event loop
-   * when the cursor down key was received.
+   * This handles the increase by 1 of the y-position triggered by the 
+   * cursor-down-key or the down-arrow-gadget. It is called from the 
+   * handleIDCMP method of this class.
+   * 
+   * Child classes must implement it and therein should perform the 
+   * scrolling to y+1.
+   * 
+   * @param p_IncreaseBy
+   * Amount to increase the y-position by
+   * 
+   * @param p_bTriggeredByArrowGadget
+   * If the call is triggered by the down-arrow-gadget: true
+   * If the call is triggered by other sources: false
    */
-  virtual void YIncrease() = 0;
+  virtual void YIncrease(size_t p_IncreaseBy, 
+    bool p_bTriggeredByArrowGadget = false) = 0;
 
   /**
-   * Decreases the Y position of the text by 1 and performs a scrolling
-   * by one line.  Should be called from the Application event loop
-   * when the cursor up key was received.
+   * This handles the decrease by 1 of the y-position triggered by the 
+   * cursor-up-key or the up-arrow-gadget. It is called from the 
+   * handleIDCMP method of this class.
+   * 
+   * Child classes must implement it and therein should perform the 
+   * scrolling to y-1.
+   * 
+   * @param p_DecreaseBy
+   * Amount to decrease the y-position by
+   * 
+   * @param p_bTriggeredByArrowGadget
+   * If the call is triggered by the up-arrow-gadget: true
+   * If the call is triggered by other sources: false
    */
-  virtual void YDecrease() = 0;
+  virtual void YDecrease(size_t p_DecreaseBy, 
+    bool p_bTriggeredByArrowGadget = false) = 0;
 
 
 protected:
