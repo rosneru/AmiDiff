@@ -87,6 +87,10 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
     return false;
   }
 
+  // Re-initialize rast port.
+  // TODO Check: Does this set the default proportional font in the rastport??
+  InitRastPort(m_pWindow->RPort);
+
   //
   // Calculate some initial values which only have to be calculated
   // once after window opening
