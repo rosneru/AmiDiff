@@ -117,7 +117,6 @@ Storm Shell Project (Dependencies)
 File
 1 "amigautils/AmigaFile.cpp"
 "amigautils/AmigaFile.cpp"
-"amigautils/StopWatch.h"
 "amigautils/AmigaFile.h"
 "oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
