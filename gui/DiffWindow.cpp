@@ -513,9 +513,12 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     p_ScrollNumLinesDown = m_Y;
   }
 
+  // Set background color before scrolling
+  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+
   // Move text area downward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
-    -p_ScrollNumLinesDown * m_AppScreen.FontHeight(),  // n * height
+    -p_ScrollNumLinesDown * m_TextFontHeight_pix,  // n * height
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
@@ -582,9 +585,12 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     p_ScrollUpNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextAreaLines);
   }
 
+  // Set background color before scrolling
+  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+
   // Move text area upward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
-    p_ScrollUpNumLinesUp * m_AppScreen.FontHeight(),
+    p_ScrollUpNumLinesUp * m_TextFontHeight_pix,
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
