@@ -8,6 +8,7 @@
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <clib/utility_protos.h>
+#include <graphics/gfxbase.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
@@ -15,12 +16,18 @@
 #include <libraries/gadtools.h>
 #include "DiffWindow.h"
 
+extern struct Library* GfxBase;
+
 DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : ScrollbarWindow(p_AppScreen, p_pMsgPort),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
-    m_MaxTextLines(0),
+    m_TextFontWidth_pix(0),
+    m_TextFontHeight_pix(0),
+    m_X(0),
     m_Y(0),
+    m_MaxTextAreaLines(0),
+    m_MaxTextAreaChars(0),
     m_IndentX(5),
     m_IndentY(0),
     m_TextArea1Left(0),
@@ -92,6 +99,11 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_TextArea1Left = m_IndentX;
   m_TextAreasTop = m_IndentY;
 
+  struct TextFont* defaultTextFont = ((struct GfxBase *)GfxBase)->DefaultFont;
+  m_TextFontWidth_pix = defaultTextFont->tf_XSize;
+  m_TextFontHeight_pix = defaultTextFont->tf_YSize;
+
+
   // Calculate some values which have to calculated after window
   // opening and after resizing
   calcSizes();
@@ -100,19 +112,6 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
   m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
   m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
-
-  // Set the fixed properties for the left and right line parts
-  m_LeftIText.FrontPen   = m_AppScreen.Pens().Text();
-  m_LeftIText.DrawMode   = JAM2;
-  m_LeftIText.LeftEdge   = m_TextArea1Left + 3;
-  m_LeftIText.ITextFont  = &m_TextAttr;
-  m_LeftIText.NextText   = &m_RightIText;
-
-  m_RightIText.FrontPen  = m_AppScreen.Pens().Text();
-  m_RightIText.DrawMode  = JAM2;
-  m_RightIText.LeftEdge  = 0;
-  m_RightIText.ITextFont = &m_TextAttr;
-  m_RightIText.NextText  = NULL;
 
   // Paint the window decoration
   paintWindowDecoration();
@@ -149,7 +148,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   // Display the document titles above the text areas
   paintDocumentNames();
 
-  // Display the first [1; m_MaxTextLines] lines
+  // Display the first [1; m_MaxTextAreaLines] lines
   paintDocument();
 
   // Paint the window decoration
@@ -157,7 +156,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  setYScrollPotSize(m_MaxTextLines, m_pLeftDocument->NumLines());
+  setYScrollPotSize(m_MaxTextAreaLines, m_pLeftDocument->NumLines());
 
   return true;
 }
@@ -171,7 +170,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   }
 
   int deltaAbs = abs(delta);
-  int deltaLimit = m_MaxTextLines / 2;
+  int deltaLimit = m_MaxTextAreaLines / 2;
 
   //
   // Scroll small amounts (1/2 window height) line by line
@@ -198,7 +197,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
   // Determine how often getPrev or getNext must be called to set the
   // left and right documents to the new start point for page redrawing
-  int numListTraverses = delta - m_MaxTextLines + 1;
+  int numListTraverses = delta - m_MaxTextAreaLines + 1;
 
   // Depending on numListTraverses call getPrev and getNext as often
   // as needed
@@ -280,8 +279,7 @@ void DiffWindow::initialize()
   // Setting the IDCMP messages we want to receive for this window
   setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
            IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
-           IDCMP_NEWSIZE |        // Inform us about resizing
-           IDCMP_IDCMPUPDATE);    // Inform us about TODO
+           IDCMP_NEWSIZE);    // Inform us about TODO
 
   m_bInitialized = true;
 
@@ -333,11 +331,14 @@ void DiffWindow::calcSizes()
     return;
   }
 
-  // Calculates how many lines fit into current window size
-  m_MaxTextLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
+  // Calculates how many lines fit into each text area
+  m_MaxTextAreaLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
+
+  // Calculates how many chars fit on each line in each text area
+  m_MaxTextAreaChars = (m_TextAreasWidth - 4) / m_TextFontWidth_pix;
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_MaxTextLines);
+  setYScrollPotSize(m_MaxTextAreaLines);
 }
 
 void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
@@ -362,6 +363,9 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
     pRightLine = m_pRightDocument->GetIndexedLine(i);
   }
 
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+
   while((pLeftLine != NULL) && (pRightLine !=NULL))
   {
     int lineNum = i - m_Y;
@@ -369,7 +373,7 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
     paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
 
-    if(lineNum >= m_MaxTextLines - 1)
+    if(lineNum >= m_MaxTextAreaLines - 1)
     {
       // Only display as many lines as fit into the window
       break;
@@ -385,43 +389,45 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
 void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
     const SimpleString* p_pRightLine, WORD p_TopEdge)
 {
-  // Set left text
-  m_LeftIText.TopEdge = p_TopEdge + m_TextAreasTop + 2;
-  m_LeftIText.BackPen = colorNameToPen(m_pLeftDocument->LineColor());
-  m_LeftIText.IText = (UBYTE*)p_pLeftLine->C_str();
+  // Move rastport cursor to start of left line
+  ::Move(m_pWindow->RPort,
+    m_TextArea1Left + 3,
+    p_TopEdge + m_TextAreasTop + m_TextFontHeight_pix
+  );
 
-  // Set right text
-  m_RightIText.LeftEdge = m_TextArea2Left + 3;
-  m_RightIText.TopEdge = p_TopEdge + m_TextAreasTop + 2;
-  m_RightIText.BackPen = colorNameToPen(m_pRightDocument->LineColor());
-  m_RightIText.IText = (UBYTE*)p_pRightLine->C_str();
+  // Set the left line's background color
+  SetBPen(m_pWindow->RPort, colorNameToPen(m_pLeftDocument->LineColor()));
 
-  // Print both lines (as ITexts are connected)
-  PrintIText(m_pWindow->RPort, &m_LeftIText, 0, 0);
+  // Determine how many characters would be print theoretically
+  size_t numChars = p_pLeftLine->Length();
 
-  // Erase a small area around the center vertical line / start of the
-  // right text area in case left line was too long
-  EraseRect(m_pWindow->RPort,
-    m_TextArea2Left - 2,
-    m_TextAreasTop + p_TopEdge + 2,
-    m_TextArea2Left + 2,
-    m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 1);
+  // Limit this number to the max fitting chars if exceeded
+  numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
 
-  // Determine how long in pixels the right line is
-  int rightTextLen_pix = m_pWindow->RPort->Font->tf_XSize * p_pRightLine->Length();
-  if(rightTextLen_pix > m_TextAreasWidth)
-  {
-    // limit the value to max possible (displayable) value
-    rightTextLen_pix = m_TextAreasWidth - 3;
-  }
+  Text(m_pWindow->RPort,
+    p_pLeftLine->C_str(), // TODO (UBYTE*) or (STRPTR)
+    numChars
+  );
 
-  // Erase the area after right line text to window border
-  EraseRect(m_pWindow->RPort,
-    m_TextArea2Left + 3 + rightTextLen_pix,
-    m_TextAreasTop + p_TopEdge + 2,
-    m_InnerWindowRight,
-    m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 1);
+  // Move rastport cursor to start of right line
+  ::Move(m_pWindow->RPort,
+    m_TextArea2Left + 3,
+    p_TopEdge + m_TextAreasTop + m_TextFontHeight_pix
+  );
 
+  // Set the right line's background color
+  SetBPen(m_pWindow->RPort, colorNameToPen(m_pRightDocument->LineColor()));
+
+  // Determine how many characters would be print theoretically
+  numChars = p_pRightLine->Length();
+
+  // Limit this number to the max fitting chars if exceeded
+  numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
+
+  Text(m_pWindow->RPort,
+    p_pRightLine->C_str(), // TODO (UBYTE*) or (STRPTR)
+    numChars
+  );
 }
 
 void DiffWindow::paintWindowDecoration()
@@ -507,12 +513,18 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     p_ScrollNumLinesDown = m_Y;
   }
 
+  // Set background color before scrolling
+  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+
   // Move text area downward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
-    -p_ScrollNumLinesDown * m_AppScreen.FontHeight(),  // n * height
+    -p_ScrollNumLinesDown * m_TextFontHeight_pix,  // n * height
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
+
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
 
   // This id only is used in the first call of
   // GetPreviousOrIndexedLine() in the loop below. The next calls don't
@@ -554,37 +566,43 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     return 0;
   }
 
-  if(m_pLeftDocument->NumLines() < m_MaxTextLines)
+  if(m_pLeftDocument->NumLines() < m_MaxTextAreaLines)
   {
     // Do not move the scroll area upward if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_Y + m_MaxTextLines) == m_pLeftDocument->NumLines())
+  if((m_Y + m_MaxTextAreaLines) == m_pLeftDocument->NumLines())
   {
     // Do not move the scroll area upward if text already at bottom
     return 0;
   }
 
-  if((m_Y + m_MaxTextLines + p_ScrollUpNumLinesUp) > m_pLeftDocument->NumLines())
+  if((m_Y + m_MaxTextAreaLines + p_ScrollUpNumLinesUp) > m_pLeftDocument->NumLines())
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    p_ScrollUpNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextLines);
+    p_ScrollUpNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextAreaLines);
   }
+
+  // Set background color before scrolling
+  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
   // Move text area upward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
-    p_ScrollUpNumLinesUp * m_AppScreen.FontHeight(),
+    p_ScrollUpNumLinesUp * m_TextFontHeight_pix,
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
+
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
 
   // This id only is used in the first call of GetNextOrIndexedLine()
   // in the loop below. The next calls don't use the index, instead
   // they use GetNext(). Because of this it is no problem that weather
   // the index itself nor m_Y etc are updated in the loop.
-  int nextLineId = m_Y + m_MaxTextLines;
+  int nextLineId = m_Y + m_MaxTextAreaLines;
 
   for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
@@ -600,7 +618,7 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
       break;
     }
 
-    int lineNum = m_MaxTextLines - p_ScrollUpNumLinesUp + i;
+    int lineNum = m_MaxTextAreaLines - p_ScrollUpNumLinesUp + i;
 
     paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());

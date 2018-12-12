@@ -102,14 +102,24 @@ private:
   DiffDocument* m_pRightDocument;
 
   struct TextAttr m_TextAttr;
-  struct IntuiText m_LeftIText;
-  struct IntuiText m_RightIText;
 
-  int m_MaxTextLines;       ///> Number of text lines that fit in window
-  int m_Y;                  ///> Index of currently first displayed text line
+  int m_TextFontWidth_pix;
+  int m_TextFontHeight_pix;
 
-  int m_IndentX;            ///> Distance of TextArea to left and right window border
-  int m_IndentY;            ///> Distance of TextArea to window title bar and bottom border
+  int m_X;  ///> Index of leftmost char in displayed lines.
+            ///> Is > 0 when text is horizontally scrolled.
+
+  int m_Y;  ///> Index of topmost displayed line in document.
+            ///> Is > 0 when text is vertically scrolled.
+
+  int m_MaxTextAreaChars; ///> Max fitting chars in each text area.
+                          ///> Depending on font and text area size.
+
+  int m_MaxTextAreaLines; ///> Max fitting lines in each text area.
+                          ///> Depending on font and window size.
+
+  int m_IndentX;  ///> X-distance of TextAreas to window borders
+  int m_IndentY;  ///> Y-distance of TextAreas to window borders
 
   int m_TextArea1Left;      ///> X-position of the 1st text area
   int m_TextArea2Left;      ///> X-position of the 2nd text area
