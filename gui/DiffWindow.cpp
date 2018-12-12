@@ -104,18 +104,7 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
   m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
-  // Set the fixed properties for the left and right line parts
-  m_LeftIText.FrontPen   = m_AppScreen.Pens().Text();
-  m_LeftIText.DrawMode   = JAM2;
-  m_LeftIText.LeftEdge   = m_TextArea1Left + 3;
-  m_LeftIText.ITextFont  = &m_TextAttr;
-  m_LeftIText.NextText   = &m_RightIText;
-
-  m_RightIText.FrontPen  = m_AppScreen.Pens().Text();
-  m_RightIText.DrawMode  = JAM2;
-  m_RightIText.LeftEdge  = 0;
-  m_RightIText.ITextFont = &m_TextAttr;
-  m_RightIText.NextText  = NULL;
+  m_FontWidth_pix = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_XSize;
 
   // Paint the window decoration
   paintWindowDecoration();
@@ -336,8 +325,11 @@ void DiffWindow::calcSizes()
     return;
   }
 
-  // Calculates how many lines fit into current window size
+  // Calculates how many lines fit into each text area
   m_MaxTextAreaLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
+
+  // Calculates how many chars fit on each line in each text area
+  m_MaxTextAreaChars = (m_TextAreasWidth - 4) / m_FontWidth_pix;
 
   // Set y-scroll-gadget's pot size in relation of new window size
   setYScrollPotSize(m_MaxTextAreaLines);
@@ -388,43 +380,45 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
 void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
     const SimpleString* p_pRightLine, WORD p_TopEdge)
 {
-  // Set left text
-  m_LeftIText.TopEdge = p_TopEdge + m_TextAreasTop + 2;
-  m_LeftIText.BackPen = colorNameToPen(m_pLeftDocument->LineColor());
-  m_LeftIText.IText = (UBYTE*)p_pLeftLine->C_str();
+  // Move rastport cursor to start of left line
+  ::Move(m_pWindow->RPort,
+    0,
+    p_TopEdge + m_TextAreasTop + 2
+  );
 
-  // Set right text
-  m_RightIText.LeftEdge = m_TextArea2Left + 3;
-  m_RightIText.TopEdge = p_TopEdge + m_TextAreasTop + 2;
-  m_RightIText.BackPen = colorNameToPen(m_pRightDocument->LineColor());
-  m_RightIText.IText = (UBYTE*)p_pRightLine->C_str();
+  // Set the left line's background color
+  SetBPen(m_pWindow->RPort, colorNameToPen(m_pLeftDocument->LineColor()));
 
-  // Print both lines (as ITexts are connected)
-  PrintIText(m_pWindow->RPort, &m_LeftIText, 0, 0);
+  // Determine how many characters would be print theoretically
+  size_t numChars = p_pLeftLine->Length();
 
-  // Erase a small area around the center vertical line / start of the
-  // right text area in case left line was too long
-  EraseRect(m_pWindow->RPort,
-    m_TextArea2Left - 2,
-    m_TextAreasTop + p_TopEdge + 2,
-    m_TextArea2Left + 2,
-    m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 1);
+  // Limit this number to the max fitting chars if exceeded
+  numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
 
-  // Determine how long in pixels the right line is
-  int rightTextLen_pix = m_pWindow->RPort->Font->tf_XSize * p_pRightLine->Length();
-  if(rightTextLen_pix > m_TextAreasWidth)
-  {
-    // limit the value to max possible (displayable) value
-    rightTextLen_pix = m_TextAreasWidth - 3;
-  }
+  Text(m_pWindow->RPort,
+    p_pLeftLine->C_str(), // TODO (UBYTE*) or (STRPTR)
+    numChars
+  );
 
-  // Erase the area after right line text to window border
-  EraseRect(m_pWindow->RPort,
-    m_TextArea2Left + 3 + rightTextLen_pix,
-    m_TextAreasTop + p_TopEdge + 2,
-    m_InnerWindowRight,
-    m_TextAreasTop + p_TopEdge + m_AppScreen.FontHeight() + 1);
+  // Move rastport cursor to start of right line
+  ::Move(m_pWindow->RPort,
+    m_TextArea2Left + 3,
+    p_TopEdge + m_TextAreasTop + 2
+  );
 
+  // Set the right line's background color
+  SetBPen(m_pWindow->RPort, colorNameToPen(m_pRightDocument->LineColor()));
+
+  // Determine how many characters would be print theoretically
+  numChars = p_pRightLine->Length();
+
+  // Limit this number to the max fitting chars if exceeded
+  numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
+
+  Text(m_pWindow->RPort,
+    p_pRightLine->C_str(), // TODO (UBYTE*) or (STRPTR)
+    numChars
+  );
 }
 
 void DiffWindow::paintWindowDecoration()

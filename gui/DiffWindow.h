@@ -102,8 +102,6 @@ private:
   DiffDocument* m_pRightDocument;
 
   struct TextAttr m_TextAttr;
-  struct IntuiText m_LeftIText;
-  struct IntuiText m_RightIText;
   
   int m_FontWidth_pix;
 
