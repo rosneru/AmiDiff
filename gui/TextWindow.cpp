@@ -14,7 +14,7 @@
 TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : ScrollbarWindow(p_AppScreen, p_pMsgPort),
     m_pDocument(NULL),
-    m_MaxTextLines(0),
+    m_MaxWinLines(0),
     m_Y(0),
     m_TextAreaLeft(0),
     m_TextAreaTop(0),
@@ -46,7 +46,7 @@ void TextWindow::Resized()
   }
 
   // Set scroll gadgets pot size in relation of new window size
-  setYScrollPotSize(m_MaxTextLines);
+  setYScrollPotSize(m_MaxWinLines);
 
   // Redraw obscured window regions
   Refresh();
@@ -105,12 +105,12 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
   // Set full path of opened file as window title
   SetTitle(p_pTextDocument->FileName());
 
-  // Display the first [1; m_MaxTextLines] lines
+  // Display the first [1; m_MaxWinLines] lines
   paintDocument();
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  setYScrollPotSize(m_MaxTextLines, m_pDocument->NumLines());
+  setYScrollPotSize(m_MaxWinLines, m_pDocument->NumLines());
 
   return true;
 }
@@ -124,7 +124,7 @@ void TextWindow::YChangedHandler(size_t p_NewY)
   }
 
   int deltaAbs = abs(delta);
-  int deltaLimit = m_MaxTextLines / 2;
+  int deltaLimit = m_MaxWinLines / 2;
 
   //
   // Scroll small amounts (1/2 window height) line by line
@@ -151,7 +151,7 @@ void TextWindow::YChangedHandler(size_t p_NewY)
 
   // Determine how often getPrev or getNext must be called to set the
   // left and right documents to the new start point for page redrawing
-  int numListTraverses = delta - m_MaxTextLines + 1;
+  int numListTraverses = delta - m_MaxWinLines + 1;
 
   // Depending on numListTraverses call getPrev and getNext as often
   // as needed
@@ -272,11 +272,11 @@ void TextWindow::calcSizes()
     return;
   }
 
-  m_MaxTextLines = m_pWindow->Height;
-  m_MaxTextLines -= m_pWindow->BorderTop;
-  m_MaxTextLines -= m_pWindow->BorderBottom;
-  m_MaxTextLines -= m_TextAreaTop;
-  m_MaxTextLines /= m_AppScreen.FontHeight();
+  m_MaxWinLines = m_pWindow->Height;
+  m_MaxWinLines -= m_pWindow->BorderTop;
+  m_MaxWinLines -= m_pWindow->BorderBottom;
+  m_MaxWinLines -= m_TextAreaTop;
+  m_MaxWinLines /= m_AppScreen.FontHeight();
 }
 
 
@@ -313,7 +313,7 @@ void TextWindow::paintDocument(bool p_bStartFromCurrentY)
 
     paintLine(pLine, lineNum * m_AppScreen.FontHeight());
 
-    if(lineNum >= m_MaxTextLines - 1)
+    if(lineNum >= m_MaxWinLines - 1)
     {
       // Only display as many lines as fit into the window
       break;
@@ -386,23 +386,23 @@ size_t TextWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     return 0;
   }
 
-  if(m_pDocument->NumLines() < m_MaxTextLines)
+  if(m_pDocument->NumLines() < m_MaxWinLines)
   {
     // Do not move the scroll area upward if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_Y + m_MaxTextLines) == m_pDocument->NumLines())
+  if((m_Y + m_MaxWinLines) == m_pDocument->NumLines())
   {
     // Do not move the scroll area upward if text already at bottom
     return 0;
   }
 
-  if((m_Y + m_MaxTextLines + p_ScrollUpNumLinesUp) > m_pDocument->NumLines())
+  if((m_Y + m_MaxWinLines + p_ScrollUpNumLinesUp) > m_pDocument->NumLines())
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    p_ScrollUpNumLinesUp = m_pDocument->NumLines() - (m_Y + m_MaxTextLines);
+    p_ScrollUpNumLinesUp = m_pDocument->NumLines() - (m_Y + m_MaxWinLines);
   }
 
   // Move text area upward by n * the height of one text line
@@ -415,7 +415,7 @@ size_t TextWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
   // in the loop below. The next calls don't use the index, instead
   // they use GetNext(). Because of this it is no problem that weather
   // the index itself nor m_Y etc are updated in the loop.
-  int nextLineId = m_Y + m_MaxTextLines;
+  int nextLineId = m_Y + m_MaxWinLines;
 
   for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
@@ -427,7 +427,7 @@ size_t TextWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
       break;
     }
 
-    int lineNum = m_MaxTextLines - p_ScrollUpNumLinesUp + i;
+    int lineNum = m_MaxWinLines - p_ScrollUpNumLinesUp + i;
 
     paintLine(pLine, lineNum * m_AppScreen.FontHeight());
   }

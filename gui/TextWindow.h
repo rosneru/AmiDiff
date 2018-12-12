@@ -103,7 +103,7 @@ private:
   struct TextAttr m_TextAttr;
   struct IntuiText m_IntuiText;
 
-  int m_MaxTextLines;   ///> Number of text lines that fit in window
+  int m_MaxWinLines;    ///> Number of text lines that fit in window
   int m_Y;              ///> Index of currently first displayed text line
 
   int m_TextAreaLeft;   ///> Left x coordinate of text area

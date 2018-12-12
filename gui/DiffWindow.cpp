@@ -19,8 +19,11 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : ScrollbarWindow(p_AppScreen, p_pMsgPort),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
-    m_MaxTextLines(0),
+    m_FontWidth_pix(0),
+    m_X(0),
     m_Y(0),
+    m_MaxTextAreaLines(0),
+    m_MaxTextAreaChars(0),
     m_IndentX(5),
     m_IndentY(0),
     m_TextArea1Left(0),
@@ -149,7 +152,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   // Display the document titles above the text areas
   paintDocumentNames();
 
-  // Display the first [1; m_MaxTextLines] lines
+  // Display the first [1; m_MaxTextAreaLines] lines
   paintDocument();
 
   // Paint the window decoration
@@ -157,7 +160,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  setYScrollPotSize(m_MaxTextLines, m_pLeftDocument->NumLines());
+  setYScrollPotSize(m_MaxTextAreaLines, m_pLeftDocument->NumLines());
 
   return true;
 }
@@ -171,7 +174,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   }
 
   int deltaAbs = abs(delta);
-  int deltaLimit = m_MaxTextLines / 2;
+  int deltaLimit = m_MaxTextAreaLines / 2;
 
   //
   // Scroll small amounts (1/2 window height) line by line
@@ -198,7 +201,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 
   // Determine how often getPrev or getNext must be called to set the
   // left and right documents to the new start point for page redrawing
-  int numListTraverses = delta - m_MaxTextLines + 1;
+  int numListTraverses = delta - m_MaxTextAreaLines + 1;
 
   // Depending on numListTraverses call getPrev and getNext as often
   // as needed
@@ -334,10 +337,10 @@ void DiffWindow::calcSizes()
   }
 
   // Calculates how many lines fit into current window size
-  m_MaxTextLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
+  m_MaxTextAreaLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_MaxTextLines);
+  setYScrollPotSize(m_MaxTextAreaLines);
 }
 
 void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
@@ -369,7 +372,7 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
     paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
 
-    if(lineNum >= m_MaxTextLines - 1)
+    if(lineNum >= m_MaxTextAreaLines - 1)
     {
       // Only display as many lines as fit into the window
       break;
@@ -554,23 +557,23 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     return 0;
   }
 
-  if(m_pLeftDocument->NumLines() < m_MaxTextLines)
+  if(m_pLeftDocument->NumLines() < m_MaxTextAreaLines)
   {
     // Do not move the scroll area upward if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_Y + m_MaxTextLines) == m_pLeftDocument->NumLines())
+  if((m_Y + m_MaxTextAreaLines) == m_pLeftDocument->NumLines())
   {
     // Do not move the scroll area upward if text already at bottom
     return 0;
   }
 
-  if((m_Y + m_MaxTextLines + p_ScrollUpNumLinesUp) > m_pLeftDocument->NumLines())
+  if((m_Y + m_MaxTextAreaLines + p_ScrollUpNumLinesUp) > m_pLeftDocument->NumLines())
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    p_ScrollUpNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextLines);
+    p_ScrollUpNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextAreaLines);
   }
 
   // Move text area upward by n * the height of one text line
@@ -584,7 +587,7 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
   // in the loop below. The next calls don't use the index, instead
   // they use GetNext(). Because of this it is no problem that weather
   // the index itself nor m_Y etc are updated in the loop.
-  int nextLineId = m_Y + m_MaxTextLines;
+  int nextLineId = m_Y + m_MaxTextAreaLines;
 
   for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
@@ -600,7 +603,7 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
       break;
     }
 
-    int lineNum = m_MaxTextLines - p_ScrollUpNumLinesUp + i;
+    int lineNum = m_MaxTextAreaLines - p_ScrollUpNumLinesUp + i;
 
     paintLine(pLeftLine, pRightLine,
       lineNum * m_AppScreen.FontHeight());
