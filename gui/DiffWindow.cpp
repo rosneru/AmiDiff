@@ -276,8 +276,7 @@ void DiffWindow::initialize()
   // Setting the IDCMP messages we want to receive for this window
   setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
            IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
-           IDCMP_NEWSIZE |        // Inform us about resizing
-           IDCMP_IDCMPUPDATE);    // Inform us about TODO
+           IDCMP_NEWSIZE);    // Inform us about TODO
 
   m_bInitialized = true;
 
