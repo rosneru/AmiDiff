@@ -57,10 +57,10 @@ bool AmigaDiffFacade::Diff()
     return false;
   }
 
-  int timePreprocessLeft = 0;
-  int timePreprocessRight = 0;
-  int timeDiff = 0;
-  int timeSummary = 0;
+  long timePreprocessLeft = 0;
+  long timePreprocessRight = 0;
+  long timeDiff = 0;
+  long timeSummary = 0;
 
   m_StopWatch.Start();
   if(m_LeftSrcPartition.PreProcess(m_LeftFilePath) == false)
@@ -70,7 +70,7 @@ bool AmigaDiffFacade::Diff()
 
     return false;
   }
-  timePreprocessLeft = static_cast<int>(m_StopWatch.Stop());
+  timePreprocessLeft = static_cast<long>(m_StopWatch.Stop());
 
   m_StopWatch.Start();
   if(m_RightSrcPartition.PreProcess(m_RightFilePath) == false)
@@ -79,7 +79,7 @@ bool AmigaDiffFacade::Diff()
     m_ErrorText += m_RightFilePath + "'\n Maybe a read error?";
     return false;
   }
-  timePreprocessRight = static_cast<int>(m_StopWatch.Stop());
+  timePreprocessRight = static_cast<long>(m_StopWatch.Stop());
 
   m_StopWatch.Start();
   DiffEngine diffEngine;
@@ -87,7 +87,7 @@ bool AmigaDiffFacade::Diff()
     m_LeftSrcPartition, m_RightSrcPartition,
     m_LeftDiffPartition, m_RightDiffPartition);
 
-  timeDiff = static_cast<int>(m_StopWatch.Stop());
+  timeDiff = static_cast<long>(m_StopWatch.Stop());
 
   timeSummary = timePreprocessLeft + timePreprocessRight + timeDiff;
 
@@ -100,10 +100,13 @@ bool AmigaDiffFacade::Diff()
   m_ErrorText = "";
 
   m_ElapsedText = "Diff performed in ";
-  m_ElapsedText += timeSummary / 1000 + " sec. ";
-  m_ElapsedText += "( " + timePreprocessLeft / 1000;
-  m_ElapsedText += " + " + timePreprocessRight / 1000;
-  m_ElapsedText += " + " + timeDiff / 1000;
+  m_ElapsedText += timeSummary;
+  m_ElapsedText += " ms. ( ";
+  m_ElapsedText += timePreprocessLeft;
+  m_ElapsedText += " + ";
+  m_ElapsedText += timePreprocessRight;
+  m_ElapsedText += " + ";
+  m_ElapsedText += timeDiff;
   m_ElapsedText += ")";
 
   disposeDocuments();

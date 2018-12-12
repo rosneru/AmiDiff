@@ -168,7 +168,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   return true;
 }
 
-bool DiffWindow::SetStatusBarText(const SimpleString& p_StatusBarText)
+void DiffWindow::SetStatusBarText(const SimpleString& p_StatusBarText)
 {
   m_StatusBarText = p_StatusBarText;
   paintStatusBar();

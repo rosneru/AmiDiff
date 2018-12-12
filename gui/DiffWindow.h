@@ -52,7 +52,7 @@ public:
   bool SetContent(DiffDocument* p_pLeftDocument,
     DiffDocument* p_pRightDocument);
 
-  bool SetStatusBarText(const SimpleString& p_StatusBarText);
+  void SetStatusBarText(const SimpleString& p_StatusBarText);
 
   /**
    * Handles given IDCMP event.
@@ -162,12 +162,13 @@ private:
   void paintWindowDecoration();
 
   /**
-   * Displays the names of the documents above the two BevelBoxes
+   * Displays the names of the documents above the two text areas
    */
   void paintDocumentNames();
 
   /**
-   * Displays the names of the documents above the two BevelBoxes
+   * Displays a status bar with statistical information and a legend
+   *  below the two text areas
    */
   void paintStatusBar();
 
