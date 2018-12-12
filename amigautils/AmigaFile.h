@@ -53,12 +53,24 @@ public:
 
   /**
    * Counts the number of lines in file. The file has  to be opened
-   * before calling this function.
+   * before calling this method.
    *
    * @returns
    * Number of lines in file or -1 if file is not opened.
    */
   int CountLines();
+
+  /**
+   * Gets the file size in bytes. The file has  to be opened before
+   * calling this method.
+   * 
+   * NOTE: Changes the file handle position! After this operation the
+   * file handle points to the start of tze file.
+   *
+   * @returns
+   * File size in bytes, 0 if not opened.
+   */
+  ULONG GetSize();
 
   /**
    * Reads the file line by line storing each line at the bottom of the
@@ -85,20 +97,11 @@ public:
    */
   bool ReadLine(SimpleString& p_Line);
 
-  /**
-   * Returns a string with statistical informations about e.g. how long
-   * counting lines or loading text into a list took.
-   *
-   * This information will be cleared at file closing time.
-   */
-  SimpleString GetTimeStatistics();
-
 private:
   const size_t MAX_LINE_LENGTH;
   char* m_pLineBuf;
   BPTR m_pFile;
   SimpleString m_FileName;
-  SimpleString m_TimeStatistics;
 };
 
 #endif

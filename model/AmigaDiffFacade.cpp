@@ -38,6 +38,10 @@ const SimpleString& AmigaDiffFacade::ErrorText() const
   return m_ErrorText;
 }
 
+const SimpleString& AmigaDiffFacade::ElapsedText() const
+{
+  return m_ElapsedText;
+}
 
 bool AmigaDiffFacade::Diff()
 {
@@ -53,22 +57,39 @@ bool AmigaDiffFacade::Diff()
     return false;
   }
 
+  long timePreprocessLeft = 0;
+  long timePreprocessRight = 0;
+  long timeDiff = 0;
+  long timeSummary = 0;
+
+  m_StopWatch.Start();
   if(m_LeftSrcPartition.PreProcess(m_LeftFilePath) == false)
   {
-    m_ErrorText = "Error in pre-processing the left file. Maybe a read/write error?";
+    m_ErrorText = "Error while pre-processing the file '";
+    m_ErrorText += m_LeftFilePath + "'\n Maybe a read error?";
+
     return false;
   }
+  timePreprocessLeft = static_cast<long>(m_StopWatch.Stop());
 
+  m_StopWatch.Start();
   if(m_RightSrcPartition.PreProcess(m_RightFilePath) == false)
   {
-    m_ErrorText = "Error in pre-processing the right file. Maybe a read/write error?";
+    m_ErrorText = "Error while pre-processing the file \n'";
+    m_ErrorText += m_RightFilePath + "'\n Maybe a read error?";
     return false;
   }
+  timePreprocessRight = static_cast<long>(m_StopWatch.Stop());
 
+  m_StopWatch.Start();
   DiffEngine diffEngine;
   bool diffOk = diffEngine.Diff(
     m_LeftSrcPartition, m_RightSrcPartition,
     m_LeftDiffPartition, m_RightDiffPartition);
+
+  timeDiff = static_cast<long>(m_StopWatch.Stop());
+
+  timeSummary = timePreprocessLeft + timePreprocessRight + timeDiff;
 
   if(!diffOk)
   {
@@ -77,6 +98,16 @@ bool AmigaDiffFacade::Diff()
   }
 
   m_ErrorText = "";
+
+  m_ElapsedText = "Diff performed in ";
+  m_ElapsedText += timeSummary;
+  m_ElapsedText += " ms. ( ";
+  m_ElapsedText += timePreprocessLeft;
+  m_ElapsedText += " + ";
+  m_ElapsedText += timePreprocessRight;
+  m_ElapsedText += " + ";
+  m_ElapsedText += timeDiff;
+  m_ElapsedText += ")";
 
   disposeDocuments();
 
@@ -89,6 +120,7 @@ bool AmigaDiffFacade::Diff()
   m_DiffWindow.Open();
 
   m_DiffWindow.SetContent(m_pLeftDiffDocument, m_pRightDiffDocument);
+  m_DiffWindow.SetStatusBarText(m_ElapsedText);
 
   return true;
 }

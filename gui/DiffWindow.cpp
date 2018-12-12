@@ -79,6 +79,9 @@ void DiffWindow::Resized()
     paintDocument();
   }
 
+  // Paint the status bar
+  paintStatusBar();
+
   // Paint the window decoration
   paintWindowDecoration();
 
@@ -154,11 +157,20 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   // Paint the window decoration
   paintWindowDecoration();
 
+  // PAint the status bar
+  paintStatusBar();
+
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
   setYScrollPotSize(m_MaxTextAreaLines, m_pLeftDocument->NumLines());
 
   return true;
+}
+
+void DiffWindow::SetStatusBarText(const SimpleString& p_StatusBarText)
+{
+  m_StatusBarText = p_StatusBarText;
+  paintStatusBar();
 }
 
 void DiffWindow::YChangedHandler(size_t p_NewY)
@@ -470,6 +482,43 @@ void DiffWindow::paintDocumentNames()
 
   intuiText.LeftEdge  = m_TextArea2Left + 2;
   intuiText.IText = (UBYTE*)m_pRightDocument->FileName().C_str();
+  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+}
+
+void DiffWindow::paintStatusBar()
+{
+  struct IntuiText intuiText;
+  intuiText.FrontPen  = m_AppScreen.Pens().Text();
+  intuiText.BackPen   = m_AppScreen.Pens().Background();
+  intuiText.DrawMode  = JAM2;
+  intuiText.ITextFont = &m_TextAttr;
+  intuiText.NextText  = NULL;
+
+  int top = m_TextAreasTop + m_TextAreasHeight + 2;
+  int left = m_TextArea1Left + 2;
+
+  intuiText.TopEdge   = top;
+  intuiText.LeftEdge  = left;
+  intuiText.IText = (UBYTE*)
+    SimpleString(m_StatusBarText + "  |  Legend: ").C_str();
+  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+
+  left += IntuiTextLength(&intuiText);
+  intuiText.LeftEdge = left;
+  intuiText.BackPen = m_AppScreen.Pens().Green();
+  intuiText.IText = (UBYTE*) "Added";
+  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+
+  left += IntuiTextLength(&intuiText) + 5;
+  intuiText.LeftEdge = left;
+  intuiText.BackPen = m_AppScreen.Pens().Yellow();
+  intuiText.IText = (UBYTE*) "Changed";
+  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+
+  left += IntuiTextLength(&intuiText) + 5;
+  intuiText.LeftEdge = left;
+  intuiText.BackPen = m_AppScreen.Pens().Red();
+  intuiText.IText = (UBYTE*) "Deleted";
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
 

@@ -43,7 +43,6 @@ bool TextDocument::Load(const SimpleString& p_FileName)
     m_FileName = p_FileName;
   }
 
-  m_TimeStatistics += file.GetTimeStatistics();
   file.Close();
   return bSuccess;
 }
@@ -59,7 +58,6 @@ void TextDocument::Clear()
   }
 
   m_FileName = "";
-  m_TimeStatistics = "";
 }
 
 const size_t TextDocument::NumLines() const

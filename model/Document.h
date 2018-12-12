@@ -17,7 +17,6 @@ public:
 
 protected:
   SimpleString m_FileName;
-  SimpleString m_TimeStatistics;
 };
 
 

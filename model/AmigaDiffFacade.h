@@ -6,6 +6,7 @@
 #include "DiffFilePartitionAmiga.h"
 #include "DiffWindow.h"
 #include "SimpleString.h"
+#include "StopWatch.h"
 
 /**
  * Facade to hold all objects which are needed to perform a diff and
@@ -28,6 +29,8 @@ public:
   const SimpleString& RightFilePath() const;
 
   const SimpleString& ErrorText() const;
+
+  const SimpleString& ElapsedText() const;
 
 
   /**
@@ -68,7 +71,10 @@ private:
   DiffDocument* m_pLeftDiffDocument;
   DiffDocument* m_pRightDiffDocument;
 
-  SimpleString m_ErrorText;
+  SimpleString m_ErrorText;   ///> Information about last error
+
+  StopWatch m_StopWatch;
+  SimpleString m_ElapsedText; ///> Information about elapsed times
 
   void disposeDocuments();
 };
