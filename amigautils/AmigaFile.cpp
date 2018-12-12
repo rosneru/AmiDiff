@@ -1,5 +1,4 @@
 #include <clib/dos_protos.h>
-#include "StopWatch.h"
 #include "AmigaFile.h"
 
 AmigaFile::AmigaFile()
@@ -68,7 +67,6 @@ void AmigaFile::Close()
   ::Close(m_pFile);
   m_pFile = NULL;
   m_FileName = "";
-  m_TimeStatistics = "";
 }
 
 int AmigaFile::CountLines()
@@ -86,25 +84,27 @@ int AmigaFile::CountLines()
   // Rewind reading pointer to start of file
   Seek(m_pFile, 0, OFFSET_BEGINNING);
 
-  // Initialize and start StopWatch
-  StopWatch stopWatch;
-  stopWatch.Start();
-
   // Reading all lines and increment counter
   while(FGets(m_pFile, m_pLineBuf, readBufSize) != NULL)
   {
     numLines++;
   }
 
-  // Stop StopWatch and store statistic informations
-  long elapsed = static_cast<long>(stopWatch.Stop());
-  m_TimeStatistics += "Counting lines of file '";
-  m_TimeStatistics += m_FileName;
-  m_TimeStatistics += "': ";
-  m_TimeStatistics += elapsed;
-  m_TimeStatistics += " milliseconds\n";
+  return numLines;
+}
 
-return numLines;
+ULONG AmigaFile::GetSize()
+{
+  if(m_pFile == NULL)
+  {
+    return 0;
+  }
+
+  Seek(m_pFile, 0, OFFSET_BEGINING);
+  ULONG size = Seek(m_pFile, 0, OFFSET_END);
+  Seek(m_pFile, 0, OFFSET_BEGINING);
+  
+  return size;
 }
 
 bool AmigaFile::ReadLines(LinkedList& p_List)
@@ -118,24 +118,12 @@ bool AmigaFile::ReadLines(LinkedList& p_List)
   // Rewind reading pointer to start of file
   Seek(m_pFile, 0, OFFSET_BEGINNING);
 
-  // Initialize and start StopWatch
-  StopWatch stopWatch;
-  stopWatch.Start();
-
   // Reading all lines and increment counter
   SimpleString line;
   while(ReadLine(line))
   {
     p_List.InsertTail(new SimpleString(line));
   }
-
-  // Stop StopWatch and store statistic informations
-  long elapsed = static_cast<long>(stopWatch.Stop());
-  m_TimeStatistics += "Loading lines from file '";
-  m_TimeStatistics += m_FileName;
-  m_TimeStatistics += "' into a list: ";
-  m_TimeStatistics += elapsed;
-  m_TimeStatistics += " milliseconds\n";
 
   // Rewind reading pointer to start of file
   Seek(m_pFile, 0, OFFSET_BEGINNING);
@@ -163,9 +151,4 @@ bool AmigaFile::ReadLine(SimpleString& p_Line)
   p_Line = line.Trim();
 
   return true;
-}
-
-SimpleString AmigaFile::GetTimeStatistics()
-{
-  return m_TimeStatistics;
 }
