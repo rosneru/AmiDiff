@@ -52,6 +52,8 @@ public:
   bool SetContent(DiffDocument* p_pLeftDocument,
     DiffDocument* p_pRightDocument);
 
+  bool SetStatusBarText(const SimpleString& p_StatusBarText);
+
   /**
    * Handles given IDCMP event.
    *
@@ -100,6 +102,8 @@ public:
 private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
+
+  SimpleString m_StatusBarText;
 
   struct TextAttr m_TextAttr;
   struct IntuiText m_LeftIText;
@@ -161,6 +165,11 @@ private:
    * Displays the names of the documents above the two BevelBoxes
    */
   void paintDocumentNames();
+
+  /**
+   * Displays the names of the documents above the two BevelBoxes
+   */
+  void paintStatusBar();
 
   /**
    * Gets an appropriate pen from a given ColorName
