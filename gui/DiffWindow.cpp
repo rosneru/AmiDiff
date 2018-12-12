@@ -91,6 +91,9 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   // TODO Check: Does this set the default proportional font in the rastport??
   InitRastPort(m_pWindow->RPort);
 
+  // IF THIS NOT WORKS TRY SOMETHING LIKE THIS
+  // struct Font* DefaultFont=GfxBase->DefaultFont; 
+
   //
   // Calculate some initial values which only have to be calculated
   // once after window opening
