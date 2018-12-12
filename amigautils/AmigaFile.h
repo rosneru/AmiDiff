@@ -70,7 +70,7 @@ public:
    * @returns
    * File size in bytes, 0 if not opened.
    */
-  ULONG GetSize()
+  ULONG GetSize();
 
   /**
    * Reads the file line by line storing each line at the bottom of the
