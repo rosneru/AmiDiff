@@ -102,8 +102,9 @@ private:
   DiffDocument* m_pRightDocument;
 
   struct TextAttr m_TextAttr;
-  
-  int m_FontWidth_pix;
+
+  int m_TextFontWidth_pix;
+  int m_TextFontHeight_pix;
 
   int m_X;  ///> Index of leftmost char in displayed lines.
             ///> Is > 0 when text is horizontally scrolled.

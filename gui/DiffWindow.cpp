@@ -8,6 +8,7 @@
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <clib/utility_protos.h>
+#include <graphics/gfxbase.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
@@ -15,11 +16,14 @@
 #include <libraries/gadtools.h>
 #include "DiffWindow.h"
 
+extern struct Library* GfxBase;
+
 DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : ScrollbarWindow(p_AppScreen, p_pMsgPort),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
-    m_FontWidth_pix(0),
+    m_TextFontWidth_pix(0),
+    m_TextFontHeight_pix(0),
     m_X(0),
     m_Y(0),
     m_MaxTextAreaLines(0),
@@ -87,13 +91,6 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
     return false;
   }
 
-  // Re-initialize rast port.
-  // TODO Check: Does this set the default proportional font in the rastport??
-  InitRastPort(m_pWindow->RPort);
-
-  // IF THIS NOT WORKS TRY SOMETHING LIKE THIS
-  // struct Font* DefaultFont=GfxBase->DefaultFont; 
-
   //
   // Calculate some initial values which only have to be calculated
   // once after window opening
@@ -101,6 +98,11 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_IndentY = 2 * m_AppScreen.FontHeight();
   m_TextArea1Left = m_IndentX;
   m_TextAreasTop = m_IndentY;
+
+  struct TextFont* defaultTextFont = ((struct GfxBase *)GfxBase)->DefaultFont;
+  m_TextFontWidth_pix = defaultTextFont->tf_XSize;
+  m_TextFontHeight_pix = defaultTextFont->tf_YSize;
+
 
   // Calculate some values which have to calculated after window
   // opening and after resizing
@@ -110,8 +112,6 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
   m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
   m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
-
-  m_FontWidth_pix = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_XSize;
 
   // Paint the window decoration
   paintWindowDecoration();
@@ -335,7 +335,7 @@ void DiffWindow::calcSizes()
   m_MaxTextAreaLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
 
   // Calculates how many chars fit on each line in each text area
-  m_MaxTextAreaChars = (m_TextAreasWidth - 4) / m_FontWidth_pix;
+  m_MaxTextAreaChars = (m_TextAreasWidth - 4) / m_TextFontWidth_pix;
 
   // Set y-scroll-gadget's pot size in relation of new window size
   setYScrollPotSize(m_MaxTextAreaLines);
@@ -363,6 +363,9 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
     pRightLine = m_pRightDocument->GetIndexedLine(i);
   }
 
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+
   while((pLeftLine != NULL) && (pRightLine !=NULL))
   {
     int lineNum = i - m_Y;
@@ -388,8 +391,8 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
 {
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
-    0,
-    p_TopEdge + m_TextAreasTop + 2
+    m_TextArea1Left + 3,
+    p_TopEdge + m_TextAreasTop + m_TextFontHeight_pix
   );
 
   // Set the left line's background color
@@ -409,7 +412,7 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   // Move rastport cursor to start of right line
   ::Move(m_pWindow->RPort,
     m_TextArea2Left + 3,
-    p_TopEdge + m_TextAreasTop + 2
+    p_TopEdge + m_TextAreasTop + m_TextFontHeight_pix
   );
 
   // Set the right line's background color
@@ -517,6 +520,9 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
 
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+
   // This id only is used in the first call of
   // GetPreviousOrIndexedLine() in the loop below. The next calls don't
   // use the index, instead they use GetPrevious(). Because of this it
@@ -582,6 +588,9 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 2);
+
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
 
   // This id only is used in the first call of GetNextOrIndexedLine()
   // in the loop below. The next calls don't use the index, instead
