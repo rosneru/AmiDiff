@@ -179,28 +179,28 @@ void TextWindow::YChangedHandler(size_t p_NewY)
 
 
 void TextWindow::YIncrease(size_t p_IncreaseBy,
-  bool p_bTriggeredByArrowGadget)
+  bool p_bTriggeredByScrollbarPot)
 {
   m_Y += scrollNLinesUp(p_IncreaseBy);
 
-  if(!p_bTriggeredByArrowGadget)
+  if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the up-arrow-gadget:
-    // Manually det the new TOP value for the y-scrollbar
+    // Y-position-decrease was not triggered by the scrollbar pot 
+    // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
 }
 
 
 void TextWindow::YDecrease(size_t p_DecreaseBy,
-  bool p_bTriggeredByArrowGadget)
+  bool p_bTriggeredByScrollbarPot)
 {
   m_Y -= scrollNLinesDown(p_DecreaseBy);
 
-  if(!p_bTriggeredByArrowGadget)
+  if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the up-arrow-gadget:
-    // Manually det the new TOP value for the y-scrollbar
+    // Y-position-decrease was not triggered by the scrollbar pot 
+    // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
 }

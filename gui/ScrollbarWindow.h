@@ -60,12 +60,12 @@ public:
    * @param p_IncreaseBy
    * Amount to increase the y-position by
    *
-   * @param p_bTriggeredByArrowGadget
-   * If the call is triggered by the down-arrow-gadget: true
+   * @param p_bTriggeredByScrollbarPot
+   * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
   virtual void YIncrease(size_t p_IncreaseBy,
-    bool p_bTriggeredByArrowGadget = false) = 0;
+    bool p_bTriggeredByScrollbarPot = false) = 0;
 
   /**
    * This handles the decrease by 1 of the y-position triggered by the
@@ -78,12 +78,12 @@ public:
    * @param p_DecreaseBy
    * Amount to decrease the y-position by
    *
-   * @param p_bTriggeredByArrowGadget
-   * If the call is triggered by the up-arrow-gadget: true
+   * @param p_bTriggeredByScrollbarPot
+   * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
   virtual void YDecrease(size_t p_DecreaseBy,
-    bool p_bTriggeredByArrowGadget = false) = 0;
+    bool p_bTriggeredByScrollbarPot = false) = 0;
 
 
 protected:

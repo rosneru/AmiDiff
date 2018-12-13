@@ -102,6 +102,8 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_TextArea1Left = m_IndentX;
   m_TextAreasTop = m_IndentY;
 
+  // Get the width and height of a char of the default rastport font
+  // (This is the systems default monospace font)
   struct TextFont* defaultTextFont = ((struct GfxBase *)GfxBase)->DefaultFont;
   m_TextFontWidth_pix = defaultTextFont->tf_XSize;
   m_TextFontHeight_pix = defaultTextFont->tf_YSize;
@@ -248,27 +250,27 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 }
 
 void DiffWindow::YIncrease(size_t p_IncreaseBy,
-  bool p_bTriggeredByArrowGadget)
+  bool p_bTriggeredByScrollbarPot)
 {
   m_Y += scrollNLinesUp(p_IncreaseBy);
 
-  if(!p_bTriggeredByArrowGadget)
+  if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the up-arrow-gadget:
-    // Manually det the new TOP value for the y-scrollbar
+    // Y-position-decrease was not triggered by the scrollbar pot 
+    // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
 }
 
 void DiffWindow::YDecrease(size_t p_DecreaseBy,
-  bool p_bTriggeredByArrowGadget)
+  bool p_bTriggeredByScrollbarPot)
 {
   m_Y -= scrollNLinesDown(p_DecreaseBy);
 
-  if(!p_bTriggeredByArrowGadget)
+  if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the up-arrow-gadget:
-    // Manually det the new TOP value for the y-scrollbar
+    // Y-position-decrease was not triggered by the scrollbar pot 
+    // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
 }

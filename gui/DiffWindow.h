@@ -80,11 +80,11 @@ public:
    * @param p_IncreaseBy
    * Amount to increase the y-position by
    *
-   * @param p_bTriggeredByArrowGadget
-   * If the call is triggered by the down-arrow-gadget: true
+   * @param p_bTriggeredByScrollbarPot
+   * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByArrowGadget);
+  void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByScrollbarPot);
 
   /**
    * Decreases the Y position of the text by the given amount and
@@ -93,11 +93,11 @@ public:
    * @param p_DecreaseBy
    * Amount to decrease the y-position by
    *
-   * @param p_bTriggeredByArrowGadget
-   * If the call is triggered by the up-arrow-gadget: true
+   * @param p_bTriggeredByScrollbarPot
+   * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void YDecrease(size_t p_DecreaseBy, bool p_bTriggeredByArrowGadget);
+  void YDecrease(size_t p_DecreaseBy, bool p_bTriggeredByScrollbarPot);
 
 private:
   DiffDocument* m_pLeftDocument;
