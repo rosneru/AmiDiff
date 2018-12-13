@@ -34,8 +34,7 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_TextArea2Left(0),
     m_TextAreasTop(0),
     m_TextAreasWidth(0),
-    m_TextAreasHeight(0),
-    m_LineNumbersWidth(0)
+    m_TextAreasHeight(0)
 {
 
 }
@@ -50,7 +49,7 @@ void DiffWindow::Resized()
 {
   if(!IsOpen())
   {
-    return; // TODO
+    return;
   }
 
   if(m_pWindow->Width == m_WinWidth &&
@@ -102,6 +101,8 @@ bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
   m_TextArea1Left = m_IndentX;
   m_TextAreasTop = m_IndentY;
 
+  // Get the width and height of a char of the default rastport font
+  // (This is the systems default monospace font)
   struct TextFont* defaultTextFont = ((struct GfxBase *)GfxBase)->DefaultFont;
   m_TextFontWidth_pix = defaultTextFont->tf_XSize;
   m_TextFontHeight_pix = defaultTextFont->tf_YSize;
@@ -132,18 +133,13 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
 
   m_pLeftDocument = p_pLeftDocument;
   m_pRightDocument = p_pRightDocument;
+  m_X = 0;
   m_Y = 0;
 
   if(!IsOpen())
   {
     return true;
   }
-
-  // TODO Instead 9999 use some algorithm to use exactly as many 9s as
-  //      the m_LeftDocument.NumLines digits has. Maybe sprintf numLines
-  //      to a buf and use this?
-  m_LineNumbersWidth = TextLength(m_pWindow->RPort, "9999", 4);
-
 
   // Clear the window completely
   SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
@@ -248,27 +244,27 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
 }
 
 void DiffWindow::YIncrease(size_t p_IncreaseBy,
-  bool p_bTriggeredByArrowGadget)
+  bool p_bTriggeredByScrollbarPot)
 {
   m_Y += scrollNLinesUp(p_IncreaseBy);
 
-  if(!p_bTriggeredByArrowGadget)
+  if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the up-arrow-gadget:
-    // Manually det the new TOP value for the y-scrollbar
+    // Y-position-decrease was not triggered by the scrollbar pot 
+    // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
 }
 
 void DiffWindow::YDecrease(size_t p_DecreaseBy,
-  bool p_bTriggeredByArrowGadget)
+  bool p_bTriggeredByScrollbarPot)
 {
   m_Y -= scrollNLinesDown(p_DecreaseBy);
 
-  if(!p_bTriggeredByArrowGadget)
+  if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the up-arrow-gadget:
-    // Manually det the new TOP value for the y-scrollbar
+    // Y-position-decrease was not triggered by the scrollbar pot 
+    // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
 }
@@ -291,7 +287,7 @@ void DiffWindow::initialize()
   // Setting the IDCMP messages we want to receive for this window
   setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
            IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
-           IDCMP_NEWSIZE);    // Inform us about TODO
+           IDCMP_NEWSIZE);        // Inform us about resizing
 
   m_bInitialized = true;
 
@@ -338,15 +334,15 @@ void DiffWindow::calcSizes()
 
   m_TextArea2Left = m_TextArea1Left + m_TextAreasWidth;
 
-  if(m_AppScreen.FontHeight() == 0)
+  if((m_TextFontHeight_pix == 0) || (m_TextFontWidth_pix == 0))
   {
     return;
   }
 
-  // Calculates how many lines fit into each text area
-  m_MaxTextAreaLines = (m_TextAreasHeight - 4) /  m_AppScreen.FontHeight();
+  // Calculate how many lines fit into each text area
+  m_MaxTextAreaLines = (m_TextAreasHeight - 4) /  m_TextFontHeight_pix;
 
-  // Calculates how many chars fit on each line in each text area
+  // Calculate how many chars fit on each line in each text area
   m_MaxTextAreaChars = (m_TextAreasWidth - 4) / m_TextFontWidth_pix;
 
   // Set y-scroll-gadget's pot size in relation of new window size
@@ -357,7 +353,7 @@ void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {
-    return; // TODO
+    return;
   }
 
   size_t i = m_Y;
@@ -416,8 +412,9 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   // Limit this number to the max fitting chars if exceeded
   numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
 
+  // Print the left line
   Text(m_pWindow->RPort,
-    p_pLeftLine->C_str(), // TODO (UBYTE*) or (STRPTR)
+    p_pLeftLine->C_str(),
     numChars
   );
 
@@ -436,8 +433,9 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   // Limit this number to the max fitting chars if exceeded
   numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
 
+  // Print the right line
   Text(m_pWindow->RPort,
-    p_pRightLine->C_str(), // TODO (UBYTE*) or (STRPTR)
+    p_pRightLine->C_str(),
     numChars
   );
 }
@@ -598,7 +596,7 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
 
     int lineNum = p_ScrollNumLinesDown - i - 1;
 
-    paintLine(pLeftLine, pRightLine, lineNum * m_AppScreen.FontHeight());
+    paintLine(pLeftLine, pRightLine, lineNum * m_TextFontHeight_pix);
   }
 
   // Repaint window decoration
@@ -669,8 +667,7 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
 
     int lineNum = m_MaxTextAreaLines - p_ScrollUpNumLinesUp + i;
 
-    paintLine(pLeftLine, pRightLine,
-      lineNum * m_AppScreen.FontHeight());
+    paintLine(pLeftLine, pRightLine, lineNum * m_TextFontHeight_pix);
   }
 
   // Repaint window decoration

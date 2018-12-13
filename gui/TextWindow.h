@@ -30,8 +30,6 @@ public:
    */
   virtual void Resized();
 
-  virtual void Refresh();
-
   /**
    * Opens the window.
    *
@@ -77,11 +75,11 @@ public:
    * @param p_IncreaseBy
    * Amount to increase the y-position by
    *
-   * @param p_bTriggeredByArrowGadget
-   * If the call is triggered by the down-arrow-gadget: true
+   * @param p_bTriggeredByScrollbarPot
+   * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByArrowGadget);
+  void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByScrollbarPot);
 
   /**
    * Decreases the Y position of the text by the given amount and
@@ -90,26 +88,40 @@ public:
    * @param p_DecreaseBy
    * Amount to decrease the y-position by
    *
-   * @param p_bTriggeredByArrowGadget
-   * If the call is triggered by the up-arrow-gadget: true
+   * @param p_bTriggeredByScrollbarPot
+   * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void YDecrease(size_t p_DecreaseBy, bool p_bTriggeredByArrowGadget);
+  void YDecrease(size_t p_DecreaseBy, bool p_bTriggeredByScrollbarPot);
 
 
 private:
   TextDocument* m_pDocument;
 
   struct TextAttr m_TextAttr;
-  struct IntuiText m_IntuiText;
 
-  int m_MaxWinLines;    ///> Number of text lines that fit in window
-  int m_Y;              ///> Index of currently first displayed text line
+  int m_TextFontWidth_pix;  ///> Width of the rastport text font
+  int m_TextFontHeight_pix; ///> Height of the rastport text font
 
-  int m_TextAreaLeft;   ///> Left x coordinate of text area
-  int m_TextAreaTop;    ///> Top y coordinate of text area
-  int m_TextAreaRight;  ///> Right x coordinate of text area
-  int m_TextAreaBottom; ///> Bottom y coordinate of text area
+  int m_X;  ///> Index of leftmost char in displayed lines.
+            ///> Is > 0 when text is horizontally scrolled.
+
+  int m_Y;  ///> Index of topmost displayed line in document.
+            ///> Is > 0 when text is vertically scrolled.
+
+  int m_MaxWinChars;      ///> Max fitting lines in each text area.
+                          ///> Depending on font and window size.
+
+  int m_MaxWinLines;      ///> Max fitting lines in each text area.
+                          ///> Depending on font and window size.
+
+  int m_IndentX;  ///> X-distance of the text area to window borders
+  int m_IndentY;  ///> Y-distance of the text area to window borders
+
+  int m_TextAreaLeft;     ///> X-position of the 1st text area
+  int m_TextAreaTop;      ///> Y-position of the text area
+  int m_TextAreaWidth;    ///> Width of each text area
+  int m_TextAreaHeight;   ///> Height of the text area
 
   /**
    * Initializes some window specific feature. Gadgets, etc.
