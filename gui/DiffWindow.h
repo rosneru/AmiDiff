@@ -107,8 +107,8 @@ private:
 
   struct TextAttr m_TextAttr;
 
-  int m_TextFontWidth_pix;
-  int m_TextFontHeight_pix;
+  int m_TextFontWidth_pix;  ///> Width of the rastport text font
+  int m_TextFontHeight_pix; ///> Height of the rastport text font
 
   int m_X;  ///> Index of leftmost char in displayed lines.
             ///> Is > 0 when text is horizontally scrolled.
@@ -122,16 +122,14 @@ private:
   int m_MaxTextAreaLines; ///> Max fitting lines in each text area.
                           ///> Depending on font and window size.
 
-  int m_IndentX;  ///> X-distance of TextAreas to window borders
-  int m_IndentY;  ///> Y-distance of TextAreas to window borders
+  int m_IndentX;  ///> X-distance of the text areas to window borders
+  int m_IndentY;  ///> Y-distance of the text areas to window borders
 
-  int m_TextArea1Left;      ///> X-position of the 1st text area
-  int m_TextArea2Left;      ///> X-position of the 2nd text area
-  int m_TextAreasTop;       ///> Y-position of the text areas
-  int m_TextAreasWidth;     ///> Width of each text area
-  int m_TextAreasHeight;    ///> Height of the text areas (equally heigh)
-
-  int m_LineNumbersWidth;
+  int m_TextArea1Left;    ///> X-position of the 1st text area
+  int m_TextArea2Left;    ///> X-position of the 2nd text area
+  int m_TextAreasTop;     ///> Y-position of the text areas
+  int m_TextAreasWidth;   ///> Width of each text area
+  int m_TextAreasHeight;  ///> Height of the text areas (equally heigh)
 
   /**
    * Initializes some window specific features. Gadgets, etc.
