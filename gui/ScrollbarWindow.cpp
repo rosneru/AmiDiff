@@ -288,14 +288,14 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 
         case ScrollbarWindow::GID_ArrowUp:
         {
-          YDecrease(1, true);
+          YDecrease(1);
           return true;
           break;
         }
 
         case ScrollbarWindow::GID_ArrowDown:
         {
-          YIncrease(1, true);
+          YIncrease(1);
           return true;
           break;
         }
