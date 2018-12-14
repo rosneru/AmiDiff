@@ -739,8 +739,8 @@ BOOST_AUTO_TEST_CASE( testDiff_RightLineOneDelThreeAdds )
 
   BOOST_CHECK_EQUAL(leftSrcPartition1.NumLines(), 4);
   BOOST_CHECK_EQUAL(rightSrcPartition1.NumLines(), 6);
-  BOOST_CHECK_EQUAL(leftDiffPartition1.NumLines(), 5);
-  BOOST_CHECK_EQUAL(rightDiffPartition1.NumLines(), 5);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.NumLines(), 7);
+  BOOST_CHECK_EQUAL(rightDiffPartition1.NumLines(), 7);
 
   BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineText(0).C_str(), "Line 1");
   BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineState(0), DiffLine::Normal);
@@ -752,6 +752,10 @@ BOOST_AUTO_TEST_CASE( testDiff_RightLineOneDelThreeAdds )
   BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineState(3), DiffLine::Normal);
   BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineText(4).C_str(), "");
   BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineState(4), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineText(5).C_str(), "");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineState(5), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineText(6).C_str(), "");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineState(6), DiffLine::Normal);
 
   BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineText(0).C_str(), "Line 1");
   BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(0), DiffLine::Normal);
@@ -763,4 +767,8 @@ BOOST_AUTO_TEST_CASE( testDiff_RightLineOneDelThreeAdds )
   BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(3), DiffLine::Normal);
   BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineText(4).C_str(), "Line 5");
   BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(4), DiffLine::Added);
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineText(5).C_str(), "Line 6");
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(5), DiffLine::Added);
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineText(6).C_str(), "Line 7");
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(6), DiffLine::Added);
 }

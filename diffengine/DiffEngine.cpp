@@ -146,7 +146,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
     p_File1Diff.AddBlankLine();
     p_File2Diff.AddString(pFile2DiffLine->GetText(), DiffLine::Added );
 
-    pFile2DiffLine = p_File2Diff.GetNextDiffLine();
+    pFile2DiffLine = p_File2Src.GetNextDiffLine();
     nF2CurrentLine++;
   }
 
