@@ -737,6 +737,8 @@ BOOST_AUTO_TEST_CASE( testDiff_RightLineOneDelThreeAdds )
 
   BOOST_CHECK_EQUAL(diffOk, true);
 
+  BOOST_CHECK_EQUAL(leftSrcPartition1.NumLines(), 4);
+  BOOST_CHECK_EQUAL(rightSrcPartition1.NumLines(), 6);
   BOOST_CHECK_EQUAL(leftDiffPartition1.NumLines(), 5);
   BOOST_CHECK_EQUAL(rightDiffPartition1.NumLines(), 5);
 
