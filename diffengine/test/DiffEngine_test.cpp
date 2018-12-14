@@ -20,6 +20,22 @@
 #include "SimpleString.h"
 
 
+/**
+ * Helper function. Deletes all items of a given list which points to
+ * SimpleString objetcs
+ */
+void deleteAllListStrings(LinkedList& p_List)
+{
+  SimpleString* pItem = static_cast<SimpleString*>(p_List.GetFirst());
+  while(pItem != NULL)
+  {
+    delete pItem;
+    p_List.RemoveItem();
+    pItem = static_cast<SimpleString*>(p_List.GetFirst());
+  }
+}
+
+
 
 BOOST_AUTO_TEST_CASE( testFilePartition )
 {
@@ -40,16 +56,6 @@ BOOST_AUTO_TEST_CASE( testFilePartition )
 }
 
 
-void deleteAllListStrings(LinkedList& p_List)
-{
-  SimpleString* pItem = static_cast<SimpleString*>(p_List.GetFirst());
-  while(pItem != NULL)
-  {
-    delete pItem;
-    p_List.RemoveItem();
-    pItem = static_cast<SimpleString*>(p_List.GetFirst());
-  }
-}
 
 
 
@@ -59,7 +65,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
   DiffEngine diffEngine;
 
   //
-  // Test case 3
+  // Test 3
   //
   // Left.txt       |   Right.txt
   // ------------------------------
@@ -119,7 +125,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
   BOOST_CHECK_EQUAL(leftDiffPartition1.GetCurrentDiffLine()->GetState(), DiffLine::Normal);
 
   //
-  // Test case 4
+  // Test 4
   //
   // Left.txt       |   Right.txt
   // ------------------------------
@@ -170,7 +176,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
 
 
   //
-  // Test case 5
+  // Test 5
   //
   // Left.txt       |   Right.txt
   // ------------------------------
@@ -227,7 +233,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
   DiffEngine diffEngine;
 
   //
-  // Test case 1: Left file is empty
+  // Test 1: Left file is empty
   //
   rightFileLines.InsertTail(new SimpleString("Line 1"));
   rightFileLines.InsertTail(new SimpleString("Line 2"));
@@ -279,7 +285,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
 
 
   //
-  // Test case 2: Right file is empty
+  // Test 2: Right file is empty
   //
   leftFileLines.InsertTail(new SimpleString("Line 1"));
   leftFileLines.InsertTail(new SimpleString("Line 2"));
@@ -332,7 +338,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
 
 
   //
-  // Test case 3: Deleted "Line 3" in right file
+  // Test 3: Deleted "Line 3" in right file
   //
 
   leftFileLines.InsertTail(new SimpleString("Line 1"));
@@ -386,7 +392,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
   deleteAllListStrings(rightFileLines);
 
   //
-  // Test case 4: Cleared "Line 3" (set to empty) in right file
+  // Test 4: Cleared "Line 3" (set to empty) in right file
   //
 
   leftFileLines.InsertTail(new SimpleString("Line 1"));
@@ -441,7 +447,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
   deleteAllListStrings(rightFileLines);
 
   //
-  // Test case 5: Deleted "Line 2" in left file
+  // Test 5: Deleted "Line 2" in left file
   //
 
   leftFileLines.InsertTail(new SimpleString("Line 1"));
@@ -495,7 +501,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
   deleteAllListStrings(rightFileLines);
 
   //
-  // Test case 6: Mixed it up with 6 changes
+  // Test 6: Mixed it up with 6 changes
   //
   // Left.txt       |   Right.txt
   // ------------------------------
@@ -509,7 +515,7 @@ BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
   // Line 9         |   cd
   // Line 10        |   Line 10
   //
-  // >> Test case 6: Mixed it up with 6 changes
+  // >> Test 6: Mixed it up with 6 changes
   //
 
   leftFileLines.InsertTail(new SimpleString("Line 1"));
@@ -693,4 +699,66 @@ BOOST_AUTO_TEST_CASE( testDiff_PassFileListInConstructor )
   // clean up
   deleteAllListStrings(leftFileLines);
   deleteAllListStrings(rightFileLines);
+}
+
+
+BOOST_AUTO_TEST_CASE( testDiff_RightLineOneDelThreeAdds )
+{
+  bool diffOk = false;
+  DiffEngine diffEngine;
+
+  //
+  // Test 11
+  //
+  // Left.txt       |   Right.txt
+  // ------------------------------
+  // Line 1         |   Line 1
+  // Line 2         |   Line 3
+  // Line 3         |   Line 4
+  // Line 4         |   Line 5
+  //                |   Line 6
+  //                |   Line 7
+  //
+  // >> Deleted one line and added 3 lines in right file
+
+  DiffFilePartitionLinux leftSrcPartition1;
+  leftSrcPartition1.PreProcess("../../testfiles/Testcase_11_Left.txt");
+
+  DiffFilePartitionLinux rightSrcPartition1;
+  rightSrcPartition1.PreProcess("../../testfiles/Testcase_11_Right.txt");
+
+  DiffFilePartition leftDiffPartition1;
+  DiffFilePartition rightDiffPartition1;
+
+  diffOk = diffEngine.Diff(leftSrcPartition1,
+                           rightSrcPartition1,
+                           leftDiffPartition1,
+                           rightDiffPartition1);
+
+  BOOST_CHECK_EQUAL(diffOk, true);
+
+  BOOST_CHECK_EQUAL(leftDiffPartition1.NumLines(), 5);
+  BOOST_CHECK_EQUAL(rightDiffPartition1.NumLines(), 5);
+
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineText(0).C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineText(1).C_str(), "Line 2");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineState(1), DiffLine::Deleted);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineText(2).C_str(), "Line 3");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineState(2), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineText(3).C_str(), "Line 4");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineState(3), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineText(4).C_str(), "");
+  BOOST_CHECK_EQUAL(leftDiffPartition1.GetIndexedLineState(4), DiffLine::Normal);
+
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineText(0).C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineText(1).C_str(), "");
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineText(2).C_str(), "Line 3");
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(2), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineText(3).C_str(), "Line 4");
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(3), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineText(4).C_str(), "Line 5");
+  BOOST_CHECK_EQUAL(rightDiffPartition1.GetIndexedLineState(4), DiffLine::Added);
 }
