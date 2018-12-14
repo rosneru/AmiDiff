@@ -29,4 +29,5 @@ HEADERS += \
     ../../oscottlibs/LinkedList.h \
     ../../oscottlibs/LinkedListNode.h \
     ../../oscottlibs/SimpleString.h \
-    ../DiffFilePartitionLinux.h
+    ../DiffFilePartitionLinux.h \
+    ../../oscottlibs/Array.h

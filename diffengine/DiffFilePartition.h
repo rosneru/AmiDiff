@@ -1,7 +1,7 @@
 #ifndef DIFF_FILE_PARTITION_H
 #define DIFF_FILE_PARTITION_H
 
-#include "LinkedList.h"
+#include "Array.h"
 #include "SimpleString.h"
 
 #include "DiffLine.h"
@@ -23,10 +23,10 @@ class DiffFilePartition
   // Constructor
 public:
   DiffFilePartition();
-  DiffFilePartition(LinkedList* p_pLinesList);
+//  DiffFilePartition(LinkedList* p_pLinesList);
   virtual ~DiffFilePartition();
 
-  LinkedList* TokensList();
+  Array<long>& TokensList();
 
   long NumLines() const;
   void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted);
@@ -49,12 +49,12 @@ public:
   void AddBlankLine();
 
 private:
-  LinkedList* m_pInputLinesList;
-  LinkedList* m_pDiffLinesList;
-  LinkedList* m_pTokensList;
+  size_t m_Index;
+  Array<SimpleString*> m_InputLinesArray;
+  Array<DiffLine*> m_DiffLinesArray;
+  Array<long> m_TokensArray;
 
   void clearDiffLinesList();
-  void clearTokensList();
 };
 
 #endif
