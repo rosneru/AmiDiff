@@ -23,7 +23,6 @@ class DiffFilePartition
   // Constructor
 public:
   DiffFilePartition();
-//  DiffFilePartition(LinkedList* p_pLinesList);
   virtual ~DiffFilePartition();
 
   Array<long>& TokensList();
@@ -31,14 +30,14 @@ public:
   long NumLines() const;
   void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted);
 
-  const SimpleString GetIndexedLineText(size_t p_Index);
+  const SimpleString& GetIndexedLineText(size_t p_Index);
   DiffLine::LineState GetIndexedLineState(size_t p_Index);
 
-  DiffLine* GetIndexedDiffLine(size_t p_Index);
-  DiffLine* GetFirstDiffLine();
-  DiffLine* GetNextDiffLine();
-  DiffLine* GetPreviousDiffLine();
-  DiffLine* GetCurrentDiffLine();
+  const DiffLine* GetIndexedDiffLine(size_t p_Index);
+  const DiffLine* GetFirstDiffLine();
+  const DiffLine* GetNextDiffLine();
+  const DiffLine* GetPreviousDiffLine();
+  const DiffLine* GetCurrentDiffLine();
 
   bool PreProcess();
 
