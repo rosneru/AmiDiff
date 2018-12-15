@@ -12,10 +12,14 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
                       DiffFilePartition& p_File1Diff,
                       DiffFilePartition& p_File2Diff)
 {
-  if(p_File1Src.NumLines() == 0)
+  long numLinesFile1Src = p_File1Src.NumLines();
+  long numLinesFile2Src = p_File2Src.NumLines();
+
+  // special empty file case
+  if(numLinesFile1Src == 0)
   {
     long i = 0;
-    while(i < p_File2Src.NumLines())
+    while(i < numLinesFile2Src)
     {
       p_File1Diff.AddBlankLine();
       p_File2Diff.AddString(p_File2Src.GetIndexedLineText(i++), DiffLine::Normal);
@@ -27,11 +31,11 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
   long i = 0;
   long nF2CurrentLine = 0;
 
-  while(i < p_File1Src.NumLines())
+  while(i < numLinesFile1Src)
   {
     // process this line (and possibly update indexes as well)
     long nLineF2 = nF2CurrentLine;
-    if(nLineF2 >= p_File2Src.NumLines())
+    if(nLineF2 >= numLinesFile2Src)
     {
       DiffLine* pFile1DiffLine = p_File1Src.GetIndexedDiffLine(i);
       while(pFile1DiffLine != NULL)
@@ -51,7 +55,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
       if(nLineF2 > nF2CurrentLine)
       {
         long iTmp = i;
-        bDeleted = p_File2Src.MatchLine(nF2CurrentLine, p_File1Src, iTmp) && (iTmp  < p_File1Src.NumLines());
+        bDeleted = p_File2Src.MatchLine(nF2CurrentLine, p_File1Src, iTmp) && (iTmp  < numLinesFile1Src);
         if(bDeleted)
         {
           long j = iTmp - i;
@@ -141,7 +145,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
 
   // are there any remaining lines from p_File2Src?
   DiffLine* pFile2DiffLine = p_File2Src.GetIndexedDiffLine(nF2CurrentLine);
-  while (nF2CurrentLine < p_File2Src.NumLines() && pFile2DiffLine != NULL)
+  while (nF2CurrentLine < numLinesFile2Src && pFile2DiffLine != NULL)
   {
     p_File1Diff.AddBlankLine();
     p_File2Diff.AddString(pFile2DiffLine->GetText(), DiffLine::Added );
