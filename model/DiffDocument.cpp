@@ -90,7 +90,7 @@ DiffDocument::ColorName DiffDocument::LineColor() const
 
 const SimpleString* DiffDocument::evaluateLine(const DiffLine* p_pDiffLine)
 {
-  switch(p_pDiffLine->GetState())
+  switch(p_pDiffLine->State())
   {
     case DiffLine::Normal:
       m_LineColor = DiffDocument::CN_Default;
@@ -113,5 +113,5 @@ const SimpleString* DiffDocument::evaluateLine(const DiffLine* p_pDiffLine)
       break;
   }
 
-  return &(p_pDiffLine->GetText());
+  return &(p_pDiffLine->Text());
 }
