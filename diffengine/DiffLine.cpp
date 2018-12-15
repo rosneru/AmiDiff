@@ -27,20 +27,15 @@ long DiffLine::SetLine(const SimpleString p_String)
 void DiffLine::SetLine(const SimpleString& p_String, DiffLine::LineState p_LineState)
 {
   m_LineText = p_String;
-  SetState(p_LineState);
+  m_LineState = p_LineState;
 }
 
-const SimpleString& DiffLine::GetText() const
+const SimpleString& DiffLine::Text() const
 {
   return m_LineText;
 }
 
-void DiffLine::SetState(DiffLine::LineState p_LineState)
-{
-  m_LineState = p_LineState;
-}
-
-DiffLine::LineState DiffLine::GetState() const
+DiffLine::LineState DiffLine::State() const
 {
   return m_LineState;
 }

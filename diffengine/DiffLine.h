@@ -41,10 +41,15 @@ public:
    */
   void SetLine(const SimpleString& p_String, LineState p_LineState);
 
-  const SimpleString& GetText() const;
+  /**
+   * Returns the text of the diff line
+   */
+  const SimpleString& Text() const;
 
-  void SetState(LineState p_LineState);
-  LineState GetState() const;
+  /**
+   * Returns the state of the diff line
+   */
+  LineState State() const;
 
 protected:
   LineState m_LineState;
