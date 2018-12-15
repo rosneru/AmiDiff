@@ -34,7 +34,7 @@ public:
   /**
    * Store a string and build its token
    */
-  long SetLine(const SimpleString p_pString);
+  long SetLine(const SimpleString& p_pString);
 
   /**
    * Store a string and its state. Does not evaluate token.
