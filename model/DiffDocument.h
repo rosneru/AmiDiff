@@ -30,17 +30,16 @@ public:
   const SimpleString* GetCurrentLine();
   const SimpleString* GetPreviousLine();
   const SimpleString* GetNextLine();
-  const SimpleString* GetIndexedLine(int p_LineIdx);
+  const SimpleString* GetIndexedLine(int p_LineId);
 
   ColorName LineColor() const;
 
 
 
 private:
-  ColorName m_LineColor;
-
   DiffFilePartition& m_DiffFilePartition;
-
+  size_t m_LineId;
+  ColorName m_LineColor;
   const SimpleString* evaluateLine(const DiffLine* p_pDiffLine);
 };
 
