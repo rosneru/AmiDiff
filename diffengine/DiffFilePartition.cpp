@@ -1,7 +1,6 @@
 #include "DiffFilePartition.h"
 
 DiffFilePartition::DiffFilePartition()
-  : m_Index(0)
 {
 
 }
@@ -16,7 +15,7 @@ long DiffFilePartition::NumLines() const
   return m_DiffLinesArray.Size();
 }
 
-void DiffFilePartition::NumChanges(int& p_Added, int& p_Changed, int& p_Deleted)
+void DiffFilePartition::NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const
 {
   p_Added = p_Changed = p_Deleted = 0;
   if(NumLines() == 0)
@@ -27,7 +26,7 @@ void DiffFilePartition::NumChanges(int& p_Added, int& p_Changed, int& p_Deleted)
   for(int i = 0; i < NumLines(); i++)
   {
 
-    DiffLine::LineState lineState = GetIndexedLineState(i);
+    DiffLine::LineState lineState = GetDiffLineState(i);
     switch(lineState)
     {
       case DiffLine::Added: p_Added++; break;
@@ -41,80 +40,34 @@ void DiffFilePartition::NumChanges(int& p_Added, int& p_Changed, int& p_Deleted)
   }
 }
 
-
-const DiffLine* DiffFilePartition::GetIndexedDiffLine(size_t p_Index)
+const DiffLine* DiffFilePartition::GetDiffLine(size_t p_Index) const
 {
   if(p_Index >= m_DiffLinesArray.Size())
   {
     return NULL;
   }
 
-  m_Index = p_Index;
   return m_DiffLinesArray[p_Index];
 }
 
-const DiffLine* DiffFilePartition::GetFirstDiffLine()
-{
-  if(m_DiffLinesArray.IsEmpty())
-  {
-    return NULL;
-  }
-
-  m_Index = 0;
-  return m_DiffLinesArray[m_Index];
-}
-
-const DiffLine* DiffFilePartition::GetNextDiffLine()
-{
-  if(m_DiffLinesArray.IsEmpty() || m_Index >= m_DiffLinesArray.Size())
-  {
-    return NULL;
-  }
-
-  m_Index++;
-  return m_DiffLinesArray[m_Index];
-}
-
-const DiffLine* DiffFilePartition::GetPreviousDiffLine()
-{
-  if(m_DiffLinesArray.IsEmpty() || m_Index < 1)
-  {
-    return NULL;
-  }
-
-  m_Index--;
-
-  return m_DiffLinesArray[m_Index];
-}
-
-const DiffLine* DiffFilePartition::GetCurrentDiffLine()
-{
-  if(m_DiffLinesArray.IsEmpty())
-  {
-    return NULL;
-  }
-
-  return m_DiffLinesArray[m_Index];
-}
-
-const SimpleString& DiffFilePartition::GetIndexedLineText(size_t p_Index)
+const SimpleString& DiffFilePartition::GetDiffLineText(size_t p_Index) const
 {
   if(m_DiffLinesArray.IsEmpty()|| p_Index >= m_DiffLinesArray.Size())
   {
     return SimpleString();
   }
 
-  return GetIndexedDiffLine(p_Index)->Text();
+  return GetDiffLine(p_Index)->Text();
 }
 
-DiffLine::LineState DiffFilePartition::GetIndexedLineState(size_t p_Index)
+DiffLine::LineState DiffFilePartition::GetDiffLineState(size_t p_Index) const
 {
   if(m_DiffLinesArray.IsEmpty() || p_Index >= m_DiffLinesArray.Size())
   {
     return DiffLine::Undefined;
   }
 
-  return GetIndexedDiffLine(p_Index)->State();
+  return GetDiffLine(p_Index)->State();
 }
 
 Array<long>& DiffFilePartition::TokensList()
@@ -155,7 +108,7 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
     return false;
   }
 
-  const SimpleString lineThisFile = GetIndexedDiffLine(i1)->Text();
+  const SimpleString lineThisFile = GetDiffLine(i1)->Text();
 
   bool bFound = false;
   long i = 0;
@@ -168,7 +121,7 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
     if(m_TokensArray[i1] == *pOtherFileToken)  // Fast compare
     {
       // Make sure strings really match
-      const SimpleString lineOtherFile = p_OtherFile.GetIndexedDiffLine(i2 + i)->Text();
+      const SimpleString lineOtherFile = p_OtherFile.GetDiffLine(i2 + i)->Text();
       bFound = (lineThisFile == lineOtherFile);
     }
 

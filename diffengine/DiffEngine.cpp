@@ -22,7 +22,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
     while(i < numLinesFile2Src)
     {
       p_File1Diff.AddBlankLine();
-      p_File2Diff.AddString(p_File2Src.GetIndexedLineText(i++), DiffLine::Normal);
+      p_File2Diff.AddString(p_File2Src.GetDiffLineText(i++), DiffLine::Normal);
     }
 
     return true;
@@ -40,7 +40,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
       while(i < numLinesFile1Src)
       {
         // It's time to end the game now
-        p_File1Diff.AddString(p_File1Src.GetIndexedDiffLine(i)->Text(), DiffLine::Deleted);
+        p_File1Diff.AddString(p_File1Src.GetDiffLine(i)->Text(), DiffLine::Deleted);
         p_File2Diff.AddBlankLine();
         i++;
       }
@@ -60,7 +60,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
           long j = iTmp - 1;
           while(j > 0)
           {
-            p_File1Diff.AddString(p_File1Src.GetIndexedDiffLine(i)->Text(), DiffLine::Deleted);
+            p_File1Diff.AddString(p_File1Src.GetDiffLine(i)->Text(), DiffLine::Deleted);
             p_File2Diff.AddBlankLine();
             i++;
             j--;
@@ -81,15 +81,15 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
          while (j > 0)
          {
            p_File1Diff.AddBlankLine();
-           p_File2Diff.AddString(p_File2Src.GetIndexedDiffLine(nLineF2 - j)->Text(), DiffLine::Added );
+           p_File2Diff.AddString(p_File2Src.GetDiffLine(nLineF2 - j)->Text(), DiffLine::Added );
 
            j--;
          }
       }
 
       // exactly matched
-      p_File1Diff.AddString(p_File1Src.GetIndexedLineText(i), DiffLine::Normal);
-      p_File2Diff.AddString(p_File2Src.GetIndexedLineText(nLineF2), DiffLine::Normal);
+      p_File1Diff.AddString(p_File1Src.GetDiffLineText(i), DiffLine::Normal);
+      p_File2Diff.AddString(p_File2Src.GetDiffLineText(nLineF2), DiffLine::Normal);
 
       nF2CurrentLine = nLineF2 + 1; // next line in p_File2Src
     }
@@ -103,7 +103,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
       {
         // the dual line in f2 can be found in f1, that's because
         // the current line in f1 has been deleted
-        p_File1Diff.AddString( p_File1Src.GetIndexedLineText(i), DiffLine::Deleted);
+        p_File1Diff.AddString( p_File1Src.GetDiffLineText(i), DiffLine::Deleted);
         p_File2Diff.AddBlankLine();
 
         // this whole block is flagged as deleted
@@ -114,7 +114,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
           {
             i++;
 
-            p_File1Diff.AddString(p_File1Src.GetIndexedDiffLine(i)->Text(), DiffLine::Deleted);
+            p_File1Diff.AddString(p_File1Src.GetDiffLine(i)->Text(), DiffLine::Deleted);
             p_File2Diff.AddBlankLine();
 
             j--;
@@ -126,8 +126,8 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
       else
       {
         // neither added, nor deleted, so it's flagged as changed
-        p_File1Diff.AddString(p_File1Src.GetIndexedLineText(i), DiffLine::Changed);
-        p_File2Diff.AddString(p_File2Src.GetIndexedLineText(nLineF2), DiffLine::Changed);
+        p_File1Diff.AddString(p_File1Src.GetDiffLineText(i), DiffLine::Changed);
+        p_File2Diff.AddString(p_File2Src.GetDiffLineText(nLineF2), DiffLine::Changed);
 
         nF2CurrentLine = nLineF2 + 1; // next line in p_File2Src
       }
@@ -140,7 +140,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
   while (nF2CurrentLine < numLinesFile2Src)
   {
     p_File1Diff.AddBlankLine();
-    p_File2Diff.AddString(p_File2Src.GetIndexedDiffLine(nF2CurrentLine)->Text(), DiffLine::Added );
+    p_File2Diff.AddString(p_File2Src.GetDiffLine(nF2CurrentLine)->Text(), DiffLine::Added );
 
     nF2CurrentLine++;
   }

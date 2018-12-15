@@ -28,16 +28,12 @@ public:
   Array<long>& TokensList();
 
   long NumLines() const;
-  void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted);
+  void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const;
 
-  const SimpleString& GetIndexedLineText(size_t p_Index);
-  DiffLine::LineState GetIndexedLineState(size_t p_Index);
+  const SimpleString& GetDiffLineText(size_t p_Index) const;
+  DiffLine::LineState GetDiffLineState(size_t p_Index) const;
+  const DiffLine* GetDiffLine(size_t p_Index) const;
 
-  const DiffLine* GetIndexedDiffLine(size_t p_Index);
-  const DiffLine* GetFirstDiffLine();
-  const DiffLine* GetNextDiffLine();
-  const DiffLine* GetPreviousDiffLine();
-  const DiffLine* GetCurrentDiffLine();
 
   bool PreProcess();
 
@@ -48,7 +44,6 @@ public:
   void AddBlankLine();
 
 private:
-  size_t m_Index;
   Array<SimpleString*> m_InputLinesArray;
   Array<DiffLine*> m_DiffLinesArray;
   Array<long> m_TokensArray;
