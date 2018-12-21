@@ -371,12 +371,12 @@ void DiffWindow::paintDocument(bool p_bStartFromTop)
     const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
     const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
 
-    if((pLeftLine == NULL) || (pRightLine == NULL))
+    if(pLeftLine == NULL || pRightLine == NULL)
     {
       break;
     }
 
-    paintLine(pLeftLine, pRightLine, i * m_AppScreen.FontHeight());
+    paintLine(pLeftLine, pRightLine, i * m_TextFontHeight_pix);
   }
 }
 
@@ -565,35 +565,20 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
-
-  // This id only is used in the first call of
-  // GetPreviousOrIndexedLine() in the loop below. The next calls don't
-  // use the index, instead they use GetPrevious(). Because of this it
-  // is no problem that weather the index itself nor m_Y etc are
-  // updated in the loop.
-  int previousLineId = m_Y - 1;
-
   // fill the gap with the previous text lines
   for(int i = 0; i < p_ScrollNumLinesDown; i++)
   {
-    const SimpleString* pLeftLine = NULL;
-    const SimpleString* pRightLine = NULL;
-
-    pLeftLine = m_pLeftDocument->GetPreviousOrIndexedLine(previousLineId);
-    pRightLine = m_pRightDocument->GetPreviousOrIndexedLine(previousLineId);
+    int lineIndex = m_Y - p_ScrollNumLinesDown + i;
+    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
+    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
       break;
     }
 
-    int lineNum = p_ScrollNumLinesDown - i - 1;
-
-    paintLine(pLeftLine, pRightLine, lineNum * m_TextFontHeight_pix);
+    paintLine(pLeftLine, pRightLine, i * m_TextFontHeight_pix);
   }
-
-  // Repaint window decoration
-  //paintWindowDecoration();
 
   return p_ScrollNumLinesDown;
 }
@@ -644,30 +629,19 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
-
-  // This id only is used in the first call of GetNextOrIndexedLine()
-  // in the loop below. The next calls don't use the index, instead
-  // they use GetNext(). Because of this it is no problem that weather
-  // the index itself nor m_Y etc are updated in the loop.
-  int nextLineId = m_Y + m_MaxTextAreaLines;
-
   for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
-    const SimpleString* pLeftLine = NULL;
-    const SimpleString* pRightLine = NULL;
-
-
-    pLeftLine = m_pLeftDocument->GetNextOrIndexedLine(nextLineId);
-    pRightLine = m_pRightDocument->GetNextOrIndexedLine(nextLineId);
+    int lineIndex = m_Y + m_MaxTextAreaLines + i;
+    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
+    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
       break;
     }
 
-    int lineNum = m_MaxTextAreaLines - p_ScrollUpNumLinesUp + i;
-
-    paintLine(pLeftLine, pRightLine, lineNum * m_TextFontHeight_pix);
+    int paintLineIndex = m_MaxTextAreaLines - p_ScrollUpNumLinesUp + i;
+    paintLine(pLeftLine, pRightLine, paintLineIndex * m_TextFontHeight_pix);
   }
 
   // Repaint window decoration
