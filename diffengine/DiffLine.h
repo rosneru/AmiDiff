@@ -34,17 +34,22 @@ public:
   /**
    * Store a string and build its token
    */
-  long SetLine(const SimpleString p_pString);
+  long SetLine(const SimpleString& p_pString);
 
   /**
    * Store a string and its state. Does not evaluate token.
    */
   void SetLine(const SimpleString& p_String, LineState p_LineState);
 
-  const SimpleString& GetText() const;
+  /**
+   * Returns the text of the diff line
+   */
+  const SimpleString& Text() const;
 
-  void SetState(LineState p_LineState);
-  LineState GetState() const;
+  /**
+   * Returns the state of the diff line
+   */
+  LineState State() const;
 
 protected:
   LineState m_LineState;

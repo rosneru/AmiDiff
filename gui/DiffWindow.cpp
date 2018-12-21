@@ -153,7 +153,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   // Paint the window decoration
   paintWindowDecoration();
 
-  // PAint the status bar
+  // Paint the status bar
   paintStatusBar();
 
   // Set scroll gadgets pot size dependent on window size and the number
@@ -198,49 +198,23 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   }
 
   //
-  // Scroll bigger amounts by re-paintting the whole page at the new
+  // Scroll bigger amounts by re-painting the whole page at the new
   // y-position
   //
   m_Y = p_NewY;
-
-  // Determine how often getPrev or getNext must be called to set the
-  // left and right documents to the new start point for page redrawing
-  int numListTraverses = delta - m_MaxTextAreaLines + 1;
-
-  // Depending on numListTraverses call getPrev and getNext as often
-  // as needed
-  if(numListTraverses < 0)
-  {
-    for(int i = 0; i < -numListTraverses; i++)
-    {
-      m_pLeftDocument->GetPreviousLine();
-      m_pRightDocument->GetPreviousLine();
-    }
-  }
-  else if(numListTraverses > 0)
-  {
-    for(int i = 0; i < numListTraverses; i++)
-    {
-      m_pLeftDocument->GetNextLine();
-      m_pRightDocument->GetNextLine();
-    }
-  }
 
   // Clear both text areas completely
   EraseRect(m_pWindow->RPort,
     m_TextArea1Left + 2, m_TextAreasTop + 2,
     m_TextArea1Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 4);
+    m_TextAreasTop + m_TextAreasHeight - 3);
 
   EraseRect(m_pWindow->RPort,
     m_TextArea2Left + 2, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 4);
+    m_TextAreasTop + m_TextAreasHeight - 3);
 
-  paintDocument(true);
-
-  paintWindowDecoration();
-
+  paintDocument(false);
 }
 
 void DiffWindow::YIncrease(size_t p_IncreaseBy,
@@ -250,7 +224,7 @@ void DiffWindow::YIncrease(size_t p_IncreaseBy,
 
   if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the scrollbar pot 
+    // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
@@ -263,7 +237,7 @@ void DiffWindow::YDecrease(size_t p_DecreaseBy,
 
   if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the scrollbar pot 
+    // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
@@ -349,48 +323,37 @@ void DiffWindow::calcSizes()
   setYScrollPotSize(m_MaxTextAreaLines);
 }
 
-void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
+void DiffWindow::paintDocument(bool p_bStartFromTop)
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {
     return;
   }
 
-  size_t i = m_Y;
-  const SimpleString* pLeftLine = NULL;
-  const SimpleString* pRightLine = NULL;
-
-  if(p_bStartFromCurrentY == true)
+  if(p_bStartFromTop == true)
   {
-    pLeftLine = m_pLeftDocument->GetCurrentLine();
-    pRightLine = m_pRightDocument->GetCurrentLine();
-  }
-  else
-  {
-    pLeftLine = m_pLeftDocument->GetIndexedLine(i);
-    pRightLine = m_pRightDocument->GetIndexedLine(i);
+    m_Y = 0;
   }
 
   // Set foreground color for document painting
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
 
-  while((pLeftLine != NULL) && (pRightLine !=NULL))
+  for(int i = m_Y; (i - m_Y) < m_MaxTextAreaLines; i++)
   {
-    int lineNum = i - m_Y;
-
-    paintLine(pLeftLine, pRightLine,
-      lineNum * m_AppScreen.FontHeight());
-
-    if(lineNum >= m_MaxTextAreaLines - 1)
+    if(i >= m_pLeftDocument->NumLines())
     {
-      // Only display as many lines as fit into the window
       break;
     }
 
-    i++;
+    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
+    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
 
-    pLeftLine = m_pLeftDocument->GetNextLine();
-    pRightLine = m_pRightDocument->GetNextLine();
+    if(pLeftLine == NULL || pRightLine == NULL)
+    {
+      break;
+    }
+
+    paintLine(pLeftLine, pRightLine, (i - m_Y) * m_TextFontHeight_pix);
   }
 }
 
@@ -498,25 +461,25 @@ void DiffWindow::paintStatusBar()
   intuiText.TopEdge   = top;
   intuiText.LeftEdge  = left;
   intuiText.IText = (UBYTE*)
-    SimpleString(m_StatusBarText + "  |  Legend: ").C_str();
+    SimpleString(m_StatusBarText + "   |   ").C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText);
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_AppScreen.Pens().Green();
-  intuiText.IText = (UBYTE*) "Added";
+  intuiText.IText = (UBYTE*) " Added ";
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_AppScreen.Pens().Yellow();
-  intuiText.IText = (UBYTE*) "Changed";
+  intuiText.IText = (UBYTE*) " Changed ";
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_AppScreen.Pens().Red();
-  intuiText.IText = (UBYTE*) "Deleted";
+  intuiText.IText = (UBYTE*) " Deleted ";
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
 
@@ -560,47 +523,39 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     p_ScrollNumLinesDown = m_Y;
   }
 
-  // Set background color before scrolling
-  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
-
-  // Move text area downward by n * the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0,
-    -p_ScrollNumLinesDown * m_TextFontHeight_pix,  // n * height
-    m_TextArea1Left + 3, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 2);
-
   // Set foreground color for document painting
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
 
-  // This id only is used in the first call of
-  // GetPreviousOrIndexedLine() in the loop below. The next calls don't
-  // use the index, instead they use GetPrevious(). Because of this it
-  // is no problem that weather the index itself nor m_Y etc are
-  // updated in the loop.
-  int previousLineId = m_Y - 1;
+  // Set background color before scrolling
+  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+
+  // Move each text area downward by n * the height of one text line
+  ScrollRaster(m_pWindow->RPort, 0,
+    -p_ScrollNumLinesDown * m_TextFontHeight_pix,  // n * height
+    m_TextArea1Left + 3, m_TextAreasTop + 2,
+    m_TextArea1Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 3);
+
+  ScrollRaster(m_pWindow->RPort, 0,
+    -p_ScrollNumLinesDown * m_TextFontHeight_pix,  // n * height
+    m_TextArea2Left + 3, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 3);
 
   // fill the gap with the previous text lines
   for(int i = 0; i < p_ScrollNumLinesDown; i++)
   {
-    const SimpleString* pLeftLine = NULL;
-    const SimpleString* pRightLine = NULL;
-
-    pLeftLine = m_pLeftDocument->GetPreviousOrIndexedLine(previousLineId);
-    pRightLine = m_pRightDocument->GetPreviousOrIndexedLine(previousLineId);
+    int lineIndex = m_Y - p_ScrollNumLinesDown + i;
+    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
+    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
       break;
     }
 
-    int lineNum = p_ScrollNumLinesDown - i - 1;
-
-    paintLine(pLeftLine, pRightLine, lineNum * m_TextFontHeight_pix);
+    paintLine(pLeftLine, pRightLine, i * m_TextFontHeight_pix);
   }
-
-  // Repaint window decoration
-  paintWindowDecoration();
 
   return p_ScrollNumLinesDown;
 }
@@ -632,42 +587,38 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     p_ScrollUpNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextAreaLines);
   }
 
-  // Set background color before scrolling
-  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
-
-  // Move text area upward by n * the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0,
-    p_ScrollUpNumLinesUp * m_TextFontHeight_pix,
-    m_TextArea1Left + 3, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 2);
-
   // Set foreground color for document painting
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
 
-  // This id only is used in the first call of GetNextOrIndexedLine()
-  // in the loop below. The next calls don't use the index, instead
-  // they use GetNext(). Because of this it is no problem that weather
-  // the index itself nor m_Y etc are updated in the loop.
-  int nextLineId = m_Y + m_MaxTextAreaLines;
+  // Set background color before scrolling
+  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+
+  // Move each text area upward by n * the height of one text line
+  ScrollRaster(m_pWindow->RPort, 0,
+    p_ScrollUpNumLinesUp * m_TextFontHeight_pix,
+    m_TextArea1Left + 3, m_TextAreasTop + 2,
+    m_TextArea1Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 3);
+
+  ScrollRaster(m_pWindow->RPort, 0,
+    p_ScrollUpNumLinesUp * m_TextFontHeight_pix,
+    m_TextArea2Left + 3, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 3);
 
   for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
-    const SimpleString* pLeftLine = NULL;
-    const SimpleString* pRightLine = NULL;
-
-
-    pLeftLine = m_pLeftDocument->GetNextOrIndexedLine(nextLineId);
-    pRightLine = m_pRightDocument->GetNextOrIndexedLine(nextLineId);
+    int lineIndex = m_Y + m_MaxTextAreaLines + i;
+    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
+    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
       break;
     }
 
-    int lineNum = m_MaxTextAreaLines - p_ScrollUpNumLinesUp + i;
-
-    paintLine(pLeftLine, pRightLine, lineNum * m_TextFontHeight_pix);
+    int paintLineIndex = m_MaxTextAreaLines - p_ScrollUpNumLinesUp + i;
+    paintLine(pLeftLine, pRightLine, paintLineIndex * m_TextFontHeight_pix);
   }
 
   // Repaint window decoration

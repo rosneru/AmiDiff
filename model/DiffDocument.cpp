@@ -1,7 +1,8 @@
 #include "DiffDocument.h"
 
 DiffDocument::DiffDocument(DiffFilePartition& p_DiffFilePartition)
-  : m_DiffFilePartition(p_DiffFilePartition)
+  : m_DiffFilePartition(p_DiffFilePartition),
+    m_LineId(0)
 {
 
 }
@@ -18,7 +19,14 @@ const size_t DiffDocument::NumLines() const
 
 const SimpleString* DiffDocument::GetFirstLine()
 {
-  DiffLine* pDiffLine = m_DiffFilePartition.GetFirstDiffLine();
+  if(NumLines() < 1)
+  {
+    return NULL;
+  }
+
+  m_LineId = 0;
+  const DiffLine* pDiffLine = m_DiffFilePartition.GetDiffLine(m_LineId);
+
   if(pDiffLine == NULL)
   {
     m_LineColor = DiffDocument::CN_Default;
@@ -26,12 +34,12 @@ const SimpleString* DiffDocument::GetFirstLine()
   }
 
   return evaluateLine(pDiffLine);
-
 }
 
 const SimpleString* DiffDocument::GetCurrentLine()
 {
-  DiffLine* pDiffLine = m_DiffFilePartition.GetCurrentDiffLine();
+  const DiffLine* pDiffLine = m_DiffFilePartition.GetDiffLine(m_LineId);
+
   if(pDiffLine == NULL)
   {
     m_LineColor = DiffDocument::CN_Default;
@@ -39,13 +47,20 @@ const SimpleString* DiffDocument::GetCurrentLine()
   }
 
   return evaluateLine(pDiffLine);
-
 }
 
 const SimpleString* DiffDocument::GetPreviousLine()
 {
+  if(m_LineId < 1)
+  {
+    return NULL;
+  }
+
   m_LastScrollDirection = PreviousLine;
-  DiffLine* pDiffLine = m_DiffFilePartition.GetPreviousDiffLine();
+
+  m_LineId--;
+  const DiffLine* pDiffLine = m_DiffFilePartition.GetDiffLine(m_LineId);
+
   if(pDiffLine == NULL)
   {
     m_LineColor = DiffDocument::CN_Default;
@@ -58,8 +73,16 @@ const SimpleString* DiffDocument::GetPreviousLine()
 
 const SimpleString* DiffDocument::GetNextLine()
 {
+  if(m_LineId >= NumLines())
+  {
+    return NULL;
+  }
+
   m_LastScrollDirection = NextLine;
-  DiffLine* pDiffLine = m_DiffFilePartition.GetNextDiffLine();
+
+  m_LineId++;
+  const DiffLine* pDiffLine = m_DiffFilePartition.GetDiffLine(m_LineId);
+
   if(pDiffLine == NULL)
   {
     m_LineColor = DiffDocument::CN_Default;
@@ -70,10 +93,13 @@ const SimpleString* DiffDocument::GetNextLine()
 
 }
 
-const SimpleString* DiffDocument::GetIndexedLine(int p_LineIdx)
+const SimpleString* DiffDocument::GetIndexedLine(int p_LineId)
 {
   m_LastScrollDirection = None;
-  DiffLine* pDiffLine = m_DiffFilePartition.GetIndexedDiffLine(p_LineIdx);
+
+  m_LineId = p_LineId;
+  const DiffLine* pDiffLine = m_DiffFilePartition.GetDiffLine(m_LineId);
+
   if(pDiffLine == NULL)
   {
     m_LineColor = DiffDocument::CN_Default;
@@ -90,7 +116,7 @@ DiffDocument::ColorName DiffDocument::LineColor() const
 
 const SimpleString* DiffDocument::evaluateLine(const DiffLine* p_pDiffLine)
 {
-  switch(p_pDiffLine->GetState())
+  switch(p_pDiffLine->State())
   {
     case DiffLine::Normal:
       m_LineColor = DiffDocument::CN_Default;
@@ -113,5 +139,5 @@ const SimpleString* DiffDocument::evaluateLine(const DiffLine* p_pDiffLine)
       break;
   }
 
-  return &(p_pDiffLine->GetText());
+  return &(p_pDiffLine->Text());
 }
