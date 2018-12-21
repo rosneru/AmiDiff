@@ -238,9 +238,6 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     m_TextAreasTop + m_TextAreasHeight - 4);
 
   paintDocument(true);
-
-  paintWindowDecoration();
-
 }
 
 void DiffWindow::YIncrease(size_t p_IncreaseBy,
@@ -250,7 +247,7 @@ void DiffWindow::YIncrease(size_t p_IncreaseBy,
 
   if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the scrollbar pot 
+    // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
@@ -263,7 +260,7 @@ void DiffWindow::YDecrease(size_t p_DecreaseBy,
 
   if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the scrollbar pot 
+    // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
@@ -560,18 +557,25 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     p_ScrollNumLinesDown = m_Y;
   }
 
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+
   // Set background color before scrolling
   SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
-  // Move text area downward by n * the height of one text line
+  // Move each text area downward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
     -p_ScrollNumLinesDown * m_TextFontHeight_pix,  // n * height
     m_TextArea1Left + 3, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 2);
+    m_TextArea1Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 3);
 
-  // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+  ScrollRaster(m_pWindow->RPort, 0,
+    -p_ScrollNumLinesDown * m_TextFontHeight_pix,  // n * height
+    m_TextArea2Left + 3, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 3);
+
 
   // This id only is used in the first call of
   // GetPreviousOrIndexedLine() in the loop below. The next calls don't
@@ -600,7 +604,7 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
   }
 
   // Repaint window decoration
-  paintWindowDecoration();
+  //paintWindowDecoration();
 
   return p_ScrollNumLinesDown;
 }
@@ -632,18 +636,25 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     p_ScrollUpNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextAreaLines);
   }
 
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+
   // Set background color before scrolling
   SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
-  // Move text area upward by n * the height of one text line
+  // Move each text area upward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
     p_ScrollUpNumLinesUp * m_TextFontHeight_pix,
     m_TextArea1Left + 3, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 2);
+    m_TextArea1Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 3);
 
-  // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+  ScrollRaster(m_pWindow->RPort, 0,
+    p_ScrollUpNumLinesUp * m_TextFontHeight_pix,
+    m_TextArea2Left + 3, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 3);
+
 
   // This id only is used in the first call of GetNextOrIndexedLine()
   // in the loop below. The next calls don't use the index, instead
