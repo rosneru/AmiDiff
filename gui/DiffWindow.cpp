@@ -153,7 +153,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   // Paint the window decoration
   paintWindowDecoration();
 
-  // PAint the status bar
+  // Paint the status bar
   paintStatusBar();
 
   // Set scroll gadgets pot size dependent on window size and the number
@@ -202,40 +202,19 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   // y-position
   //
   m_Y = p_NewY;
-
-  // Determine how often getPrev or getNext must be called to set the
-  // left and right documents to the new start point for page redrawing
-  int numListTraverses = delta - m_MaxTextAreaLines + 1;
-
-  // Depending on numListTraverses call getPrev and getNext as often
-  // as needed
-  if(numListTraverses < 0)
-  {
-    for(int i = 0; i < -numListTraverses; i++)
-    {
-      m_pLeftDocument->GetPreviousLine();
-      m_pRightDocument->GetPreviousLine();
-    }
-  }
-  else if(numListTraverses > 0)
-  {
-    for(int i = 0; i < numListTraverses; i++)
-    {
-      m_pLeftDocument->GetNextLine();
-      m_pRightDocument->GetNextLine();
-    }
-  }
+  m_pLeftDocument->GetIndexedLine(m_Y);
+  m_pRightDocument->GetIndexedLine(m_Y);
 
   // Clear both text areas completely
   EraseRect(m_pWindow->RPort,
     m_TextArea1Left + 2, m_TextAreasTop + 2,
     m_TextArea1Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 4);
+    m_TextAreasTop + m_TextAreasHeight - 3);
 
   EraseRect(m_pWindow->RPort,
     m_TextArea2Left + 2, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 4);
+    m_TextAreasTop + m_TextAreasHeight - 3);
 
   paintDocument(false);
 }
@@ -361,7 +340,7 @@ void DiffWindow::paintDocument(bool p_bStartFromTop)
   // Set foreground color for document painting
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
 
-  for(int i = 0; i < m_MaxTextAreaLines; i++)
+  for(int i = m_Y; (i - m_Y) < m_MaxTextAreaLines; i++)
   {
     if(i >= m_pLeftDocument->NumLines())
     {
@@ -376,7 +355,7 @@ void DiffWindow::paintDocument(bool p_bStartFromTop)
       break;
     }
 
-    paintLine(pLeftLine, pRightLine, i * m_TextFontHeight_pix);
+    paintLine(pLeftLine, pRightLine, (i - m_Y) * m_TextFontHeight_pix);
   }
 }
 
