@@ -198,12 +198,10 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   }
 
   //
-  // Scroll bigger amounts by re-paintting the whole page at the new
+  // Scroll bigger amounts by re-painting the whole page at the new
   // y-position
   //
   m_Y = p_NewY;
-  m_pLeftDocument->GetIndexedLine(m_Y);
-  m_pRightDocument->GetIndexedLine(m_Y);
 
   // Clear both text areas completely
   EraseRect(m_pWindow->RPort,
