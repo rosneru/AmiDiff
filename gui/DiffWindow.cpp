@@ -237,7 +237,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 4);
 
-  paintDocument(true);
+  paintDocument(false);
 }
 
 void DiffWindow::YIncrease(size_t p_IncreaseBy,
@@ -346,48 +346,37 @@ void DiffWindow::calcSizes()
   setYScrollPotSize(m_MaxTextAreaLines);
 }
 
-void DiffWindow::paintDocument(bool p_bStartFromCurrentY)
+void DiffWindow::paintDocument(bool p_bStartFromTop)
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {
     return;
   }
 
-  size_t i = m_Y;
-  const SimpleString* pLeftLine = NULL;
-  const SimpleString* pRightLine = NULL;
-
-  if(p_bStartFromCurrentY == true)
+  if(p_bStartFromTop == true)
   {
-    pLeftLine = m_pLeftDocument->GetCurrentLine();
-    pRightLine = m_pRightDocument->GetCurrentLine();
-  }
-  else
-  {
-    pLeftLine = m_pLeftDocument->GetIndexedLine(i);
-    pRightLine = m_pRightDocument->GetIndexedLine(i);
+    m_Y = 0;
   }
 
   // Set foreground color for document painting
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
 
-  while((pLeftLine != NULL) && (pRightLine !=NULL))
+  for(int i = 0; i < m_MaxTextAreaLines; i++)
   {
-    int lineNum = i - m_Y;
-
-    paintLine(pLeftLine, pRightLine,
-      lineNum * m_AppScreen.FontHeight());
-
-    if(lineNum >= m_MaxTextAreaLines - 1)
+    if(i >= m_pLeftDocument->NumLines())
     {
-      // Only display as many lines as fit into the window
       break;
     }
 
-    i++;
+    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
+    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
 
-    pLeftLine = m_pLeftDocument->GetNextLine();
-    pRightLine = m_pRightDocument->GetNextLine();
+    if((pLeftLine == NULL) || (pRightLine == NULL))
+    {
+      break;
+    }
+
+    paintLine(pLeftLine, pRightLine, i * m_AppScreen.FontHeight());
   }
 }
 
