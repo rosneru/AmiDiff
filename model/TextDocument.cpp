@@ -93,36 +93,3 @@ const SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
   m_LastScrollDirection = None;
   return static_cast<SimpleString*>(m_Lines.GetIndexed(p_LineIdx));
 }
-
-
-const SimpleString* TextDocument::GetNextOrIndexedLine(int p_NextId)
-{
-  const SimpleString* pLine = NULL;
-  if(m_LastScrollDirection == NextLine)
-  {
-    pLine = GetNextLine();
-  }
-  else
-  {
-    pLine = GetIndexedLine(p_NextId);
-    m_LastScrollDirection = NextLine;
-  }
-
-  return pLine;
-}
-
-const SimpleString* TextDocument::GetPreviousOrIndexedLine(int p_PreviousId)
-{
-  const SimpleString* pLine = NULL;
-  if(m_LastScrollDirection == PreviousLine)
-  {
-    pLine = GetPreviousLine();
-  }
-  else
-  {
-    pLine = GetIndexedLine(p_PreviousId);
-    m_LastScrollDirection = PreviousLine;
-  }
-
-  return pLine;
-}

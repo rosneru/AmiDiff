@@ -463,25 +463,25 @@ void DiffWindow::paintStatusBar()
   intuiText.TopEdge   = top;
   intuiText.LeftEdge  = left;
   intuiText.IText = (UBYTE*)
-    SimpleString(m_StatusBarText + "  |  Legend: ").C_str();
+    SimpleString(m_StatusBarText + "   |   ").C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText);
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_AppScreen.Pens().Green();
-  intuiText.IText = (UBYTE*) "Added";
+  intuiText.IText = (UBYTE*) " Added ";
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_AppScreen.Pens().Yellow();
-  intuiText.IText = (UBYTE*) "Changed";
+  intuiText.IText = (UBYTE*) " Changed ";
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_AppScreen.Pens().Red();
-  intuiText.IText = (UBYTE*) "Deleted";
+  intuiText.IText = (UBYTE*) " Deleted ";
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
 
