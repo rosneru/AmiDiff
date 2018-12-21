@@ -137,13 +137,11 @@ private:
   /**
    * Displays the complete file from current m_Y position as first line
    *
-   * @param p_bStartFromCurrentY
-   * When true: no GetIndexed() is done to left and right document to
-   * find the start position. Instead it is assumed that the right y-
-   * position is set already ang acn be get with GetCurrent for left
-   * and right document.
+   * @param p_bStartFromTop
+   * When true: Prints the document starting with line index 0.
+   * When false: Printing starts at current position m_Y.
    */
-  void paintDocument(bool p_bStartFromCurrentY = false);
+  void paintDocument(bool p_bStartFromTop = true);
 
   /**
    * Prints the given line at given y-position p_TopEdge.

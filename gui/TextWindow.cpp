@@ -163,31 +163,10 @@ void TextWindow::YChangedHandler(size_t p_NewY)
   }
 
   //
-  // Scroll bigger amounts by re-paintting the whole page at the new
+  // Scroll bigger amounts by re-painting the whole page at the new
   // y-position
   //
   m_Y = p_NewY;
-
-  // Determine how often getPrev or getNext must be called to set the
-  // left and right documents to the new start point for page redrawing
-  int numListTraverses = delta - m_MaxWinLines + 1;
-
-  // Depending on numListTraverses call getPrev and getNext as often
-  // as needed
-  if(numListTraverses < 0)
-  {
-    for(int i = 0; i < -numListTraverses; i++)
-    {
-      m_pDocument->GetPreviousLine();
-    }
-  }
-  else if(numListTraverses > 0)
-  {
-    for(int i = 0; i < numListTraverses; i++)
-    {
-      m_pDocument->GetNextLine();
-    }
-  }
 
   // Clear the window completely
   SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
@@ -321,40 +300,33 @@ void TextWindow::paintLine(const SimpleString* p_pLine, WORD p_TopEdge)
   );
 }
 
-void TextWindow::paintDocument(bool p_bStartFromCurrentY)
+void TextWindow::paintDocument(bool p_bStartFromTop)
 {
   if(m_pDocument == NULL)
   {
     return;
   }
 
-  size_t i = m_Y;
-  const SimpleString* pLine = NULL;
-
-  if(p_bStartFromCurrentY == true)
+  if(p_bStartFromTop == true)
   {
-    pLine = m_pDocument->GetCurrentLine();
-  }
-  else
-  {
-    pLine = m_pDocument->GetIndexedLine(i);
+    m_Y = 0;
   }
 
-  while(pLine != NULL)
+  for(int i = m_Y; (i - m_Y) < m_MaxWinLines; i++)
   {
-    int lineNum = i - m_Y;
-
-    paintLine(pLine, lineNum * m_AppScreen.FontHeight());
-
-    if(lineNum >= m_MaxWinLines - 1)
+    if(i >= m_pDocument->NumLines())
     {
-      // Only display as many lines as fit into the window
       break;
     }
 
-    i++;
+    const SimpleString* pLine = m_pDocument->GetIndexedLine(i);
 
-    pLine = m_pDocument->GetNextLine();
+    if(pLine == NULL)
+    {
+      break;
+    }
+
+    paintLine(pLine, (i - m_Y) * m_TextFontHeight_pix);
   }
 }
 
@@ -385,28 +357,18 @@ size_t TextWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     m_TextAreaLeft + m_TextAreaWidth,
     m_TextAreaTop + m_TextAreaHeight);
 
-  // This id only is used in the first call of
-  // GetPreviousOrIndexedLine() in the loop below. The next calls don't
-  // use the index, instead they use GetPrevious(). Because of this it
-  // is no problem that weather the index itself nor m_Y etc are
-  // updated in the loop.
-  int previousLineId = m_Y - 1;
-
   // fill the gap with the previous text lines
   for(int i = 0; i < p_ScrollNumLinesDown; i++)
   {
-    const SimpleString* pLine = NULL;
-
-    pLine = m_pDocument->GetPreviousOrIndexedLine(previousLineId);
+    int lineIndex = m_Y - p_ScrollNumLinesDown + i;
+    const SimpleString* pLine = m_pDocument->GetIndexedLine(lineIndex);
 
     if(pLine == NULL)
     {
       break;
     }
 
-    int lineNum = p_ScrollNumLinesDown - i - 1;
-
-    paintLine(pLine, lineNum * m_TextFontHeight_pix);
+    paintLine(pLine, i * m_TextFontHeight_pix);
   }
 
   return p_ScrollNumLinesDown;
@@ -446,25 +408,18 @@ size_t TextWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     m_TextAreaLeft + m_TextAreaWidth,
     m_TextAreaTop + m_TextAreaHeight);
 
-  // This id only is used in the first call of GetNextOrIndexedLine()
-  // in the loop below. The next calls don't use the index, instead
-  // they use GetNext(). Because of this it is no problem that weather
-  // the index itself nor m_Y etc are updated in the loop.
-  int nextLineId = m_Y + m_MaxWinLines;
-
   for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
-    const SimpleString* pLine = NULL;
-    pLine = m_pDocument->GetNextOrIndexedLine(nextLineId);
+    int lineIndex = m_Y + m_MaxWinLines + i;
+    const SimpleString* pLine = m_pDocument->GetIndexedLine(lineIndex);
 
     if(pLine == NULL)
     {
       break;
     }
 
-    int lineNum = m_MaxWinLines - p_ScrollUpNumLinesUp + i;
-
-    paintLine(pLine, lineNum * m_TextFontHeight_pix);
+    int paintLineIndex = m_MaxWinLines - p_ScrollUpNumLinesUp + i;
+    paintLine(pLine, paintLineIndex * m_TextFontHeight_pix);
   }
 
   return p_ScrollUpNumLinesUp;
