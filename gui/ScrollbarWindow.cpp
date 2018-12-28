@@ -2,6 +2,7 @@
 
 #include <clib/alib_protos.h>
 #include <clib/dos_protos.h>
+#include <clib/exec_protos.h>
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <clib/utility_protos.h>
@@ -272,16 +273,41 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
   {
     case IDCMP_IDCMPUPDATE:
     {
-      ULONG tagData = GetTagData(GA_ID, 0,
-        (struct TagItem *)p_IAddress);
+      ULONG tagData = GetTagData(GA_ID, 0, (struct TagItem *)p_IAddress);
       switch(tagData)
       {
         case ScrollbarWindow::GID_PropY:
         {
+          // Disable multi tasking to avoid getting too many of these
+          // messages. This could be a problem on slow machines.
+          Forbid();
+
           size_t newY = GetTagData(PGA_Top, 0, (struct TagItem *)
             p_IAddress);
 
+
+          IntuiMessage* pSucc = (IntuiMessage*)m_pMsgPort->mp_MsgList.lh_Head;
+          IntuiMessage* pSucc1;
+          const struct Message* pThisExecMsg = &pSucc->ExecMessage;
+          while((pSucc1 = (IntuiMessage*)pSucc->ExecMessage.mn_Node.ln_Succ))
+          {
+            if( (pSucc->Class == IDCMP_IDCMPUPDATE) )//&&
+               // (pSucc->IAddress == p_IAddress) &&
+               // (&pSucc->ExecMessage != pThisExecMsg) )
+            {
+              newY = GetTagData(PGA_Top, 0, (struct TagItem *) pSucc->IAddress);
+              Remove((Node*)pSucc);
+              ReplyMsg((Message*)pSucc);
+            }
+
+            pSucc = pSucc1;
+          }
+
           YChangedHandler(newY);
+
+          // Enable multi tasking again
+          Permit();
+
           return true;
           break;
         }
