@@ -299,12 +299,12 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
                pMessage->Class == IDCMP_IDCMPUPDATE)
             {
               ULONG msgTagData = GetTagData(GA_ID, 0,
-                (struct TagItem *)p_IAddress);
+                (struct TagItem *)pMessage->IAddress);
 
               if(msgTagData == ScrollbarWindow::GID_PropY)
               {
                 newY = GetTagData(PGA_Top, 0, (struct TagItem *)
-                  p_IAddress);
+                  pMessage->IAddress);
 
                 // Intuition is about to free this message. Make sure
                 // that we have politely sent it back.
