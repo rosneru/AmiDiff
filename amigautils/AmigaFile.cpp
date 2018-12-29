@@ -140,15 +140,14 @@ bool AmigaFile::ReadLine(SimpleString& p_Line)
   }
 
   size_t readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a
-                                            // bug in AmigaOS v36/37
 
   if(FGets(m_pFile, m_pLineBuf, readBufSize) == NULL)
   {
     return false;
   }
 
-  SimpleString line(m_pLineBuf);  // TODO optimize to save time
-  p_Line = line.Trim();
+  p_Line = m_pLineBuf;
+  p_Line = p_Line.Trim();
 
   return true;
 }
