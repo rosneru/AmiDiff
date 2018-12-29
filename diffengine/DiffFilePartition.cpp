@@ -54,7 +54,8 @@ const SimpleString& DiffFilePartition::GetDiffLineText(size_t p_Index) const
 {
   if(m_DiffLinesArray.IsEmpty()|| p_Index >= m_DiffLinesArray.Size())
   {
-    return SimpleString();
+    static SimpleString s = "";
+    return s;
   }
 
   return GetDiffLine(p_Index)->Text();

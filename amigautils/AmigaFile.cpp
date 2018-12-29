@@ -17,7 +17,7 @@ AmigaFile::~AmigaFile()
   }
 }
 
-bool AmigaFile::Open(const SimpleString& p_FileName, 
+bool AmigaFile::Open(const SimpleString& p_FileName,
   AccessMode p_AccessMode)
 {
   if(m_pFile != NULL)
@@ -103,11 +103,11 @@ ULONG AmigaFile::GetSize()
   Seek(m_pFile, 0, OFFSET_BEGINING);
   ULONG size = Seek(m_pFile, 0, OFFSET_END);
   Seek(m_pFile, 0, OFFSET_BEGINING);
-  
+
   return size;
 }
 
-bool AmigaFile::ReadLines(LinkedList& p_List)
+bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
 {
   if(m_pFile == NULL)
   {
@@ -122,7 +122,7 @@ bool AmigaFile::ReadLines(LinkedList& p_List)
   SimpleString line;
   while(ReadLine(line))
   {
-    p_List.InsertTail(new SimpleString(line));
+    p_Array.Push(new SimpleString(line));
   }
 
   // Rewind reading pointer to start of file

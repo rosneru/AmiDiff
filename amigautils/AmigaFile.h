@@ -2,7 +2,7 @@
 #define AMIGA_FILE_H
 
 #include <libraries/dos.h>
-#include "LinkedList.h"
+#include "Array.h"
 #include "SimpleString.h"
 
 /**
@@ -63,7 +63,7 @@ public:
   /**
    * Gets the file size in bytes. The file has  to be opened before
    * calling this method.
-   * 
+   *
    * NOTE: Changes the file handle position! After this operation the
    * file handle points to the start of tze file.
    *
@@ -84,7 +84,7 @@ public:
    * @param p_List
    * List to store the lines
    */
-  bool ReadLines(LinkedList& p_List);
+  bool ReadLines(Array<SimpleString*>& p_Array);
 
   /**
    * Reads the next line from file

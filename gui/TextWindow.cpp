@@ -183,7 +183,7 @@ void TextWindow::YIncrease(size_t p_IncreaseBy,
 
   if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the scrollbar pot 
+    // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }
@@ -197,7 +197,7 @@ void TextWindow::YDecrease(size_t p_DecreaseBy,
 
   if(!p_bTriggeredByScrollbarPot)
   {
-    // Y-position-decrease was not triggered by the scrollbar pot 
+    // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
     setYScrollTop(m_Y);
   }

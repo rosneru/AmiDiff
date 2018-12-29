@@ -45,16 +45,21 @@ bool TextDocument::Load(const SimpleString& p_FileName)
 
   file.Close();
   return bSuccess;
+
 }
 
 void TextDocument::Clear()
 {
-  const SimpleString* pLine = GetFirstLine();
+  if(NumLines() < 1)
+  {
+    return;
+  }
+
+  const SimpleString* pLine = m_Lines.Pop();
   while (pLine != NULL)
   {
     delete pLine;
-    m_Lines.RemoveItem();
-    pLine = GetFirstLine();
+    pLine = m_Lines.Pop();
   }
 
   m_FileName = "";
@@ -66,30 +71,8 @@ const size_t TextDocument::NumLines() const
 }
 
 
-const SimpleString* TextDocument::GetFirstLine()
-{
-  return static_cast<SimpleString*>(m_Lines.GetFirst());
-}
-
-const SimpleString* TextDocument::GetCurrentLine()
-{
-  return static_cast<SimpleString*>(m_Lines.GetSelected());
-}
-
-const SimpleString* TextDocument::GetPreviousLine()
-{
-  m_LastScrollDirection = PreviousLine;
-  return static_cast<SimpleString*>(m_Lines.GetPrev());
-}
-
-const SimpleString* TextDocument::GetNextLine()
-{
-  m_LastScrollDirection = NextLine;
-  return static_cast<SimpleString*>(m_Lines.GetNext());
-}
-
 const SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
 {
   m_LastScrollDirection = None;
-  return static_cast<SimpleString*>(m_Lines.GetIndexed(p_LineIdx));
+  return m_Lines[p_LineIdx];
 }

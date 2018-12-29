@@ -2,7 +2,7 @@
 #define TEXT_DOCUMENT_H
 
 #include "Document.h"
-#include "LinkedList.h"
+#include "Array.h"
 #include "SimpleString.h"
 
 
@@ -17,11 +17,6 @@ public:
 
 
   virtual const size_t NumLines() const;
-
-  virtual const SimpleString* GetFirstLine();
-  virtual const SimpleString* GetCurrentLine();
-  virtual const SimpleString* GetPreviousLine();
-  virtual const SimpleString* GetNextLine();
   virtual const SimpleString* GetIndexedLine(int p_LineIdx);
 
 protected:
@@ -43,7 +38,7 @@ protected:
   LastScrollDirection m_LastScrollDirection;
 
 private:
-  LinkedList m_Lines;
+  Array<SimpleString*> m_Lines;
 };
 
 
