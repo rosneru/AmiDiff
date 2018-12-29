@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 
 #include <clib/alib_protos.h>
 #include <clib/dos_protos.h>
@@ -286,26 +287,38 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
             p_IAddress);
 
 
-          IntuiMessage* pSucc = (IntuiMessage*)m_pMsgPort->mp_MsgList.lh_Head;
-          IntuiMessage* pSucc1;
-          const struct Message* pThisExecMsg = &pSucc->ExecMessage;
-          while((pSucc1 = (IntuiMessage*)pSucc->ExecMessage.mn_Node.ln_Succ))
+          struct MsgPort* pMsgPort = m_pWindow->UserPort;
+          struct Node* pSuccessor;
+          struct IntuiMessage* pMessage;
+
+          pMessage = (struct IntuiMessage*) pMsgPort->mp_MsgList.lh_Head;
+
+          while(pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ)
           {
-            if( (pSucc->Class == IDCMP_IDCMPUPDATE) )//&&
-               // (pSucc->IAddress == p_IAddress) &&
-               // (&pSucc->ExecMessage != pThisExecMsg) )
+            if(pMessage->IDCMPWindow == m_pWindow &&
+               pMessage->Class == IDCMP_IDCMPUPDATE)
             {
-              newY = GetTagData(PGA_Top, 0, (struct TagItem *) pSucc->IAddress);
-              Remove((Node*)pSucc);
-              ReplyMsg((Message*)pSucc);
+              ULONG msgTagData = GetTagData(GA_ID, 0,
+                (struct TagItem *)p_IAddress);
+
+              if(msgTagData == ScrollbarWindow::GID_PropY)
+              {
+                newY = GetTagData(PGA_Top, 0, (struct TagItem *)
+                  p_IAddress);
+
+                // Intuition is about to free this message. Make sure
+                // that we have politely sent it back.
+                Remove((struct Node*) pMessage);
+                ReplyMsg((struct Message*) pMessage);
+              }
             }
 
-            pSucc = pSucc1;
+            pMessage = (struct IntuiMessage*) pSuccessor;
           }
 
           YChangedHandler(newY);
 
-          // Enable multi tasking again
+          // Enable multi tasking
           Permit();
 
           return true;
