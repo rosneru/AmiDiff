@@ -1,5 +1,4 @@
 #include <string.h>
-#include <stdio.h>
 
 #include <clib/alib_protos.h>
 #include <clib/dos_protos.h>
@@ -286,7 +285,6 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
           size_t newY = GetTagData(PGA_Top, 0, (struct TagItem *)
             p_IAddress);
 
-
           struct MsgPort* pMsgPort = m_pWindow->UserPort;
           struct Node* pSuccessor;
           struct IntuiMessage* pMessage;
@@ -316,10 +314,10 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
             pMessage = (struct IntuiMessage*) pSuccessor;
           }
 
-          YChangedHandler(newY);
-
           // Enable multi tasking
           Permit();
+
+          YChangedHandler(newY);
 
           return true;
           break;
