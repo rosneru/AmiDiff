@@ -372,6 +372,32 @@ void ScrollbarWindow::calcSizes()
     - m_SizeImageHeight;
 }
 
+void ScrollbarWindow::setXScrollPotSize(int p_MaxVisible, int p_Total)
+{
+  if(m_pXPropGadget == NULL)
+  {
+    return;
+  }
+
+  if(p_Total < 0)
+  {
+    // Only max visible lines  provided
+	  SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
+    	PGA_Visible, p_MaxVisible,
+    	TAG_DONE);
+  }
+  else if(p_MaxVisible >= 0)
+  {
+    // Number of total lines and number of max visible lines provided:
+    // Set the y-scrollbar to an initial state
+    SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
+      PGA_Total, p_Total,
+      PGA_Top, 0,
+      PGA_Visible, p_MaxVisible,
+      TAG_DONE);
+  }
+}
+
 void ScrollbarWindow::setYScrollPotSize(int p_MaxVisible, int p_Total)
 {
   if(m_pYPropGadget == NULL)
@@ -384,8 +410,7 @@ void ScrollbarWindow::setYScrollPotSize(int p_MaxVisible, int p_Total)
     // Only max visible lines  provided
 	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
     	PGA_Visible, p_MaxVisible,
-    	TAG_DONE
-	   );
+    	TAG_DONE);
   }
   else if(p_MaxVisible >= 0)
   {
@@ -398,6 +423,24 @@ void ScrollbarWindow::setYScrollPotSize(int p_MaxVisible, int p_Total)
       TAG_DONE);
   }
 }
+
+void ScrollbarWindow::setXScrollLeft(int p_Left)
+{
+  if(m_pYPropGadget == NULL)
+  {
+    return;
+  }
+
+  if(p_Left < 0)
+  {
+    return;
+  }
+
+  SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
+    PGA_Top, p_Left,
+    TAG_DONE);
+}
+
 
 void ScrollbarWindow::setYScrollTop(int p_Top)
 {

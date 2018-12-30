@@ -116,6 +116,20 @@ protected:
   virtual void calcSizes();
 
   /**
+   * Setting the pot size of the x-scrollbar.
+   *
+   * @param p_MaxVisible
+   * Number of max visible chars / points / etc in window. Has to be
+   * updated e.g. after the window resizes.
+   *
+   * @param p_Total
+   * Optional parameter. Number of total visible chars / points / etc
+   * in document. Has to be set once after opening the document and can
+   * then left untouched (or skipped by giving -1).
+   */
+  void setXScrollPotSize(int p_MaxVisible, int p_Total = - 1);
+
+  /**
    * Setting the pot size of the y-scrollbar.
    *
    * @param p_MaxVisible
@@ -128,6 +142,11 @@ protected:
    * then left untouched (or skipped by giving -1).
    */
   void setYScrollPotSize(int p_MaxVisible, int p_Total = - 1);
+
+  /**
+   * Setting a new top position to the x-scrollbar pot.
+   */
+  void setXScrollLeft(int p_Left);
 
   /**
    * Setting a new top position to the y-scrollbar pot.

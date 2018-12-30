@@ -14,12 +14,13 @@ public:
   bool Load(const SimpleString& p_FileName);
   void Clear();
 
-
-
-  virtual const size_t NumLines() const;
+  virtual size_t NumLines() const;
+  virtual size_t MaxLineLength();
   virtual const SimpleString* GetIndexedLine(int p_LineIdx);
 
 protected:
+  size_t m_MaxLineLength;
+
   /**
    * Used to describe if the last line obtaining method was
    * getNextLine(), getPreviousLine() ore none of both.

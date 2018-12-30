@@ -24,8 +24,8 @@ public:
   DiffDocument(DiffFilePartition& p_DiffFilePartition);
   virtual ~DiffDocument();
 
-  const size_t NumLines() const;
-  const size_t MaxLineLenght() const;
+  size_t NumLines() const;
+  size_t MaxLineLength();
 
   const SimpleString* GetIndexedLine(int p_LineId);
 

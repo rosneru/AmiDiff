@@ -3,7 +3,8 @@
 #include <stdio.h>
 
 TextDocument::TextDocument()
-  : m_LastScrollDirection(None)
+  : m_MaxLineLength(0),
+    m_LastScrollDirection(None)
 {
 }
 
@@ -65,9 +66,27 @@ void TextDocument::Clear()
   m_FileName = "";
 }
 
-const size_t TextDocument::NumLines() const
+size_t TextDocument::NumLines() const
 {
   return m_Lines.Size();
+}
+
+size_t TextDocument::MaxLineLength()
+{
+  if(m_MaxLineLength > 0)
+  {
+    return m_MaxLineLength;
+  }
+
+  for(size_t i = 0; i < NumLines(); i++)
+  {
+    if(m_Lines[i]->Length() > m_MaxLineLength)
+    {
+      m_MaxLineLength = m_Lines[i]->Length();
+    }
+  }
+
+  return m_MaxLineLength;
 }
 
 

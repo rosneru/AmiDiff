@@ -12,23 +12,27 @@ DiffDocument::~DiffDocument()
 
 }
 
-const size_t DiffDocument::NumLines() const
+size_t DiffDocument::NumLines() const
 {
   return m_DiffFilePartition.NumLines();
 }
 
-const size_t DiffDocument::MaxLineLenght() const
+size_t DiffDocument::MaxLineLength()
 {
-  size_t maxLineLength = 0;
+  if(m_MaxLineLength > 0)
+  {
+    return m_MaxLineLength;
+  }
+
   for(size_t i = 0; i < NumLines(); i++)
   {
-    if(m_DiffFilePartition.GetDiffLine(i)->Text().Length > maxLineLength)
+    if(m_DiffFilePartition.GetDiffLine(i)->Text().Length > m_MaxLineLength)
     {
-      maxLineLength = m_DiffFilePartition.GetDiffLine(i)->Text().Length;
+      m_MaxLineLength = m_DiffFilePartition.GetDiffLine(i)->Text().Length;
     }
   }
 
-  return maxLineLength;
+  return m_MaxLineLength;
 }
 
 
