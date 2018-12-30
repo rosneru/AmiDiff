@@ -26,10 +26,6 @@ public:
 
   const size_t NumLines() const;
 
-  const SimpleString* GetFirstLine();
-  const SimpleString* GetCurrentLine();
-  const SimpleString* GetPreviousLine();
-  const SimpleString* GetNextLine();
   const SimpleString* GetIndexedLine(int p_LineId);
 
   ColorName LineColor() const;
