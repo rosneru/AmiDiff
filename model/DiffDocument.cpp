@@ -17,6 +17,21 @@ const size_t DiffDocument::NumLines() const
   return m_DiffFilePartition.NumLines();
 }
 
+const size_t DiffDocument::MaxLineLenght() const
+{
+  size_t maxLineLength = 0;
+  for(size_t i = 0; i < NumLines(); i++)
+  {
+    if(m_DiffFilePartition.GetDiffLine(i)->Text().Length > maxLineLength)
+    {
+      maxLineLength = m_DiffFilePartition.GetDiffLine(i)->Text().Length;
+    }
+  }
+
+  return maxLineLength;
+}
+
+
 const SimpleString* DiffDocument::GetIndexedLine(int p_LineId)
 {
   m_LastScrollDirection = None;

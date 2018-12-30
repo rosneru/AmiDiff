@@ -25,6 +25,7 @@ public:
   virtual ~DiffDocument();
 
   const size_t NumLines() const;
+  const size_t MaxLineLenght() const;
 
   const SimpleString* GetIndexedLine(int p_LineId);
 
