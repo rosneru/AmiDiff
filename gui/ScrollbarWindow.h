@@ -50,6 +50,42 @@ public:
   virtual void YChangedHandler(size_t p_NewY) = 0;
 
   /**
+   * This handles the increase by 1 of the x-position triggered by the
+   * cursor-right-key or the right-arrow-gadget. It is called from the
+   * handleIDCMP method of this class.
+   *
+   * Child classes must implement it and therein should perform the
+   * scrolling to x+1.
+   *
+   * @param p_IncreaseBy
+   * Amount to increase the x-position by
+   *
+   * @param p_bTriggeredByScrollbarPot
+   * If the call is triggered by moving the scrollbar pot: true
+   * If the call is triggered by other sources: false
+   */
+  virtual void XIncrease(size_t p_IncreaseBy,
+    bool p_bTriggeredByScrollbarPot = false) = 0;
+
+  /**
+   * This handles the decrease by 1 of the x-position triggered by the
+   * cursor-left-key or the left-arrow-gadget. It is called from the
+   * handleIDCMP method of this class.
+   *
+   * Child classes must implement it and therein should perform the
+   * scrolling to x-1.
+   *
+   * @param p_DecreaseBy
+   * Amount to decrease the x-position by
+   *
+   * @param p_bTriggeredByScrollbarPot
+   * If the call is triggered by moving the scrollbar pot: true
+   * If the call is triggered by other sources: false
+   */
+  virtual void XDecrease(size_t p_DecreaseBy,
+    bool p_bTriggeredByScrollbarPot = false) = 0;
+
+  /**
    * This handles the increase by 1 of the y-position triggered by the
    * cursor-down-key or the down-arrow-gadget. It is called from the
    * handleIDCMP method of this class.

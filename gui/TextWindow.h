@@ -69,6 +69,32 @@ public:
   virtual void YChangedHandler(size_t p_NewY);
 
   /**
+   * Increases the X position of the text by the given amount and
+   * performs a scrolling as needed.
+   *
+   * @param p_IncreaseBy
+   * Amount to increase the x-position by
+   *
+   * @param p_bTriggeredByScrollbarPot
+   * If the call is triggered by moving the scrollbar pot: true
+   * If the call is triggered by other sources: false
+   */
+  void XIncrease(size_t p_IncreaseBy, bool p_bTriggeredByScrollbarPot);
+
+  /**
+   * Decreases the X position of the text by the given amount and
+   * performs a scrolling as needed.
+   *
+   * @param p_DecreaseBy
+   * Amount to decrease the x-position by
+   *
+   * @param p_bTriggeredByScrollbarPot
+   * If the call is triggered by moving the scrollbar pot: true
+   * If the call is triggered by other sources: false
+   */
+  void XDecrease(size_t p_DecreaseBy, bool p_bTriggeredByScrollbarPot);
+
+  /**
    * Increases the Y position of the text by the given amount and
    * performs a scrolling as needed.
    *
@@ -147,6 +173,30 @@ private:
    * Prints the given line at given y-position p_TopEdge.
    */
     void paintLine(const SimpleString* p_pLine, WORD p_TopEdge);
+
+  /**
+   * Scrolls the current text in the text area left by
+   * p_ScrollNumCharsLeft chars and fills the gap at right with the
+   * following chars
+   *
+   * NOTE: Does *not* change the current left line position m_X!
+   *
+   * @returns Number of lines scrolled. Can be smaller than expected
+   * when last char of longest line is displayed.
+   */
+  size_t scrollNCharsLeft(int p_ScrollNumCharsLeft);
+
+  /**
+   * Scrolls the current text in the text area right by
+   * p_ScrollNumCharsRight chars and fills the gap at left with the
+   * previous chars
+   *
+   * NOTE: Does *not* change the current top line position m_Y!
+   *
+   * @returns Number of lines scrolled. Can be smaller than expected
+   * when first char of text reached.
+   */
+  size_t scrollNCharsRight(int p_ScrollNumCharsRight);
 
   /**
    * Scrolls the current text in the text area down by

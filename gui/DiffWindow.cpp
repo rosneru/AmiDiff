@@ -156,8 +156,8 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   // Paint the status bar
   paintStatusBar();
 
-  size_t maxCharsLeft = p_pLeftDocument->MaxLineLenght();
-  size_t maxCharsRight = p_pRightDocument->MaxLineLenght();
+  size_t maxCharsLeft = p_pLeftDocument->MaxLineLength();
+  size_t maxCharsRight = p_pRightDocument->MaxLineLength();
   size_t maxLineLength = maxCharsLeft > maxCharsRight ? 
     maxCharsLeft : maxCharsRight;
 
@@ -402,14 +402,14 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pLeftDocument->LineColor()));
 
   // Determine how many characters would be print theoretically
-  size_t numChars = p_pLeftLine->Length();
+  size_t numChars = p_pLeftLine->Length() - m_X;
 
   // Limit this number to the max fitting chars if exceeded
   numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
 
   // Print the left line
   Text(m_pWindow->RPort,
-    p_pLeftLine->C_str(),
+    p_pLeftLine->C_str() + m_X,
     numChars
   );
 
@@ -577,14 +577,11 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
-  // TODO continue here #1
-
-  // fill the gap with the previous text lines
-  for(int i = 0; i < p_ScrollNumLinesDown; i++)
+  // fill the gap with the previous chars
+  for(int i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
-    int lineIndex = m_Y - p_ScrollNumLinesDown + i;
-    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
-    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
+    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
+    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -594,7 +591,7 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
     paintLine(pLeftLine, pRightLine, i * m_TextFontHeight_pix);
   }
 
-  return p_ScrollNumLinesDown;
+  return p_ScrollNumCharsRight;
 }
 
 size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
@@ -645,27 +642,24 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
-  // TODO continue here #2
-
-  for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
+  // Fill the gap with the following chars
+  for(int i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
-    int lineIndex = m_Y + m_MaxTextAreaLines + i;
-    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
-    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
+    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
+    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
       break;
     }
 
-    int paintLineIndex = m_MaxTextAreaLines - p_ScrollUpNumLinesUp + i;
-    paintLine(pLeftLine, pRightLine, paintLineIndex * m_TextFontHeight_pix);
+    paintLine(pLeftLine, pRightLine, i * m_TextFontHeight_pix);
   }
 
-  // Repaint window decoration
-  paintWindowDecoration();
+  // // Repaint window decoration
+  // paintWindowDecoration();
 
-  return p_ScrollUpNumLinesUp;
+  return p_ScrollNumCharsLeft;
 }
 
 size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)

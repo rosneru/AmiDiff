@@ -323,6 +323,20 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
           break;
         }
 
+        case ScrollbarWindow::GID_ArrowLeft:
+        {
+          XDecrease(1);
+          return true;
+          break;
+        }
+
+        case ScrollbarWindow::GID_ArrowRight:
+        {
+          XIncrease(1);
+          return true;
+          break;
+        }
+
         case ScrollbarWindow::GID_ArrowUp:
         {
           YDecrease(1);
@@ -343,7 +357,17 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 
     case IDCMP_RAWKEY:
     {
-      if(p_Code == CURSORDOWN)
+      if(p_Code == CURSORLEFT)
+      {
+        XDecrease(1);
+        return true;
+      }
+      else if(p_Code == CURSORRIGHT)
+      {
+        XIncrease(1);
+        return true;
+      }
+      else if(p_Code == CURSORDOWN)
       {
         YIncrease(1);
         return true;

@@ -175,6 +175,32 @@ void TextWindow::YChangedHandler(size_t p_NewY)
   paintDocument(true);
 }
 
+void TextWindow::XIncrease(size_t p_IncreaseBy,
+  bool p_bTriggeredByScrollbarPot)
+{
+  m_X += scrollNCharsLeft(p_IncreaseBy);
+
+  if(!p_bTriggeredByScrollbarPot)
+  {
+    // Y-position-decrease was not triggered by the scrollbar pot
+    // directly. So the pot top position must be set manually.
+    setXScrollLeft(m_X);
+  }
+}
+
+void TextWindow::XDecrease(size_t p_DecreaseBy,
+  bool p_bTriggeredByScrollbarPot)
+{
+  m_X -= scrollNCharsRight(p_DecreaseBy);
+
+  if(!p_bTriggeredByScrollbarPot)
+  {
+    // Y-position-decrease was not triggered by the scrollbar pot
+    // directly. So the pot top position must be set manually.
+    setXScrollLeft(m_X);
+  }
+}
+
 
 void TextWindow::YIncrease(size_t p_IncreaseBy,
   bool p_bTriggeredByScrollbarPot)
@@ -329,6 +355,116 @@ void TextWindow::paintDocument(bool p_bStartFromTop)
     paintLine(pLine, (i - m_Y) * m_TextFontHeight_pix);
   }
 }
+
+size_t TextWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
+{
+  if(p_ScrollNumCharsRight < 1)
+  {
+    // Nothing to do
+    return 0;
+  }
+
+  if(m_Y < 1)
+  {
+    // Do not move the text area right if text is already at leftmost position
+    return 0;
+  }
+
+  if(p_ScrollNumCharsRight > m_X)
+  {
+    // Limit the scrolling to only scroll only as many chars as necessary
+    p_ScrollNumCharsRight = m_X;
+  }
+
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+
+  // Set background color before scrolling
+  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+
+  // Move the text area right by n * the height of one text line
+  ScrollRaster(m_pWindow->RPort,
+    -p_ScrollNumCharsRight * m_TextFontWidth_pix, // n * width
+    0,  
+    m_TextAreaLeft + 3, m_TextAreaTop + 2,
+    m_TextAreaLeft + m_TextAreaWidth - 3,
+    m_TextAreaTop + m_TextAreaHeight - 3);
+
+
+  // fill the gap with the previous chars
+  for(int i = m_Y; i < m_Y + m_MaxWinLines; i++)
+  {
+    const SimpleString* pLine = m_pDocument->GetIndexedLine(i);
+
+    if(pLine == NULL)
+    {
+      break;
+    }
+
+    paintLine(pLine, i * m_TextFontHeight_pix);
+  }
+
+  return p_ScrollNumCharsRight;
+}
+
+size_t TextWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
+{
+  if(p_ScrollNumCharsLeft < 1)
+  {
+    // Noting to do
+    return 0;
+  }
+
+  if(m_pDocument->MaxLineLength() < m_MaxWinChars)
+  {
+    // Do not move the scroll area left if all the text fits into
+    // the window
+    return 0;
+  }
+
+  if((m_X + m_MaxWinChars) == m_pDocument->NumLines())
+  {
+    // Do not move the scroll area left if text already at rightmost position
+    return 0;
+  }
+
+  if((m_X + m_MaxWinChars + p_ScrollNumCharsLeft) > m_pDocument->MaxLineLength())
+  {
+    // Limit the scrolling to only scroll only as many lines as necessary
+    p_ScrollNumCharsLeft = m_pDocument->MaxLineLength - (m_X + m_MaxWinChars);
+  }
+
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+
+  // Set background color before scrolling
+  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+
+  // Move each text area left by n * the width of one char
+  ScrollRaster(m_pWindow->RPort, 
+    p_ScrollNumCharsLeft * m_TextFontWidth_pix,
+    0,
+    m_TextAreaLeft + 3, m_TextAreaTop + 2,
+    m_TextAreaLeft + m_TextAreaWidth - 3,
+    m_TextAreaTop + m_TextAreaHeight - 3);
+
+
+  // Fill the gap with the following chars
+  for(int i = m_Y; i < m_Y + m_MaxWinLines; i++)
+  {
+    const SimpleString* pLine = m_pDocument->GetIndexedLine(i);
+
+    if(pLine == NULL)
+    {
+      break;
+    }
+
+    paintLine(pLine, i * m_TextFontHeight_pix);
+  }
+
+  return p_ScrollNumCharsLeft;
+}
+
 
 size_t TextWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
 {
