@@ -26,9 +26,9 @@ size_t DiffDocument::MaxLineLength()
 
   for(size_t i = 0; i < NumLines(); i++)
   {
-    if(m_DiffFilePartition.GetDiffLine(i)->Text().Length > m_MaxLineLength)
+    if(m_DiffFilePartition.GetDiffLine(i)->Text().Length() > m_MaxLineLength)
     {
-      m_MaxLineLength = m_DiffFilePartition.GetDiffLine(i)->Text().Length;
+      m_MaxLineLength = m_DiffFilePartition.GetDiffLine(i)->Text().Length();
     }
   }
 

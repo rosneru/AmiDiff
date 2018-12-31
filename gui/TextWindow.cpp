@@ -385,7 +385,7 @@ size_t TextWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
   // Move the text area right by n * the height of one text line
   ScrollRaster(m_pWindow->RPort,
     -p_ScrollNumCharsRight * m_TextFontWidth_pix, // n * width
-    0,  
+    0,
     m_TextAreaLeft + 3, m_TextAreaTop + 2,
     m_TextAreaLeft + m_TextAreaWidth - 3,
     m_TextAreaTop + m_TextAreaHeight - 3);
@@ -431,7 +431,7 @@ size_t TextWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
   if((m_X + m_MaxWinChars + p_ScrollNumCharsLeft) > m_pDocument->MaxLineLength())
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    p_ScrollNumCharsLeft = m_pDocument->MaxLineLength - (m_X + m_MaxWinChars);
+    p_ScrollNumCharsLeft = m_pDocument->MaxLineLength() - (m_X + m_MaxWinChars);
   }
 
   // Set foreground color for document painting
@@ -441,7 +441,7 @@ size_t TextWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
   SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
   // Move each text area left by n * the width of one char
-  ScrollRaster(m_pWindow->RPort, 
+  ScrollRaster(m_pWindow->RPort,
     p_ScrollNumCharsLeft * m_TextFontWidth_pix,
     0,
     m_TextAreaLeft + 3, m_TextAreaTop + 2,

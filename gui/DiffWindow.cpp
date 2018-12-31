@@ -158,7 +158,7 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
 
   size_t maxCharsLeft = p_pLeftDocument->MaxLineLength();
   size_t maxCharsRight = p_pRightDocument->MaxLineLength();
-  size_t maxLineLength = maxCharsLeft > maxCharsRight ? 
+  size_t maxLineLength = maxCharsLeft > maxCharsRight ?
     maxCharsLeft : maxCharsRight;
 
   setXScrollPotSize(m_MaxTextAreaChars, maxLineLength);
@@ -565,12 +565,12 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
   // Move each text area right by n * the height of one text line
   ScrollRaster(m_pWindow->RPort,
     -p_ScrollNumCharsRight * m_TextFontWidth_pix, // n * width
-    0,  
+    0,
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea1Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
-  ScrollRaster(m_pWindow->RPort, 
+  ScrollRaster(m_pWindow->RPort,
     -p_ScrollNumCharsRight * m_TextFontWidth_pix,  // n * width
     0,
     m_TextArea2Left + 3, m_TextAreasTop + 2,
@@ -618,7 +618,7 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
   if((m_X + m_MaxTextAreaChars + p_ScrollNumCharsLeft) > m_pLeftDocument->MaxLineLength())
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    p_ScrollNumCharsLeft = m_pLeftDocument->MaxLineLength - (m_X + m_MaxTextAreaChars);
+    p_ScrollNumCharsLeft = m_pLeftDocument->MaxLineLength() - (m_X + m_MaxTextAreaChars);
   }
 
   // Set foreground color for document painting
@@ -628,14 +628,14 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
   SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
   // Move each text area left by n * the width of one char
-  ScrollRaster(m_pWindow->RPort, 
+  ScrollRaster(m_pWindow->RPort,
     p_ScrollNumCharsLeft * m_TextFontWidth_pix,
     0,
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea1Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
-  ScrollRaster(m_pWindow->RPort, 
+  ScrollRaster(m_pWindow->RPort,
     p_ScrollNumCharsLeft * m_TextFontWidth_pix,
     0,
     m_TextArea2Left + 3, m_TextAreasTop + 2,
