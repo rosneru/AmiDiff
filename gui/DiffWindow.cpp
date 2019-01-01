@@ -391,8 +391,14 @@ void DiffWindow::paintDocument(bool p_bStartFromTop)
 }
 
 void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
-    const SimpleString* p_pRightLine, WORD p_TopEdge)
+    const SimpleString* p_pRightLine, WORD p_TopEdge,
+    int p_StartCharIndex, int p_NumChars)
 {
+  if(p_StartCharIndex == 0)
+  {
+    p_StartCharIndex = m_X;
+  }
+
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
     m_TextArea1Left + 3,
@@ -401,8 +407,16 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   // Set the left line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pLeftDocument->LineColor()));
 
-  // Determine how many characters would be print theoretically
-  size_t numChars = p_pLeftLine->Length() - m_X;
+  size_t numChars = 0;
+  if(p_NumChars > 0)
+  {
+    numChars = p_NumChars;
+  }
+  else
+  {
+    // Determine how many characters would be print theoretically
+    numChars = p_pLeftLine->Length() - m_X;
+  }
 
   // Limit this number to the maximum number of chars that fit into the
   // left text area
@@ -412,7 +426,7 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   if(m_X < p_pLeftLine->Length())
   {
     Text(m_pWindow->RPort,
-      p_pLeftLine->C_str()+ m_X,
+      p_pLeftLine->C_str() + p_StartCharIndex,
       numChars
     );
   }
@@ -426,8 +440,16 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   // Set the right line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pRightDocument->LineColor()));
 
-  // Determine how many characters would be print theoretically
-  numChars = p_pRightLine->Length() - m_X;
+  numChars = 0;
+  if(p_NumChars > 0)
+  {
+    numChars = p_NumChars;
+  }
+  else
+  {
+    // Determine how many characters would be print theoretically
+    numChars = p_pRightLine->Length() - m_X;
+  }
 
   // Limit this number to the maximum number of chars that fit into the
   // right text area
@@ -437,7 +459,7 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   if(m_X < p_pRightLine->Length())
   {
     Text(m_pWindow->RPort,
-      p_pRightLine->C_str() + m_X,
+      p_pRightLine->C_str() + p_StartCharIndex,
       numChars
     );
   }

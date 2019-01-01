@@ -184,7 +184,8 @@ private:
    * y-position p_TopEdge.
    */
   void paintLine(const SimpleString* p_pLeftLine,
-    const SimpleString* p_pRightLine, WORD p_TopEdge);
+    const SimpleString* p_pRightLine, WORD p_TopEdge,
+    int p_StartCharIndex = 0, int p_NumChars = 0);
 
   /**
    * Paints the basic window content: the 2 BevelBoxes for the original
