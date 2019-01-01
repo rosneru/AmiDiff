@@ -394,14 +394,25 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
     const SimpleString* p_pRightLine, WORD p_TopEdge,
     int p_StartCharIndex, int p_NumChars)
 {
-  if(p_StartCharIndex == 0)
+  size_t indent = 0;
+
+  if(p_StartCharIndex < 0)
   {
     p_StartCharIndex = m_X;
   }
 
+  if(p_NumChars < 0)
+  {
+    // A negative p_NumChars means that the text is to be inserted
+    // right-adjusted. So here an indent for the text is calculated
+    // and p_NumChars is made positive to get used below.
+    p_NumChars = -p_NumChars;
+    indent = (m_MaxTextAreaChars - p_NumChars) * m_TextFontWidth_pix;
+  }
+
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
-    m_TextArea1Left + 3,
+    m_TextArea1Left + 3 + indent,
     p_TopEdge + m_TextAreasTop + m_TextFontHeight_pix);
 
   // Set the left line's background color
@@ -423,7 +434,7 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
 
   // Print the left line if is visible regarding current x scroll
-  if(m_X < p_pLeftLine->Length())
+  if(p_StartCharIndex < p_pLeftLine->Length())
   {
     Text(m_pWindow->RPort,
       p_pLeftLine->C_str() + p_StartCharIndex,
@@ -433,7 +444,7 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
 
   // Move rastport cursor to start of right line
   ::Move(m_pWindow->RPort,
-    m_TextArea2Left + 3,
+    m_TextArea2Left + 3  + indent,
     p_TopEdge + m_TextAreasTop + m_TextFontHeight_pix
   );
 
@@ -455,8 +466,8 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   // right text area
   numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
 
-  // Print the left line if is visible regarding current x scroll
-  if(m_X < p_pRightLine->Length())
+  // Print the right line if is visible regarding current x scroll
+  if(p_StartCharIndex < p_pRightLine->Length())
   {
     Text(m_pWindow->RPort,
       p_pRightLine->C_str() + p_StartCharIndex,
@@ -618,7 +629,8 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
       break;
     }
 
-    //paintLine(pLeftLine, pRightLine, i * m_TextFontHeight_pix);
+    paintLine(pLeftLine, pRightLine, (i - m_Y) * m_TextFontHeight_pix,
+      m_X - 1, p_ScrollNumCharsRight);
   }
 
   return p_ScrollNumCharsRight;
@@ -683,11 +695,9 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
       break;
     }
 
-    //paintLine(pLeftLine, pRightLine, i * m_TextFontHeight_pix);
+    paintLine(pLeftLine, pRightLine, (i - m_Y)  * m_TextFontHeight_pix,
+      m_X + m_MaxTextAreaChars, -p_ScrollNumCharsLeft);
   }
-
-  // // Repaint window decoration
-  // paintWindowDecoration();
 
   return p_ScrollNumCharsLeft;
 }
@@ -811,7 +821,7 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
   }
 
   // Repaint window decoration
-  paintWindowDecoration();
+  //paintWindowDecoration();
 
   return p_ScrollUpNumLinesUp;
 }
