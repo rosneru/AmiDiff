@@ -276,10 +276,53 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       ULONG tagData = GetTagData(GA_ID, 0, (struct TagItem *)p_IAddress);
       switch(tagData)
       {
+        case ScrollbarWindow::GID_PropX:
+        {
+          Forbid();
+
+          size_t newX = GetTagData(PGA_Top, 0, (struct TagItem *)
+            p_IAddress);
+
+          struct MsgPort* pMsgPort = m_pWindow->UserPort;
+          struct Node* pSuccessor;
+          struct IntuiMessage* pMessage;
+
+          pMessage = (struct IntuiMessage*) pMsgPort->mp_MsgList.lh_Head;
+
+          while(pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ)
+          {
+            if(pMessage->IDCMPWindow == m_pWindow &&
+               pMessage->Class == IDCMP_IDCMPUPDATE)
+            {
+              ULONG msgTagData = GetTagData(GA_ID, 0,
+                (struct TagItem *)pMessage->IAddress);
+
+              if(msgTagData == ScrollbarWindow::GID_PropY)
+              {
+                newX = GetTagData(PGA_Top, 0, (struct TagItem *)
+                  pMessage->IAddress);
+
+                // Intuition is about to free this message. Make sure
+                // that we have politely sent it back.
+                Remove((struct Node*) pMessage);
+                ReplyMsg((struct Message*) pMessage);
+              }
+            }
+
+            pMessage = (struct IntuiMessage*) pSuccessor;
+          }
+
+          // Enable multi tasking
+          Permit();
+
+          XChangedHandler(newX);
+
+          return true;
+          break;
+        }
+
         case ScrollbarWindow::GID_PropY:
         {
-          // Disable multi tasking to avoid getting too many of these
-          // messages. This could be a problem on slow machines.
           Forbid();
 
           size_t newY = GetTagData(PGA_Top, 0, (struct TagItem *)

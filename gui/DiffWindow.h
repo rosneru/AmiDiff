@@ -66,7 +66,7 @@ public:
    * of the window. It is called from the handleIDCMP() method of
    * ScrollbarWindow.
    */
-  void XChangedHandler(size_t p_NewY);
+  void XChangedHandler(size_t p_NewX);
 
   /**
    * This handles the y-changes triggered by the vertical scrollbar
