@@ -61,15 +61,17 @@ public:
    */
   virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
+  /**
+   * This handles the x-changes triggered by the horizontal scrollbar
+   * of the window. It is called from the handleIDCMP() method of
+   * ScrollbarWindow.
+   */
+  void XChangedHandler(size_t p_NewY);
 
   /**
-   * This handles the Y-Changes triggered by the vertical scrollbar
-   * of the window. It does so by completely re-drawing the text from
-   * beginning with p_NewY on the top line.
-   *
-   * This method should be called from Application event loop if the
-   * Y-proportional gadget attached to the window has been moved by
-   * the user.
+   * This handles the y-changes triggered by the vertical scrollbar
+   * of the window. It is called from the handleIDCMP() method of
+   * ScrollbarWindow.
    */
   void YChangedHandler(size_t p_NewY);
 

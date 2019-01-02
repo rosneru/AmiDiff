@@ -38,6 +38,15 @@ public:
    */
   virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
+  /**
+   * This handles the x-changes triggered by the horizontal scrollbar
+   * of the window. It is called from the handleIDCMP method of this
+   * class.
+   *
+   * Child classes must implement it and therin should perform the
+   * scrolling to the new x-position.
+   */
+  virtual void XChangedHandler(size_t p_NewX) = 0;
 
   /**
    * This handles the y-changes triggered by the vertical scrollbar

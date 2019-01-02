@@ -176,6 +176,25 @@ void DiffWindow::SetStatusBarText(const SimpleString& p_StatusBarText)
   paintStatusBar();
 }
 
+void DiffWindow::XChangedHandler(size_t p_NewY)
+{
+  int delta = p_NewY - m_Y;
+  if(delta == 0)
+  {
+    return;
+  }
+
+  int deltaAbs = abs(delta);
+  if(delta > 0)
+  {
+    m_Y += scrollNCharsLeft(deltaAbs);
+  }
+  else if(delta < 0)
+  {
+    m_Y -= scrollNCharsRight(deltaAbs);
+  }
+}
+
 void DiffWindow::YChangedHandler(size_t p_NewY)
 {
   int delta = p_NewY - m_Y;

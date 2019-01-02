@@ -134,6 +134,11 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
   return true;
 }
 
+void TextWindow::XChangedHandler(size_t p_NewY)
+{
+  // TODO
+}
+
 void TextWindow::YChangedHandler(size_t p_NewY)
 {
   int delta = p_NewY - m_Y;
