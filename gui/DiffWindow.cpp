@@ -437,7 +437,7 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   // Set the left line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pLeftDocument->LineColor()));
 
-  size_t numChars = 0;
+  int numChars = 0;
   if(p_NumChars > 0)
   {
     numChars = p_NumChars;
@@ -448,12 +448,22 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
     numChars = p_pLeftLine->Length() - m_X;
   }
 
-  // Limit this number to the maximum number of chars that fit into the
-  // left text area
-  numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
+  // Limit the number of printed chars to fit into the text area
+  if(numChars > m_MaxTextAreaChars)
+  {
+    numChars = m_MaxTextAreaChars;
+  }
+
+  // When p_StartChar is set: limit the number of printed chars to not
+  // exceed the line length
+  if((p_StartCharIndex > -1) &&
+     (numChars + p_StartCharIndex > p_pLeftLine->Length()))
+  {
+    numChars = p_pLeftLine->Length() - p_StartCharIndex;
+  }
 
   // Print the left line if is visible regarding current x scroll
-  if(p_StartCharIndex < p_pLeftLine->Length())
+  if(numChars > 0)
   {
     Text(m_pWindow->RPort,
       p_pLeftLine->C_str() + p_StartCharIndex,
@@ -481,12 +491,23 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
     numChars = p_pRightLine->Length() - m_X;
   }
 
-  // Limit this number to the maximum number of chars that fit into the
-  // right text area
-  numChars = numChars > m_MaxTextAreaChars ? m_MaxTextAreaChars : numChars;
+  // Limit the number of printed chars to fit into the text area
+  if(numChars > m_MaxTextAreaChars)
+  {
+    numChars = m_MaxTextAreaChars;
+  }
+
+  // When p_StartChar is set: limit the number of printed chars to not
+  // exceed the line length
+  if((p_StartCharIndex > -1) &&
+     (numChars + p_StartCharIndex > p_pRightLine->Length()))
+  {
+    numChars = p_pRightLine->Length() - p_StartCharIndex;
+  }
+
 
   // Print the right line if is visible regarding current x scroll
-  if(p_StartCharIndex < p_pRightLine->Length())
+  if(numChars > 0)
   {
     Text(m_pWindow->RPort,
       p_pRightLine->C_str() + p_StartCharIndex,
@@ -649,7 +670,7 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
     }
 
     paintLine(pLeftLine, pRightLine, (i - m_Y) * m_TextFontHeight_pix,
-      m_X - 1, p_ScrollNumCharsRight);
+      m_X - p_ScrollNumCharsRight, p_ScrollNumCharsRight);
   }
 
   return p_ScrollNumCharsRight;

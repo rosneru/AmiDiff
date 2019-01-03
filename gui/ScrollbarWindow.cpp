@@ -402,12 +402,12 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
     {
       if(p_Code == CURSORLEFT)
       {
-        XDecrease(1);
+        XDecrease(2);
         return true;
       }
       else if(p_Code == CURSORRIGHT)
       {
-        XIncrease(1);
+        XIncrease(2);
         return true;
       }
       else if(p_Code == CURSORDOWN)
