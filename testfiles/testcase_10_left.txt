@@ -8,7 +8,7 @@ Line    6
 Line    7 Next two lines are empty
 
 
-Line    8
+Line    8 Now this is also an very very long line and again it is used to verify that no text is overlapping when h-scroll is used in huge portions.
 Line    9
 Line   10 Is an long line too but not as long as line 5. The left/right - scrolling should work.
 Line   11
