@@ -637,6 +637,12 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
     p_ScrollNumCharsRight = m_X;
   }
 
+  if(p_ScrollNumCharsRight > m_MaxTextAreaChars)
+  {
+    p_ScrollNumCharsRight = m_MaxTextAreaChars;
+  }
+
+
   // Set foreground color for document painting
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
 
@@ -682,6 +688,11 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
   {
     // Noting to do
     return 0;
+  }
+
+  if(p_ScrollNumCharsLeft > m_MaxTextAreaChars)
+  {
+    p_ScrollNumCharsLeft = m_MaxTextAreaChars;
   }
 
   if(m_pLeftDocument->MaxLineLength() < m_MaxTextAreaChars)
