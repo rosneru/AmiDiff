@@ -200,6 +200,8 @@ void DiffWindow::XChangedHandler(size_t p_NewX)
     {
       m_X -= scrollNCharsRight(deltaAbs);
     }
+
+    return;
   }
 
   //
