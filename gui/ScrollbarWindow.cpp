@@ -278,43 +278,18 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       {
         case ScrollbarWindow::GID_PropX:
         {
-          Forbid();
-
+          // Get the top value of the prop gadget from the tag data of
+          // the message
           size_t newX = GetTagData(PGA_Top, 0, (struct TagItem *)
             p_IAddress);
 
-          struct MsgPort* pMsgPort = m_pWindow->UserPort;
-          struct Node* pSuccessor;
-          struct IntuiMessage* pMessage;
+          // If there are other GID_PropX addressed to this window,
+          // delete them and get the top value from the latest found
+          // message.
+          extractLatestPropGadTopValue(GID_PropX, newX);
 
-          pMessage = (struct IntuiMessage*) pMsgPort->mp_MsgList.lh_Head;
-
-          while(pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ)
-          {
-            if(pMessage->IDCMPWindow == m_pWindow &&
-               pMessage->Class == IDCMP_IDCMPUPDATE)
-            {
-              ULONG msgTagData = GetTagData(GA_ID, 0,
-                (struct TagItem *)pMessage->IAddress);
-
-              if(msgTagData == ScrollbarWindow::GID_PropX)
-              {
-                newX = GetTagData(PGA_Top, 0, (struct TagItem *)
-                  pMessage->IAddress);
-
-                // Intuition is about to free this message. Make sure
-                // that we have politely sent it back.
-                Remove((struct Node*) pMessage);
-                ReplyMsg((struct Message*) pMessage);
-              }
-            }
-
-            pMessage = (struct IntuiMessage*) pSuccessor;
-          }
-
-          // Enable multi tasking
-          Permit();
-
+          // Pass the latest found newX value to the childs which have
+          // to implement this abstract method
           XChangedHandler(newX);
 
           return true;
@@ -323,43 +298,18 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 
         case ScrollbarWindow::GID_PropY:
         {
-          Forbid();
-
+          // Get the top value of the prop gadget from the tag data of
+          // the message
           size_t newY = GetTagData(PGA_Top, 0, (struct TagItem *)
             p_IAddress);
 
-          struct MsgPort* pMsgPort = m_pWindow->UserPort;
-          struct Node* pSuccessor;
-          struct IntuiMessage* pMessage;
+          // If there are other GID_PropY addressed to this window,
+          // delete them and get the top value from the latest found
+          // message.
+          extractLatestPropGadTopValue(GID_PropY, newY);
 
-          pMessage = (struct IntuiMessage*) pMsgPort->mp_MsgList.lh_Head;
-
-          while(pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ)
-          {
-            if(pMessage->IDCMPWindow == m_pWindow &&
-               pMessage->Class == IDCMP_IDCMPUPDATE)
-            {
-              ULONG msgTagData = GetTagData(GA_ID, 0,
-                (struct TagItem *)pMessage->IAddress);
-
-              if(msgTagData == ScrollbarWindow::GID_PropY)
-              {
-                newY = GetTagData(PGA_Top, 0, (struct TagItem *)
-                  pMessage->IAddress);
-
-                // Intuition is about to free this message. Make sure
-                // that we have politely sent it back.
-                Remove((struct Node*) pMessage);
-                ReplyMsg((struct Message*) pMessage);
-              }
-            }
-
-            pMessage = (struct IntuiMessage*) pSuccessor;
-          }
-
-          // Enable multi tasking
-          Permit();
-
+          // Pass the latest found newY value to the childs which have
+          // to implement this abstract method
           YChangedHandler(newY);
 
           return true;
@@ -524,4 +474,43 @@ void ScrollbarWindow::setYScrollTop(int p_Top)
   SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
     PGA_Top, p_Top,
     TAG_DONE);
+}
+
+void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId p_GadgetId, 
+  size_t& p_LatestValue)
+{
+  Forbid();
+
+  struct MsgPort* pMsgPort = m_pWindow->UserPort;
+
+  struct IntuiMessage* pMessage;
+  pMessage = (struct IntuiMessage*) pMsgPort->mp_MsgList.lh_Head;
+
+  struct Node* pSuccessor;
+
+  while(pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ)
+  {
+    if(pMessage->IDCMPWindow == m_pWindow &&
+        pMessage->Class == IDCMP_IDCMPUPDATE)
+    {
+      ULONG msgTagData = GetTagData(GA_ID, 0,
+        (struct TagItem *)pMessage->IAddress);
+
+      if(msgTagData == p_GadgetId)
+      {
+        p_LatestValue = GetTagData(PGA_Top, 0, (struct TagItem*)
+          pMessage->IAddress);
+
+        // Intuition is about to free this message. Make sure
+        // that we have politely sent it back.
+        Remove((struct Node*) pMessage);
+        ReplyMsg((struct Message*) pMessage);
+      }
+    }
+
+    pMessage = (struct IntuiMessage*) pSuccessor;
+  }
+
+  // Enable multi tasking
+  Permit();
 }

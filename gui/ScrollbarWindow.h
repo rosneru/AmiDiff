@@ -132,20 +132,6 @@ public:
 
 
 protected:
-  /**
-   * IDs to help to interpret the events of this window's BOOPSI system
-   * gadgets in the Application event loop.
-   */
-  enum GadgetId
-  {
-    GID_PropX,
-    GID_PropY,
-    GID_ArrowUp,
-    GID_ArrowDown,
-    GID_ArrowLeft,
-    GID_ArrowRight,
-  };
-
   long m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
   long m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar
 
@@ -199,6 +185,20 @@ protected:
   void setYScrollTop(int p_Top);
 
 private:
+  /**
+   * IDs to help to interpret the events of this window's BOOPSI system
+   * gadgets in the Application event loop.
+   */
+  enum GadgetId
+  {
+    GID_PropX,
+    GID_PropY,
+    GID_ArrowUp,
+    GID_ArrowDown,
+    GID_ArrowLeft,
+    GID_ArrowRight,
+  };
+
   ULONG m_SizeImageWidth;
   ULONG m_SizeImageHeight;
 
@@ -213,6 +213,26 @@ private:
   struct Gadget* m_pRightArrowButton; ///> h-scrollbar right button
   struct Gadget* m_pUpArrowButton;    ///> v-scrollbar up button
   struct Gadget* m_pDownArrowButton;  ///> v-scrollbar down button
+
+  /**
+   * Browses through all IDCMP_IDCMPUPDATE messages for the given 
+   * proportional gadget (BOOPSI) which are addressed to this window.
+   * It deletes each of this messages by replying it to intuition. 
+   * Finally the given value argument variable is set to the last 
+   * found top value.
+   * 
+   * This should be used on proportional gadgets to get only the latest
+   * top value and delete all previous messages of this kind. Usefull
+   * on slow systems to not get flooded by messages for this gadget.
+   * 
+   * @param p_GadgetId of the BOOPSI gadget to browse for messages
+   * 
+   * @param If one or more IDCMP_IDCMPUPDATE messages are found while 
+   * browsing, the tag value of the latest found message is written to 
+   * this given argument. If no appropriate message is found the 
+   * argument variable will not be overwritten.
+   */
+  void extractLatestPropGadTopValue(GadgetId p_GadgetId, size_t& p_LatestValue);
 };
 
 
