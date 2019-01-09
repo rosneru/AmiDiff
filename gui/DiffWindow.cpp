@@ -185,7 +185,9 @@ void DiffWindow::XChangedHandler(size_t p_NewX)
   }
 
   int deltaAbs = abs(delta);
-  int deltaLimit = m_MaxTextAreaChars / 2;
+
+  //int deltaLimit = m_MaxTextAreaChars / 2;
+  int deltaLimit = 10;
 
   //
   // Scroll small amounts (1/2 text area width) line by line
@@ -234,7 +236,9 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   }
 
   int deltaAbs = abs(delta);
-  int deltaLimit = m_MaxTextAreaLines / 2;
+
+//  int deltaLimit = m_MaxTextAreaLines / 2;
+  int deltaLimit = 10;
 
   //
   // Scroll small amounts (1/2 text area height) line by line
