@@ -175,11 +175,13 @@ private:
    * The file is displayed starting from current text position m_Y as
    * first line at the very top of the text area.
    *
-   * @param p_bStartFromTop
-   * When true: Prints the documents starting with line index 0.
+   * @param  p_bDisplayFromStart
+   * When true: Before printing the documents the line and column
+   *   indices m_X and m_Y are reset to 0. So the document will be
+   *   displayed from start.
    * When false: Printing starts at current position m_Y.
    */
-  void paintDocument(bool p_bStartFromTop = true);
+  void paintDocument(bool  p_bDisplayFromStart = true);
 
   /**
    * Prints the given line (p_pLeftLine and p_pRightLine) at given

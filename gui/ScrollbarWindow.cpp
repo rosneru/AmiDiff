@@ -297,7 +297,7 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
               ULONG msgTagData = GetTagData(GA_ID, 0,
                 (struct TagItem *)pMessage->IAddress);
 
-              if(msgTagData == ScrollbarWindow::GID_PropY)
+              if(msgTagData == ScrollbarWindow::GID_PropX)
               {
                 newX = GetTagData(PGA_Top, 0, (struct TagItem *)
                   pMessage->IAddress);
@@ -368,28 +368,28 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 
         case ScrollbarWindow::GID_ArrowLeft:
         {
-          XDecrease(1);
+          XDecrease(2);
           return true;
           break;
         }
 
         case ScrollbarWindow::GID_ArrowRight:
         {
-          XIncrease(1);
+          XIncrease(2);
           return true;
           break;
         }
 
         case ScrollbarWindow::GID_ArrowUp:
         {
-          YDecrease(1);
+          YDecrease(2);
           return true;
           break;
         }
 
         case ScrollbarWindow::GID_ArrowDown:
         {
-          YIncrease(1);
+          YIncrease(2);
           return true;
           break;
         }
@@ -412,12 +412,12 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       }
       else if(p_Code == CURSORDOWN)
       {
-        YIncrease(1);
+        YIncrease(2);
         return true;
       }
       else if(p_Code == CURSORUP)
       {
-        YDecrease(1);
+        YDecrease(2);
         return true;
       }
       break;

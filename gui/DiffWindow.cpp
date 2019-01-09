@@ -185,14 +185,42 @@ void DiffWindow::XChangedHandler(size_t p_NewX)
   }
 
   int deltaAbs = abs(delta);
-  if(delta > 0)
+  int deltaLimit = m_MaxTextAreaChars / 2;
+
+  //
+  // Scroll small amounts (1/2 text area width) line by line
+  //
+  if(deltaAbs < deltaLimit)
   {
-    m_X += scrollNCharsLeft(deltaAbs);
+    if(delta > 0)
+    {
+      m_X += scrollNCharsLeft(deltaAbs);
+    }
+    else if(delta < 0)
+    {
+      m_X -= scrollNCharsRight(deltaAbs);
+    }
   }
-  else if(delta < 0)
-  {
-    m_X -= scrollNCharsRight(deltaAbs);
-  }
+
+  //
+  // Scroll bigger amounts by re-painting the whole page at the new
+  // x-position
+  //
+  m_X = p_NewX;
+
+  // Clear both text areas completely
+  EraseRect(m_pWindow->RPort,
+    m_TextArea1Left + 2, m_TextAreasTop + 2,
+    m_TextArea1Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 3);
+
+  EraseRect(m_pWindow->RPort,
+    m_TextArea2Left + 2, m_TextAreasTop + 2,
+    m_TextArea2Left + m_TextAreasWidth - 3,
+    m_TextAreasTop + m_TextAreasHeight - 3);
+
+  paintDocument(false);
+
 }
 
 void DiffWindow::YChangedHandler(size_t p_NewY)
@@ -207,7 +235,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   int deltaLimit = m_MaxTextAreaLines / 2;
 
   //
-  // Scroll small amounts (1/2 window height) line by line
+  // Scroll small amounts (1/2 text area height) line by line
   //
   if(deltaAbs < deltaLimit)
   {
@@ -375,15 +403,16 @@ void DiffWindow::calcSizes()
   setYScrollPotSize(m_MaxTextAreaLines);
 }
 
-void DiffWindow::paintDocument(bool p_bStartFromTop)
+void DiffWindow::paintDocument(bool  p_bDisplayFromStart)
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {
     return;
   }
 
-  if(p_bStartFromTop == true)
+  if( p_bDisplayFromStart == true)
   {
+    m_X = 0;
     m_Y = 0;
   }
 
