@@ -476,7 +476,7 @@ void ScrollbarWindow::setYScrollTop(int p_Top)
     TAG_DONE);
 }
 
-void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId p_GadgetId, 
+void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId p_GadgetId,
   size_t& p_LatestValue)
 {
   Forbid();
