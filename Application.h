@@ -24,16 +24,23 @@
 class Application
 {
 public:
-  Application(int argc, char **argv, struct MsgPort* p_pMsgPortAllWindows);
+  /**
+   * Creates the application using the given message port for the 
+   * windows messages. If an non-empty string for p_PubScreenName is
+   * provided, the 
+   */
+  Application(struct MsgPort* p_pMsgPortAllWindows, 
+    const SimpleString& p_PubScreenName);
+
   ~Application();
+
+  void SetLeftFilePath(const SimpleString& p_LeftFilePath);
+  void SetRightFilePath(const SimpleString& p_RightFilePath);
 
   bool Run();
 
 private:
   struct MsgPort* m_pMsgPortAllWindows;
-  int m_Argc;
-  char** m_Argv;
-
   bool m_bExitRequested;
 
   AppScreen m_Screen;

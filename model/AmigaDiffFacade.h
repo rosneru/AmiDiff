@@ -22,10 +22,10 @@ public:
   AmigaDiffFacade(DiffWindow& p_DiffWindow);
   ~AmigaDiffFacade();
 
-  void SetLeftFilePath(const char* p_pLeftFilePath);
+  void SetLeftFilePath(const SimpleString& p_LeftFilePath);
   const SimpleString& LeftFilePath() const;
 
-  void SetRightFilePath(const char* p_pRightFilePath);
+  void SetRightFilePath(const SimpleString& p_RightFilePath);
   const SimpleString& RightFilePath() const;
 
   const SimpleString& ErrorText() const;

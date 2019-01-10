@@ -15,10 +15,9 @@
 
 #include "Application.h"
 
-Application::Application(int argc, char **argv, struct MsgPort* p_pMsgPortAllWindows)
+Application::Application(struct MsgPort* p_pMsgPortAllWindows, 
+  const SimpleString& p_PubScreenName)
   : m_pMsgPortAllWindows(p_pMsgPortAllWindows),
-    m_Argc(argc),
-    m_Argv(argv),
     m_bExitRequested(false),
     m_Screen(),
     m_DiffWindow(m_Screen, m_pMsgPortAllWindows),
@@ -51,6 +50,15 @@ Application::~Application()
 
 }
 
+void Application::SetLeftFilePath(const SimpleString& p_LeftFilePath)
+{
+  m_DiffFacade.SetLeftFilePath(p_LeftFilePath);
+}
+
+void Application::SetRightFilePath(const SimpleString& p_RightFilePath)
+{
+  m_DiffFacade.SetRightFilePath(p_RightFilePath);
+}
 
 bool Application::Run()
 {
@@ -58,29 +66,21 @@ bool Application::Run()
   //
   // Opening the screen
   //
-  m_Screen.SetTitle("AmiDiff (C) 2018 by Uwe Rosner.");
+  m_Screen.SetTitle("ADiffView 1.0");
   if (!m_Screen.Open(AppScreen::SME_CloneWorkbenchMin8Col))
   {
     // Opening the screen failed
     return false;
   }
 
-  //
-  // If there are at least two command line arguments permitted, take
-  // the first two of them (argv[1] and argv[2]  as file names and load
-  // them into left and right window.
-  //
-  if(m_Argc >= 3)
+  // TODO Debugging only. Remove afterwards.
+  if((m_DiffFacade.LeftFilePath().Length == 0) && 
+     (m_DiffFacade.RightFilePath().Length == 0))
   {
-    m_DiffFacade.SetLeftFilePath(m_Argv[1]);
-    m_DiffFacade.SetRightFilePath(m_Argv[2]);
-  }
-  else
-  {
-    // TODO Remove after debugging
     m_DiffFacade.SetLeftFilePath("testfiles/Testcase_10_Left.txt");
     m_DiffFacade.SetRightFilePath("testfiles/Testcase_10_Right.txt");
   }
+
   //
   // Filling the GadTools menu struct, supplying pointers to the
   // commands as nm_UserData. So no complicated evalution needed to

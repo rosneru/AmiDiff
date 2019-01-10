@@ -13,9 +13,9 @@ AmigaDiffFacade::~AmigaDiffFacade()
   disposeDocuments();
 }
 
-void AmigaDiffFacade::SetLeftFilePath(const char* p_pLeftFilePath)
+void AmigaDiffFacade::SetLeftFilePath(const SimpleString& p_LeftFilePath)
 {
-  m_LeftFilePath = p_pLeftFilePath;
+  m_LeftFilePath = p_LeftFilePath;
 }
 
 const SimpleString& AmigaDiffFacade::LeftFilePath() const
@@ -23,9 +23,9 @@ const SimpleString& AmigaDiffFacade::LeftFilePath() const
   return m_LeftFilePath;
 }
 
-void AmigaDiffFacade::SetRightFilePath(const char* p_pRightFilePath)
+void AmigaDiffFacade::SetRightFilePath(const SimpleString& p_RightFilePath)
 {
-  m_RightFilePath = p_pRightFilePath;
+  m_RightFilePath = p_RightFilePath;
 }
 
 const SimpleString& AmigaDiffFacade::RightFilePath() const
