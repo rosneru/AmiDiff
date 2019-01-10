@@ -1,22 +1,22 @@
 #include <clib/gadtools_protos.h>
 #include <clib/intuition_protos.h>
 
-#include "AppMenu.h"
+#include "ApplicationMenu.h"
 
 
-AppMenu::AppMenu(AppScreen& p_Screen)
+ApplicationMenu::ApplicationMenu(AppScreen& p_Screen)
   : m_Screen(p_Screen),
     m_pMenu(NULL)
 {
 
 }
 
-AppMenu::~AppMenu()
+ApplicationMenu::~ApplicationMenu()
 {
   Dispose();
 }
 
-bool AppMenu::Create(struct NewMenu* p_pMenuDefinition)
+bool ApplicationMenu::Create(struct NewMenu* p_pMenuDefinition)
 {
   if(m_Screen.GadtoolsVisualInfo() == NULL)
   {
@@ -45,7 +45,7 @@ bool AppMenu::Create(struct NewMenu* p_pMenuDefinition)
   return true;
 }
 
-void AppMenu::Dispose()
+void ApplicationMenu::Dispose()
 {
   if(m_pMenu != NULL)
   {
@@ -54,7 +54,7 @@ void AppMenu::Dispose()
   }
 }
 
-bool AppMenu::AttachToWindow(struct Window* p_pWindow)
+bool ApplicationMenu::AttachToWindow(struct Window* p_pWindow)
 {
   if(SetMenuStrip(p_pWindow, m_pMenu) == FALSE)
   {
@@ -65,7 +65,7 @@ bool AppMenu::AttachToWindow(struct Window* p_pWindow)
   return true;
 }
 
-bool AppMenu::UpdateInWindow(struct Window* p_pWindow)
+bool ApplicationMenu::UpdateInWindow(struct Window* p_pWindow)
 {
   if(ResetMenuStrip(p_pWindow, m_pMenu) == FALSE)
   {
@@ -76,18 +76,18 @@ bool AppMenu::UpdateInWindow(struct Window* p_pWindow)
   return true;
 }
 
-void AppMenu::DetachFromWindow(struct Window* p_pWindow)
+void ApplicationMenu::DetachFromWindow(struct Window* p_pWindow)
 {
   ClearMenuStrip(p_pWindow);
 }
 
-struct Menu* AppMenu::IntuiMenu()
+struct Menu* ApplicationMenu::IntuiMenu()
 {
   return m_pMenu;
 }
 
 
-void AppMenu::DisableMenuItem(struct Window* p_pWindow,
+void ApplicationMenu::DisableMenuItem(struct Window* p_pWindow,
   APTR p_pUserDataMenuItemToDisable)
 {
   if(p_pUserDataMenuItemToDisable == NULL)
@@ -105,7 +105,7 @@ void AppMenu::DisableMenuItem(struct Window* p_pWindow,
   OffMenu(p_pWindow, menuNumber);
 }
 
-void AppMenu::EnableMenuItem(struct Window* p_pWindow,
+void ApplicationMenu::EnableMenuItem(struct Window* p_pWindow,
   APTR p_pUserDataMenuItemToEnable)
 {
   if(p_pUserDataMenuItemToEnable == NULL)
@@ -123,7 +123,7 @@ void AppMenu::EnableMenuItem(struct Window* p_pWindow,
   OnMenu(p_pWindow, menuNumber);
 }
 
-struct MenuItem* AppMenu::findItemByUserData(APTR p_pUserDataToFind, WORD& p_FoundMenuNumber)
+struct MenuItem* ApplicationMenu::findItemByUserData(APTR p_pUserDataToFind, WORD& p_FoundMenuNumber)
 {
   if(m_pMenu == NULL)
   {

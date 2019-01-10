@@ -1,7 +1,7 @@
 #ifndef CMD_OPEN_WINDOW_H
 #define CMD_OPEN_WINDOW_H
 
-#include "AppMenu.h"
+#include "ApplicationMenu.h"
 #include "Command.h"
 #include "WindowBase.h"
 

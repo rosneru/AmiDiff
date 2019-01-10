@@ -16,7 +16,10 @@
  *       Linux / Debian Stretch in a VM
  *       Amiga OS toolchain from https://github.com/bebbo
  *       Visual Studio Code
- * 
+ *
+ *   (3) TESTING SOME SUBMODULES
+ *       Linux / Debian Stretch in a VM
+ *       UnitTests with QTCreator and the boost framework
  *
  * History
  *   xx.02.2019 - Release of version 1.0
@@ -24,6 +27,7 @@
  *
  * Author: Uwe Rosner
  * https://github.com/rosneru
+ *
  */
 
 #define INTUI_V36_NAMES_ONLY

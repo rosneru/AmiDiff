@@ -11,7 +11,7 @@
 #include <exec/ports.h>
 
 #include "AmigaDiffFacade.h"
-#include "AppMenu.h"
+#include "ApplicationMenu.h"
 #include "AppScreen.h"
 #include "CmdOpenWindow.h"
 #include "CmdPerformDiff.h"
@@ -25,11 +25,11 @@ class Application
 {
 public:
   /**
-   * Creates the application using the given message port for the 
+   * Creates the application using the given message port for the
    * windows messages. If an non-empty string for p_PubScreenName is
-   * provided, the 
+   * provided, the
    */
-  Application(struct MsgPort* p_pMsgPortAllWindows, 
+  Application(struct MsgPort* p_pMsgPortAllWindows,
     const SimpleString& p_PubScreenName);
 
   ~Application();
@@ -50,7 +50,7 @@ private:
   CmdPerformDiff m_CmdDiff;
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpenFilesWindow;
-  AppMenu m_Menu;
+  ApplicationMenu m_Menu;
 
 
   /**

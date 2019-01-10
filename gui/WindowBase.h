@@ -3,7 +3,7 @@
 
 #include <exec/ports.h>
 #include <intuition/screens.h>
-#include "AppMenu.h"
+#include "ApplicationMenu.h"
 #include "AppScreen.h"
 #include "SimpleString.h"
 
@@ -171,7 +171,7 @@ public:
    */
   AppScreen& WindowScreen();
 
-  void SetMenu(AppMenu* p_pMenu);
+  void SetMenu(ApplicationMenu* p_pMenu);
 
 protected:
   AppScreen& m_AppScreen;
@@ -184,7 +184,7 @@ protected:
   long m_WinWidth;
   long m_WinHeight;
   bool m_bInitialized;
-  AppMenu* m_pMenu;
+  ApplicationMenu* m_pMenu;
   SimpleString m_Title;
 
   /**

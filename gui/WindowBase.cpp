@@ -105,8 +105,8 @@ bool WindowBase::Open(APTR p_pMenuItemDisableAtOpen)
 
   //
   // Opening the window
-  // 
-  // NOTE: Two separate calls because WA_SmartRefresh and 
+  //
+  // NOTE: Two separate calls because WA_SmartRefresh and
   //       WA_SimpleRefresh mutually excluding each other and should
   //       only be permitted if true.
   //
@@ -231,7 +231,7 @@ void WindowBase::SetTitle(SimpleString p_NewTitle)
   SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
 }
 
-void WindowBase::SetInitialPosition(InitialPosition p_InitialPosition, 
+void WindowBase::SetInitialPosition(InitialPosition p_InitialPosition,
   long p_Left, long p_Top, long p_Width, long p_Height)
 {
   if(IsOpen())
@@ -331,7 +331,7 @@ AppScreen& WindowBase::WindowScreen()
 }
 
 
-void WindowBase::SetMenu(AppMenu* p_pMenu)
+void WindowBase::SetMenu(ApplicationMenu* p_pMenu)
 {
   if(p_pMenu == NULL)
   {
