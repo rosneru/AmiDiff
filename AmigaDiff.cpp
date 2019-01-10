@@ -17,9 +17,12 @@
  * Author: Uwe Rosner
  */
 #define INTUI_V36_NAMES_ONLY
+#include <stdio.h>
 
 #include <exec/types.h>
+#include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
+#include <workbench/startup.h>
 
 #include "Application.h"
 
@@ -34,6 +37,13 @@ struct Library* UtilityBase;
 struct Library* MathIeeeDoubBasBase;
 struct Library* MathIeeeDoubTransBase;
 
+/*#ifdef __STORM__
+void wbmain(struct WBStartup* wb)
+{
+  main(0, (char **) wb);
+}
+#endif
+*/
 
 int main(int argc, char **argv)
 {
@@ -61,6 +71,22 @@ int main(int argc, char **argv)
     return 20;
   }
 
+  if(argc == 0)
+  {
+    FILE* outFile;
+    if((outFile = fopen("CON://0/0/640/200/PrArgs", "r+")) != NULL)
+    {
+      struct WBStartup* argmsg = (struct WBStartup*) argv;
+      struct WBArg* wb_arg = argmsg->sm_ArgList;
+
+      fprintf(outFile, "Run from the Workbench, %ld args.\n", argmsg->sm_NumArgs);
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
   // Create a message port for shared use with all windows
   struct MsgPort* pMsgPortAppWindows = CreateMsgPort();
   if(pMsgPortAppWindows == NULL)
@@ -83,6 +109,12 @@ int main(int argc, char **argv)
 
   return 0;
 }
+
+void wbmain(struct WBStartup* wb)
+{
+  main(0, (char **) wb);
+}
+
 
 void closeLibs()
 {
