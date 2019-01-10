@@ -67,6 +67,7 @@ struct Library* DosBase;
 struct Library* GadToolsBase;
 struct Library* AslBase;
 struct Library* GfxBase;
+struct Library* IconBase;
 struct Library* UtilityBase;
 struct Library* MathIeeeDoubBasBase;
 struct Library* MathIeeeDoubTransBase;
@@ -79,6 +80,7 @@ int main(int argc, char **argv)
   GadToolsBase = OpenLibrary("gadtools.library", 37);
   AslBase = OpenLibrary("asl.library", 37);
   GfxBase = OpenLibrary("graphics.library", 37);
+  IconBase = OpenLibrary("icon.library", 37);
   UtilityBase = OpenLibrary("utility.library", 37);
   MathIeeeDoubBasBase = OpenLibrary("mathieeedoubbas.library", 37);
   MathIeeeDoubTransBase = OpenLibrary("mathieeedoubtrans.library", 37);
@@ -143,6 +145,7 @@ void closeLibs()
   CloseLibrary(MathIeeeDoubTransBase);
   CloseLibrary(MathIeeeDoubBasBase);
   CloseLibrary(UtilityBase);
+  CloseLibrary(IconBase);  
   CloseLibrary(GfxBase);
   CloseLibrary(AslBase);
   CloseLibrary(GadToolsBase);
@@ -165,11 +168,11 @@ void exctractArgs(int argc, char **argv,
     STRPTR pBuf = (STRPTR) AllocVec(bufLen, MEMF_FAST);
     if(pBuf != NULL)
     {
-      struct WBStartup* argmsg = (struct WBStartup*) argv;
-      struct WBArg* wb_arg = argmsg->sm_ArgList;
-      for(int i=0; i < argmsg->sm_NumArgs; i++, wb_arg++)
+      struct WBStartup* wbStartup = (struct WBStartup*) argv;
+      struct WBArg* wbArg = wbStartup->sm_ArgList;
+      for(int i=0; i < wbStartup->sm_NumArgs; i++, wbArg++)
       {
-        if((wb_arg->wa_Lock != NULL))
+        if((wbArg->wa_Lock != NULL))
         {
           if(i == 0)
           {
@@ -182,19 +185,21 @@ void exctractArgs(int argc, char **argv,
           {
             SimpleString fullPath;
 
-            NameFromLock(wb_arg->wa_Lock, pBuf, bufLen);
-            if(AddPart(pBuf,(STRPTR) wb_arg->wa_Name, bufLen))
+            if(NameFromLock(wbArg->wa_Lock, pBuf, bufLen) != 0)
             {
-              fullPath = pBuf;
-            }
-
-            if(i == 1)
-            {
-              p_LeftFilePath = fullPath;
-            }
-            else
-            {
-              p_RightFilePath = fullPath;
+              if(AddPart(pBuf,(STRPTR) wbArg->wa_Name, bufLen))
+              {
+                fullPath = pBuf;
+              }
+  
+              if(i == 1)
+              {
+                p_LeftFilePath = fullPath;
+              }
+              else
+              {
+                p_RightFilePath = fullPath;
+              }
             }
           }
           else
