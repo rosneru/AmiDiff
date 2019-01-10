@@ -180,15 +180,21 @@ void exctractArgs(int argc, char **argv,
           }
           else if(i < 3)
           {
+            SimpleString fullPath;
+
             NameFromLock(wb_arg->wa_Lock, pBuf, bufLen);
+            if(AddPart(pBuf,(STRPTR) wb_arg->wa_Name, bufLen))
+            {
+              fullPath = pBuf;
+            }
 
             if(i == 1)
             {
-              p_LeftFilePath = pBuf;
+              p_LeftFilePath = fullPath;
             }
             else
             {
-              p_RightFilePath = pBuf;
+              p_RightFilePath = fullPath;
             }
           }
           else

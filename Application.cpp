@@ -15,7 +15,7 @@
 
 #include "Application.h"
 
-Application::Application(struct MsgPort* p_pMsgPortAllWindows, 
+Application::Application(struct MsgPort* p_pMsgPortAllWindows,
   const SimpleString& p_PubScreenName)
   : m_pMsgPortAllWindows(p_pMsgPortAllWindows),
     m_bExitRequested(false),
@@ -74,8 +74,8 @@ bool Application::Run()
   }
 
   // TODO Debugging only. Remove afterwards.
-  if((m_DiffFacade.LeftFilePath().Length == 0) && 
-     (m_DiffFacade.RightFilePath().Length == 0))
+  if((m_DiffFacade.LeftFilePath().Length() == 0) &&
+     (m_DiffFacade.RightFilePath().Length() == 0))
   {
     m_DiffFacade.SetLeftFilePath("testfiles/Testcase_10_Left.txt");
     m_DiffFacade.SetRightFilePath("testfiles/Testcase_10_Right.txt");

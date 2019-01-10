@@ -2,6 +2,7 @@
 
 #include <clib/asl_protos.h>
 #include <clib/dos_protos.h>
+#include <clib/exec_protos.h>
 #include <libraries/asl.h>
 #include <libraries/dos.h>
 
@@ -68,13 +69,19 @@ SimpleString AslFileRequest::SelectFile(const SimpleString& p_Title,
   // Copying selected path name into a big enough buffer
   // TODO Find something better than use a fixed buffer size. Is there
   //      e.g. a system max path length defined somewhere?
-  char fullPathBuf[512];
-  strcpy(fullPathBuf, pFileRequest->rf_Dir);
-
-  // Calling a dos.library function to combine path and file name
-  if(AddPart(fullPathBuf, pFileRequest->fr_File, 512))
+  int bufLen = 2048;
+  STRPTR pFullPathBuf = (STRPTR) AllocVec(bufLen, MEMF_FAST);
+  if(pFullPathBuf != NULL)
   {
-   selectedFileFullPath = fullPathBuf;
+    strcpy(pFullPathBuf, pFileRequest->rf_Dir);
+
+    // Calling a dos.library function to combine path and file name
+    if(AddPart(pFullPathBuf, pFileRequest->fr_File, bufLen))
+    {
+      selectedFileFullPath = pFullPathBuf;
+    }
+
+    FreeVec(pFullPathBuf);
   }
 
   FreeAslRequest(pFileRequest);

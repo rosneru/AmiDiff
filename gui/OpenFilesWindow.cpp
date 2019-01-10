@@ -256,7 +256,7 @@ bool OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         if(selectFile(leftFilePath, "Select left (original) file"))
         {
           setStringGadgetText(m_pLeftFileStringGadget, leftFilePath);
-          m_DiffFacade.SetLeftFilePath(leftFilePath.C_str());
+          m_DiffFacade.SetLeftFilePath(leftFilePath);
           setDiffButtonState();
         }
       }
@@ -272,7 +272,7 @@ bool OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         if(selectFile(rightFilePath, "Select right (changed) file"))
         {
           setStringGadgetText(m_pRightFileStringGadget, rightFilePath);
-          m_DiffFacade.SetRightFilePath(rightFilePath.C_str());
+          m_DiffFacade.SetRightFilePath(rightFilePath);
           setDiffButtonState();
 
         }
@@ -492,13 +492,13 @@ void OpenFilesWindow::readStringGadgetsText()
   UBYTE* pBuf = ((struct StringInfo*)
     m_pLeftFileStringGadget->SpecialInfo)->Buffer;
 
-  m_DiffFacade.SetLeftFilePath((const char*)pBuf);
+  m_DiffFacade.SetLeftFilePath(SimpleString((const char*)pBuf));
 
   // Set the changed string gadget text as right file path
   pBuf = ((struct StringInfo*)
     m_pRightFileStringGadget->SpecialInfo)->Buffer;
 
-  m_DiffFacade.SetRightFilePath((const char*)pBuf);
+  m_DiffFacade.SetRightFilePath(SimpleString((const char*)pBuf));
 
   // Enable the 'Diff' button when both string gadgets contain text.
   // If not not: disable it.
