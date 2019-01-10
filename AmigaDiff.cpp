@@ -170,9 +170,9 @@ void exctractArgs(int argc, char **argv,
     {
       struct WBStartup* wbStartup = (struct WBStartup*) argv;
       struct WBArg* wbArg = wbStartup->sm_ArgList;
-      for(int i=0; i < wbStartup->sm_NumArgs; i++, wbArg++)
+      for(int i=0; i < wbStartup->sm_NumArgs; i++)
       {
-        if((wbArg->wa_Lock != NULL))
+        if((wbArg[i].wa_Lock != NULL))
         {
           if(i == 0)
           {
@@ -185,9 +185,9 @@ void exctractArgs(int argc, char **argv,
           {
             SimpleString fullPath;
 
-            if(NameFromLock(wbArg->wa_Lock, pBuf, bufLen) != 0)
+            if(NameFromLock(wbArg[i].wa_Lock, pBuf, bufLen) != 0)
             {
-              if(AddPart(pBuf,(STRPTR) wbArg->wa_Name, bufLen))
+              if(AddPart(pBuf,(STRPTR) wbArg[i].wa_Name, bufLen))
               {
                 fullPath = pBuf;
               }
