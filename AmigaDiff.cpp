@@ -31,7 +31,9 @@
 #include <exec/types.h>
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
+#include <clib/icon_protos.h>
 #include <workbench/startup.h>
+#include <workbench/workbench.h>
 
 #include "Application.h"
 #include "SimpleString.h"
@@ -168,26 +170,52 @@ void exctractArgs(int argc, char **argv,
     STRPTR pBuf = (STRPTR) AllocVec(bufLen, MEMF_FAST);
     if(pBuf != NULL)
     {
-      struct WBStartup* wbStartup = (struct WBStartup*) argv;
-      struct WBArg* wbArg = wbStartup->sm_ArgList;
-      for(int i=0; i < wbStartup->sm_NumArgs; i++)
+      struct WBStartup* pWbStartup = (struct WBStartup*) argv;
+      struct WBArg* pWbArg = pWbStartup->sm_ArgList;
+      for(int i=0; i < pWbStartup->sm_NumArgs; i++)
       {
-        if((wbArg[i].wa_Lock != NULL))
+        if((pWbArg[i].wa_Lock != NULL))
         {
           if(i == 0)
           {
-            // The application icon itself. Get the PUBSCREEN tooltype 
-            // from it
+            //
+            // The first pWbArg is the application icon itself. Getting 
+            // the PUBSCREEN tooltype  from it
+            //
 
-            // TODO
+            // Make the directory of the icon to the current dir (cd)
+            BPTR oldDir = CurrentDir(pWbArg[i].wa_Lock);
+
+            struct DiskObject* pDiskObject = GetDiskObjectNew(
+              (STRPTR) pWbArg[i].wa_Name);
+
+            if(pDiskObject != NULL)
+            {
+              // Trying to read the value of the PUBSCREEN tooltype in
+              // the application icon
+              STRPTR pValue = (STRPTR) FindToolType(
+                pDiskObject->do_ToolTypes, "PUBSCREEN");
+              
+              if(pValue != NULL)
+              {
+                // The tooltype exists and the value was read. Now save 
+                // the value in the provided variable
+                p_PubScreenName = pValue;
+              }
+
+              FreeDiskObject(pDiskObject);
+            }
+
+            // Change back to the formerly current directory
+            CurrentDir(oldDir);
           }
           else if(i < 3)
           {
             SimpleString fullPath;
 
-            if(NameFromLock(wbArg[i].wa_Lock, pBuf, bufLen) != 0)
+            if(NameFromLock(pWbArg[i].wa_Lock, pBuf, bufLen) != 0)
             {
-              if(AddPart(pBuf,(STRPTR) wbArg[i].wa_Name, bufLen))
+              if(AddPart(pBuf,(STRPTR) pWbArg[i].wa_Name, bufLen))
               {
                 fullPath = pBuf;
               }
