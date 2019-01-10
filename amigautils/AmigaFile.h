@@ -1,6 +1,7 @@
 #ifndef AMIGA_FILE_H
 #define AMIGA_FILE_H
 
+#include <exec/types.h>
 #include <libraries/dos.h>
 #include "Array.h"
 #include "SimpleString.h"
@@ -98,8 +99,8 @@ public:
   bool ReadLine(SimpleString& p_Line);
 
 private:
-  const size_t MAX_LINE_LENGTH;
-  char* m_pLineBuf;
+  const ULONG MAX_LINE_LENGTH;
+  STRPTR m_pLineBuf;
   BPTR m_pFile;
   SimpleString m_FileName;
 };

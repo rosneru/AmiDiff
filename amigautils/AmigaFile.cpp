@@ -1,19 +1,19 @@
 #include <clib/dos_protos.h>
+#include <clib/exec_protos.h>
 #include "AmigaFile.h"
 
 AmigaFile::AmigaFile()
   : MAX_LINE_LENGTH(512), // TODO A better solution needed?
-    m_pLineBuf(new char[MAX_LINE_LENGTH]),
     m_pFile(NULL)
 {
-
+  m_pLineBuf = (STRPTR) AllocVec(MAX_LINE_LENGTH, MEMF_FAST);
 }
 
 AmigaFile::~AmigaFile()
 {
   if(m_pLineBuf != NULL)
   {
-    delete[] m_pLineBuf;
+    FreeVec(m_pLineBuf);
   }
 }
 
@@ -139,7 +139,7 @@ bool AmigaFile::ReadLine(SimpleString& p_Line)
     return false;
   }
 
-  size_t readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a
+  ULONG readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a
 
   if(FGets(m_pFile, m_pLineBuf, readBufSize) == NULL)
   {
