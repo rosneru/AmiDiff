@@ -27,7 +27,6 @@
  *
  * Author: Uwe Rosner
  * https://github.com/rosneru
- *
  */
 
 #define INTUI_V36_NAMES_ONLY
@@ -57,6 +56,11 @@ void closeLibs();
  * @p_PubScreenName The name of the pubscreen to open the window on. 
  * Only set if the CLI argument or Workbench tooltype PUBSCREEN is set.
  * 
+ * @p_bDoNotAsk A boolean switch which indicates if the diff starts
+ * directly after program start without opening the OpenFilesWindow.
+ * Only set to true if the CLI argument or Workbench tooltype DONOTASK
+ * is set.
+ * 
  * @p_LeftFilePath The file name of the left file if one was passed 
  * from Workbench or CLI.
  * 
@@ -65,6 +69,7 @@ void closeLibs();
  */
 void exctractArgs(int argc, char **argv,
   SimpleString& p_PubScreenName,
+  bool& p_bDoNotAsk,
   SimpleString& p_LeftFilePath,
   SimpleString& p_RightFilePath);
 
@@ -109,11 +114,14 @@ int main(int argc, char **argv)
   // Define some variables for values which optionally could be passed
   // as arguments to the app
   SimpleString pubScreenName;
+  bool bDoNotAsk = false;
   SimpleString leftFilePath;
   SimpleString rightFilePath;
 
   // Fill the variables with values if appropriate arguments are passed
-  exctractArgs(argc, argv, pubScreenName, leftFilePath, rightFilePath);
+  // as CLI or Workbench startup argumnts / tool types
+  exctractArgs(argc, argv, pubScreenName, bDoNotAsk, leftFilePath, 
+    rightFilePath);
 
   // Create a message port for shared use with all windows
   struct MsgPort* pMsgPortAppWindows = CreateMsgPort();
@@ -128,7 +136,7 @@ int main(int argc, char **argv)
   Application* pApp = new Application(pMsgPortAppWindows, pubScreenName);
   pApp->SetLeftFilePath(leftFilePath);
   pApp->SetRightFilePath(rightFilePath);
-  pApp->Run();
+  pApp->Run(bDoNotAsk);
 
   // Destroy app
   delete pApp;
@@ -161,6 +169,7 @@ void closeLibs()
 
 void exctractArgs(int argc, char **argv,
   SimpleString& p_PubScreenName,
+  bool& p_bDoNotAsk,
   SimpleString& p_LeftFilePath,
   SimpleString& p_RightFilePath)
 {
@@ -202,9 +211,22 @@ void exctractArgs(int argc, char **argv,
               
               if(pValue != NULL)
               {
-                // The tooltype exists and the value was read. Now save 
-                // the value in the provided variable
+                // The tooltype exists and the value has been read. 
+                // Now save the value in the provided variable.
                 p_PubScreenName = pValue;
+              }
+
+              // Trying to read the value of the DONOTASK tooltype in
+              // the application icon
+              pValue = (STRPTR) FindToolType(
+                pDiskObject->do_ToolTypes, "DONOTASK");
+
+              if(pValue != NULL)
+              {
+                // The tooltype exists. The value is ignored here 
+                // because its a boolean tooltype. Now set the provided
+                // variable.
+                p_bDoNotAsk = true;
               }
 
               FreeDiskObject(pDiskObject);

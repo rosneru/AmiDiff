@@ -37,7 +37,15 @@ public:
   void SetLeftFilePath(const SimpleString& p_LeftFilePath);
   void SetRightFilePath(const SimpleString& p_RightFilePath);
 
-  bool Run();
+  /**
+   * Starts the application.
+   * 
+   * When p_bDoNotAsk is set to true, the diff will be performed 
+   * immediately without waiting for the user to click the "Diff" 
+   * button in OpenFilesWindow. This only works if both files, 
+   * left and right are passed as argument.
+   */
+  bool Run(bool p_bDoNotAsk);
 
 private:
   struct MsgPort* m_pMsgPortAllWindows;

@@ -60,7 +60,7 @@ void Application::SetRightFilePath(const SimpleString& p_RightFilePath)
   m_DiffFacade.SetRightFilePath(p_RightFilePath);
 }
 
-bool Application::Run()
+bool Application::Run(bool p_bDoNotAsk)
 {
 
   //
@@ -127,6 +127,15 @@ bool Application::Run()
   // Giving the command ptr as argument, so the appropriate menu item
   // is disabled after opening.
   m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
+
+  // When DONOTASK argument is set and left and right file are passed,
+  // start the diff immediately
+  if((m_DiffFacade.LeftFilePath().Length() > 0) &&
+     (m_DiffFacade.RightFilePath().Length() > 0) &&
+     p_bDoNotAsk == true)
+  {
+    // TODO How can I do this?
+  }
 
   //
   // Wait-in-loop for menu actions etc
