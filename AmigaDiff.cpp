@@ -304,7 +304,7 @@ void exctractArgs(int argc, char **argv,
     
     if(args[1] != NULL)
     {
-      p_PubScreenName = args[1];
+      p_PubScreenName = (const char*) args[1];
     }
 
     if(args[2] != NULL)
