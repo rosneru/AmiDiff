@@ -31,6 +31,7 @@
 
 #define INTUI_V36_NAMES_ONLY
 
+#include <dos/dos.h>
 #include <exec/types.h>
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
@@ -266,5 +267,51 @@ void exctractArgs(int argc, char **argv,
 
       FreeVec(pBuf);
     }
+  }
+  else
+  {
+    //
+    // Started from CLI
+    //
+
+    // Reading the command line arguments
+    SimpleString argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S";
+    long args[3];
+
+    struct RDArgs* pReadArgs = ReadArgs(argTempl.C_str(), args, NULL);
+    if(pReadArgs == NULL)
+    {
+      return;
+    }
+
+    if(args[0] != NULL)
+    {
+      // args[0] contains a array of pointers to the passed FILEs.
+      STRPTR* pFiles = (STRPTR*) args[0];
+      
+      // If there are passed some FILE arguments we only take the first
+      // two of them, storing them as left and right file path.
+      if(pFiles[0] != NULL)
+      {
+        p_LeftFilePath = *pFiles[0];
+      }
+
+      if(pFiles[1] != NULL)
+      {
+        p_RightFilePath = *pFiles[1];
+      }
+    }
+    
+    if(args[1] != NULL)
+    {
+      p_PubScreenName = args[1];
+    }
+
+    if(args[2] != NULL)
+    {
+      p_bDoNotAsk = true;
+    }
+
+    FreeArgs(pReadArgs);
   }
 }
