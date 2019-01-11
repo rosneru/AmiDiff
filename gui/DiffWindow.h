@@ -150,6 +150,9 @@ private:
   int m_MaxTextAreaLines; ///> Max fitting lines in each text area.
                           ///> Depending on font and window size.
 
+  ULONG m_MaxLineLength;  ///> Longest line length (in chars) either
+                          ///> in left or in right file
+
   int m_IndentX;  ///> X-distance of the text areas to window borders
   int m_IndentY;  ///> Y-distance of the text areas to window borders
 

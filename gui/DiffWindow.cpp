@@ -26,8 +26,9 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
     m_TextFontHeight_pix(0),
     m_X(0),
     m_Y(0),
-    m_MaxTextAreaLines(0),
     m_MaxTextAreaChars(0),
+    m_MaxTextAreaLines(0),
+    m_MaxLineLength(0),
     m_IndentX(5),
     m_IndentY(0),
     m_TextArea1Left(0),
@@ -158,10 +159,17 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
 
   size_t maxCharsLeft = p_pLeftDocument->MaxLineLength();
   size_t maxCharsRight = p_pRightDocument->MaxLineLength();
-  size_t maxLineLength = maxCharsLeft > maxCharsRight ?
-    maxCharsLeft : maxCharsRight;
+  m_MaxLineLength = 0;
+  if(maxCharsLeft > maxCharsRight)
+  {
+    m_MaxLineLength = maxCharsLeft;
+  }
+  else
+  {
+    m_MaxLineLength = maxCharsRight;
+  }
 
-  setXScrollPotSize(m_MaxTextAreaChars, maxLineLength);
+  setXScrollPotSize(m_MaxTextAreaChars, m_MaxLineLength);
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
@@ -730,23 +738,24 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
     p_ScrollNumCharsLeft = m_MaxTextAreaChars;
   }
 
-  if(m_pLeftDocument->MaxLineLength() < m_MaxTextAreaChars)
+  if(m_MaxLineLength < m_MaxTextAreaChars)
   {
     // Do not move the scroll area left if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_X + m_MaxTextAreaChars) == m_pLeftDocument->NumLines())
+  if((m_X + m_MaxTextAreaChars) == m_MaxLineLength)
   {
-    // Do not move the scroll area left if text already at rightmost position
+    // Do not move the scroll area left if text already at rightmost
+    // position
     return 0;
   }
 
-  if((m_X + m_MaxTextAreaChars + p_ScrollNumCharsLeft) > m_pLeftDocument->MaxLineLength())
+  if((m_X + m_MaxTextAreaChars + p_ScrollNumCharsLeft) > m_MaxLineLength)
   {
-    // Limit the scrolling to only scroll only as many lines as necessary
-    p_ScrollNumCharsLeft = m_pLeftDocument->MaxLineLength() - (m_X + m_MaxTextAreaChars);
+    // Limit the scrolling to only scroll only as many chars as necessary
+    p_ScrollNumCharsLeft = m_MaxLineLength - (m_X + m_MaxTextAreaChars);
   }
 
   // Set foreground color for document painting

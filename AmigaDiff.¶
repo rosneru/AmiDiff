@@ -255,6 +255,10 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "gui/ApplicationMenu.cpp"
+"gui/ApplicationMenu.cpp"
+"gui/ApplicationMenu.h"
+"gui/AppScreen.h"
+"gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ApplicationMenu.o" "objects_debug/ApplicationMenu.debug"
 ""
@@ -496,6 +500,7 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "gui/ApplicationMenu.h"
+"gui/ApplicationMenu.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

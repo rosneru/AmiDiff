@@ -79,6 +79,10 @@ bool Application::Run()
   {
     m_DiffFacade.SetLeftFilePath("testfiles/Testcase_10_Left.txt");
     m_DiffFacade.SetRightFilePath("testfiles/Testcase_10_Right.txt");
+
+    m_DiffFacade.SetLeftFilePath("S:Startup-Sequence-BB3.9-1");
+    m_DiffFacade.SetRightFilePath("S:Startup-Sequence");
+
   }
 
   //
