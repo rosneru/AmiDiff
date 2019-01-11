@@ -293,12 +293,12 @@ void exctractArgs(int argc, char **argv,
       // two of them, storing them as left and right file path.
       if(pFiles[0] != NULL)
       {
-        p_LeftFilePath = *pFiles[0];
+        p_LeftFilePath = pFiles[0];
       }
 
       if(pFiles[1] != NULL)
       {
-        p_RightFilePath = *pFiles[1];
+        p_RightFilePath = pFiles[1];
       }
     }
     
