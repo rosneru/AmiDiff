@@ -26,7 +26,7 @@
  *   18.09.2018 - Project start
  *
  * Author: Uwe Rosner
- * https://github.com/rosneru
+ *    https://github.com/rosneru
  */
 
 #define INTUI_V36_NAMES_ONLY
@@ -36,6 +36,7 @@
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
 #include <clib/icon_protos.h>
+#include <clib/intuition_protos.h>
 #include <workbench/startup.h>
 #include <workbench/workbench.h>
 
@@ -74,6 +75,11 @@ void exctractArgs(int argc, char **argv,
   SimpleString& p_LeftFilePath,
   SimpleString& p_RightFilePath);
 
+/**
+ * Displays a warning request if the operating system is less than v39.
+ */
+void warningRequestWrongOSVersion();
+
 struct Library* IntuitionBase;
 struct Library* DosBase;
 struct Library* GadToolsBase;
@@ -87,15 +93,15 @@ struct Library* MathIeeeDoubTransBase;
 
 int main(int argc, char **argv)
 {
-  IntuitionBase = OpenLibrary("intuition.library", 37);
-  DosBase = OpenLibrary("dos.library", 37);
-  GadToolsBase = OpenLibrary("gadtools.library", 37);
-  AslBase = OpenLibrary("asl.library", 37);
-  GfxBase = OpenLibrary("graphics.library", 37);
-  IconBase = OpenLibrary("icon.library", 37);
-  UtilityBase = OpenLibrary("utility.library", 37);
-  MathIeeeDoubBasBase = OpenLibrary("mathieeedoubbas.library", 37);
-  MathIeeeDoubTransBase = OpenLibrary("mathieeedoubtrans.library", 37);
+  IntuitionBase = OpenLibrary("intuition.library", 39);
+  DosBase = OpenLibrary("dos.library", 39);
+  GadToolsBase = OpenLibrary("gadtools.library", 39);
+  AslBase = OpenLibrary("asl.library", 39);
+  GfxBase = OpenLibrary("graphics.library", 39);
+  IconBase = OpenLibrary("icon.library", 39);
+  UtilityBase = OpenLibrary("utility.library", 39);
+  MathIeeeDoubBasBase = OpenLibrary("mathieeedoubbas.library", 39);
+  MathIeeeDoubTransBase = OpenLibrary("mathieeedoubtrans.library", 39);
 
   if((!IntuitionBase) || (!DosBase) || (!GadToolsBase) ||
      (!AslBase) || (!GfxBase) || (!UtilityBase) ||
@@ -105,8 +111,8 @@ int main(int argc, char **argv)
     return 20;
   }
 
-  if((IntuitionBase->lib_Version < 37) ||
-     (IntuitionBase->lib_Version < 37))
+  if((IntuitionBase->lib_Version < 39) ||
+     (IntuitionBase->lib_Version < 39))
   {
     closeLibs();
     return 20;
@@ -314,4 +320,22 @@ void exctractArgs(int argc, char **argv,
 
     FreeArgs(pReadArgs);
   }
+}
+
+void warningRequestWrongOSVersion()
+{
+  IntuitionBase = OpenLibrary("intuition.library", 33);
+  if(!IntuitionBase)
+  {
+    return;
+  }
+
+  struct IntuiText bodyText;
+  struct IntuiText buttonText;
+
+  bodyText.IText = (UBYTE*) "This program requires at least OS 3.0 / v39 to run.":
+  buttonText.IText = (UBYTE*) "Ok";
+  AutoRequest(NULL, &bodyText, NULL, &buttonText, NULL, NULL, 180, 80);
+
+  CloseLibrary(IntuitionBase);
 }
