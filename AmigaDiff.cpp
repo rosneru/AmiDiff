@@ -108,6 +108,7 @@ int main(int argc, char **argv)
      (!MathIeeeDoubBasBase) || (!MathIeeeDoubTransBase) )
   {
     closeLibs();
+    warningRequestWrongOSVersion();
     return 20;
   }
 
@@ -115,6 +116,7 @@ int main(int argc, char **argv)
      (IntuitionBase->lib_Version < 39))
   {
     closeLibs();
+    warningRequestWrongOSVersion();
     return 20;
   }
 
@@ -330,11 +332,25 @@ void warningRequestWrongOSVersion()
     return;
   }
 
+ 
   struct IntuiText bodyText;
+  bodyText.FrontPen  = 1;
+  bodyText.BackPen   = 0;
+  bodyText.DrawMode  = JAM2;
+  bodyText.NextText  = NULL;
+  bodyText.TopEdge   = 10;
+  bodyText.LeftEdge  = 10;
+  bodyText.IText = (UBYTE*) "This program requires at least OS 3.0 / v39 to run.";
+ 
   struct IntuiText buttonText;
-
-  bodyText.IText = (UBYTE*) "This program requires at least OS 3.0 / v39 to run.":
+  buttonText.FrontPen  = 1;
+  buttonText.BackPen   = 0;
+  buttonText.DrawMode  = JAM2;
+  buttonText.NextText  = NULL;
+  buttonText.TopEdge   = 10;
+  buttonText.LeftEdge  = 10;
   buttonText.IText = (UBYTE*) "Ok";
+
   AutoRequest(NULL, &bodyText, NULL, &buttonText, NULL, NULL, 180, 80);
 
   CloseLibrary(IntuitionBase);
