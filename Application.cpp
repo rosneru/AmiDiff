@@ -1,10 +1,8 @@
 #include <libraries/gadtools.h>
 
-#include <clib/exec_protos.h>
-#include <clib/gadtools_protos.h>
-#include <clib/intuition_protos.h>
-
-#include "LinkedList.h"
+#include <proto/exec.h>
+#include <proto/gadtools.h>
+#include <proto/intuition.h>
 
 #include "Command.h"
 #include "CmdPerformDiff.h"

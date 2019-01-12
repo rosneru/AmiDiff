@@ -1,10 +1,8 @@
-#include <clib/graphics_protos.h>
-#include <exec/libraries.h>
+#include <proto/graphics.h>
 
 #include "AppScreen.h"
 #include "AmigaDiffPens.h"
 
-extern struct Library* GfxBase;
 
 AmigaDiffPens::AmigaDiffPens()
   : m_pAppScreen(NULL),
@@ -80,19 +78,6 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen)
       // Case 2 - We use the Workbench screen and have Workbench
       // version >= 3.0, so we try to use pen sharing to get our
       // needed pens
-
-      if(GfxBase->lib_Version < 39)
-      {
-        // We need to use the ObtainBestPen function from OS3.0 and
-        // above. So we stop here, if this requirement is not given,
-        // setting all our special colors to pen 3 (blue in most cases)
-        m_RedPen = 3;
-        m_YellowPen = 3;
-        m_GreenPen = 3;
-        m_GreyPen = 3;
-        break;
-      }
-
       m_RedPen = ObtainBestPen(pColorMap,
         0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9,
         OBP_FailIfBad, FALSE,

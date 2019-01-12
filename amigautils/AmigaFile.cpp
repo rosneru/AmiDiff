@@ -1,12 +1,12 @@
-#include <clib/dos_protos.h>
-#include <clib/exec_protos.h>
+#include <proto/dos.h>
+#include <proto/exec.h>
 #include "AmigaFile.h"
 
 AmigaFile::AmigaFile()
   : MAX_LINE_LENGTH(512), // TODO A better solution needed?
     m_pFile(NULL)
 {
-  m_pLineBuf = (STRPTR) AllocVec(MAX_LINE_LENGTH, MEMF_FAST);
+  m_pLineBuf = (STRPTR) AllocVec(MAX_LINE_LENGTH, 0L);
 }
 
 AmigaFile::~AmigaFile()

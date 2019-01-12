@@ -1,10 +1,9 @@
 #include <string.h>
 
-#include <clib/alib_protos.h>
-#include <clib/dos_protos.h>
-#include <clib/graphics_protos.h>
-#include <clib/intuition_protos.h>
-#include <clib/utility_protos.h>
+#include <proto/dos.h>
+#include <proto/graphics.h>
+#include <proto/intuition.h>
+#include <proto/utility.h>
 #include <graphics/gfxbase.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
@@ -12,7 +11,7 @@
 #include <intuition/icclass.h>
 #include "TextWindow.h"
 
-extern struct Library* GfxBase;
+extern struct GfxBase* GfxBase;
 
 TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : ScrollbarWindow(p_AppScreen, p_pMsgPort),

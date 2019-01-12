@@ -143,7 +143,7 @@ void exctractArgs(int argc, char **argv,
     //
 
     int bufLen = 2048;  // TODO How to get rid of this fixed maximum?
-    STRPTR pBuf = (STRPTR) AllocVec(bufLen, MEMF_FAST);
+    STRPTR pBuf = (STRPTR) AllocVec(bufLen, 0L);
     if(pBuf != NULL)
     {
       struct WBStartup* pWbStartup = (struct WBStartup*) argv;

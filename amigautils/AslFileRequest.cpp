@@ -1,8 +1,8 @@
 #include <string.h>
 
-#include <clib/asl_protos.h>
-#include <clib/dos_protos.h>
-#include <clib/exec_protos.h>
+#include <proto/asl.h>
+#include <proto/dos.h>
+#include <proto/exec.h>
 #include <libraries/asl.h>
 #include <libraries/dos.h>
 
@@ -70,7 +70,7 @@ SimpleString AslFileRequest::SelectFile(const SimpleString& p_Title,
   // TODO Find something better than use a fixed buffer size. Is there
   //      e.g. a system max path length defined somewhere?
   int bufLen = 2048;
-  STRPTR pFullPathBuf = (STRPTR) AllocVec(bufLen, MEMF_FAST);
+  STRPTR pFullPathBuf = (STRPTR) AllocVec(bufLen, 0L);
   if(pFullPathBuf != NULL)
   {
     strcpy(pFullPathBuf, pFileRequest->rf_Dir);

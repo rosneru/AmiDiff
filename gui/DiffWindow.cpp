@@ -2,12 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <clib/alib_protos.h>
-#include <clib/dos_protos.h>
-#include <clib/gadtools_protos.h>
-#include <clib/graphics_protos.h>
-#include <clib/intuition_protos.h>
-#include <clib/utility_protos.h>
+#include <proto/dos.h>
+#include <proto/gadtools.h>
+#include <proto/graphics.h>
+#include <proto/intuition.h>
+#include <proto/utility.h>
 #include <graphics/gfxbase.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
@@ -16,7 +15,7 @@
 #include <libraries/gadtools.h>
 #include "DiffWindow.h"
 
-extern struct Library* GfxBase;
+extern struct GfxBase* GfxBase;
 
 DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
   : ScrollbarWindow(p_AppScreen, p_pMsgPort),

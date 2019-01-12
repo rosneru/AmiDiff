@@ -1,6 +1,6 @@
-#include <clib/gadtools_protos.h>
-#include <clib/graphics_protos.h>
-#include <clib/intuition_protos.h>
+#include <proto/gadtools.h>
+#include <proto/graphics.h>
+#include <proto/intuition.h>
 #include <graphics/text.h>
 #include "AppScreen.h"
 
