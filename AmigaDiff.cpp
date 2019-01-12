@@ -33,20 +33,18 @@
 
 #include <dos/dos.h>
 #include <exec/types.h>
-#include <clib/dos_protos.h>
-#include <clib/exec_protos.h>
-#include <clib/icon_protos.h>
-#include <clib/intuition_protos.h>
+#include <exec/libraries.h>
+#include <intuition/intuitionbase.h>
+#include <proto/dos.h>
+#include <proto/exec.h>
+#include <proto/icon.h>
+#include <proto/intuition.h>
 #include <workbench/startup.h>
 #include <workbench/workbench.h>
 
 #include "Application.h"
 #include "SimpleString.h"
 
-/**
- * Closes all opened libraries
- */
-void closeLibs();
 
 /**
  * Extracts the parameters which could be provided optionally on 
@@ -75,47 +73,19 @@ void exctractArgs(int argc, char **argv,
   SimpleString& p_LeftFilePath,
   SimpleString& p_RightFilePath);
 
+
 /**
  * Displays a warning request if the operating system is less than v39.
  */
 void warningRequestWrongOSVersion();
 
-struct Library* IntuitionBase;
-struct Library* DosBase;
-struct Library* GadToolsBase;
-struct Library* AslBase;
-struct Library* GfxBase;
-struct Library* IconBase;
-struct Library* UtilityBase;
-struct Library* MathIeeeDoubBasBase;
-struct Library* MathIeeeDoubTransBase;
-
+extern struct IntuitionBase* IntuitionBase;
 
 int main(int argc, char **argv)
 {
-  IntuitionBase = OpenLibrary("intuition.library", 39);
-  DosBase = OpenLibrary("dos.library", 39);
-  GadToolsBase = OpenLibrary("gadtools.library", 39);
-  AslBase = OpenLibrary("asl.library", 39);
-  GfxBase = OpenLibrary("graphics.library", 39);
-  IconBase = OpenLibrary("icon.library", 39);
-  UtilityBase = OpenLibrary("utility.library", 39);
-  MathIeeeDoubBasBase = OpenLibrary("mathieeedoubbas.library", 39);
-  MathIeeeDoubTransBase = OpenLibrary("mathieeedoubtrans.library", 39);
-
-  if((!IntuitionBase) || (!DosBase) || (!GadToolsBase) ||
-     (!AslBase) || (!GfxBase) || (!UtilityBase) ||
-     (!MathIeeeDoubBasBase) || (!MathIeeeDoubTransBase) )
+  // Check if the OS version is at least v39 / OS 3.0; return otherwise
+  if(IntuitionBase->LibNode.lib_Version < 39)
   {
-    closeLibs();
-    warningRequestWrongOSVersion();
-    return 20;
-  }
-
-  if((IntuitionBase->lib_Version < 39) ||
-     (IntuitionBase->lib_Version < 39))
-  {
-    closeLibs();
     warningRequestWrongOSVersion();
     return 20;
   }
@@ -136,8 +106,7 @@ int main(int argc, char **argv)
   struct MsgPort* pMsgPortAppWindows = CreateMsgPort();
   if(pMsgPortAppWindows == NULL)
   {
-    closeLibs();
-    return 20;
+    return 30;
   }
 
   // Create the application dynamically, so we can destroy it later
@@ -152,7 +121,6 @@ int main(int argc, char **argv)
 
   // Destroy message port
   DeleteMsgPort(pMsgPortAppWindows);
-  closeLibs();
 
   return 0;
 }
@@ -160,20 +128,6 @@ int main(int argc, char **argv)
 void wbmain(struct WBStartup* wb)
 {
   main(0, (char **) wb);
-}
-
-
-void closeLibs()
-{
-  CloseLibrary(MathIeeeDoubTransBase);
-  CloseLibrary(MathIeeeDoubBasBase);
-  CloseLibrary(UtilityBase);
-  CloseLibrary(IconBase);  
-  CloseLibrary(GfxBase);
-  CloseLibrary(AslBase);
-  CloseLibrary(GadToolsBase);
-  CloseLibrary(DosBase);
-  CloseLibrary(IntuitionBase);
 }
 
 void exctractArgs(int argc, char **argv,
@@ -326,32 +280,45 @@ void exctractArgs(int argc, char **argv,
 
 void warningRequestWrongOSVersion()
 {
-  IntuitionBase = OpenLibrary("intuition.library", 33);
-  if(!IntuitionBase)
+  size_t iTextSize = sizeof(struct IntuiText);
+
+  struct IntuiText* pBodyText = (struct IntuiText*) 
+    AllocMem(iTextSize, MEMF_CLEAR);
+  
+  if(pBodyText == NULL)
   {
     return;
   }
 
- 
-  struct IntuiText bodyText;
-  bodyText.FrontPen  = 1;
-  bodyText.BackPen   = 0;
-  bodyText.DrawMode  = JAM2;
-  bodyText.NextText  = NULL;
-  bodyText.TopEdge   = 10;
-  bodyText.LeftEdge  = 10;
-  bodyText.IText = (UBYTE*) "This program requires at least OS 3.0 / v39 to run.";
- 
-  struct IntuiText buttonText;
-  buttonText.FrontPen  = 1;
-  buttonText.BackPen   = 0;
-  buttonText.DrawMode  = JAM2;
-  buttonText.NextText  = NULL;
-  buttonText.TopEdge   = 10;
-  buttonText.LeftEdge  = 10;
-  buttonText.IText = (UBYTE*) "Ok";
+  struct IntuiText* pButtonText = (struct IntuiText*) 
+    AllocMem(iTextSize, MEMF_CLEAR);
 
-  AutoRequest(NULL, &bodyText, NULL, &buttonText, NULL, NULL, 180, 80);
+  if(pButtonText == NULL)
+  {
+    FreeMem(pBodyText, iTextSize); 
+    return;
+  }
 
-  CloseLibrary(IntuitionBase);
+  SimpleString bodyStr = "This program needs at least OS 3.0 / v39 to run.";
+  pBodyText->FrontPen  = 1;
+  pBodyText->BackPen   = 0;
+  pBodyText->DrawMode  = JAM2;
+  pBodyText->NextText  = NULL;
+  pBodyText->TopEdge   = 10;
+  pBodyText->LeftEdge  = 10;
+  pBodyText->IText = (UBYTE*) bodyStr.C_str();
+ 
+  SimpleString buttonStr = "Ok";
+  pButtonText->FrontPen  = 1;
+  pButtonText->BackPen   = 0;
+  pButtonText->DrawMode  = JAM2;
+  pButtonText->NextText  = NULL;
+  pButtonText->TopEdge   = 10;
+  pButtonText->LeftEdge  = 10;
+  pButtonText->IText = (UBYTE*) buttonStr.C_str();
+
+  AutoRequest(NULL, pBodyText, NULL, pButtonText, NULL, NULL, 180, 80);
+
+  FreeMem(pBodyText, iTextSize); 
+  FreeMem(pButtonText, iTextSize);
 }
