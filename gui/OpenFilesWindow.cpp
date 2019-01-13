@@ -137,7 +137,9 @@ void OpenFilesWindow::initialize()
   newGadget.ng_Flags      = 0;
 
   m_pLeftFileStringGadget = CreateGadget(STRING_KIND,
-    pLabelGadget, &newGadget, TAG_END);
+    pLabelGadget, &newGadget,
+    GTST_MaxChars, 200, // TODO remove constant
+    TAG_END);
 
   // Creating the Select button
   newGadget.ng_LeftEdge   = selectButtonLeft;
@@ -173,7 +175,9 @@ void OpenFilesWindow::initialize()
   newGadget.ng_Flags      = 0;
 
   m_pRightFileStringGadget = CreateGadget(STRING_KIND,
-    pLabelGadget, &newGadget, TAG_END);
+    pLabelGadget, &newGadget,
+    GTST_MaxChars, 200, // TODO remove constant
+    TAG_END);
 
   // Creating the Select button
   newGadget.ng_LeftEdge   = selectButtonLeft;
