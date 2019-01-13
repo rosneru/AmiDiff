@@ -74,10 +74,10 @@ bool AmigaDiffPens::Init(AppScreen* p_pAppScreen)
       break;
     }
     case AppScreen::SME_UseWorkbench:
+    case AppScreen::SME_UseNamedPubScreen:
     {
-      // Case 2 - We use the Workbench screen and have Workbench
-      // version >= 3.0, so we try to use pen sharing to get our
-      // needed pens
+      // Case 2 - We use the Workbench or another public screen, so we
+      // try to use pen sharing to get our needed pens
       m_RedPen = ObtainBestPen(pColorMap,
         0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9,
         OBP_FailIfBad, FALSE,

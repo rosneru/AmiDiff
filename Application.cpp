@@ -16,6 +16,7 @@
 Application::Application(struct MsgPort* p_pMsgPortAllWindows,
   const SimpleString& p_PubScreenName)
   : m_pMsgPortAllWindows(p_pMsgPortAllWindows),
+    m_PubScreenName(p_PubScreenName),
     m_bExitRequested(false),
     m_Screen(),
     m_DiffWindow(m_Screen, m_pMsgPortAllWindows),
@@ -65,7 +66,19 @@ bool Application::Run(bool p_bDoNotAsk)
   // Opening the screen
   //
   m_Screen.SetTitle("ADiffView 1.0");
-  if (!m_Screen.Open(AppScreen::SME_CloneWorkbenchMin8Col))
+
+  m_Screen.Open(AppScreen::SME_UseWorkbench);
+/*
+  if(m_PubScreenName.Length() > 0)
+  {
+    m_Screen.Open(AppScreen::SME_UseNamedPubScreen, m_PubScreenName);
+  }
+  else
+  {
+    m_Screen.Open(AppScreen::SME_CloneWorkbenchMin8Col);
+  }
+*/
+  if (!m_Screen.IsOpen())
   {
     // Opening the screen failed
     return false;

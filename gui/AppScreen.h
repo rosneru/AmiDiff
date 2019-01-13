@@ -19,7 +19,7 @@ class AppScreen
 public:
   /**
    * Used to specify the needed screen mode without messing around with
-   * too many parameters. 
+   * too many parameters.
    */
   enum ScreenModeEasy
   {
@@ -29,7 +29,7 @@ public:
     SME_UseNamedPubScreen       ///> Use a pub screen which name is to be given in constructor
   };
 
-  AppScreen(SimpleString p_pPubScreenName = "");
+  AppScreen();
   ~AppScreen();
 
   /**
@@ -38,7 +38,8 @@ public:
    * @returns
    * false if oping fails
    */
-  bool Open(ScreenModeEasy p_ScreenModeEasy = SME_CloneWorkbenchMin8Col);
+  bool Open(ScreenModeEasy p_ScreenModeEasy = SME_CloneWorkbenchMin8Col,
+    SimpleString p_pPubScreenName = "");
 
   /**
    * Closes the screen

@@ -5,9 +5,8 @@
 #include "AppScreen.h"
 
 
-AppScreen::AppScreen(SimpleString p_pPubScreenName)
-  : m_PubScreenName(p_pPubScreenName),
-    m_pTextFont(NULL),
+AppScreen::AppScreen()
+  : m_pTextFont(NULL),
     m_FontName(""),
     m_Title("AppScreen"),
     m_pScreen(NULL),
@@ -21,7 +20,8 @@ AppScreen::~AppScreen()
   Close();
 }
 
-bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy)
+bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
+  SimpleString p_pPubScreenName)
 {
   //
   // Initial validations
@@ -34,22 +34,24 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy)
   }
 
   m_ScreenModeEasy = p_ScreenModeEasy;
-  if(m_ScreenModeEasy == SME_UseWorkbench)
+  m_PubScreenName = p_pPubScreenName;
+
+  if(m_ScreenModeEasy != SME_UseNamedPubScreen)
   {
     m_PubScreenName = "Workbench";
   }
 
   if((m_ScreenModeEasy == SME_UseNamedPubScreen) &&
-     (m_PubScreenName.Length == 0))
+     (m_PubScreenName.Length() == 0))
   {
     m_ScreenModeEasy = SME_CloneWorkbenchMin8Col;
   }
 
   //
-  // Get some data from the Workbench screen to open an own screen with
-  // similar parameters
+  // Locking the given public screen (or workbench) and get some
+  // needed data from it
   //
-  struct Screen* pPublicScreen = m_pScreen = LockPubScreen(m_PubScreenName.C_str();
+  struct Screen* pPublicScreen = m_pScreen = LockPubScreen(m_PubScreenName.C_str());
   if(pPublicScreen == NULL)
   {
     return false;
@@ -62,8 +64,8 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy)
     return false;
   }
 
-  ULONG wbScreenModeId = GetVPModeID(&pPublicScreen->ViewPort);
-  if(wbScreenModeId == INVALID_ID)
+  ULONG publicScreenModeId = GetVPModeID(&pPublicScreen->ViewPort);
+  if(publicScreenModeId == INVALID_ID)
   {
     FreeScreenDrawInfo(pPublicScreen, pPublicScreenDrawInfo);
     UnlockPubScreen(NULL, pPublicScreen);
@@ -87,7 +89,7 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy)
   }
 
   if((m_ScreenModeEasy == AppScreen::SME_UseWorkbench) ||
-     (m_ScreenModeEasy == AppScreen::SME_UseNamedPubScreen)
+     (m_ScreenModeEasy == AppScreen::SME_UseNamedPubScreen))
   {
     //
     // Using the Workbench or an other  public screen
@@ -125,7 +127,7 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy)
       SA_AutoScroll, TRUE,
       SA_Pens, (ULONG)pPublicScreenDrawInfo->dri_Pens,
       SA_Font, (ULONG) &m_TextAttr,
-      SA_DisplayID, wbScreenModeId,
+      SA_DisplayID, publicScreenModeId,
       SA_Title, m_Title.C_str(),
       TAG_DONE);
 
@@ -189,14 +191,15 @@ void AppScreen::Close()
 
   if(m_pScreen != NULL)
   {
-    if(m_ScreenModeEasy == AppScreen::SME_UseWorkbench)
+    if((m_ScreenModeEasy == AppScreen::SME_UseWorkbench) ||
+       (m_ScreenModeEasy == AppScreen::SME_UseNamedPubScreen))
     {
-      // We had used the Workbench public screen
+      // We had used a public screen or the Workbench
       UnlockPubScreen(NULL, m_pScreen);
     }
     else
     {
-      // We had created a copy of the workbench screen
+      // We had created a copy of the Workbench screen
       CloseScreen(m_pScreen);
     }
 
