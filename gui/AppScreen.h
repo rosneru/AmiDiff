@@ -23,12 +23,13 @@ public:
    */
   enum ScreenModeEasy
   {
-    SME_UseWorkbench,         ///> Uses to Worbkbench public screen
-    SME_CloneWorkbench,       ///> Clones the Workbench screen
-    SME_CloneWorkbenchMin8Col ///> Creates a Workbench screen clone with at 8 colors
+    SME_UseWorkbench,           ///> Uses to Worbkbench public screen
+    SME_CloneWorkbench,         ///> Clones the Workbench screen
+    SME_CloneWorkbenchMin8Col,  ///> Creates a Workbench screen clone with at 8 colors
+    SME_UseNamedPubScreen       ///> Use a pub screen which name is to be given in constructor
   };
 
-  AppScreen();
+  AppScreen(SimpleString p_pPubScreenName = "");
   ~AppScreen();
 
   /**
@@ -37,7 +38,7 @@ public:
    * @returns
    * false if oping fails
    */
-  bool Open(ScreenModeEasy p_ScreenModeEasy = SME_UseWorkbench);
+  bool Open(ScreenModeEasy p_ScreenModeEasy = SME_CloneWorkbenchMin8Col);
 
   /**
    * Closes the screen
@@ -84,6 +85,7 @@ public:
 
 
 private:
+  SimpleString m_PubScreenName;
   ScreenModeEasy m_ScreenModeEasy;
   AmigaDiffPens m_Pens;
   struct TextAttr m_TextAttr;
