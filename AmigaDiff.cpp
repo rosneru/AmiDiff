@@ -75,9 +75,9 @@ void exctractArgs(int argc, char **argv,
 
 
 /**
- * Displays a warning request if the operating system is less than v39.
+ * Displays a warn request with the given message
  */
-void warningRequestWrongOSVersion();
+void warnRequest(SimpleString p_Message);
 
 extern struct IntuitionBase* IntuitionBase;
 
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
   // Check if the OS version is at least v39 / OS 3.0; return otherwise
   if(IntuitionBase->LibNode.lib_Version < 39)
   {
-    warningRequestWrongOSVersion();
+    warnRequest("This program needs at least OS 3.0 / v39 to run.");
     return 20;
   }
 
@@ -106,6 +106,7 @@ int main(int argc, char **argv)
   struct MsgPort* pMsgPortAppWindows = CreateMsgPort();
   if(pMsgPortAppWindows == NULL)
   {
+    warnRequest("Error: Can't create message port.");
     return 30;
   }
 
@@ -278,7 +279,7 @@ void exctractArgs(int argc, char **argv,
   }
 }
 
-void warningRequestWrongOSVersion()
+void warnRequest(SimpleString p_Message)
 {
   size_t iTextSize = sizeof(struct IntuiText);
 
@@ -299,7 +300,7 @@ void warningRequestWrongOSVersion()
     return;
   }
 
-  SimpleString bodyStr = "This program needs at least OS 3.0 / v39 to run.";
+  SimpleString bodyStr = p_Message;
   pBodyText->FrontPen  = 1;
   pBodyText->BackPen   = 0;
   pBodyText->DrawMode  = JAM2;
