@@ -67,8 +67,6 @@ bool Application::Run(bool p_bDoNotAsk)
   //
   m_Screen.SetTitle("ADiffView 1.0");
 
-  m_Screen.Open(AppScreen::SME_UseWorkbench);
-/*
   if(m_PubScreenName.Length() > 0)
   {
     m_Screen.Open(AppScreen::SME_UseNamedPubScreen, m_PubScreenName);
@@ -77,7 +75,7 @@ bool Application::Run(bool p_bDoNotAsk)
   {
     m_Screen.Open(AppScreen::SME_CloneWorkbenchMin8Col);
   }
-*/
+
   if (!m_Screen.IsOpen())
   {
     // Opening the screen failed
@@ -138,6 +136,7 @@ bool Application::Run(bool p_bDoNotAsk)
   // Giving the command ptr as argument, so the appropriate menu item
   // is disabled after opening.
   m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
+//m_DiffWindow.Open();
 
   // When DONOTASK argument is set and left and right file are passed,
   // start the diff immediately

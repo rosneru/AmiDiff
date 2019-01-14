@@ -51,40 +51,40 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
   // Locking the given public screen (or workbench) and get some
   // needed data from it
   //
-  struct Screen* pPublicScreen = m_pScreen = LockPubScreen(m_PubScreenName.C_str());
-  if(pPublicScreen == NULL)
+  struct Screen* pPubScr = LockPubScreen(m_PubScreenName.C_str());
+  if(pPubScr == NULL)
   {
     return false;
   }
 
-  struct DrawInfo* pPublicScreenDrawInfo = m_pDrawInfo = GetScreenDrawInfo(pPublicScreen);
-  if(pPublicScreenDrawInfo == NULL)
+  struct DrawInfo* pPubScrDrawInfo = GetScreenDrawInfo(pPubScr);
+  if(pPubScrDrawInfo == NULL)
   {
-    UnlockPubScreen(NULL, pPublicScreen);
+    UnlockPubScreen(NULL, pPubScr);
     return false;
   }
 
-  ULONG publicScreenModeId = GetVPModeID(&pPublicScreen->ViewPort);
+  ULONG publicScreenModeId = GetVPModeID(&pPubScr->ViewPort);
   if(publicScreenModeId == INVALID_ID)
   {
-    FreeScreenDrawInfo(pPublicScreen, pPublicScreenDrawInfo);
-    UnlockPubScreen(NULL, pPublicScreen);
+    FreeScreenDrawInfo(pPubScr, pPubScrDrawInfo);
+    UnlockPubScreen(NULL, pPubScr);
     return false;
   }
 
   // Get font font name and other properties fro Workbench DrawInfo and
   // store it here
-  m_FontName = pPublicScreenDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
+  m_FontName = pPubScrDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
   m_TextAttr.ta_Name = const_cast<STRPTR>(m_FontName.C_str());
-  m_TextAttr.ta_YSize = pPublicScreenDrawInfo->dri_Font->tf_YSize;
-  m_TextAttr.ta_Style = pPublicScreenDrawInfo->dri_Font->tf_Style;
-  m_TextAttr.ta_Flags = pPublicScreenDrawInfo->dri_Font->tf_Flags;
+  m_TextAttr.ta_YSize = pPubScrDrawInfo->dri_Font->tf_YSize;
+  m_TextAttr.ta_Style = pPubScrDrawInfo->dri_Font->tf_Style;
+  m_TextAttr.ta_Flags = pPubScrDrawInfo->dri_Font->tf_Flags;
 
   m_pTextFont = OpenFont(&m_TextAttr);
   if(m_pTextFont == NULL)
   {
-    FreeScreenDrawInfo(pPublicScreen, pPublicScreenDrawInfo);
-    UnlockPubScreen(NULL, pPublicScreen);
+    FreeScreenDrawInfo(pPubScr, pPubScrDrawInfo);
+    UnlockPubScreen(NULL, pPubScr);
     return false;
   }
 
@@ -95,8 +95,8 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
     // Using the Workbench or an other  public screen
     //
 
-    m_pScreen = pPublicScreen;
-    m_pDrawInfo = pPublicScreenDrawInfo;
+    m_pScreen = pPubScr;
+    m_pDrawInfo = pPubScrDrawInfo;
   }
   else
   {
@@ -105,7 +105,7 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
     //
 
     // Ensure that screen has at least 8 colors
-    int screenDepth = pPublicScreenDrawInfo->dri_Depth;
+    int screenDepth = pPubScrDrawInfo->dri_Depth;
 
     if(m_ScreenModeEasy == AppScreen::SME_CloneWorkbenchMin8Col)
     {
@@ -120,20 +120,20 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
     // Opening the screen
     //
     m_pScreen = OpenScreenTags(NULL,
-      SA_Width, pPublicScreen->Width,
-      SA_Height, pPublicScreen->Height,
+      SA_Width, pPubScr->Width,
+      SA_Height, pPubScr->Height,
       SA_Depth, screenDepth,
       SA_Overscan, OSCAN_TEXT,
       SA_AutoScroll, TRUE,
-      SA_Pens, (ULONG)pPublicScreenDrawInfo->dri_Pens,
+      SA_Pens, (ULONG)pPubScrDrawInfo->dri_Pens,
       SA_Font, (ULONG) &m_TextAttr,
       SA_DisplayID, publicScreenModeId,
       SA_Title, m_Title.C_str(),
       TAG_DONE);
 
     // We don't need them anymore
-    FreeScreenDrawInfo(pPublicScreen, pPublicScreenDrawInfo);
-    UnlockPubScreen(NULL, pPublicScreen);
+    FreeScreenDrawInfo(pPubScr, pPubScrDrawInfo);
+    UnlockPubScreen(NULL, pPubScr);
 
     if(m_pScreen == NULL)
     {
