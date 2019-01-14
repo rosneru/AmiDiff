@@ -412,6 +412,9 @@ void DiffWindow::calcSizes()
   // Calculate how many chars fit on each line in each text area
   m_MaxTextAreaChars = (m_TextAreasWidth - 4) / m_TextFontWidth_pix;
 
+  // Set x-scroll-gadget's pot size in relation of new window size
+  setXScrollPotSize(m_MaxTextAreaChars);
+
   // Set y-scroll-gadget's pot size in relation of new window size
   setYScrollPotSize(m_MaxTextAreaLines);
 }
