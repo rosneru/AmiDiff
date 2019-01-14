@@ -39,7 +39,7 @@ public:
    * false if oping fails
    */
   bool Open(ScreenModeEasy p_ScreenModeEasy = SME_CloneWorkbenchMin8Col,
-    SimpleString p_pPubScreenName = "");
+    SimpleString p_PubScreenName = "");
 
   /**
    * Closes the screen

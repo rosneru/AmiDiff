@@ -21,7 +21,7 @@ AppScreen::~AppScreen()
 }
 
 bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
-  SimpleString p_pPubScreenName)
+  SimpleString p_PubScreenName)
 {
   //
   // Initial validations
@@ -34,7 +34,7 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
   }
 
   m_ScreenModeEasy = p_ScreenModeEasy;
-  m_PubScreenName = p_pPubScreenName;
+  m_PubScreenName = p_PubScreenName;
 
   if(m_ScreenModeEasy != SME_UseNamedPubScreen)
   {
@@ -51,16 +51,16 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
   // Locking the given public screen (or workbench) and get some
   // needed data from it
   //
-  struct Screen* pPubScr = LockPubScreen(m_PubScreenName.C_str());
+  struct Screen* pPubScr = m_pScreen = LockPubScreen(m_PubScreenName.C_str());
   if(pPubScr == NULL)
   {
     return false;
   }
 
-  struct DrawInfo* pPubScrDrawInfo = GetScreenDrawInfo(pPubScr);
+  struct DrawInfo* pPubScrDrawInfo = m_pDrawInfo = GetScreenDrawInfo(pPubScr);
   if(pPubScrDrawInfo == NULL)
   {
-    UnlockPubScreen(m_PubScreenName.C_str(), pPubScr);
+    UnlockPubScreen(NULL, pPubScr);
     return false;
   }
 
@@ -68,12 +68,12 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
   if(publicScreenModeId == INVALID_ID)
   {
     FreeScreenDrawInfo(pPubScr, pPubScrDrawInfo);
-    UnlockPubScreen(m_PubScreenName.C_str(), pPubScr);
+    UnlockPubScreen(NULL, pPubScr);
     return false;
   }
 
-  // Get font font name and other properties fro Workbench DrawInfo and
-  // store it here
+  // Get font font name and other properties from the public screens
+  // DrawInfo and store it here
   m_FontName = pPubScrDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
   m_TextAttr.ta_Name = const_cast<STRPTR>(m_FontName.C_str());
   m_TextAttr.ta_YSize = pPubScrDrawInfo->dri_Font->tf_YSize;
@@ -84,7 +84,7 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
   if(m_pTextFont == NULL)
   {
     FreeScreenDrawInfo(pPubScr, pPubScrDrawInfo);
-    UnlockPubScreen(m_PubScreenName.C_str(), pPubScr);
+    UnlockPubScreen(NULL, pPubScr);
     return false;
   }
 
@@ -134,7 +134,7 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
 
     // We don't need them anymore
     FreeScreenDrawInfo(pPubScr, pPubScrDrawInfo);
-    UnlockPubScreen(m_PubScreenName.C_str(), pPubScr);
+    UnlockPubScreen(NULL, pPubScr);
 
     if(m_pScreen == NULL)
     {
@@ -196,7 +196,7 @@ void AppScreen::Close()
        (m_ScreenModeEasy == AppScreen::SME_UseNamedPubScreen))
     {
       // We had used a public screen or the Workbench
-      UnlockPubScreen(m_PubScreenName.C_str(), m_pScreen);
+      UnlockPubScreen(NULL, m_pScreen);
     }
     else
     {
