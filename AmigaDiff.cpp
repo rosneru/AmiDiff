@@ -238,7 +238,7 @@ void exctractArgs(int argc, char **argv,
 
     // Reading the command line arguments
     SimpleString argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S";
-    long args[3];
+    LONG args[3] = {0, 0, 0};
 
     struct RDArgs* pReadArgs = ReadArgs(argTempl.C_str(), args, NULL);
     if(pReadArgs == NULL)
