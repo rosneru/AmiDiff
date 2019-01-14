@@ -60,7 +60,7 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
   struct DrawInfo* pPubScrDrawInfo = GetScreenDrawInfo(pPubScr);
   if(pPubScrDrawInfo == NULL)
   {
-    UnlockPubScreen(NULL, pPubScr);
+    UnlockPubScreen(m_PubScreenName.C_str(), pPubScr);
     return false;
   }
 
@@ -68,7 +68,7 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
   if(publicScreenModeId == INVALID_ID)
   {
     FreeScreenDrawInfo(pPubScr, pPubScrDrawInfo);
-    UnlockPubScreen(NULL, pPubScr);
+    UnlockPubScreen(m_PubScreenName.C_str(), pPubScr);
     return false;
   }
 
@@ -84,7 +84,7 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
   if(m_pTextFont == NULL)
   {
     FreeScreenDrawInfo(pPubScr, pPubScrDrawInfo);
-    UnlockPubScreen(NULL, pPubScr);
+    UnlockPubScreen(m_PubScreenName.C_str(), pPubScr);
     return false;
   }
 
@@ -127,13 +127,14 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
       SA_AutoScroll, TRUE,
       SA_Pens, (ULONG)pPubScrDrawInfo->dri_Pens,
       SA_Font, (ULONG) &m_TextAttr,
+      SA_SharePens, TRUE,
       SA_DisplayID, publicScreenModeId,
       SA_Title, m_Title.C_str(),
       TAG_DONE);
 
     // We don't need them anymore
     FreeScreenDrawInfo(pPubScr, pPubScrDrawInfo);
-    UnlockPubScreen(NULL, pPubScr);
+    UnlockPubScreen(m_PubScreenName.C_str(), pPubScr);
 
     if(m_pScreen == NULL)
     {
@@ -173,11 +174,9 @@ void AppScreen::Close()
     m_pVisualInfo = NULL;
   }
 
-  if(m_pDrawInfo != NULL && m_pScreen != NULL)
-  {
-    FreeScreenDrawInfo(m_pScreen, m_pDrawInfo);
-    m_pDrawInfo = NULL;
-  }
+  // Freeing the allocated pens before closing the screen as the intui
+  // screen is needed there
+  m_Pens.Dispose();
 
   if(m_pTextFont != NULL)
   {
@@ -185,9 +184,11 @@ void AppScreen::Close()
     m_pTextFont = NULL;
   }
 
-  // Freeing the allocated pens before closing the screen as the intui
-  // screen is needed there
-  m_Pens.Dispose();
+  if(m_pDrawInfo != NULL && m_pScreen != NULL)
+  {
+    FreeScreenDrawInfo(m_pScreen, m_pDrawInfo);
+    m_pDrawInfo = NULL;
+  }
 
   if(m_pScreen != NULL)
   {
@@ -195,7 +196,7 @@ void AppScreen::Close()
        (m_ScreenModeEasy == AppScreen::SME_UseNamedPubScreen))
     {
       // We had used a public screen or the Workbench
-      UnlockPubScreen(NULL, m_pScreen);
+      UnlockPubScreen(m_PubScreenName.C_str(), m_pScreen);
     }
     else
     {
