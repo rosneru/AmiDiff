@@ -31,21 +31,6 @@ Application::Application(struct MsgPort* p_pMsgPortAllWindows,
 
 Application::~Application()
 {
-  //
-  // Ensure that all windows are closed before the screen is closed
-  //
-
-  if(m_OpenFilesWin.IsOpen())
-  {
-    m_OpenFilesWin.Close();
-  }
-
-  if(m_DiffWindow.IsOpen())
-  {
-    m_DiffWindow.Close();
-  }
-
-  m_Screen.Close();
 
 }
 

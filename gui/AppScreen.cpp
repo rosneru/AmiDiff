@@ -6,12 +6,13 @@
 
 
 AppScreen::AppScreen()
-  : m_pTextFont(NULL),
-    m_FontName(""),
-    m_Title("AppScreen"),
+  :
     m_pScreen(NULL),
     m_pDrawInfo(NULL),
-    m_pVisualInfo(NULL)
+    m_pTextFont(NULL),
+    m_FontName(""),
+    m_pVisualInfo(NULL),
+    m_Title("AppScreen")
 {
 }
 
