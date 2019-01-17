@@ -45,6 +45,7 @@
 #include "Application.h"
 #include "SimpleString.h"
 
+void closeLibs();
 
 /**
  * Extracts the parameters which could be provided optionally on 
@@ -79,15 +80,48 @@ void exctractArgs(int argc, char **argv,
  */
 void warnRequest(SimpleString p_Message);
 
-extern struct IntuitionBase* IntuitionBase;
+struct IntuitionBase* IntuitionBase = NULL;
+struct Library* DosBase = NULL;
+struct Library* GadToolsBase = NULL;
+struct Library* AslBase = NULL;
+struct Library* GfxBase = NULL;
+struct Library* IconBase = NULL;
+struct Library* UtilityBase = NULL;
+struct Library* MathIeeeDoubBasBase = NULL;
+struct Library* MathIeeeDoubTransBase = NULL;
+
 
 int main(int argc, char **argv)
 {
+  IntuitionBase = (struct IntuitionBase*) OpenLibrary("intuition.library", 36);
+  DosBase = OpenLibrary("dos.library", 39);
+  GadToolsBase = OpenLibrary("gadtools.library", 39);
+  AslBase = OpenLibrary("asl.library", 39);
+  GfxBase = OpenLibrary("graphics.library", 39);
+  IconBase = OpenLibrary("icon.library", 39);
+  UtilityBase = OpenLibrary("utility.library", 39);
+  MathIeeeDoubBasBase = OpenLibrary("mathieeedoubbas.library", 39);
+  MathIeeeDoubTransBase = OpenLibrary("mathieeedoubtrans.library", 39);
+
+  if((!IntuitionBase) || (!DosBase) || (!GadToolsBase) ||
+     (!AslBase) || (!GfxBase) || (!IconBase) || (!UtilityBase) ||
+     (!MathIeeeDoubBasBase) || (!MathIeeeDoubTransBase) )
+  {
+    closeLibs();
+    return RETURN_ERROR;
+  }
+
+  if(IntuitionBase->LibNode.lib_Version < 39)
+  {
+    closeLibs();
+    return RETURN_ERROR;
+  }
   // Check if the OS version is at least v39 / OS 3.0; return otherwise
   if(IntuitionBase->LibNode.lib_Version < 39)
   {
     warnRequest("This program needs at least OS 3.0 / v39 to run.");
-    return 20;
+    closeLibs();
+    return RETURN_ERROR;
   }
 
   // Define some variables for values which optionally could be passed
@@ -107,7 +141,8 @@ int main(int argc, char **argv)
   if(pMsgPortAppWindows == NULL)
   {
     warnRequest("Error: Can't create message port.");
-    return 30;
+    closeLibs();
+    return RETURN_ERROR;
   }
 
   // Create the application dynamically, so we can destroy it later
@@ -123,12 +158,26 @@ int main(int argc, char **argv)
   // Destroy message port
   DeleteMsgPort(pMsgPortAppWindows);
 
-  return 0;
+  closeLibs();
+  return RETURN_OK;
 }
 
 void wbmain(struct WBStartup* wb)
 {
   main(0, (char **) wb);
+}
+
+void closeLibs()
+{
+  CloseLibrary(MathIeeeDoubTransBase);
+  CloseLibrary(MathIeeeDoubBasBase);
+  CloseLibrary(UtilityBase);
+  CloseLibrary(IconBase);  
+  CloseLibrary(GfxBase);
+  CloseLibrary(AslBase);
+  CloseLibrary(GadToolsBase);
+  CloseLibrary(DosBase);
+  CloseLibrary((struct Library*)IntuitionBase);
 }
 
 void exctractArgs(int argc, char **argv,
