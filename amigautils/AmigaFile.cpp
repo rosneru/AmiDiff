@@ -146,8 +146,16 @@ bool AmigaFile::ReadLine(SimpleString& p_Line)
     return false;
   }
 
-  p_Line = m_pLineBuf;
-  p_Line = p_Line.Trim();
+  for(int i = 0; i < readBufSize; i++)
+  {
+    if((m_pLineBuf[i] == '\r') ||
+       (m_pLineBuf[i] == '\n'))
+    {
+      m_pLineBuf[i] = 0;
+      break;
+    }
+  }
 
+  p_Line = m_pLineBuf;
   return true;
 }
