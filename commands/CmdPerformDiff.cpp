@@ -14,6 +14,5 @@ CmdPerformDiff::~CmdPerformDiff()
 void CmdPerformDiff::Execute()
 {
   // Run() starts the diff as asynchronous background process
-  //m_DiffFacade.Run();
-  m_DiffFacade.Diff();
+  m_DiffFacade.Run();
 }

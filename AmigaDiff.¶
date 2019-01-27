@@ -76,7 +76,7 @@ Linker
 Run
 30 "" "" "" 0
 ""
-PUBSCREEN StormScreen
+
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 1 0
 0 0 0 "" ""
@@ -427,6 +427,11 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "thread/BackgroundWorker.cpp"
+"thread/BackgroundWorker.cpp"
+"thread/BackgroundWorker.h"
+"thread/ProgressReporter.h"
+"thread/WorkerStartupMsg.h"
+"thread/WorkerProgressMsg.h"
 Storm Shell Project (Dependencies)
 "objects_debug/BackgroundWorker.o" "objects_debug/BackgroundWorker.debug"
 ""
@@ -651,6 +656,13 @@ Storm Shell Project (Dependencies)
 File
 2 "thread/WorkerStartupMsg.h"
 "thread/WorkerStartupMsg.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "oscottlibs/LinkedListNode.h"
+"oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
