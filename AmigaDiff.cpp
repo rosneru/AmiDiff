@@ -98,21 +98,31 @@ int main(int argc, char **argv)
   SimpleString rightFilePath;
 
   // Fill the variables with values if appropriate arguments are passed
-  // as CLI or Workbench startup argumnts / tool types
+  // as CLI or Workbench startup arguments / tool types
   exctractArgs(argc, argv, pubScreenName, bDoNotAsk, leftFilePath, 
     rightFilePath);
 
   // Create a message port for shared use with all windows
-  struct MsgPort* pMsgPortAppWindows = CreateMsgPort();
-  if(pMsgPortAppWindows == NULL)
+  struct MsgPort* pMsgPortIDCMP = CreateMsgPort();
+  if(pMsgPortIDCMP == NULL)
   {
-    warnRequest("Error: Can't create message port.");
+    warnRequest("Error: Can't create idcmp message port.");
+    return 30;
+  }
+
+  struct MsgPort* pMsgPortProgress = CreateMsgPort();
+  if(pMsgPortProgress == NULL)
+  {
+    warnRequest("Error: Can't create progress message port.");
+    DeleteMsgPort(pMsgPortIDCMP);
     return 30;
   }
 
   // Create the application dynamically, so we can destroy it later
   // before de Message port is destroyed.
-  Application* pApp = new Application(pMsgPortAppWindows, pubScreenName);
+  Application* pApp = new Application(pubScreenName, pMsgPortIDCMP, 
+    pMsgPortProgress);
+
   pApp->SetLeftFilePath(leftFilePath);
   pApp->SetRightFilePath(rightFilePath);
   pApp->Run(bDoNotAsk);
@@ -120,8 +130,9 @@ int main(int argc, char **argv)
   // Destroy app
   delete pApp;
 
-  // Destroy message port
-  DeleteMsgPort(pMsgPortAppWindows);
+  // Destroy message ports
+  DeleteMsgPort(pMsgPortProgress);
+  DeleteMsgPort(pMsgPortIDCMP);
 
   return 0;
 }

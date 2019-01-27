@@ -8,23 +8,23 @@
 #include "CmdPerformDiff.h"
 #include "CmdOpenWindow.h"
 #include "CmdQuit.h"
-
-#include "TextDocument.h"
+#include "WorkerProgressMsg.h"
 
 #include "Application.h"
 
-Application::Application(struct MsgPort* p_pMsgPortAllWindows,
-  const SimpleString& p_PubScreenName)
-  : m_pMsgPortAllWindows(p_pMsgPortAllWindows),
+Application::Application(const SimpleString& p_PubScreenName,
+  struct MsgPort* p_pMsgPortIDCMP, struct MsgPort* p_pMsgPortProgress)
+  : m_pMsgPortIDCMP(p_pMsgPortIDCMP),
     m_PubScreenName(p_PubScreenName),
     m_bExitRequested(false),
     m_Screen(),
-    m_DiffWindow(m_Screen, m_pMsgPortAllWindows),
-    m_DiffFacade(m_DiffWindow),
-    m_OpenFilesWin(m_Screen, m_pMsgPortAllWindows, m_DiffFacade),
+    m_DiffWindow(m_Screen, m_pMsgPortIDCMP),
+    m_DiffFacade(m_DiffWindow, m_ProgressWindow, p_pMsgPortProgress),
+    m_OpenFilesWindow(m_Screen, m_pMsgPortIDCMP, m_DiffFacade),
+    m_ProgressWindow(m_Screen, m_pMsgPortIDCMP),
     m_CmdDiff(m_DiffFacade),
     m_CmdQuit(m_bExitRequested),
-    m_CmdOpenFilesWindow(m_OpenFilesWin),
+    m_CmdOpenFilesWindow(m_OpenFilesWindow),
     m_Menu(m_Screen)
 {
 }
@@ -46,7 +46,6 @@ void Application::SetRightFilePath(const SimpleString& p_RightFilePath)
 
 bool Application::Run(bool p_bDoNotAsk)
 {
-
   //
   // Opening the screen
   //
@@ -103,7 +102,7 @@ bool Application::Run(bool p_bDoNotAsk)
   // Installing menu to all windows
   //
   m_DiffWindow.SetMenu(&m_Menu);
-  m_OpenFilesWin.SetMenu(&m_Menu);
+  m_OpenFilesWindow.SetMenu(&m_Menu);
 
   //
   // Prepare the DiffWindow
@@ -116,7 +115,7 @@ bool Application::Run(bool p_bDoNotAsk)
   //
   // Giving the command ptr as argument, so the appropriate menu item
   // is disabled after opening.
-  m_OpenFilesWin.Open(&m_CmdOpenFilesWindow);
+  m_OpenFilesWindow.Open(&m_CmdOpenFilesWindow);
 //m_DiffWindow.Open();
 
   // When DONOTASK argument is set and left and right file are passed,
@@ -139,63 +138,82 @@ bool Application::Run(bool p_bDoNotAsk)
 
 void Application::intuiEventLoop()
 {
-  struct IntuiMessage* pMsg;
+  ULONG sigIDCMP = (1ul << m_pMsgPortIDCMP->mp_SigBit);
+  ULONG sigProgress = (1ul << m_pMsgPortProgress->mp_SigBit);
+
+  ULONG signals = sigIDCMP | sigProgress;
+
   do
   {
-    Wait(1L << m_pMsgPortAllWindows->mp_SigBit);
-    while (pMsg = (struct IntuiMessage *) GT_GetIMsg(m_pMsgPortAllWindows))
+    const ULONG activeSignals = Wait(signals);
+
+    if(activeSignals & sigProgress)
     {
-      // Get all data we need from message
-      ULONG msgClass = pMsg->Class;
-      UWORD msgCode = pMsg->Code;
-      APTR msgIAddress = pMsg->IAddress;
-      struct Window* msgWindow = pMsg->IDCMPWindow;
-
-      // When we're through with a message, reply
-      GT_ReplyIMsg(pMsg);
-
-      if(msgClass == IDCMP_MENUPICK)
+      struct WorkerProgressMsg* pMsg = NULL;
+      while (pMsg = (struct WorkerProgressMsg *) GetMsg(m_pMsgPortProgress))
       {
-        //
-        // Menupick messages are handled here
-        //
-        UWORD menuNumber = msgCode;
-        struct MenuItem* pSelectedItem = ItemAddress(m_Menu.IntuiMenu(), menuNumber);
+        // TODO m_ProgressWindow.HandleProgress(..);
+        ReplyMsg(pMsg);
+      }
+    }
 
-        if(pSelectedItem != NULL)
+    if(activeSignals & sigIDCMP)
+    {
+      struct IntuiMessage* pMsg = NULL;
+      while (pMsg = (struct IntuiMessage *) GT_GetIMsg(m_pMsgPortIDCMP))
+      {
+        // Get all data we need from message
+        ULONG msgClass = pMsg->Class;
+        UWORD msgCode = pMsg->Code;
+        APTR msgIAddress = pMsg->IAddress;
+        struct Window* msgWindow = pMsg->IDCMPWindow;
+
+        // When we're through with a message, reply
+        GT_ReplyIMsg(pMsg);
+
+        if(msgClass == IDCMP_MENUPICK)
         {
-          // Getting the user data from selected menu item
-          APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
-          if(pUserData != NULL)
-          {
-            // Our menu user data always contain a pointer to a Command
-            Command* pSelecedCommand = static_cast<Command*>(pUserData);
+          //
+          // Menu-pick messages are handled here
+          //
+          UWORD menuNumber = msgCode;
+          struct MenuItem* pSelectedItem = ItemAddress(m_Menu.IntuiMenu(), menuNumber);
 
-            // Execute this command
-            pSelecedCommand->Execute();
+          if(pSelectedItem != NULL)
+          {
+            // Getting the user data from selected menu item
+            APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
+            if(pUserData != NULL)
+            {
+              // Our menu user data always contain a pointer to a Command
+              Command* pSelecedCommand = static_cast<Command*>(pUserData);
+
+              // Execute this command
+              pSelecedCommand->Execute();
+            }
           }
         }
-      }
-      else
-      {
-        //
-        // All other messages are handled in the appropriate window
-        //
-        if(m_DiffWindow.IsOpen() && msgWindow == m_DiffWindow.IntuiWindow())
+        else
         {
-          m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+          //
+          // All other messages are handled in the appropriate window
+          //
+          if(m_DiffWindow.IsOpen() && msgWindow == m_DiffWindow.IntuiWindow())
+          {
+            m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+          }
+          else if(m_OpenFilesWindow.IsOpen() && msgWindow == m_OpenFilesWindow.IntuiWindow())
+          {
+            m_OpenFilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+          }
         }
-        else if(m_OpenFilesWin.IsOpen() && msgWindow == m_OpenFilesWin.IntuiWindow())
-        {
-          m_OpenFilesWin.HandleIdcmp(msgClass, msgCode, msgIAddress);
-        }
-      }
 
-      if(!m_DiffWindow.IsOpen() && !m_OpenFilesWin.IsOpen())
-      {
-        // All windows are close: exit
-        m_bExitRequested = true;
-        break;
+        if(!m_DiffWindow.IsOpen() && !m_OpenFilesWindow.IsOpen())
+        {
+          // All windows are close: exit
+          m_bExitRequested = true;
+          break;
+        }
       }
     }
   }

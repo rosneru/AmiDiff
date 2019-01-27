@@ -15,6 +15,8 @@ C/C++ Environment
 0
 "diffengine"
 0
+"thread"
+0
 Includepath (End)
 0 "" 80
 1 "objects_debug"
@@ -110,6 +112,8 @@ File
 "gui/AmigaDiffPens.h"
 "gui/ScrollbarWindow.h"
 "gui/ApplicationMenu.h"
+"thread/ProgressReporter.h"
+"thread/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AmigaDiff.o" "objects_debug/AmigaDiff.debug"
 ""
@@ -152,6 +156,8 @@ File
 "gui/AmigaDiffPens.h"
 "gui/ScrollbarWindow.h"
 "gui/ApplicationMenu.h"
+"thread/ProgressReporter.h"
+"thread/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -182,6 +188,8 @@ File
 "gui/AmigaDiffPens.h"
 "gui/ScrollbarWindow.h"
 "gui/ApplicationMenu.h"
+"thread/ProgressReporter.h"
+"thread/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdPerformDiff.o" "objects_debug/CmdPerformDiff.debug"
 ""
@@ -303,8 +311,22 @@ File
 "gui/AmigaDiffPens.h"
 "gui/ScrollbarWindow.h"
 "gui/ApplicationMenu.h"
+"thread/ProgressReporter.h"
+"thread/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "objects_debug/OpenFilesWindow.o" "objects_debug/OpenFilesWindow.debug"
+""
+1 1
+File
+1 "gui/ProgressWindow.cpp"
+"gui/ProgressWindow.cpp"
+"gui/ProgressWindow.h"
+"gui/AppScreen.h"
+"gui/AmigaDiffPens.h"
+"gui/WindowBase.h"
+"gui/ApplicationMenu.h"
+Storm Shell Project (Dependencies)
+"objects_debug/ProgressWindow.o" "objects_debug/ProgressWindow.debug"
 ""
 1 1
 File
@@ -360,6 +382,8 @@ File
 "gui/AmigaDiffPens.h"
 "gui/ScrollbarWindow.h"
 "gui/ApplicationMenu.h"
+"thread/ProgressReporter.h"
+"thread/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AmigaDiffFacade.o" "objects_debug/AmigaDiffFacade.debug"
 ""
@@ -399,6 +423,12 @@ File
 "oscottlibs/SimpleString.h"
 Storm Shell Project (Dependencies)
 "objects_debug/SimpleString.o" "objects_debug/SimpleString.debug"
+""
+1 1
+File
+1 "thread/BackgroundWorker.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/BackgroundWorker.o" "objects_debug/BackgroundWorker.debug"
 ""
 1 1
 Section
@@ -527,6 +557,13 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "gui/ProgressWindow.h"
+"gui/ProgressWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "gui/ScrollbarWindow.h"
 "gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
@@ -584,15 +621,36 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "oscottlibs/LinkedListNode.h"
-"oscottlibs/LinkedListNode.h"
+2 "oscottlibs/SimpleString.h"
+"oscottlibs/SimpleString.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
-2 "oscottlibs/SimpleString.h"
-"oscottlibs/SimpleString.h"
+2 "thread/BackgroundWorker.h"
+"thread/BackgroundWorker.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "thread/ProgressReporter.h"
+"thread/ProgressReporter.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "thread/WorkerProgressMsg.h"
+"thread/WorkerProgressMsg.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "thread/WorkerStartupMsg.h"
+"thread/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

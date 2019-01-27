@@ -18,6 +18,7 @@
 #include "CmdQuit.h"
 #include "AmigaDiffFacade.h"
 #include "OpenFilesWindow.h"
+#include "ProgressWindow.h"
 #include "SimpleString.h"
 #include "DiffWindow.h"
 
@@ -29,8 +30,8 @@ public:
    * windows messages. If an non-empty string for p_PubScreenName is
    * provided, the
    */
-  Application(struct MsgPort* p_pMsgPortAllWindows,
-    const SimpleString& p_PubScreenName);
+  Application(const SimpleString& p_PubScreenName, 
+    struct MsgPort* p_pMsgPortIDCMP, struct MsgPort* p_pMsgPortProgress);
 
   ~Application();
 
@@ -48,7 +49,8 @@ public:
   bool Run(bool p_bDoNotAsk);
 
 private:
-  struct MsgPort* m_pMsgPortAllWindows;
+  struct MsgPort* m_pMsgPortIDCMP;
+  struct MsgPort* m_pMsgPortProgress;
   SimpleString m_PubScreenName;
   bool m_bExitRequested;
 
@@ -66,7 +68,8 @@ private:
   ApplicationMenu m_Menu;
   DiffWindow m_DiffWindow;
   AmigaDiffFacade m_DiffFacade;
-  OpenFilesWindow m_OpenFilesWin;
+  OpenFilesWindow m_OpenFilesWindow;
+  ProgressWindow m_ProgressWindow;
   CmdPerformDiff m_CmdDiff;
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpenFilesWindow;

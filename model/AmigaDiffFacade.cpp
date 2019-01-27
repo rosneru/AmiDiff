@@ -1,8 +1,11 @@
 #include "DiffEngine.h"
 #include "AmigaDiffFacade.h"
 
-AmigaDiffFacade::AmigaDiffFacade(DiffWindow& p_DiffWindow)
-  : m_DiffWindow(p_DiffWindow),
+AmigaDiffFacade::AmigaDiffFacade(DiffWindow& p_DiffWindow,
+    ProgressWindow& p_ProgressWindow, struct MsgPort* p_pProgressPort)
+  : BackgroundWorker(p_pProgressPort),
+    m_DiffWindow(p_DiffWindow),
+    m_ProgressWindow(p_ProgressWindow),
     m_pLeftDiffDocument(NULL),
     m_pRightDiffDocument(NULL)
 {
@@ -53,7 +56,7 @@ bool AmigaDiffFacade::Diff()
 
   if(m_RightFilePath.Length() == 0)
   {
-    m_ErrorText = "Right file iname not set.";
+    m_ErrorText = "Right file name not set.";
     return false;
   }
 
@@ -138,4 +141,9 @@ void AmigaDiffFacade::disposeDocuments()
     delete m_pRightDiffDocument;
     m_pRightDiffDocument = NULL;
   }
+}
+
+void AmigaDiffFacade::doWork()
+{
+  Diff();
 }

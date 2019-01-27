@@ -1,10 +1,14 @@
 #ifndef AMIGA_DIFF_FACADE_H
 #define AMIGA_DIFF_FACADE_H
 
+#include <exec/ports.h>
+
+#include "BackgroundWorker.h"
 #include "DiffDocument.h"
 #include "DiffFilePartition.h"
 #include "DiffFilePartitionAmiga.h"
 #include "DiffWindow.h"
+#include "ProgressWindow.h"
 #include "SimpleString.h"
 #include "StopWatch.h"
 
@@ -16,10 +20,12 @@
  * @author Uwe Rosner
  * @date 26/10/2018
  */
-class AmigaDiffFacade
+class AmigaDiffFacade : public BackgroundWorker 
 {
 public:
-  AmigaDiffFacade(DiffWindow& p_DiffWindow);
+  AmigaDiffFacade(DiffWindow& p_DiffWindow, 
+    ProgressWindow& p_ProgressWindow, struct MsgPort* p_pProgressPort);
+
   ~AmigaDiffFacade();
 
   void SetLeftFilePath(const SimpleString& p_LeftFilePath);
@@ -35,8 +41,8 @@ public:
 
   /**
    * Performs the diff using LeftFilePath and RightFilePath as input
-   * files. After the the diff is sucessfully created, the resulting
-   * diff can be retrievced using LeftFileDiff and RightFileDiff in
+   * files. After the the diff is successfully created, the resulting
+   * diff can be retrieved using LeftFileDiff and RightFileDiff in
    * the host application.
    *
    * @returns
@@ -58,6 +64,7 @@ public:
 
 private:
   DiffWindow& m_DiffWindow;
+  ProgressWindow& m_ProgressWindow;
 
   SimpleString m_LeftFilePath;
   SimpleString m_RightFilePath;
@@ -77,6 +84,8 @@ private:
   SimpleString m_ElapsedText; ///> Information about elapsed times
 
   void disposeDocuments();
+  
+  void doWork();
 };
 
 #endif // AMIGA_DIFF_FACADE_H
