@@ -57,6 +57,9 @@ public:
    * Counts the number of lines in file. The file has  to be opened
    * before calling this method.
    *
+   * NOTE After this call the file reading pointer will be reset to
+   *      the start of the file.
+   *
    * @returns
    * Number of lines in file or -1 if file is not opened.
    */
@@ -114,7 +117,7 @@ private:
   BPTR m_pFile;
   SimpleString m_FileName;
 
-  ProgressReporter* m_pProgressReporter;
+  ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
 };
 

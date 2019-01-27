@@ -4,6 +4,7 @@
 #include "SimpleString.h"
 #include "DiffLine.h"
 #include "DiffFilePartition.h"
+#include "ProgressReporter.h"
 
 /**
  * Class for generating a diff of the contents of two files.
@@ -27,6 +28,15 @@ public:
             DiffFilePartition& p_File2Src,
             DiffFilePartition& p_File1Diff,
             DiffFilePartition& p_File2Diff);
+
+  /**
+   * Setting the progress reporter
+   */
+  void SetProgressReporter(ProgressReporter* p_pProgressReporter);
+
+private:
+  ProgressReporter* m_pProgressReporter;  ///> for progress reporting
+
 };
 
 #endif

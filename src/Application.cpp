@@ -1,5 +1,6 @@
-#include <libraries/gadtools.h>
+#include <stdio.h>
 
+#include <libraries/gadtools.h>
 #include <proto/exec.h>
 #include <proto/gadtools.h>
 #include <proto/intuition.h>
@@ -149,10 +150,23 @@ void Application::intuiEventLoop()
 
     if(activeSignals & sigProgress)
     {
+      int lastReportedProgress = 1000;
       struct WorkerProgressMsg* pMsg = NULL;
       while (pMsg = (struct WorkerProgressMsg *) GetMsg(m_pMsgPortProgress))
       {
         // TODO m_ProgressWindow.HandleProgress(..);
+        if(pMsg->progress < lastReportedProgress)
+        {
+          lastReportedProgress = pMsg->progress;
+          printf("\nTask: %s\n", pMsg->pDescription);
+        }
+
+        if(pMsg->progress % 5 == 0)
+        {
+          lastReportedProgress = pMsg->progress;
+          printf("  %d\n", lastReportedProgress);
+        }
+
         ReplyMsg(pMsg);
       }
     }

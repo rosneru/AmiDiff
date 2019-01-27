@@ -2,9 +2,10 @@
 #define DIFF_FILE_PARTITION_H
 
 #include "Array.h"
+#include "DiffLine.h"
+#include "ProgressReporter.h"
 #include "SimpleString.h"
 
-#include "DiffLine.h"
 
 /**
  * Class for storing a file line by line with diff information.
@@ -43,12 +44,21 @@ public:
   void AddString(const SimpleString& p_String);
   void AddBlankLine();
 
+  /**
+   * Setting the progress reporter
+   */
+  void SetProgressReporter(ProgressReporter* p_pProgressReporter);
+
+protected:
+  ProgressReporter* m_pProgressReporter;  ///> for progress reporting
+
 private:
   Array<SimpleString*> m_InputLinesArray;
   Array<DiffLine*> m_DiffLinesArray;
   Array<long> m_TokensArray;
 
   void clearDiffLinesList();
+
 };
 
 #endif

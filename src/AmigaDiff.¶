@@ -382,7 +382,6 @@ File
 "gui/AmigaDiffPens.h"
 "gui/ScrollbarWindow.h"
 "gui/ApplicationMenu.h"
-"thread/ProgressReporter.h"
 "thread/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AmigaDiffFacade.o" "objects_debug/AmigaDiffFacade.debug"
@@ -656,13 +655,6 @@ Storm Shell Project (Dependencies)
 File
 2 "thread/WorkerStartupMsg.h"
 "thread/WorkerStartupMsg.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "oscottlibs/LinkedListNode.h"
-"oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

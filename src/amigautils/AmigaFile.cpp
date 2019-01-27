@@ -91,6 +91,9 @@ int AmigaFile::CountLines()
     numLines++;
   }
 
+  // Rewind reading pointer to start of file again
+  Seek(m_pFile, 0, OFFSET_BEGINNING);
+
   return numLines;
 }
 
@@ -153,7 +156,8 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
   }
 
   if(m_pProgressReporter != NULL)
-  {  // Now reporting the final progress value
+  {
+    // Now reporting the final progress value
     m_pProgressReporter->notifyProgressChanged(100);
   }
 

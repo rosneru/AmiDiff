@@ -66,6 +66,13 @@ bool AmigaDiffFacade::Diff()
   long timeSummary = 0;
 
   m_StopWatch.Start();
+
+  // Send progress notifications to here. (This is a BackgroundWorker
+  // who sends them as messages to the event loop).
+  m_LeftSrcPartition.SetProgressReporter(this);
+
+  setProgressDescription("Pre-processing left file..");
+
   if(m_LeftSrcPartition.PreProcess(m_LeftFilePath) == false)
   {
     m_ErrorText = "Error while pre-processing the file '";
@@ -73,19 +80,36 @@ bool AmigaDiffFacade::Diff()
 
     return false;
   }
+
   timePreprocessLeft = static_cast<long>(m_StopWatch.Stop());
 
   m_StopWatch.Start();
+
+  // Send progress notifications to here. (This is a BackgroundWorker
+  // who sends them as messages to the event loop).
+  m_RightSrcPartition.SetProgressReporter(this);
+
+  setProgressDescription("Pre-processing right file..");
+
   if(m_RightSrcPartition.PreProcess(m_RightFilePath) == false)
   {
     m_ErrorText = "Error while pre-processing the file \n'";
     m_ErrorText += m_RightFilePath + "'\n Maybe a read error?";
     return false;
   }
+
   timePreprocessRight = static_cast<long>(m_StopWatch.Stop());
 
   m_StopWatch.Start();
+
   DiffEngine diffEngine;
+
+  // Send progress notifications to here. (This is a BackgroundWorker
+  // who sends them as messages to the event loop).
+  diffEngine.SetProgressReporter(this);
+
+  setProgressDescription("Comparing the files..");
+
   bool diffOk = diffEngine.Diff(
     m_LeftSrcPartition, m_RightSrcPartition,
     m_LeftDiffPartition, m_RightDiffPartition);

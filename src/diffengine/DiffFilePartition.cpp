@@ -1,6 +1,7 @@
 #include "DiffFilePartition.h"
 
 DiffFilePartition::DiffFilePartition()
+  : m_pProgressReporter(NULL)
 {
 
 }
@@ -193,3 +194,7 @@ void DiffFilePartition::clearDiffLinesList()
   }
 }
 
+void DiffFilePartition::SetProgressReporter(ProgressReporter* p_pProgressReporter)
+{
+  m_pProgressReporter = p_pProgressReporter;
+}

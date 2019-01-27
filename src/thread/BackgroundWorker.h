@@ -56,10 +56,13 @@ protected:
   struct MsgPort* m_pReplyPort;
 
   SimpleString m_LastError;
+  void setProgressDescription(const char* p_pProgressDescription);
+
   virtual void doWork() = 0;
 
 private:
   struct Process* m_pBackgrProcess;
+  const char* m_pProgressDescription;
   bool m_bExitRequested;
 
   static void startup();

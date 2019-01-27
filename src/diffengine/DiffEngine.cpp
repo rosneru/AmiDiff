@@ -3,6 +3,7 @@
 
 
 DiffEngine::DiffEngine()
+  : m_pProgressReporter(NULL)
 {
 
 }
@@ -146,4 +147,9 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
   }
 
   return true;
+}
+
+void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
+{
+  m_pProgressReporter = p_pProgressReporter;
 }

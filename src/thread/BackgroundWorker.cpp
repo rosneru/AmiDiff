@@ -1,6 +1,7 @@
+#include <dos/dosextens.h>
+#include <dos/dostags.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include <dos/dostags.h>
 
 #include "BackgroundWorker.h"
 #include "WorkerProgressMsg.h"
@@ -10,6 +11,7 @@ BackgroundWorker::BackgroundWorker(struct MsgPort* p_pProgressPort)
   : m_pStartupMsg(NULL),
     m_pProgressPort(p_pProgressPort),
     m_pReplyPort(NULL),
+    m_pProgressDescription(NULL),
     m_pBackgrProcess(NULL),
     m_bExitRequested(false)
 {
@@ -26,7 +28,6 @@ BackgroundWorker::~BackgroundWorker()
 
 bool BackgroundWorker::Run()
 {
-
   if(m_pBackgrProcess != NULL)
   {
     // Do not start the process if it's already running
@@ -34,7 +35,7 @@ bool BackgroundWorker::Run()
   }
 
   // Create the background process
-  m_pBackgrProcess = CreateNewProcTags(
+    struct Process* m_pBackgrProcess = CreateNewProcTags(
     NP_Name, "BackgroundWorker",
     NP_Entry, &startup,
     TAG_END);
@@ -80,16 +81,21 @@ void BackgroundWorker::startup()
   pStartupMsg->that->m_pReplyPort = CreateMsgPort();
   if (that->m_pReplyPort == NULL)
   {
-    //Forbid();
     return;
   }
 
   that->doWork();
 
-  //Forbid();
   DeleteMsgPort(that->m_pReplyPort);
-  //Forbid();
+  // TODO Maybe activate this
+  //that->m_pBackgrProcess = NULL;
 }
+
+void BackgroundWorker::setProgressDescription(const char* p_pProgressDescription)
+{
+  m_pProgressDescription = p_pProgressDescription;
+}
+
 
 void BackgroundWorker::notifyProgressChanged(int p_Progress)
 {
@@ -102,6 +108,7 @@ void BackgroundWorker::notifyProgressChanged(int p_Progress)
   struct WorkerProgressMsg progressMessage;
   progressMessage.mn_ReplyPort = m_pReplyPort;
   progressMessage.progress = p_Progress;
+  progressMessage.pDescription = m_pProgressDescription;
 
   // Sending the progress message, waiting for the answer and taking the
   // answer from the queue
