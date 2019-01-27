@@ -4,7 +4,8 @@
 
 AmigaFile::AmigaFile()
   : MAX_LINE_LENGTH(512), // TODO A better solution needed?
-    m_pFile(NULL)
+    m_pFile(NULL),
+    m_pProgressReporter(NULL)
 {
   m_pLineBuf = (STRPTR) AllocVec(MAX_LINE_LENGTH, 0L);
 }
@@ -97,6 +98,7 @@ ULONG AmigaFile::GetSize()
 {
   if(m_pFile == NULL)
   {
+    // File not opened
     return 0;
   }
 
@@ -115,14 +117,44 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
     return false;
   }
 
+  // Initialize some variables needed for progress reporting
+  int lastProgressValue = 0;
+  int numLines = CountLines();
+  if(numLines < 1)
+  {
+    return true;
+  }
+
   // Rewind reading pointer to start of file
   Seek(m_pFile, 0, OFFSET_BEGINNING);
+
+  // Initially clearing the Array
+  // TODO: Implement Clear() method in Array
 
   // Reading all lines and increment counter
   SimpleString line;
   while(ReadLine(line))
   {
     p_Array.Push(new SimpleString(line));
+
+    if(m_pProgressReporter != NULL)
+    {
+      int newProgressValue = (p_Array.Size() * 100) / numLines;
+      if(newProgressValue > lastProgressValue)
+      {
+        lastProgressValue = newProgressValue;
+
+        // Report the lastProgressValue-1 to ensure that the final
+        // progress value of 100 (%) is sent after the last line is
+        // read.
+        m_pProgressReporter->notifyProgressChanged(lastProgressValue - 1);
+      }
+    }
+  }
+
+  if(m_pProgressReporter != NULL)
+  {  // Now reporting the final progress value
+    m_pProgressReporter->notifyProgressChanged(100);
   }
 
   // Rewind reading pointer to start of file
@@ -139,7 +171,7 @@ bool AmigaFile::ReadLine(SimpleString& p_Line)
     return false;
   }
 
-  ULONG readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a
+  ULONG readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a OS v36 failure
 
   if(FGets(m_pFile, m_pLineBuf, readBufSize) == NULL)
   {
@@ -158,4 +190,9 @@ bool AmigaFile::ReadLine(SimpleString& p_Line)
 
   p_Line = m_pLineBuf;
   return true;
+}
+
+void AmigaFile::SetProgressReporter(ProgressReporter* p_pProgressReporter)
+{
+  m_pProgressReporter = p_pProgressReporter;
 }

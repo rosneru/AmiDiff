@@ -4,6 +4,7 @@
 #include <exec/types.h>
 #include <libraries/dos.h>
 #include "Array.h"
+#include "ProgressReporter.h"
 #include "SimpleString.h"
 
 /**
@@ -78,7 +79,11 @@ public:
    * provided list.
    *
    * The lines are stored as dynamically created SimpleString objects,
-   * so the list has to be cleared manually after use
+   * so these objects have to be deleted manually after use.
+   *
+   * NOTE: This method reports its progress between 0 and 100 (%) if an
+   * external ProgressReporter is added to this instance using the
+   * SetProgressReporter() method,.
    *
    * @see SimpleString
    *
@@ -98,11 +103,19 @@ public:
    */
   bool ReadLine(SimpleString& p_Line);
 
+  /**
+   * Setting the progress reporter
+   */
+  void SetProgressReporter(ProgressReporter* p_pProgressReporter);
+
 private:
   const ULONG MAX_LINE_LENGTH;
   STRPTR m_pLineBuf;
   BPTR m_pFile;
   SimpleString m_FileName;
+
+  ProgressReporter* m_pProgressReporter;
+
 };
 
 #endif
