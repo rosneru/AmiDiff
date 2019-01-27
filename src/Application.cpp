@@ -70,8 +70,8 @@ bool Application::Run(bool p_bDoNotAsk)
   if((m_DiffFacade.LeftFilePath().Length() == 0) &&
      (m_DiffFacade.RightFilePath().Length() == 0))
   {
-    m_DiffFacade.SetLeftFilePath("testfiles/Testcase_10_Left.txt");
-    m_DiffFacade.SetRightFilePath("testfiles/Testcase_10_Right.txt");
+    m_DiffFacade.SetLeftFilePath("/testfiles/Testcase_10_Left.txt");
+    m_DiffFacade.SetRightFilePath("/testfiles/Testcase_10_Right.txt");
   }
 
   //
