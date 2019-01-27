@@ -108,7 +108,7 @@ void BackgroundWorker::notifyProgressChanged(int p_Progress)
   struct WorkerProgressMsg progressMessage;
   progressMessage.mn_ReplyPort = m_pReplyPort;
   progressMessage.progress = p_Progress;
-  progressMessage.pDescription = m_pProgressDescription;
+  //progressMessage.pDescription = m_pProgressDescription;
 
   // Sending the progress message, waiting for the answer and taking the
   // answer from the queue

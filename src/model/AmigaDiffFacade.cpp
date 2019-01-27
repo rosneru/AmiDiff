@@ -2,7 +2,7 @@
 #include "AmigaDiffFacade.h"
 
 AmigaDiffFacade::AmigaDiffFacade(DiffWindow& p_DiffWindow,
-    ProgressWindow& p_ProgressWindow, struct MsgPort* p_pProgressPort)
+  ProgressWindow& p_ProgressWindow, struct MsgPort* p_pProgressPort)
   : BackgroundWorker(p_pProgressPort),
     m_DiffWindow(p_DiffWindow),
     m_ProgressWindow(p_ProgressWindow),

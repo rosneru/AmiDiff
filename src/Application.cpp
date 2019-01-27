@@ -151,39 +151,40 @@ void Application::intuiEventLoop()
     if(activeSignals & sigProgress)
     {
       int lastReportedProgress = 1000;
-      struct WorkerProgressMsg* pMsg = NULL;
-      while (pMsg = (struct WorkerProgressMsg *) GetMsg(m_pMsgPortProgress))
+      struct WorkerProgressMsg* pProgressMsg = NULL;
+      while (pProgressMsg = (struct WorkerProgressMsg *) GetMsg(m_pMsgPortProgress))
       {
         // TODO m_ProgressWindow.HandleProgress(..);
-        if(pMsg->progress < lastReportedProgress)
+
+        if(pProgressMsg->progress < lastReportedProgress)
         {
-          lastReportedProgress = pMsg->progress;
-          printf("\nTask: %s\n", pMsg->pDescription);
+          lastReportedProgress = pProgressMsg->progress;
+          printf("\nTask: %s\n", pProgressMsg->pDescription);
         }
 
-        if(pMsg->progress % 5 == 0)
+        if(pProgressMsg->progress % 5 == 0)
         {
-          lastReportedProgress = pMsg->progress;
+          lastReportedProgress = pProgressMsg->progress;
           printf("  %d\n", lastReportedProgress);
         }
 
-        ReplyMsg(pMsg);
+        ReplyMsg(pProgressMsg);
       }
     }
 
     if(activeSignals & sigIDCMP)
     {
-      struct IntuiMessage* pMsg = NULL;
-      while (pMsg = (struct IntuiMessage *) GT_GetIMsg(m_pMsgPortIDCMP))
+      struct IntuiMessage* pIdcmpMsg = NULL;
+      while (pIdcmpMsg = (struct IntuiMessage *) GT_GetIMsg(m_pMsgPortIDCMP))
       {
         // Get all data we need from message
-        ULONG msgClass = pMsg->Class;
-        UWORD msgCode = pMsg->Code;
-        APTR msgIAddress = pMsg->IAddress;
-        struct Window* msgWindow = pMsg->IDCMPWindow;
+        ULONG msgClass = pIdcmpMsg->Class;
+        UWORD msgCode = pIdcmpMsg->Code;
+        APTR msgIAddress = pIdcmpMsg->IAddress;
+        struct Window* msgWindow = pIdcmpMsg->IDCMPWindow;
 
         // When we're through with a message, reply
-        GT_ReplyIMsg(pMsg);
+        GT_ReplyIMsg(pIdcmpMsg);
 
         if(msgClass == IDCMP_MENUPICK)
         {

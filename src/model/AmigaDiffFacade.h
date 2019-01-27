@@ -26,7 +26,7 @@ public:
   AmigaDiffFacade(DiffWindow& p_DiffWindow, 
     ProgressWindow& p_ProgressWindow, struct MsgPort* p_pProgressPort);
 
-  ~AmigaDiffFacade();
+  virtual ~AmigaDiffFacade();
 
   void SetLeftFilePath(const SimpleString& p_LeftFilePath);
   const SimpleString& LeftFilePath() const;

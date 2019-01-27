@@ -305,6 +305,8 @@ bool OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         disableAll();
 
         // Perform the diff
+        m_DiffFacade.Run();
+/*
         if(m_DiffFacade.Diff() == true)
         {
           // Diff was successful. Left and right diff windows should
@@ -317,6 +319,7 @@ bool OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
           // TODO FileRequest to inform the user about diff error
           enableAll();
         }
+*/
       }
       else if(pGadget->GadgetID == GID_LeftFileString)
       {
