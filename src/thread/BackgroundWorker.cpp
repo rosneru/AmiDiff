@@ -35,7 +35,7 @@ bool BackgroundWorker::Run()
   }
 
   // Create the background process
-    struct Process* m_pBackgrProcess = CreateNewProcTags(
+  m_pBackgrProcess = CreateNewProcTags(
     NP_Name, "BackgroundWorker",
     NP_Entry, &startup,
     TAG_END);

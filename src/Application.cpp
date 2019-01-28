@@ -16,6 +16,7 @@
 Application::Application(const SimpleString& p_PubScreenName,
   struct MsgPort* p_pMsgPortIDCMP, struct MsgPort* p_pMsgPortProgress)
   : m_pMsgPortIDCMP(p_pMsgPortIDCMP),
+    m_pMsgPortProgress(p_pMsgPortProgress),
     m_PubScreenName(p_PubScreenName),
     m_bExitRequested(false),
     m_Screen(),
@@ -155,7 +156,7 @@ void Application::intuiEventLoop()
       while (pProgressMsg = (struct WorkerProgressMsg *) GetMsg(m_pMsgPortProgress))
       {
         // TODO m_ProgressWindow.HandleProgress(..);
-
+/*
         if(pProgressMsg->progress < lastReportedProgress)
         {
           lastReportedProgress = pProgressMsg->progress;
@@ -167,7 +168,8 @@ void Application::intuiEventLoop()
           lastReportedProgress = pProgressMsg->progress;
           printf("  %d\n", lastReportedProgress);
         }
-
+*/
+        printf("  %d\n", pProgressMsg->progress);
         ReplyMsg(pProgressMsg);
       }
     }

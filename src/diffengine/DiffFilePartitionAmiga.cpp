@@ -27,15 +27,19 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
 
     if(m_pProgressReporter != NULL)
     {
-      int newProgressValue = i / numLines;
+      int newProgressValue = i * 100 / numLines;
       if(newProgressValue > lastProgressValue)
       {
-        lastProgressValue = newProgressValue;
-
         // Report the lastProgressValue-1 to ensure that the final
         // progress value of 100 (%) is sent after the last line is
         // read.
-        m_pProgressReporter->notifyProgressChanged(lastProgressValue - 1);
+        lastProgressValue = newProgressValue - 1;
+
+        if(lastProgressValue % 5 == 0)
+        {
+          // Only reporting 5% steps for performance reasons
+          m_pProgressReporter->notifyProgressChanged(lastProgressValue);
+        }
       }
     }
 
