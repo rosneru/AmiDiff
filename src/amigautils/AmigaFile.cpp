@@ -121,18 +121,20 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
   }
 
   // Initialize some variables needed for progress reporting
-  int lastProgressValue = 0;
-  int numLines = CountLines();
-  if(numLines < 1)
+  int lastProgressValue = -1;
+  int numLines = 0;
+  if(m_pProgressReporter != NULL)
   {
-    return true;
+    numLines = CountLines();
   }
 
   // Rewind reading pointer to start of file
   Seek(m_pFile, 0, OFFSET_BEGINNING);
 
+  // ****
   // Initially clearing the Array
   // TODO: Implement Clear() method in Array
+  // ****
 
   // Reading all lines and increment counter
   SimpleString line;
@@ -142,6 +144,9 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
     p_Array.Push(new SimpleString(line));
     i++;
 
+    //
+    // Progress reporting
+    //
     if(m_pProgressReporter != NULL)
     {
       // Report the 'lastProgressValue - 1' to ensure that the final
@@ -160,9 +165,11 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
     }
   }
 
+  //
+  // Progress reporting (final value)
+  //
   if(m_pProgressReporter != NULL)
   {
-    // Report the final progress value
     m_pProgressReporter->notifyProgressChanged(100);
   }
 

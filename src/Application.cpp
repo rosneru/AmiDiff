@@ -156,20 +156,8 @@ void Application::intuiEventLoop()
       while (pProgressMsg = (struct WorkerProgressMsg *) GetMsg(m_pMsgPortProgress))
       {
         // TODO m_ProgressWindow.HandleProgress(..);
-/*
-        if(pProgressMsg->progress < lastReportedProgress)
-        {
-          lastReportedProgress = pProgressMsg->progress;
-          printf("\nTask: %s\n", pProgressMsg->pDescription);
-        }
+        printf("%s : %d\n", pProgressMsg->pDescription, pProgressMsg->progress);
 
-        if(pProgressMsg->progress % 5 == 0)
-        {
-          lastReportedProgress = pProgressMsg->progress;
-          printf("  %d\n", lastReportedProgress);
-        }
-*/
-        printf("  %d\n", pProgressMsg->progress);
         ReplyMsg(pProgressMsg);
       }
     }
@@ -202,7 +190,7 @@ void Application::intuiEventLoop()
             APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
             if(pUserData != NULL)
             {
-              // Our menu user data always contain a pointer to a Command
+              // The menu user_data contains a pointer to a Command
               Command* pSelecedCommand = static_cast<Command*>(pUserData);
 
               // Execute this command

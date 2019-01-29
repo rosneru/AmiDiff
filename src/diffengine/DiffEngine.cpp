@@ -15,15 +15,32 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
 {
   long numLinesFile1Src = p_File1Src.NumLines();
   long numLinesFile2Src = p_File2Src.NumLines();
+  int lastProgressValue = -1;
 
   // special empty file case
   if(numLinesFile1Src == 0)
   {
+    //
+    // Progress reporting (initial value)
+    //
+    if(m_pProgressReporter != NULL)
+    {
+      m_pProgressReporter->notifyProgressChanged(10);
+    }
+
     long i = 0;
     while(i < numLinesFile2Src)
     {
       p_File1Diff.AddBlankLine();
       p_File2Diff.AddString(p_File2Src.GetDiffLineText(i++), DiffLine::Normal);
+    }
+
+    //
+    // Progress reporting (final value)
+    //
+    if(m_pProgressReporter != NULL)
+    {
+      m_pProgressReporter->notifyProgressChanged(100);
     }
 
     return true;
@@ -135,6 +152,26 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
     }
 
     i++; // next line in p_File1Src
+
+    //
+    // Progress reporting
+    //
+    if(m_pProgressReporter != NULL)
+    {
+      // Report the 'lastProgressValue - 1' to ensure that the final
+      // value of 100 (%) is sent after the last line is read.
+      int newProgressValue = (i * 100 / numLinesFile1Src) - 1;
+
+      if(newProgressValue > lastProgressValue)
+      {
+       // For performance reasons only report 5% steps
+       if(newProgressValue % 5 == 0)
+        {
+          lastProgressValue = newProgressValue;
+          m_pProgressReporter->notifyProgressChanged(lastProgressValue);
+        }
+      }
+    }
   }
 
   // are there any remaining lines from p_File2Src?
@@ -144,6 +181,14 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
     p_File2Diff.AddString(p_File2Src.GetDiffLine(nF2CurrentLine)->Text(), DiffLine::Added );
 
     nF2CurrentLine++;
+  }
+
+  //
+  // Progress reporting (final value)
+  //
+  if(m_pProgressReporter != NULL)
+  {
+    m_pProgressReporter->notifyProgressChanged(100);
   }
 
   return true;
