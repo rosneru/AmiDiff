@@ -78,7 +78,7 @@ Run
 ""
 
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
-1 0
+0 0
 0 0 0 "" ""
 Settings (End)
 Storm Shell Project (Custom Sections End)
@@ -665,6 +665,7 @@ Section
 7
 File
 10 "AmigaDiff"
+"AmigaDiff"
 Storm Shell Project (Dependencies)
 "" ""
 ""

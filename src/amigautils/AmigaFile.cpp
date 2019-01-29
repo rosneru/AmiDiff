@@ -136,28 +136,33 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
 
   // Reading all lines and increment counter
   SimpleString line;
+  int i = 0;
   while(ReadLine(line))
   {
     p_Array.Push(new SimpleString(line));
+    i++;
 
     if(m_pProgressReporter != NULL)
     {
-      int newProgressValue = (p_Array.Size() * 100) / numLines;
+      // Report the 'lastProgressValue - 1' to ensure that the final
+      // value of 100 (%) is sent after the last line is read.
+      int newProgressValue = (i * 100 / numLines) - 1;
+
       if(newProgressValue > lastProgressValue)
       {
-        lastProgressValue = newProgressValue;
-
-        // Report the lastProgressValue-1 to ensure that the final
-        // progress value of 100 (%) is sent after the last line is
-        // read.
-        m_pProgressReporter->notifyProgressChanged(lastProgressValue - 1);
+       // For performance reasons only report 5% steps
+       if(newProgressValue % 5 == 0)
+        {
+          lastProgressValue = newProgressValue;
+          m_pProgressReporter->notifyProgressChanged(lastProgressValue);
+        }
       }
     }
   }
 
   if(m_pProgressReporter != NULL)
   {
-    // Now reporting the final progress value
+    // Report the final progress value
     m_pProgressReporter->notifyProgressChanged(100);
   }
 

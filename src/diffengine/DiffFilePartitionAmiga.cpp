@@ -10,13 +10,13 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
   }
 
   // Initialize some variables needed for progress reporting
-  int lastProgressValue = 0;
-  int numLines = file.CountLines();
-  if(numLines < 1)
-  {
-    return true;
-  }
+  int lastProgressValue = -1;
+  int numLines = 0;
 
+  if(m_pProgressReporter != NULL)
+  {
+    numLines = file.CountLines();
+  }
 
   SimpleString line;
   int i = 0;
@@ -27,17 +27,16 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
 
     if(m_pProgressReporter != NULL)
     {
-      int newProgressValue = i * 100 / numLines;
+      // Report the 'lastProgressValue - 1' to ensure that the final
+      // value of 100 (%) is sent after the last line is read.
+      int newProgressValue = (i * 100 / numLines) - 1;
+
       if(newProgressValue > lastProgressValue)
       {
-        // Report the lastProgressValue-1 to ensure that the final
-        // progress value of 100 (%) is sent after the last line is
-        // read.
-        lastProgressValue = newProgressValue - 1;
-
-        if(lastProgressValue % 5 == 0)
+       // For performance reasons only report 5% steps
+       if(newProgressValue % 5 == 0)
         {
-          // Only reporting 5% steps for performance reasons
+          lastProgressValue = newProgressValue;
           m_pProgressReporter->notifyProgressChanged(lastProgressValue);
         }
       }
@@ -47,7 +46,7 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
 
   if(m_pProgressReporter != NULL)
   {
-    // Now reporting the final progress value
+    // Report the final progress value
     m_pProgressReporter->notifyProgressChanged(100);
   }
 
