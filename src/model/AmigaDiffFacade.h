@@ -20,10 +20,10 @@
  * @author Uwe Rosner
  * @date 26/10/2018
  */
-class AmigaDiffFacade : public BackgroundWorker 
+class AmigaDiffFacade : public BackgroundWorker
 {
 public:
-  AmigaDiffFacade(DiffWindow& p_DiffWindow, 
+  AmigaDiffFacade(DiffWindow& p_DiffWindow,
     ProgressWindow& p_ProgressWindow, struct MsgPort* p_pProgressPort);
 
   virtual ~AmigaDiffFacade();
@@ -65,6 +65,7 @@ public:
 private:
   DiffWindow& m_DiffWindow;
   ProgressWindow& m_ProgressWindow;
+  int m_ProgressOffset;
 
   SimpleString m_LeftFilePath;
   SimpleString m_RightFilePath;
@@ -84,8 +85,19 @@ private:
   SimpleString m_ElapsedText; ///> Information about elapsed times
 
   void disposeDocuments();
-  
+
   void doWork();
+
+  /**
+   * Sending a message about progress to the port given in the
+   * constructor.
+   *
+   * NOTE Extends the basis class method. The 3 stages of progress in
+   *      in diff are reported alltogether as 0..33%, 33%..66% and
+   *      66%..100%.
+   */
+  virtual void notifyProgressChanged(int p_Progress);
+
 };
 
 #endif // AMIGA_DIFF_FACADE_H

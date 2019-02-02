@@ -6,6 +6,7 @@ AmigaDiffFacade::AmigaDiffFacade(DiffWindow& p_DiffWindow,
   : BackgroundWorker(p_pProgressPort),
     m_DiffWindow(p_DiffWindow),
     m_ProgressWindow(p_ProgressWindow),
+    m_ProgressOffset(0),
     m_pLeftDiffDocument(NULL),
     m_pRightDiffDocument(NULL)
 {
@@ -170,4 +171,38 @@ void AmigaDiffFacade::disposeDocuments()
 void AmigaDiffFacade::doWork()
 {
   Diff();
+}
+
+void AmigaDiffFacade::notifyProgressChanged(int p_Progress)
+{
+  //
+  // Reporting the 3 stages of diff-progress (preprocessing left file,
+  // preprocessing right file, performing the diff as 0..33%, 33%..66%
+  // and 66%..100%.
+  //
+
+  if(p_Progress == 100)
+  {
+    if(m_ProgressOffset == 0)
+    {
+      m_ProgressOffset = 33;
+      p_Progress = 0;
+    }
+    else if(m_ProgressOffset == 33)
+    {
+      m_ProgressOffset = 66;
+      p_Progress = 0;
+    }
+    else if(m_ProgressOffset == 66)
+    {
+      m_ProgressOffset = 0;
+      p_Progress = 100;
+    }
+  }
+  else
+  {
+    p_Progress /= 3;
+  }
+
+  BackgroundWorker::notifyProgressChanged(m_ProgressOffset + p_Progress);
 }

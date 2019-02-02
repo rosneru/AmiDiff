@@ -60,14 +60,19 @@ protected:
 
   virtual void doWork() = 0;
 
+  /**
+   * Sending a message about progres to the port given in the
+   * constructor.
+   */
+  virtual void notifyProgressChanged(int p_Progress);
+
+
 private:
   struct Process* m_pBackgrProcess;
   const char* m_pProgressDescription;
   bool m_bExitRequested;
 
   static void startup();
-
-  virtual void notifyProgressChanged(int p_Progress);
 };
 
 #endif
