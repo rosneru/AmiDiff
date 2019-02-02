@@ -7,7 +7,6 @@ struct WorkerProgressMsg : public Message
 {
   long progress;
   const char *pDescription;
-  const char *pResult;
 };
 
 

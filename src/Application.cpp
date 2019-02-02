@@ -19,6 +19,7 @@ Application::Application(const SimpleString& p_PubScreenName,
     m_pMsgPortProgress(p_pMsgPortProgress),
     m_PubScreenName(p_PubScreenName),
     m_bExitRequested(false),
+    m_bExitAllowed(true),
     m_Screen(),
     m_DiffWindow(m_Screen, m_pMsgPortIDCMP),
     m_DiffFacade(m_DiffWindow, m_ProgressWindow, p_pMsgPortProgress),
@@ -155,6 +156,9 @@ void Application::intuiEventLoop()
       struct WorkerProgressMsg* pProgressMsg = NULL;
       while (pProgressMsg = (struct WorkerProgressMsg *) GetMsg(m_pMsgPortProgress))
       {
+        // Only allow to exit if diff background process has ended
+        m_bExitAllowed = (pProgressMsg->progress == -1);
+
         // TODO m_ProgressWindow.HandleProgress(..);
         printf("%s : %d\n", pProgressMsg->pDescription, pProgressMsg->progress);
 
@@ -222,5 +226,5 @@ void Application::intuiEventLoop()
       }
     }
   }
-  while(!m_bExitRequested);
+  while(!m_bExitRequested || !m_bExitAllowed);
 }

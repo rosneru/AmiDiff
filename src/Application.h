@@ -53,6 +53,7 @@ private:
   struct MsgPort* m_pMsgPortProgress;
   SimpleString m_PubScreenName;
   bool m_bExitRequested;
+  bool m_bExitAllowed;
 
   /**
    * NOTE The order of the following items is IMPORTANT. Because the

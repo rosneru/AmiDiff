@@ -197,7 +197,6 @@ void AmigaDiffFacade::notifyProgressChanged(int p_Progress)
     {
       m_ProgressOffset = 0;
       p_Progress = -1;
-      return;
     }
   }
   else
