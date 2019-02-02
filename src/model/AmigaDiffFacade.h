@@ -8,6 +8,7 @@
 #include "DiffFilePartition.h"
 #include "DiffFilePartitionAmiga.h"
 #include "DiffWindow.h"
+#include "FilesWindow.h"
 #include "ProgressWindow.h"
 #include "SimpleString.h"
 #include "StopWatch.h"
@@ -23,19 +24,16 @@
 class AmigaDiffFacade : public BackgroundWorker
 {
 public:
-  AmigaDiffFacade(DiffWindow& p_DiffWindow,
-    ProgressWindow& p_ProgressWindow, struct MsgPort* p_pProgressPort);
+  AmigaDiffFacade(SimpleString& p_LeftFilePath,
+                  SimpleString& p_RightFilePath,
+                  DiffWindow& p_DiffWindow,
+                  FilesWindow& p_FilesWindow,
+                  ProgressWindow& p_ProgressWindow,
+                  struct MsgPort* p_pProgressPort);
 
   virtual ~AmigaDiffFacade();
 
-  void SetLeftFilePath(const SimpleString& p_LeftFilePath);
-  const SimpleString& LeftFilePath() const;
-
-  void SetRightFilePath(const SimpleString& p_RightFilePath);
-  const SimpleString& RightFilePath() const;
-
   const SimpleString& ErrorText() const;
-
   const SimpleString& ElapsedText() const;
 
 
@@ -64,11 +62,12 @@ public:
 
 private:
   DiffWindow& m_DiffWindow;
+  FilesWindow& m_FilesWindow;
   ProgressWindow& m_ProgressWindow;
   int m_ProgressOffset;
 
-  SimpleString m_LeftFilePath;
-  SimpleString m_RightFilePath;
+  SimpleString& m_LeftFilePath;
+  SimpleString& m_RightFilePath;
 
   DiffFilePartitionAmiga m_LeftSrcPartition;
   DiffFilePartitionAmiga m_RightSrcPartition;

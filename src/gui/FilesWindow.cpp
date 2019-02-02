@@ -15,10 +15,15 @@
 #include "FilesWindow.h"
 
 FilesWindow::FilesWindow(AppScreen& p_AppScreen,
-    struct MsgPort* p_pMsgPort, AmigaDiffFacade& p_DiffFacade)
+                         struct MsgPort* p_pMsgPort,
+                         SimpleString& p_LeftFilePath,
+                         SimpleString& p_RightFilePath,
+                         Command& p_CmdDiff)
   : WindowBase(p_AppScreen, p_pMsgPort),
     m_bFileRequestOpen(false),
-    m_DiffFacade(p_DiffFacade),
+    m_LeftFilePath(p_LeftFilePath),
+    m_RightFilePath(p_RightFilePath),
+    m_CmdDiff(p_CmdDiff),
     m_pGadgetList(NULL),
     m_pLeftFileStringGadget(NULL),
     m_pRightFileStringGadget(NULL),
@@ -68,8 +73,8 @@ bool FilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
   // Set the Diff button to an initial enabled / disabled state
   setDiffButtonState();
 
-  setStringGadgetText(m_pLeftFileStringGadget, m_DiffFacade.LeftFilePath());
-  setStringGadgetText(m_pRightFileStringGadget, m_DiffFacade.RightFilePath());
+  setStringGadgetText(m_pLeftFileStringGadget, m_LeftFilePath);
+  setStringGadgetText(m_pRightFileStringGadget, m_RightFilePath);
 
   return true;
 }
@@ -255,11 +260,9 @@ bool FilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         readStringGadgetsText();
 
         // Open an ASL file request to let the user select the file
-        SimpleString leftFilePath = m_DiffFacade.LeftFilePath();
-        if(selectFile(leftFilePath, "Select left (original) file"))
+        if(selectFile(m_LeftFilePath, "Select left (original) file"))
         {
-          setStringGadgetText(m_pLeftFileStringGadget, leftFilePath);
-          m_DiffFacade.SetLeftFilePath(leftFilePath);
+          setStringGadgetText(m_pLeftFileStringGadget, m_LeftFilePath);
           setDiffButtonState();
         }
       }
@@ -271,13 +274,10 @@ bool FilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         readStringGadgetsText();
 
         // Open an ASL file request to let the user select the file
-        SimpleString rightFilePath = m_DiffFacade.RightFilePath();
-        if(selectFile(rightFilePath, "Select right (changed) file"))
+        if(selectFile(m_RightFilePath, "Select right (changed) file"))
         {
-          setStringGadgetText(m_pRightFileStringGadget, rightFilePath);
-          m_DiffFacade.SetRightFilePath(rightFilePath);
+          setStringGadgetText(m_pRightFileStringGadget, m_RightFilePath);
           setDiffButtonState();
-
         }
       }
       else if(pGadget->GadgetID == GID_CancelButton)
@@ -293,10 +293,10 @@ bool FilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         readStringGadgetsText();
 
         // If now one of the texts is empty, do not perform the Diff
-        if(m_DiffFacade.LeftFilePath().Length() == 0 ||
-           m_DiffFacade.RightFilePath().Length() == 0)
+        if(m_LeftFilePath.Length() == 0 ||
+           m_RightFilePath.Length() == 0)
         {
-          // Note: true marks that the *event* was handled properly,
+          // Note: true marks that the *idcmp* was handled properly,
           //       regardless of the diff not being performed
           return true;
         }
@@ -305,7 +305,7 @@ bool FilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         disableAll();
 
         // Perform the diff
-        m_DiffFacade.Run();
+        m_CmdDiff.Execute();
 /*
         if(m_DiffFacade.Diff() == true)
         {
@@ -461,8 +461,8 @@ void FilesWindow::setDiffButtonState()
     return;
   }
 
-  if(m_DiffFacade.LeftFilePath().Length() > 0 &&
-     m_DiffFacade.RightFilePath().Length() > 0)
+  if(m_LeftFilePath.Length() > 0 &&
+     m_RightFilePath.Length() > 0)
   {
     // Enable "Diff" button
     GT_SetGadgetAttrs(m_pDiffButton, m_pWindow, NULL,
@@ -498,13 +498,13 @@ void FilesWindow::readStringGadgetsText()
   UBYTE* pBuf = ((struct StringInfo*)
     m_pLeftFileStringGadget->SpecialInfo)->Buffer;
 
-  m_DiffFacade.SetLeftFilePath(SimpleString((const char*)pBuf));
+  m_LeftFilePath = (const char*)pBuf;
 
   // Set the changed string gadget text as right file path
   pBuf = ((struct StringInfo*)
     m_pRightFileStringGadget->SpecialInfo)->Buffer;
 
-  m_DiffFacade.SetRightFilePath(SimpleString((const char*)pBuf));
+  m_RightFilePath = (const char*)pBuf;
 
   // Enable the 'Diff' button when both string gadgets contain text.
   // If not not: disable it.

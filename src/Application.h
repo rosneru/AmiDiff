@@ -30,13 +30,14 @@ public:
    * windows messages. If an non-empty string for p_PubScreenName is
    * provided, the
    */
-  Application(const SimpleString& p_PubScreenName,
-    struct MsgPort* p_pMsgPortIDCMP, struct MsgPort* p_pMsgPortProgress);
+  Application(struct MsgPort* p_pMsgPortIDCMP,
+              struct MsgPort* p_pMsgPortProgress);
 
   ~Application();
 
   void SetLeftFilePath(const SimpleString& p_LeftFilePath);
   void SetRightFilePath(const SimpleString& p_RightFilePath);
+  void SetPubScreenName(const SimpleString& p_PubScreenName);
 
   /**
    * Starts the application.
@@ -68,13 +69,14 @@ private:
   AppScreen m_Screen;
   ApplicationMenu m_Menu;
   DiffWindow m_DiffWindow;
-  AmigaDiffFacade m_DiffFacade;
   FilesWindow m_FilesWindow;
   ProgressWindow m_ProgressWindow;
+  AmigaDiffFacade m_DiffFacade;
   CmdPerformDiff m_CmdDiff;
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpenFilesWindow;
-
+  SimpleString m_LeftFilePath;
+  SimpleString m_RightFilePath;
 
   /**
    * Handling messages from Intuition

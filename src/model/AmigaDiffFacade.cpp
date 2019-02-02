@@ -1,10 +1,17 @@
 #include "DiffEngine.h"
 #include "AmigaDiffFacade.h"
 
-AmigaDiffFacade::AmigaDiffFacade(DiffWindow& p_DiffWindow,
-  ProgressWindow& p_ProgressWindow, struct MsgPort* p_pProgressPort)
+AmigaDiffFacade::AmigaDiffFacade(SimpleString& p_LeftFilePath,
+                                 SimpleString& p_RightFilePath,
+                                 DiffWindow& p_DiffWindow,
+                                 FilesWindow& p_FilesWindow,
+                                 ProgressWindow& p_ProgressWindow,
+                                 struct MsgPort* p_pProgressPort)
   : BackgroundWorker(p_pProgressPort),
+    m_LeftFilePath(p_LeftFilePath),
+    m_RightFilePath(p_RightFilePath),
     m_DiffWindow(p_DiffWindow),
+    m_FilesWindow(p_FilesWindow),
     m_ProgressWindow(p_ProgressWindow),
     m_ProgressOffset(0),
     m_pLeftDiffDocument(NULL),
@@ -15,26 +22,6 @@ AmigaDiffFacade::AmigaDiffFacade(DiffWindow& p_DiffWindow,
 AmigaDiffFacade::~AmigaDiffFacade()
 {
   disposeDocuments();
-}
-
-void AmigaDiffFacade::SetLeftFilePath(const SimpleString& p_LeftFilePath)
-{
-  m_LeftFilePath = p_LeftFilePath;
-}
-
-const SimpleString& AmigaDiffFacade::LeftFilePath() const
-{
-  return m_LeftFilePath;
-}
-
-void AmigaDiffFacade::SetRightFilePath(const SimpleString& p_RightFilePath)
-{
-  m_RightFilePath = p_RightFilePath;
-}
-
-const SimpleString& AmigaDiffFacade::RightFilePath() const
-{
-  return m_RightFilePath;
 }
 
 const SimpleString& AmigaDiffFacade::ErrorText() const
@@ -142,8 +129,8 @@ bool AmigaDiffFacade::Diff()
   m_pLeftDiffDocument = new DiffDocument(m_LeftDiffPartition);
   m_pRightDiffDocument = new DiffDocument(m_RightDiffPartition);
 
-  m_pLeftDiffDocument->SetFileName(LeftFilePath());
-  m_pRightDiffDocument->SetFileName(RightFilePath());
+  m_pLeftDiffDocument->SetFileName(m_LeftFilePath);
+  m_pRightDiffDocument->SetFileName(m_RightFilePath);
 
   m_DiffWindow.Open();
 

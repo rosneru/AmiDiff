@@ -2,7 +2,7 @@
  * ADiffView
  *
  * A simple graphical viewer for Differences in ASCII text files.
- * 
+ *
  * Running on AMIGA computers with at least OS 3.0 / v39.
  *
  *
@@ -11,7 +11,7 @@
  *       Amiga with OS3.9 on WinUAE
  *       NDK for AmigaOS 3.9
  *       StormC 4
- * 
+ *
  *   (2) CROSS DEVELOPING
  *       Linux / Debian Stretch in a VM
  *       Amiga OS toolchain from https://github.com/bebbo
@@ -47,23 +47,23 @@
 
 
 /**
- * Extracts the parameters which could be provided optionally on 
+ * Extracts the parameters which could be provided optionally on
  * program start via Workbench or CLI.
- * 
+ *
  * @param argc The argc variable from main()
  * @param argv The argv array from main.
- * 
- * @p_PubScreenName The name of the pubscreen to open the window on. 
+ *
+ * @p_PubScreenName The name of the pubscreen to open the window on.
  * Only set if the CLI argument or Workbench tooltype PUBSCREEN is set.
- * 
+ *
  * @p_bDoNotAsk A boolean switch which indicates if the diff starts
  * directly after program start without opening the OpenFilesWindow.
  * Only set to true if the CLI argument or Workbench tooltype DONOTASK
  * is set.
- * 
- * @p_LeftFilePath The file name of the left file if one was passed 
+ *
+ * @p_LeftFilePath The file name of the left file if one was passed
  * from Workbench or CLI.
- * 
+ *
  * @p_RightFilePath The file name of the right file if one was passed
  * from Workbench or CLI.
  */
@@ -99,7 +99,7 @@ int main(int argc, char **argv)
 
   // Fill the variables with values if appropriate arguments are passed
   // as CLI or Workbench startup arguments / tool types
-  exctractArgs(argc, argv, pubScreenName, bDoNotAsk, leftFilePath, 
+  exctractArgs(argc, argv, pubScreenName, bDoNotAsk, leftFilePath,
     rightFilePath);
 
   // Create a message port for shared use with all windows
@@ -119,12 +119,15 @@ int main(int argc, char **argv)
   }
 
   // Create the application dynamically, so we can destroy it later
-  // before de Message port is destroyed.
-  Application* pApp = new Application(pubScreenName, pMsgPortIDCMP, 
-    pMsgPortProgress);
+  // before the message ports are destroyed.
+  Application* pApp = new Application(pMsgPortIDCMP, pMsgPortProgress);
 
+  // Giving the command line arguments to the application
   pApp->SetLeftFilePath(leftFilePath);
   pApp->SetRightFilePath(rightFilePath);
+  pApp->SetPubScreenName(pubScreenName);
+
+  // Running the application
   pApp->Run(bDoNotAsk);
 
   // Destroy app
@@ -167,7 +170,7 @@ void exctractArgs(int argc, char **argv,
           if(i == 0)
           {
             //
-            // The first pWbArg is the application icon itself. Getting 
+            // The first pWbArg is the application icon itself. Getting
             // the PUBSCREEN tooltype  from it
             //
 
@@ -183,10 +186,10 @@ void exctractArgs(int argc, char **argv,
               // the application icon
               STRPTR pValue = (STRPTR) FindToolType(
                 pDiskObject->do_ToolTypes, "PUBSCREEN");
-              
+
               if(pValue != NULL)
               {
-                // The tooltype exists and the value has been read. 
+                // The tooltype exists and the value has been read.
                 // Now save the value in the provided variable.
                 p_PubScreenName = pValue;
               }
@@ -198,7 +201,7 @@ void exctractArgs(int argc, char **argv,
 
               if(pValue != NULL)
               {
-                // The tooltype exists. The value is ignored here 
+                // The tooltype exists. The value is ignored here
                 // because its a boolean tooltype. Now set the provided
                 // variable.
                 p_bDoNotAsk = true;
@@ -220,7 +223,7 @@ void exctractArgs(int argc, char **argv,
               {
                 fullPath = pBuf;
               }
-  
+
               if(i == 1)
               {
                 p_LeftFilePath = fullPath;
@@ -262,7 +265,7 @@ void exctractArgs(int argc, char **argv,
     {
       // args[0] contains a array of pointers to the passed FILEs.
       STRPTR* pFiles = (STRPTR*) args[0];
-      
+
       // If there are passed some FILE arguments we only take the first
       // two of them, storing them as left and right file path.
       if(pFiles[0] != NULL)
@@ -275,7 +278,7 @@ void exctractArgs(int argc, char **argv,
         p_RightFilePath = pFiles[1];
       }
     }
-    
+
     if(args[1] != NULL)
     {
       p_PubScreenName = (const char*) args[1];
@@ -294,20 +297,20 @@ void warnRequest(SimpleString p_Message)
 {
   size_t iTextSize = sizeof(struct IntuiText);
 
-  struct IntuiText* pBodyText = (struct IntuiText*) 
+  struct IntuiText* pBodyText = (struct IntuiText*)
     AllocMem(iTextSize, MEMF_CLEAR);
-  
+
   if(pBodyText == NULL)
   {
     return;
   }
 
-  struct IntuiText* pButtonText = (struct IntuiText*) 
+  struct IntuiText* pButtonText = (struct IntuiText*)
     AllocMem(iTextSize, MEMF_CLEAR);
 
   if(pButtonText == NULL)
   {
-    FreeMem(pBodyText, iTextSize); 
+    FreeMem(pBodyText, iTextSize);
     return;
   }
 
@@ -319,7 +322,7 @@ void warnRequest(SimpleString p_Message)
   pBodyText->TopEdge   = 10;
   pBodyText->LeftEdge  = 10;
   pBodyText->IText = (UBYTE*) bodyStr.C_str();
- 
+
   SimpleString buttonStr = "Ok";
   pButtonText->FrontPen  = 1;
   pButtonText->BackPen   = 0;
@@ -331,6 +334,6 @@ void warnRequest(SimpleString p_Message)
 
   AutoRequest(NULL, pBodyText, NULL, pButtonText, NULL, NULL, 180, 80);
 
-  FreeMem(pBodyText, iTextSize); 
+  FreeMem(pBodyText, iTextSize);
   FreeMem(pButtonText, iTextSize);
 }

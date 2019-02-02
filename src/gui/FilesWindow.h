@@ -4,7 +4,6 @@
 #include <exec/ports.h>
 #include <intuition/screens.h>
 
-#include "AmigaDiffFacade.h"
 #include "AppScreen.h"
 #include "Command.h"
 #include "SimpleString.h"
@@ -21,8 +20,12 @@
 class FilesWindow : public WindowBase
 {
 public:
-  FilesWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
-    AmigaDiffFacade& p_DiffFacade);
+  FilesWindow(AppScreen& p_AppScreen,
+              struct MsgPort* p_pMsgPort,
+              SimpleString& p_LeftFilePath,
+              SimpleString& p_RightFilePath,
+              Command& p_CmdDiff);
+
   virtual ~FilesWindow();
 
   void Refresh();
@@ -49,6 +52,10 @@ public:
   bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
 private:
+  SimpleString& m_LeftFilePath;
+  SimpleString& m_RightFilePath;
+  Command& m_CmdDiff;
+
   bool m_bFileRequestOpen;
 
   /**
@@ -64,9 +71,6 @@ private:
     GID_DiffButton,
     GID_CancelButton,
   };
-
-  AmigaDiffFacade& m_DiffFacade;
-
 
   WORD m_FontHeight;  ///> Height of current text font
 

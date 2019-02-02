@@ -13,18 +13,19 @@
 
 #include "Application.h"
 
-Application::Application(const SimpleString& p_PubScreenName,
-  struct MsgPort* p_pMsgPortIDCMP, struct MsgPort* p_pMsgPortProgress)
+Application::Application(struct MsgPort* p_pMsgPortIDCMP,
+                         struct MsgPort* p_pMsgPortProgress)
   : m_pMsgPortIDCMP(p_pMsgPortIDCMP),
     m_pMsgPortProgress(p_pMsgPortProgress),
-    m_PubScreenName(p_PubScreenName),
     m_bExitRequested(false),
     m_bExitAllowed(true),
     m_Screen(),
     m_DiffWindow(m_Screen, m_pMsgPortIDCMP),
-    m_DiffFacade(m_DiffWindow, m_ProgressWindow, p_pMsgPortProgress),
-    m_FilesWindow(m_Screen, m_pMsgPortIDCMP, m_DiffFacade),
+    m_FilesWindow(m_Screen, m_pMsgPortIDCMP, m_LeftFilePath,
+                  m_RightFilePath, m_CmdDiff),
     m_ProgressWindow(m_Screen, m_pMsgPortIDCMP),
+    m_DiffFacade(m_LeftFilePath, m_RightFilePath, m_DiffWindow,
+                 m_FilesWindow, m_ProgressWindow, p_pMsgPortProgress),
     m_CmdDiff(m_DiffFacade),
     m_CmdQuit(m_bExitRequested),
     m_CmdOpenFilesWindow(m_FilesWindow),
@@ -39,12 +40,17 @@ Application::~Application()
 
 void Application::SetLeftFilePath(const SimpleString& p_LeftFilePath)
 {
-  m_DiffFacade.SetLeftFilePath(p_LeftFilePath);
+  m_LeftFilePath = p_LeftFilePath;
 }
 
 void Application::SetRightFilePath(const SimpleString& p_RightFilePath)
 {
-  m_DiffFacade.SetRightFilePath(p_RightFilePath);
+  m_RightFilePath = p_RightFilePath;
+}
+
+void Application::SetPubScreenName(const SimpleString& p_PubScreenName)
+{
+  m_PubScreenName = p_PubScreenName;
 }
 
 bool Application::Run(bool p_bDoNotAsk)
@@ -70,11 +76,11 @@ bool Application::Run(bool p_bDoNotAsk)
   }
 
   // TODO Debugging only. Remove afterwards.
-  if((m_DiffFacade.LeftFilePath().Length() == 0) &&
-     (m_DiffFacade.RightFilePath().Length() == 0))
+  if((m_LeftFilePath.Length() == 0) &&
+     (m_RightFilePath.Length() == 0))
   {
-    m_DiffFacade.SetLeftFilePath("/testfiles/Testcase_10_Left.txt");
-    m_DiffFacade.SetRightFilePath("/testfiles/Testcase_10_Right.txt");
+    m_LeftFilePath = "/testfiles/Testcase_10_Left.txt";
+    m_RightFilePath = "/testfiles/Testcase_10_Right.txt";
   }
 
   //
@@ -123,8 +129,8 @@ bool Application::Run(bool p_bDoNotAsk)
 
   // When DONOTASK argument is set and left and right file are passed,
   // start the diff immediately
-  if((m_DiffFacade.LeftFilePath().Length() > 0) &&
-     (m_DiffFacade.RightFilePath().Length() > 0) &&
+  if((m_LeftFilePath.Length() > 0) &&
+     (m_RightFilePath.Length() > 0) &&
      p_bDoNotAsk == true)
   {
     // TODO How can I do this?
@@ -226,5 +232,5 @@ void Application::intuiEventLoop()
       }
     }
   }
-  while(!m_bExitRequested || !m_bExitAllowed);
+  while(!m_bExitRequested);
 }
