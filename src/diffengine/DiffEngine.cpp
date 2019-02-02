@@ -164,8 +164,8 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
 
       if(newProgressValue > lastProgressValue)
       {
-       // For performance reasons only report 5% steps
-       if(newProgressValue % 5 == 0)
+       // For performance reasons report only 3% steps
+       if(newProgressValue % 3 == 0)
         {
           lastProgressValue = newProgressValue;
           m_pProgressReporter->notifyProgressChanged(lastProgressValue);

@@ -196,12 +196,13 @@ void AmigaDiffFacade::notifyProgressChanged(int p_Progress)
     else if(m_ProgressOffset == 66)
     {
       m_ProgressOffset = 0;
-      p_Progress = 100;
+      p_Progress = -1;
+      return;
     }
   }
   else
   {
-    p_Progress /= 3;
+    p_Progress = p_Progress / 3 + 1;
   }
 
   BackgroundWorker::notifyProgressChanged(m_ProgressOffset + p_Progress);
