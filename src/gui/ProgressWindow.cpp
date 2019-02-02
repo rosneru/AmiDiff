@@ -11,7 +11,9 @@
 #include <intuition/icclass.h>
 #include <libraries/gadtools.h>
 
+#include "WorkerProgressMsg.h"
 #include "ProgressWindow.h"
+
 
 ProgressWindow::ProgressWindow(AppScreen& p_AppScreen,
     struct MsgPort* p_pMsgPort)
@@ -22,7 +24,8 @@ ProgressWindow::ProgressWindow(AppScreen& p_AppScreen,
     m_pSelectLeftFileButton(NULL),
     m_pSelectRightFileButton(NULL),
     m_pDiffButton(NULL),
-    m_pCancelButton(NULL)
+    m_pCancelButton(NULL),
+    m_pProgressDescription(NULL)
 {
 
 }
@@ -110,7 +113,7 @@ void ProgressWindow::initialize()
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = m_FontHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Left file";
-  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
+  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT;
 
   struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
     pContext, &newGadget, TAG_END);
@@ -127,9 +130,9 @@ void ProgressWindow::initialize()
   newGadget.ng_GadgetID   = GID_LeftFileString;
   newGadget.ng_Flags      = 0;
 
-  m_pLeftFileStringGadget = CreateGadget(STRING_KIND,
+  m_pLeftFileStringGadget = CreateGadget(TEXT_KIND,
     pLabelGadget, &newGadget,
-    GTST_MaxChars, 200, // TODO remove constant
+//    GTST_MaxChars, 200, // TODO remove constant
     TAG_END);
 
   // Creating the Select button
@@ -165,9 +168,11 @@ void ProgressWindow::initialize()
   newGadget.ng_GadgetID   = GID_RightFileString;
   newGadget.ng_Flags      = 0;
 
-  m_pRightFileStringGadget = CreateGadget(STRING_KIND,
+  m_pRightFileStringGadget = CreateGadget(NUMBER_KIND,
     pLabelGadget, &newGadget,
-    GTST_MaxChars, 200, // TODO remove constant
+    GTNM_Format, "%ld %%",
+    GTNM_Border, TRUE,
+    GTNM_Justification, GTJ_CENTER,
     TAG_END);
 
   // Creating the Select button
@@ -208,15 +213,13 @@ void ProgressWindow::initialize()
   SetTitle("Open the files to diff");
 
   // Setting the window flags
-  setFlags(WFLG_CLOSEGADGET |     // Add a close gadget
-           WFLG_DRAGBAR |         // Add a drag gadget
+  setFlags(WFLG_DRAGBAR |         // Add a drag gadget
            WFLG_DEPTHGADGET);     // Add a depth gadget
 
   // Setting the IDCMP messages we want to receive for this window
   setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
            IDCMP_VANILLAKEY |     // Inform us about RAW key press
            IDCMP_RAWKEY |         // Inform us about printable key press
-           IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
            IDCMP_REFRESHWINDOW |  // Inform us when refreshing is necessary
            BUTTONIDCMP);          // Inform us about GadTools button events
 
@@ -261,56 +264,38 @@ bool ProgressWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
   return false;
 }
 
-void ProgressWindow::enableAll()
+void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
+                                    p_pProgressMsg)
 {
-  GT_SetGadgetAttrs(m_pLeftFileStringGadget, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
+  if(p_pProgressMsg == NULL)
+  {
+    return;
+  }
+
+  if(p_pProgressMsg->progress < 0)
+  {
+    m_pProgressDescription = NULL;
+    return;
+  }
+
+  if( p_pProgressMsg != NULL &&
+     (p_pProgressMsg->pDescription != m_pProgressDescription))
+  {
+    m_pProgressDescription = p_pProgressMsg->pDescription;
+
+    GT_SetGadgetAttrs(m_pLeftFileStringGadget, m_pWindow, NULL,
+      GTTX_Text, m_pProgressDescription,
+      TAG_END);
+  }
+
+  RectFill(m_pWindow->RPort, 10, 10, 60, 60);
+
+//  m_ProgressValue = "Progress = ";
+//  m_ProgressValue += p_pProgressMsg->progress;
+//  m_ProgressValue += " %";
+
+  GT_SetGadgetAttrs(m_pRightFileStringGadget, m_pWindow, NULL,
+    GTNM_Number, p_pProgressMsg->progress,
     TAG_END);
 
-  GT_SetGadgetAttrs(m_pRightFileStringGadget, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pSelectLeftFileButton, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pSelectRightFileButton, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pCancelButton, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_END);
-
-  // TODO enable menu item "Quit"
-}
-
-void ProgressWindow::disableAll()
-{
-  GT_SetGadgetAttrs(m_pLeftFileStringGadget, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pRightFileStringGadget, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pSelectLeftFileButton, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pSelectRightFileButton, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pCancelButton, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
-    TAG_END);
-
-  GT_SetGadgetAttrs(m_pDiffButton, IntuiWindow(), NULL,
-    GA_Disabled, TRUE,
-    TAG_END);
-
-  // TODO disable menu item "Quit"
 }

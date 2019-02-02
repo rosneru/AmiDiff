@@ -1,3 +1,5 @@
+#include <proto/dos.h>
+
 #include "AmigaFile.h"
 #include "DiffFilePartitionAmiga.h"
 
@@ -43,6 +45,9 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
         }
       }
     }
+
+    // TODO remove after implementation of ProgressWindow
+    Delay(1);
 
   }
 

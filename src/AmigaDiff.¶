@@ -664,13 +664,12 @@ Section
 7
 File
 10 "AmigaDiff"
-"AmigaDiff"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 Section
-5 0 -50
+5 1 -50
 0 0 0 0
 7
 File
@@ -690,17 +689,6 @@ Storm Shell Project (Dependencies)
 File
 5 "debug.lib"
 "debug.lib"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-Section
-11 1 -120
-0 0 0 0
-7
-File
-11 "AmigaDiff"
-"AmigaDiff"
 Storm Shell Project (Dependencies)
 "" ""
 ""

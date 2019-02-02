@@ -45,6 +45,9 @@ public:
    */
   bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
+  void HandleProgress(struct WorkerProgressMsg* p_pProgressMsg);
+
+
 private:
   /**
    * IDs to help to interpret the events of this window's Gadtools
@@ -70,26 +73,14 @@ private:
   struct Gadget* m_pDiffButton;
   struct Gadget* m_pCancelButton;
 
+  const char* m_pProgressDescription;
+  SimpleString m_ProgressValue;
+
+
   /**
    * Initializes some window specific feature. Gadgets, etc.
    */
   void initialize();
-
-
-  /**
-   * Enables all gadgets in the window except the 'Diff' button which
-   * only is enabled when both string gadgets contain text.
-   */
-  void enableAll();
-
-  /**
-   * Disables all gadgets in the window.
-   *
-   * Should be called e.g. before an ASL reuest is opened to prevent
-   * from input during request is open.
-   */
-  void disableAll();
-
 };
 
 

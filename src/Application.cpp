@@ -123,9 +123,8 @@ bool Application::Run(bool p_bDoNotAsk)
   // Open the OpenFilesWindow.
   //
   // Giving the command ptr as argument, so the appropriate menu item
-  // is disabled after opening.
+  // will be disabled after opening.
   m_FilesWindow.Open(&m_CmdOpenFilesWindow);
-//m_DiffWindow.Open();
 
   // When DONOTASK argument is set and left and right file are passed,
   // start the diff immediately
@@ -133,7 +132,7 @@ bool Application::Run(bool p_bDoNotAsk)
      (m_RightFilePath.Length() > 0) &&
      p_bDoNotAsk == true)
   {
-    // TODO How can I do this?
+    m_CmdDiff.Execute();
   }
 
   //
@@ -158,15 +157,16 @@ void Application::intuiEventLoop()
 
     if(activeSignals & sigProgress)
     {
-      int lastReportedProgress = 1000;
       struct WorkerProgressMsg* pProgressMsg = NULL;
       while (pProgressMsg = (struct WorkerProgressMsg *) GetMsg(m_pMsgPortProgress))
       {
         // Only allow to exit if diff background process has ended
         m_bExitAllowed = (pProgressMsg->progress == -1);
 
-        // TODO m_ProgressWindow.HandleProgress(..);
-        printf("%s : %d\n", pProgressMsg->pDescription, pProgressMsg->progress);
+        if(m_ProgressWindow.IsOpen())
+        {
+          m_ProgressWindow.HandleProgress(pProgressMsg);
+        }
 
         ReplyMsg(pProgressMsg);
       }
