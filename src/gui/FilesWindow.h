@@ -1,5 +1,5 @@
-#ifndef OPEN_FILES_WINDOW_H
-#define OPEN_FILES_WINDOW_H
+#ifndef FILES_WINDOW_H
+#define FILES_WINDOW_H
 
 #include <exec/ports.h>
 #include <intuition/screens.h>
@@ -18,12 +18,12 @@
  * @author Uwe Rosner
  * @date 21/10/2018
  */
-class OpenFilesWindow : public WindowBase
+class FilesWindow : public WindowBase
 {
 public:
-  OpenFilesWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
+  FilesWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
     AmigaDiffFacade& p_DiffFacade);
-  virtual ~OpenFilesWindow();
+  virtual ~FilesWindow();
 
   void Refresh();
 

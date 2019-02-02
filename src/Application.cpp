@@ -22,11 +22,11 @@ Application::Application(const SimpleString& p_PubScreenName,
     m_Screen(),
     m_DiffWindow(m_Screen, m_pMsgPortIDCMP),
     m_DiffFacade(m_DiffWindow, m_ProgressWindow, p_pMsgPortProgress),
-    m_OpenFilesWindow(m_Screen, m_pMsgPortIDCMP, m_DiffFacade),
+    m_FilesWindow(m_Screen, m_pMsgPortIDCMP, m_DiffFacade),
     m_ProgressWindow(m_Screen, m_pMsgPortIDCMP),
     m_CmdDiff(m_DiffFacade),
     m_CmdQuit(m_bExitRequested),
-    m_CmdOpenFilesWindow(m_OpenFilesWindow),
+    m_CmdOpenFilesWindow(m_FilesWindow),
     m_Menu(m_Screen)
 {
 }
@@ -104,7 +104,7 @@ bool Application::Run(bool p_bDoNotAsk)
   // Installing menu to all windows
   //
   m_DiffWindow.SetMenu(&m_Menu);
-  m_OpenFilesWindow.SetMenu(&m_Menu);
+  m_FilesWindow.SetMenu(&m_Menu);
 
   //
   // Prepare the DiffWindow
@@ -117,7 +117,7 @@ bool Application::Run(bool p_bDoNotAsk)
   //
   // Giving the command ptr as argument, so the appropriate menu item
   // is disabled after opening.
-  m_OpenFilesWindow.Open(&m_CmdOpenFilesWindow);
+  m_FilesWindow.Open(&m_CmdOpenFilesWindow);
 //m_DiffWindow.Open();
 
   // When DONOTASK argument is set and left and right file are passed,
@@ -207,13 +207,13 @@ void Application::intuiEventLoop()
           {
             m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
           }
-          else if(m_OpenFilesWindow.IsOpen() && msgWindow == m_OpenFilesWindow.IntuiWindow())
+          else if(m_FilesWindow.IsOpen() && msgWindow == m_FilesWindow.IntuiWindow())
           {
-            m_OpenFilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+            m_FilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
           }
         }
 
-        if(!m_DiffWindow.IsOpen() && !m_OpenFilesWindow.IsOpen())
+        if(!m_DiffWindow.IsOpen() && !m_FilesWindow.IsOpen())
         {
           // All windows are close: exit
           m_bExitRequested = true;

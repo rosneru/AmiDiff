@@ -12,9 +12,9 @@
 #include <libraries/gadtools.h>
 
 #include "AslFileRequest.h"
-#include "OpenFilesWindow.h"
+#include "FilesWindow.h"
 
-OpenFilesWindow::OpenFilesWindow(AppScreen& p_AppScreen,
+FilesWindow::FilesWindow(AppScreen& p_AppScreen,
     struct MsgPort* p_pMsgPort, AmigaDiffFacade& p_DiffFacade)
   : WindowBase(p_AppScreen, p_pMsgPort),
     m_bFileRequestOpen(false),
@@ -30,7 +30,7 @@ OpenFilesWindow::OpenFilesWindow(AppScreen& p_AppScreen,
 
 }
 
-OpenFilesWindow::~OpenFilesWindow()
+FilesWindow::~FilesWindow()
 {
   Close();
 
@@ -51,14 +51,14 @@ OpenFilesWindow::~OpenFilesWindow()
 
 
 
-void OpenFilesWindow::Refresh()
+void FilesWindow::Refresh()
 {
 // TODO
 //  BeginRefresh(m_pWindow);
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
+bool FilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
 {
   if(WindowBase::Open(p_pUserDataMenuItemToDisable) == false)
   {
@@ -75,7 +75,7 @@ bool OpenFilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
 }
 
 
-void OpenFilesWindow::initialize()
+void FilesWindow::initialize()
 {
   //
   // Calculate some basic values
@@ -235,7 +235,7 @@ void OpenFilesWindow::initialize()
   m_bInitialized = true;
 }
 
-bool OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+bool FilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
   if(!IsOpen())
   {
@@ -358,7 +358,7 @@ bool OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
   return false;
 }
 
-bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
+bool FilesWindow::selectFile(SimpleString& p_FilePath,
   const SimpleString& p_RequestTitle)
 {
   if(m_bFileRequestOpen)
@@ -397,7 +397,7 @@ bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
   return true;
 }
 
-void OpenFilesWindow::enableAll()
+void FilesWindow::enableAll()
 {
   GT_SetGadgetAttrs(m_pLeftFileStringGadget, IntuiWindow(), NULL,
     GA_Disabled, FALSE,
@@ -424,7 +424,7 @@ void OpenFilesWindow::enableAll()
   // TODO enable menu item "Quit"
 }
 
-void OpenFilesWindow::disableAll()
+void FilesWindow::disableAll()
 {
   GT_SetGadgetAttrs(m_pLeftFileStringGadget, IntuiWindow(), NULL,
     GA_Disabled, TRUE,
@@ -454,7 +454,7 @@ void OpenFilesWindow::disableAll()
 }
 
 
-void OpenFilesWindow::setDiffButtonState()
+void FilesWindow::setDiffButtonState()
 {
   if(!IsOpen() || m_pDiffButton == NULL)
   {
@@ -479,7 +479,7 @@ void OpenFilesWindow::setDiffButtonState()
   }
 }
 
-void OpenFilesWindow::setStringGadgetText(struct Gadget* p_pGadget,
+void FilesWindow::setStringGadgetText(struct Gadget* p_pGadget,
   const SimpleString& p_Text)
 {
   if(!IsOpen() || p_pGadget == NULL)
@@ -492,7 +492,7 @@ void OpenFilesWindow::setStringGadgetText(struct Gadget* p_pGadget,
     TAG_END);
 }
 
-void OpenFilesWindow::readStringGadgetsText()
+void FilesWindow::readStringGadgetsText()
 {
   // Set the changed string gadget text as left file path
   UBYTE* pBuf = ((struct StringInfo*)
