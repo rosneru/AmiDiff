@@ -51,18 +51,18 @@ public:
   virtual bool Open(APTR p_pMenuItemDisableAtOpen) = 0;
 
   /**
+   * Closes the window.
+   */
+  void Close();
+
+  const APTR DisabledMenuItem() const;
+
+  /**
    * Handles given IDCMP event.
    *
    * @returns If this event was handled: true; else: false.
    */
   virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
-
-
-  /**
-   * Closes the window.
-   */
-  void Close();
-
 
   /**
    * Returns true if the window is opened.
@@ -71,8 +71,6 @@ public:
 
   const char* Title() const;
   void SetTitle(SimpleString p_NewTitle);
-
-
 
   /**
    * Sets the initial position of the window. Only is applied when

@@ -301,9 +301,6 @@ bool FilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
           return true;
         }
 
-        // Disable all gadgets while diff is performing
-        disableAll();
-
         // Perform the diff
         m_CmdDiff.Execute();
 /*

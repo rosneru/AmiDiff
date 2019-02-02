@@ -212,6 +212,11 @@ bool WindowBase::IsOpen() const
   return m_pWindow != NULL;
 }
 
+const APTR WindowBase::DisabledMenuItem() const
+{
+  return m_pMenuItemDisableAtOpen;
+}
+
 const char* WindowBase::Title() const
 {
   return m_Title.C_str();

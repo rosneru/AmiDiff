@@ -53,6 +53,16 @@ bool AmigaDiffFacade::Diff()
   long timeDiff = 0;
   long timeSummary = 0;
 
+  m_ProgressWindow.Open();
+
+    /**
+   * Closes the window.
+   */
+  void Close();
+
+  APTR pDisabledMenuItem = m_FilesWindow.DisabledMenuItem();
+  m_FilesWindow.Close();
+
   m_StopWatch.Start();
 
   // Send progress notifications to here. (This is a BackgroundWorker
@@ -65,6 +75,9 @@ bool AmigaDiffFacade::Diff()
   {
     m_ErrorText = "Error while pre-processing the file '";
     m_ErrorText += m_LeftFilePath + "'\n Maybe a read error?";
+
+    m_FilesWindow.Open(pDisabledMenuItem);
+    m_ProgressWindow.Close();
 
     return false;
   }
@@ -83,6 +96,10 @@ bool AmigaDiffFacade::Diff()
   {
     m_ErrorText = "Error while pre-processing the file \n'";
     m_ErrorText += m_RightFilePath + "'\n Maybe a read error?";
+
+    m_FilesWindow.Open(pDisabledMenuItem);
+    m_ProgressWindow.Close();
+
     return false;
   }
 
@@ -109,6 +126,10 @@ bool AmigaDiffFacade::Diff()
   if(!diffOk)
   {
     m_ErrorText = "Error while performing the diff.";
+
+    m_FilesWindow.Open(pDisabledMenuItem);
+    m_ProgressWindow.Close();
+
     return false;
   }
 
@@ -133,6 +154,7 @@ bool AmigaDiffFacade::Diff()
   m_pRightDiffDocument->SetFileName(m_RightFilePath);
 
   m_DiffWindow.Open();
+  m_ProgressWindow.Close();
 
   m_DiffWindow.SetContent(m_pLeftDiffDocument, m_pRightDiffDocument);
   m_DiffWindow.SetStatusBarText(m_ElapsedText);
