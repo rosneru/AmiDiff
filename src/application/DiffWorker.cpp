@@ -170,8 +170,6 @@ bool DiffWorker::Diff()
   m_ElapsedText += timeDiff;
   m_ElapsedText += ")";
 
-  disposeDocuments();
-
   m_pLeftDiffDocument = new DiffDocument(m_LeftDiffPartition);
   m_pRightDiffDocument = new DiffDocument(m_RightDiffPartition);
 

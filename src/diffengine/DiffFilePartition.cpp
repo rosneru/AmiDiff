@@ -14,12 +14,19 @@ DiffFilePartition::~DiffFilePartition()
 
 void DiffFilePartition::Clear()
 {
-  for(size_t i=0; i < m_DiffLinesArray.Size(); i++)
+  if(m_DiffLinesArray.Size() == 0)
   {
-    DiffLine* pDiffLine = m_DiffLinesArray[i];
-    if(pDiffLine != NULL)
+    return;
+  }
+
+  DiffLine* pItem;
+  while((pItem = m_DiffLinesArray.Pop()) != NULL)
+  {
+    delete pItem;
+
+    if(m_DiffLinesArray.Size() == 0)
     {
-      delete pDiffLine;
+      break;
     }
   }
 }

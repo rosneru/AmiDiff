@@ -51,16 +51,20 @@ bool TextDocument::Load(const SimpleString& p_FileName)
 
 void TextDocument::Clear()
 {
-  if(NumLines() < 1)
+  if(m_Lines.Size() == 0)
   {
     return;
   }
 
-  const SimpleString* pLine = m_Lines.Pop();
-  while (pLine != NULL)
+  const SimpleString* pLine;
+  while((pLine = m_Lines.Pop()) != NULL)
   {
     delete pLine;
-    pLine = m_Lines.Pop();
+
+    if(m_Lines.Size() == 0)
+    {
+      break;
+    }
   }
 
   m_FileName = "";
