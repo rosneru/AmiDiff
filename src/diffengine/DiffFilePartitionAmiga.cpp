@@ -3,6 +3,12 @@
 #include "AmigaFile.h"
 #include "DiffFilePartitionAmiga.h"
 
+DiffFilePartitionAmiga::DiffFilePartitionAmiga(
+  bool& p_bCancelRequested)
+  : DiffFilePartition(p_bCancelRequested)
+{
+}
+
 bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
 {
   AmigaFile file;
@@ -44,6 +50,15 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
           m_pProgressReporter->notifyProgressChanged(lastProgressValue);
         }
       }
+    }
+
+    //
+    // Handling a potential cancel request
+    //
+    if(m_bCancelRequested == true)
+    {
+      m_bCancelRequested = false;
+      return false;
     }
 
     // TODO remove after implementation of ProgressWindow

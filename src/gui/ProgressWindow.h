@@ -19,7 +19,8 @@
 class ProgressWindow : public WindowBase
 {
 public:
-  ProgressWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort);
+  ProgressWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
+                 bool& p_bCancelRequested);
   virtual ~ProgressWindow();
 
   void Refresh();
@@ -65,9 +66,10 @@ private:
   struct Gadget* m_pGadgetList;
   struct Gadget* m_pDescriptionGadget;
   struct Gadget* m_pProgressGadget;
-  struct Gadget* m_pCancelButton;
+  struct Gadget* m_pBtnCancel;
 
   const char* m_pProgressDescription;
+  bool& m_bCancelRequested;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.

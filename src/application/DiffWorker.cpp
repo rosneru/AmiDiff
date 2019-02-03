@@ -7,17 +7,23 @@ DiffWorker::DiffWorker(SimpleString& p_LeftFilePath,
                                  FilesWindow& p_FilesWindow,
                                  ProgressWindow& p_ProgressWindow,
                                  struct MsgPort* p_pProgressPort,
+                                 bool& p_bCancelRequested,
                                  bool& p_bExitAllowed)
   : BackgroundWorker(p_pProgressPort),
     m_LeftFilePath(p_LeftFilePath),
     m_RightFilePath(p_RightFilePath),
     m_DiffWindow(p_DiffWindow),
     m_FilesWindow(p_FilesWindow),
+    m_bCancelRequested(p_bCancelRequested),
     m_bExitAllowed(p_bExitAllowed),
     m_ProgressWindow(p_ProgressWindow),
     m_ProgressOffset(0),
     m_pLeftDiffDocument(NULL),
-    m_pRightDiffDocument(NULL)
+    m_pRightDiffDocument(NULL),
+    m_LeftSrcPartition(m_bCancelRequested),
+    m_RightSrcPartition(m_bCancelRequested),
+    m_LeftDiffPartition(m_bCancelRequested),
+    m_RightDiffPartition(m_bCancelRequested)
 {
 }
 
@@ -38,6 +44,8 @@ const SimpleString& DiffWorker::ElapsedText() const
 
 bool DiffWorker::Diff()
 {
+  m_bCancelRequested = false;
+
   if(m_LeftFilePath.Length() == 0)
   {
     m_ErrorText = "Left file name not set.";
@@ -113,7 +121,7 @@ bool DiffWorker::Diff()
 
   m_StopWatch.Start();
 
-  DiffEngine diffEngine;
+  DiffEngine diffEngine(m_bCancelRequested);
 
   // Send progress notifications to here. (This is a BackgroundWorker
   // who sends them as messages to the event loop).

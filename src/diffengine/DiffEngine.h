@@ -22,7 +22,7 @@ class DiffEngine
 {
 
 public:
-  DiffEngine();
+  DiffEngine(bool& p_bCancelRequested);
 
   bool Diff(DiffFilePartition& p_File1Src,
             DiffFilePartition& p_File2Src,
@@ -36,6 +36,7 @@ public:
 
 private:
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
+  bool& m_bCancelRequested;
 
 };
 

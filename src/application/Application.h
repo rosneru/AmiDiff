@@ -52,6 +52,7 @@ private:
   struct MsgPort* m_pMsgPortIDCMP;
   struct MsgPort* m_pMsgPortProgress;
   SimpleString m_PubScreenName;
+  bool m_bCancelRequested;
   bool m_bExitRequested;
   bool m_bExitAllowed;
 

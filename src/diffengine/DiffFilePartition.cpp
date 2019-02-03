@@ -1,7 +1,8 @@
 #include "DiffFilePartition.h"
 
-DiffFilePartition::DiffFilePartition()
-  : m_pProgressReporter(NULL)
+DiffFilePartition::DiffFilePartition(bool& p_bCancelRequested)
+  : m_bCancelRequested(p_bCancelRequested),
+    m_pProgressReporter(NULL)
 {
 
 }

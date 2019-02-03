@@ -15,6 +15,7 @@
 class DiffFilePartitionAmiga : public DiffFilePartition
 {
 public:
+  DiffFilePartitionAmiga(bool& p_bCancelRequested);
   bool PreProcess(const SimpleString& p_FileName);
 };
 

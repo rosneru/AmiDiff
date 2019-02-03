@@ -2,8 +2,9 @@
 
 
 
-DiffEngine::DiffEngine()
-  : m_pProgressReporter(NULL)
+DiffEngine::DiffEngine(bool& p_bCancelRequested)
+  : m_bCancelRequested(p_bCancelRequested),
+    m_pProgressReporter(NULL)
 {
 
 }
@@ -172,6 +173,17 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
         }
       }
     }
+
+    //
+    // Handling a potential cancel request
+    //
+    if(m_bCancelRequested == true)
+    {
+      m_bCancelRequested = false;
+      return false;
+    }
+
+
   }
 
   // are there any remaining lines from p_File2Src?

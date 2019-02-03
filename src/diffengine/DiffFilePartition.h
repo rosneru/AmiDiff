@@ -23,7 +23,7 @@ class DiffFilePartition
 {
   // Constructor
 public:
-  DiffFilePartition();
+  DiffFilePartition(bool& p_bCancelRequested);
   virtual ~DiffFilePartition();
 
   Array<long>& TokensList();
@@ -51,6 +51,7 @@ public:
 
 protected:
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
+  bool& m_bCancelRequested;
 
 private:
   Array<SimpleString*> m_InputLinesArray;

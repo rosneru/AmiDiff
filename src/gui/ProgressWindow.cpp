@@ -16,12 +16,13 @@
 
 
 ProgressWindow::ProgressWindow(AppScreen& p_AppScreen,
-    struct MsgPort* p_pMsgPort)
+    struct MsgPort* p_pMsgPort, bool& p_bCancelRequested)
   : WindowBase(p_AppScreen, p_pMsgPort),
+    m_bCancelRequested(p_bCancelRequested),
     m_pGadgetList(NULL),
     m_pDescriptionGadget(NULL),
     m_pProgressGadget(NULL),
-    m_pCancelButton(NULL),
+    m_pBtnCancel(NULL),
     m_pProgressDescription(NULL)
 {
 
@@ -37,7 +38,7 @@ ProgressWindow::~ProgressWindow()
     m_pGadgetList = NULL;
     m_pDescriptionGadget = NULL;
     m_pProgressGadget = NULL;
-    m_pCancelButton = NULL;
+    m_pBtnCancel = NULL;
   }
 }
 
@@ -93,10 +94,8 @@ void ProgressWindow::initialize()
     return;
   }
 
-  // Declare the basic gadget structure
+  // Declare the basic gadget structure and fill with basic values
   struct NewGadget newGadget;
-
-  // Setting basic values into the NewGadget struct
   newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
   newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
 
@@ -135,7 +134,7 @@ void ProgressWindow::initialize()
   newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
   newGadget.ng_GadgetID   = GID_BtnCancel;
 
-  m_pCancelButton = CreateGadget(BUTTON_KIND,
+  m_pBtnCancel = CreateGadget(BUTTON_KIND,
     m_pProgressGadget, &newGadget, GT_Underscore, '_', TAG_END);
 
   // Adjust the window height depending on the y-Pos and height of the
@@ -173,6 +172,19 @@ bool ProgressWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
   {
     case IDCMP_GADGETUP:
     {
+      struct Gadget* pGadget = (struct Gadget*) p_IAddress;
+      if(pGadget->GadgetID == GID_BtnCancel)
+      {
+        // Set the flag which will stop background process as soon as
+        // possible
+        m_bCancelRequested = true;
+
+        // Disable the Cancel button
+        GT_SetGadgetAttrs(m_pBtnCancel, IntuiWindow(), NULL,
+          GA_Disabled, TRUE,
+          TAG_END);
+      }
+
       return true;
       break;
     }

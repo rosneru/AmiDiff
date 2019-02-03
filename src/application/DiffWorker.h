@@ -31,6 +31,7 @@ public:
                   FilesWindow& p_FilesWindow,
                   ProgressWindow& p_ProgressWindow,
                   struct MsgPort* p_pProgressPort,
+                  bool& p_bCancelRequested,
                   bool& p_bExitAllowed);
 
   virtual ~DiffWorker();
@@ -67,6 +68,7 @@ private:
   FilesWindow& m_FilesWindow;
   ProgressWindow& m_ProgressWindow;
   int m_ProgressOffset;
+  bool& m_bCancelRequested;
   bool& m_bExitAllowed;
 
   SimpleString& m_LeftFilePath;
