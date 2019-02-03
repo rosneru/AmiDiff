@@ -74,8 +74,6 @@ private:
   struct Gadget* m_pCancelButton;
 
   const char* m_pProgressDescription;
-  SimpleString m_ProgressValue;
-
 
   /**
    * Initializes some window specific feature. Gadgets, etc.

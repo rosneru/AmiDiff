@@ -278,6 +278,8 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
     return;
   }
 
+  RectFill(m_pWindow->RPort, 10, 10, 60, 60);
+
   if( p_pProgressMsg != NULL &&
      (p_pProgressMsg->pDescription != m_pProgressDescription))
   {
@@ -287,12 +289,6 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
       GTTX_Text, m_pProgressDescription,
       TAG_END);
   }
-
-  RectFill(m_pWindow->RPort, 10, 10, 60, 60);
-
-//  m_ProgressValue = "Progress = ";
-//  m_ProgressValue += p_pProgressMsg->progress;
-//  m_ProgressValue += " %";
 
   GT_SetGadgetAttrs(m_pRightFileStringGadget, m_pWindow, NULL,
     GTNM_Number, p_pProgressMsg->progress,
