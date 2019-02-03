@@ -19,11 +19,8 @@ ProgressWindow::ProgressWindow(AppScreen& p_AppScreen,
     struct MsgPort* p_pMsgPort)
   : WindowBase(p_AppScreen, p_pMsgPort),
     m_pGadgetList(NULL),
-    m_pLeftFileStringGadget(NULL),
-    m_pRightFileStringGadget(NULL),
-    m_pSelectLeftFileButton(NULL),
-    m_pSelectRightFileButton(NULL),
-    m_pDiffButton(NULL),
+    m_pDescriptionGadget(NULL),
+    m_pProgressGadget(NULL),
     m_pCancelButton(NULL),
     m_pProgressDescription(NULL)
 {
@@ -38,11 +35,8 @@ ProgressWindow::~ProgressWindow()
   {
     FreeGadgets(m_pGadgetList);
     m_pGadgetList = NULL;
-    m_pLeftFileStringGadget = NULL;
-    m_pRightFileStringGadget = NULL;
-    m_pSelectLeftFileButton = NULL;
-    m_pSelectRightFileButton = NULL;
-    m_pDiffButton = NULL;
+    m_pDescriptionGadget = NULL;
+    m_pProgressGadget = NULL;
     m_pCancelButton = NULL;
   }
 }
@@ -85,10 +79,7 @@ void ProgressWindow::initialize()
   WORD right = m_WinWidth - hSpace;
   WORD buttonWidth = 60;
   WORD buttonHeight = m_FontHeight + 6;
-  WORD selectButtonWidth = TextLength(
-    &m_AppScreen.IntuiScreen()->RastPort, "...", 3) + 8;
-  WORD stringGadgetWidth = right - left - hSpace / 2 - selectButtonWidth;
-  WORD selectButtonLeft = right - selectButtonWidth;
+  WORD stringGadgetWidth = right - left - hSpace / 2 - buttonWidth;
 
   //
   // Setting up the gadgets
@@ -105,112 +96,54 @@ void ProgressWindow::initialize()
   // Declare the basic gadget structure
   struct NewGadget newGadget;
 
-  // Line 1  contains  a label
+  // Setting basic values into the NewGadget struct
   newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
   newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
-  newGadget.ng_LeftEdge   = left + 2;
-  newGadget.ng_TopEdge    = top;
-  newGadget.ng_Width      = stringGadgetWidth;
-  newGadget.ng_Height     = m_FontHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "Left file";
-  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT;
 
-  struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
-    pContext, &newGadget, TAG_END);
-
-  // Line 2 contains a string gadget and selection button for the
-  // filename of the left file
-
-  // Creating the string gadget
+  // Creating the string gadget to display the progress description
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += m_FontHeight + 2;
+  newGadget.ng_TopEdge    += top;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = NULL;
-  newGadget.ng_GadgetID   = GID_LeftFileString;
+  newGadget.ng_GadgetID   = GID_Description;
   newGadget.ng_Flags      = 0;
 
-  m_pLeftFileStringGadget = CreateGadget(TEXT_KIND,
-    pLabelGadget, &newGadget,
-//    GTST_MaxChars, 200, // TODO remove constant
+  m_pDescriptionGadget = CreateGadget(TEXT_KIND,
+    pContext, &newGadget,
     TAG_END);
 
-  // Creating the Select button
-  newGadget.ng_LeftEdge   = selectButtonLeft;
-  newGadget.ng_Width      = selectButtonWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "...";
-  newGadget.ng_GadgetID   = GID_LeftFileButton;
-  newGadget.ng_Flags      = 0;
-
-  m_pSelectLeftFileButton = CreateGadget(BUTTON_KIND,
-    m_pLeftFileStringGadget, &newGadget, TAG_END);
-
-  // Line 3  contains a label
-  newGadget.ng_LeftEdge   = left + 2;
-  newGadget.ng_TopEdge    += buttonHeight + vSpace;
-  newGadget.ng_Width      = stringGadgetWidth;
-  newGadget.ng_Height     = m_FontHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "Right file";
-  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
-
-  pLabelGadget = CreateGadget(TEXT_KIND, m_pSelectLeftFileButton,
-    &newGadget, TAG_END);
-
-  // Line 4 contains a string gadget and selection button for the
-  // filename of the right file
-
-  // Creating the string gadget
+  // Creating the string gadget to display the progress value
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += m_FontHeight + 2;
+  newGadget.ng_TopEdge    += buttonHeight + vSpace;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetText = NULL;
-  newGadget.ng_GadgetID   = GID_RightFileString;
+  newGadget.ng_GadgetID   = GID_Progress;
   newGadget.ng_Flags      = 0;
 
-  m_pRightFileStringGadget = CreateGadget(NUMBER_KIND,
-    pLabelGadget, &newGadget,
+  m_pProgressGadget = CreateGadget(NUMBER_KIND,
+    m_pDescriptionGadget, &newGadget,
     GTNM_Format, "%ld %%",
     GTNM_Border, TRUE,
     GTNM_Justification, GTJ_CENTER,
     TAG_END);
 
-  // Creating the Select button
-  newGadget.ng_LeftEdge   = selectButtonLeft;
-  newGadget.ng_Width      = selectButtonWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "...";
-  newGadget.ng_GadgetID   = GID_RightFileButton;
-  newGadget.ng_Flags      = 0;
-
-  m_pSelectRightFileButton = CreateGadget(BUTTON_KIND,
-    m_pRightFileStringGadget, &newGadget, TAG_END);
-
-  // Line 5 conatins the buttons Diff and Cancel
-
-  // Creating the Diff button
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += buttonHeight + vSpace + vSpace;
-  newGadget.ng_Width      = buttonWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "_Diff";
-  newGadget.ng_GadgetID   = GID_DiffButton;
-
-  m_pDiffButton = CreateGadget(BUTTON_KIND,
-    m_pSelectRightFileButton, &newGadget, GT_Underscore, '_', TAG_END);
-
   // Creating the Cancel button
   newGadget.ng_LeftEdge   = right - buttonWidth;
+  newGadget.ng_Width      = buttonWidth;
   newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
-  newGadget.ng_GadgetID   = GID_CancelButton;
+  newGadget.ng_GadgetID   = GID_BtnCancel;
 
   m_pCancelButton = CreateGadget(BUTTON_KIND,
-    m_pDiffButton, &newGadget, GT_Underscore, '_', TAG_END);
+    m_pProgressGadget, &newGadget, GT_Underscore, '_', TAG_END);
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
   m_WinHeight = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
 
   // Setting window title
-  SetTitle("Open the files to diff");
+  SetTitle("Comparing the files");
 
   // Setting the window flags
   setFlags(WFLG_DRAGBAR |         // Add a drag gadget
@@ -252,13 +185,6 @@ bool ProgressWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
       return true;
       break;
     }
-
-    case IDCMP_CLOSEWINDOW:
-    {
-      Close();
-      return true;
-      break;
-    }
   }
 
   return false;
@@ -285,12 +211,12 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
   {
     m_pProgressDescription = p_pProgressMsg->pDescription;
 
-    GT_SetGadgetAttrs(m_pLeftFileStringGadget, m_pWindow, NULL,
+    GT_SetGadgetAttrs(m_pDescriptionGadget, m_pWindow, NULL,
       GTTX_Text, m_pProgressDescription,
       TAG_END);
   }
 
-  GT_SetGadgetAttrs(m_pRightFileStringGadget, m_pWindow, NULL,
+  GT_SetGadgetAttrs(m_pProgressGadget, m_pWindow, NULL,
     GTNM_Number, p_pProgressMsg->progress,
     TAG_END);
 }

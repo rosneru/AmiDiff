@@ -6,12 +6,14 @@ DiffWorker::DiffWorker(SimpleString& p_LeftFilePath,
                                  DiffWindow& p_DiffWindow,
                                  FilesWindow& p_FilesWindow,
                                  ProgressWindow& p_ProgressWindow,
-                                 struct MsgPort* p_pProgressPort)
+                                 struct MsgPort* p_pProgressPort,
+                                 bool& p_bExitAllowed)
   : BackgroundWorker(p_pProgressPort),
     m_LeftFilePath(p_LeftFilePath),
     m_RightFilePath(p_RightFilePath),
     m_DiffWindow(p_DiffWindow),
     m_FilesWindow(p_FilesWindow),
+    m_bExitAllowed(p_bExitAllowed),
     m_ProgressWindow(p_ProgressWindow),
     m_ProgressOffset(0),
     m_pLeftDiffDocument(NULL),
@@ -48,6 +50,8 @@ bool DiffWorker::Diff()
     return false;
   }
 
+  m_bExitAllowed = false;
+
   long timePreprocessLeft = 0;
   long timePreprocessRight = 0;
   long timeDiff = 0;
@@ -55,7 +59,7 @@ bool DiffWorker::Diff()
 
   m_ProgressWindow.Open();
 
-    /**
+  /**
    * Closes the window.
    */
   void Close();
@@ -79,6 +83,7 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
+    m_bExitAllowed = true;
     return false;
   }
 
@@ -100,6 +105,7 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
+    m_bExitAllowed = true;
     return false;
   }
 
@@ -130,6 +136,7 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
+    m_bExitAllowed = true;
     return false;
   }
 
@@ -159,6 +166,7 @@ bool DiffWorker::Diff()
   m_DiffWindow.SetContent(m_pLeftDiffDocument, m_pRightDiffDocument);
   m_DiffWindow.SetStatusBarText(m_ElapsedText);
 
+  m_bExitAllowed = true;
   return true;
 }
 

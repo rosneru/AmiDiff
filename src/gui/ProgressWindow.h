@@ -51,26 +51,20 @@ public:
 private:
   /**
    * IDs to help to interpret the events of this window's Gadtools
-   * gadgets in the Application event loop.
+   * gadgets
    */
   enum GadgetId
   {
-    GID_LeftFileString,
-    GID_RightFileString,
-    GID_LeftFileButton,
-    GID_RightFileButton,
-    GID_DiffButton,
-    GID_CancelButton,
+    GID_Description,
+    GID_Progress,
+    GID_BtnCancel,
   };
 
   WORD m_FontHeight;  ///> Height of current text font
 
   struct Gadget* m_pGadgetList;
-  struct Gadget* m_pLeftFileStringGadget;
-  struct Gadget* m_pRightFileStringGadget;
-  struct Gadget* m_pSelectLeftFileButton;
-  struct Gadget* m_pSelectRightFileButton;
-  struct Gadget* m_pDiffButton;
+  struct Gadget* m_pDescriptionGadget;
+  struct Gadget* m_pProgressGadget;
   struct Gadget* m_pCancelButton;
 
   const char* m_pProgressDescription;

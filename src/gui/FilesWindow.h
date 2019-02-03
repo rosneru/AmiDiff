@@ -60,7 +60,7 @@ private:
 
   /**
    * IDs to help to interpret the events of this window's Gadtools
-   * gadgets in the Application event loop.
+   * gadgets.
    */
   enum GadgetId
   {

@@ -19,10 +19,11 @@ Application::Application(struct MsgPort* p_pMsgPortIDCMP,
     m_Screen(),
     m_DiffWindow(m_Screen, m_pMsgPortIDCMP),
     m_FilesWindow(m_Screen, m_pMsgPortIDCMP, m_LeftFilePath,
-                  m_RightFilePath, m_CmdDiff),
+      m_RightFilePath, m_CmdDiff),
     m_ProgressWindow(m_Screen, m_pMsgPortIDCMP),
     m_DiffWorker(m_LeftFilePath, m_RightFilePath, m_DiffWindow,
-                 m_FilesWindow, m_ProgressWindow, p_pMsgPortProgress),
+      m_FilesWindow, m_ProgressWindow, p_pMsgPortProgress,
+      m_bExitAllowed),
     m_CmdDiff(m_DiffWorker),
     m_CmdQuit(m_bExitRequested),
     m_CmdOpenFilesWindow(m_FilesWindow),
@@ -157,9 +158,6 @@ void Application::intuiEventLoop()
       struct WorkerProgressMsg* pProgressMsg = NULL;
       while (pProgressMsg = (struct WorkerProgressMsg *) GetMsg(m_pMsgPortProgress))
       {
-        // Only allow to exit if diff background process has ended
-        m_bExitAllowed = (pProgressMsg->progress == -1);
-
         if(m_ProgressWindow.IsOpen())
         {
           m_ProgressWindow.HandleProgress(pProgressMsg);
@@ -218,6 +216,10 @@ void Application::intuiEventLoop()
           {
             m_FilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
           }
+          else if(m_ProgressWindow.IsOpen() && msgWindow == m_ProgressWindow.IntuiWindow())
+          {
+            m_ProgressWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+          }
         }
 
         if(!m_DiffWindow.IsOpen() && !m_FilesWindow.IsOpen())
@@ -229,5 +231,5 @@ void Application::intuiEventLoop()
       }
     }
   }
-  while(!m_bExitRequested);
+  while(!m_bExitRequested || !m_bExitAllowed);
 }

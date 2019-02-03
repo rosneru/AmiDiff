@@ -187,7 +187,7 @@ protected:
 private:
   /**
    * IDs to help to interpret the events of this window's BOOPSI system
-   * gadgets in the Application event loop.
+   * gadgets.
    */
   enum GadgetId
   {
