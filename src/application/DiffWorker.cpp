@@ -1,7 +1,7 @@
 #include "DiffEngine.h"
-#include "AmigaDiffFacade.h"
+#include "DiffWorker.h"
 
-AmigaDiffFacade::AmigaDiffFacade(SimpleString& p_LeftFilePath,
+DiffWorker::DiffWorker(SimpleString& p_LeftFilePath,
                                  SimpleString& p_RightFilePath,
                                  DiffWindow& p_DiffWindow,
                                  FilesWindow& p_FilesWindow,
@@ -19,22 +19,22 @@ AmigaDiffFacade::AmigaDiffFacade(SimpleString& p_LeftFilePath,
 {
 }
 
-AmigaDiffFacade::~AmigaDiffFacade()
+DiffWorker::~DiffWorker()
 {
   disposeDocuments();
 }
 
-const SimpleString& AmigaDiffFacade::ErrorText() const
+const SimpleString& DiffWorker::ErrorText() const
 {
   return m_ErrorText;
 }
 
-const SimpleString& AmigaDiffFacade::ElapsedText() const
+const SimpleString& DiffWorker::ElapsedText() const
 {
   return m_ElapsedText;
 }
 
-bool AmigaDiffFacade::Diff()
+bool DiffWorker::Diff()
 {
   if(m_LeftFilePath.Length() == 0)
   {
@@ -162,7 +162,7 @@ bool AmigaDiffFacade::Diff()
   return true;
 }
 
-void AmigaDiffFacade::disposeDocuments()
+void DiffWorker::disposeDocuments()
 {
   if(m_pLeftDiffDocument != NULL)
   {
@@ -177,12 +177,12 @@ void AmigaDiffFacade::disposeDocuments()
   }
 }
 
-void AmigaDiffFacade::doWork()
+void DiffWorker::doWork()
 {
   Diff();
 }
 
-void AmigaDiffFacade::notifyProgressChanged(int p_Progress)
+void DiffWorker::notifyProgressChanged(int p_Progress)
 {
   //
   // Reporting the 3 stages of diff-progress (preprocessing left file,

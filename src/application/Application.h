@@ -10,13 +10,12 @@
 
 #include <exec/ports.h>
 
-#include "AmigaDiffFacade.h"
 #include "ApplicationMenu.h"
 #include "AppScreen.h"
 #include "CmdOpenWindow.h"
-#include "CmdPerformDiff.h"
+#include "CmdDiff.h"
 #include "CmdQuit.h"
-#include "AmigaDiffFacade.h"
+#include "DiffWorker.h"
 #include "FilesWindow.h"
 #include "ProgressWindow.h"
 #include "SimpleString.h"
@@ -71,8 +70,8 @@ private:
   DiffWindow m_DiffWindow;
   FilesWindow m_FilesWindow;
   ProgressWindow m_ProgressWindow;
-  AmigaDiffFacade m_DiffFacade;
-  CmdPerformDiff m_CmdDiff;
+  DiffWorker m_DiffWorker;
+  CmdDiff m_CmdDiff;
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpenFilesWindow;
   SimpleString m_LeftFilePath;

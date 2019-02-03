@@ -6,9 +6,6 @@
 #include <proto/intuition.h>
 
 #include "Command.h"
-#include "CmdPerformDiff.h"
-#include "CmdOpenWindow.h"
-#include "CmdQuit.h"
 #include "WorkerProgressMsg.h"
 
 #include "Application.h"
@@ -24,9 +21,9 @@ Application::Application(struct MsgPort* p_pMsgPortIDCMP,
     m_FilesWindow(m_Screen, m_pMsgPortIDCMP, m_LeftFilePath,
                   m_RightFilePath, m_CmdDiff),
     m_ProgressWindow(m_Screen, m_pMsgPortIDCMP),
-    m_DiffFacade(m_LeftFilePath, m_RightFilePath, m_DiffWindow,
+    m_DiffWorker(m_LeftFilePath, m_RightFilePath, m_DiffWindow,
                  m_FilesWindow, m_ProgressWindow, p_pMsgPortProgress),
-    m_CmdDiff(m_DiffFacade),
+    m_CmdDiff(m_DiffWorker),
     m_CmdQuit(m_bExitRequested),
     m_CmdOpenFilesWindow(m_FilesWindow),
     m_Menu(m_Screen)

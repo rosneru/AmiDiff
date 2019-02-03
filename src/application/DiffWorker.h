@@ -1,5 +1,5 @@
-#ifndef AMIGA_DIFF_FACADE_H
-#define AMIGA_DIFF_FACADE_H
+#ifndef DIFF_WORKER_H
+#define DIFF_WORKER_H
 
 #include <exec/ports.h>
 
@@ -14,24 +14,25 @@
 #include "StopWatch.h"
 
 /**
- * Facade to hold all objects which are needed to perform a diff and
- * display its results
+ * Class to perform the diff as a background process. Also managing
+ * the opening and closing of the required windows to e.g. display the
+ * file differences.
  *
  *
  * @author Uwe Rosner
  * @date 26/10/2018
  */
-class AmigaDiffFacade : public BackgroundWorker
+class DiffWorker : public BackgroundWorker
 {
 public:
-  AmigaDiffFacade(SimpleString& p_LeftFilePath,
+  DiffWorker(SimpleString& p_LeftFilePath,
                   SimpleString& p_RightFilePath,
                   DiffWindow& p_DiffWindow,
                   FilesWindow& p_FilesWindow,
                   ProgressWindow& p_ProgressWindow,
                   struct MsgPort* p_pProgressPort);
 
-  virtual ~AmigaDiffFacade();
+  virtual ~DiffWorker();
 
   const SimpleString& ErrorText() const;
   const SimpleString& ElapsedText() const;
@@ -92,11 +93,12 @@ private:
    * constructor.
    *
    * NOTE Extends the basis class method. The 3 stages of progress in
-   *      in diff are reported alltogether as 0..33%, 33%..66% and
-   *      66%..100%.
+   *      diff (pre-processing left file, pre-processing right file
+   *      and performing the diff) are reported merged with 0..33%,
+   *      33%..66% and 66%..100%.
    */
   virtual void notifyProgressChanged(int p_Progress);
 
 };
 
-#endif // AMIGA_DIFF_FACADE_H
+#endif

@@ -37,8 +37,8 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
 
       if(newProgressValue > lastProgressValue)
       {
-       // For performance reasons report only 3% steps
-       if(newProgressValue % 3 == 0)
+        // For performance reasons report only 3% steps
+        if(newProgressValue % 3 == 0)
         {
           lastProgressValue = newProgressValue;
           m_pProgressReporter->notifyProgressChanged(lastProgressValue);
