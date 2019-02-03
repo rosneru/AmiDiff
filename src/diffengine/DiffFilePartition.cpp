@@ -9,8 +9,21 @@ DiffFilePartition::DiffFilePartition(bool& p_bCancelRequested)
 
 DiffFilePartition::~DiffFilePartition()
 {
-  clearDiffLinesList();
+  Clear();
 }
+
+void DiffFilePartition::Clear()
+{
+  for(size_t i=0; i < m_DiffLinesArray.Size(); i++)
+  {
+    DiffLine* pDiffLine = m_DiffLinesArray[i];
+    if(pDiffLine != NULL)
+    {
+      delete pDiffLine;
+    }
+  }
+}
+
 
 long DiffFilePartition::NumLines() const
 {
@@ -181,18 +194,6 @@ void DiffFilePartition::AddString(const SimpleString& p_String)
 void DiffFilePartition::AddBlankLine()
 {
   AddString(SimpleString(), DiffLine::Normal);
-}
-
-void DiffFilePartition::clearDiffLinesList()
-{
-  for(size_t i=0; i < m_DiffLinesArray.Size(); i++)
-  {
-    DiffLine* pDiffLine = m_DiffLinesArray[i];
-    if(pDiffLine != NULL)
-    {
-      delete pDiffLine;
-    }
-  }
 }
 
 void DiffFilePartition::SetProgressReporter(ProgressReporter* p_pProgressReporter)

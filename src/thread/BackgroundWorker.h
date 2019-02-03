@@ -61,6 +61,12 @@ protected:
   virtual void doWork() = 0;
 
   /**
+   * Has to be called by deriving classes at the end or exit of their
+   * doWork() method to allow the BackgroundWorker to clean up etc.
+   */
+  void workDone();
+
+  /**
    * Sending a message about progres to the port given in the
    * constructor.
    */

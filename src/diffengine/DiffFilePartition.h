@@ -26,6 +26,8 @@ public:
   DiffFilePartition(bool& p_bCancelRequested);
   virtual ~DiffFilePartition();
 
+  void Clear();
+
   Array<long>& TokensList();
 
   long NumLines() const;
@@ -57,9 +59,6 @@ private:
   Array<SimpleString*> m_InputLinesArray;
   Array<DiffLine*> m_DiffLinesArray;
   Array<long> m_TokensArray;
-
-  void clearDiffLinesList();
-
 };
 
 #endif

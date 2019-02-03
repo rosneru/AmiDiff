@@ -19,11 +19,7 @@ BackgroundWorker::BackgroundWorker(struct MsgPort* p_pProgressPort)
 
 BackgroundWorker::~BackgroundWorker()
 {
-  if(m_pStartupMsg != NULL)
-  {
-    FreeVec(m_pStartupMsg);
-    m_pStartupMsg = NULL;
-  }
+  workDone();
 }
 
 bool BackgroundWorker::Run()
@@ -89,6 +85,18 @@ void BackgroundWorker::startup()
   DeleteMsgPort(that->m_pReplyPort);
   // TODO Maybe activate this
   //that->m_pBackgrProcess = NULL;
+}
+
+void BackgroundWorker::workDone()
+{
+  if(m_pStartupMsg != NULL)
+  {
+    FreeVec(m_pStartupMsg);
+    m_pStartupMsg = NULL;
+  }
+
+  // TODO Is this enough?
+  m_pBackgrProcess = NULL;
 }
 
 void BackgroundWorker::setProgressDescription(const char* p_pProgressDescription)

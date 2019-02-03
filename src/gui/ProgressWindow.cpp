@@ -16,8 +16,8 @@
 
 
 ProgressWindow::ProgressWindow(AppScreen& p_AppScreen,
-                               struct MsgPort* p_pMsgPort, 
-                               int& p_NumWindowsOpen, 
+                               struct MsgPort* p_pMsgPort,
+                               int& p_NumWindowsOpen,
                                bool& p_bCancelRequested)
   : WindowBase(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
     m_bCancelRequested(p_bCancelRequested),
@@ -61,6 +61,12 @@ bool ProgressWindow::Open(const APTR p_pUserDataMenuItemToDisable)
   {
     return false;
   }
+
+  // Enable the Cancel button in case it has been disabled the last
+  // time the window was open
+  GT_SetGadgetAttrs(m_pBtnCancel, IntuiWindow(), NULL,
+    GA_Disabled, FALSE,
+    TAG_END);
 
   return true;
 }

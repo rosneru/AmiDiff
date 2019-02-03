@@ -45,20 +45,28 @@ const SimpleString& DiffWorker::ElapsedText() const
 bool DiffWorker::Diff()
 {
   m_bCancelRequested = false;
+  m_bExitAllowed = false;
+
+  m_ProgressOffset = 0;
 
   if(m_LeftFilePath.Length() == 0)
   {
     m_ErrorText = "Left file name not set.";
+
+    workDone();
+    m_bExitAllowed = true;
     return false;
   }
 
   if(m_RightFilePath.Length() == 0)
   {
     m_ErrorText = "Right file name not set.";
+
+    workDone();
+    m_bExitAllowed = true;
     return false;
   }
 
-  m_bExitAllowed = false;
 
   long timePreprocessLeft = 0;
   long timePreprocessRight = 0;
@@ -67,13 +75,12 @@ bool DiffWorker::Diff()
 
   m_ProgressWindow.Open();
 
-  /**
-   * Closes the window.
-   */
-  void Close();
-
   APTR pDisabledMenuItem = m_FilesWindow.DisabledMenuItem();
   m_FilesWindow.Close();
+
+  m_DiffWindow.Close();
+
+  disposeDocuments();
 
   m_StopWatch.Start();
 
@@ -91,6 +98,7 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
+    workDone();
     m_bExitAllowed = true;
     return false;
   }
@@ -113,6 +121,7 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
+    workDone();
     m_bExitAllowed = true;
     return false;
   }
@@ -144,6 +153,7 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
+    workDone();
     m_bExitAllowed = true;
     return false;
   }
@@ -174,6 +184,7 @@ bool DiffWorker::Diff()
   m_DiffWindow.SetContent(m_pLeftDiffDocument, m_pRightDiffDocument);
   m_DiffWindow.SetStatusBarText(m_ElapsedText);
 
+  workDone();
   m_bExitAllowed = true;
   return true;
 }
@@ -191,6 +202,11 @@ void DiffWorker::disposeDocuments()
     delete m_pRightDiffDocument;
     m_pRightDiffDocument = NULL;
   }
+
+  m_LeftSrcPartition.Clear();
+  m_RightSrcPartition.Clear();
+  m_LeftDiffPartition.Clear();
+  m_RightDiffPartition.Clear();
 }
 
 void DiffWorker::doWork()
