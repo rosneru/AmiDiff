@@ -11,8 +11,10 @@
 #include <intuition/icclass.h>
 #include "ScrollbarWindow.h"
 
-ScrollbarWindow::ScrollbarWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
-  : WindowBase(p_AppScreen, p_pMsgPort),
+ScrollbarWindow::ScrollbarWindow(AppScreen& p_AppScreen, 
+                                 struct MsgPort* p_pMsgPort,
+                                 int& p_NumWindowsOpen)
+  : WindowBase(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
     m_SizeImageWidth(18),
     m_SizeImageHeight(10),
     m_InnerWindowRight(0),

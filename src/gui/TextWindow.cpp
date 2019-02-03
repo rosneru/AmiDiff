@@ -13,8 +13,10 @@
 
 extern struct GfxBase* GfxBase;
 
-TextWindow::TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
-  : ScrollbarWindow(p_AppScreen, p_pMsgPort),
+TextWindow::TextWindow(AppScreen& p_AppScreen, 
+                       struct MsgPort* p_pMsgPort, 
+                       int& p_NumWindowsOpen)
+  : ScrollbarWindow(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
     m_pDocument(NULL),
     m_TextFontWidth_pix(0),
     m_TextFontHeight_pix(0),

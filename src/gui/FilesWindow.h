@@ -20,11 +20,9 @@
 class FilesWindow : public WindowBase
 {
 public:
-  FilesWindow(AppScreen& p_AppScreen,
-              struct MsgPort* p_pMsgPort,
-              SimpleString& p_LeftFilePath,
-              SimpleString& p_RightFilePath,
-              const Command& p_CmdDiff);
+  FilesWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
+              int& p_NumWindowsOpen, SimpleString& p_LeftFilePath, 
+              SimpleString& p_RightFilePath, const Command& p_CmdDiff);
 
   virtual ~FilesWindow();
 

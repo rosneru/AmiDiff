@@ -18,7 +18,8 @@
 class TextWindow : public ScrollbarWindow
 {
 public:
-  TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort);
+  TextWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
+             int& p_NumWindowsOpen);
   virtual ~TextWindow();
 
   /**

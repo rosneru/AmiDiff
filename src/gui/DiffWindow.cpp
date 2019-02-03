@@ -17,8 +17,9 @@
 
 extern struct GfxBase* GfxBase;
 
-DiffWindow::DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
-  : ScrollbarWindow(p_AppScreen, p_pMsgPort),
+DiffWindow::DiffWindow(AppScreen& p_AppScreen, 
+                       struct MsgPort* p_pMsgPort, int& p_NumWindowsOpen)
+  : ScrollbarWindow(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
     m_TextFontWidth_pix(0),

@@ -16,8 +16,10 @@
 
 
 ProgressWindow::ProgressWindow(AppScreen& p_AppScreen,
-    struct MsgPort* p_pMsgPort, bool& p_bCancelRequested)
-  : WindowBase(p_AppScreen, p_pMsgPort),
+                               struct MsgPort* p_pMsgPort, 
+                               int& p_NumWindowsOpen, 
+                               bool& p_bCancelRequested)
+  : WindowBase(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
     m_bCancelRequested(p_bCancelRequested),
     m_pGadgetList(NULL),
     m_pDescriptionGadget(NULL),

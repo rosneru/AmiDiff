@@ -193,10 +193,15 @@ protected:
    *
    * @param p_pMsgPort
    * Message port which is used for this window. Can be shared
-   * with other windows-
+   * with other windows.
+   *
+   * @param p_NumWindowsOpen
+   * Reference to a counter variable. Will be increased at each
+   * successful opening and decreased at each closing of a window.
    *
    */
-  WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort);
+  WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
+             int& p_NumWindowsOpen);
 
   virtual ~WindowBase();
 
@@ -259,6 +264,7 @@ protected:
   struct Image* createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height);
 
 private:
+  int& m_NumWindowsOpen;
   bool m_bIsFixed;
   InitialPosition m_InitialPosition;
   ULONG m_WindowFlags;

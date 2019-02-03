@@ -15,11 +15,12 @@
 #include "FilesWindow.h"
 
 FilesWindow::FilesWindow(AppScreen& p_AppScreen,
-                         struct MsgPort* p_pMsgPort,
+                         struct MsgPort* p_pMsgPort, 
+                         int& p_NumWindowsOpen,
                          SimpleString& p_LeftFilePath,
                          SimpleString& p_RightFilePath,
                          const Command& p_CmdDiff)
-  : WindowBase(p_AppScreen, p_pMsgPort),
+  : WindowBase(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
     m_bFileRequestOpen(false),
     m_LeftFilePath(p_LeftFilePath),
     m_RightFilePath(p_RightFilePath),

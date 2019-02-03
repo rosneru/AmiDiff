@@ -16,10 +16,11 @@ class CmdQuit : public Command
 {
 public:
   virtual ~CmdQuit();
-  CmdQuit(bool& p_bExitRequested);
+  CmdQuit(bool& p_bExitAllowed, bool& p_bExitRequested);
   virtual void Execute() const;
 
 private:
+  bool& m_bExitAllowed;
   bool& m_bExitRequested;
 };
 

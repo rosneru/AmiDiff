@@ -13,9 +13,12 @@
 #include <libraries/dos.h>
 #include "WindowBase.h"
 
-WindowBase::WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort)
+WindowBase::WindowBase(AppScreen& p_AppScreen,
+                       struct MsgPort* p_pMsgPort,
+                       int& p_NumWindowsOpen)
   : m_AppScreen(p_AppScreen),
     m_pMsgPort(p_pMsgPort),
+    m_NumWindowsOpen(p_NumWindowsOpen),
     m_pWindow(NULL),
     m_bBorderless(false),
     m_bSmartRefresh(false),
@@ -166,6 +169,8 @@ bool WindowBase::Open(const APTR p_pMenuItemDisableAtOpen)
 
   ModifyIDCMP(m_pWindow, m_WindowIdcmp);
 
+  m_NumWindowsOpen++;
+
   if(m_pMenu == NULL)
   {
     // Opening successful, but at the moment there's no menu set to
@@ -176,7 +181,8 @@ bool WindowBase::Open(const APTR p_pMenuItemDisableAtOpen)
   // Set menu strip to the window
   if(m_pMenu->AttachToWindow(m_pWindow) == false)
   {
-    return false;
+    // TODO React somehow on this failing?
+    return true;
   }
 
   if(p_pMenuItemDisableAtOpen != NULL)
@@ -205,6 +211,7 @@ void WindowBase::Close()
   }
 
   closeWindowSafely();
+  m_NumWindowsOpen--;
 }
 
 bool WindowBase::IsOpen() const

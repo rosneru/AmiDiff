@@ -20,7 +20,8 @@ class ProgressWindow : public WindowBase
 {
 public:
   ProgressWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
-                 bool& p_bCancelRequested);
+                 int& p_NumWindowsOpen, bool& p_bCancelRequested);
+
   virtual ~ProgressWindow();
 
   void Refresh();

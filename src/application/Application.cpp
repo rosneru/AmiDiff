@@ -16,17 +16,19 @@ Application::Application(struct MsgPort* p_pMsgPortIDCMP,
     m_pMsgPortProgress(p_pMsgPortProgress),
     m_bCancelRequested(false),
     m_bExitRequested(false),
+    m_NumWindowsOpen(0),
     m_bExitAllowed(true),
     m_Screen(),
-    m_DiffWindow(m_Screen, m_pMsgPortIDCMP),
-    m_FilesWindow(m_Screen, m_pMsgPortIDCMP, m_LeftFilePath,
-                  m_RightFilePath, m_CmdDiff),
-    m_ProgressWindow(m_Screen, m_pMsgPortIDCMP, m_bCancelRequested),
+    m_DiffWindow(m_Screen, m_pMsgPortIDCMP, m_NumWindowsOpen),
+    m_FilesWindow(m_Screen, m_pMsgPortIDCMP, m_NumWindowsOpen,
+                  m_LeftFilePath, m_RightFilePath, m_CmdDiff),
+    m_ProgressWindow(m_Screen, m_pMsgPortIDCMP, m_NumWindowsOpen,
+                     m_bCancelRequested),
     m_DiffWorker(m_LeftFilePath, m_RightFilePath, m_DiffWindow,
                  m_FilesWindow, m_ProgressWindow, p_pMsgPortProgress,
                  m_bCancelRequested, m_bExitAllowed),
     m_CmdDiff(m_DiffWorker),
-    m_CmdQuit(m_bExitRequested),
+    m_CmdQuit(m_bExitAllowed, m_bExitRequested),
     m_CmdOpenFilesWindow(m_FilesWindow),
     m_Menu(m_Screen)
 {
@@ -222,15 +224,13 @@ void Application::intuiEventLoop()
             m_ProgressWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
           }
         }
-
-        if(!m_DiffWindow.IsOpen() && !m_FilesWindow.IsOpen())
-        {
-          // All windows are close: exit
-          m_bExitRequested = true;
-          break;
-        }
       }
     }
+
+    if(m_NumWindowsOpen < 1)
+    {
+      m_CmdQuit.Execute();
+    }
   }
-  while(!m_bExitRequested || !m_bExitAllowed);
+  while(!m_bExitRequested);
 }
