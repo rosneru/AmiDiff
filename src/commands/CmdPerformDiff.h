@@ -17,7 +17,7 @@ class CmdPerformDiff : public Command
 public:
   CmdPerformDiff(AmigaDiffFacade& p_DiffFacade);
   virtual ~CmdPerformDiff();
-  virtual void Execute();
+  virtual void Execute() const;
 
 private:
   AmigaDiffFacade&  m_DiffFacade;

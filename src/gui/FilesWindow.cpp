@@ -18,7 +18,7 @@ FilesWindow::FilesWindow(AppScreen& p_AppScreen,
                          struct MsgPort* p_pMsgPort,
                          SimpleString& p_LeftFilePath,
                          SimpleString& p_RightFilePath,
-                         Command& p_CmdDiff)
+                         const Command& p_CmdDiff)
   : WindowBase(p_AppScreen, p_pMsgPort),
     m_bFileRequestOpen(false),
     m_LeftFilePath(p_LeftFilePath),
@@ -63,7 +63,7 @@ void FilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool FilesWindow::Open(APTR p_pUserDataMenuItemToDisable)
+bool FilesWindow::Open(const APTR p_pUserDataMenuItemToDisable)
 {
   if(WindowBase::Open(p_pUserDataMenuItemToDisable) == false)
   {

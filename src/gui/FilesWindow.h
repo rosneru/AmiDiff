@@ -24,7 +24,7 @@ public:
               struct MsgPort* p_pMsgPort,
               SimpleString& p_LeftFilePath,
               SimpleString& p_RightFilePath,
-              Command& p_CmdDiff);
+              const Command& p_CmdDiff);
 
   virtual ~FilesWindow();
 
@@ -42,7 +42,7 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(APTR p_pMenuItemDisableAtOpen);
+  bool Open(const APTR p_pMenuItemDisableAtOpen);
 
   /**
    * Handles given IDCMP event.
@@ -54,7 +54,7 @@ public:
 private:
   SimpleString& m_LeftFilePath;
   SimpleString& m_RightFilePath;
-  Command& m_CmdDiff;
+  const Command& m_CmdDiff;
 
   bool m_bFileRequestOpen;
 

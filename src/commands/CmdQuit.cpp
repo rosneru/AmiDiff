@@ -11,7 +11,7 @@ CmdQuit::~CmdQuit()
 
 }
 
-void CmdQuit::Execute()
+void CmdQuit::Execute() const
 {
   m_bExitRequested = true;
 }

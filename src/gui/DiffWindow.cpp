@@ -86,7 +86,7 @@ void DiffWindow::Resized()
 
 }
 
-bool DiffWindow::Open(APTR p_pMenuItemDisableAtOpen)
+bool DiffWindow::Open(const APTR p_pMenuItemDisableAtOpen)
 {
   if(ScrollbarWindow::Open(p_pMenuItemDisableAtOpen) == false)
   {

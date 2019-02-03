@@ -178,7 +178,6 @@ File
 "oscottlibs/LinkedListNode.h"
 "model/Document.h"
 "commands/CmdPerformDiff.h"
-"commands/Command.h"
 "diffengine/DiffLine.h"
 "gui/AppScreen.h"
 "gui/WindowBase.h"
@@ -664,6 +663,7 @@ Section
 7
 File
 10 "AmigaDiff"
+"AmigaDiff"
 Storm Shell Project (Dependencies)
 "" ""
 ""

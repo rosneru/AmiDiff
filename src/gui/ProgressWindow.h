@@ -36,7 +36,7 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(APTR p_pMenuItemDisableAtOpen = NULL);
+  bool Open(const APTR p_pMenuItemDisableAtOpen = NULL);
 
   /**
    * Handles given IDCMP event.

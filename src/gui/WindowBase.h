@@ -48,7 +48,7 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  virtual bool Open(APTR p_pMenuItemDisableAtOpen) = 0;
+  virtual bool Open(const APTR p_pMenuItemDisableAtOpen) = 0;
 
   /**
    * Closes the window.

@@ -98,7 +98,7 @@ ScrollbarWindow::~ScrollbarWindow()
 
 
 
-bool ScrollbarWindow::Open(APTR p_pMenuItemDisableAtOpen)
+bool ScrollbarWindow::Open(const APTR p_pMenuItemDisableAtOpen)
 {
   if(WindowBase::Open(p_pMenuItemDisableAtOpen) == false)
   {

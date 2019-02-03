@@ -68,7 +68,7 @@ void TextWindow::Resized()
   }
 }
 
-bool TextWindow::Open(APTR p_pMenuItemDisableAtOpen)
+bool TextWindow::Open(const APTR p_pMenuItemDisableAtOpen)
 {
   if(ScrollbarWindow::Open(p_pMenuItemDisableAtOpen) == false)
   {

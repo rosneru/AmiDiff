@@ -29,7 +29,7 @@ public:
    * @returns
    * false if opening fails
    */
-  virtual bool Open(APTR p_pMenuItemDisableAtOpen = NULL);
+  virtual bool Open(const APTR p_pMenuItemDisableAtOpen = NULL);
 
   /**
    * Handles given IDCMP event.
@@ -215,21 +215,21 @@ private:
   struct Gadget* m_pDownArrowButton;  ///> v-scrollbar down button
 
   /**
-   * Browses through all IDCMP_IDCMPUPDATE messages for the given 
+   * Browses through all IDCMP_IDCMPUPDATE messages for the given
    * proportional gadget (BOOPSI) which are addressed to this window.
-   * It deletes each of this messages by replying it to intuition. 
-   * Finally the given value argument variable is set to the last 
+   * It deletes each of this messages by replying it to intuition.
+   * Finally the given value argument variable is set to the last
    * found top value.
-   * 
+   *
    * This should be used on proportional gadgets to get only the latest
    * top value and delete all previous messages of this kind. Usefull
    * on slow systems to not get flooded by messages for this gadget.
-   * 
+   *
    * @param p_GadgetId of the BOOPSI gadget to browse for messages
-   * 
-   * @param If one or more IDCMP_IDCMPUPDATE messages are found while 
-   * browsing, the tag value of the latest found message is written to 
-   * this given argument. If no appropriate message is found the 
+   *
+   * @param If one or more IDCMP_IDCMPUPDATE messages are found while
+   * browsing, the tag value of the latest found message is written to
+   * this given argument. If no appropriate message is found the
    * argument variable will not be overwritten.
    */
   void extractLatestPropGadTopValue(GadgetId p_GadgetId, size_t& p_LatestValue);

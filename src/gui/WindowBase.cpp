@@ -40,7 +40,7 @@ WindowBase::~WindowBase()
   Close();
 }
 
-bool WindowBase::Open(APTR p_pMenuItemDisableAtOpen)
+bool WindowBase::Open(const APTR p_pMenuItemDisableAtOpen)
 {
   m_pMenuItemDisableAtOpen = p_pMenuItemDisableAtOpen;
 

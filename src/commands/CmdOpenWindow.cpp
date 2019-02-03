@@ -10,7 +10,7 @@ CmdOpenWindow::~CmdOpenWindow()
 {
 }
 
-void CmdOpenWindow::Execute()
+void CmdOpenWindow::Execute() const
 {
   if(m_Window.IsOpen())
   {
@@ -22,5 +22,5 @@ void CmdOpenWindow::Execute()
   // contains a pointer to this command. If found this menu item will
   // then be disabled at window opening time and enabled when the
   // window is closed.
-  m_Window.Open(this);
+  m_Window.Open((APTR)this);
 }

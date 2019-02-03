@@ -58,7 +58,7 @@ void ProgressWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool ProgressWindow::Open(APTR p_pUserDataMenuItemToDisable)
+bool ProgressWindow::Open(const APTR p_pUserDataMenuItemToDisable)
 {
   if(WindowBase::Open(p_pUserDataMenuItemToDisable) == false)
   {
@@ -293,5 +293,4 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
   GT_SetGadgetAttrs(m_pRightFileStringGadget, m_pWindow, NULL,
     GTNM_Number, p_pProgressMsg->progress,
     TAG_END);
-
 }

@@ -19,7 +19,7 @@ class CmdOpenWindow : public Command
 public:
   CmdOpenWindow(WindowBase& p_Window);
   virtual ~CmdOpenWindow();
-  virtual void Execute();
+  virtual void Execute() const;
 
 private:
   WindowBase& m_Window;
