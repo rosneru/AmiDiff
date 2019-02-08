@@ -22,13 +22,12 @@ ProgressWindow::ProgressWindow(AppScreen& p_AppScreen,
   : WindowBase(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
     m_bCancelRequested(p_bCancelRequested),
     m_pGadgetList(NULL),
-    m_pDescriptionGadget(NULL),
-    m_pProgressGadget(NULL),
-    m_pBtnCancel(NULL),
-    m_ProgressGadgetLeft(NULL),
-    m_ProgressGadgetTop(NULL),
-    m_ProgressGadgetWidth(NULL),
-    m_ProgressGadgetHeight(NULL),
+    m_pLabelDescription(NULL),
+    m_pButtonCancel(NULL),
+    m_ProgressBarLeft(NULL),
+    m_ProgressBarTop(NULL),
+    m_ProgressBarWidth(NULL),
+    m_ProgressBarHeight(NULL),
     m_pProgressDescription(NULL)
 {
 
@@ -42,9 +41,8 @@ ProgressWindow::~ProgressWindow()
   {
     FreeGadgets(m_pGadgetList);
     m_pGadgetList = NULL;
-    m_pDescriptionGadget = NULL;
-    m_pProgressGadget = NULL;
-    m_pBtnCancel = NULL;
+    m_pLabelDescription = NULL;
+    m_pButtonCancel = NULL;
   }
 }
 
@@ -66,9 +64,18 @@ bool ProgressWindow::Open(const APTR p_pUserDataMenuItemToDisable)
     return false;
   }
 
+  // Draw a bevel box around the area where the progress bar will be
+  DrawBevelBox(m_pWindow->RPort,
+    m_ProgressBarLeft, m_ProgressBarTop,
+    m_ProgressBarWidth, m_ProgressBarHeight,
+    GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
+    GTBB_Recessed, TRUE,
+    TAG_DONE);
+
+
   // Enable the Cancel button in case it has been disabled the last
   // time the window was open
-  GT_SetGadgetAttrs(m_pBtnCancel, IntuiWindow(), NULL,
+  GT_SetGadgetAttrs(m_pButtonCancel, IntuiWindow(), NULL,
     GA_Disabled, FALSE,
     TAG_END);
 
@@ -120,40 +127,33 @@ void ProgressWindow::initialize()
   newGadget.ng_GadgetID   = GID_Description;
   newGadget.ng_Flags      = 0;
 
-  m_pDescriptionGadget = CreateGadget(TEXT_KIND,
+  m_pLabelDescription = CreateGadget(TEXT_KIND,
     pContext, &newGadget,
     TAG_END);
 
-  // Creating the string gadget to display the progress value
+  // Preparing the newGadget struct for the progress value gadget
   newGadget.ng_LeftEdge   = left;
   newGadget.ng_TopEdge    += buttonHeight + vSpace;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
-  newGadget.ng_GadgetText = NULL;
-  newGadget.ng_GadgetID   = GID_Progress;
   newGadget.ng_Flags      = 0;
 
-  m_pProgressGadget = CreateGadget(NUMBER_KIND,
-    m_pDescriptionGadget, &newGadget,
-    GTNM_Format, "%ld %%",
-    GTNM_Border, TRUE,
-    GTNM_Justification, GTJ_CENTER,
-    TAG_END);
+  // But actually the "gadget" is just a BevelBox which is drawn after
+  // window opening. So just remembering the progress gadget dimensions
+  // as they are needed later
+  m_ProgressBarLeft = newGadget.ng_LeftEdge;
+  m_ProgressBarTop = newGadget.ng_TopEdge;
+  m_ProgressBarWidth = newGadget.ng_Width;
+  m_ProgressBarHeight = newGadget.ng_Height;
 
-  // Remembering the progress gadget dimensions as we need them later
-  m_ProgressGadgetLeft = newGadget.ng_LeftEdge;
-  m_ProgressGadgetTop = newGadget.ng_TopEdge;
-  m_ProgressGadgetWidth = newGadget.ng_Width;
-  m_ProgressGadgetHeight = newGadget.ng_Height;
-
-  // Creating the Cancel button
+  // Creating the Cancel button in right of the "progress gadget"
   newGadget.ng_LeftEdge   = right - buttonWidth;
   newGadget.ng_Width      = buttonWidth;
   newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
-  newGadget.ng_GadgetID   = GID_BtnCancel;
+  newGadget.ng_GadgetID   = GID_ButtonCancel;
 
-  m_pBtnCancel = CreateGadget(BUTTON_KIND,
-    m_pProgressGadget, &newGadget, GT_Underscore, '_', TAG_END);
+  m_pButtonCancel = CreateGadget(BUTTON_KIND,
+    m_pLabelDescription, &newGadget, GT_Underscore, '_', TAG_END);
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
@@ -191,14 +191,14 @@ bool ProgressWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
     case IDCMP_GADGETUP:
     {
       struct Gadget* pGadget = (struct Gadget*) p_IAddress;
-      if(pGadget->GadgetID == GID_BtnCancel)
+      if(pGadget->GadgetID == GID_ButtonCancel)
       {
         // Set the flag which will stop background process as soon as
         // possible
         m_bCancelRequested = true;
 
         // Disable the Cancel button
-        GT_SetGadgetAttrs(m_pBtnCancel, IntuiWindow(), NULL,
+        GT_SetGadgetAttrs(m_pButtonCancel, IntuiWindow(), NULL,
           GA_Disabled, TRUE,
           TAG_END);
       }
@@ -237,7 +237,7 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
   int progrWidth = 1;
   if(p_pProgressMsg->progress > 0)
   {
-    progrWidth = (m_ProgressGadgetWidth - 2) *
+    progrWidth = (m_ProgressBarWidth - 2) *
       p_pProgressMsg->progress / 100;
   }
 
@@ -245,29 +245,36 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
 
 /*
   printf("Fill at (%d, %d), width = %d, height = %d\n",
-           m_ProgressGadgetLeft + 2,
-           m_ProgressGadgetTop + 2,
+           m_ProgressBarLeft + 2,
+           m_ProgressBarTop + 2,
            progrWidth,
-           m_ProgressGadgetHeight - 4);
+           m_ProgressBarHeight - 4);
 */
 
+  // Set foreground color for document painting
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Fill());
+
   RectFill(m_pWindow->RPort,
-           m_ProgressGadgetLeft + 1,
-           m_ProgressGadgetTop + 1,
-           m_ProgressGadgetLeft + progrWidth,
-           m_ProgressGadgetTop + m_ProgressGadgetHeight - 2);
+           m_ProgressBarLeft + 1,
+           m_ProgressBarTop + 1,
+           m_ProgressBarLeft + progrWidth,
+           m_ProgressBarTop + m_ProgressBarHeight - 2);
 
   if( p_pProgressMsg != NULL &&
      (p_pProgressMsg->pDescription != m_pProgressDescription))
   {
     m_pProgressDescription = p_pProgressMsg->pDescription;
 
-    GT_SetGadgetAttrs(m_pDescriptionGadget, m_pWindow, NULL,
+    GT_SetGadgetAttrs(m_pLabelDescription, m_pWindow, NULL,
       GTTX_Text, m_pProgressDescription,
       TAG_END);
   }
 
+/*
   GT_SetGadgetAttrs(m_pProgressGadget, m_pWindow, NULL,
     GTNM_Number, p_pProgressMsg->progress,
     TAG_END);
+
+  TODO replace by DrawText
+*/
 }

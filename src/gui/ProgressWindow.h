@@ -64,21 +64,19 @@ private:
   enum GadgetId
   {
     GID_Description,
-    GID_Progress,
-    GID_BtnCancel,
+    GID_ButtonCancel,
   };
 
   WORD m_FontHeight;  ///> Height of current text font
 
   struct Gadget* m_pGadgetList;
-  struct Gadget* m_pDescriptionGadget;
-  struct Gadget* m_pProgressGadget;
-  struct Gadget* m_pBtnCancel;
+  struct Gadget* m_pLabelDescription;
+  struct Gadget* m_pButtonCancel;
 
-  int m_ProgressGadgetLeft;
-  int m_ProgressGadgetTop;
-  int m_ProgressGadgetWidth;
-  int m_ProgressGadgetHeight;
+  int m_ProgressBarLeft;
+  int m_ProgressBarTop;
+  int m_ProgressBarWidth;
+  int m_ProgressBarHeight;
 
   const char* m_pProgressDescription;
   bool& m_bCancelRequested;

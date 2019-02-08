@@ -144,6 +144,22 @@ LONG AmigaDiffPens::HighlightedText()  const
   return m_pAppScreen->IntuiDrawInfo()->dri_Pens[HIGHLIGHTTEXTPEN];
 }
 
+LONG AmigaDiffPens::Fill()  const
+{
+  if(!m_bInitialized)
+  {
+    return 3;
+  }
+
+  if(m_pAppScreen == NULL || m_pAppScreen->IntuiDrawInfo() == NULL)
+  {
+    return 3;
+  }
+
+  return m_pAppScreen->IntuiDrawInfo()->dri_Pens[FILLPEN];
+}
+
+
 LONG AmigaDiffPens::Red() const
 {
   return m_RedPen;

@@ -33,6 +33,7 @@ public:
   LONG Background() const;
   LONG Text() const;
   LONG HighlightedText() const;
+  LONG Fill() const;
 
   LONG Red() const;
   LONG Yellow() const;
