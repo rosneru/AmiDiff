@@ -47,6 +47,12 @@ public:
    */
   bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
+  /**
+   * Handles the given progress event.
+   *
+   * Prints the current pDescription text of given p_pProgressMsg and
+   * draws a progress bar representing the actual percentual value.
+   */
   void HandleProgress(struct WorkerProgressMsg* p_pProgressMsg);
 
 
@@ -68,6 +74,11 @@ private:
   struct Gadget* m_pDescriptionGadget;
   struct Gadget* m_pProgressGadget;
   struct Gadget* m_pBtnCancel;
+
+  int m_ProgressGadgetLeft;
+  int m_ProgressGadgetTop;
+  int m_ProgressGadgetWidth;
+  int m_ProgressGadgetHeight;
 
   const char* m_pProgressDescription;
   bool& m_bCancelRequested;

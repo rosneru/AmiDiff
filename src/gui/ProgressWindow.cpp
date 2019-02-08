@@ -25,6 +25,10 @@ ProgressWindow::ProgressWindow(AppScreen& p_AppScreen,
     m_pDescriptionGadget(NULL),
     m_pProgressGadget(NULL),
     m_pBtnCancel(NULL),
+    m_ProgressGadgetLeft(NULL),
+    m_ProgressGadgetTop(NULL),
+    m_ProgressGadgetWidth(NULL),
+    m_ProgressGadgetHeight(NULL),
     m_pProgressDescription(NULL)
 {
 
@@ -136,6 +140,12 @@ void ProgressWindow::initialize()
     GTNM_Justification, GTJ_CENTER,
     TAG_END);
 
+  // Remembering the progress gadget dimensions as we need them later
+  m_ProgressGadgetLeft = newGadget.ng_LeftEdge;
+  m_ProgressGadgetTop = newGadget.ng_TopEdge;
+  m_ProgressGadgetWidth = newGadget.ng_Width;
+  m_ProgressGadgetHeight = newGadget.ng_Height;
+
   // Creating the Cancel button
   newGadget.ng_LeftEdge   = right - buttonWidth;
   newGadget.ng_Width      = buttonWidth;
@@ -224,7 +234,28 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
     return;
   }
 
-  RectFill(m_pWindow->RPort, 10, 10, 60, 60);
+  int progrWidth = 1;
+  if(p_pProgressMsg->progress > 0)
+  {
+    progrWidth = (m_ProgressGadgetWidth - 2) *
+      p_pProgressMsg->progress / 100;
+  }
+
+  //RectFill(m_pWindow->RPort, 10, 10, 60, 60);
+
+/*
+  printf("Fill at (%d, %d), width = %d, height = %d\n",
+           m_ProgressGadgetLeft + 2,
+           m_ProgressGadgetTop + 2,
+           progrWidth,
+           m_ProgressGadgetHeight - 4);
+*/
+
+  RectFill(m_pWindow->RPort,
+           m_ProgressGadgetLeft + 1,
+           m_ProgressGadgetTop + 1,
+           m_ProgressGadgetLeft + progrWidth,
+           m_ProgressGadgetTop + m_ProgressGadgetHeight - 2);
 
   if( p_pProgressMsg != NULL &&
      (p_pProgressMsg->pDescription != m_pProgressDescription))
