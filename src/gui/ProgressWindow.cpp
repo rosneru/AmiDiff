@@ -79,6 +79,14 @@ bool ProgressWindow::Open(const APTR p_pUserDataMenuItemToDisable)
     GA_Disabled, FALSE,
     TAG_END);
 
+  // Initialize the intui text structure for progress value display
+  m_ProgressValueIText.FrontPen  = m_AppScreen.Pens().HighlightedText();
+  m_ProgressValueIText.BackPen   = m_AppScreen.Pens().Background();
+  m_ProgressValueIText.DrawMode  = JAM1;
+  //m_ProgressValueIText.ITextFont = &m_TextAttr;
+  m_ProgressValueIText.NextText  = NULL;
+  m_ProgressValueIText.TopEdge   = m_ProgressBarTop;
+
   return true;
 }
 
@@ -251,14 +259,28 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
            m_ProgressBarHeight - 4);
 */
 
-  // Set foreground color for document painting
+  // Set color to blue for painting the progress bar
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Fill());
 
+  // Fill the progress bar area
   RectFill(m_pWindow->RPort,
-           m_ProgressBarLeft + 1,
+           m_ProgressBarLeft + 2,
            m_ProgressBarTop + 1,
-           m_ProgressBarLeft + progrWidth,
+           m_ProgressBarLeft + progrWidth - 3,
            m_ProgressBarTop + m_ProgressBarHeight - 2);
+
+  // Set color to background for painting the grey background of the
+  // yet uncovered area of the progress bar
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+
+  // Fill the yet uncovered progress bar area with the background
+  // color. This is necessary to clear the formerly printed text.
+  RectFill(m_pWindow->RPort,
+           m_ProgressBarLeft + progrWidth - 2,
+           m_ProgressBarTop + 1,
+           m_ProgressBarLeft + m_ProgressBarWidth - 3,
+           m_ProgressBarTop + m_ProgressBarHeight - 2);
+
 
   if( p_pProgressMsg != NULL &&
      (p_pProgressMsg->pDescription != m_pProgressDescription))
@@ -270,11 +292,14 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
       TAG_END);
   }
 
-/*
-  GT_SetGadgetAttrs(m_pProgressGadget, m_pWindow, NULL,
-    GTNM_Number, p_pProgressMsg->progress,
-    TAG_END);
+  SimpleString progrText = p_pProgressMsg->progress;
+  progrText += " %";
 
-  TODO replace by DrawText
-*/
+  m_ProgressValueIText.IText = (UBYTE*) progrText.C_str();
+  m_ProgressValueIText.LeftEdge  = m_ProgressBarLeft;
+
+  int textLength = IntuiTextLength(&m_ProgressValueIText);
+  int x = (m_ProgressBarWidth - textLength) / 2;
+
+  PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 2);
 }

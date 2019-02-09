@@ -60,10 +60,6 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
       m_bCancelRequested = false;
       return false;
     }
-
-    // TODO remove after implementation of ProgressWindow
-    Delay(1);
-
   }
 
   //

@@ -78,6 +78,7 @@ private:
   int m_ProgressBarWidth;
   int m_ProgressBarHeight;
 
+  struct IntuiText m_ProgressValueIText;
   const char* m_pProgressDescription;
   bool& m_bCancelRequested;
 
