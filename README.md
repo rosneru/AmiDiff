@@ -1,17 +1,20 @@
 # README #
 
-This is me learning the basics of AMIGA programming.
+Development of a graphical file compare / diff viewer for AmigaOS3.0+.
 
-Maybe someday this develops into a graphical diff tool for OS2.04 and 
-above.
-
-After cloning this repository the needed submodules should be initialized:
+After cloning the needed submodules should be initialized:
 
     git submodule init
     git submodule update
 
-### Development environment ###
+
+## Development environment ##
 
 * Amiga with OS3.9
 * NDK for AmigaOS 3.9
 * StormC 4
+
+The project file src/ADiffView.¶ can be loaded with StormC4. 
+
+In StormC4/gcc mode it should compile without errors and just a few 
+warnings..
