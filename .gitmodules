@@ -1,3 +1,6 @@
 [submodule "oscottlibs"]
 	path = src/oscottlibs
 	url = ../oscottlibs.git
+[submodule "src/oscottlibs"]
+	path = src/oscottlibs
+	url = https://github.com/rosneru/oscottlibs
