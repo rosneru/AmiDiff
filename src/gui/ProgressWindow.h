@@ -9,12 +9,10 @@
 #include "WindowBase.h"
 
 /**
- * Class for the window to open the two files on which the diff will
- * be performed.
- *
+ * Window to display a progress bar
  *
  * @author Uwe Rosner
- * @date 21/10/2018
+ * @date 02/02/2019
  */
 class ProgressWindow : public WindowBase
 {

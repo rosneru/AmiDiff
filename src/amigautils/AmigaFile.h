@@ -70,7 +70,7 @@ public:
    * calling this method.
    *
    * NOTE: Changes the file handle position! After this operation the
-   * file handle points to the start of tze file.
+   * file handle points to the start of the file.
    *
    * @returns
    * File size in bytes, 0 if not opened.
