@@ -83,9 +83,9 @@ bool ProgressWindow::Open(const APTR p_pUserDataMenuItemToDisable)
   m_ProgressValueIText.FrontPen  = m_AppScreen.Pens().HighlightedText();
   m_ProgressValueIText.BackPen   = m_AppScreen.Pens().Background();
   m_ProgressValueIText.DrawMode  = JAM1;
-  //m_ProgressValueIText.ITextFont = &m_TextAttr;
   m_ProgressValueIText.NextText  = NULL;
-  m_ProgressValueIText.TopEdge   = m_ProgressBarTop;
+  m_ProgressValueIText.LeftEdge  = m_ProgressBarLeft + 3;
+  m_ProgressValueIText.TopEdge   = m_ProgressBarTop + 3;
 
   return true;
 }
@@ -249,34 +249,24 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
       p_pProgressMsg->progress / 100;
   }
 
-  //RectFill(m_pWindow->RPort, 10, 10, 60, 60);
-
-/*
-  printf("Fill at (%d, %d), width = %d, height = %d\n",
-           m_ProgressBarLeft + 2,
-           m_ProgressBarTop + 2,
-           progrWidth,
-           m_ProgressBarHeight - 4);
-*/
-
-  // Set color to blue for painting the progress bar
+  // Set color to <blue> for painting the progress bar
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Fill());
 
   // Fill the progress bar area
   RectFill(m_pWindow->RPort,
            m_ProgressBarLeft + 2,
            m_ProgressBarTop + 1,
-           m_ProgressBarLeft + progrWidth - 3,
+           m_ProgressBarLeft + progrWidth - 1,
            m_ProgressBarTop + m_ProgressBarHeight - 2);
 
-  // Set color to background for painting the grey background of the
+  // Set color to <background> for painting the grey background of the
   // yet uncovered area of the progress bar
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
   // Fill the yet uncovered progress bar area with the background
   // color. This is necessary to clear the formerly printed text.
   RectFill(m_pWindow->RPort,
-           m_ProgressBarLeft + progrWidth - 2,
+           m_ProgressBarLeft + 2 + progrWidth,
            m_ProgressBarTop + 1,
            m_ProgressBarLeft + m_ProgressBarWidth - 3,
            m_ProgressBarTop + m_ProgressBarHeight - 2);
@@ -296,10 +286,9 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
   progrText += " %";
 
   m_ProgressValueIText.IText = (UBYTE*) progrText.C_str();
-  m_ProgressValueIText.LeftEdge  = m_ProgressBarLeft;
 
   int textLength = IntuiTextLength(&m_ProgressValueIText);
   int x = (m_ProgressBarWidth - textLength) / 2;
 
-  PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 2);
+  PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 0);
 }

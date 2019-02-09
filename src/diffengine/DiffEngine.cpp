@@ -1,7 +1,5 @@
 #include "DiffEngine.h"
 
-
-
 DiffEngine::DiffEngine(bool& p_bCancelRequested)
   : m_bCancelRequested(p_bCancelRequested),
     m_pProgressReporter(NULL)
