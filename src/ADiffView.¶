@@ -116,6 +116,12 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "amigautils/Request.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/Request.o" "objects_debug/Request.debug"
+""
+1 1
+File
 1 "amigautils/StopWatch.cpp"
 "amigautils/StopWatch.cpp"
 "amigautils/StopWatch.h"
@@ -433,6 +439,12 @@ Storm Shell Project (Dependencies)
 File
 2 "amigautils/AslFileRequest.h"
 "amigautils/AslFileRequest.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "amigautils/Request.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

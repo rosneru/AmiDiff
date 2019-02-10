@@ -38,11 +38,11 @@
 #include <proto/dos.h>
 #include <proto/exec.h>
 #include <proto/icon.h>
-#include <proto/intuition.h>
 #include <workbench/startup.h>
 #include <workbench/workbench.h>
 
 #include "Application.h"
+#include "Request.h"
 #include "SimpleString.h"
 
 
@@ -68,10 +68,10 @@
  * from Workbench or CLI.
  */
 void exctractArgs(int argc, char **argv,
-  SimpleString& p_PubScreenName,
-  bool& p_bDoNotAsk,
-  SimpleString& p_LeftFilePath,
-  SimpleString& p_RightFilePath);
+                  SimpleString& p_PubScreenName,
+                  bool& p_bDoNotAsk,
+                  SimpleString& p_LeftFilePath,
+                  SimpleString& p_RightFilePath);
 
 
 /**
@@ -83,10 +83,13 @@ extern struct IntuitionBase* IntuitionBase;
 
 int main(int argc, char **argv)
 {
+  Request request;
+
   // Check if the OS version is at least v39 / OS 3.0; return otherwise
   if(IntuitionBase->LibNode.lib_Version < 39)
   {
-    warnRequest("This program needs at least OS 3.0 / v39 to run.");
+    request.Show("This program needs at least OS 3.0 / v39 to run.",
+                 "Ok");
     return 20;
   }
 
@@ -106,14 +109,14 @@ int main(int argc, char **argv)
   struct MsgPort* pMsgPortIDCMP = CreateMsgPort();
   if(pMsgPortIDCMP == NULL)
   {
-    warnRequest("Error: Can't create idcmp message port.");
+    request.Show("Error: Can't create idcmp message port.", "Ok");
     return 30;
   }
 
   struct MsgPort* pMsgPortProgress = CreateMsgPort();
   if(pMsgPortProgress == NULL)
   {
-    warnRequest("Error: Can't create progress message port.");
+    request.Show("Error: Can't create progress message port.", "Ok");
     DeleteMsgPort(pMsgPortIDCMP);
     return 30;
   }
@@ -146,10 +149,10 @@ void wbmain(struct WBStartup* wb)
 }
 
 void exctractArgs(int argc, char **argv,
-  SimpleString& p_PubScreenName,
-  bool& p_bDoNotAsk,
-  SimpleString& p_LeftFilePath,
-  SimpleString& p_RightFilePath)
+                  SimpleString& p_PubScreenName,
+                  bool& p_bDoNotAsk,
+                  SimpleString& p_LeftFilePath,
+                  SimpleString& p_RightFilePath)
 {
   if(argc == 0)
   {
@@ -291,49 +294,4 @@ void exctractArgs(int argc, char **argv,
 
     FreeArgs(pReadArgs);
   }
-}
-
-void warnRequest(SimpleString p_Message)
-{
-  size_t iTextSize = sizeof(struct IntuiText);
-
-  struct IntuiText* pBodyText = (struct IntuiText*)
-    AllocMem(iTextSize, MEMF_CLEAR);
-
-  if(pBodyText == NULL)
-  {
-    return;
-  }
-
-  struct IntuiText* pButtonText = (struct IntuiText*)
-    AllocMem(iTextSize, MEMF_CLEAR);
-
-  if(pButtonText == NULL)
-  {
-    FreeMem(pBodyText, iTextSize);
-    return;
-  }
-
-  SimpleString bodyStr = p_Message;
-  pBodyText->FrontPen  = 1;
-  pBodyText->BackPen   = 0;
-  pBodyText->DrawMode  = JAM2;
-  pBodyText->NextText  = NULL;
-  pBodyText->TopEdge   = 10;
-  pBodyText->LeftEdge  = 10;
-  pBodyText->IText = (UBYTE*) bodyStr.C_str();
-
-  SimpleString buttonStr = "Ok";
-  pButtonText->FrontPen  = 1;
-  pButtonText->BackPen   = 0;
-  pButtonText->DrawMode  = JAM2;
-  pButtonText->NextText  = NULL;
-  pButtonText->TopEdge   = 10;
-  pButtonText->LeftEdge  = 10;
-  pButtonText->IText = (UBYTE*) buttonStr.C_str();
-
-  AutoRequest(NULL, pBodyText, NULL, pButtonText, NULL, NULL, 180, 80);
-
-  FreeMem(pBodyText, iTextSize);
-  FreeMem(pButtonText, iTextSize);
 }
