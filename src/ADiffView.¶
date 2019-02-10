@@ -116,9 +116,9 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "amigautils/Request.cpp"
+1 "amigautils/MessageBox.cpp"
 Storm Shell Project (Dependencies)
-"objects_debug/Request.o" "objects_debug/Request.debug"
+"objects_debug/MessageBox.o" "objects_debug/MessageBox.debug"
 ""
 1 1
 File
@@ -444,7 +444,7 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "amigautils/Request.h"
+2 "amigautils/MessageBox.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

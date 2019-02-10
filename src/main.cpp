@@ -42,7 +42,7 @@
 #include <workbench/workbench.h>
 
 #include "Application.h"
-#include "Request.h"
+#include "MessageBox.h"
 #include "SimpleString.h"
 
 
@@ -77,13 +77,13 @@ void exctractArgs(int argc, char **argv,
 /**
  * Displays a warn request with the given message
  */
-void warnRequest(SimpleString p_Message);
+void warnMessageBox(SimpleString p_Message);
 
 extern struct IntuitionBase* IntuitionBase;
 
 int main(int argc, char **argv)
 {
-  Request request;
+  MessageBox request;
 
   // Check if the OS version is at least v39 / OS 3.0; return otherwise
   if(IntuitionBase->LibNode.lib_Version < 39)

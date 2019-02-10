@@ -1,5 +1,5 @@
-#ifndef REQUEST_H
-#define REQUEST_H
+#ifndef MESSAGE_BOX_H
+#define MESSAGE_BOX_H
 
 #include <intuition/intuition.h>
 #include "SimpleString.h"
@@ -10,11 +10,11 @@
  * @author Uwe Rosner
  * @date 18/10/2018
  */
-class Request
+class MessageBox
 {
 public:
-  Request();
-  virtual ~Request();
+  MessageBox();
+  virtual ~MessageBox();
 
   void Show(struct Window* p_pWindow,
             const SimpleString& p_Message,

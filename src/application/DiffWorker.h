@@ -36,10 +36,6 @@ public:
 
   virtual ~DiffWorker();
 
-  const SimpleString& ErrorText() const;
-  const SimpleString& ElapsedText() const;
-
-
   /**
    * Performs the diff using LeftFilePath and RightFilePath as input
    * files. After the the diff is successfully created, the resulting
@@ -83,13 +79,15 @@ private:
   DiffDocument* m_pLeftDiffDocument;
   DiffDocument* m_pRightDiffDocument;
 
-  SimpleString m_ErrorText;   ///> Information about last error
-
   StopWatch m_StopWatch;
-  SimpleString m_ElapsedText; ///> Information about elapsed times
 
   void disposeDocuments();
 
+  /**
+   * Implemented abstract method from BackgroundWorker.
+   *
+   * Here the diff is calculated, the display window opened etc.
+   */
   void doWork();
 
   /**

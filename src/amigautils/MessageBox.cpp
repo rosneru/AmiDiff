@@ -1,8 +1,8 @@
 #include <proto/exec.h>
 #include <proto/intuition.h>
-#include "Request.h"
+#include "MessageBox.h"
 
-Request::Request()
+MessageBox::MessageBox()
   :  m_pBodyText(NULL),
      m_pButtonText(NULL)
 {
@@ -24,7 +24,7 @@ Request::Request()
   m_pButtonText->NextText  = NULL;
 }
 
-Request::~Request()
+MessageBox::~MessageBox()
 {
   if(m_pBodyText != NULL)
   {
@@ -39,7 +39,7 @@ Request::~Request()
   }
 }
 
-void Request::Show(struct Window* p_pWindow,
+void MessageBox::Show(struct Window* p_pWindow,
                    const SimpleString& p_Message,
                    const SimpleString& p_ButtonText)
 {
@@ -50,7 +50,7 @@ void Request::Show(struct Window* p_pWindow,
               180, 80);
 }
 
-void Request::Show(const SimpleString& p_Message,
+void MessageBox::Show(const SimpleString& p_Message,
                    const SimpleString& p_ButtonText)
 {
   Show(NULL, p_Message, p_ButtonText);

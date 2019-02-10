@@ -1,14 +1,15 @@
+#include "MessageBox.h"
 #include "DiffEngine.h"
 #include "DiffWorker.h"
 
 DiffWorker::DiffWorker(SimpleString& p_LeftFilePath,
-                                 SimpleString& p_RightFilePath,
-                                 DiffWindow& p_DiffWindow,
-                                 FilesWindow& p_FilesWindow,
-                                 ProgressWindow& p_ProgressWindow,
-                                 struct MsgPort* p_pProgressPort,
-                                 bool& p_bCancelRequested,
-                                 bool& p_bExitAllowed)
+                       SimpleString& p_RightFilePath,
+                       DiffWindow& p_DiffWindow,
+                       FilesWindow& p_FilesWindow,
+                       ProgressWindow& p_ProgressWindow,
+                       struct MsgPort* p_pProgressPort,
+                       bool& p_bCancelRequested,
+                       bool& p_bExitAllowed)
   : BackgroundWorker(p_pProgressPort),
     m_LeftFilePath(p_LeftFilePath),
     m_RightFilePath(p_RightFilePath),
@@ -32,18 +33,9 @@ DiffWorker::~DiffWorker()
   disposeDocuments();
 }
 
-const SimpleString& DiffWorker::ErrorText() const
-{
-  return m_ErrorText;
-}
-
-const SimpleString& DiffWorker::ElapsedText() const
-{
-  return m_ElapsedText;
-}
-
 bool DiffWorker::Diff()
 {
+  MessageBox request;
   m_bCancelRequested = false;
   m_bExitAllowed = false;
 
@@ -51,7 +43,7 @@ bool DiffWorker::Diff()
 
   if(m_LeftFilePath.Length() == 0)
   {
-    m_ErrorText = "Left file name not set.";
+    request.Show("Error: Left file name not set.", "Ok");
 
     workDone();
     m_bExitAllowed = true;
@@ -60,7 +52,7 @@ bool DiffWorker::Diff()
 
   if(m_RightFilePath.Length() == 0)
   {
-    m_ErrorText = "Right file name not set.";
+    request.Show("Error: Right file name not set.", "Ok");
 
     workDone();
     m_bExitAllowed = true;
@@ -92,8 +84,8 @@ bool DiffWorker::Diff()
 
   if(m_LeftSrcPartition.PreProcess(m_LeftFilePath) == false)
   {
-    m_ErrorText = "Error while pre-processing the file '";
-    m_ErrorText += m_LeftFilePath + "'\n Maybe a read error?";
+    request.Show(m_ProgressWindow.IntuiWindow(),
+                 "Error: Can't read left file.", "Ok");
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
@@ -115,8 +107,8 @@ bool DiffWorker::Diff()
 
   if(m_RightSrcPartition.PreProcess(m_RightFilePath) == false)
   {
-    m_ErrorText = "Error while pre-processing the file \n'";
-    m_ErrorText += m_RightFilePath + "'\n Maybe a read error?";
+    request.Show(m_ProgressWindow.IntuiWindow(),
+                 "Error: Can't read right file.", "Ok");
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
@@ -148,7 +140,8 @@ bool DiffWorker::Diff()
 
   if(!diffOk)
   {
-    m_ErrorText = "Error while performing the diff.";
+    request.Show(m_ProgressWindow.IntuiWindow(),
+                 "Error while performing the diff.", "Ok");
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
@@ -158,17 +151,15 @@ bool DiffWorker::Diff()
     return false;
   }
 
-  m_ErrorText = "";
-
-  m_ElapsedText = "Diff performed in ";
-  m_ElapsedText += timeSummary;
-  m_ElapsedText += " ms. ( ";
-  m_ElapsedText += timePreprocessLeft;
-  m_ElapsedText += " + ";
-  m_ElapsedText += timePreprocessRight;
-  m_ElapsedText += " + ";
-  m_ElapsedText += timeDiff;
-  m_ElapsedText += ")";
+  SimpleString elapsedText = "Diff performed in ";
+  elapsedText += timeSummary;
+  elapsedText += " ms. ( ";
+  elapsedText += timePreprocessLeft;
+  elapsedText += " + ";
+  elapsedText += timePreprocessRight;
+  elapsedText += " + ";
+  elapsedText += timeDiff;
+  elapsedText += ")";
 
   m_pLeftDiffDocument = new DiffDocument(m_LeftDiffPartition);
   m_pRightDiffDocument = new DiffDocument(m_RightDiffPartition);
@@ -180,7 +171,7 @@ bool DiffWorker::Diff()
   m_ProgressWindow.Close();
 
   m_DiffWindow.SetContent(m_pLeftDiffDocument, m_pRightDiffDocument);
-  m_DiffWindow.SetStatusBarText(m_ElapsedText);
+  m_DiffWindow.SetStatusBarText(elapsedText);
 
   workDone();
   m_bExitAllowed = true;

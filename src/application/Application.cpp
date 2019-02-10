@@ -6,6 +6,7 @@
 #include <proto/intuition.h>
 
 #include "Command.h"
+#include "MessageBox.h"
 #include "WorkerProgressMsg.h"
 
 #include "Application.h"
@@ -56,6 +57,8 @@ void Application::SetPubScreenName(const SimpleString& p_PubScreenName)
 
 bool Application::Run(bool p_bDoNotAsk)
 {
+  ::MessageBox request;
+
   //
   // Opening the screen
   //
@@ -73,6 +76,7 @@ bool Application::Run(bool p_bDoNotAsk)
   if (!m_Screen.IsOpen())
   {
     // Opening the screen failed
+    request.Show("Error: Can't open screen.", "Ok");
     return false;
   }
 
@@ -105,6 +109,7 @@ bool Application::Run(bool p_bDoNotAsk)
   //
   if(m_Menu.Create(menuDefinition) == false)
   {
+    request.Show("Error: Can't create the menu.", "Ok");
     return false;
   }
 
@@ -159,7 +164,8 @@ void Application::intuiEventLoop()
     if(activeSignals & sigProgress)
     {
       struct WorkerProgressMsg* pProgressMsg = NULL;
-      while (pProgressMsg = (struct WorkerProgressMsg *) GetMsg(m_pMsgPortProgress))
+      while(pProgressMsg = (struct WorkerProgressMsg *)
+              GetMsg(m_pMsgPortProgress))
       {
         if(m_ProgressWindow.IsOpen())
         {
@@ -173,7 +179,8 @@ void Application::intuiEventLoop()
     if(activeSignals & sigIDCMP)
     {
       struct IntuiMessage* pIdcmpMsg = NULL;
-      while (pIdcmpMsg = (struct IntuiMessage *) GT_GetIMsg(m_pMsgPortIDCMP))
+      while (pIdcmpMsg = (struct IntuiMessage *)
+               GT_GetIMsg(m_pMsgPortIDCMP))
       {
         // Get all data we need from message
         ULONG msgClass = pIdcmpMsg->Class;
@@ -190,7 +197,8 @@ void Application::intuiEventLoop()
           // Menu-pick messages are handled here
           //
           UWORD menuNumber = msgCode;
-          struct MenuItem* pSelectedItem = ItemAddress(m_Menu.IntuiMenu(), menuNumber);
+          struct MenuItem* pSelectedItem = ItemAddress(
+            m_Menu.IntuiMenu(), menuNumber);
 
           if(pSelectedItem != NULL)
           {
@@ -211,15 +219,18 @@ void Application::intuiEventLoop()
           //
           // All other messages are handled in the appropriate window
           //
-          if(m_DiffWindow.IsOpen() && msgWindow == m_DiffWindow.IntuiWindow())
+          if(m_DiffWindow.IsOpen() &&
+             msgWindow == m_DiffWindow.IntuiWindow())
           {
             m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
           }
-          else if(m_FilesWindow.IsOpen() && msgWindow == m_FilesWindow.IntuiWindow())
+          else if(m_FilesWindow.IsOpen() &&
+                  msgWindow == m_FilesWindow.IntuiWindow())
           {
             m_FilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
           }
-          else if(m_ProgressWindow.IsOpen() && msgWindow == m_ProgressWindow.IntuiWindow())
+          else if(m_ProgressWindow.IsOpen() &&
+                  msgWindow == m_ProgressWindow.IntuiWindow())
           {
             m_ProgressWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
           }
