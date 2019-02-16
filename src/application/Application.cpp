@@ -80,14 +80,6 @@ bool Application::Run(bool p_bDoNotAsk)
     return false;
   }
 
-  // TODO Debugging only. Remove afterwards.
-  if((m_LeftFilePath.Length() == 0) &&
-     (m_RightFilePath.Length() == 0))
-  {
-    m_LeftFilePath = "/testfiles/Testcase_10_Left.txt";
-    m_RightFilePath = "/testfiles/Testcase_10_Right.txt";
-  }
-
   //
   // Filling the GadTools menu struct, supplying pointers to the
   // commands as nm_UserData. So no complicated evalution needed to
@@ -125,20 +117,25 @@ bool Application::Run(bool p_bDoNotAsk)
   m_DiffWindow.SetInitialPosition(WindowBase::IP_Fill);
   m_DiffWindow.SetSmartRefresh(true);
 
-  //
-  // Open the OpenFilesWindow.
-  //
-  // Giving the command ptr as argument, so the appropriate menu item
-  // will be disabled after opening.
-  m_FilesWindow.Open(&m_CmdOpenFilesWindow);
 
-  // When DONOTASK argument is set and left and right file are passed,
-  // start the diff immediately
   if((m_LeftFilePath.Length() > 0) &&
      (m_RightFilePath.Length() > 0) &&
      p_bDoNotAsk == true)
   {
+    //
+    // The DONOTASK argument has been set and left and right file are
+    // also given: Start the diff immediately
+    //
     m_CmdDiff.Execute();
+  }
+  else
+  {
+    //
+    // Default: Open the OpenFilesWindow.
+    //
+    // Giving the command ptr as argument, so the appropriate menu item
+    // will be disabled after opening.
+    m_FilesWindow.Open(&m_CmdOpenFilesWindow);
   }
 
   //
