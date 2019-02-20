@@ -12,6 +12,7 @@
 
 #include "ApplicationMenu.h"
 #include "AppScreen.h"
+#include "CmdAbout.h"
 #include "CmdOpenWindow.h"
 #include "CmdDiff.h"
 #include "CmdQuit.h"
@@ -73,9 +74,10 @@ private:
   FilesWindow m_FilesWindow;
   ProgressWindow m_ProgressWindow;
   DiffWorker m_DiffWorker;
+  CmdAbout m_CmdAbout;
   CmdDiff m_CmdDiff;
   CmdQuit m_CmdQuit;
-  CmdOpenWindow m_CmdOpenFilesWindow;
+  CmdOpenWindow m_CmdOpen;
   SimpleString m_LeftFilePath;
   SimpleString m_RightFilePath;
 

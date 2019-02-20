@@ -118,6 +118,7 @@ Storm Shell Project (Dependencies)
 File
 1 "amigautils/MessageBox.cpp"
 "amigautils/MessageBox.cpp"
+"amigautils/MessageBox.h"
 Storm Shell Project (Dependencies)
 "objects_debug/MessageBox.o" "objects_debug/MessageBox.debug"
 ""
@@ -164,6 +165,13 @@ File
 "gui/ApplicationMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
+""
+1 1
+File
+1 "commands/CmdAbout.cpp"
+"commands/CmdOpenAbout.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/CmdAbout.o" "objects_debug/CmdAbout.debug"
 ""
 1 1
 File
@@ -468,6 +476,13 @@ Storm Shell Project (Dependencies)
 File
 2 "application/DiffWorker.h"
 "application/DiffWorker.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "commands/CmdAbout.h"
+"commands/CmdOpenAbout.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

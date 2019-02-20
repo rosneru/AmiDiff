@@ -30,7 +30,8 @@ Application::Application(struct MsgPort* p_pMsgPortIDCMP,
                  m_bCancelRequested, m_bExitAllowed),
     m_CmdDiff(m_DiffWorker),
     m_CmdQuit(m_bExitAllowed, m_bExitRequested),
-    m_CmdOpenFilesWindow(m_FilesWindow),
+    m_CmdOpen(m_FilesWindow),
+    m_CmdAbout(),
     m_Menu(m_Screen)
 {
 }
@@ -88,12 +89,12 @@ bool Application::Run(bool p_bDoNotAsk)
   //
   struct NewMenu menuDefinition[] =
   {
-    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open files...",         "O", 0, 0, &m_CmdOpenFilesWindow },
-//    {  NM_ITEM,   "Time statistics...",    "T", 0, 0, m_pCmdStatistics }, // TODO
-    {  NM_ITEM,   NM_BARLABEL,              0 , 0, 0, 0 },
-    {  NM_ITEM,   "Quit",                  "Q", 0, 0, &m_CmdQuit },
-    {  NM_END,    NULL,                     0 , 0, 0, 0 },
+    { NM_TITLE,   "Project",      0 , 0, 0, 0 },
+    {  NM_ITEM,   "Open...",     "O", 0, 0, &m_CmdOpen },
+    {  NM_ITEM,   "About...",     0 , 0, 0, &m_CmdAbout },
+    {  NM_ITEM,   NM_BARLABEL,    0 , 0, 0, 0 },
+    {  NM_ITEM,   "Quit",        "Q", 0, 0, &m_CmdQuit },
+    {  NM_END,    NULL,           0 , 0, 0, 0 },
   };
 
   //
@@ -135,11 +136,11 @@ bool Application::Run(bool p_bDoNotAsk)
     //
     // Giving the command ptr as argument, so the appropriate menu item
     // will be disabled after opening.
-    m_FilesWindow.Open(&m_CmdOpenFilesWindow);
+    m_FilesWindow.Open(&m_CmdOpen);
   }
 
   //
-  // Wait-in-loop for menu actions etc
+  // The Amiga Intuition event loop
   //
   intuiEventLoop();
 
