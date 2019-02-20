@@ -1,5 +1,5 @@
-#include <proto/dos.h>
-#include <proto/exec.h>
+#include <clib/dos_protos.h>
+#include <clib/exec_protos.h>
 #include "AmigaFile.h"
 
 AmigaFile::AmigaFile()

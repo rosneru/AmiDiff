@@ -1,4 +1,4 @@
-#include <proto/graphics.h>
+#include <clib/graphics_protos.h>
 
 #include "AppScreen.h"
 #include "AmigaDiffPens.h"

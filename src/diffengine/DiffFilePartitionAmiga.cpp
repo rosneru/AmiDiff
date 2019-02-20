@@ -1,4 +1,4 @@
-#include <proto/dos.h>
+#include <clib/dos_protos.h>
 
 #include "AmigaFile.h"
 #include "DiffFilePartitionAmiga.h"

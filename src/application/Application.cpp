@@ -1,9 +1,9 @@
 #include <stdio.h>
 
 #include <libraries/gadtools.h>
-#include <proto/exec.h>
-#include <proto/gadtools.h>
-#include <proto/intuition.h>
+#include <clib/exec_protos.h>
+#include <clib/gadtools_protos.h>
+#include <clib/intuition_protos.h>
 
 #include "Command.h"
 #include "MessageBox.h"

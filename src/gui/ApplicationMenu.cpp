@@ -1,5 +1,5 @@
-#include <proto/gadtools.h>
-#include <proto/intuition.h>
+#include <clib/gadtools_protos.h>
+#include <clib/intuition_protos.h>
 
 #include "ApplicationMenu.h"
 

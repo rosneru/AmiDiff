@@ -35,9 +35,9 @@
 #include <exec/types.h>
 #include <exec/libraries.h>
 #include <intuition/intuitionbase.h>
-#include <proto/dos.h>
-#include <proto/exec.h>
-#include <proto/icon.h>
+#include <clib/dos_protos.h>
+#include <clib/exec_protos.h>
+#include <clib/icon_protos.h>
 #include <workbench/startup.h>
 #include <workbench/workbench.h>
 

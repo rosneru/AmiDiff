@@ -1,8 +1,8 @@
 #include <string.h>
 
-#include <proto/asl.h>
-#include <proto/dos.h>
-#include <proto/exec.h>
+#include <clib/asl_protos.h>
+#include <clib/dos_protos.h>
+#include <clib/exec_protos.h>
 #include <libraries/asl.h>
 #include <libraries/dos.h>
 

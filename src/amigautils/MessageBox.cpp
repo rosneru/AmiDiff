@@ -1,5 +1,5 @@
-#include <proto/exec.h>
-#include <proto/intuition.h>
+#include <clib/exec_protos.h>
+#include <clib/intuition_protos.h>
 #include "MessageBox.h"
 
 MessageBox::MessageBox()

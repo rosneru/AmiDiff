@@ -1,10 +1,10 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <proto/dos.h>
-#include <proto/gadtools.h>
-#include <proto/graphics.h>
-#include <proto/intuition.h>
+#include <clib/dos_protos.h>
+#include <clib/gadtools_protos.h>
+#include <clib/graphics_protos.h>
+#include <clib/intuition_protos.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
