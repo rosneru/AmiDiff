@@ -8,7 +8,7 @@
  * Displays a requester with a message to the user.
  *
  * @author Uwe Rosner
- * @date 18/10/2018
+ * @date 10/02/2019
  */
 class MessageBox
 {
@@ -24,8 +24,7 @@ public:
             const SimpleString& p_ButtonText);
 
 private:
-  struct IntuiText* m_pBodyText;
-  struct IntuiText* m_pButtonText;
+    struct EasyStruct* m_pEasyStruct;
 };
 
 #endif

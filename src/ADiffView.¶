@@ -78,7 +78,7 @@ Linker
 Run
 30 "" "" "" 0
 ""
-
+/testfiles/testcase_10_left.txt /testfiles/testcase_10_right.txt
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 0 0
 0 0 0 "" ""
@@ -117,6 +117,7 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "amigautils/MessageBox.cpp"
+"amigautils/MessageBox.cpp"
 Storm Shell Project (Dependencies)
 "objects_debug/MessageBox.o" "objects_debug/MessageBox.debug"
 ""
@@ -445,6 +446,7 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "amigautils/MessageBox.h"
+"amigautils/MessageBox.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
