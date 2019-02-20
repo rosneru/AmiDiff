@@ -184,6 +184,8 @@ void ProgressWindow::initialize()
   // Setting the first gadget of the gadet list for the window
   setFirstGadget(m_pGadgetList);
 
+  SetSmartRefresh(true);
+
   m_bInitialized = true;
 }
 
