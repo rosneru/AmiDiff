@@ -5,7 +5,7 @@ CmdAbout::CmdAbout(AppScreen& p_Screen, ApplicationMenu& p_Menu)
   : m_Screen(p_Screen),
     m_Menu(p_Menu)
 {
-  m_AboutMsg  = "ADiffView 1.0 (28.02.2019)\n";
+  m_AboutMsg  = "ADiffView 1.0 (21.02.2019)\n";
   m_AboutMsg += "\n";
   m_AboutMsg += "Autor: Uwe Rosner (u.rosner@ymail.com)\n";
   m_AboutMsg += "\n";
@@ -23,7 +23,7 @@ void CmdAbout::Execute() const
   // Get the active window
   struct Window* pActiveWindow = m_Screen.ActiveWindow();
 
-  // Disable this command in the menu of the active window 
+  // Disable this command in the menu of the active window
   m_Menu.DisableMenuItem(pActiveWindow, (APTR)this);
 
   // Display the about dialog
