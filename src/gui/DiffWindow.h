@@ -54,7 +54,35 @@ public:
   bool SetContent(DiffDocument* p_pLeftDocument,
     DiffDocument* p_pRightDocument);
 
-  void SetStatusBarText(const SimpleString& p_StatusBarText);
+  /**
+   * Setting the data to be shown on the status bar.
+   * 
+   * A reapienting of the status bar is triggered afterwards.
+   * 
+   * @param p_DiffTime
+   * How long did comparing the files take (in milli seconds)
+   * 
+   * @param p_NumAdded
+   * Number of added lines (sum of left  and right file)
+   * 
+   * @param p_NumChanged
+   * Number of changed lines (sum of left  and right file)
+   * 
+   * @param p_NumDeleted
+   * Number of deleted lines (sum of left  and right file)
+   * 
+   */
+  void SetStatusBar(long p_DiffTime, int p_NumAdded, int p_NumChanged, 
+                    int p_NumDeleted);
+
+  /**
+   * Set the number of changes to be displayed at the status bar.
+   * A reapienting of the status bar is triggered afterwards.
+   * 
+   */
+  void SetNumChanges(int p_NumAdded,int p_NumChanged, int p_NumDeleted);
+
+
 
   /**
    * Handles given IDCMP event.
@@ -134,6 +162,9 @@ private:
   DiffDocument* m_pRightDocument;
 
   SimpleString m_StatusBarText;
+  SimpleString m_AddedText;
+  SimpleString m_ChangedText;
+  SimpleString m_DeletedText;
 
   struct TextAttr m_TextAttr;
 

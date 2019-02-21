@@ -1,5 +1,4 @@
 #include "MessageBox.h"
-#include "DiffEngine.h"
 #include "DiffWorker.h"
 
 DiffWorker::DiffWorker(SimpleString& p_LeftFilePath,
@@ -24,8 +23,20 @@ DiffWorker::DiffWorker(SimpleString& p_LeftFilePath,
     m_LeftSrcPartition(m_bCancelRequested),
     m_RightSrcPartition(m_bCancelRequested),
     m_LeftDiffPartition(m_bCancelRequested),
-    m_RightDiffPartition(m_bCancelRequested)
+    m_RightDiffPartition(m_bCancelRequested),
+    m_DiffEngine(m_bCancelRequested)
 {
+  //
+  // Registering *this* as receiver for progress messages for some 
+  // objects.
+  //
+  // NOTE *this* is a BackgroundWorker who forwards these messages to 
+  //      the intuition event loop which eventually displays the 
+  //      progress in a window.
+  //
+  m_LeftSrcPartition.SetProgressReporter(this);
+  m_RightSrcPartition.SetProgressReporter(this);
+  m_DiffEngine.SetProgressReporter(this);
 }
 
 DiffWorker::~DiffWorker()
@@ -38,9 +49,11 @@ bool DiffWorker::Diff()
   MessageBox request;
   m_bCancelRequested = false;
   m_bExitAllowed = false;
-
   m_ProgressOffset = 0;
 
+  //
+  // Checking some obvious things
+  //
   if(m_LeftFilePath.Length() == 0)
   {
     request.Show("Error: Left file name not set.", "Ok");
@@ -59,29 +72,22 @@ bool DiffWorker::Diff()
     return false;
   }
 
-
-  long timePreprocessLeft = 0;
-  long timePreprocessRight = 0;
-  long timeDiff = 0;
-  long timeSummary = 0;
-
+  //
+  // Closing FilesWindow, opening ProgressWindow etc
+  //
   m_ProgressWindow.Open();
-
   APTR pDisabledMenuItem = m_FilesWindow.DisabledMenuItem();
   m_FilesWindow.Close();
-
   m_DiffWindow.Close();
-
   disposeDocuments();
-
   m_StopWatch.Start();
 
-  // Send progress notifications to here. (This is a BackgroundWorker
-  // who sends them as messages to the event loop).
-  m_LeftSrcPartition.SetProgressReporter(this);
-
+  //
+  // Pre-processing the left file
+  //
   setProgressDescription("Pre-processing left file..");
 
+  // If there was an error return to FilesWindow
   if(m_LeftSrcPartition.PreProcess(m_LeftFilePath) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
@@ -95,16 +101,12 @@ bool DiffWorker::Diff()
     return false;
   }
 
-  timePreprocessLeft = static_cast<long>(m_StopWatch.Stop());
-
-  m_StopWatch.Start();
-
-  // Send progress notifications to here. (This is a BackgroundWorker
-  // who sends them as messages to the event loop).
-  m_RightSrcPartition.SetProgressReporter(this);
-
+  //
+  // Pre-processing the right file
+  //
   setProgressDescription("Pre-processing right file..");
 
+  // If there was an error return to FilesWindow
   if(m_RightSrcPartition.PreProcess(m_RightFilePath) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
@@ -118,26 +120,18 @@ bool DiffWorker::Diff()
     return false;
   }
 
-  timePreprocessRight = static_cast<long>(m_StopWatch.Stop());
-
-  m_StopWatch.Start();
-
-  DiffEngine diffEngine(m_bCancelRequested);
-
-  // Send progress notifications to here. (This is a BackgroundWorker
-  // who sends them as messages to the event loop).
-  diffEngine.SetProgressReporter(this);
-
+  //
+  // Comparing the files
+  //
   setProgressDescription("Comparing the files..");
 
-  bool diffOk = diffEngine.Diff(
+  bool diffOk = m_DiffEngine.Diff(
     m_LeftSrcPartition, m_RightSrcPartition,
     m_LeftDiffPartition, m_RightDiffPartition);
 
-  timeDiff = static_cast<long>(m_StopWatch.Stop());
+  long timeSummary = static_cast<long>(m_StopWatch.Stop());
 
-  timeSummary = timePreprocessLeft + timePreprocessRight + timeDiff;
-
+  // If there was an error return to FilesWindow
   if(!diffOk)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
@@ -151,15 +145,39 @@ bool DiffWorker::Diff()
     return false;
   }
 
-  SimpleString elapsedText = "Diff performed in ";
-  elapsedText += timeSummary;
-  elapsedText += " ms. ( ";
-  elapsedText += timePreprocessLeft;
-  elapsedText += " + ";
-  elapsedText += timePreprocessRight;
-  elapsedText += " + ";
-  elapsedText += timeDiff;
-  elapsedText += ")";
+  //
+  // Collecting the number of changes
+  //
+  int leftNumAdded;
+  int leftNumChanged;
+  int leftNumDeleted;
+  m_LeftDiffPartition.NumChanges(leftNumAdded, leftNumChanged, 
+                                 leftNumDeleted);
+
+  int rightNumAdded;
+  int rightNumChanged;
+  int rightNumDeleted;
+  m_RightDiffPartition.NumChanges(rightNumAdded, rightNumChanged, 
+                                  rightNumDeleted);
+
+  // If there are no changes return to FilesWindow
+  if((leftNumAdded + leftNumChanged + leftNumDeleted +
+     rightNumAdded + rightNumChanged + rightNumDeleted) == 0)
+  {
+    request.Show(m_ProgressWindow.IntuiWindow(),
+                 "No differences found: the files are equal.", "Ok");
+
+    m_FilesWindow.Open(pDisabledMenuItem);
+    m_ProgressWindow.Close();
+
+    workDone();
+    m_bExitAllowed = true;
+    return false;
+  }
+
+  //
+  // Prepare diff window and set results
+  //
 
   m_pLeftDiffDocument = new DiffDocument(m_LeftDiffPartition);
   m_pRightDiffDocument = new DiffDocument(m_RightDiffPartition);
@@ -171,7 +189,9 @@ bool DiffWorker::Diff()
   m_ProgressWindow.Close();
 
   m_DiffWindow.SetContent(m_pLeftDiffDocument, m_pRightDiffDocument);
-  m_DiffWindow.SetStatusBarText(elapsedText);
+  m_DiffWindow.SetStatusBar(timeSummary, leftNumAdded + rightNumAdded,
+                            leftNumChanged + rightNumChanged,
+                            leftNumDeleted + rightNumDeleted);
 
   workDone();
   m_bExitAllowed = true;

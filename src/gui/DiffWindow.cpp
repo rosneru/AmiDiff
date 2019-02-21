@@ -35,7 +35,11 @@ DiffWindow::DiffWindow(AppScreen& p_AppScreen,
     m_TextArea2Left(0),
     m_TextAreasTop(0),
     m_TextAreasWidth(0),
-    m_TextAreasHeight(0)
+    m_TextAreasHeight(0),
+    m_ChangedText(" Changed "),
+    m_AddedText(" Added "),
+    m_DeletedText(" Deleted "),
+    m_StatusBarText("No diff performed.")
 {
 
 }
@@ -178,9 +182,21 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   return true;
 }
 
-void DiffWindow::SetStatusBarText(const SimpleString& p_StatusBarText)
+void DiffWindow::SetStatusBar(long p_DiffTime, int p_NumAdded, 
+                              int p_NumChanged, int p_NumDeleted)
 {
-  m_StatusBarText = p_StatusBarText;
+  long totalChanges = p_NumAdded + p_NumChanged + p_NumDeleted;
+
+  m_StatusBarText = "Diff performed in ";
+  m_StatusBarText += p_DiffTime;
+  m_StatusBarText += " ms. Total changes:";
+  m_StatusBarText += totalChanges;
+
+
+  m_AddedText = p_NumAdded + " Added ";
+  m_ChangedText = p_NumChanged + " Changed ";
+  m_DeletedText = p_NumDeleted + " Deleted ";
+
   paintStatusBar();
 }
 
@@ -626,19 +642,19 @@ void DiffWindow::paintStatusBar()
   left += IntuiTextLength(&intuiText);
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_AppScreen.Pens().Green();
-  intuiText.IText = (UBYTE*) " Added ";
+  intuiText.IText = (UBYTE*) m_AddedText.C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_AppScreen.Pens().Yellow();
-  intuiText.IText = (UBYTE*) " Changed ";
+  intuiText.IText = (UBYTE*) m_ChangedText.C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_AppScreen.Pens().Red();
-  intuiText.IText = (UBYTE*) " Deleted ";
+  intuiText.IText = (UBYTE*) m_DeletedText.C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
 

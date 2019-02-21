@@ -5,6 +5,7 @@
 
 #include "BackgroundWorker.h"
 #include "DiffDocument.h"
+#include "DiffEngine.h"
 #include "DiffFilePartition.h"
 #include "DiffFilePartitionAmiga.h"
 #include "DiffWindow.h"
@@ -75,6 +76,8 @@ private:
 
   DiffFilePartition m_LeftDiffPartition;
   DiffFilePartition m_RightDiffPartition;
+
+  DiffEngine m_DiffEngine;
 
   DiffDocument* m_pLeftDiffDocument;
   DiffDocument* m_pRightDiffDocument;
