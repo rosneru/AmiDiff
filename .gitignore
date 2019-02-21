@@ -6,3 +6,4 @@ objects_debug
 *.pro.user
 *.autosave
 build-*
+!release/**
