@@ -2,6 +2,7 @@
 #define APPSCREEN
 
 #include <graphics/text.h>
+#include <intuition/intuition.h>
 #include <intuition/screens.h>
 
 #include "AmigaDiffPens.h"
@@ -62,6 +63,21 @@ public:
   struct Screen* IntuiScreen();
 
   /**
+   * Returns the pointer to the active window. If no active window is 
+   * found NULL is returned.
+   * 
+   * NOTE: I) The active window is not guaranteed to be on this screen.
+   * 
+   *       II) Be aware that the active window can be another one 
+   *       directly after this call as the user or the application can 
+   *       change it.
+   * 
+   *       III.) The active window can already have been closed when 
+   *       you use this window pointer. Be prepared!
+   */
+  struct Window* ActiveWindow() const;
+
+  /**
    * Returns the intuition screen draw info or NULL if it hadn't been
    * acquired successfully
    */
@@ -83,6 +99,7 @@ public:
   const AmigaDiffPens& Pens() const;
 
   ScreenModeEasy ScreenMode() const;
+
 
 
 private:

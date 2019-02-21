@@ -2,8 +2,10 @@
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <graphics/text.h>
+#include <intuition/intuitionbase.h>
 #include "AppScreen.h"
 
+extern struct IntuitionBase* IntuitionBase;
 
 AppScreen::AppScreen()
   :
@@ -253,6 +255,20 @@ WORD AppScreen::BarHeight() const
 struct Screen* AppScreen::IntuiScreen()
 {
   return m_pScreen;
+}
+
+struct Window* AppScreen::ActiveWindow() const
+{
+  // Locking the intuition base
+  ULONG intuitionLock = LockIBase(0L);
+  
+  // Getting the active window
+  struct Window* pActiveWin = IntuitionBase->ActiveWindow;
+
+  // Unlocking  the intuition base
+  UnlockIBase(intuitionLock);
+
+  return pActiveWin;
 }
 
 struct DrawInfo* AppScreen::IntuiDrawInfo()

@@ -1,7 +1,8 @@
 #include "MessageBox.h"
 #include "CmdAbout.h"
 
-CmdAbout::CmdAbout()
+CmdAbout::CmdAbout(AppScreen& p_AppScreen)
+  : m_AppScreen(p_AppScreen)
 {
   m_AboutMsg  = "ADiffView 1.0 (28.02.2019)\n";
   m_AboutMsg += "\n";
@@ -19,5 +20,5 @@ CmdAbout::~CmdAbout()
 void CmdAbout::Execute() const
 {
   MessageBox messageBox;
-  messageBox.Show(m_AboutMsg.C_str(), "Ok");
+  messageBox.Show(m_AppScreen.ActiveWindow(), m_AboutMsg.C_str(), "Ok");
 }
