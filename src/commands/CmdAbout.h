@@ -2,6 +2,7 @@
 #define CMD_ABOUT_H
 
 #include "AppScreen.h"
+#include "ApplicationMenu.h"
 #include "Command.h"
 #include "SimpleString.h"
 
@@ -15,14 +16,15 @@
 class CmdAbout : public Command
 {
 public:
-  CmdAbout(AppScreen& p_AppScreen);
+  CmdAbout(AppScreen& p_Screen, ApplicationMenu& p_Menu);
   virtual ~CmdAbout();
   virtual void Execute() const;
 
   SimpleString m_AboutMsg;
 
 private:
-  AppScreen& m_AppScreen,
+  AppScreen& m_Screen;
+  ApplicationMenu& m_Menu;
 };
 
 #endif // CMD_ABOUT_H

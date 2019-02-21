@@ -50,7 +50,11 @@ public:
   bool IsOpen() const;
 
   const char* Title() const;
-  void SetTitle(SimpleString p_NewTitle); ///> Not working when the screen is already open
+  
+  /**
+   * NOTE Setting the title does not work when screen is already open
+   */
+  void SetTitle(SimpleString p_NewTitle);
 
   WORD FontHeight() const;
 
@@ -68,9 +72,9 @@ public:
    * 
    * NOTE: I) The active window is not guaranteed to be on this screen.
    * 
-   *       II) Be aware that the active window can be another one 
-   *       directly after this call as the user or the application can 
-   *       change it.
+   *       II) Be aware that the active window can already be another 
+   *       one directly after this call as the user or the application 
+   *       can change it.
    * 
    *       III.) The active window can already have been closed when 
    *       you use this window pointer. Be prepared!

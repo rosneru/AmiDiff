@@ -31,7 +31,7 @@ Application::Application(struct MsgPort* p_pMsgPortIDCMP,
     m_CmdDiff(m_DiffWorker),
     m_CmdQuit(m_bExitAllowed, m_bExitRequested),
     m_CmdOpen(m_FilesWindow),
-    m_CmdAbout(m_Screen),
+    m_CmdAbout(m_Screen, m_Menu),
     m_Menu(m_Screen)
 {
 }

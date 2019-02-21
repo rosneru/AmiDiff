@@ -1,8 +1,9 @@
 #include "MessageBox.h"
 #include "CmdAbout.h"
 
-CmdAbout::CmdAbout(AppScreen& p_AppScreen)
-  : m_AppScreen(p_AppScreen)
+CmdAbout::CmdAbout(AppScreen& p_Screen, ApplicationMenu& p_Menu)
+  : m_Screen(p_Screen),
+    m_Menu(p_Menu)
 {
   m_AboutMsg  = "ADiffView 1.0 (28.02.2019)\n";
   m_AboutMsg += "\n";
@@ -19,6 +20,16 @@ CmdAbout::~CmdAbout()
 
 void CmdAbout::Execute() const
 {
+  // Get the active window
+  struct Window* pActiveWindow = m_Screen.ActiveWindow();
+
+  // Disable this command in the menu of the active window 
+  m_Menu.DisableMenuItem(pActiveWindow, (APTR)this);
+
+  // Display the about dialog
   MessageBox messageBox;
-  messageBox.Show(m_AppScreen.ActiveWindow(), m_AboutMsg.C_str(), "Ok");
+  messageBox.Show(pActiveWindow, m_AboutMsg.C_str(), "Ok");
+
+  // Enable this command in the menu of the active window
+  m_Menu.EnableMenuItem(pActiveWindow, (APTR)this);
 }
