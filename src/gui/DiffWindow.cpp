@@ -17,7 +17,7 @@
 
 extern struct GfxBase* GfxBase;
 
-DiffWindow::DiffWindow(AppScreen& p_AppScreen, 
+DiffWindow::DiffWindow(AppScreen& p_AppScreen,
                        struct MsgPort* p_pMsgPort, int& p_NumWindowsOpen)
   : ScrollbarWindow(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
     m_pLeftDocument(NULL),
@@ -182,20 +182,21 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   return true;
 }
 
-void DiffWindow::SetStatusBar(long p_DiffTime, int p_NumAdded, 
+void DiffWindow::SetStatusBar(long p_DiffTime, int p_NumAdded,
                               int p_NumChanged, int p_NumDeleted)
 {
   long totalChanges = p_NumAdded + p_NumChanged + p_NumDeleted;
 
   m_StatusBarText = "Diff performed in ";
   m_StatusBarText += p_DiffTime;
-  m_StatusBarText += " ms. Total changes:";
+  m_StatusBarText += " ms. Total changes: ";
   m_StatusBarText += totalChanges;
 
 
-  m_AddedText = p_NumAdded + " Added ";
-  m_ChangedText = p_NumChanged + " Changed ";
-  m_DeletedText = p_NumDeleted + " Deleted ";
+  SimpleString emptyStr = "";
+  m_AddedText = emptyStr + p_NumAdded + " Added ";
+  m_ChangedText = emptyStr + p_NumChanged + " Changed ";
+  m_DeletedText = emptyStr + p_NumDeleted + " Deleted ";
 
   paintStatusBar();
 }
