@@ -9,12 +9,12 @@
 
 # Compiler
 
-COMPILER := g++
+COMPILER := /opt/amiga/bin/m68k-amigaos-c++
 
 # Flags
 
-COMPILE_FLAGS := -O2 -Wall
-LINKING_FLAGS := 
+COMPILE_FLAGS := -Wall -Wno-unused-function -noixemul -exceptions -Os -g0
+LINKING_FLAGS := -noixemul
 
 # Source code
 
