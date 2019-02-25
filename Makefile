@@ -48,35 +48,35 @@ DEPS=$(SRC_ROOT)/amigautils/AmigaFile.h \
 		$(SRC_ROOT)/thread/WorkerStartupMsg.h
 
 _OBJ=$(SRC_ROOT)/main.o \
-		$(SRC_ROOT)/amigautils/AmigaFile.cpp \
-		$(SRC_ROOT)/amigautils/AslFileRequest.cpp \
-		$(SRC_ROOT)/amigautils/MessageBox.cpp \
-		$(SRC_ROOT)/amigautils/StopWatch.cpp \
-		$(SRC_ROOT)/application/Application.cpp \
-		$(SRC_ROOT)/application/DiffWorker.cpp \
-		$(SRC_ROOT)/commands/CmdAbout.cpp \
-		$(SRC_ROOT)/commands/CmdDiff.cpp \
-		$(SRC_ROOT)/commands/CmdOpenWindow.cpp \
-		$(SRC_ROOT)/commands/CmdQuit.cpp \
-		$(SRC_ROOT)/commands/Command.cpp \
-		$(SRC_ROOT)/diffengine/DiffEngine.cpp \
-		$(SRC_ROOT)/diffengine/DiffFilePartition.cpp \
-		$(SRC_ROOT)/diffengine/DiffFilePartitionAmiga.cpp \
-		$(SRC_ROOT)/diffengine/DiffLine.cpp \
-		$(SRC_ROOT)/gui/AmigaDiffPens.cpp \
-		$(SRC_ROOT)/gui/ApplicationMenu.cpp \
-		$(SRC_ROOT)/gui/AppScreen.cpp \
-		$(SRC_ROOT)/gui/DiffWindow.cpp \
-		$(SRC_ROOT)/gui/FilesWindow.cpp \
-		$(SRC_ROOT)/gui/ProgressWindow.cpp \
-		$(SRC_ROOT)/gui/ScrollbarWindow.cpp \
-		$(SRC_ROOT)/gui/TextWindow.cpp \
-		$(SRC_ROOT)/gui/WindowBase.cpp \
-		$(SRC_ROOT)/model/DiffDocument.cpp \
-		$(SRC_ROOT)/model/Document.cpp \
-		$(SRC_ROOT)/model/TextDocument.cpp \
-		$(SRC_ROOT)/oscottlibs/SimpleString.cpp \
-		$(SRC_ROOT)/thread/BackgroundWorker.cpp
+		$(SRC_ROOT)/amigautils/AmigaFile.o \
+		$(SRC_ROOT)/amigautils/AslFileRequest.o \
+		$(SRC_ROOT)/amigautils/MessageBox.o \
+		$(SRC_ROOT)/amigautils/StopWatch.o \
+		$(SRC_ROOT)/application/Application.o \
+		$(SRC_ROOT)/application/DiffWorker.o \
+		$(SRC_ROOT)/commands/CmdAbout.o \
+		$(SRC_ROOT)/commands/CmdDiff.o \
+		$(SRC_ROOT)/commands/CmdOpenWindow.o \
+		$(SRC_ROOT)/commands/CmdQuit.o \
+		$(SRC_ROOT)/commands/Command.o \
+		$(SRC_ROOT)/diffengine/DiffEngine.o \
+		$(SRC_ROOT)/diffengine/DiffFilePartition.o \
+		$(SRC_ROOT)/diffengine/DiffFilePartitionAmiga.o \
+		$(SRC_ROOT)/diffengine/DiffLine.o \
+		$(SRC_ROOT)/gui/AmigaDiffPens.o \
+		$(SRC_ROOT)/gui/ApplicationMenu.o \
+		$(SRC_ROOT)/gui/AppScreen.o \
+		$(SRC_ROOT)/gui/DiffWindow.o \
+		$(SRC_ROOT)/gui/FilesWindow.o \
+		$(SRC_ROOT)/gui/ProgressWindow.o \
+		$(SRC_ROOT)/gui/ScrollbarWindow.o \
+		$(SRC_ROOT)/gui/TextWindow.o \
+		$(SRC_ROOT)/gui/WindowBase.o \
+		$(SRC_ROOT)/model/DiffDocument.o \
+		$(SRC_ROOT)/model/Document.o \
+		$(SRC_ROOT)/model/TextDocument.o \
+		$(SRC_ROOT)/oscottlibs/SimpleString.o \
+		$(SRC_ROOT)/thread/BackgroundWorker.o
  
 INCLUDE=-I$(SRC_ROOT) \
 				-I$(SRC_ROOT)/amigautils \
