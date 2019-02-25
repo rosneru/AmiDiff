@@ -74,10 +74,10 @@ private:
   FilesWindow m_FilesWindow;
   ProgressWindow m_ProgressWindow;
   DiffWorker m_DiffWorker;
-  CmdAbout m_CmdAbout;
   CmdDiff m_CmdDiff;
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpen;
+  CmdAbout m_CmdAbout;
   SimpleString m_LeftFilePath;
   SimpleString m_RightFilePath;
 

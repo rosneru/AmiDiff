@@ -65,7 +65,7 @@ StopWatch::~StopWatch()
 
 void StopWatch::Start()
 {
-  if(m_bInitialized = false)
+  if(m_bInitialized == false)
   {
     return;
   }
@@ -77,7 +77,7 @@ void StopWatch::Start()
 // stoppt Zeitmessung und liefert das Ergebnis in Millisekunden
 double StopWatch::Stop()
 {
-  if(m_bInitialized = false)
+  if(m_bInitialized == false)
   {
     return -1.0;
   }

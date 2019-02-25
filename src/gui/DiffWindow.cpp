@@ -453,7 +453,7 @@ void DiffWindow::paintDocument(bool  p_bDisplayFromStart)
   // Set foreground color for document painting
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
 
-  for(int i = m_Y; (i - m_Y) < m_MaxTextAreaLines; i++)
+  for(size_t i = m_Y; (i - m_Y) < m_MaxTextAreaLines; i++)
   {
     if(i >= m_pLeftDocument->NumLines())
     {
@@ -567,7 +567,6 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   {
     numChars = p_pRightLine->Length() - p_StartCharIndex;
   }
-
 
   // Print the right line if is visible regarding current x scroll
   if(numChars > 0)
@@ -728,7 +727,7 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
     m_TextAreasTop + m_TextAreasHeight - 3);
 
   // fill the gap with the previous chars
-  for(int i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
+  for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
     const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
     const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
@@ -800,7 +799,7 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
     m_TextAreasTop + m_TextAreasHeight - 3);
 
   // Fill the gap with the following chars
-  for(int i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
+  for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
     const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
     const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);

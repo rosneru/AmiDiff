@@ -52,8 +52,8 @@ public:
   void SetProgressReporter(ProgressReporter* p_pProgressReporter);
 
 protected:
-  ProgressReporter* m_pProgressReporter;  ///> for progress reporting
   bool& m_bCancelRequested;
+  ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
 private:
   Array<SimpleString*> m_InputLinesArray;

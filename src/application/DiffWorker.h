@@ -61,6 +61,9 @@ public:
   DiffFilePartition& RightFileDiff();
 
 private:
+  SimpleString& m_LeftFilePath;
+  SimpleString& m_RightFilePath;
+
   DiffWindow& m_DiffWindow;
   FilesWindow& m_FilesWindow;
   ProgressWindow& m_ProgressWindow;
@@ -68,8 +71,8 @@ private:
   bool& m_bCancelRequested;
   bool& m_bExitAllowed;
 
-  SimpleString& m_LeftFilePath;
-  SimpleString& m_RightFilePath;
+  DiffDocument* m_pLeftDiffDocument;
+  DiffDocument* m_pRightDiffDocument;
 
   DiffFilePartitionAmiga m_LeftSrcPartition;
   DiffFilePartitionAmiga m_RightSrcPartition;
@@ -78,9 +81,6 @@ private:
   DiffFilePartition m_RightDiffPartition;
 
   DiffEngine m_DiffEngine;
-
-  DiffDocument* m_pLeftDiffDocument;
-  DiffDocument* m_pRightDiffDocument;
 
   StopWatch m_StopWatch;
 

@@ -15,11 +15,12 @@ Application::Application(struct MsgPort* p_pMsgPortIDCMP,
                          struct MsgPort* p_pMsgPortProgress)
   : m_pMsgPortIDCMP(p_pMsgPortIDCMP),
     m_pMsgPortProgress(p_pMsgPortProgress),
+    m_NumWindowsOpen(0),
     m_bCancelRequested(false),
     m_bExitRequested(false),
-    m_NumWindowsOpen(0),
     m_bExitAllowed(true),
     m_Screen(),
+    m_Menu(m_Screen),
     m_DiffWindow(m_Screen, m_pMsgPortIDCMP, m_NumWindowsOpen),
     m_FilesWindow(m_Screen, m_pMsgPortIDCMP, m_NumWindowsOpen,
                   m_LeftFilePath, m_RightFilePath, m_CmdDiff),
@@ -31,8 +32,7 @@ Application::Application(struct MsgPort* p_pMsgPortIDCMP,
     m_CmdDiff(m_DiffWorker),
     m_CmdQuit(m_bExitAllowed, m_bExitRequested),
     m_CmdOpen(m_FilesWindow),
-    m_CmdAbout(m_Screen, m_Menu),
-    m_Menu(m_Screen)
+    m_CmdAbout(m_Screen, m_Menu)
 {
 }
 
@@ -177,8 +177,7 @@ void Application::intuiEventLoop()
     if(activeSignals & sigIDCMP)
     {
       struct IntuiMessage* pIdcmpMsg = NULL;
-      while (pIdcmpMsg = (struct IntuiMessage *)
-               GT_GetIMsg(m_pMsgPortIDCMP))
+      while (pIdcmpMsg = GT_GetIMsg(m_pMsgPortIDCMP))
       {
         // Get all data we need from message
         ULONG msgClass = pIdcmpMsg->Class;

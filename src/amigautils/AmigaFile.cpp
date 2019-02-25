@@ -194,7 +194,7 @@ bool AmigaFile::ReadLine(SimpleString& p_Line)
     return false;
   }
 
-  for(int i = 0; i < readBufSize; i++)
+  for(size_t i = 0; i < readBufSize; i++)
   {
     if((m_pLineBuf[i] == '\r') ||
        (m_pLineBuf[i] == '\n'))

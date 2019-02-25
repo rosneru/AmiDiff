@@ -107,17 +107,18 @@ public:
 
 
 private:
-  SimpleString m_PubScreenName;
-  SimpleString m_FontName;
-  SimpleString m_Title;
-  ScreenModeEasy m_ScreenModeEasy;
-  struct TextAttr m_TextAttr;
-
   struct Screen* m_pScreen;
   struct DrawInfo* m_pDrawInfo;
   struct TextFont* m_pTextFont;
-  AmigaDiffPens m_Pens;
+  SimpleString m_FontName;
   APTR* m_pVisualInfo;
+  SimpleString m_Title;
+
+  ScreenModeEasy m_ScreenModeEasy;
+  SimpleString m_PubScreenName;
+
+  struct TextAttr m_TextAttr;
+  AmigaDiffPens m_Pens;
 };
 
 

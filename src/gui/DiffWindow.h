@@ -161,39 +161,39 @@ private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
 
-  SimpleString m_StatusBarText;
-  SimpleString m_AddedText;
+  unsigned short m_TextFontWidth_pix;  ///> Width of the rastport text font
+  unsigned short m_TextFontHeight_pix; ///> Height of the rastport text font
+
+  unsigned short m_X;   ///> Index of leftmost char in displayed lines.
+                        ///> Is > 0 when text is horizontally scrolled.
+
+  unsigned long m_Y;    ///> Index of topmost displayed line in document.
+                        ///> Is > 0 when text is vertically scrolled.
+
+  unsigned short m_MaxTextAreaChars;  ///> Max fitting chars in each text area.
+                                      ///> Depending on font and text area size.
+
+  unsigned long m_MaxTextAreaLines; ///> Max fitting lines in each text area.
+                                    ///> Depending on font and window size.
+
+  unsigned short m_MaxLineLength;   ///> Longest line length (in chars) either
+                                    ///> in left or in right file
+
+  unsigned short m_IndentX;  ///> X-distance of the text areas to window borders
+  unsigned short m_IndentY;  ///> Y-distance of the text areas to window borders
+
+  unsigned short m_TextArea1Left;   ///> X-position of the 1st text area
+  unsigned short m_TextArea2Left;   ///> X-position of the 2nd text area
+  unsigned short m_TextAreasTop;    ///> Y-position of the text areas
+  unsigned short m_TextAreasWidth;  ///> Width of each text area
+  unsigned short m_TextAreasHeight; ///> Height of the text areas (equally heigh)
+  
   SimpleString m_ChangedText;
+  SimpleString m_AddedText;
   SimpleString m_DeletedText;
+  SimpleString m_StatusBarText;
 
   struct TextAttr m_TextAttr;
-
-  int m_TextFontWidth_pix;  ///> Width of the rastport text font
-  int m_TextFontHeight_pix; ///> Height of the rastport text font
-
-  int m_X;  ///> Index of leftmost char in displayed lines.
-            ///> Is > 0 when text is horizontally scrolled.
-
-  int m_Y;  ///> Index of topmost displayed line in document.
-            ///> Is > 0 when text is vertically scrolled.
-
-  int m_MaxTextAreaChars; ///> Max fitting chars in each text area.
-                          ///> Depending on font and text area size.
-
-  int m_MaxTextAreaLines; ///> Max fitting lines in each text area.
-                          ///> Depending on font and window size.
-
-  ULONG m_MaxLineLength;  ///> Longest line length (in chars) either
-                          ///> in left or in right file
-
-  int m_IndentX;  ///> X-distance of the text areas to window borders
-  int m_IndentY;  ///> Y-distance of the text areas to window borders
-
-  int m_TextArea1Left;    ///> X-position of the 1st text area
-  int m_TextArea2Left;    ///> X-position of the 2nd text area
-  int m_TextAreasTop;     ///> Y-position of the text areas
-  int m_TextAreasWidth;   ///> Width of each text area
-  int m_TextAreasHeight;  ///> Height of the text areas (equally heigh)
 
   /**
    * Initializes some window specific features. Gadgets, etc.

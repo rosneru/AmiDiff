@@ -67,6 +67,8 @@ private:
 
   WORD m_FontHeight;  ///> Height of current text font
 
+  bool& m_bCancelRequested;
+  
   struct Gadget* m_pGadgetList;
   struct Gadget* m_pLabelDescription;
   struct Gadget* m_pButtonCancel;
@@ -78,7 +80,6 @@ private:
 
   struct IntuiText m_ProgressValueIText;
   const char* m_pProgressDescription;
-  bool& m_bCancelRequested;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.

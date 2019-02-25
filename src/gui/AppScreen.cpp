@@ -8,8 +8,7 @@
 extern struct IntuitionBase* IntuitionBase;
 
 AppScreen::AppScreen()
-  :
-    m_pScreen(NULL),
+  : m_pScreen(NULL),
     m_pDrawInfo(NULL),
     m_pTextFont(NULL),
     m_FontName(""),
@@ -67,7 +66,7 @@ bool AppScreen::Open(ScreenModeEasy p_ScreenModeEasy,
     return false;
   }
 
-  ULONG publicScreenModeId = GetVPModeID(&pPubScr->ViewPort);
+  LONG publicScreenModeId = GetVPModeID(&pPubScr->ViewPort);
   if(publicScreenModeId == INVALID_ID)
   {
     FreeScreenDrawInfo(pPubScr, pPubScrDrawInfo);
