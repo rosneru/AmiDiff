@@ -47,7 +47,7 @@ DEPS=$(SRC_ROOT)/amigautils/AmigaFile.h \
 		$(SRC_ROOT)/thread/WorkerProgressMsg.h \
 		$(SRC_ROOT)/thread/WorkerStartupMsg.h
 
-_OBJ=$(SRC_ROOT)/main.o
+_OBJ=$(SRC_ROOT)/main.o \
 		$(SRC_ROOT)/amigautils/AmigaFile.cpp \
 		$(SRC_ROOT)/amigautils/AslFileRequest.cpp \
 		$(SRC_ROOT)/amigautils/MessageBox.cpp \
