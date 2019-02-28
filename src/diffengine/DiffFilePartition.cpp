@@ -72,12 +72,13 @@ const DiffLine* DiffFilePartition::GetDiffLine(size_t p_Index) const
   return m_DiffLinesArray[p_Index];
 }
 
+static const SimpleString emptyStr = "";
+
 const SimpleString& DiffFilePartition::GetDiffLineText(size_t p_Index) const
 {
   if(m_DiffLinesArray.IsEmpty()|| p_Index >= m_DiffLinesArray.Size())
   {
-    static SimpleString s = "";
-    return s;
+    return emptyStr;
   }
 
   return GetDiffLine(p_Index)->Text();

@@ -31,6 +31,9 @@
 
 #define INTUI_V36_NAMES_ONLY
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <dos/dos.h>
 #include <exec/types.h>
 #include <exec/libraries.h>
@@ -72,6 +75,23 @@ void exctractArgs(int argc, char **argv,
                   bool& p_bDoNotAsk,
                   SimpleString& p_LeftFilePath,
                   SimpleString& p_RightFilePath);
+
+
+/**
+ * Globally overloading the new operator. The default c++ new operator 
+ * is using exceptions and that would blow up the code etc.
+ */
+void* operator new (std::size_t size)
+{
+  void* p = malloc(size);
+  if (p)
+  {
+    return p;
+  }
+
+  perror("std::bad_alloc");
+  abort();
+}
 
 
 /**
