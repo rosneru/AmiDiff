@@ -77,21 +77,29 @@ void exctractArgs(int argc, char **argv,
                   SimpleString& p_RightFilePath);
 
 
-/**
- * Globally overloading the new operator. The default c++ new operator 
- * is using exceptions and that would blow up the code etc.
- */
-void* operator new (std::size_t size)
-{
-  void* p = malloc(size);
-  if (p)
-  {
-    return p;
-  }
+//
+// TODO. Disabled the overloaded new operator 'cause now it's already 
+// in the toolchain.
+//
+// But the code's still there to remind me adding something 
+// memory-pool-related in the future
+//
 
-  perror("std::bad_alloc");
-  abort();
-}
+// /**
+//  * Globally overloading the new operator. The default c++ new operator 
+//  * is using exceptions and that would blow up the code etc.
+//  */
+// void* operator new (std::size_t size)
+// {
+//   void* p = malloc(size);
+//   if (p)
+//   {
+//     return p;
+//   }
+
+//   perror("std::bad_alloc");
+//   abort();
+// }
 
 
 /**
