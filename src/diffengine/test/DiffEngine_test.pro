@@ -9,6 +9,7 @@ LIBS += -lncurses \
         -lboost_unit_test_framework \
 
 INCLUDEPATH +=  ../ \
+                ../../thread \
                 ../../oscottlibs
 
 SOURCES += \

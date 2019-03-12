@@ -5,6 +5,13 @@
 
 #include "DiffFilePartitionLinux.h"
 
+DiffFilePartitionLinux::DiffFilePartitionLinux(
+  bool& p_bCancelRequested)
+  : DiffFilePartition(p_bCancelRequested)
+{
+}
+
+
 bool DiffFilePartitionLinux::PreProcess(const SimpleString& p_FileName)
 {
   ifstream inputFileStream;

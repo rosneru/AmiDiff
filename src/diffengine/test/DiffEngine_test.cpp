@@ -22,8 +22,9 @@
 
 BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
 {
+  bool cancelRequested = false;
   bool diffOk = false;
-  DiffEngine diffEngine;
+  DiffEngine diffEngine(cancelRequested);
 
   //
   // Test 3
@@ -38,14 +39,14 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
   //
   // >> Deleted "Line 3" in right file.
 
-  DiffFilePartitionLinux leftSrcPartition1;
-  leftSrcPartition1.PreProcess("../../testfiles/testcase_03_left.txt");
+  DiffFilePartitionLinux leftSrcPartition1(cancelRequested);
+  leftSrcPartition1.PreProcess("../../../testfiles/testcase_03_left.txt");
 
-  DiffFilePartitionLinux rightSrcPartition1;
-  rightSrcPartition1.PreProcess("../../testfiles/testcase_03_right.txt");
+  DiffFilePartitionLinux rightSrcPartition1(cancelRequested);
+  rightSrcPartition1.PreProcess("../../../testfiles/testcase_03_right.txt");
 
-  DiffFilePartition leftDiffPartition1;
-  DiffFilePartition rightDiffPartition1;
+  DiffFilePartition leftDiffPartition1(cancelRequested);
+  DiffFilePartition rightDiffPartition1(cancelRequested);
 
   diffOk = diffEngine.Diff(leftSrcPartition1,
                            rightSrcPartition1,
@@ -87,14 +88,14 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
   //
   // >> Cleared "Line 3" (set to empty) in right file
 
-  DiffFilePartitionLinux leftSrcPartition2;
-  leftSrcPartition2.PreProcess("../../testfiles/testcase_04_left.txt");
+  DiffFilePartitionLinux leftSrcPartition2(cancelRequested);
+  leftSrcPartition2.PreProcess("../../../testfiles/testcase_04_left.txt");
 
-  DiffFilePartitionLinux rightSrcPartition2;
-  rightSrcPartition2.PreProcess("../../testfiles/testcase_04_right.txt");
+  DiffFilePartitionLinux rightSrcPartition2(cancelRequested);
+  rightSrcPartition2.PreProcess("../../../testfiles/testcase_04_right.txt");
 
-  DiffFilePartition leftDiffPartition2;
-  DiffFilePartition rightDiffPartition2;
+  DiffFilePartition leftDiffPartition2(cancelRequested);
+  DiffFilePartition rightDiffPartition2(cancelRequested);
 
   diffOk = diffEngine.Diff(leftSrcPartition2,
                            rightSrcPartition2,
@@ -138,14 +139,14 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
   //
   // >> Deleted "Line 2" in left file
 
-  DiffFilePartitionLinux leftSrcPartition3;
-  leftSrcPartition3.PreProcess("../../testfiles/testcase_05_left.txt");
+  DiffFilePartitionLinux leftSrcPartition3(cancelRequested);
+  leftSrcPartition3.PreProcess("../../../testfiles/testcase_05_left.txt");
 
-  DiffFilePartitionLinux rightSrcPartition3;
-  rightSrcPartition3.PreProcess("../../testfiles/testcase_05_right.txt");
+  DiffFilePartitionLinux rightSrcPartition3(cancelRequested);
+  rightSrcPartition3.PreProcess("../../../testfiles/testcase_05_right.txt");
 
-  DiffFilePartition leftDiffPartition3;
-  DiffFilePartition rightDiffPartition3;
+  DiffFilePartition leftDiffPartition3(cancelRequested);
+  DiffFilePartition rightDiffPartition3(cancelRequested);
 
   diffOk = diffEngine.Diff(leftSrcPartition3,
                            rightSrcPartition3,
@@ -178,8 +179,9 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
 
 BOOST_AUTO_TEST_CASE( DiffTest_06_Mixed )
 {
+  bool cancelRequested = false;
   bool diffOk = false;
-  DiffEngine diffEngine;
+  DiffEngine diffEngine(cancelRequested);
 
   //
   // Test 6: Mixed it up with 6 changes
@@ -197,14 +199,14 @@ BOOST_AUTO_TEST_CASE( DiffTest_06_Mixed )
   // Line 10        |   Line 10
   //
 
-  DiffFilePartitionLinux leftSrcPartition;
-  leftSrcPartition.PreProcess("../../testfiles/testcase_06_left.txt");
+  DiffFilePartitionLinux leftSrcPartition(cancelRequested);
+  leftSrcPartition.PreProcess("../../../testfiles/testcase_06_left.txt");
 
-  DiffFilePartitionLinux rightSrcPartition;
-  rightSrcPartition.PreProcess("../../testfiles/testcase_06_right.txt");
+  DiffFilePartitionLinux rightSrcPartition(cancelRequested);
+  rightSrcPartition.PreProcess("../../../testfiles/testcase_06_right.txt");
 
-  DiffFilePartition leftDiffPartition;
-  DiffFilePartition rightDiffPartition;
+  DiffFilePartition leftDiffPartition(cancelRequested);
+  DiffFilePartition rightDiffPartition(cancelRequested);
 
   diffOk = diffEngine.Diff(leftSrcPartition,
                            rightSrcPartition,
@@ -276,8 +278,9 @@ BOOST_AUTO_TEST_CASE( DiffTest_06_Mixed )
 
 BOOST_AUTO_TEST_CASE( DiffTest_11_RightLineOneDelThreeAdds )
 {
+  bool cancelRequested = false;
   bool diffOk = false;
-  DiffEngine diffEngine;
+  DiffEngine diffEngine(cancelRequested);
 
   //
   // Test 11
@@ -293,14 +296,14 @@ BOOST_AUTO_TEST_CASE( DiffTest_11_RightLineOneDelThreeAdds )
   //
   // >> Deleted one line and added 3 lines in right file
 
-  DiffFilePartitionLinux leftSrcPartition1;
-  leftSrcPartition1.PreProcess("../../testfiles/testcase_11_left.txt");
+  DiffFilePartitionLinux leftSrcPartition1(cancelRequested);
+  leftSrcPartition1.PreProcess("../../../testfiles/testcase_11_left.txt");
 
-  DiffFilePartitionLinux rightSrcPartition1;
-  rightSrcPartition1.PreProcess("../../testfiles/testcase_11_right.txt");
+  DiffFilePartitionLinux rightSrcPartition1(cancelRequested);
+  rightSrcPartition1.PreProcess("../../../testfiles/testcase_11_right.txt");
 
-  DiffFilePartition leftDiffPartition1;
-  DiffFilePartition rightDiffPartition1;
+  DiffFilePartition leftDiffPartition1(cancelRequested);
+  DiffFilePartition rightDiffPartition1(cancelRequested);
 
   diffOk = diffEngine.Diff(leftSrcPartition1,
                            rightSrcPartition1,
@@ -348,8 +351,9 @@ BOOST_AUTO_TEST_CASE( DiffTest_11_RightLineOneDelThreeAdds )
 
 BOOST_AUTO_TEST_CASE( DiffTest_12_EndlessLoop )
 {
+  bool cancelRequested = false;
   bool diffOk = false;
-  DiffEngine diffEngine;
+  DiffEngine diffEngine(cancelRequested);
 
   //
   // Test case: endless loop in version 1 from 2003
@@ -367,14 +371,14 @@ BOOST_AUTO_TEST_CASE( DiffTest_12_EndlessLoop )
   // >> Cleared "Line 3" (set to empty) in right file
   //
 
-  DiffFilePartitionLinux leftSrcPartition;
-  leftSrcPartition.PreProcess("../../testfiles/testcase_12_endless_loop_left.txt");
+  DiffFilePartitionLinux leftSrcPartition(cancelRequested);
+  leftSrcPartition.PreProcess("../../../testfiles/testcase_12_endless_loop_left.txt");
 
-  DiffFilePartitionLinux rightSrcPartition;
-  rightSrcPartition.PreProcess("../../testfiles/testcase_12_endless_loop_right.txt");
+  DiffFilePartitionLinux rightSrcPartition(cancelRequested);
+  rightSrcPartition.PreProcess("../../../testfiles/testcase_12_endless_loop_right.txt");
 
-    DiffFilePartition leftDiffPartition;
-    DiffFilePartition rightDiffPartition;
+    DiffFilePartition leftDiffPartition(cancelRequested);
+    DiffFilePartition rightDiffPartition(cancelRequested);
 
     diffOk = diffEngine.Diff(leftSrcPartition,
                              rightSrcPartition,

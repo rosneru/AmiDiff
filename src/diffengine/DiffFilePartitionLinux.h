@@ -15,6 +15,7 @@
 class DiffFilePartitionLinux : public DiffFilePartition
 {
 public:
+  DiffFilePartitionLinux(bool& p_bCancelRequested);
   bool PreProcess(const SimpleString& p_FileName);
 };
 
