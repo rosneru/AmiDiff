@@ -153,7 +153,6 @@ File
 "application/DiffWorker.cpp"
 "diffengine/DiffLine.h"
 "oscottlibs/LinkedListNode.h"
-"diffengine/DiffFilePartition.h"
 "application/DiffWorker.h"
 "thread/WorkerStartupMsg.h"
 "model/TextDocument.h"
@@ -163,13 +162,17 @@ File
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
+"thread/ProgressReporter.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
 ""
 1 1
 File
 1 "commands/CmdAbout.cpp"
-"commands/CmdOpenAbout.cpp"
+"commands/CmdAbout.cpp"
+"commands/CmdAbout.h"
+"gui/AmigaDiffPens.h"
+"commands/Command.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdAbout.o" "objects_debug/CmdAbout.debug"
 ""
@@ -483,6 +486,7 @@ Storm Shell Project (Dependencies)
 File
 2 "commands/CmdAbout.h"
 "commands/CmdOpenAbout.h"
+"commands/CmdAbout.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
