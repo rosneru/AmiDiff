@@ -37,7 +37,9 @@ long DiffFilePartition::NumLines() const
   return m_DiffLinesArray.Size();
 }
 
-void DiffFilePartition::NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const
+void DiffFilePartition::NumChanges(int& p_Added, 
+                                   int& p_Changed, 
+                                   int& p_Deleted) const
 {
   p_Added = p_Changed = p_Deleted = 0;
   if(NumLines() == 0)
@@ -114,7 +116,9 @@ bool DiffFilePartition::PreProcess()
   return true;
 }
 
-bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long& i2)
+bool DiffFilePartition::MatchLine(long i1, 
+                                  DiffFilePartition& p_OtherFile, 
+                                  long& i2)
 {
   if(m_TokensArray.Size() == 0)
   {
@@ -145,7 +149,9 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
     if(m_TokensArray[i1] == *pOtherFileToken)  // Fast compare
     {
       // Make sure strings really match
-      const SimpleString lineOtherFile = p_OtherFile.GetDiffLine(i2 + i)->Text();
+      const SimpleString lineOtherFile = 
+        p_OtherFile.GetDiffLine(i2 + i)->Text();
+      
       bFound = (lineThisFile == lineOtherFile);
     }
 
@@ -168,7 +174,8 @@ bool DiffFilePartition::MatchLine(long i1, DiffFilePartition& p_OtherFile, long&
   return false;
 }
 
-void DiffFilePartition::AddString(const SimpleString& p_String, DiffLine::LineState p_LineState)
+void DiffFilePartition::AddString(const SimpleString& p_String, 
+                                  DiffLine::LineState p_LineState)
 {
   DiffLine* pDiffLine = new DiffLine();
   if(pDiffLine == NULL)

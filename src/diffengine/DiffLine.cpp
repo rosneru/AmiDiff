@@ -24,7 +24,8 @@ long DiffLine::SetLine(const SimpleString& p_String)
   return nToken;
 }
 
-void DiffLine::SetLine(const SimpleString& p_String, DiffLine::LineState p_LineState)
+void DiffLine::SetLine(const SimpleString& p_String, 
+                       DiffLine::LineState p_LineState)
 {
   m_LineText = p_String;
   m_LineState = p_LineState;

@@ -42,8 +42,11 @@ public:
 
   bool MatchLine(long i1, DiffFilePartition& p_OtherFile, long& i2);
 
-  void AddString(const SimpleString& p_String, DiffLine::LineState p_LineState);
+  void AddString(const SimpleString& p_String, 
+                 DiffLine::LineState p_LineState);
+
   void AddString(const SimpleString& p_String);
+
   void AddBlankLine();
 
   /**
