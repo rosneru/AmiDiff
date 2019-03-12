@@ -74,7 +74,7 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
         bDeleted = p_File2Src.MatchLine(nF2CurrentLine, p_File1Src, iTmp) && (iTmp  < numLinesFile1Src);
         if(bDeleted)
         {
-          long j = iTmp - 1;
+          long j = iTmp - i;
           while(j > 0)
           {
             p_File1Diff.AddString(p_File1Src.GetDiffLine(i)->Text(), DiffLine::Deleted);

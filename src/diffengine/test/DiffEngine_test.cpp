@@ -416,3 +416,53 @@ BOOST_AUTO_TEST_CASE( DiffTest_12_EndlessLoop )
     BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(5).C_str(), "Line 5");
     BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(5), DiffLine::Normal);
 }
+
+
+/**
+ * In this test case both files are about 6000 lines long.
+ *
+ * In ADiffView release version 1.0 this crashes:-(
+ */
+BOOST_AUTO_TEST_CASE( DiffTest_13_LongFiles_Crash )
+{
+  bool cancelRequested = false;
+  bool diffOk = false;
+  DiffEngine diffEngine(cancelRequested);
+
+
+  DiffFilePartitionLinux leftSrcPartition(cancelRequested);
+  leftSrcPartition.PreProcess("../../../testfiles/testcase_13_6000_left.cpp");
+
+  DiffFilePartitionLinux rightSrcPartition(cancelRequested);
+  rightSrcPartition.PreProcess("../../../testfiles/testcase_13_6000_right.cpp");
+
+    DiffFilePartition leftDiffPartition(cancelRequested);
+    DiffFilePartition rightDiffPartition(cancelRequested);
+
+    diffOk = diffEngine.Diff(leftSrcPartition,
+                             rightSrcPartition,
+                             leftDiffPartition,
+                             rightDiffPartition);
+
+    BOOST_CHECK_EQUAL(diffOk, true);
+
+    //
+    // Collecting the number of changes
+    //
+    int leftNumAdded;
+    int leftNumChanged;
+    int leftNumDeleted;
+    leftDiffPartition.NumChanges(leftNumAdded, leftNumChanged,
+                                 leftNumDeleted);
+
+    int rightNumAdded;
+    int rightNumChanged;
+    int rightNumDeleted;
+    rightDiffPartition.NumChanges(rightNumAdded, rightNumChanged,
+                                  rightNumDeleted);
+
+    int sumChanges = leftNumAdded + leftNumChanged + leftNumDeleted
+                   + rightNumAdded + rightNumChanged + rightNumDeleted;
+
+    BOOST_CHECK_EQUAL(7603, sumChanges);
+}
