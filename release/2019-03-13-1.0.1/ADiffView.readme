@@ -41,10 +41,8 @@ FEATURES
 - A window allows you to choose the files to compare.
 
 - While comparing the files the difference is calculated in a
-background process and a progress bar is shown. On an emulated system
-you will barely notice the progress bar as the diff runs fast. But for
-example on a real hardware A500 (as necessary with Kickstart >= 3.0)
-comparing two files of 1000 lines each will take more than 20 seconds.
+background process and a progress bar is shown to give a visual
+response of what's going on and that the program isn't freezed yet.
 
 So you have a visual response what's going on and that the program
 isn't freezed yet.

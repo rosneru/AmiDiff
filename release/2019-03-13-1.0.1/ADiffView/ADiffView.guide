@@ -2,7 +2,7 @@
 @wordwrap
 @node Main "ADiffView - Introduction"
 
-@{fg shine}ADiffView 1.0 released on 21.02.2019.@{fg text}
+@{fg shine}ADiffView 1.0.1 released on 13.03.2019.@{fg text}
 
 @{b}About@{ub}
 
@@ -10,7 +10,9 @@ ADiffView compares two ASCII text files and displays the differences in an Intui
 
 Minimum system requirement is an Amiga with 1.0 MB RAM and AmigaOS3.0.
 
-While comparing the files the difference is calculated in a background process and a progress bar is shown. On an emulated system you will barely notice the progress bar as the diff runs fast. But for example on a real hardware A500 (as necessary with Kickstart >= 3.0) comparing two files of 1000 lines each will take more than 20 seconds. So you have a visual response what's going on and that the program isn't freezed yet.
+While comparing the files the difference is calculated in a background process and a progress bar is shown to give a visual response of what's going on and that the program isn't freezed yet.
+
+Note that if you compare large files with several thousend lines ADiffView takes some time at exit to free all the allocated memory. This is due to the implementation of the memory allocation and no error. Maybe this will change some day if the memory pool functions of AmigaOS3.0+ find their way into ADiffView.
 
 @{b}Origin of the diff algorithm@{ub}
 
@@ -22,6 +24,7 @@ http://www.arstdesign.com/articles/difftool.html
 
 @{"Installation" link installation}
 @{"Arguments and tool types" link argsttypes}
+@{"Changelog" link changelog}
 @{"Distribution" link distribution}
 
 
@@ -38,7 +41,8 @@ Additionally if you use DOpus 5.x you can setup a button to run ADiffView from t
 1) Edit the file DOpus/ARexx/Compare.dopus5 in away that the line at the bottom which starts with 'Address Command' looks like this:
 @{fg shine}Address Command 'SYS:Tools/ADiffView "' || First_Name || '" "' || Second_Name || '"' DONOTASK@{fg text}
 
-2) In DOpus create or edit a button, name it e.g. "Diff" and set this ARexx script to be executed on the button click.
+2) In DOpus create or edit a button, name it e.g. "Diff" and set this ARexx script to be executed on the button click:
+@{fg shine}DOpus5:ARexx/Compare.dopus5 {Qp}@{fg text}
 
 Now when clicking on "Diff" ADiffView will be started, immediately comparing the first two selected files. The files to compare can be selected in one lister or in two different listers.
 
@@ -69,6 +73,23 @@ The file comparing starts immediately after program start. The window for select
 
 
 @endnode
+
+@node changelog "Changelog"
+
+@{b}Changelog@{ub}
+
+
+1.0.1 (13.03.2019)
+- Fixed a bug which caused a crash when comparing long files
+- Fixed a minor problem in the about window where the title was always inherited by the parent window.
+- Added some more info into the manual chapter about running ADiffView from Directory Opus
+
+1.0.0 (21.02.2019)
+- Initial version
+
+
+@endnode
+
 
 @node distribution "Author and distribution"
 
