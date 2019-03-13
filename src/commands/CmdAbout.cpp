@@ -5,7 +5,7 @@ CmdAbout::CmdAbout(AppScreen& p_Screen, ApplicationMenu& p_Menu)
   : m_Screen(p_Screen),
     m_Menu(p_Menu)
 {
-  m_AboutMsg  = "ADiffView 1.0 (21.02.2019)\n";
+  m_AboutMsg  = "ADiffView 1.0.1 (13.03.2019)\n";
   m_AboutMsg += "\n";
   m_AboutMsg += "Autor: Uwe Rosner (u.rosner@ymail.com)\n";
   m_AboutMsg += "\n";
@@ -28,7 +28,7 @@ void CmdAbout::Execute() const
 
   // Display the about dialog
   MessageBox messageBox;
-  messageBox.Show(pActiveWindow, m_AboutMsg.C_str(), "Ok");
+  messageBox.Show(pActiveWindow, "About", m_AboutMsg.C_str(), "Ok");
 
   // Enable this command in the menu of the active window
   m_Menu.EnableMenuItem(pActiveWindow, (APTR)this);
