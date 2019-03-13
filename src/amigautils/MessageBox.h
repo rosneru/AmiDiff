@@ -17,6 +17,11 @@ public:
   virtual ~MessageBox();
 
   void Show(struct Window* p_pWindow,
+            const SimpleString& p_WindowTitle,
+            const SimpleString& p_Message,
+            const SimpleString& p_ButtonText);
+
+  void Show(struct Window* p_pWindow,
             const SimpleString& p_Message,
             const SimpleString& p_ButtonText);
 

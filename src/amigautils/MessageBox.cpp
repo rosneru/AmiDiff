@@ -28,8 +28,17 @@ MessageBox::~MessageBox()
 }
 
 void MessageBox::Show(struct Window* p_pWindow,
-                   const SimpleString& p_Message,
-                   const SimpleString& p_ButtonText)
+                      const SimpleString& p_WindowTitle,
+                      const SimpleString& p_Message,
+                      const SimpleString& p_ButtonText)
+{
+  m_pEasyStruct->es_Title = (UBYTE*) p_WindowTitle.C_str();
+  Show(p_pWindow, p_Message, p_ButtonText);
+}
+
+void MessageBox::Show(struct Window* p_pWindow,
+                      const SimpleString& p_Message,
+                      const SimpleString& p_ButtonText)
 {
   if(m_pEasyStruct == NULL)
   {
