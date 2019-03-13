@@ -75,8 +75,8 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
       {
         long iTmp = i;
         bDeleted = p_File2Src.MatchLine(nF2CurrentLine, p_File1Src, iTmp) 
-                   && (iTmp  < numLinesFile1Src);
-        
+                 && (iTmp  < numLinesFile1Src);
+
         if(bDeleted)
         {
           long j = iTmp - i;
