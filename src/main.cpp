@@ -22,7 +22,8 @@
  *       UnitTests with QTCreator and the boost framework
  *
  * History
- *   21.02.2019 - Release of version 1.0
+ *   13.03.2019 - Release of version 1.0.1
+ *   21.02.2019 - Release of version 1.0.0
  *   18.09.2018 - Project start
  *
  * Author: Uwe Rosner
