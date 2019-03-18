@@ -1,0 +1,20 @@
+Mikhail Malyshev <mm@list.ru>
+
+Thanks for the update!
+
+But a few issues remain
+
+1. Comparing the included files gives a somewhat odd result, one string 
+changed, but we get a full block of changes
+
+2. Compare two files, open the file requester to compare something 
+again and select the same file in both path result should be no diff, 
+but we are greeted with a lot of changes in the same file!
+
+==== 2nd mail
+
+3. And forgot to add, after comparing an option to invert comparison 
+would be nice that is first and second file exchanged, so that deleted /
+added strings change if files were not in correct order new/old
+
+4. Amiga-conform version string

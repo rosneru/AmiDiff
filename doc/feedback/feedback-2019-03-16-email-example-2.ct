@@ -1,0 +1,146 @@
+;--- Find requester -------------------
+FRTITLE_FIND_DOCUMENT
+Поиск документа
+; Find Document
+;
+FRTITLE_FIND_TEXT
+Поиск текста
+; Find Text
+;
+FRLABEL_FIND
+Поиск
+; _Find
+;
+FRLABEL_NEXT
+Дальше
+; _Next
+;
+FRLABEL_CANCEL
+Отменить
+; _Cancel
+;
+FRLABEL_IGNORE_CASE
+Без учёта регистра
+; I_gnore Case
+;
+FRLABEL_ONLY_WHOLE_WORDS
+Только целые слова
+; _Only Whole Words
+;
+FRLABEL_SCAN_DATABASE
+Сканировать базу данных
+; _Scan Database
+;
+FRNODE_FOUND_NO_OCCURRENCES
+\nНет совпадений с\n\"%s\"\n
+; \nFound no occurrences of:\n\"%s\"\n
+;
+FRNODE_FOUND_ONE_OCCURRENCE
+\nНайдено одно совпадение с\n\"%s\"\n
+; \nFound 1 occurrence of:\n\"%s\"\n
+;
+FRNODE_FOUND_OCCURRENCES
+Найдено %ld совпадений с:\n\"%s\"\n
+; \nFound %ld occurrences of:\n\"%s\"\n
+;
+;--- Menus ----------------------------
+MENU_PROJECT
+Проект
+; Project
+;
+ITEM_OPEN
+O\0Открыть ...
+; O\0Open...
+;
+ITEM_SAVE_AS
+A\0Сохранить как ...
+; A\0Save As...
+;
+ITEM_PRINT
+P\0Печать
+; P\0Print
+;
+ITEM_ABOUT
+?\0О программе ...
+; ?\0About...
+;
+ITEM_QUIT
+Q\0Выход
+; Q\0Quit
+;
+MENU_EDIT
+Редактор
+; Edit
+;
+ITEM_MARK
+B\0Пометить
+; B\0Mark
+;
+ITEM_COPY
+C\0Копировать
+; C\0Copy
+;
+ITEM_SELECT_ALL
+L\0Выбрать всё
+; [\0Select All
+;
+ITEM_CLEAR_SELECTED
+]\0Отменить выбор
+; ]\0Clear Selected
+;
+MENU_SEARCH
+Поиск
+; Search
+;
+ITEM_FIND
+F\0Найти...
+; F\0Find...
+;
+ITEM_FIND_NEXT
+N\0Продолжить поиск
+; N\0Find Next
+;
+ITEM_GO_TO_LINE
+G\0Перейти на строку #...
+; G\0Go To Line #...
+;
+ITEM_SET_BOOKMARK
+ \0Установить закладку
+;  \0Set Bookmark
+;
+ITEM_GOTO_BOOKMARK
+ \0Перейти на закладку
+;  \0Go To Bookmark
+;
+MENU_WINDOW
+Окно
+; Window
+;
+ITEM_MINIMIZE
+ \0Минимальное
+;  \0Minimize
+;
+ITEM_NORMAL
+ \0Обычное
+;  \0Normal
+;
+ITEM_MAXIMIZE
+ \0Максимальное
+;  \0Maximize
+;
+MENU_EXTRAS
+Дополнение
+; Extras
+;
+ITEM_EXECUTE_COMMAND
+E\0Выполнить команду ...
+; E\0Execute Command...
+;
+MENU_PREFS
+Установки
+; Prefs
+;
+ITEM_SAVE_AS_DEFAULTS
+D\0Сохранить по умолчанию
+; D\0Save As Defaults
+;
