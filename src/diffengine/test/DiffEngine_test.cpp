@@ -468,11 +468,12 @@ BOOST_AUTO_TEST_CASE( DiffTest_13_LongFiles_Crash )
 }
 
 /**
- * In this test case both files are about 6000 lines long.
+ * User-provided testcase, see doc/feedback/FB101-02 files
  *
- * In ADiffView release version 1.0 this crashes:-(
+ * Comparing the included files gives a somewhat odd result, one
+ * string changed, but we get a full block of changes
  */
-BOOST_AUTO_TEST_CASE( DiffTest_14_One_char_change_whole_block_diff )
+BOOST_AUTO_TEST_CASE( DiffTest_14_One_string_change_whole_block_diff )
 {
   bool cancelRequested = false;
   bool diffOk = false;
@@ -480,10 +481,10 @@ BOOST_AUTO_TEST_CASE( DiffTest_14_One_char_change_whole_block_diff )
 
 
   DiffFilePartitionLinux leftSrcPartition(cancelRequested);
-  leftSrcPartition.PreProcess("../../../testfiles/testcase_14_FB101-02-Left");
+  leftSrcPartition.PreProcess("../../../testfiles/testcase_14_FB101-02-Left.txt");
 
   DiffFilePartitionLinux rightSrcPartition(cancelRequested);
-  rightSrcPartition.PreProcess("../../../testfiles/testcase_14_FB101-02-Right");
+  rightSrcPartition.PreProcess("../../../testfiles/testcase_14_FB101-02-Right.txt");
 
   DiffFilePartition leftDiffPartition(cancelRequested);
   DiffFilePartition rightDiffPartition(cancelRequested);
