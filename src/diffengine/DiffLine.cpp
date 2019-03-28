@@ -9,12 +9,12 @@ DiffLine::~DiffLine()
 {
 }
 
-long DiffLine::SetLine(const SimpleString& p_String)
+unsigned long DiffLine::SetLine(const SimpleString& p_String)
 {
   m_LineText = p_String;
 
   const char* pBuf = p_String.C_str();
-  long nToken = 0;
+  unsigned long nToken = 0;
 
   for(size_t i = 0; i < p_String.Length(); i++)
   {
