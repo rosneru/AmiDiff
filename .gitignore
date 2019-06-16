@@ -6,5 +6,6 @@ objects_debug
 *.pro.user
 *.autosave
 *.o
+.vscode
 build-*
 !release/**
