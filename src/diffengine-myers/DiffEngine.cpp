@@ -40,24 +40,30 @@ bool DiffEngine::Diff(DiffFilePartition& p_File1Src,
 
       // follow diagonal
       long snake = 0;
-      while ( xEnd < aMax && yEnd < bMax
-              && p_File1Src.GetDiffLine(xEnd)->Token() == p_File2Src.GetDiffLine(yEnd)->Token() )
+      while (    (xEnd < aMax )
+              && (yEnd < bMax)
+              && (p_File1Src.GetDiffLine(xEnd)->Token() == p_File2Src.GetDiffLine(yEnd)->Token()) )
       {
         xEnd++;
         yEnd++;
         snake++;
+        p_File1Diff.AddString(p_File1Src.GetDiffLine(xEnd)->Text(), DiffLine::Normal);
+        p_File2Diff.AddString(p_File1Src.GetDiffLine(yEnd)->Text(), DiffLine::Normal);
       }
 
       // save end point
-      V.Set(k, xEnd);
+//      V.Set(k, xEnd);
 
       // check for solution
       if ( xEnd >= aMax && yEnd >= bMax ) /* solution has been found */
       {
-        xEnd++;
+        // TODO return history
+        return true;
       }
     }
   }
+
+  return false;
 }
 
 void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
