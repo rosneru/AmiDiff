@@ -28,18 +28,9 @@ public:
     Undefined
   };
 
-  DiffLine();
+  DiffLine(const SimpleString& p_String);
+  DiffLine(const SimpleString& p_String, LineState p_LineState);
   ~DiffLine();
-
-  /**
-   * Store a string and build its token
-   */
-  unsigned long SetLine(const SimpleString& p_pString);
-
-  /**
-   * Store a string and its state. Does not evaluate token.
-   */
-  void SetLine(const SimpleString& p_String, LineState p_LineState);
 
   /**
    * Returns the text of the diff line
@@ -51,7 +42,13 @@ public:
    */
   LineState State() const;
 
+  /**
+   * Returns the token which is asociated with this line
+   */
+  unsigned long Token() const;
+
 protected:
+  unsigned long m_Token;
   LineState m_LineState;
   SimpleString m_LineText;
 };

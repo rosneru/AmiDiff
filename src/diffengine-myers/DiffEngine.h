@@ -35,6 +35,7 @@ public:
   void SetProgressReporter(ProgressReporter* p_pProgressReporter);
 
 private:
+  Array<long> V;
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 

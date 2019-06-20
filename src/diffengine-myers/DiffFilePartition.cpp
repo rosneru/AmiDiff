@@ -96,10 +96,6 @@ DiffLine::LineState DiffFilePartition::GetDiffLineState(size_t p_Index) const
   return GetDiffLine(p_Index)->State();
 }
 
-Array<unsigned long>& DiffFilePartition::TokensList()
-{
-  return m_TokensArray;
-}
 
 bool DiffFilePartition::PreProcess()
 {
@@ -120,18 +116,7 @@ bool DiffFilePartition::MatchLine(long i1,
                                   DiffFilePartition& p_OtherFile, 
                                   long& i2)
 {
-  if(m_TokensArray.Size() == 0)
-  {
-    return false;
-  }
-
   if((i1 < 0 ) || (i1 > NumLines()))
-  {
-    return false;
-  }
-
-  unsigned long* otherFileTokenArray = p_OtherFile.TokensList().Data();
-  if(otherFileTokenArray == NULL)
   {
     return false;
   }
@@ -142,11 +127,12 @@ bool DiffFilePartition::MatchLine(long i1,
   long i = 0;
   long otherFileSubsetLines = p_OtherFile.NumLines() - i2;
 
-  unsigned long* pOtherFileToken = otherFileTokenArray + i2;
+  unsigned long pOtherFileToken = p_OtherFile.GetDiffLine(i2)->Token();
+  ;
 
   while(!bFound && i < otherFileSubsetLines)
   {
-    if(m_TokensArray[i1] == *pOtherFileToken)  // Fast compare
+    if(m_DiffLinesArray[i1]->Token() == pOtherFileToken)  // Fast compare
     {
       // Make sure strings really match
       const SimpleString lineOtherFile = 
@@ -177,33 +163,25 @@ bool DiffFilePartition::MatchLine(long i1,
 void DiffFilePartition::AddString(const SimpleString& p_String, 
                                   DiffLine::LineState p_LineState)
 {
-  DiffLine* pDiffLine = new DiffLine();
+  DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
   if(pDiffLine == NULL)
   {
     return;
   }
 
-  pDiffLine->SetLine(p_String, p_LineState);
   m_DiffLinesArray.Push(pDiffLine);
 }
 
 void DiffFilePartition::AddString(const SimpleString& p_String)
 {
-  DiffLine* pDiffLine = new DiffLine();
+  DiffLine* pDiffLine = new DiffLine(p_String);
   if(pDiffLine == NULL)
   {
     return;
   }
 
-  // Set string in DiffLine gets us the token
-  unsigned long token = pDiffLine->SetLine(p_String);
-
-  // Append token to list
-  m_TokensArray.Push(token);
-
   // Append DiffLine to list
   m_DiffLinesArray.Push(pDiffLine);
-
 }
 
 void DiffFilePartition::AddBlankLine()

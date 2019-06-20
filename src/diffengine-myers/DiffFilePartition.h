@@ -28,8 +28,6 @@ public:
 
   void Clear();
 
-  Array<unsigned long>& TokensList();
-
   long NumLines() const;
   void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const;
 
@@ -61,7 +59,6 @@ protected:
 private:
   Array<SimpleString*> m_InputLinesArray;
   Array<DiffLine*> m_DiffLinesArray;
-  Array<unsigned long> m_TokensArray;
 };
 
 #endif

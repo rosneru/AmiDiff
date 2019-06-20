@@ -40,10 +40,10 @@ BOOST_AUTO_TEST_CASE( testDiff_PassAddString )
   // >> Deleted "Line 3" in right file.
 
   DiffFilePartitionLinux leftSrcPartition1(cancelRequested);
-  leftSrcPartition1.PreProcess("../../../testfiles/testcase_03_left.txt");
+  leftSrcPartition1.PreProcess("../../../testfiles/testcase_02_left.txt");
 
   DiffFilePartitionLinux rightSrcPartition1(cancelRequested);
-  rightSrcPartition1.PreProcess("../../../testfiles/testcase_03_right.txt");
+  rightSrcPartition1.PreProcess("../../../testfiles/testcase_02_right.txt");
 
   DiffFilePartition leftDiffPartition1(cancelRequested);
   DiffFilePartition rightDiffPartition1(cancelRequested);
