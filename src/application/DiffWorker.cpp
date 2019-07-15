@@ -27,11 +27,11 @@ DiffWorker::DiffWorker(SimpleString& p_LeftFilePath,
     m_DiffEngine(m_bCancelRequested)
 {
   //
-  // Registering *this* as receiver for progress messages for some 
+  // Registering *this* as receiver for progress messages for some
   // objects.
   //
-  // NOTE *this* is a BackgroundWorker who forwards these messages to 
-  //      the intuition event loop which eventually displays the 
+  // NOTE *this* is a BackgroundWorker who forwards these messages to
+  //      the intuition event loop which eventually displays the
   //      progress in a window.
   //
   m_LeftSrcPartition.SetProgressReporter(this);
@@ -129,7 +129,7 @@ bool DiffWorker::Diff()
     m_LeftSrcPartition, m_RightSrcPartition,
     m_LeftDiffPartition, m_RightDiffPartition);
 
-  long timeSummary = static_cast<long>(m_StopWatch.Stop());
+  long timeSummary = static_cast<long>(m_StopWatch.Pick());
 
   // If there was an error return to FilesWindow
   if(!diffOk)
@@ -151,13 +151,13 @@ bool DiffWorker::Diff()
   int leftNumAdded;
   int leftNumChanged;
   int leftNumDeleted;
-  m_LeftDiffPartition.NumChanges(leftNumAdded, leftNumChanged, 
+  m_LeftDiffPartition.NumChanges(leftNumAdded, leftNumChanged,
                                  leftNumDeleted);
 
   int rightNumAdded;
   int rightNumChanged;
   int rightNumDeleted;
-  m_RightDiffPartition.NumChanges(rightNumAdded, rightNumChanged, 
+  m_RightDiffPartition.NumChanges(rightNumAdded, rightNumChanged,
                                   rightNumDeleted);
 
   // If there are no changes return to FilesWindow
