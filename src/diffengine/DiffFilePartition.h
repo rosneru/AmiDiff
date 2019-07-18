@@ -28,8 +28,6 @@ public:
 
   void Clear();
 
-  Array<unsigned long>& TokensList();
-
   long NumLines() const;
   void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const;
 
@@ -39,8 +37,6 @@ public:
 
 
   bool PreProcess();
-
-  bool MatchLine(long i1, DiffFilePartition& p_OtherFile, long& i2);
 
   void AddString(const SimpleString& p_String, 
                  DiffLine::LineState p_LineState);
@@ -61,7 +57,6 @@ protected:
 private:
   Array<SimpleString*> m_InputLinesArray;
   Array<DiffLine*> m_DiffLinesArray;
-  Array<unsigned long> m_TokensArray;
 };
 
 #endif

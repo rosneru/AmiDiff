@@ -1,7 +1,8 @@
 #include "DiffLine.h"
 
 DiffLine::DiffLine()
-  : m_LineState(Normal)
+  : m_LineState(Normal),
+    m_Token(0)
 {
 }
 
@@ -9,19 +10,17 @@ DiffLine::~DiffLine()
 {
 }
 
-unsigned long DiffLine::SetLine(const SimpleString& p_String)
+void DiffLine::SetLine(const SimpleString& p_String)
 {
   m_LineText = p_String;
 
   const char* pBuf = p_String.C_str();
-  unsigned long nToken = 0;
+  m_Token = 0;
 
   for(size_t i = 0; i < p_String.Length(); i++)
   {
-    nToken += 2 * nToken + *(pBuf++); // (George V. Reilly hint)
+    m_Token += 2 * m_Token + *(pBuf++);
   }
-
-  return nToken;
 }
 
 void DiffLine::SetLine(const SimpleString& p_String, 
@@ -39,4 +38,9 @@ const SimpleString& DiffLine::Text() const
 DiffLine::LineState DiffLine::State() const
 {
   return m_LineState;
+}
+
+unsigned long DiffLine::Token() const
+{
+  return m_Token;
 }

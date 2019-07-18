@@ -96,10 +96,6 @@ DiffLine::LineState DiffFilePartition::GetDiffLineState(size_t p_Index) const
   return GetDiffLine(p_Index)->State();
 }
 
-Array<unsigned long>& DiffFilePartition::TokensList()
-{
-  return m_TokensArray;
-}
 
 bool DiffFilePartition::PreProcess()
 {
@@ -116,63 +112,6 @@ bool DiffFilePartition::PreProcess()
   return true;
 }
 
-bool DiffFilePartition::MatchLine(long i1, 
-                                  DiffFilePartition& p_OtherFile, 
-                                  long& i2)
-{
-  if(m_TokensArray.Size() == 0)
-  {
-    return false;
-  }
-
-  if((i1 < 0 ) || (i1 > NumLines()))
-  {
-    return false;
-  }
-
-  unsigned long* otherFileTokenArray = p_OtherFile.TokensList().Data();
-  if(otherFileTokenArray == NULL)
-  {
-    return false;
-  }
-
-  const SimpleString lineThisFile = GetDiffLine(i1)->Text();
-
-  bool bFound = false;
-  long i = 0;
-  long otherFileSubsetLines = p_OtherFile.NumLines() - i2;
-
-  unsigned long* pOtherFileToken = otherFileTokenArray + i2;
-
-  while(!bFound && i < otherFileSubsetLines)
-  {
-    if(m_TokensArray[i1] == *pOtherFileToken)  // Fast compare
-    {
-      // Make sure strings really match
-      const SimpleString lineOtherFile = 
-        p_OtherFile.GetDiffLine(i2 + i)->Text();
-      
-      bFound = (lineThisFile == lineOtherFile);
-    }
-
-    pOtherFileToken++;
-    i++;
-    if(pOtherFileToken == NULL)
-    {
-      break;
-    }
-  }
-
-  i--;
-
-  if(bFound)
-  {
-    i2 += i;
-    return true;
-  }
-
-  return false;
-}
 
 void DiffFilePartition::AddString(const SimpleString& p_String, 
                                   DiffLine::LineState p_LineState)
@@ -196,14 +135,10 @@ void DiffFilePartition::AddString(const SimpleString& p_String)
   }
 
   // Set string in DiffLine gets us the token
-  unsigned long token = pDiffLine->SetLine(p_String);
-
-  // Append token to list
-  m_TokensArray.Push(token);
+  pDiffLine->SetLine(p_String);
 
   // Append DiffLine to list
   m_DiffLinesArray.Push(pDiffLine);
-
 }
 
 void DiffFilePartition::AddBlankLine()

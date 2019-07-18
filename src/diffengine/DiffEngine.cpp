@@ -30,7 +30,8 @@ int DiffEngine::shortestEdit(DiffFilePartition& a, DiffFilePartition& b)
   int m = b.NumLines();
   long max = n + m;
 
-  int* v = new int[2 * max + 1];
+  int vSize = 2 * max + 1;
+  int* v = new int[vSize];
   v[1] = 0;
 
   int x, y;
@@ -57,7 +58,13 @@ int DiffEngine::shortestEdit(DiffFilePartition& a, DiffFilePartition& b)
         y++;
       }
 
-      v[k] = x;
+      int idx = k;
+      if(idx < 0)
+      {
+        idx = vSize + k;
+      }
+
+      v[idx] = x;
 
       if((x >= n) && (y >= m))
       {
