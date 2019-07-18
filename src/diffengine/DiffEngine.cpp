@@ -52,10 +52,13 @@ int DiffEngine::shortestEdit(DiffFilePartition& a, DiffFilePartition& b)
       y = x - k;
 
       while((x < n) && (y < m) &&
-            (a.GetDiffLine(x)->Text() == b.GetDiffLine(y)->Text()))
+            (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token()))
       {
-        x++;
-        y++;
+        if(a.GetDiffLine(x)->Text() == b.GetDiffLine(y)->Text())
+        {
+          x++;
+          y++;
+        }
       }
 
       int idx = k;
