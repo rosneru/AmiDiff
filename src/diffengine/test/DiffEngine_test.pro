@@ -20,7 +20,8 @@ SOURCES += \
     ../../oscottlibs/LinkedList.cpp \
     ../../oscottlibs/LinkedListNode.cpp \
     ../../oscottlibs/SimpleString.cpp \
-    ../DiffFilePartitionLinux.cpp
+    ../DiffFilePartitionLinux.cpp \
+    ../DiffTracer.cpp
 
 
 HEADERS += \
@@ -31,4 +32,5 @@ HEADERS += \
     ../../oscottlibs/LinkedListNode.h \
     ../../oscottlibs/SimpleString.h \
     ../DiffFilePartitionLinux.h \
-    ../../oscottlibs/Array.h
+    ../../oscottlibs/Array.h \
+    ../DiffTracer.h

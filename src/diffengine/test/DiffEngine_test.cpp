@@ -16,6 +16,7 @@
 #include "DiffFilePartitionLinux.h"
 #include "DiffEngine.h"
 #include "DiffLine.h"
+#include "DiffTracer.h"
 #include "LinkedList.h"
 #include "SimpleString.h"
 
@@ -517,6 +518,42 @@
 //  BOOST_CHECK_EQUAL(7, sumChanges);
 //}
 
+/**
+ * Testing if the DiffTracer stores the given array properly.
+ *
+ * Doing so by clearing the src arrays after adding them to DiffTracer
+ * and then checking if the former src values are still there.
+ */
+BOOST_AUTO_TEST_CASE( test_DiffTracer_Storage )
+{
+  int src1[] = {3, 4, 5, 6};
+  int src2[] = {83, 293, 1377};
+
+  DiffTracer diffTracer;
+  diffTracer.AddArray(src1, sizeof(src1) / sizeof(src1[0]));
+  diffTracer.AddArray(src2, sizeof(src2) / sizeof(src2[0]));
+
+  src1[0] = 0;
+  src1[1] = 0;
+  src1[2] = 0;
+  src1[3] = 0;
+
+  src2[0] = 0;
+  src2[1] = 0;
+  src2[2] = 0;
+
+  Array<int>* pFirstStored = diffTracer.GetFirst();
+  Array<int>* pSecondStored = diffTracer.GetNext();
+
+  BOOST_CHECK_EQUAL((*pFirstStored)[0], 3);
+  BOOST_CHECK_EQUAL((*pFirstStored)[1], 4);
+  BOOST_CHECK_EQUAL((*pFirstStored)[2], 5);
+  BOOST_CHECK_EQUAL((*pFirstStored)[3], 6);
+
+  BOOST_CHECK_EQUAL((*pSecondStored)[0], 83);
+  BOOST_CHECK_EQUAL((*pSecondStored)[1], 293);
+  BOOST_CHECK_EQUAL((*pSecondStored)[2], 1377);
+}
 
 /**
  * Simplified variant of user-provided testcase,
