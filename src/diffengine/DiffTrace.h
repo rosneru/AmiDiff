@@ -12,16 +12,21 @@
  * @author Uwe Rosner
  * @date 26/07/2019
  */
-class DiffTracer
+class DiffTrace
 {
 public:
-  DiffTracer();
-  ~DiffTracer();
+  DiffTrace();
+  ~DiffTrace();
 
-  void AddArray(const int* array, size_t arrayLen);
+  void AddTrace(const int* array, size_t arrayLen);
 
   Array<int>* GetFirst();
   Array<int>* GetNext();
+  size_t NumItems();
+
+  void Backtrack(int x, int y);
+
+  void Print();
 
 protected:
   LinkedList m_TraceList;

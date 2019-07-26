@@ -12,9 +12,16 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
                       DiffFilePartition& targetA,
                       DiffFilePartition& targetB)
 {
-  int se = shortestEdit(srcA, srcB);
+  DiffTrace trace;
+  if(shortestEdit(trace, srcA, srcB) == false)
+  {
+    return false;
+  }
 
-  return se > 0;
+//  trace.Backtrack(srcA.NumLines(), srcB.NumLines());
+  trace.Print();
+
+  return true;
 }
 
 
@@ -24,7 +31,9 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
   m_pProgressReporter = p_pProgressReporter;
 }
 
-int DiffEngine::shortestEdit(DiffFilePartition& a, DiffFilePartition& b)
+bool DiffEngine::shortestEdit(DiffTrace& trace,
+                              DiffFilePartition& a,
+                              DiffFilePartition& b)
 {
   int n = a.NumLines();
   int m = b.NumLines();
@@ -36,8 +45,9 @@ int DiffEngine::shortestEdit(DiffFilePartition& a, DiffFilePartition& b)
 
   int x, y;
 
-  for(int d = 0; d < max; d++)
+  for(int d = 0; d <= max; d++)
   {
+    trace.AddTrace(v, vSize);
     for(long k = -d; k <= d; k += 2)
     {
       if((k == -d) || ((k != d) && (v[k - 1] < v[k + 1])))
@@ -72,11 +82,11 @@ int DiffEngine::shortestEdit(DiffFilePartition& a, DiffFilePartition& b)
       if((x >= n) && (y >= m))
       {
         delete[] v;
-        return d;
+        return true;
       }
     }
   }
 
   delete[] v;
-  return -1;
+  return false;
 }

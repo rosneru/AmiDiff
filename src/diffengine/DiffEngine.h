@@ -4,6 +4,7 @@
 #include "SimpleString.h"
 #include "DiffLine.h"
 #include "DiffFilePartition.h"
+#include "DiffTrace.h"
 #include "ProgressReporter.h"
 
 /**
@@ -34,7 +35,9 @@ private:
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
-  int shortestEdit(DiffFilePartition& a, DiffFilePartition& b);
+  bool shortestEdit(DiffTrace& trace,
+                    DiffFilePartition& a,
+                    DiffFilePartition& b);
 
 };
 

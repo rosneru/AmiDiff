@@ -16,7 +16,7 @@
 #include "DiffFilePartitionLinux.h"
 #include "DiffEngine.h"
 #include "DiffLine.h"
-#include "DiffTracer.h"
+#include "DiffTrace.h"
 #include "LinkedList.h"
 #include "SimpleString.h"
 
@@ -529,9 +529,9 @@ BOOST_AUTO_TEST_CASE( test_DiffTracer_Storage )
   int src1[] = {3, 4, 5, 6};
   int src2[] = {83, 293, 1377};
 
-  DiffTracer diffTracer;
-  diffTracer.AddArray(src1, sizeof(src1) / sizeof(src1[0]));
-  diffTracer.AddArray(src2, sizeof(src2) / sizeof(src2[0]));
+  DiffTrace trace;
+  trace.AddTrace(src1, sizeof(src1) / sizeof(src1[0]));
+  trace.AddTrace(src2, sizeof(src2) / sizeof(src2[0]));
 
   src1[0] = 0;
   src1[1] = 0;
@@ -542,8 +542,8 @@ BOOST_AUTO_TEST_CASE( test_DiffTracer_Storage )
   src2[1] = 0;
   src2[2] = 0;
 
-  Array<int>* pFirstStored = diffTracer.GetFirst();
-  Array<int>* pSecondStored = diffTracer.GetNext();
+  Array<int>* pFirstStored = trace.GetFirst();
+  Array<int>* pSecondStored = trace.GetNext();
 
   BOOST_CHECK_EQUAL((*pFirstStored)[0], 3);
   BOOST_CHECK_EQUAL((*pFirstStored)[1], 4);
