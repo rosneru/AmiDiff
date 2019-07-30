@@ -6,6 +6,6 @@ objects_debug
 *.pro.user
 *.autosave
 *.o
-.vscode
+.vscode/ipch
 build-*
 !release/**
