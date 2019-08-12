@@ -2,7 +2,9 @@
 
 #include "DiffTrace.h"
 
-DiffTrace::DiffTrace()
+DiffTrace::DiffTrace(DiffFilePartition& a, DiffFilePartition& b)
+  : m_A(a),
+    m_B(b)
 {
 }
 
@@ -103,14 +105,43 @@ void DiffTrace::Backtrack(int x, int y)
 
     while(x > prevX && y > prevY)
     {
-      printf("yield #1 x-1, y-1, x, y = %d,%d,%d,%d\n", x-1, y-1, x, y );
+//      printf("yield #1 x-1, y-1, x, y = %d,%d,%d,%d\n", x-1, y-1, x, y );
+      const char* aLine = m_A.GetDiffLineText(prevX).C_str();
+      const char* bLine = m_B.GetDiffLineText(prevY).C_str();
+      if(x == prevX)
+      {
+        printf("+  %s\n", bLine);
+      }
+      else if(y == prevY)
+      {
+        printf("-  %s\n", aLine);
+      }
+      else
+      {
+        printf("=  %s\n", aLine);
+      }
+
       x--;
       y--;
     }
 
     if(d > 0)
     {
-      printf("yield #2 prevX, prevY, x, y = %d,%d,%d,%d\n", prevX, prevY, x, y );
+//      printf("yield #2 prevX, prevY, x, y = %d,%d,%d,%d\n", prevX, prevY, x, y );
+      const char* aLine = m_A.GetDiffLineText(prevX).C_str();
+      const char* bLine = m_B.GetDiffLineText(prevY).C_str();
+      if(x == prevX)
+      {
+        printf("+  %s\n", bLine);
+      }
+      else if(y == prevY)
+      {
+        printf("-  %s\n", aLine);
+      }
+      else
+      {
+        printf("=  %s\n", aLine);
+      }
     }
 
     x = prevX;
@@ -118,32 +149,5 @@ void DiffTrace::Backtrack(int x, int y)
 
 
     v = (Array<int>*) m_TraceList.GetPrev();
-  }
-}
-
-void DiffTrace::Print()
-{
-  Array<int>* pItem = (Array<int>*)m_TraceList.GetFirst();
-  for(int i = 0; i < m_TraceList.Size(); i++)
-  {
-    if(pItem == NULL)
-    {
-      return;
-    }
-
-    printf("%d: {", i);
-
-    for(int j = 0; j < pItem->Size(); j++)
-    {
-      printf("%d", (*pItem)[j]);
-      if(j < (pItem->Size() - 1))
-      {
-        printf(", ");
-      }
-    }
-
-    printf("}\n");
-
-    pItem = (Array<int>*)m_TraceList.GetNext();
   }
 }

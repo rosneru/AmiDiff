@@ -519,43 +519,6 @@
 //}
 
 /**
- * Testing if the DiffTracer stores the given array properly.
- *
- * Doing so by clearing the src arrays after adding them to DiffTracer
- * and then checking if the former src values are still there.
- */
-BOOST_AUTO_TEST_CASE( test_DiffTracer_Storage )
-{
-  int src1[] = {3, 4, 5, 6};
-  int src2[] = {83, 293, 1377};
-
-  DiffTrace trace;
-  trace.AddTrace(src1, sizeof(src1) / sizeof(src1[0]));
-  trace.AddTrace(src2, sizeof(src2) / sizeof(src2[0]));
-
-  src1[0] = 0;
-  src1[1] = 0;
-  src1[2] = 0;
-  src1[3] = 0;
-
-  src2[0] = 0;
-  src2[1] = 0;
-  src2[2] = 0;
-
-  Array<int>* pFirstStored = trace.GetFirst();
-  Array<int>* pSecondStored = trace.GetNext();
-
-  BOOST_CHECK_EQUAL((*pFirstStored)[0], 3);
-  BOOST_CHECK_EQUAL((*pFirstStored)[1], 4);
-  BOOST_CHECK_EQUAL((*pFirstStored)[2], 5);
-  BOOST_CHECK_EQUAL((*pFirstStored)[3], 6);
-
-  BOOST_CHECK_EQUAL((*pSecondStored)[0], 83);
-  BOOST_CHECK_EQUAL((*pSecondStored)[1], 293);
-  BOOST_CHECK_EQUAL((*pSecondStored)[2], 1377);
-}
-
-/**
  * Simplified variant of user-provided testcase,
  * see doc/feedback/FB101-02 files
  *

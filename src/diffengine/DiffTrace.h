@@ -4,6 +4,8 @@
 #include "Array.h"
 #include "LinkedList.h"
 
+#include "DiffFilePartition.h"
+
 /**
  * A class that can store multiple arrays in a list for doing a trace 
  * later
@@ -15,7 +17,7 @@
 class DiffTrace
 {
 public:
-  DiffTrace();
+  DiffTrace(DiffFilePartition& a, DiffFilePartition& b);
   ~DiffTrace();
 
   void AddTrace(const int* array, size_t arrayLen);
@@ -26,9 +28,9 @@ public:
 
   void Backtrack(int x, int y);
 
-  void Print();
-
 protected:
+  DiffFilePartition& m_A;
+  DiffFilePartition& m_B;
   LinkedList m_TraceList;
 };
 

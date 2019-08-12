@@ -12,14 +12,13 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
                       DiffFilePartition& targetA,
                       DiffFilePartition& targetB)
 {
-  DiffTrace trace;
+  DiffTrace trace(srcA, srcB);
   if(shortestEdit(trace, srcA, srcB) == false)
   {
     return false;
   }
 
   trace.Backtrack(srcA.NumLines(), srcB.NumLines());
-//  trace.Print();
 
   return true;
 }
@@ -33,7 +32,7 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 
 int idxConvert(int i, int from, int to)
 {
-  if(i < 0) // from instead 0 ??
+  if(i < 0)
   {
     return from + to + i;
   }
