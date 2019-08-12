@@ -31,6 +31,22 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
   m_pProgressReporter = p_pProgressReporter;
 }
 
+int idxConvert(int i, int from, int to)
+{
+  if(i < 0) // from instead 0 ??
+  {
+    return from + to + i;
+  }
+
+  if(i > to)
+  {
+    return from + (i - to);
+  }
+
+  return i;
+}
+
+
 bool DiffEngine::shortestEdit(DiffTrace& trace,
                               DiffFilePartition& a,
                               DiffFilePartition& b)
@@ -43,11 +59,11 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
   int* v = new int[vSize];
   v[1] = 0;
 
-  // TODO Remove this loop after debugging
-  for(int i=0; i < vSize; i++)
-  {
-    v[i] = 0;
-  }
+//  // TODO Remove this loop after debugging
+//  for(int i=0; i < vSize; i++)
+//  {
+//    v[i] = 0;
+//  }
 
   int x, y;
 
@@ -56,13 +72,13 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
     trace.AddTrace(v, vSize);
     for(long k = -d; k <= d; k += 2)
     {
-      if((k == -d) || ((k != d) && (v[k - 1] < v[k + 1])))
+      if((k == -d) || ((k != d) && (v[idxConvert(k - 1, 1, vSize)] < v[idxConvert(k + 1, 1, vSize)])))
       {
-        x = v[k + 1];
+        x = v[idxConvert(k + 1, 1, vSize)];
       }
       else
       {
-        x = v[k - 1] + 1;
+        x = v[idxConvert(k - 1, 1, vSize)] + 1;
       }
 
       y = x - k;
@@ -77,11 +93,7 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
         }
       }
 
-      int idx = k;
-      if(idx < 0)
-      {
-        idx = vSize + k;
-      }
+      int idx = idxConvert(k, 1, vSize);
 
       v[idx] = x;
 
