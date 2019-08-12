@@ -86,15 +86,18 @@ void DiffTrace::Backtrack(int x, int y)
 
     while(x > prevX && y > prevY)
     {
-      printf("yield #1 x-1, y-1, x, y = %d,%d,%d,%d\n",x-1, y-1, x, y );
+      printf("yield #1 x-1, y-1, x, y = %d,%d,%d,%d\n", x-1, y-1, x, y );
       x--;
       y--;
     }
 
     if(d > 0)
     {
-      printf("yield #2 prevX, prevY, x, y = %d,%d,%d,%d\n",prevX, prevY, x, y );
+      printf("yield #2 prevX, prevY, x, y = %d,%d,%d,%d\n", prevX, prevY, x, y );
     }
+
+    x = prevX;
+    y = prevY;
 
 
     v = (Array<int>*) m_TraceList.GetPrev();

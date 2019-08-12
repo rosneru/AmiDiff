@@ -18,8 +18,8 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     return false;
   }
 
-//  trace.Backtrack(srcA.NumLines(), srcB.NumLines());
-  trace.Print();
+  trace.Backtrack(srcA.NumLines(), srcB.NumLines());
+//  trace.Print();
 
   return true;
 }
@@ -42,6 +42,12 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
   int vSize = 2 * max + 1;
   int* v = new int[vSize];
   v[1] = 0;
+
+  // TODO Remove this loop after debugging
+  for(int i=0; i < vSize; i++)
+  {
+    v[i] = 0;
+  }
 
   int x, y;
 
