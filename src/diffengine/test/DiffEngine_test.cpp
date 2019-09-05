@@ -59,35 +59,43 @@ BOOST_AUTO_TEST_CASE( testcase_00_myers )
   BOOST_CHECK_EQUAL(targetA.NumLines(), 9);
   BOOST_CHECK_EQUAL(targetB.NumLines(), 9);
 
-/*
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineText(0).C_str(), "AAAA");
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineState(0), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineText(1).C_str(), "BBBB");
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineState(1), DiffLine::Changed);
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineText(2).C_str(), "CCCC");
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineState(2), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineText(3).C_str(), "DDDD");
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineState(3), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineText(4).C_str(), "EEEE");
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineState(4), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineText(5).C_str(), "FFFF");
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineState(5), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineText(6).C_str(), "GGGG");
-  BOOST_CHECK_EQUAL(targetA1.GetDiffLineState(6), DiffLine::Normal);
 
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineText(0).C_str(), "AAAA");
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineState(0), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineText(1).C_str(), "FFFF");
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineState(1), DiffLine::Changed);
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineText(2).C_str(), "CCCC");
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineState(2), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineText(3).C_str(), "DDDD");
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineState(3), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineText(4).C_str(), "EEEE");
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineState(4), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineText(5).C_str(), "FFFF");
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineState(5), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineText(6).C_str(), "GGGG");
-  BOOST_CHECK_EQUAL(targetB1.GetDiffLineState(6), DiffLine::Normal);
-*/
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineText(0).C_str(), "A");
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineState(0), DiffLine::Deleted);
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineText(1).C_str(), "B");
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineState(1), DiffLine::Deleted);
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineText(2).C_str(), "C");
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineState(2), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineText(3).C_str(), "");
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineState(3), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineText(4).C_str(), "A");
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineState(4), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineText(5).C_str(), "B");
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineState(5), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineText(6).C_str(), "B");
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineState(6), DiffLine::Deleted);
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineText(7).C_str(), "A");
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineState(7), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineText(8).C_str(), "");
+  BOOST_CHECK_EQUAL(targetA.GetDiffLineState(8), DiffLine::Normal);
+
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineText(0).C_str(), "");
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineText(1).C_str(), "");
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineText(2).C_str(), "C");
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineState(2), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineText(3).C_str(), "B");
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineState(3), DiffLine::Added);
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineText(4).C_str(), "A");
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineState(4), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineText(5).C_str(), "B");
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineState(5), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineText(6).C_str(), "");
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineState(6), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineText(7).C_str(), "A");
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineState(7), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineText(8).C_str(), "C");
+  BOOST_CHECK_EQUAL(targetB.GetDiffLineState(8), DiffLine::Added);
+
 }
