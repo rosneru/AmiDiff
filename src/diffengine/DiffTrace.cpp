@@ -118,7 +118,7 @@ void DiffTrace::Backtrack(int x, int y)
       }
       else
       {
-        printf("=  %s\n", aLine);
+        printf("=  %s\n", bLine);
       }
 
       x--;
@@ -140,7 +140,7 @@ void DiffTrace::Backtrack(int x, int y)
       }
       else
       {
-        printf("=  %s\n", aLine);
+        printf("=  %s\n", bLine);
       }
     }
 
