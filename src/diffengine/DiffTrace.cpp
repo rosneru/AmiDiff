@@ -65,7 +65,7 @@ size_t DiffTrace::numTraces()
 /**
  * @brief
  * Convert the given index into a 'Ruby-like-array-index' in regards to
- * the target-array's from- and to-value.
+ * the target-array's dimension (from- and to-value).
  *
  * That means the target arrays index will not be exceeded or deceeded.
  * When due to exceeding the remaining 'id-portion' is added from the
@@ -147,18 +147,24 @@ void DiffTrace::Backtrack()
 
 void DiffTrace::yield(int x1, int y1, int x, int y)
 {
-  const char* pLineA = m_SrcA.GetDiffLineText(x1).C_str();
-  const char* pLineB = m_SrcB.GetDiffLineText(y1).C_str();
+//  const char* pLineA = m_SrcA.GetDiffLineText(x1).C_str();
+//  const char* pLineB = m_SrcB.GetDiffLineText(y1).C_str();
   if(x == x1)
   {
-    printf("+  %s\n", pLineB);
+//    printf("+  %s\n", pLineB);
+    m_TargetA.AddBlankLine();
+    m_TargetB.AddString(m_SrcB.GetDiffLineText(y1), DiffLine::Added);
   }
   else if(y == y1)
   {
-    printf("-  %s\n", pLineA);
+//    printf("-  %s\n", pLineA);
+    m_TargetA.AddString(m_SrcA.GetDiffLineText(x1), DiffLine::Deleted);
+    m_TargetB.AddBlankLine();
   }
   else
   {
-    printf("=  %s\n", pLineB);
+//    printf("=  %s\n", pLineA);
+    m_TargetA.AddString(m_SrcA.GetDiffLineText(x1), DiffLine::Normal);
+    m_TargetB.AddString(m_SrcB.GetDiffLineText(y1), DiffLine::Normal);
   }
 }

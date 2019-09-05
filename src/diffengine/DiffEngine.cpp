@@ -30,9 +30,20 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
   m_pProgressReporter = p_pProgressReporter;
 }
 
+/**
+ * @brief
+ * Convert the given index into a 'Ruby-like-array-index' in regards to
+ * the target-array's dimension (from- and to-value).
+ *
+ * That means the target arrays index will not be exceeded or deceeded.
+ * When due to exceeding the remaining 'id-portion' is added from the
+ * start, deceeding it's subtracted from the end.
+ *
+ * TODO This is ugly by some means. Find a better solution!
+ */
 int idxConvert(int i, int from, int to)
 {
-  if(i < 0)
+  if(i < 0)  // use 'from' instead of '0' ??
   {
     return from + to + i;
   }
