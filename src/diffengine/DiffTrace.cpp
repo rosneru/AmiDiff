@@ -57,6 +57,17 @@ size_t DiffTrace::NumItems()
   return m_TraceList.Size();
 }
 
+/**
+ * @brief
+ * Convert the given index into a 'Ruby-like-array-index' in regards to
+ * the target-array's from- and to-value.
+ *
+ * That means the target arrays index will not be exceeded or deceeded.
+ * When due to exceeding the remaining 'id-portion' is added from the
+ * start, deceeding it's subtracted from the end.
+ *
+ * TODO This is ugly by some means. Find a better solution!
+ */
 int idxConv(int i, int from, int to)
 {
   if(i < 0) // use 'from' instead of '0' ??
