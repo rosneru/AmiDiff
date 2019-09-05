@@ -91,11 +91,6 @@ const SimpleString& DiffFilePartition::GetDiffLineText(size_t p_Index) const
     return emptyStr;
   }
 
-  if(m_bReversedMode)
-  {
-    p_Index = numLines - 1 - p_Index;
-  }
-
   return GetDiffLine(p_Index)->Text();
 }
 
@@ -105,11 +100,6 @@ DiffLine::LineState DiffFilePartition::GetDiffLineState(size_t p_Index) const
   if((numLines == 0) || (p_Index >= numLines))
   {
     return DiffLine::Undefined;
-  }
-
-  if(m_bReversedMode)
-  {
-    p_Index = numLines - 1 - p_Index;
   }
 
   return GetDiffLine(p_Index)->State();

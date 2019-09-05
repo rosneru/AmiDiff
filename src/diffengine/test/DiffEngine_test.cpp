@@ -59,33 +59,6 @@ BOOST_AUTO_TEST_CASE( testcase_00_myers )
   BOOST_CHECK_EQUAL(targetA.NumLines(), 9);
   BOOST_CHECK_EQUAL(targetB.NumLines(), 9);
 
-  for(int i = 0; i < targetA.NumLines(); i++)
-  {
-    DiffLine::LineState state = targetA.GetDiffLineState(i);
-    const char* lineText = targetA.GetDiffLineText(i).C_str();
-
-    switch(state)
-    {
-    case DiffLine::Added:
-      printf("ADD %s\n", lineText);
-      break;
-
-    case DiffLine::Deleted:
-      printf("DEL %s\n", lineText);
-      break;
-
-    case DiffLine::Normal:
-      printf("    %s\n", lineText);
-      break;
-
-    case DiffLine::Undefined:
-      printf("??? %s\n", lineText);
-      break;
-
-    }
-  }
-
-
   BOOST_CHECK_EQUAL(targetA.GetDiffLineText(0).C_str(), "A");
   BOOST_CHECK_EQUAL(targetA.GetDiffLineState(0), DiffLine::Deleted);
   BOOST_CHECK_EQUAL(targetA.GetDiffLineText(1).C_str(), "B");
