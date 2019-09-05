@@ -124,6 +124,19 @@ void DiffTrace::Backtrack(int x, int y)
   }
 }
 
+bool DiffTrace::GetDiffResult(DiffFilePartition& targetA,
+                              DiffFilePartition& targetB)
+{
+  if(m_TraceList.Size() < 1)
+  {
+    // Nothing to diff
+    return false;
+  }
+
+
+  return true;
+}
+
 void DiffTrace::yield(int x1, int y1, int x, int y)
 {
   const char* aLine = m_A.GetDiffLineText(x1).C_str();

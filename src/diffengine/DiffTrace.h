@@ -8,7 +8,7 @@
 
 /**
  * A class that can store multiple arrays in a list for doing a trace 
- * later
+ * later.
  *
  *
  * @author Uwe Rosner
@@ -18,6 +18,7 @@ class DiffTrace
 {
 public:
   DiffTrace(DiffFilePartition& a, DiffFilePartition& b);
+
   ~DiffTrace();
 
   void AddTrace(const int* array, size_t arrayLen);
@@ -27,6 +28,9 @@ public:
   size_t NumItems();
 
   void Backtrack(int x, int y);
+
+  bool GetDiffResult(DiffFilePartition& targetA,
+                     DiffFilePartition& targetB);
 
 protected:
   DiffFilePartition& m_A;
