@@ -33,32 +33,6 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
   m_pProgressReporter = p_pProgressReporter;
 }
 
-/**
- * @brief
- * Convert the given index into a 'Ruby-like-array-index' in regards to
- * the target-array's dimension (from- and to-value).
- *
- * That means the target arrays index will not be exceeded or deceeded.
- * When due to exceeding the remaining 'id-portion' is added from the
- * start, deceeding it's subtracted from the end.
- *
- * TODO This is ugly by some means. Find a better solution!
- */
-int idxConvert(int i, int from, int to)
-{
-  if(i < 0)  // use 'from' instead of '0' ??
-  {
-    return from + to + i;
-  }
-
-  if(i > to)
-  {
-    return from + (i - to);
-  }
-
-  return i;
-}
-
 
 bool DiffEngine::shortestEdit(DiffTrace& trace,
                               DiffFilePartition& a,
@@ -79,13 +53,13 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
     trace.AddTrace(v, vSize);
     for(long k = -d; k <= d; k += 2)
     {
-      if((k == -d) || ((k != d) && (v[idxConvert(k - 1, 1, vSize)] < v[idxConvert(k + 1, 1, vSize)])))
+      if((k == -d) || ((k != d) && (v[DiffTrace::IdxConv(k - 1, 1, vSize)] < v[DiffTrace::IdxConv(k + 1, 1, vSize)])))
       {
-        x = v[idxConvert(k + 1, 1, vSize)];
+        x = v[DiffTrace::IdxConv(k + 1, 1, vSize)];
       }
       else
       {
-        x = v[idxConvert(k - 1, 1, vSize)] + 1;
+        x = v[DiffTrace::IdxConv(k - 1, 1, vSize)] + 1;
       }
 
       y = x - k;
@@ -100,7 +74,7 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
         }
       }
 
-      int idx = idxConvert(k, 1, vSize);
+      int idx = DiffTrace::IdxConv(k, 1, vSize);
 
       v[idx] = x;
 

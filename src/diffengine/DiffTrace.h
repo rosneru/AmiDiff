@@ -41,6 +41,19 @@ public:
    */
   void Backtrack();
 
+  /**
+   * @brief
+   * Helper method!
+   *
+   * Convert the given index into a 'Ruby-like-array-index' in regards to
+   * the target-array's dimension (from- and to-value).
+   *
+   * That means the target arrays index will not be exceeded or deceeded.
+   * When due to exceeding the remaining 'id-portion' is added from the
+   * start, deceeding it's subtracted from the end.
+   */
+  static int IdxConv(int i, int from, int to);
+
 private:
   DiffFilePartition& m_SrcA;
   DiffFilePartition& m_SrcB;

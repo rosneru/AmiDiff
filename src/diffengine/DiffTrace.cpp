@@ -46,48 +46,6 @@ void DiffTrace::AddTrace(const int* array, size_t arrayLen)
 }
 
 
-Array<int>* DiffTrace::firstTrace()
-{
-  return (Array<int>*) m_TraceList.GetFirst();
-}
-
-
-Array<int>* DiffTrace::nextTrace()
-{
-  return (Array<int>*) m_TraceList.GetNext();
-}
-
-size_t DiffTrace::numTraces()
-{
-  return m_TraceList.Size();
-}
-
-/**
- * @brief
- * Convert the given index into a 'Ruby-like-array-index' in regards to
- * the target-array's dimension (from- and to-value).
- *
- * That means the target arrays index will not be exceeded or deceeded.
- * When due to exceeding the remaining 'id-portion' is added from the
- * start, deceeding it's subtracted from the end.
- *
- * TODO This is ugly by some means. Find a better solution!
- */
-int idxConv(int i, int from, int to)
-{
-  if(i < 0) // use 'from' instead of '0' ??
-  {
-    return from + to + i;
-  }
-
-  if(i > to)
-  {
-    return from + (i - to);
-  }
-
-  return i;
-}
-
 void DiffTrace::Backtrack()
 {
   int x = m_SrcA.NumLines();
@@ -110,7 +68,7 @@ void DiffTrace::Backtrack()
     int k = x - y;
 
     if((k == -d) || ((k != d)
-      && ((*v)[idxConv(k - 1, 1, vSize)] < (*v)[idxConv(k + 1, 1, vSize)])))
+      && ((*v)[IdxConv(k - 1, 1, vSize)] < (*v)[IdxConv(k + 1, 1, vSize)])))
     {
       prevK = k + 1;
     }
@@ -119,7 +77,7 @@ void DiffTrace::Backtrack()
       prevK = k - 1;
     }
 
-    int idx = idxConv(prevK, 1, vSize);
+    int idx = IdxConv(prevK, 1, vSize);
     prevX = (*v)[idx];
     prevY = prevX - prevK;
 
@@ -142,6 +100,40 @@ void DiffTrace::Backtrack()
 
     v = (Array<int>*) m_TraceList.GetPrev();
   }
+}
+
+
+
+int DiffTrace::IdxConv(int i, int from, int to)
+{
+  if((i + from) < from)
+  {
+    return from + to + i;
+  }
+
+  if(i > to)
+  {
+    return from + (i - to);
+  }
+
+  return i;
+}
+
+
+Array<int>* DiffTrace::firstTrace()
+{
+  return (Array<int>*) m_TraceList.GetFirst();
+}
+
+
+Array<int>* DiffTrace::nextTrace()
+{
+  return (Array<int>*) m_TraceList.GetNext();
+}
+
+size_t DiffTrace::numTraces()
+{
+  return m_TraceList.Size();
 }
 
 
@@ -168,3 +160,4 @@ void DiffTrace::yield(int x1, int y1, int x, int y)
     m_TargetB.AddString(m_SrcB.GetDiffLineText(y1), DiffLine::Normal);
   }
 }
+
