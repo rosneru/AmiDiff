@@ -59,7 +59,7 @@ size_t DiffTrace::NumItems()
 
 int idxConv(int i, int from, int to)
 {
-  if(i < 0) // from instead 0 ??
+  if(i < 0) // use 'from' instead of '0' ??
   {
     return from + to + i;
   }
@@ -93,7 +93,8 @@ void DiffTrace::Backtrack()
 
     int k = x - y;
 
-    if((k == -d) || ((k != d) && ((*v)[idxConv(k - 1, 1, vSize)] < (*v)[idxConv(k + 1, 1, vSize)])))
+    if((k == -d) || ((k != d)
+      && ((*v)[idxConv(k - 1, 1, vSize)] < (*v)[idxConv(k + 1, 1, vSize)])))
     {
       prevK = k + 1;
     }
@@ -142,18 +143,18 @@ bool DiffTrace::GetDiffResult(DiffFilePartition& targetA,
 
 void DiffTrace::yield(int x1, int y1, int x, int y)
 {
-  const char* aLine = m_A.GetDiffLineText(x1).C_str();
-  const char* bLine = m_B.GetDiffLineText(y1).C_str();
+  const char* pLineA = m_A.GetDiffLineText(x1).C_str();
+  const char* pLineB = m_B.GetDiffLineText(y1).C_str();
   if(x == x1)
   {
-    printf("+  %s\n", bLine);
+    printf("+  %s\n", pLineB);
   }
   else if(y == y1)
   {
-    printf("-  %s\n", aLine);
+    printf("-  %s\n", pLineA);
   }
   else
   {
-    printf("=  %s\n", bLine);
+    printf("=  %s\n", pLineB);
   }
 }
