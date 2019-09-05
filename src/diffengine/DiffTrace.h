@@ -52,7 +52,7 @@ public:
    * When due to exceeding the remaining 'id-portion' is added from the
    * start, deceeding it's subtracted from the end.
    */
-  static int IdxConv(int i, int from, int to);
+  static size_t IdxConv(int idx, int arraySize);
 
 private:
   DiffFilePartition& m_SrcA;

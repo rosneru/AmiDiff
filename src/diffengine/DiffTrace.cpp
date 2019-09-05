@@ -56,7 +56,6 @@ void DiffTrace::Backtrack()
   int prevY;
 
 
-  int vSize = m_TraceList.Size();
   Array<int>* v = (Array<int>*) m_TraceList.GetLast();
   for(int d = m_TraceList.Size() - 1; d >= 0; d--)
   {
@@ -65,10 +64,12 @@ void DiffTrace::Backtrack()
       break;
     }
 
+    int vSize = v->Size();
+
     int k = x - y;
 
     if((k == -d) || ((k != d)
-      && ((*v)[IdxConv(k - 1, 1, vSize)] < (*v)[IdxConv(k + 1, 1, vSize)])))
+      && ((*v)[IdxConv(k - 1, vSize)] < (*v)[IdxConv(k + 1, vSize)])))
     {
       prevK = k + 1;
     }
@@ -77,7 +78,7 @@ void DiffTrace::Backtrack()
       prevK = k - 1;
     }
 
-    int idx = IdxConv(prevK, 1, vSize);
+    int idx = IdxConv(prevK, vSize);
     prevX = (*v)[idx];
     prevY = prevX - prevK;
 
@@ -104,19 +105,31 @@ void DiffTrace::Backtrack()
 
 
 
-int DiffTrace::IdxConv(int i, int from, int to)
+size_t DiffTrace::IdxConv(int idx, int arraySize)
 {
-  if((i + from) < from)
+  if(idx < 0)
   {
-    return from + to + i;
+    if(idx + arraySize < 0)
+    {
+      int factor = -idx / arraySize;
+      idx = idx + factor * arraySize;
+    }
+
+    return arraySize + idx;
   }
 
-  if(i > to)
+  if(idx >= arraySize)
   {
-    return from + (i - to);
+    if(-idx + arraySize <= 0)
+    {
+      int factor = idx / arraySize;
+      idx = idx - factor * arraySize;
+    }
+
+    return idx;
   }
 
-  return i;
+  return idx;
 }
 
 

@@ -53,13 +53,13 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
     trace.AddTrace(v, vSize);
     for(long k = -d; k <= d; k += 2)
     {
-      if((k == -d) || ((k != d) && (v[DiffTrace::IdxConv(k - 1, 1, vSize)] < v[DiffTrace::IdxConv(k + 1, 1, vSize)])))
+      if((k == -d) || ((k != d) && (v[DiffTrace::IdxConv(k - 1, vSize)] < v[DiffTrace::IdxConv(k + 1, vSize)])))
       {
-        x = v[DiffTrace::IdxConv(k + 1, 1, vSize)];
+        x = v[DiffTrace::IdxConv(k + 1, vSize)];
       }
       else
       {
-        x = v[DiffTrace::IdxConv(k - 1, 1, vSize)] + 1;
+        x = v[DiffTrace::IdxConv(k - 1, vSize)] + 1;
       }
 
       y = x - k;
@@ -74,7 +74,7 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
         }
       }
 
-      int idx = DiffTrace::IdxConv(k, 1, vSize);
+      int idx = DiffTrace::IdxConv(k, vSize);
 
       v[idx] = x;
 
