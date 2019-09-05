@@ -18,10 +18,27 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     return false;
   }
 
+  //
+  // Progress reporting
+  //
+  if(m_pProgressReporter != NULL)
+  {
+    m_pProgressReporter->notifyProgressChanged(50);
+  }
+
   trace.Backtrack();
 
   targetA.SetReversedMode(true);
   targetB.SetReversedMode(true);
+
+  //
+  // Progress reporting
+  //
+  if(m_pProgressReporter != NULL)
+  {
+    m_pProgressReporter->notifyProgressChanged(100);
+  }
+
 
   return true;
 }

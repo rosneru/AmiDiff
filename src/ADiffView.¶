@@ -436,12 +436,17 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "oscottlibs/LinkedList.cpp"
+"oscottlibs/LinkedList.cpp"
+"oscottlibs/LinkedList.h"
+"oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/LinkedList.o" "objects_debug/LinkedList.debug"
 ""
 1 1
 File
 1 "oscottlibs/LinkedListNode.cpp"
+"oscottlibs/LinkedListNode.cpp"
+"oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/LinkedListNode.o" "objects_debug/LinkedListNode.debug"
 ""
@@ -680,6 +685,7 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "oscottlibs/LinkedList.h"
+"oscottlibs/LinkedList.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
