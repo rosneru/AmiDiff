@@ -2,7 +2,8 @@
 
 DiffFilePartition::DiffFilePartition(bool& p_bCancelRequested)
   : m_bCancelRequested(p_bCancelRequested),
-    m_pProgressReporter(NULL)
+    m_pProgressReporter(NULL),
+    m_bReversedMode(false)
 {
 
 }
@@ -66,9 +67,15 @@ void DiffFilePartition::NumChanges(int& p_Added,
 
 const DiffLine* DiffFilePartition::GetDiffLine(size_t p_Index) const
 {
-  if(p_Index >= m_DiffLinesArray.Size())
+  size_t numLines = m_DiffLinesArray.Size();
+  if((numLines == 0) || (p_Index >= numLines))
   {
     return NULL;
+  }
+
+  if(m_bReversedMode)
+  {
+    p_Index = numLines - 1 - p_Index;
   }
 
   return m_DiffLinesArray[p_Index];
@@ -78,9 +85,15 @@ static const SimpleString emptyStr = "";
 
 const SimpleString& DiffFilePartition::GetDiffLineText(size_t p_Index) const
 {
-  if(m_DiffLinesArray.IsEmpty()|| p_Index >= m_DiffLinesArray.Size())
+  size_t numLines = m_DiffLinesArray.Size();
+  if((numLines == 0) || (p_Index >= numLines))
   {
     return emptyStr;
+  }
+
+  if(m_bReversedMode)
+  {
+    p_Index = numLines - 1 - p_Index;
   }
 
   return GetDiffLine(p_Index)->Text();
@@ -88,9 +101,15 @@ const SimpleString& DiffFilePartition::GetDiffLineText(size_t p_Index) const
 
 DiffLine::LineState DiffFilePartition::GetDiffLineState(size_t p_Index) const
 {
-  if(m_DiffLinesArray.IsEmpty() || p_Index >= m_DiffLinesArray.Size())
+  size_t numLines = m_DiffLinesArray.Size();
+  if((numLines == 0) || (p_Index >= numLines))
   {
     return DiffLine::Undefined;
+  }
+
+  if(m_bReversedMode)
+  {
+    p_Index = numLines - 1 - p_Index;
   }
 
   return GetDiffLine(p_Index)->State();
@@ -144,6 +163,11 @@ void DiffFilePartition::AddString(const SimpleString& p_String)
 void DiffFilePartition::AddBlankLine()
 {
   AddString(SimpleString(), DiffLine::Normal);
+}
+
+void DiffFilePartition::SetReversedMode(bool bReversed)
+{
+  m_bReversedMode = bReversed;
 }
 
 void DiffFilePartition::SetProgressReporter(ProgressReporter* p_pProgressReporter)

@@ -46,6 +46,12 @@ public:
   void AddBlankLine();
 
   /**
+   * @brief
+   * When set to true, all index-based operations are done backwards.
+   */
+  void SetReversedMode(bool bReversed);
+
+  /**
    * Setting the progress reporter
    */
   void SetProgressReporter(ProgressReporter* p_pProgressReporter);
@@ -55,6 +61,7 @@ protected:
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
 private:
+  bool m_bReversedMode;
   Array<SimpleString*> m_InputLinesArray;
   Array<DiffLine*> m_DiffLinesArray;
 };

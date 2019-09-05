@@ -20,6 +20,9 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
 
   trace.Backtrack();
 
+//  targetA.SetReversedMode(true);
+//  targetB.SetReversedMode(true);
+
   return true;
 }
 
