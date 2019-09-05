@@ -12,14 +12,13 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
                       DiffFilePartition& targetA,
                       DiffFilePartition& targetB)
 {
-  DiffTrace trace(srcA, srcB);
+  DiffTrace trace(srcA, srcB, targetA, targetB);
   if(shortestEdit(trace, srcA, srcB) == false)
   {
     return false;
   }
 
   trace.Backtrack();
-  bool diffOk = trace.GetDiffResult(targetA, targetB);
 
   return true;
 }

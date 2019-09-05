@@ -10,6 +10,9 @@
  * A class that can store multiple arrays in a list for doing a trace 
  * later.
  *
+ * After the Backtrack() method is called the target references given
+ * in the constructor will contain files with diff informations ready
+ * to be displayed.
  *
  * @author Uwe Rosner
  * @date 26/07/2019
@@ -17,7 +20,10 @@
 class DiffTrace
 {
 public:
-  DiffTrace(DiffFilePartition& a, DiffFilePartition& b);
+  DiffTrace(DiffFilePartition& srcA,
+            DiffFilePartition& srcB,
+            DiffFilePartition& targetA,
+            DiffFilePartition& targetB);
 
   ~DiffTrace();
 
@@ -27,23 +33,6 @@ public:
    */
   void AddTrace(const int* array, size_t arrayLen);
 
-  /**
-   * @brief
-   * Returns the first Array which is stored in the TraceList.
-   */
-  Array<int>* GetFirst();
-
-  /**
-   * @brief
-   * Returns the following Array from the TraceList.
-   */
-  Array<int>* GetNext();
-
-  /**
-   * @brief
-   * Returns the number of Arrays which are stored in the TraceList.
-   */
-  size_t NumItems();
 
   /**
    * @brief
@@ -52,20 +41,32 @@ public:
    */
   void Backtrack();
 
-  /**
-   * @brief GetDiffResult
-   * Fill the given target DiffFilePartitions with the calculated Diff
-   */
-  bool GetDiffResult(DiffFilePartition& targetA,
-                     DiffFilePartition& targetB);
-
-protected:
-  DiffFilePartition& m_A;
-  DiffFilePartition& m_B;
+private:
+  DiffFilePartition& m_SrcA;
+  DiffFilePartition& m_SrcB;
+  DiffFilePartition& m_TargetA;
+  DiffFilePartition& m_TargetB;
   LinkedList m_TraceList;
 
-private:
   void yield(int x1, int y1, int x, int y);
+
+  /**
+   * @brief
+   * Returns the first Array which is stored in the TraceList.
+   */
+  Array<int>* firstTrace();
+
+  /**
+   * @brief
+   * Returns the following Array from the TraceList.
+   */
+  Array<int>* nextTrace();
+
+  /**
+   * @brief
+   * Returns the number of Arrays which are stored in the TraceList.
+   */
+  size_t numTraces();
 };
 
 #endif

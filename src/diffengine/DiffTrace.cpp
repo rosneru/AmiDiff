@@ -2,9 +2,14 @@
 
 #include "DiffTrace.h"
 
-DiffTrace::DiffTrace(DiffFilePartition& a, DiffFilePartition& b)
-  : m_A(a),
-    m_B(b)
+DiffTrace::DiffTrace(DiffFilePartition& srcA,
+                     DiffFilePartition& srcB,
+                     DiffFilePartition& targetA,
+                     DiffFilePartition& targetB)
+  : m_SrcA(srcA),
+    m_SrcB(srcB),
+    m_TargetA(targetA),
+    m_TargetB(targetB)
 {
 }
 
@@ -41,18 +46,18 @@ void DiffTrace::AddTrace(const int* array, size_t arrayLen)
 }
 
 
-Array<int>* DiffTrace::GetFirst()
+Array<int>* DiffTrace::firstTrace()
 {
   return (Array<int>*) m_TraceList.GetFirst();
 }
 
 
-Array<int>* DiffTrace::GetNext()
+Array<int>* DiffTrace::nextTrace()
 {
   return (Array<int>*) m_TraceList.GetNext();
 }
 
-size_t DiffTrace::NumItems()
+size_t DiffTrace::numTraces()
 {
   return m_TraceList.Size();
 }
@@ -85,8 +90,8 @@ int idxConv(int i, int from, int to)
 
 void DiffTrace::Backtrack()
 {
-  int x = m_A.NumLines();
-  int y = m_B.NumLines();
+  int x = m_SrcA.NumLines();
+  int y = m_SrcB.NumLines();
 
   int prevK;
   int prevX;
@@ -139,23 +144,11 @@ void DiffTrace::Backtrack()
   }
 }
 
-bool DiffTrace::GetDiffResult(DiffFilePartition& targetA,
-                              DiffFilePartition& targetB)
-{
-  if(m_TraceList.Size() < 1)
-  {
-    // Nothing to diff
-    return false;
-  }
-
-
-  return true;
-}
 
 void DiffTrace::yield(int x1, int y1, int x, int y)
 {
-  const char* pLineA = m_A.GetDiffLineText(x1).C_str();
-  const char* pLineB = m_B.GetDiffLineText(y1).C_str();
+  const char* pLineA = m_SrcA.GetDiffLineText(x1).C_str();
+  const char* pLineB = m_SrcB.GetDiffLineText(y1).C_str();
   if(x == x1)
   {
     printf("+  %s\n", pLineB);
