@@ -32,6 +32,9 @@ protected:
   DiffFilePartition& m_A;
   DiffFilePartition& m_B;
   LinkedList m_TraceList;
+
+private:
+  void yield(int x1, int y1, int x, int y);
 };
 
 #endif

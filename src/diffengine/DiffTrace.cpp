@@ -103,23 +103,9 @@ void DiffTrace::Backtrack(int x, int y)
     prevX = (*v)[idx];
     prevY = prevX - prevK;
 
-    while(x > prevX && y > prevY)
+    while((x > prevX) && (y > prevY))
     {
-//      printf("yield #1 x-1, y-1, x, y = %d,%d,%d,%d\n", x-1, y-1, x, y );
-      const char* aLine = m_A.GetDiffLineText(prevX).C_str();
-      const char* bLine = m_B.GetDiffLineText(prevY).C_str();
-      if(x == prevX)
-      {
-        printf("+  %s\n", bLine);
-      }
-      else if(y == prevY)
-      {
-        printf("-  %s\n", aLine);
-      }
-      else
-      {
-        printf("=  %s\n", bLine);
-      }
+      yield(x-1, y-1, x, y);
 
       x--;
       y--;
@@ -127,21 +113,7 @@ void DiffTrace::Backtrack(int x, int y)
 
     if(d > 0)
     {
-//      printf("yield #2 prevX, prevY, x, y = %d,%d,%d,%d\n", prevX, prevY, x, y );
-      const char* aLine = m_A.GetDiffLineText(prevX).C_str();
-      const char* bLine = m_B.GetDiffLineText(prevY).C_str();
-      if(x == prevX)
-      {
-        printf("+  %s\n", bLine);
-      }
-      else if(y == prevY)
-      {
-        printf("-  %s\n", aLine);
-      }
-      else
-      {
-        printf("=  %s\n", bLine);
-      }
+      yield(prevX, prevY, x, y);
     }
 
     x = prevX;
@@ -149,5 +121,23 @@ void DiffTrace::Backtrack(int x, int y)
 
 
     v = (Array<int>*) m_TraceList.GetPrev();
+  }
+}
+
+void DiffTrace::yield(int x1, int y1, int x, int y)
+{
+  const char* aLine = m_A.GetDiffLineText(x1).C_str();
+  const char* bLine = m_B.GetDiffLineText(y1).C_str();
+  if(x == x1)
+  {
+    printf("+  %s\n", bLine);
+  }
+  else if(y == y1)
+  {
+    printf("-  %s\n", aLine);
+  }
+  else
+  {
+    printf("=  %s\n", bLine);
   }
 }
