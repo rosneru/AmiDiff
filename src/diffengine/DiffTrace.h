@@ -21,14 +21,41 @@ public:
 
   ~DiffTrace();
 
+  /**
+   * @brief
+   * Add an array to the TraceList.
+   */
   void AddTrace(const int* array, size_t arrayLen);
 
+  /**
+   * @brief
+   * Returns the first Array which is stored in the TraceList.
+   */
   Array<int>* GetFirst();
+
+  /**
+   * @brief
+   * Returns the following Array from the TraceList.
+   */
   Array<int>* GetNext();
+
+  /**
+   * @brief
+   * Returns the number of Arrays which are stored in the TraceList.
+   */
   size_t NumItems();
 
-  void Backtrack(int x, int y);
+  /**
+   * @brief
+   * Backtrack all trace lists to find the single path which is leading
+   * to the result.
+   */
+  void Backtrack();
 
+  /**
+   * @brief GetDiffResult
+   * Fill the given target DiffFilePartitions with the calculated Diff
+   */
   bool GetDiffResult(DiffFilePartition& targetA,
                      DiffFilePartition& targetB);
 

@@ -72,8 +72,11 @@ int idxConv(int i, int from, int to)
   return i;
 }
 
-void DiffTrace::Backtrack(int x, int y)
+void DiffTrace::Backtrack()
 {
+  int x = m_A.NumLines();
+  int y = m_B.NumLines();
+
   int prevK;
   int prevX;
   int prevY;

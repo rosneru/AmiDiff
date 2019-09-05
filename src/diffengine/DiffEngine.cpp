@@ -18,7 +18,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     return false;
   }
 
-  trace.Backtrack(srcA.NumLines(), srcB.NumLines());
+  trace.Backtrack();
   bool diffOk = trace.GetDiffResult(targetA, targetB);
 
   return true;
