@@ -153,8 +153,8 @@ BOOST_AUTO_TEST_CASE( testcase_10_myers )
 
   BOOST_CHECK_EQUAL(diffOk, true);
 
-  BOOST_CHECK_EQUAL(srcA.NumLines(), 7);
-  BOOST_CHECK_EQUAL(srcB.NumLines(), 6);
-  BOOST_CHECK_EQUAL(targetA.NumLines(), 9);
-  BOOST_CHECK_EQUAL(targetB.NumLines(), 9);
+  BOOST_CHECK_EQUAL(srcA.NumLines(), 203);
+  BOOST_CHECK_EQUAL(srcB.NumLines(), 208);
+  BOOST_CHECK_EQUAL(targetA.NumLines(), 218);
+  BOOST_CHECK_EQUAL(targetB.NumLines(), 218);
 }
