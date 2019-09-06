@@ -81,14 +81,12 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
 
       y = x - k;
 
-      while((x < n) && (y < m) &&
-            (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token()))
+      while((x < n) && (y < m) 
+        && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token())
+        && (a.GetDiffLine(x)->Text() == b.GetDiffLine(y)->Text()))
       {
-        if(a.GetDiffLine(x)->Text() == b.GetDiffLine(y)->Text())
-        {
-          x++;
-          y++;
-        }
+        x++;
+        y++;
       }
 
       int idx = DiffTrace::IdxConv(k, vSize);
