@@ -141,10 +141,10 @@ BOOST_AUTO_TEST_CASE( testcase_10_myers )
   DiffEngine diffEngine(cancelRequested);
 
   DiffFilePartitionLinux srcA(cancelRequested);
-  srcA.PreProcess("../../../testfiles/testcase_10_left.txt");
+  srcA.PreProcess("../../../testfiles/testcase_13_6000_left.cpp");
 
   DiffFilePartitionLinux srcB(cancelRequested);
-  srcB.PreProcess("../../../testfiles/testcase_10_right.txt");
+  srcB.PreProcess("../../../testfiles/testcase_13_6000_right.cpp");
 
   DiffFilePartition targetA(cancelRequested);
   DiffFilePartition targetB(cancelRequested);
@@ -153,8 +153,8 @@ BOOST_AUTO_TEST_CASE( testcase_10_myers )
 
   BOOST_CHECK_EQUAL(diffOk, true);
 
-  BOOST_CHECK_EQUAL(srcA.NumLines(), 203);
-  BOOST_CHECK_EQUAL(srcB.NumLines(), 208);
-  BOOST_CHECK_EQUAL(targetA.NumLines(), 218);
-  BOOST_CHECK_EQUAL(targetB.NumLines(), 218);
+  BOOST_CHECK_EQUAL(srcA.NumLines(), 5832);
+  BOOST_CHECK_EQUAL(srcB.NumLines(), 7183);
+  BOOST_CHECK_EQUAL(targetA.NumLines(), 7796);
+  BOOST_CHECK_EQUAL(targetB.NumLines(), 7796);
 }
