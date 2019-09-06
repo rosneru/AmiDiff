@@ -129,3 +129,32 @@ BOOST_AUTO_TEST_CASE( testcase_00_myers )
   BOOST_CHECK_EQUAL(targetB.GetDiffLineState(8), DiffLine::Added);
 
 }
+
+/**
+ * This test did loop on Amiga..
+ *
+ */
+BOOST_AUTO_TEST_CASE( testcase_10_myers )
+{
+  bool cancelRequested = false;
+  bool diffOk = false;
+  DiffEngine diffEngine(cancelRequested);
+
+  DiffFilePartitionLinux srcA(cancelRequested);
+  srcA.PreProcess("../../../testfiles/testcase_10_left.txt");
+
+  DiffFilePartitionLinux srcB(cancelRequested);
+  srcB.PreProcess("../../../testfiles/testcase_10_right.txt");
+
+  DiffFilePartition targetA(cancelRequested);
+  DiffFilePartition targetB(cancelRequested);
+
+  diffOk = diffEngine.Diff(srcA, srcB, targetA, targetB);
+
+  BOOST_CHECK_EQUAL(diffOk, true);
+
+  BOOST_CHECK_EQUAL(srcA.NumLines(), 7);
+  BOOST_CHECK_EQUAL(srcB.NumLines(), 6);
+  BOOST_CHECK_EQUAL(targetA.NumLines(), 9);
+  BOOST_CHECK_EQUAL(targetB.NumLines(), 9);
+}
