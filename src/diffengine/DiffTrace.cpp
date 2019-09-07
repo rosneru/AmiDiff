@@ -97,6 +97,11 @@ void DiffTrace::Backtrack()
     y = prevY;
 
     i--;
+    if(i < 0)
+    {
+      break;
+    }
+
     v = m_TracesArray[i];
   }
 }
