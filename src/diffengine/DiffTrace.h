@@ -2,8 +2,7 @@
 #define DIFF_TRACER_H
 
 #include "Array.h"
-#include "LinkedList.h"
-
+#include "Array.h"
 #include "DiffFilePartition.h"
 
 /**
@@ -29,7 +28,7 @@ public:
 
   /**
    * @brief
-   * Add an array to the TraceList.
+   * Add an array to the TracesArray.
    */
   void AddTrace(const int* array, size_t arrayLen);
 
@@ -59,27 +58,9 @@ private:
   DiffFilePartition& m_SrcB;
   DiffFilePartition& m_TargetA;
   DiffFilePartition& m_TargetB;
-  LinkedList m_TraceList;
+  Array<Array<int>*> m_TracesArray;
 
   void yield(int x1, int y1, int x, int y);
-
-  /**
-   * @brief
-   * Returns the first Array which is stored in the TraceList.
-   */
-  Array<int>* firstTrace();
-
-  /**
-   * @brief
-   * Returns the following Array from the TraceList.
-   */
-  Array<int>* nextTrace();
-
-  /**
-   * @brief
-   * Returns the number of Arrays which are stored in the TraceList.
-   */
-  size_t numTraces();
 };
 
 #endif

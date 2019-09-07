@@ -17,18 +17,14 @@ DiffTrace::~DiffTrace()
 {
   // Free the memory of all allocated items
   // The list / nodes are freed in the list destructor
-
-  Array<int>* pItem = (Array<int>*) m_TraceList.GetFirst();
-  if(pItem == NULL)
+  while(m_TracesArray.Size() > 0)
   {
-    return;
+    Array<int>* pItem = NULL;
+    if((pItem = (Array<int>*) m_TracesArray.Pop()) != NULL)
+    {
+      delete pItem;
+    }
   }
-
-  do
-  {
-    delete pItem;
-  }
-  while((pItem = (Array<int>*) m_TraceList.GetNext()) != NULL);
 
 }
 
@@ -39,10 +35,11 @@ void DiffTrace::AddTrace(const int* array, size_t arrayLen)
 
   for(size_t i = 0; i < arrayLen; i++)
   {
-    pItem->Push(array[i]);
+    int value = array[i];
+    pItem->Push(value);
   }
-  
-  m_TraceList.InsertTail(pItem);
+
+  m_TracesArray.Push(pItem);
 }
 
 
@@ -56,8 +53,9 @@ void DiffTrace::Backtrack()
   int prevY;
 
 
-  Array<int>* v = (Array<int>*) m_TraceList.GetLast();
-  for(int d = m_TraceList.Size() - 1; d >= 0; d--)
+  int i = m_TracesArray.Size() - 1;
+  Array<int>* v = m_TracesArray[i];
+  for(int d = m_TracesArray.Size() - 1; d >= 0; d--)
   {
     if(v == NULL)
     {
@@ -98,8 +96,8 @@ void DiffTrace::Backtrack()
     x = prevX;
     y = prevY;
 
-
-    v = (Array<int>*) m_TraceList.GetPrev();
+    i--;
+    v = m_TracesArray[i];
   }
 }
 
@@ -132,22 +130,6 @@ size_t DiffTrace::IdxConv(int idx, int arraySize)
   return idx;
 }
 
-
-Array<int>* DiffTrace::firstTrace()
-{
-  return (Array<int>*) m_TraceList.GetFirst();
-}
-
-
-Array<int>* DiffTrace::nextTrace()
-{
-  return (Array<int>*) m_TraceList.GetNext();
-}
-
-size_t DiffTrace::numTraces()
-{
-  return m_TraceList.Size();
-}
 
 
 void DiffTrace::yield(int x1, int y1, int x, int y)
