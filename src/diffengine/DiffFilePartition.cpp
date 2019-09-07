@@ -122,29 +122,25 @@ bool DiffFilePartition::PreProcess()
 }
 
 
-void DiffFilePartition::AddString(const SimpleString& p_String, 
+void DiffFilePartition::AddString(const SimpleString& p_String,
                                   DiffLine::LineState p_LineState)
 {
-  DiffLine* pDiffLine = new DiffLine();
+  DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
   if(pDiffLine == NULL)
   {
     return;
   }
 
-  pDiffLine->SetLine(p_String, p_LineState);
   m_DiffLinesArray.Push(pDiffLine);
 }
 
 void DiffFilePartition::AddString(const SimpleString& p_String)
 {
-  DiffLine* pDiffLine = new DiffLine();
+  DiffLine* pDiffLine = new DiffLine(p_String);
   if(pDiffLine == NULL)
   {
     return;
   }
-
-  // Set string in DiffLine gets us the token
-  pDiffLine->SetLine(p_String);
 
   // Append DiffLine to list
   m_DiffLinesArray.Push(pDiffLine);
