@@ -13,7 +13,7 @@ INCLUDEPATH +=  ../ \
                 ../../oscottlibs
 
 SOURCES += \
-    DiffEngine_test.cpp \
+    DiffEngine_test_boost.cpp \
     ../DiffEngine.cpp \
     ../DiffFilePartition.cpp \
     ../DiffLine.cpp \
