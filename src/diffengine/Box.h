@@ -14,6 +14,11 @@ public:
   Box(long left, long top, long right, long bottom);
   ~Box();
 
+  long Left() const;
+  long Top() const;
+  long Right() const;
+  long Bottom() const;
+
   long Width() const;
   long Height() const ;
   long Size() const;

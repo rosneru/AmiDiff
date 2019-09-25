@@ -13,6 +13,26 @@ Box::~Box()
 
 }
 
+long Box::Left() const
+{
+  return m_Left;
+}
+
+long Box::Top() const
+{
+  return m_Top;
+}
+
+long Box::Right() const
+{
+  return m_Right;
+}
+
+long Box::Bottom() const
+{
+  return m_Bottom;
+}
+
 long Box::Width() const
 {
   return m_Right - m_Left;

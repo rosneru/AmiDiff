@@ -23,31 +23,31 @@
 
 BOOST_AUTO_TEST_CASE( testcase_IdxConv )
 {
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(-1, 5), 4);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(-2, 5), 3);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(-3, 5), 2);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(-4, 5), 1);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(-5, 5), 0);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(-1, 5), 4);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(-2, 5), 3);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(-3, 5), 2);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(-4, 5), 1);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(-5, 5), 0);
 
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(-6, 5), 4);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(-7, 5), 3);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(-11, 5), 4);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(-6, 5), 4);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(-7, 5), 3);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(-11, 5), 4);
 
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(0, 5), 0);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(1, 5), 1);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(2, 5), 2);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(3, 5), 3);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(4, 5), 4);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(0, 5), 0);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(1, 5), 1);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(2, 5), 2);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(3, 5), 3);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(4, 5), 4);
 
 
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(5, 5), 0);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(6, 5), 1);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(7, 5), 2);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(8, 5), 3);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(9, 5), 4);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(5, 5), 0);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(6, 5), 1);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(7, 5), 2);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(8, 5), 3);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(9, 5), 4);
 
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(10, 5), 0);
-  BOOST_CHECK_EQUAL(DiffTrace::IdxConv(11, 5), 1);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(10, 5), 0);
+  BOOST_CHECK_EQUAL(Trace::IdxConv(11, 5), 1);
 
 }
 

@@ -12,7 +12,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
                       DiffFilePartition& targetA,
                       DiffFilePartition& targetB)
 {
-  DiffTrace trace(srcA, srcB, targetA, targetB);
+  Trace trace(srcA, srcB, targetA, targetB);
   if(shortestEdit(trace, srcA, srcB) == false)
   {
     return false;
@@ -51,7 +51,7 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 }
 
 
-bool DiffEngine::shortestEdit(DiffTrace& trace,
+bool DiffEngine::shortestEdit(Trace& trace,
                               DiffFilePartition& a,
                               DiffFilePartition& b)
 {
@@ -67,16 +67,16 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
 
   for(int d = 0; d <= max; d++)
   {
-    trace.AddTrace(v, vSize);
+    //trace.AddTrace(v, vSize);
     for(long k = -d; k <= d; k += 2)
     {
-      if((k == -d) || ((k != d) && (v[DiffTrace::IdxConv(k - 1, vSize)] < v[DiffTrace::IdxConv(k + 1, vSize)])))
+      if((k == -d) || ((k != d) && (v[Trace::IdxConv(k - 1, vSize)] < v[Trace::IdxConv(k + 1, vSize)])))
       {
-        x = v[DiffTrace::IdxConv(k + 1, vSize)];
+        x = v[Trace::IdxConv(k + 1, vSize)];
       }
       else
       {
-        x = v[DiffTrace::IdxConv(k - 1, vSize)] + 1;
+        x = v[Trace::IdxConv(k - 1, vSize)] + 1;
       }
 
       y = x - k;
@@ -89,7 +89,7 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
         y++;
       }
 
-      int idx = DiffTrace::IdxConv(k, vSize);
+      int idx = Trace::IdxConv(k, vSize);
 
       v[idx] = x;
 
@@ -103,4 +103,35 @@ bool DiffEngine::shortestEdit(DiffTrace& trace,
 
   delete[] v;
   return false;
+}
+
+bool DiffEngine::findPath(long left, long top, long right, long bottom)
+{
+  Box box(left, top, right, bottom);
+  Box snake = midpoint(box);
+}
+
+Box DiffEngine::midpoint(Box box)
+{
+  if(box.Size() == 0)
+  {
+    // If this box is empty return the mepty box to signal the failure
+    return box;
+  }
+
+  // Original: max = (box.size / 2.0).ceil
+  int max = (box.Size() / 2) + ((box.Size() % 2) != 0);
+
+  int vSize = 2 * max + 1;
+
+  int* vf = new int[vSize];
+  vf[1] = box.Left();
+
+  int* vb = new int[vSize];
+  vb[1] = box.Bottom();
+
+  for(int d = 0; d <= max; d++)
+  {
+
+  }
 }

@@ -1,6 +1,7 @@
 #ifndef DIFF_ENGINE_H
 #define DIFF_ENGINE_H
 
+#include "Box.h"
 #include "SimpleString.h"
 #include "DiffLine.h"
 #include "DiffFilePartition.h"
@@ -35,9 +36,13 @@ private:
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
-  bool shortestEdit(DiffTrace& trace,
+  bool shortestEdit(Trace& trace,
                     DiffFilePartition& a,
                     DiffFilePartition& b);
+
+  bool findPath(long left, long top, long right, long bottom);
+
+  Box midpoint(Box box);
 
 };
 

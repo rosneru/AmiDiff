@@ -2,7 +2,7 @@
 
 #include "Trace.h"
 
-DiffTrace::DiffTrace(DiffFilePartition& srcA,
+Trace::Trace(DiffFilePartition& srcA,
                      DiffFilePartition& srcB,
                      DiffFilePartition& targetA,
                      DiffFilePartition& targetB)
@@ -13,7 +13,7 @@ DiffTrace::DiffTrace(DiffFilePartition& srcA,
 {
 }
 
-DiffTrace::~DiffTrace()
+Trace::~Trace()
 {
   // Free the memory of all allocated items
   // The list / nodes are freed in the list destructor
@@ -29,7 +29,7 @@ DiffTrace::~DiffTrace()
 }
 
 
-void DiffTrace::AddTrace(const int* array, size_t arrayLen)
+void Trace::AddTrace(const int* array, size_t arrayLen)
 {
   Array<int>* pItem = new Array<int>();
 
@@ -43,7 +43,7 @@ void DiffTrace::AddTrace(const int* array, size_t arrayLen)
 }
 
 
-void DiffTrace::Backtrack()
+void Trace::Backtrack()
 {
   int x = m_SrcA.NumLines();
   int y = m_SrcB.NumLines();
@@ -108,7 +108,7 @@ void DiffTrace::Backtrack()
 
 
 
-size_t DiffTrace::IdxConv(int idx, int arraySize)
+size_t Trace::IdxConv(int idx, int arraySize)
 {
   if(idx < 0)
   {
@@ -137,7 +137,7 @@ size_t DiffTrace::IdxConv(int idx, int arraySize)
 
 
 
-void DiffTrace::yield(int x1, int y1, int x, int y)
+void Trace::yield(int x1, int y1, int x, int y)
 {
 //  const char* pLineA = m_SrcA.GetDiffLineText(x1).C_str();
 //  const char* pLineB = m_SrcB.GetDiffLineText(y1).C_str();

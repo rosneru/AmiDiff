@@ -16,15 +16,15 @@
  * @author Uwe Rosner
  * @date 26/07/2019
  */
-class DiffTrace
+class Trace
 {
 public:
-  DiffTrace(DiffFilePartition& srcA,
+  Trace(DiffFilePartition& srcA,
             DiffFilePartition& srcB,
             DiffFilePartition& targetA,
             DiffFilePartition& targetB);
 
-  ~DiffTrace();
+  ~Trace();
 
   /**
    * @brief
