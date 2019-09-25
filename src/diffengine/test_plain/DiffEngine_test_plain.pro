@@ -18,7 +18,7 @@ SOURCES += \
     ../../oscottlibs/LinkedListNode.cpp \
     ../../oscottlibs/SimpleString.cpp \
     ../DiffFilePartitionLinux.cpp \
-    ../DiffTrace.cpp
+    ../Trace.cpp
 
 
 HEADERS += \
@@ -30,4 +30,4 @@ HEADERS += \
     ../../oscottlibs/SimpleString.h \
     ../DiffFilePartitionLinux.h \
     ../../oscottlibs/Array.h \
-    ../DiffTrace.h
+    ../Trace.h

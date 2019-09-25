@@ -4,8 +4,8 @@
 #include "SimpleString.h"
 #include "DiffLine.h"
 #include "DiffFilePartition.h"
-#include "DiffTrace.h"
 #include "ProgressReporter.h"
+#include "Trace.h"
 
 /**
  * Class for generating and representing the difference of two files.

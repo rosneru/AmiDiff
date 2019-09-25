@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "DiffTrace.h"
+#include "Trace.h"
 
 DiffTrace::DiffTrace(DiffFilePartition& srcA,
                      DiffFilePartition& srcB,

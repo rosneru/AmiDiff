@@ -16,7 +16,7 @@
 #include "DiffFilePartitionLinux.h"
 #include "DiffEngine.h"
 #include "DiffLine.h"
-#include "DiffTrace.h"
+#include "Trace.h"
 #include "LinkedList.h"
 #include "SimpleString.h"
 
