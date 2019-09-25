@@ -21,6 +21,7 @@ class DiffEngine
 
 public:
   DiffEngine(bool& bCancelRequested);
+  ~DiffEngine();
 
   bool Diff(DiffFilePartition& srcA,
             DiffFilePartition& srcB,
@@ -36,13 +37,20 @@ private:
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
+  int* vf;
+  int* vb;
+  int vSize;
+
   bool shortestEdit(Trace& trace,
                     DiffFilePartition& a,
                     DiffFilePartition& b);
 
-  bool findPath(long left, long top, long right, long bottom);
+  bool findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
 
-  Box midpoint(Box box);
+  Box midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b);
+
+  Box forwards(Box box, int d, DiffFilePartition& a, DiffFilePartition& b);
+  Box backward(Box box, int d, DiffFilePartition& a, DiffFilePartition& b);
 
 };
 

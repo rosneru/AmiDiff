@@ -49,7 +49,7 @@ public:
    *
    * That means the target arrays index will not be exceeded or deceeded.
    * When due to exceeding the remaining 'id-portion' is added from the
-   * start, deceeding it's subtracted from the end.
+   * start, when due to deceeding it's subtracted from the end.
    */
   static size_t IdxConv(int idx, int arraySize);
 
