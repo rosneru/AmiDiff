@@ -123,12 +123,48 @@ bool DiffEngine::shortestEdit(Trace& trace,
   return false;
 }
 
-bool DiffEngine::findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
+Box DiffEngine::findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
 {
   Box box(left, top, right, bottom);
   Box snake = midpoint(box, a, b);
 
+  if(snake.Size() == 0)
+  {
+    return snake;
+  }
 
+  Box head = findPath(box.Left(), box.Top(), snake.Left(), snake.Top(), a, b);
+  Box tail = findPath(box.Right(), box.Bottom(), snake.Right(), snake.Bottom(), a, b);
+
+  long resLeft = 0;
+  long resTop = 0;
+  long resRight = 0;
+  long resBottom = 0;
+
+  if(head.Size() > 0)
+  {
+    resLeft = head.Left();
+    resTop = head.Top();
+  }
+  else
+  {
+    resLeft = snake.Left();
+    resTop = snake.Top();
+  }
+
+  if(tail.Size() > 0)
+  {
+    resRight = tail.Right();
+    resBottom = tail.Bottom();
+  }
+  else
+  {
+    resRight = snake.Right();
+    resBottom = snake.Bottom();
+  }
+
+  Box result(resLeft, resTop, resRight, resBottom);
+  return result;
 }
 
 Box DiffEngine::midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b)
@@ -164,6 +200,9 @@ Box DiffEngine::midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b)
       return backwardSnake;
     }
   }
+
+  Box result(0, 0, 0, 0);
+  return result;
 }
 
 Box DiffEngine::forwards(Box box, int d, DiffFilePartition& a, DiffFilePartition& b)
@@ -214,8 +253,13 @@ Box DiffEngine::forwards(Box box, int d, DiffFilePartition& a, DiffFilePartition
     {
       // yield [[px, py], [x, y]]
       // TODO
+      Box result(px, py, x, y);
+      return result;
     }
   }
+
+  Box result(0, 0, 0, 0);
+  return result;
 }
 
 Box DiffEngine::backward(Box box, int d, DiffFilePartition& a, DiffFilePartition& b)
@@ -266,6 +310,11 @@ Box DiffEngine::backward(Box box, int d, DiffFilePartition& a, DiffFilePartition
     {
       // yield [[x, y], [px, py]]
       // TODO
+      Box result(x, y, px, py);
+      return result;
     }
   }
+
+  Box result(0, 0, 0, 0);
+  return result;
 }

@@ -45,7 +45,7 @@ private:
                     DiffFilePartition& a,
                     DiffFilePartition& b);
 
-  bool findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
+  Box findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
 
   Box midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b);
 
