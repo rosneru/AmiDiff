@@ -41,9 +41,9 @@ private:
   int* vb;
   int vSize;
 
-  bool shortestEdit(Trace& trace,
-                    DiffFilePartition& a,
-                    DiffFilePartition& b);
+//  bool shortestEdit(Trace& trace,
+//                    DiffFilePartition& a,
+//                    DiffFilePartition& b);
 
   Box findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
 

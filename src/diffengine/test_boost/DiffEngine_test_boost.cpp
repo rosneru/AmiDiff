@@ -130,31 +130,31 @@ BOOST_AUTO_TEST_CASE( testcase_00_myers )
 
 }
 
-/**
- * This test did loop on Amiga..
- *
- */
-BOOST_AUTO_TEST_CASE( testcase_10_myers )
-{
-  bool cancelRequested = false;
-  bool diffOk = false;
-  DiffEngine diffEngine(cancelRequested);
+///**
+// * This test did loop on Amiga..
+// *
+// */
+//BOOST_AUTO_TEST_CASE( testcase_10_myers )
+//{
+//  bool cancelRequested = false;
+//  bool diffOk = false;
+//  DiffEngine diffEngine(cancelRequested);
 
-  DiffFilePartitionLinux srcA(cancelRequested);
-  srcA.PreProcess("../../../testfiles/testcase_13_6000_left.cpp");
+//  DiffFilePartitionLinux srcA(cancelRequested);
+//  srcA.PreProcess("../../../testfiles/testcase_13_6000_left.cpp");
 
-  DiffFilePartitionLinux srcB(cancelRequested);
-  srcB.PreProcess("../../../testfiles/testcase_13_6000_right.cpp");
+//  DiffFilePartitionLinux srcB(cancelRequested);
+//  srcB.PreProcess("../../../testfiles/testcase_13_6000_right.cpp");
 
-  DiffFilePartition targetA(cancelRequested);
-  DiffFilePartition targetB(cancelRequested);
+//  DiffFilePartition targetA(cancelRequested);
+//  DiffFilePartition targetB(cancelRequested);
 
-  diffOk = diffEngine.Diff(srcA, srcB, targetA, targetB);
+//  diffOk = diffEngine.Diff(srcA, srcB, targetA, targetB);
 
-  BOOST_CHECK_EQUAL(diffOk, true);
+//  BOOST_CHECK_EQUAL(diffOk, true);
 
-  BOOST_CHECK_EQUAL(srcA.NumLines(), 5832);
-  BOOST_CHECK_EQUAL(srcB.NumLines(), 7183);
-  BOOST_CHECK_EQUAL(targetA.NumLines(), 7796);
-  BOOST_CHECK_EQUAL(targetB.NumLines(), 7796);
-}
+//  BOOST_CHECK_EQUAL(srcA.NumLines(), 5832);
+//  BOOST_CHECK_EQUAL(srcB.NumLines(), 7183);
+//  BOOST_CHECK_EQUAL(targetA.NumLines(), 7796);
+//  BOOST_CHECK_EQUAL(targetB.NumLines(), 7796);
+//}

@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "DiffEngine.h"
 
 DiffEngine::DiffEngine(bool& bCancelRequested)
@@ -30,11 +32,11 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
                       DiffFilePartition& targetA,
                       DiffFilePartition& targetB)
 {
-  Trace trace(srcA, srcB, targetA, targetB);
-  if(shortestEdit(trace, srcA, srcB) == false)
-  {
-    return false;
-  }
+//  Trace trace(srcA, srcB, targetA, targetB);
+//  if(shortestEdit(trace, srcA, srcB) == false)
+//  {
+//    return false;
+//  }
 
   //
   // Progress reporting
@@ -44,10 +46,12 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     m_pProgressReporter->notifyProgressChanged(50);
   }
 
-  trace.Backtrack();
+  Box path = findPath(0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
 
-  targetA.SetReversedMode(true);
-  targetB.SetReversedMode(true);
+//  trace.Backtrack();
+
+//  targetA.SetReversedMode(true);
+//  targetB.SetReversedMode(true);
 
   //
   // Progress reporting
@@ -69,72 +73,72 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 }
 
 
-bool DiffEngine::shortestEdit(Trace& trace,
-                              DiffFilePartition& a,
-                              DiffFilePartition& b)
-{
-  int n = a.NumLines();
-  int m = b.NumLines();
-  long max = n + m;
+//bool DiffEngine::shortestEdit(Trace& trace,
+//                              DiffFilePartition& a,
+//                              DiffFilePartition& b)
+//{
+//  int n = a.NumLines();
+//  int m = b.NumLines();
+//  long max = n + m;
 
-  int vSize = 2 * max + 1;
-  int* v = new int[vSize];
-  v[1] = 0;
+//  int vSize = 2 * max + 1;
+//  int* v = new int[vSize];
+//  v[1] = 0;
 
-  int x, y;
+//  int x, y;
 
-  for(int d = 0; d <= max; d++)
-  {
-    trace.AddTrace(v, vSize);
-    for(long k = -d; k <= d; k += 2)
-    {
-      if((k == -d) || ((k != d) && (v[Trace::IdxConv(k - 1, vSize)] < v[Trace::IdxConv(k + 1, vSize)])))
-      {
-        x = v[Trace::IdxConv(k + 1, vSize)];
-      }
-      else
-      {
-        x = v[Trace::IdxConv(k - 1, vSize)] + 1;
-      }
+//  for(int d = 0; d <= max; d++)
+//  {
+//    trace.AddTrace(v, vSize);
+//    for(long k = -d; k <= d; k += 2)
+//    {
+//      if((k == -d) || ((k != d) && (v[Trace::IdxConv(k - 1, vSize)] < v[Trace::IdxConv(k + 1, vSize)])))
+//      {
+//        x = v[Trace::IdxConv(k + 1, vSize)];
+//      }
+//      else
+//      {
+//        x = v[Trace::IdxConv(k - 1, vSize)] + 1;
+//      }
 
-      y = x - k;
+//      y = x - k;
 
-      while((x < n) && (y < m) 
-        && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token())
-        && (a.GetDiffLine(x)->Text() == b.GetDiffLine(y)->Text()))
-      {
-        x++;
-        y++;
-      }
+//      while((x < n) && (y < m)
+//        && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token())
+//        && (a.GetDiffLine(x)->Text() == b.GetDiffLine(y)->Text()))
+//      {
+//        x++;
+//        y++;
+//      }
 
-      int idx = Trace::IdxConv(k, vSize);
+//      int idx = Trace::IdxConv(k, vSize);
 
-      v[idx] = x;
+//      v[idx] = x;
 
-      if((x >= n) && (y >= m))
-      {
-        delete[] v;
-        return true;
-      }
-    }
-  }
+//      if((x >= n) && (y >= m))
+//      {
+//        delete[] v;
+//        return true;
+//      }
+//    }
+//  }
 
-  delete[] v;
-  return false;
-}
+//  delete[] v;
+//  return false;
+//}
 
 Box DiffEngine::findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
 {
   Box box(left, top, right, bottom);
   Box snake = midpoint(box, a, b);
 
-  if(snake.Size() == 0)
+  if(snake.Size() > 0)
   {
     return snake;
   }
 
   Box head = findPath(box.Left(), box.Top(), snake.Left(), snake.Top(), a, b);
-  Box tail = findPath(box.Right(), box.Bottom(), snake.Right(), snake.Bottom(), a, b);
+  Box tail = findPath(snake.Right(), snake.Bottom(), box.Right(), box.Bottom(), a, b);
 
   long resLeft = 0;
   long resTop = 0;
@@ -167,8 +171,11 @@ Box DiffEngine::findPath(long left, long top, long right, long bottom, DiffFileP
   return result;
 }
 
+static long counter = 0;
+
 Box DiffEngine::midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b)
 {
+  printf("Counter = %d\n", counter++);
   if(box.Size() == 0)
   {
     // If this box is empty return the mepty box to signal the failure
@@ -276,7 +283,7 @@ Box DiffEngine::backward(Box box, int d, DiffFilePartition& a, DiffFilePartition
     }
     else
     {
-      py = vb[Trace::IdxConv(c - 1, vSize)] + 1; // TODO remove the +1...?
+      py = vb[Trace::IdxConv(c - 1, vSize)];
       y = py - 1;
     }
 
