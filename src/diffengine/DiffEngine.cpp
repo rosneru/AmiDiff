@@ -4,27 +4,14 @@
 
 DiffEngine::DiffEngine(bool& bCancelRequested)
   : m_bCancelRequested(bCancelRequested),
-    m_pProgressReporter(NULL),
-    vf(NULL),
-    vb(NULL),
-    vSize(0)
+    m_pProgressReporter(NULL)
 {
 
 }
 
 DiffEngine::~DiffEngine()
 {
-  if(vf != NULL)
-  {
-    delete[] vf;
-    vf = NULL;
-  }
 
-  if(vb != NULL)
-  {
-    delete[] vb;
-    vb = NULL;
-  }
 }
 
 bool DiffEngine::Diff(DiffFilePartition& srcA,
@@ -46,7 +33,12 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     m_pProgressReporter->notifyProgressChanged(50);
   }
 
-  Box path = findPath(0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
+  Array<Box> path;
+  Box result = findPath(path, 0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
+  if(result.Size() == 0)
+  {
+    return false;
+  }
 
 //  trace.Backtrack();
 
@@ -73,72 +65,18 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 }
 
 
-//bool DiffEngine::shortestEdit(Trace& trace,
-//                              DiffFilePartition& a,
-//                              DiffFilePartition& b)
-//{
-//  int n = a.NumLines();
-//  int m = b.NumLines();
-//  long max = n + m;
-
-//  int vSize = 2 * max + 1;
-//  int* v = new int[vSize];
-//  v[1] = 0;
-
-//  int x, y;
-
-//  for(int d = 0; d <= max; d++)
-//  {
-//    trace.AddTrace(v, vSize);
-//    for(long k = -d; k <= d; k += 2)
-//    {
-//      if((k == -d) || ((k != d) && (v[Trace::IdxConv(k - 1, vSize)] < v[Trace::IdxConv(k + 1, vSize)])))
-//      {
-//        x = v[Trace::IdxConv(k + 1, vSize)];
-//      }
-//      else
-//      {
-//        x = v[Trace::IdxConv(k - 1, vSize)] + 1;
-//      }
-
-//      y = x - k;
-
-//      while((x < n) && (y < m)
-//        && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token())
-//        && (a.GetDiffLine(x)->Text() == b.GetDiffLine(y)->Text()))
-//      {
-//        x++;
-//        y++;
-//      }
-
-//      int idx = Trace::IdxConv(k, vSize);
-
-//      v[idx] = x;
-
-//      if((x >= n) && (y >= m))
-//      {
-//        delete[] v;
-//        return true;
-//      }
-//    }
-//  }
-
-//  delete[] v;
-//  return false;
-//}
-
-Box DiffEngine::findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
+Box DiffEngine::findPath(Array<Box>& path, long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
 {
   Box box(left, top, right, bottom);
   Box snake = midpoint(box, a, b);
 
-  if(snake.Size() > 0)
+  if(snake.Size() == 0)
   {
     return snake;
   }
 
-  Box head = findPath(box.Left(), box.Top(), snake.Left(), snake.Top(), a, b);
-  Box tail = findPath(snake.Right(), snake.Bottom(), box.Right(), box.Bottom(), a, b);
+  Box head = findPath(path, left, top, snake.Left(), snake.Top(), a, b);
+  Box tail = findPath(path, snake.Right(), snake.Bottom(), right, bottom, a, b);
 
   long resLeft = 0;
   long resTop = 0;
@@ -168,6 +106,7 @@ Box DiffEngine::findPath(long left, long top, long right, long bottom, DiffFileP
   }
 
   Box result(resLeft, resTop, resRight, resBottom);
+  path.Push(result);
   return result;
 }
 
@@ -185,34 +124,40 @@ Box DiffEngine::midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b)
   // Original: max = (box.size / 2.0).ceil
   int max = (box.Size() / 2) + ((box.Size() % 2) != 0);
 
-  vSize = 2 * max + 1;
+  int vSize = 2 * max + 1;
 
-  vf = new int[vSize];
+  int* vf = new int[vSize];
   vf[1] = box.Left();
 
-  vb = new int[vSize];
+  int* vb = new int[vSize];
   vb[1] = box.Bottom();
 
   for(int d = 0; d <= max; d++)
   {
-    Box forwardSnake = forwards(box, d, a, b);
+    Box forwardSnake = forwards(box, vf, vb, vSize, d, a, b);
     if(forwardSnake.Size() > 0)
     {
+      delete[] vf;
+      delete[] vb;
       return forwardSnake;
     }
 
-    Box backwardSnake = backward(box, d, a, b);
+    Box backwardSnake = backward(box, vf, vb, vSize, d, a, b);
     if(backwardSnake.Size() > 0)
     {
+      delete[] vf;
+      delete[] vb;
       return backwardSnake;
     }
   }
 
+  delete[] vf;
+  delete[] vb;
   Box result(0, 0, 0, 0);
   return result;
 }
 
-Box DiffEngine::forwards(Box box, int d, DiffFilePartition& a, DiffFilePartition& b)
+Box DiffEngine::forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
 {
   int x, px, y, py;
 
@@ -226,7 +171,7 @@ Box DiffEngine::forwards(Box box, int d, DiffFilePartition& a, DiffFilePartition
     }
     else
     {
-      px = vf[Trace::IdxConv(k - 1, vSize)] + 1; // TODO remove the +1...?
+      px = vf[Trace::IdxConv(k - 1, vSize)]; //+ 1; // TODO remove the +1...?
       x = px + 1;
     }
 
@@ -269,7 +214,7 @@ Box DiffEngine::forwards(Box box, int d, DiffFilePartition& a, DiffFilePartition
   return result;
 }
 
-Box DiffEngine::backward(Box box, int d, DiffFilePartition& a, DiffFilePartition& b)
+Box DiffEngine::backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
 {
   int x, px, y, py;
 

@@ -37,20 +37,12 @@ private:
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
-  int* vf;
-  int* vb;
-  int vSize;
-
-//  bool shortestEdit(Trace& trace,
-//                    DiffFilePartition& a,
-//                    DiffFilePartition& b);
-
-  Box findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
+  Box findPath(Array<Box>& path, long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
 
   Box midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b);
 
-  Box forwards(Box box, int d, DiffFilePartition& a, DiffFilePartition& b);
-  Box backward(Box box, int d, DiffFilePartition& a, DiffFilePartition& b);
+  Box forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
+  Box backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
 
 };
 
