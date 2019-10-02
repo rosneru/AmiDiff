@@ -40,10 +40,20 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     return false;
   }
 
-//  trace.Backtrack();
-
-//  targetA.SetReversedMode(true);
-//  targetB.SetReversedMode(true);
+  printf("[ ");
+  for(int i = 0; i < path.Size(); i++)
+  {
+    Box box = path[i];
+    printf("[%d, %d], [%d, %d]", box.Left(), box.Top(), box.Right(), box.Bottom());
+    if(i < path.Size() - 1)
+    {
+      printf(", \n  ");
+    }
+    else
+    {
+      printf("]\n");
+    }
+  }
 
   //
   // Progress reporting
