@@ -51,7 +51,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     }
     else
     {
-      printf("]\n");
+      printf(" ]\n");
     }
   }
 
@@ -120,11 +120,9 @@ Box DiffEngine::findPath(Array<Box>& path, long left, long top, long right, long
   return result;
 }
 
-static long counter = 0;
 
 Box DiffEngine::midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b)
 {
-  printf("Counter = %d\n", counter++);
   if(box.Size() == 0)
   {
     // If this box is empty return the mepty box to signal the failure
