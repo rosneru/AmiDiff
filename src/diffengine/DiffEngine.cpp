@@ -125,7 +125,7 @@ Box DiffEngine::midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b)
 {
   if(box.Size() == 0)
   {
-    // If this box is empty return the mepty box to signal the failure
+    // If this box is empty return the empty box to signal the failure
     return box;
   }
 
@@ -179,7 +179,7 @@ Box DiffEngine::forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
     }
     else
     {
-      px = vf[Trace::IdxConv(k - 1, vSize)]; //+ 1; // TODO remove the +1...?
+      px = vf[Trace::IdxConv(k - 1, vSize)];
       x = px + 1;
     }
 
@@ -207,9 +207,8 @@ Box DiffEngine::forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
     vf[idx] = x;
 
     if( ((box.Delta() % 2) != 0)  // true if box.Delta() is odd
-     && (c > -d)
-     && (c < d)
-     && (y > vb[c]))
+     && (Trace::Between(c, -(d - 1), d - 1))
+     && (y >= vb[c]))
     {
       // yield [[px, py], [x, y]]
       // TODO
@@ -264,8 +263,7 @@ Box DiffEngine::backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
     vb[idx] = y;
 
     if( ((box.Delta() % 2) == 0)  // true if box.Delta() is even
-     && (k > -d)
-     && (k < d)
+     && (Trace::Between(k, -d, d))
      && (x <= vf[k]))
     {
       // yield [[x, y], [px, py]]

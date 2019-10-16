@@ -53,6 +53,8 @@ public:
    */
   static size_t IdxConv(int idx, int arraySize);
 
+  static bool Between(long number, long min, long max);
+
 private:
   DiffFilePartition& m_SrcA;
   DiffFilePartition& m_SrcB;

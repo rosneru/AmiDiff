@@ -51,6 +51,13 @@ BOOST_AUTO_TEST_CASE( testcase_IdxConv )
 
 }
 
+BOOST_AUTO_TEST_CASE( testcase_Between )
+{
+  BOOST_CHECK_EQUAL(Trace::Between(3, 1, 5), true);
+  BOOST_CHECK_EQUAL(Trace::Between(6, 1, 5), false);
+  BOOST_CHECK_EQUAL(Trace::Between(6, 6, 6), true);
+}
+
 
 ///**
 // *  The basic example which Eugene Myers used for the presentation of

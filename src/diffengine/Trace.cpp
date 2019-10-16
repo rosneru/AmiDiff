@@ -135,6 +135,16 @@ size_t Trace::IdxConv(int idx, int arraySize)
   return idx;
 }
 
+bool Trace::Between(long number, long min, long max)
+{
+  if((number < min) || (number > max))
+  {
+    return false;
+  }
+
+  return true;
+}
+
 
 
 void Trace::yield(int x1, int y1, int x, int y)
