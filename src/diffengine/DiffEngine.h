@@ -2,6 +2,7 @@
 #define DIFF_ENGINE_H
 
 #include "Box.h"
+#include "Point.h"
 #include "SimpleString.h"
 #include "DiffLine.h"
 #include "DiffFilePartition.h"
@@ -37,7 +38,7 @@ private:
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
-  Box findPath(Array<Box>& path, long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
+  Array<Point>* findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
 
   Box midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b);
 

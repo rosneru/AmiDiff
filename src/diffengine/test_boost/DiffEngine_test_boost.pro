@@ -22,7 +22,8 @@ SOURCES += \
     ../../oscottlibs/SimpleString.cpp \
     ../DiffFilePartitionLinux.cpp \
     ../Trace.cpp \
-    ../Box.cpp
+    ../Box.cpp \
+    ../Point.cpp
 
 
 HEADERS += \
@@ -35,4 +36,5 @@ HEADERS += \
     ../DiffFilePartitionLinux.h \
     ../../oscottlibs/Array.h \
     ../Trace.h \
-    ../Box.h
+    ../Box.h \
+    ../Point.h

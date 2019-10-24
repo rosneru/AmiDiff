@@ -33,19 +33,18 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     m_pProgressReporter->notifyProgressChanged(50);
   }
 
-  Array<Box> path;
-  Box result = findPath(path, 0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
-  if(result.Size() == 0)
+  Array<Point>* pPath = findPath(0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
+  if(pPath->Size() == 0)
   {
     return false;
   }
 
   printf("[ ");
-  for(int i = 0; i < path.Size(); i++)
+  for(int i = 0; i < pPath->Size(); i++)
   {
-    Box box = path[i];
-    printf("[%d, %d], [%d, %d]", box.Left(), box.Top(), box.Right(), box.Bottom());
-    if(i < path.Size() - 1)
+    Point box = (*pPath)[i];
+    printf("[%d, %d], ", box.Left(), box.Top());
+    if(i < pPath->Size() - 1)
     {
       printf(", \n  ");
     }
@@ -54,6 +53,8 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
       printf(" ]\n");
     }
   }
+
+  delete pPath;
 
   //
   // Progress reporting
@@ -75,49 +76,64 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 }
 
 
-Box DiffEngine::findPath(Array<Box>& path, long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
+Array<Point>* DiffEngine::findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
 {
   Box box(left, top, right, bottom);
   Box snake = midpoint(box, a, b);
 
   if(snake.Size() == 0)
   {
-    return snake;
+    return new Array<Point>();
   }
 
-  Box head = findPath(path, left, top, snake.Left(), snake.Top(), a, b);
-  Box tail = findPath(path, snake.Right(), snake.Bottom(), right, bottom, a, b);
+  Array<Point>* pHead = findPath(left, top, snake.Left(), snake.Top(), a, b);
+  Array<Point>* pTail = findPath(snake.Right(), snake.Bottom(), right, bottom, a, b);
 
-  long resLeft = 0;
-  long resTop = 0;
-  long resRight = 0;
-  long resBottom = 0;
-
-  if(head.Size() > 0)
+  if(pHead->Size() > 0)
   {
-    resLeft = head.Left();
-    resTop = head.Top();
+    if(pTail->Size() > 0)
+    {
+      for(int i = 0; i < pTail->Size(); i++)
+      {
+        pHead->Push((*pTail)[i]);
+      }
+
+      delete pTail;
+      return pHead;
+    }
+    else
+    {
+      pHead->Push(Point(snake.Right(), snake.Bottom()));
+
+      delete pTail;
+      return pHead;
+    }
   }
   else
   {
-    resLeft = snake.Left();
-    resTop = snake.Top();
-  }
+    Array<Point>* pResult = new Array<Point>();
+    pResult->Push(Point(snake.Left(), snake.Top()));
 
-  if(tail.Size() > 0)
-  {
-    resRight = tail.Right();
-    resBottom = tail.Bottom();
-  }
-  else
-  {
-    resRight = snake.Right();
-    resBottom = snake.Bottom();
-  }
+    if(pTail->Size() > 0)
+    {
+      for(int i = 0; i < pTail->Size(); i++)
+      {
+        pResult->Push((*pTail)[i]);
+      }
 
-  Box result(resLeft, resTop, resRight, resBottom);
-  path.Push(result);
-  return result;
+      delete pHead;
+      delete pTail;
+      return pResult;
+    }
+    else
+    {
+      pResult->Push(Point(snake.Right(), snake.Bottom()));
+
+      delete pHead;
+      delete pTail;
+      return pResult;
+    }
+  }
 }
 
 
@@ -262,9 +278,13 @@ Box DiffEngine::backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
     int idx = Trace::IdxConv(c, vSize);
     vb[idx] = y;
 
-    if( ((box.Delta() % 2) == 0)  // true if box.Delta() is even
-     && (Trace::Between(k, -d, d))
-     && (x <= vf[k]))
+    if(k > (vSize - 1))
+    {
+      printf("ILLEGAL ACCESS\n");
+    }
+
+    // %2 => true if box.Delta() is even
+    if( ((box.Delta() % 2) == 0) && (Trace::Between(k, -d, d)) && (x <= vf[k]))
     {
       // yield [[x, y], [px, py]]
       // TODO

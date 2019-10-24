@@ -20,6 +20,24 @@
 #include "LinkedList.h"
 #include "SimpleString.h"
 
+Array<Point>* findPath(int x, int y)
+{
+  if(x < 5 || y < 5)
+  {
+    return new Array<Point>();
+  }
+
+  Array<Point>* path = findPath(x + 1, y - 1);
+
+  path->Push(Point(x, y));
+  return path;
+}
+
+BOOST_AUTO_TEST_CASE( test_Array_Recursion )
+{
+  Array<Point>* path = findPath(12, 12);
+  delete path;
+}
 
 BOOST_AUTO_TEST_CASE( testcase_IdxConv )
 {
@@ -53,9 +71,15 @@ BOOST_AUTO_TEST_CASE( testcase_IdxConv )
 
 BOOST_AUTO_TEST_CASE( testcase_Between )
 {
+  BOOST_CHECK_EQUAL(Trace::Between(0, 1, 5), false);
+  BOOST_CHECK_EQUAL(Trace::Between(1, 1, 5), true);
+  BOOST_CHECK_EQUAL(Trace::Between(2, 1, 5), true);
   BOOST_CHECK_EQUAL(Trace::Between(3, 1, 5), true);
+  BOOST_CHECK_EQUAL(Trace::Between(4, 1, 5), true);
+  BOOST_CHECK_EQUAL(Trace::Between(5, 1, 5), true);
   BOOST_CHECK_EQUAL(Trace::Between(6, 1, 5), false);
-  BOOST_CHECK_EQUAL(Trace::Between(6, 6, 6), true);
+  BOOST_CHECK_EQUAL(Trace::Between(7, 1, 5), false);
+
 }
 
 
