@@ -81,6 +81,18 @@ Array<Point>* DiffEngine::findPath(long left, long top, long right, long bottom,
   Box box(left, top, right, bottom);
   Box snake = midpoint(box, a, b);
 
+  printf("Midpoint of [%d, %d], [%d, %d]]", left, top, right, bottom);
+
+  if(snake.Size() > 0)
+  {
+    printf(" --> Snake is: [[%d, %d], [%d, %d]]\n", snake.Left(), snake.Top(), snake.Right(), snake.Bottom());
+  }
+  else
+  {
+    printf("Snake is: \n");
+  }
+
+
   if(snake.Size() == 0)
   {
     return new Array<Point>();
