@@ -81,18 +81,6 @@ Array<Point>* DiffEngine::findPath(long left, long top, long right, long bottom,
   Box box(left, top, right, bottom);
   Box snake = midpoint(box, a, b);
 
-  printf("Midpoint of [%d, %d], [%d, %d]]", left, top, right, bottom);
-
-  if(snake.Size() > 0)
-  {
-    printf(" --> Snake is: [[%d, %d], [%d, %d]]\n", snake.Left(), snake.Top(), snake.Right(), snake.Bottom());
-  }
-  else
-  {
-    printf("Snake is: \n");
-  }
-
-
   if(snake.Size() == 0)
   {
     return new Array<Point>();
@@ -231,12 +219,14 @@ Box DiffEngine::forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
       y++;
     }
 
-    int idx = Trace::IdxConv(k, vSize);
-    vf[idx] = x;
+    int cId = Trace::IdxConv(c, vSize);
+    int kId = Trace::IdxConv(k, vSize);
+
+    vf[kId] = x;
 
     if( ((box.Delta() % 2) != 0)  // true if box.Delta() is odd
      && (Trace::Between(c, -(d - 1), d - 1))
-     && (y >= vb[c]))
+     && (y >= vb[cId]))
     {
       // yield [[px, py], [x, y]]
       // TODO
@@ -287,16 +277,12 @@ Box DiffEngine::backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
       y--;
     }
 
-    int idx = Trace::IdxConv(c, vSize);
-    vb[idx] = y;
-
-    if(k > (vSize - 1))
-    {
-      printf("ILLEGAL ACCESS\n");
-    }
+    int cId = Trace::IdxConv(c, vSize);
+    int kId = Trace::IdxConv(k, vSize);
+    vb[cId] = y;
 
     // %2 => true if box.Delta() is even
-    if( ((box.Delta() % 2) == 0) && (Trace::Between(k, -d, d)) && (x <= vf[k]))
+    if( ((box.Delta() % 2) == 0) && (Trace::Between(k, -d, d)) && (x <= vf[kId]))
     {
       // yield [[x, y], [px, py]]
       // TODO
