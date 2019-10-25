@@ -7,7 +7,6 @@
 #include "DiffLine.h"
 #include "DiffFilePartition.h"
 #include "ProgressReporter.h"
-#include "Trace.h"
 
 /**
  * Class for generating and representing the difference of two files.

@@ -16,9 +16,12 @@
 #include "DiffFilePartitionLinux.h"
 #include "DiffEngine.h"
 #include "DiffLine.h"
-#include "Trace.h"
 #include "LinkedList.h"
 #include "SimpleString.h"
+
+// These two functions  are declared in DiffEngine. They are tested here.
+bool Between(long number, long min, long max);
+size_t IdxConv(int idx, int arraySize);
 
 Array<Point>* findPath(int x, int y)
 {
@@ -41,44 +44,44 @@ BOOST_AUTO_TEST_CASE( test_Array_Recursion )
 
 BOOST_AUTO_TEST_CASE( testcase_IdxConv )
 {
-  BOOST_CHECK_EQUAL(Trace::IdxConv(-1, 5), 4);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(-2, 5), 3);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(-3, 5), 2);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(-4, 5), 1);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(-5, 5), 0);
+  BOOST_CHECK_EQUAL(IdxConv(-1, 5), 4);
+  BOOST_CHECK_EQUAL(IdxConv(-2, 5), 3);
+  BOOST_CHECK_EQUAL(IdxConv(-3, 5), 2);
+  BOOST_CHECK_EQUAL(IdxConv(-4, 5), 1);
+  BOOST_CHECK_EQUAL(IdxConv(-5, 5), 0);
 
-  BOOST_CHECK_EQUAL(Trace::IdxConv(-6, 5), 4);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(-7, 5), 3);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(-11, 5), 4);
+  BOOST_CHECK_EQUAL(IdxConv(-6, 5), 4);
+  BOOST_CHECK_EQUAL(IdxConv(-7, 5), 3);
+  BOOST_CHECK_EQUAL(IdxConv(-11, 5), 4);
 
-  BOOST_CHECK_EQUAL(Trace::IdxConv(0, 5), 0);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(1, 5), 1);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(2, 5), 2);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(3, 5), 3);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(4, 5), 4);
+  BOOST_CHECK_EQUAL(IdxConv(0, 5), 0);
+  BOOST_CHECK_EQUAL(IdxConv(1, 5), 1);
+  BOOST_CHECK_EQUAL(IdxConv(2, 5), 2);
+  BOOST_CHECK_EQUAL(IdxConv(3, 5), 3);
+  BOOST_CHECK_EQUAL(IdxConv(4, 5), 4);
 
 
-  BOOST_CHECK_EQUAL(Trace::IdxConv(5, 5), 0);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(6, 5), 1);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(7, 5), 2);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(8, 5), 3);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(9, 5), 4);
+  BOOST_CHECK_EQUAL(IdxConv(5, 5), 0);
+  BOOST_CHECK_EQUAL(IdxConv(6, 5), 1);
+  BOOST_CHECK_EQUAL(IdxConv(7, 5), 2);
+  BOOST_CHECK_EQUAL(IdxConv(8, 5), 3);
+  BOOST_CHECK_EQUAL(IdxConv(9, 5), 4);
 
-  BOOST_CHECK_EQUAL(Trace::IdxConv(10, 5), 0);
-  BOOST_CHECK_EQUAL(Trace::IdxConv(11, 5), 1);
+  BOOST_CHECK_EQUAL(IdxConv(10, 5), 0);
+  BOOST_CHECK_EQUAL(IdxConv(11, 5), 1);
 
 }
 
 BOOST_AUTO_TEST_CASE( testcase_Between )
 {
-  BOOST_CHECK_EQUAL(Trace::Between(0, 1, 5), false);
-  BOOST_CHECK_EQUAL(Trace::Between(1, 1, 5), true);
-  BOOST_CHECK_EQUAL(Trace::Between(2, 1, 5), true);
-  BOOST_CHECK_EQUAL(Trace::Between(3, 1, 5), true);
-  BOOST_CHECK_EQUAL(Trace::Between(4, 1, 5), true);
-  BOOST_CHECK_EQUAL(Trace::Between(5, 1, 5), true);
-  BOOST_CHECK_EQUAL(Trace::Between(6, 1, 5), false);
-  BOOST_CHECK_EQUAL(Trace::Between(7, 1, 5), false);
+  BOOST_CHECK_EQUAL(Between(0, 1, 5), false);
+  BOOST_CHECK_EQUAL(Between(1, 1, 5), true);
+  BOOST_CHECK_EQUAL(Between(2, 1, 5), true);
+  BOOST_CHECK_EQUAL(Between(3, 1, 5), true);
+  BOOST_CHECK_EQUAL(Between(4, 1, 5), true);
+  BOOST_CHECK_EQUAL(Between(5, 1, 5), true);
+  BOOST_CHECK_EQUAL(Between(6, 1, 5), false);
+  BOOST_CHECK_EQUAL(Between(7, 1, 5), false);
 
 }
 

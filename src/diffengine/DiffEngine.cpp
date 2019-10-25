@@ -2,6 +2,55 @@
 
 #include "DiffEngine.h"
 
+/**
+ * @brief
+ * Helper method!
+ *
+ * Convert the given index into a 'Ruby-like-array-index' in regards to
+ * the target-array's dimension (from- and to-value).
+ *
+ * That means the target arrays index will not be exceeded or deceeded.
+ * When due to exceeding the remaining 'id-portion' is added from the
+ * start, when due to deceeding it's subtracted from the end.
+ */
+inline size_t IdxConv(int idx, int arraySize)
+{
+  if(idx < 0)
+  {
+    if(idx + arraySize < 0)
+    {
+      int factor = -idx / arraySize;
+      idx = idx + factor * arraySize;
+    }
+
+    return arraySize + idx;
+  }
+
+  if(idx >= arraySize)
+  {
+    if(-idx + arraySize <= 0)
+    {
+      int factor = idx / arraySize;
+      idx = idx - factor * arraySize;
+    }
+
+    return idx;
+  }
+
+  return idx;
+}
+
+inline bool Between(long number, long min, long max)
+{
+  if((number < min) || (number > max))
+  {
+    return false;
+  }
+
+  return true;
+}
+
+
 DiffEngine::DiffEngine(bool& bCancelRequested)
   : m_bCancelRequested(bCancelRequested),
     m_pProgressReporter(NULL)
@@ -189,13 +238,13 @@ Box DiffEngine::forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
   {
     long c = k - box.Delta();
 
-    if((k == -d) || ((k != d) && (vf[Trace::IdxConv(k - 1, vSize)] < vf[Trace::IdxConv(k + 1, vSize)])))
+    if((k == -d) || ((k != d) && (vf[IdxConv(k - 1, vSize)] < vf[IdxConv(k + 1, vSize)])))
     {
-      x = px = vf[Trace::IdxConv(k + 1, vSize)];
+      x = px = vf[IdxConv(k + 1, vSize)];
     }
     else
     {
-      px = vf[Trace::IdxConv(k - 1, vSize)];
+      px = vf[IdxConv(k - 1, vSize)];
       x = px + 1;
     }
 
@@ -219,13 +268,13 @@ Box DiffEngine::forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
       y++;
     }
 
-    int cId = Trace::IdxConv(c, vSize);
-    int kId = Trace::IdxConv(k, vSize);
+    int cId = IdxConv(c, vSize);
+    int kId = IdxConv(k, vSize);
 
     vf[kId] = x;
 
     if( ((box.Delta() % 2) != 0)  // true if box.Delta() is odd
-     && (Trace::Between(c, -(d - 1), d - 1))
+     && (Between(c, -(d - 1), d - 1))
      && (y >= vb[cId]))
     {
       // yield [[px, py], [x, y]]
@@ -247,13 +296,13 @@ Box DiffEngine::backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
   {
     long k = c + box.Delta();
 
-    if((c == -d) || ((c != d) && (vb[Trace::IdxConv(c - 1, vSize)] > vb[Trace::IdxConv(c + 1, vSize)])))
+    if((c == -d) || ((c != d) && (vb[IdxConv(c - 1, vSize)] > vb[IdxConv(c + 1, vSize)])))
     {
-      y = py = vb[Trace::IdxConv(c + 1, vSize)];
+      y = py = vb[IdxConv(c + 1, vSize)];
     }
     else
     {
-      py = vb[Trace::IdxConv(c - 1, vSize)];
+      py = vb[IdxConv(c - 1, vSize)];
       y = py - 1;
     }
 
@@ -277,12 +326,12 @@ Box DiffEngine::backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
       y--;
     }
 
-    int cId = Trace::IdxConv(c, vSize);
-    int kId = Trace::IdxConv(k, vSize);
+    int cId = IdxConv(c, vSize);
+    int kId = IdxConv(k, vSize);
     vb[cId] = y;
 
     // %2 => true if box.Delta() is even
-    if( ((box.Delta() % 2) == 0) && (Trace::Between(k, -d, d)) && (x <= vf[kId]))
+    if( ((box.Delta() % 2) == 0) && (Between(k, -d, d)) && (x <= vf[kId]))
     {
       // yield [[x, y], [px, py]]
       // TODO
