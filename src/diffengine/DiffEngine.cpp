@@ -91,22 +91,25 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
   int x1 = (*pPath)[0].Left();
   int y1 = (*pPath)[0].Top();
 
-  printf("[ ");
+
   for(int i = 1; i < pPath->Size(); i++)
   {
     int x2 = (*pPath)[i].Left();
     int y2 = (*pPath)[i].Top();
 
-    Point box = (*pPath)[i];
-    printf("(%d, %d),    (%d, %d)", x1, y1, x2, y2);
-    if(i < pPath->Size() - 1)
+
+    // Walk diagonal #1
+    while((x1 < x2)
+       && (y1 < y2)
+       && (srcA.GetDiffLine(x1)->Token() == srcB.GetDiffLine(y1)->Token())
+       && (srcA.GetDiffLine(x1)->Text() == srcB.GetDiffLine(y1)->Text()))    // TODO remove and run the tests
     {
-      printf(", \n  ");
+      // TODO yield x1, y1, x1 + 1, y1 + 1
+      x1++;
+      y1++;
     }
-    else
-    {
-      printf(" ]\n");
-    }
+
+    printf("Walk diagonal returns (%d, %d)\n", x1, y1);
 
     x1 = x2;
     y1 = y2;
@@ -273,7 +276,7 @@ Box DiffEngine::forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
     while((x < box.Right())
        && (y < box.Bottom())
        && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token())
-       && (a.GetDiffLine(x)->Text() == b.GetDiffLine(y)->Text()))
+       && (a.GetDiffLine(x)->Text() == b.GetDiffLine(y)->Text()))   // TODO remove and run the tests
     {
       x++;
       y++;
@@ -331,7 +334,7 @@ Box DiffEngine::backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
     while((x > box.Left())
        && (y > box.Top())
        && (a.GetDiffLine(x - 1)->Token() == b.GetDiffLine(y - 1)->Token())
-       && (a.GetDiffLine(x - 1)->Text() == b.GetDiffLine(y - 1)->Text()))
+       && (a.GetDiffLine(x - 1)->Text() == b.GetDiffLine(y - 1)->Text()))   // TODO remove and run the tests
     {
       x--;
       y--;
