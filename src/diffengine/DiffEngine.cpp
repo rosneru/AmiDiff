@@ -82,7 +82,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     m_pProgressReporter->notifyProgressChanged(50);
   }
 
-  Array<Point>* pPath = findPath(0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
+  Array<Point>* pPath = FindPath(0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
   if(pPath->Size() == 0)
   {
     return false;
@@ -92,7 +92,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
   for(int i = 0; i < pPath->Size(); i++)
   {
     Point box = (*pPath)[i];
-    printf("[%d, %d], ", box.Left(), box.Top());
+    printf("[%d, %d]", box.Left(), box.Top());
     if(i < pPath->Size() - 1)
     {
       printf(", \n  ");
@@ -125,7 +125,7 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 }
 
 
-Array<Point>* DiffEngine::findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
+Array<Point>* DiffEngine::FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
 {
   Box box(left, top, right, bottom);
   Box snake = midpoint(box, a, b);
@@ -135,8 +135,8 @@ Array<Point>* DiffEngine::findPath(long left, long top, long right, long bottom,
     return new Array<Point>();
   }
 
-  Array<Point>* pHead = findPath(left, top, snake.Left(), snake.Top(), a, b);
-  Array<Point>* pTail = findPath(snake.Right(), snake.Bottom(), right, bottom, a, b);
+  Array<Point>* pHead = FindPath(left, top, snake.Left(), snake.Top(), a, b);
+  Array<Point>* pTail = FindPath(snake.Right(), snake.Bottom(), right, bottom, a, b);
 
   if(pHead->Size() > 0)
   {
@@ -165,6 +165,8 @@ Array<Point>* DiffEngine::findPath(long left, long top, long right, long bottom,
 
     if(pTail->Size() > 0)
     {
+      // TODO Maybe array is inefficient here. Better use a linked
+      // list? Measure.
       for(int i = 0; i < pTail->Size(); i++)
       {
         pResult->Push((*pTail)[i]);

@@ -28,6 +28,9 @@ public:
             DiffFilePartition& targetA,
             DiffFilePartition& targetB);
 
+
+  Array<Point>* FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
+
   /**
    * Setting the progress reporter
    */
@@ -37,7 +40,6 @@ private:
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
-  Array<Point>* findPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
 
   Box midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b);
 
