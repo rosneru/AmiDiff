@@ -88,11 +88,17 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     return false;
   }
 
+  int x1 = (*pPath)[0].Left();
+  int y1 = (*pPath)[0].Top();
+
   printf("[ ");
-  for(int i = 0; i < pPath->Size(); i++)
+  for(int i = 1; i < pPath->Size(); i++)
   {
+    int x2 = (*pPath)[i].Left();
+    int y2 = (*pPath)[i].Top();
+
     Point box = (*pPath)[i];
-    printf("[%d, %d]", box.Left(), box.Top());
+    printf("(%d, %d),    (%d, %d)", x1, y1, x2, y2);
     if(i < pPath->Size() - 1)
     {
       printf(", \n  ");
@@ -101,6 +107,9 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     {
       printf(" ]\n");
     }
+
+    x1 = x2;
+    y1 = y2;
   }
 
   delete pPath;
