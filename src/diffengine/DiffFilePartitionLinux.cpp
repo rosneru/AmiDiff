@@ -33,5 +33,5 @@ bool DiffFilePartitionLinux::PreProcess(const SimpleString& p_FileName)
 
   inputFileStream.close();
 
-  return true;
+  return NumLines() > 0;
 }
