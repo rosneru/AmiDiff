@@ -19,7 +19,7 @@
 
 #include "Array.h"
 #include "LinkedList.h"
-#include "Point.h"
+#include "Pair.h"
 #include "SimpleString.h"
 
 // These two functions  are declared in DiffEngine. They are tested here.
@@ -169,7 +169,7 @@ BOOST_AUTO_TEST_CASE( test_FindPath_testcase_22_myers_ruby_linearSpace )
   DiffFilePartitionLinux srcB(cancelRequested);
   srcB.PreProcess("../../../testfiles/testcase_22_myersruby_right.c");
 
-  Array<Point>* pPath = diffEngine.FindPath(0, 0,
+  Array<Pair>* pPath = diffEngine.FindPath(0, 0,
                                            srcA.NumLines(),
                                            srcB.NumLines(),
                                            srcA,

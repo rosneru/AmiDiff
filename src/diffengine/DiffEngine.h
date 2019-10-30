@@ -2,7 +2,7 @@
 #define DIFF_ENGINE_H
 
 #include "Box.h"
-#include "Point.h"
+#include "Pair.h"
 #include "SimpleString.h"
 #include "DiffLine.h"
 #include "DiffFilePartition.h"
@@ -29,7 +29,7 @@ public:
             DiffFilePartition& diffB);
 
 
-  Array<Point>* FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
+  Array<Pair>* FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
 
   /**
    * Setting the progress reporter
@@ -41,7 +41,7 @@ private:
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
 
-  Box midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b);
+  Box midPair(Box box, DiffFilePartition& a, DiffFilePartition& b);
 
   Box forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
   Box backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);

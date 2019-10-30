@@ -1,35 +1,35 @@
-#include "Point.h"
+#include "Pair.h"
 
-Point::Point(long left, long top)
+Pair::Pair(long left, long top)
   : m_Left(left),
     m_Top(top),
     m_bNil(false)
 {
 }
 
-Point::Point()
+Pair::Pair()
   : m_Left(0),
     m_Top(0),
     m_bNil(true)
 {
 }
 
-Point::~Point()
+Pair::~Pair()
 {
 
 }
 
-long Point::Left() const
+long Pair::Left() const
 {
   return m_Left;
 }
 
-long Point::Top() const
+long Pair::Top() const
 {
   return m_Top;
 }
 
-bool Point::IsNil() const
+bool Pair::IsNil() const
 {
   return m_bNil;
 }

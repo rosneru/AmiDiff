@@ -1,19 +1,19 @@
-#ifndef POINT_H
-#define POINT_H
+#ifndef PAIR_H
+#define PAIR_H
 
 
 /**
- * A class that represents a point.
+ * A class that represents a Pair.
  *
  * @author Uwe Rosner
  * @date 23/10/2019
  */
-class Point
+class Pair
 {
 public:
-  Point(long left, long top);
-  Point();
-  ~Point();
+  Pair(long left, long top);
+  Pair();
+  ~Pair();
 
   long Left() const;
   long Top() const;

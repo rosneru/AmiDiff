@@ -82,7 +82,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     m_pProgressReporter->notifyProgressChanged(50);
   }
 
-  Array<Point>* pPath = FindPath(0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
+  Array<Pair>* pPath = FindPath(0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
   if(pPath->Size() == 0)
   {
     return false;
@@ -164,18 +164,18 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 }
 
 
-Array<Point>* DiffEngine::FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
+Array<Pair>* DiffEngine::FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
 {
   Box box(left, top, right, bottom);
-  Box snake = midpoint(box, a, b);
+  Box snake = midPair(box, a, b);
 
   if(snake.Size() == 0)
   {
-    return new Array<Point>();
+    return new Array<Pair>();
   }
 
-  Array<Point>* pHead = FindPath(left, top, snake.Left(), snake.Top(), a, b);
-  Array<Point>* pTail = FindPath(snake.Right(), snake.Bottom(), right, bottom, a, b);
+  Array<Pair>* pHead = FindPath(left, top, snake.Left(), snake.Top(), a, b);
+  Array<Pair>* pTail = FindPath(snake.Right(), snake.Bottom(), right, bottom, a, b);
 
   if(pHead->Size() > 0)
   {
@@ -191,7 +191,7 @@ Array<Point>* DiffEngine::FindPath(long left, long top, long right, long bottom,
     }
     else
     {
-      pHead->Push(Point(snake.Right(), snake.Bottom()));
+      pHead->Push(Pair(snake.Right(), snake.Bottom()));
 
       delete pTail;
       return pHead;
@@ -199,8 +199,8 @@ Array<Point>* DiffEngine::FindPath(long left, long top, long right, long bottom,
   }
   else
   {
-    Array<Point>* pResult = new Array<Point>();
-    pResult->Push(Point(snake.Left(), snake.Top()));
+    Array<Pair>* pResult = new Array<Pair>();
+    pResult->Push(Pair(snake.Left(), snake.Top()));
 
     if(pTail->Size() > 0)
     {
@@ -217,7 +217,7 @@ Array<Point>* DiffEngine::FindPath(long left, long top, long right, long bottom,
     }
     else
     {
-      pResult->Push(Point(snake.Right(), snake.Bottom()));
+      pResult->Push(Pair(snake.Right(), snake.Bottom()));
 
       delete pHead;
       delete pTail;
@@ -227,7 +227,7 @@ Array<Point>* DiffEngine::FindPath(long left, long top, long right, long bottom,
 }
 
 
-Box DiffEngine::midpoint(Box box, DiffFilePartition& a, DiffFilePartition& b)
+Box DiffEngine::midPair(Box box, DiffFilePartition& a, DiffFilePartition& b)
 {
   if(box.Size() == 0)
   {
