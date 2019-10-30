@@ -25,8 +25,8 @@ public:
 
   bool Diff(DiffFilePartition& srcA,
             DiffFilePartition& srcB,
-            DiffFilePartition& targetA,
-            DiffFilePartition& targetB);
+            DiffFilePartition& diffA,
+            DiffFilePartition& diffB);
 
 
   Array<Point>* FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
@@ -45,6 +45,12 @@ private:
 
   Box forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
   Box backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
+
+  void buildDiff(int x1, int y1, int x2, int y2,
+                 DiffFilePartition& srcA,
+                 DiffFilePartition& srcB,
+                 DiffFilePartition& diffA,
+                 DiffFilePartition& diffB);
 
 };
 

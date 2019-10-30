@@ -65,8 +65,8 @@ DiffEngine::~DiffEngine()
 
 bool DiffEngine::Diff(DiffFilePartition& srcA,
                       DiffFilePartition& srcB,
-                      DiffFilePartition& targetA,
-                      DiffFilePartition& targetB)
+                      DiffFilePartition& diffA,
+                      DiffFilePartition& diffB)
 {
 //  Trace trace(srcA, srcB, targetA, targetB);
 //  if(shortestEdit(trace, srcA, srcB) == false)
@@ -104,12 +104,39 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
        && (srcA.GetDiffLine(x1)->Token() == srcB.GetDiffLine(y1)->Token())
        && (srcA.GetDiffLine(x1)->Text() == srcB.GetDiffLine(y1)->Text()))    // TODO remove and run the tests
     {
-      // TODO yield x1, y1, x1 + 1, y1 + 1
+      // printf("YIELD %d, %d, %d, %d\n", x1, y1, x1+1, y1+1);
+      buildDiff(x1, y1, x1 + 1, y1 + 1, srcA, srcB, diffA, diffB);
       x1++;
       y1++;
     }
 
-    printf("Walk diagonal returns (%d, %d)\n", x1, y1);
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+
+    if(dx < dy)
+    {
+      //printf("YIELD %d, %d, %d, %d\n", x1, y1, x1, y1+1);
+      buildDiff(x1, y1, x1, y1 + 1, srcA, srcB, diffA, diffB);
+      y1++;
+    }
+    else if(dx > dy)
+    {
+      //printf("YIELD %d, %d, %d, %d\n", x1, y1, x1+1, y1);
+      buildDiff(x1, y1, x1 + 1, y1, srcA, srcB, diffA, diffB);
+    }
+
+    // Walk diagonal #2
+    while((x1 < x2)
+       && (y1 < y2)
+       && (srcA.GetDiffLine(x1)->Token() == srcB.GetDiffLine(y1)->Token())
+       && (srcA.GetDiffLine(x1)->Text() == srcB.GetDiffLine(y1)->Text()))    // TODO remove and run the tests
+    {
+      // TODO yield x1, y1, x1 + 1, y1 + 1
+      //printf("YIELD %d, %d, %d, %d\n", x1, y1, x1+1, y1+1);
+      buildDiff(x1, y1, x1 + 1, y1 + 1, srcA, srcB, diffA, diffB);
+      x1++;
+      y1++;
+    }
 
     x1 = x2;
     y1 = y2;
@@ -356,4 +383,30 @@ Box DiffEngine::backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
 
   Box result(0, 0, 0, 0);
   return result;
+}
+
+void DiffEngine::buildDiff(int x1, int y1, int x2, int y2,
+                           DiffFilePartition& srcA,
+                           DiffFilePartition& srcB,
+                           DiffFilePartition& diffA,
+                           DiffFilePartition& diffB)
+{
+  if(x1 == x2)
+  {
+    // srcB[y1] is an *inserted* line
+    diffA.AddBlankLine();
+    diffB.AddString(srcB.GetDiffLineText(y1), DiffLine::Added);
+  }
+  else if(y1 == y2)
+  {
+    // srcA[x1] is a deleted line
+    diffA.AddString(srcA.GetDiffLineText(x1), DiffLine::Deleted);
+    diffB.AddBlankLine();
+  }
+  else
+  {
+    // line is equal in srcA and srcB
+    diffA.AddString(srcA.GetDiffLineText(x1), DiffLine::Normal);
+    diffB.AddString(srcB.GetDiffLineText(y1), DiffLine::Normal);
+  }
 }
