@@ -144,7 +144,8 @@ File
 "model/TextDocument.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
-"diffengine/DiffTrace.h"
+"diffengine/Box.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -164,7 +165,8 @@ File
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
 "thread/ProgressReporter.h"
-"diffengine/DiffTrace.h"
+"diffengine/Box.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
 ""
@@ -194,7 +196,8 @@ File
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
-"diffengine/DiffTrace.h"
+"diffengine/Box.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
 ""
@@ -228,13 +231,22 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "diffengine/Box.cpp"
+"diffengine/Box.cpp"
+"diffengine/Box.h"
+Storm Shell Project (Dependencies)
+"objects_debug/Box.o" "objects_debug/Box.debug"
+""
+1 1
+File
 1 "diffengine/DiffEngine.cpp"
 "diffengine/DiffEngine.cpp"
 "diffengine/DiffEngine.h"
 "diffengine/DiffLine.h"
 "oscottlibs/LinkedListNode.h"
 "diffengine/DiffFilePartition.h"
-"diffengine/DiffTrace.h"
+"diffengine/Box.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffEngine.o" "objects_debug/DiffEngine.debug"
 ""
@@ -270,14 +282,11 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "diffengine/DiffTrace.cpp"
-"diffengine/DiffTrace.cpp"
-"diffengine/DiffTrace.h"
-"oscottlibs/LinkedListNode.h"
-"diffengine/DiffFilePartition.h"
-"diffengine/DiffLine.h"
+1 "diffengine/Pair.cpp"
+"diffengine/Pair.cpp"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
-"objects_debug/DiffTrace.o" "objects_debug/DiffTrace.debug"
+"objects_debug/Pair.o" "objects_debug/Pair.debug"
 ""
 1 1
 File
@@ -400,7 +409,8 @@ File
 "model/TextDocument.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
-"diffengine/DiffTrace.h"
+"diffengine/Box.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -539,6 +549,13 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "diffengine/Box.h"
+"diffengine/Box.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "diffengine/DiffEngine.h"
 "diffengine/DiffEngine.h"
 Storm Shell Project (Dependencies)
@@ -567,8 +584,8 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "diffengine/DiffTrace.h"
-"diffengine/DiffTrace.h"
+2 "diffengine/Pair.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -667,6 +684,13 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "oscottlibs/LinkedListNode.h"
+"oscottlibs/LinkedListNode.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "oscottlibs/SimpleString.h"
 "oscottlibs/SimpleString.h"
 Storm Shell Project (Dependencies)
@@ -707,6 +731,7 @@ Section
 7
 File
 10 "ADiffView"
+"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""
