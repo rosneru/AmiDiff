@@ -532,6 +532,26 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
 //}
 
 
+BOOST_AUTO_TEST_CASE( testcase_13_6000_lines )
+{
+  bool cancelRequested = false;
+  bool diffOk = false;
+  DiffEngine diffEngine(cancelRequested);
+
+  DiffFilePartitionLinux srcA(cancelRequested);
+  srcA.PreProcess("../../../testfiles/testcase_13_6000_left.cpp");
+
+  DiffFilePartitionLinux srcB(cancelRequested);
+  srcB.PreProcess("../../../testfiles/testcase_13_6000_right.cpp");
+
+  DiffFilePartition diffA(cancelRequested);
+  DiffFilePartition diffB(cancelRequested);
+
+  diffOk = diffEngine.Diff(srcA, srcB, diffA, diffB);
+
+  BOOST_CHECK_EQUAL(diffOk, true);
+}
+
 
 BOOST_AUTO_TEST_CASE( testcase_22_myers_ruby_linearSpace )
 {

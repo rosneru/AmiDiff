@@ -199,29 +199,30 @@ Array<Pair>* DiffEngine::FindPath(long left, long top, long right, long bottom, 
   }
   else
   {
-    Array<Pair>* pResult = new Array<Pair>();
-    pResult->Push(Pair(snake.Left(), snake.Top()));
-
     if(pTail->Size() > 0)
     {
+      Array<Pair>* pNewTail = new Array<Pair>();
+      pNewTail->Push(Pair(snake.Left(), snake.Top()));
+
       // TODO Maybe array is inefficient here. Better use a linked
       // list? Measure.
+      printf("Completely copying array of size %d!!\n", pTail->Size());
       for(int i = 0; i < pTail->Size(); i++)
       {
-        pResult->Push((*pTail)[i]);
+        pNewTail->Push((*pTail)[i]);
       }
 
       delete pHead;
       delete pTail;
-      return pResult;
+      return pNewTail;
     }
     else
     {
-      pResult->Push(Pair(snake.Right(), snake.Bottom()));
+      pTail->Push(Pair(snake.Left(), snake.Top()));
+      pTail->Push(Pair(snake.Right(), snake.Bottom()));
 
       delete pHead;
-      delete pTail;
-      return pResult;
+      return pTail;
     }
   }
 }
