@@ -227,7 +227,7 @@ Array<Pair>* DiffEngine::FindPath(long left, long top, long right, long bottom, 
 }
 
 
-Box DiffEngine::midPair(Box box, DiffFilePartition& a, DiffFilePartition& b)
+Box DiffEngine::midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b)
 {
   if(box.Size() == 0)
   {
@@ -271,7 +271,7 @@ Box DiffEngine::midPair(Box box, DiffFilePartition& a, DiffFilePartition& b)
   return result;
 }
 
-Box DiffEngine::forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
+Box DiffEngine::forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
 {
   int x, px, y, py;
 
@@ -329,7 +329,7 @@ Box DiffEngine::forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePa
   return result;
 }
 
-Box DiffEngine::backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
+Box DiffEngine::backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
 {
   int x, px, y, py;
 

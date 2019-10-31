@@ -41,10 +41,10 @@ private:
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
 
-  Box midPair(Box box, DiffFilePartition& a, DiffFilePartition& b);
+  Box midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b);
 
-  Box forwards(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
-  Box backward(Box box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
+  Box forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
+  Box backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
 
   void buildDiff(int x1, int y1, int x2, int y2,
                  DiffFilePartition& srcA,
