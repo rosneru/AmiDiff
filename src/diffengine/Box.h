@@ -14,6 +14,8 @@ public:
   Box(long left, long top, long right, long bottom);
   ~Box();
 
+  void Set(long left, long top, long right, long bottom);
+
   long Left() const;
   long Top() const;
   long Right() const;

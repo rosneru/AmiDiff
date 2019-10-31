@@ -13,6 +13,14 @@ Box::~Box()
 
 }
 
+void Box::Set(long left, long top, long right, long bottom)
+{
+  m_Left = left;
+  m_Top = top;
+  m_Right = right;
+  m_Bottom = bottom;
+}
+
 long Box::Left() const
 {
   return m_Left;

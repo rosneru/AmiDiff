@@ -161,10 +161,10 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 
 Array<Pair>* DiffEngine::FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
 {
-  Box box(left, top, right, bottom);
-  Box snake = midPair(box, a, b);
+  Box snake(left, top, right, bottom);
+  bool bFoundSnake = midPair(snake, a, b);
 
-  if(snake.Size() == 0)
+  if(!bFoundSnake)
   {
     return new Array<Pair>();
   }
@@ -222,12 +222,12 @@ Array<Pair>* DiffEngine::FindPath(long left, long top, long right, long bottom, 
 }
 
 
-Box DiffEngine::midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b)
+bool DiffEngine::midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b)
 {
   if(box.Size() == 0)
   {
     // If this box is empty return the empty box to signal the failure
-    return box;
+    return false;
   }
 
   // Original: max = (box.size / 2.0).ceil
@@ -243,30 +243,31 @@ Box DiffEngine::midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b)
 
   for(int d = 0; d <= max; d++)
   {
-    Box forwardSnake = forwards(box, vf, vb, vSize, d, a, b);
-    if(forwardSnake.Size() > 0)
+    bool bFoundForwards = forwards(box, vf, vb, vSize, d, a, b);
+    if(bFoundForwards)
     {
       delete[] vf;
       delete[] vb;
-      return forwardSnake;
+      return true;
     }
 
-    Box backwardSnake = backward(box, vf, vb, vSize, d, a, b);
-    if(backwardSnake.Size() > 0)
+    bool bFoundBackwards = backward(box, vf, vb, vSize, d, a, b);
+    if(bFoundBackwards)
     {
       delete[] vf;
       delete[] vb;
-      return backwardSnake;
+      return true;
     }
   }
 
   delete[] vf;
   delete[] vb;
-  Box result(0, 0, 0, 0);
-  return result;
+
+//  box.Set(0, 0, 0, 0);
+  return false;
 }
 
-Box DiffEngine::forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
+bool DiffEngine::forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
 {
   int x, px, y, py;
 
@@ -315,16 +316,16 @@ Box DiffEngine::forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFileP
     {
       // yield [[px, py], [x, y]]
       // TODO
-      Box result(px, py, x, y);
-      return result;
+      box.Set(px, py, x, y);
+      return true;
     }
   }
 
-  Box result(0, 0, 0, 0);
-  return result;
+  //box.Set(0, 0, 0, 0);
+  return false;
 }
 
-Box DiffEngine::backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
+bool DiffEngine::backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
 {
   int x, px, y, py;
 
@@ -371,13 +372,13 @@ Box DiffEngine::backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFileP
     {
       // yield [[x, y], [px, py]]
       // TODO
-      Box result(x, y, px, py);
-      return result;
+      box.Set(x, y, px, py);
+      return true;
     }
   }
 
-  Box result(0, 0, 0, 0);
-  return result;
+  //box.Set(0, 0, 0, 0);
+  return false;
 }
 
 void DiffEngine::buildDiff(int x1, int y1, int x2, int y2,
