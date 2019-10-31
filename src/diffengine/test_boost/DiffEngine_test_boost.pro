@@ -22,7 +22,7 @@ SOURCES += \
     ../../oscottlibs/SimpleString.cpp \
     ../DiffFilePartitionLinux.cpp \
     ../Box.cpp \
-    ../Point.cpp
+    ../Pair.cpp
 
 
 HEADERS += \
@@ -35,4 +35,4 @@ HEADERS += \
     ../DiffFilePartitionLinux.h \
     ../../oscottlibs/Array.h \
     ../Box.h \
-    ../Point.h
+    ../Pair.h
