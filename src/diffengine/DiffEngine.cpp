@@ -68,12 +68,6 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
                       DiffFilePartition& diffA,
                       DiffFilePartition& diffB)
 {
-//  Trace trace(srcA, srcB, targetA, targetB);
-//  if(shortestEdit(trace, srcA, srcB) == false)
-//  {
-//    return false;
-//  }
-
   //
   // Progress reporting
   //
@@ -102,7 +96,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     while((x1 < x2)
        && (y1 < y2)
        && (srcA.GetDiffLine(x1)->Token() == srcB.GetDiffLine(y1)->Token())
-       && (srcA.GetDiffLine(x1)->Text() == srcB.GetDiffLine(y1)->Text()))    // TODO remove and run the tests
+       && (srcA.GetDiffLineText(x1) == srcB.GetDiffLineText(y1)))    // TODO remove and run the tests
     {
       buildDiff(x1, y1, x1 + 1, y1 + 1, srcA, srcB, diffA, diffB);
       x1++;
@@ -126,7 +120,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     while((x1 < x2)
        && (y1 < y2)
        && (srcA.GetDiffLine(x1)->Token() == srcB.GetDiffLine(y1)->Token())
-       && (srcA.GetDiffLine(x1)->Text() == srcB.GetDiffLine(y1)->Text()))    // TODO remove and run the tests
+       && (srcA.GetDiffLineText(x1) == srcB.GetDiffLineText(y1)))    // TODO remove and run the tests
     {
       buildDiff(x1, y1, x1 + 1, y1 + 1, srcA, srcB, diffA, diffB);
       x1++;
@@ -299,7 +293,7 @@ bool DiffEngine::forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFile
     while((x < box.Right())
        && (y < box.Bottom())
        && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token())
-       && (a.GetDiffLine(x)->Text() == b.GetDiffLine(y)->Text()))   // TODO remove and run the tests
+       && (a.GetDiffLineText(x) == b.GetDiffLineText(y)))
     {
       x++;
       y++;
@@ -314,8 +308,6 @@ bool DiffEngine::forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFile
      && (Between(c, -(d - 1), d - 1))
      && (y >= vb[cId]))
     {
-      // yield [[px, py], [x, y]]
-      // TODO
       box.Set(px, py, x, y);
       return true;
     }
@@ -357,7 +349,7 @@ bool DiffEngine::backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFile
     while((x > box.Left())
        && (y > box.Top())
        && (a.GetDiffLine(x - 1)->Token() == b.GetDiffLine(y - 1)->Token())
-       && (a.GetDiffLine(x - 1)->Text() == b.GetDiffLine(y - 1)->Text()))   // TODO remove and run the tests
+       && (a.GetDiffLineText(x - 1) == b.GetDiffLineText(y - 1)))
     {
       x--;
       y--;
