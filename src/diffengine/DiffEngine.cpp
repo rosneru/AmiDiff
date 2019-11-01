@@ -85,7 +85,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
   Pair* pItem = (Pair*)pPath->GetFirst();
   int x1 = pItem->Left();
   int y1 = pItem->Top();
-
+  delete pItem;
 
 
   while((pItem = (Pair*)pPath->GetNext()) != NULL)
@@ -253,7 +253,6 @@ bool DiffEngine::midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b)
   delete[] vf;
   delete[] vb;
 
-//  box.Set(0, 0, 0, 0);
   return false;
 }
 
@@ -309,7 +308,6 @@ bool DiffEngine::forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFile
     }
   }
 
-  //box.Set(0, 0, 0, 0);
   return false;
 }
 
@@ -365,7 +363,6 @@ bool DiffEngine::backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFile
     }
   }
 
-  //box.Set(0, 0, 0, 0);
   return false;
 }
 
