@@ -157,80 +157,80 @@ BOOST_AUTO_TEST_CASE( testcase_Between )
  *
  * https://blog.jcoglan.com/2017/04/25/myers-diff-in-linear-space-implementation/
  */
-BOOST_AUTO_TEST_CASE( test_FindPath_testcase_22_myers_ruby_linearSpace )
-{
-  bool cancelRequested = false;
-  bool diffOk = false;
-  DiffEngine diffEngine(cancelRequested);
+//BOOST_AUTO_TEST_CASE( test_FindPath_testcase_22_myers_ruby_linearSpace )
+//{
+//  bool cancelRequested = false;
+//  bool diffOk = false;
+//  DiffEngine diffEngine(cancelRequested);
 
-  DiffFilePartitionLinux srcA(cancelRequested);
-  srcA.PreProcess("../../../testfiles/testcase_22_myersruby_left.c");
+//  DiffFilePartitionLinux srcA(cancelRequested);
+//  srcA.PreProcess("../../../testfiles/testcase_22_myersruby_left.c");
 
-  DiffFilePartitionLinux srcB(cancelRequested);
-  srcB.PreProcess("../../../testfiles/testcase_22_myersruby_right.c");
+//  DiffFilePartitionLinux srcB(cancelRequested);
+//  srcB.PreProcess("../../../testfiles/testcase_22_myersruby_right.c");
 
-  Array<Pair>* pPath = diffEngine.FindPath(0, 0,
-                                           srcA.NumLines(),
-                                           srcB.NumLines(),
-                                           srcA,
-                                           srcB);
+//  Array<Pair>* pPath = diffEngine.FindPath(0, 0,
+//                                           srcA.NumLines(),
+//                                           srcB.NumLines(),
+//                                           srcA,
+//                                           srcB);
 
-  BOOST_CHECK_EQUAL(pPath->Size(), 17);
+//  BOOST_CHECK_EQUAL(pPath->Size(), 17);
 
-  BOOST_CHECK_EQUAL((*pPath)[0].Left(), 0);
-  BOOST_CHECK_EQUAL((*pPath)[0].Top(), 0);
+//  BOOST_CHECK_EQUAL((*pPath)[0].Left(), 0);
+//  BOOST_CHECK_EQUAL((*pPath)[0].Top(), 0);
 
-  BOOST_CHECK_EQUAL((*pPath)[1].Left(), 1);
-  BOOST_CHECK_EQUAL((*pPath)[1].Top(), 0);
+//  BOOST_CHECK_EQUAL((*pPath)[1].Left(), 1);
+//  BOOST_CHECK_EQUAL((*pPath)[1].Top(), 0);
 
-  BOOST_CHECK_EQUAL((*pPath)[2].Left(), 2);
-  BOOST_CHECK_EQUAL((*pPath)[2].Top(), 2);
+//  BOOST_CHECK_EQUAL((*pPath)[2].Left(), 2);
+//  BOOST_CHECK_EQUAL((*pPath)[2].Top(), 2);
 
-  BOOST_CHECK_EQUAL((*pPath)[3].Left(), 3);
-  BOOST_CHECK_EQUAL((*pPath)[3].Top(), 2);
+//  BOOST_CHECK_EQUAL((*pPath)[3].Left(), 3);
+//  BOOST_CHECK_EQUAL((*pPath)[3].Top(), 2);
 
-  BOOST_CHECK_EQUAL((*pPath)[4].Left(), 4);
-  BOOST_CHECK_EQUAL((*pPath)[4].Top(), 2);
+//  BOOST_CHECK_EQUAL((*pPath)[4].Left(), 4);
+//  BOOST_CHECK_EQUAL((*pPath)[4].Top(), 2);
 
-  BOOST_CHECK_EQUAL((*pPath)[5].Left(), 5);
-  BOOST_CHECK_EQUAL((*pPath)[5].Top(), 4);
+//  BOOST_CHECK_EQUAL((*pPath)[5].Left(), 5);
+//  BOOST_CHECK_EQUAL((*pPath)[5].Top(), 4);
 
-  BOOST_CHECK_EQUAL((*pPath)[6].Left(), 6);
-  BOOST_CHECK_EQUAL((*pPath)[6].Top(), 4);
+//  BOOST_CHECK_EQUAL((*pPath)[6].Left(), 6);
+//  BOOST_CHECK_EQUAL((*pPath)[6].Top(), 4);
 
-  BOOST_CHECK_EQUAL((*pPath)[7].Left(), 6);
-  BOOST_CHECK_EQUAL((*pPath)[7].Top(), 5);
+//  BOOST_CHECK_EQUAL((*pPath)[7].Left(), 6);
+//  BOOST_CHECK_EQUAL((*pPath)[7].Top(), 5);
 
-  BOOST_CHECK_EQUAL((*pPath)[8].Left(), 9);
-  BOOST_CHECK_EQUAL((*pPath)[8].Top(), 7);
+//  BOOST_CHECK_EQUAL((*pPath)[8].Left(), 9);
+//  BOOST_CHECK_EQUAL((*pPath)[8].Top(), 7);
 
-  BOOST_CHECK_EQUAL((*pPath)[9].Left(), 10);
-  BOOST_CHECK_EQUAL((*pPath)[9].Top(), 9);
+//  BOOST_CHECK_EQUAL((*pPath)[9].Left(), 10);
+//  BOOST_CHECK_EQUAL((*pPath)[9].Top(), 9);
 
-  BOOST_CHECK_EQUAL((*pPath)[10].Left(), 11);
-  BOOST_CHECK_EQUAL((*pPath)[10].Top(), 9);
+//  BOOST_CHECK_EQUAL((*pPath)[10].Left(), 11);
+//  BOOST_CHECK_EQUAL((*pPath)[10].Top(), 9);
 
-  BOOST_CHECK_EQUAL((*pPath)[11].Left(), 11);
-  BOOST_CHECK_EQUAL((*pPath)[11].Top(), 10);
+//  BOOST_CHECK_EQUAL((*pPath)[11].Left(), 11);
+//  BOOST_CHECK_EQUAL((*pPath)[11].Top(), 10);
 
-  BOOST_CHECK_EQUAL((*pPath)[12].Left(), 11);
-  BOOST_CHECK_EQUAL((*pPath)[12].Top(), 11);
+//  BOOST_CHECK_EQUAL((*pPath)[12].Left(), 11);
+//  BOOST_CHECK_EQUAL((*pPath)[12].Top(), 11);
 
-  BOOST_CHECK_EQUAL((*pPath)[13].Left(), 12);
-  BOOST_CHECK_EQUAL((*pPath)[13].Top(), 12);
+//  BOOST_CHECK_EQUAL((*pPath)[13].Left(), 12);
+//  BOOST_CHECK_EQUAL((*pPath)[13].Top(), 12);
 
-  BOOST_CHECK_EQUAL((*pPath)[14].Left(), 13);
-  BOOST_CHECK_EQUAL((*pPath)[14].Top(), 12);
+//  BOOST_CHECK_EQUAL((*pPath)[14].Left(), 13);
+//  BOOST_CHECK_EQUAL((*pPath)[14].Top(), 12);
 
-  BOOST_CHECK_EQUAL((*pPath)[15].Left(), 13);
-  BOOST_CHECK_EQUAL((*pPath)[15].Top(), 13);
+//  BOOST_CHECK_EQUAL((*pPath)[15].Left(), 13);
+//  BOOST_CHECK_EQUAL((*pPath)[15].Top(), 13);
 
-  BOOST_CHECK_EQUAL((*pPath)[16].Left(), 14);
-  BOOST_CHECK_EQUAL((*pPath)[16].Top(), 14);
+//  BOOST_CHECK_EQUAL((*pPath)[16].Left(), 14);
+//  BOOST_CHECK_EQUAL((*pPath)[16].Top(), 14);
 
 
-  delete pPath;
-}
+//  delete pPath;
+//}
 
 
 BOOST_AUTO_TEST_CASE( testcase_02 )

@@ -76,20 +76,22 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     m_pProgressReporter->notifyProgressChanged(50);
   }
 
-  Array<Pair>* pPath = FindPath(0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
+  LinkedList* pPath = FindPath(0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
   if(pPath->Size() == 0)
   {
     return false;
   }
 
-  int x1 = (*pPath)[0].Left();
-  int y1 = (*pPath)[0].Top();
+  Pair* pItem = (Pair*)pPath->GetFirst();
+  int x1 = pItem->Left();
+  int y1 = pItem->Top();
 
 
-  for(int i = 1; i < pPath->Size(); i++)
+
+  while((pItem = (Pair*)pPath->GetNext()) != NULL)
   {
-    int x2 = (*pPath)[i].Left();
-    int y2 = (*pPath)[i].Top();
+    int x2 = pItem->Left();
+    int y2 = pItem->Top();
 
 
     // Walk diagonal #1
@@ -129,6 +131,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
 
     x1 = x2;
     y1 = y2;
+    delete pItem;
   }
 
   delete pPath;
@@ -153,34 +156,36 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 }
 
 
-Array<Pair>* DiffEngine::FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
+LinkedList* DiffEngine::FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
 {
   Box snake(left, top, right, bottom);
   bool bFoundSnake = midPair(snake, a, b);
 
   if(!bFoundSnake)
   {
-    return new Array<Pair>();
+    return new LinkedList();
   }
 
-  Array<Pair>* pHead = FindPath(left, top, snake.Left(), snake.Top(), a, b);
-  Array<Pair>* pTail = FindPath(snake.Right(), snake.Bottom(), right, bottom, a, b);
+  LinkedList* pHead = FindPath(left, top, snake.Left(), snake.Top(), a, b);
+  LinkedList* pTail = FindPath(snake.Right(), snake.Bottom(), right, bottom, a, b);
 
   if(pHead->Size() > 0)
   {
     if(pTail->Size() > 0)
     {
-      for(int i = 0; i < pTail->Size(); i++)
+      Pair* pItem = (Pair*)pTail->GetFirst();
+      do
       {
-        pHead->Push((*pTail)[i]);
+        pHead->InsertTail(pItem);
       }
+      while((pItem = (Pair*)pTail->GetNext()) != NULL);
 
       delete pTail;
       return pHead;
     }
     else
     {
-      pHead->Push(Pair(snake.Right(), snake.Bottom()));
+      pHead->InsertTail(new Pair(snake.Right(), snake.Bottom()));
 
       delete pTail;
       return pHead;
@@ -190,24 +195,15 @@ Array<Pair>* DiffEngine::FindPath(long left, long top, long right, long bottom, 
   {
     if(pTail->Size() > 0)
     {
-      Array<Pair>* pNewTail = new Array<Pair>();
-      pNewTail->Push(Pair(snake.Left(), snake.Top()));
-
-      // TODO Maybe array is inefficient here. Better use a linked
-      // list? Measure.
-      for(int i = 0; i < pTail->Size(); i++)
-      {
-        pNewTail->Push((*pTail)[i]);
-      }
+      pTail->InsertHead(new Pair(snake.Left(), snake.Top()));
 
       delete pHead;
-      delete pTail;
-      return pNewTail;
+      return pTail;
     }
     else
     {
-      pTail->Push(Pair(snake.Left(), snake.Top()));
-      pTail->Push(Pair(snake.Right(), snake.Bottom()));
+      pTail->InsertTail(new Pair(snake.Left(), snake.Top()));
+      pTail->InsertTail(new Pair(snake.Right(), snake.Bottom()));
 
       delete pHead;
       return pTail;

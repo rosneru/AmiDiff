@@ -1,11 +1,14 @@
 #ifndef DIFF_ENGINE_H
 #define DIFF_ENGINE_H
 
+#include "LinkedList.h"
+#include "SimpleString.h"
+
 #include "Box.h"
 #include "Pair.h"
-#include "SimpleString.h"
 #include "DiffLine.h"
 #include "DiffFilePartition.h"
+
 #include "ProgressReporter.h"
 
 /**
@@ -29,7 +32,7 @@ public:
             DiffFilePartition& diffB);
 
 
-  Array<Pair>* FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
+  LinkedList* FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
 
   /**
    * Setting the progress reporter
