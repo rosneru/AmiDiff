@@ -287,8 +287,8 @@ bool DiffEngine::forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFile
 
     while((x < box.Right())
        && (y < box.Bottom())
-       && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token())
-       && (a.GetDiffLineText(x) == b.GetDiffLineText(y)))
+       && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token()))
+       //&& (a.GetDiffLineText(x) == b.GetDiffLineText(y)))
     {
       x++;
       y++;
@@ -342,8 +342,8 @@ bool DiffEngine::backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFile
 
     while((x > box.Left())
        && (y > box.Top())
-       && (a.GetDiffLine(x - 1)->Token() == b.GetDiffLine(y - 1)->Token())
-       && (a.GetDiffLineText(x - 1) == b.GetDiffLineText(y - 1)))
+       && (a.GetDiffLine(x - 1)->Token() == b.GetDiffLine(y - 1)->Token()))
+       //&& (a.GetDiffLineText(x - 1) == b.GetDiffLineText(y - 1)))
     {
       x--;
       y--;
