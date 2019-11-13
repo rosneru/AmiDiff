@@ -222,7 +222,6 @@ bool DiffEngine::midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b)
 
   // Original: max = (box.size / 2.0).ceil
   int max = (box.Size() + 1) / 2;
-  printf("box.Size() = %d, max = %d\n", box.Size(), max);
 
   int vSize = 2 * max + 1;
 
