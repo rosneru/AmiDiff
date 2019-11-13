@@ -221,7 +221,8 @@ bool DiffEngine::midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b)
   }
 
   // Original: max = (box.size / 2.0).ceil
-  int max = (box.Size() / 2) + ((box.Size() % 2) != 0);
+  int max = (box.Size() + 1) / 2;
+  printf("box.Size() = %d, max = %d\n", box.Size(), max);
 
   int vSize = 2 * max + 1;
 
@@ -299,7 +300,7 @@ bool DiffEngine::forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFile
 
     vf[kId] = x;
 
-    if( ((box.Delta() % 2) != 0)  // true if box.Delta() is odd
+    if( ((box.Delta() & 1) == 1)  // true if box.Delta() is odd
      && (Between(c, -(d - 1), d - 1))
      && (y >= vb[cId]))
     {
@@ -353,8 +354,8 @@ bool DiffEngine::backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFile
     int kId = IdxConv(k, vSize);
     vb[cId] = y;
 
-    // %2 => true if box.Delta() is even
-    if( ((box.Delta() % 2) == 0) && (Between(k, -d, d)) && (x <= vf[kId]))
+    // &1 == 0 => true if box.Delta() is even
+    if( ((box.Delta() & 1) == 0) && (Between(k, -d, d)) && (x <= vf[kId]))
     {
       // yield [[x, y], [px, py]]
       // TODO
