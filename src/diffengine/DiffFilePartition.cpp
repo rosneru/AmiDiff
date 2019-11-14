@@ -51,7 +51,7 @@ void DiffFilePartition::NumChanges(int& p_Added,
   for(int i = 0; i < NumLines(); i++)
   {
 
-    DiffLine::LineState lineState = GetDiffLineState(i);
+    DiffLine::LineState lineState = GetLineState(i);
     switch(lineState)
     {
       case DiffLine::Added: p_Added++; break;
@@ -65,7 +65,7 @@ void DiffFilePartition::NumChanges(int& p_Added,
   }
 }
 
-DiffLine* DiffFilePartition::GetDiffLine(size_t p_Index) const
+DiffLine* DiffFilePartition::GetLine(size_t p_Index) const
 {
   size_t numLines = m_DiffLinesArray.Size();
   if((numLines == 0) || (p_Index >= numLines))
@@ -84,7 +84,7 @@ DiffLine* DiffFilePartition::GetDiffLine(size_t p_Index) const
 
 static const SimpleString emptyStr = "";
 
-const SimpleString& DiffFilePartition::GetDiffLineText(size_t p_Index) const
+const SimpleString& DiffFilePartition::GetLineText(size_t p_Index) const
 {
   size_t numLines = m_DiffLinesArray.Size();
   if((numLines == 0) || (p_Index >= numLines))
@@ -92,10 +92,10 @@ const SimpleString& DiffFilePartition::GetDiffLineText(size_t p_Index) const
     return emptyStr;
   }
 
-  return GetDiffLine(p_Index)->Text();
+  return GetLine(p_Index)->Text();
 }
 
-DiffLine::LineState DiffFilePartition::GetDiffLineState(size_t p_Index) const
+DiffLine::LineState DiffFilePartition::GetLineState(size_t p_Index) const
 {
   size_t numLines = m_DiffLinesArray.Size();
   if((numLines == 0) || (p_Index >= numLines))
@@ -103,12 +103,12 @@ DiffLine::LineState DiffFilePartition::GetDiffLineState(size_t p_Index) const
     return DiffLine::Undefined;
   }
 
-  return GetDiffLine(p_Index)->State();
+  return GetLine(p_Index)->State();
 }
 
-void DiffFilePartition::SetDiffLineState(size_t p_Index, DiffLine::LineState state)
+void DiffFilePartition::SetLineState(size_t p_Index, DiffLine::LineState state)
 {
-  DiffLine* pDiffLine = GetDiffLine(p_Index);
+  DiffLine* pDiffLine = GetLine(p_Index);
   if(pDiffLine == NULL)
   {
     // TODO Maybe change method to type bool and return false

@@ -101,13 +101,13 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
   while (lineA < srcA.NumLines() || lineB < srcB.NumLines())
   {
     if( (lineA < srcA.NumLines())
-     && (srcA.GetDiffLineState(lineA) == DiffLine::Normal)
+     && (srcA.GetLineState(lineA) == DiffLine::Normal)
      && (lineB < srcB.NumLines())
-     && (srcB.GetDiffLineState(lineB) == DiffLine::Normal))
+     && (srcB.GetLineState(lineB) == DiffLine::Normal))
     {
       // equal lines
-      diffA.AddString(srcA.GetDiffLineText(lineA), DiffLine::Normal);
-      diffB.AddString(srcB.GetDiffLineText(lineB), DiffLine::Normal);
+      diffA.AddString(srcA.GetLineText(lineA), DiffLine::Normal);
+      diffB.AddString(srcB.GetLineText(lineB), DiffLine::Normal);
 
       lineA++;
       lineB++;
@@ -116,18 +116,18 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     {
       // maybe deleted and/or inserted lines
       while((lineA < srcA.NumLines())
-        && (lineB >= srcB.NumLines() || (srcA.GetDiffLineState(lineA) != DiffLine::Normal)))
+        && (lineB >= srcB.NumLines() || (srcA.GetLineState(lineA) != DiffLine::Normal)))
       {
-        diffA.AddString(srcA.GetDiffLineText(lineA), srcA.GetDiffLineState(lineA));
+        diffA.AddString(srcA.GetLineText(lineA), srcA.GetLineState(lineA));
         diffB.AddBlankLine();
         lineA++;
       }
 
       while((lineB < srcB.NumLines())
-        && (lineA >= srcA.NumLines() || (srcB.GetDiffLineState(lineB) != DiffLine::Normal)))
+        && (lineA >= srcA.NumLines() || (srcB.GetLineState(lineB) != DiffLine::Normal)))
       {
         diffA.AddBlankLine();
-        diffB.AddString(srcB.GetDiffLineText(lineB), srcB.GetDiffLineState(lineB));
+        diffB.AddString(srcB.GetLineText(lineB), srcB.GetLineState(lineB));
         lineB++;
       }
     }
@@ -163,7 +163,7 @@ void DiffEngine::lcs(DiffFilePartition& a,
 {
   // Fast walkthrough equal lines at the start
   while((lowerA < upperA) && (lowerB < upperB)
-     && (a.GetDiffLine(lowerA)->Token() == b.GetDiffLine(lowerB)->Token()))
+     && (a.GetLine(lowerA)->Token() == b.GetLine(lowerB)->Token()))
   {
     lowerA++;
     lowerB++;
@@ -171,7 +171,7 @@ void DiffEngine::lcs(DiffFilePartition& a,
 
   // Fast walkthrough equal lines at the end
   while((lowerA < upperA) && (lowerB < upperB)
-     && (a.GetDiffLine(upperA - 1)->Token() == b.GetDiffLine(upperB - 1)->Token()))
+     && (a.GetLine(upperA - 1)->Token() == b.GetLine(upperB - 1)->Token()))
   {
     --upperA;
     --upperB;
@@ -181,14 +181,14 @@ void DiffEngine::lcs(DiffFilePartition& a,
   {
     while(lowerB < upperB)
     {
-      b.GetDiffLine(lowerB++)->SetState(DiffLine::Added);
+      b.GetLine(lowerB++)->SetState(DiffLine::Added);
     }
   }
   else if(lowerB == upperB)
   {
     while(lowerA < upperA)
     {
-      a.GetDiffLine(lowerA++)->SetState(DiffLine::Deleted);
+      a.GetLine(lowerA++)->SetState(DiffLine::Deleted);
     }
   }
   else
@@ -256,8 +256,8 @@ Pair DiffEngine::shortestMiddleSnake(DiffFilePartition& a,
 
       // find the end of the furthest reaching forward D-path in diagonal k.
       while ((x < upperA) && (y < upperB)
-          && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token())
-          && (a.GetDiffLineText(x) == b.GetDiffLineText(y)))
+          && (a.GetLine(x)->Token() == b.GetLine(y)->Token())
+          && (a.GetLineText(x) == b.GetLineText(y)))
       {
         x++;
         y++;
@@ -300,8 +300,8 @@ Pair DiffEngine::shortestMiddleSnake(DiffFilePartition& a,
       y = x - k;
 
       while ((x > lowerA) && (y > lowerB)
-          && (a.GetDiffLine(x - 1)->Token() == b.GetDiffLine(y - 1)->Token())
-          && (a.GetDiffLineText(x - 1) == b.GetDiffLineText(y - 1)))
+          && (a.GetLine(x - 1)->Token() == b.GetLine(y - 1)->Token())
+          && (a.GetLineText(x - 1) == b.GetLineText(y - 1)))
       {
         // diagonal
         x--;

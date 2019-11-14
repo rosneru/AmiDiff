@@ -65,48 +65,48 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
   }
 
   BOOST_CHECK_EQUAL(diffA.NumLines(), 10);
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineText(0).C_str(), "AAAA");
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineState(0), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineText(1).C_str(), "BBBB");
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineState(1), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineText(2).C_str(), "");
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineState(2), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineText(3).C_str(), "");
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineState(3), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineText(4).C_str(), "CCCC");
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineState(4), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineText(5).C_str(), "DDDD");
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineState(5), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineText(6).C_str(), "EEEE");
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineState(6), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineText(7).C_str(), "");
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineState(7), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineText(8).C_str(), "FFFF");
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineState(8), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineText(9).C_str(), "GGGG");
-  BOOST_CHECK_EQUAL(diffA.GetDiffLineState(9), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffA.GetLineText(0).C_str(), "AAAA");
+  BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffA.GetLineText(1).C_str(), "BBBB");
+  BOOST_CHECK_EQUAL(diffA.GetLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffA.GetLineText(2).C_str(), "");
+  BOOST_CHECK_EQUAL(diffA.GetLineState(2), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffA.GetLineText(3).C_str(), "");
+  BOOST_CHECK_EQUAL(diffA.GetLineState(3), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffA.GetLineText(4).C_str(), "CCCC");
+  BOOST_CHECK_EQUAL(diffA.GetLineState(4), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffA.GetLineText(5).C_str(), "DDDD");
+  BOOST_CHECK_EQUAL(diffA.GetLineState(5), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffA.GetLineText(6).C_str(), "EEEE");
+  BOOST_CHECK_EQUAL(diffA.GetLineState(6), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffA.GetLineText(7).C_str(), "");
+  BOOST_CHECK_EQUAL(diffA.GetLineState(7), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffA.GetLineText(8).C_str(), "FFFF");
+  BOOST_CHECK_EQUAL(diffA.GetLineState(8), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffA.GetLineText(9).C_str(), "GGGG");
+  BOOST_CHECK_EQUAL(diffA.GetLineState(9), DiffLine::Normal);
 
   BOOST_CHECK_EQUAL(diffB.NumLines(), 10);
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineText(0).C_str(), "AAAA");
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineState(0), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineText(1).C_str(), "BBBB");
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineState(1), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineText(2).C_str(), "1111");
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineState(2), DiffLine::Added);
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineText(3).C_str(), "2222");
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineState(3), DiffLine::Added);
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineText(4).C_str(), "CCCC");
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineState(4), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineText(5).C_str(), "DDDD");
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineState(5), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineText(6).C_str(), "EEEE");
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineState(6), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineText(7).C_str(), "3333");
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineState(7), DiffLine::Added);
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineText(8).C_str(), "FFFF");
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineState(8), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineText(9).C_str(), "GGGG");
-  BOOST_CHECK_EQUAL(diffB.GetDiffLineState(9), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffB.GetLineText(0).C_str(), "AAAA");
+  BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffB.GetLineText(1).C_str(), "BBBB");
+  BOOST_CHECK_EQUAL(diffB.GetLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffB.GetLineText(2).C_str(), "1111");
+  BOOST_CHECK_EQUAL(diffB.GetLineState(2), DiffLine::Added);
+  BOOST_CHECK_EQUAL(diffB.GetLineText(3).C_str(), "2222");
+  BOOST_CHECK_EQUAL(diffB.GetLineState(3), DiffLine::Added);
+  BOOST_CHECK_EQUAL(diffB.GetLineText(4).C_str(), "CCCC");
+  BOOST_CHECK_EQUAL(diffB.GetLineState(4), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffB.GetLineText(5).C_str(), "DDDD");
+  BOOST_CHECK_EQUAL(diffB.GetLineState(5), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffB.GetLineText(6).C_str(), "EEEE");
+  BOOST_CHECK_EQUAL(diffB.GetLineState(6), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffB.GetLineText(7).C_str(), "3333");
+  BOOST_CHECK_EQUAL(diffB.GetLineState(7), DiffLine::Added);
+  BOOST_CHECK_EQUAL(diffB.GetLineText(8).C_str(), "FFFF");
+  BOOST_CHECK_EQUAL(diffB.GetLineState(8), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(diffB.GetLineText(9).C_str(), "GGGG");
+  BOOST_CHECK_EQUAL(diffB.GetLineState(9), DiffLine::Normal);
 
 
 }
@@ -146,28 +146,28 @@ BOOST_AUTO_TEST_CASE( testcase_04 )
   BOOST_CHECK_EQUAL(diffOk, true);
 
   BOOST_CHECK_EQUAL(leftDiffPartition2.NumLines(), 5);
-  BOOST_CHECK_EQUAL(leftDiffPartition2.GetDiffLineText(0).C_str(), "Line 1");
-  BOOST_CHECK_EQUAL(leftDiffPartition2.GetDiffLineState(0), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(leftDiffPartition2.GetDiffLineText(1).C_str(), "Line 2");
-  BOOST_CHECK_EQUAL(leftDiffPartition2.GetDiffLineState(1), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(leftDiffPartition2.GetDiffLineText(2).C_str(), "Line 3");
-  BOOST_CHECK_EQUAL(leftDiffPartition2.GetDiffLineState(2), DiffLine::Deleted);
-  BOOST_CHECK_EQUAL(leftDiffPartition2.GetDiffLineText(3).C_str(), "");
-  BOOST_CHECK_EQUAL(leftDiffPartition2.GetDiffLineState(3), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(leftDiffPartition2.GetDiffLineText(4).C_str(), "Line 4");
-  BOOST_CHECK_EQUAL(leftDiffPartition2.GetDiffLineState(4), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetLineText(0).C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetLineText(1).C_str(), "Line 2");
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetLineText(2).C_str(), "Line 3");
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetLineState(2), DiffLine::Deleted);
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetLineText(3).C_str(), "");
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetLineState(3), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetLineText(4).C_str(), "Line 4");
+  BOOST_CHECK_EQUAL(leftDiffPartition2.GetLineState(4), DiffLine::Normal);
 
   BOOST_CHECK_EQUAL(rightDiffPartition2.NumLines(), 5);
-  BOOST_CHECK_EQUAL(rightDiffPartition2.GetDiffLineText(0).C_str(), "Line 1");
-  BOOST_CHECK_EQUAL(rightDiffPartition2.GetDiffLineState(0), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(rightDiffPartition2.GetDiffLineText(1).C_str(), "Line 2");
-  BOOST_CHECK_EQUAL(rightDiffPartition2.GetDiffLineState(1), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(rightDiffPartition2.GetDiffLineText(2).C_str(), "");
-  BOOST_CHECK_EQUAL(rightDiffPartition2.GetDiffLineState(2), DiffLine::Normal);
-  BOOST_CHECK_EQUAL(rightDiffPartition2.GetDiffLineText(3).C_str(), "");
-  BOOST_CHECK_EQUAL(rightDiffPartition2.GetDiffLineState(3), DiffLine::Added);
-  BOOST_CHECK_EQUAL(rightDiffPartition2.GetDiffLineText(4).C_str(), "Line 4");
-  BOOST_CHECK_EQUAL(rightDiffPartition2.GetDiffLineState(4), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetLineText(0).C_str(), "Line 1");
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetLineState(0), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetLineText(1).C_str(), "Line 2");
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetLineState(1), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetLineText(2).C_str(), "");
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetLineState(2), DiffLine::Normal);
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetLineText(3).C_str(), "");
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetLineState(3), DiffLine::Added);
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetLineText(4).C_str(), "Line 4");
+  BOOST_CHECK_EQUAL(rightDiffPartition2.GetLineState(4), DiffLine::Normal);
 }
 
 
@@ -206,24 +206,24 @@ BOOST_AUTO_TEST_CASE( testcase_04 )
 //  BOOST_CHECK_EQUAL(diffOk, true);
 
 //  BOOST_CHECK_EQUAL(leftDiffPartition3.NumLines(), 4);
-//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetDiffLineText(0).C_str(), "Line 1");
-//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetDiffLineState(0), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetDiffLineText(1).C_str(), "");
-//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetDiffLineState(1), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetDiffLineText(2).C_str(), "Line 3");
-//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetDiffLineState(2), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetDiffLineText(3).C_str(), "Line 4");
-//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetDiffLineState(3), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetLineText(0).C_str(), "Line 1");
+//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetLineState(0), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetLineText(1).C_str(), "");
+//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetLineState(1), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetLineText(2).C_str(), "Line 3");
+//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetLineState(2), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetLineText(3).C_str(), "Line 4");
+//  BOOST_CHECK_EQUAL(leftDiffPartition3.GetLineState(3), DiffLine::Normal);
 
 //  BOOST_CHECK_EQUAL(rightDiffPartition3.NumLines(), 4);
-//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetDiffLineText(0).C_str(), "Line 1");
-//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetDiffLineState(0), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetDiffLineText(1).C_str(), "Line 2");
-//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetDiffLineState(1), DiffLine::Added);
-//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetDiffLineText(2).C_str(), "Line 3");
-//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetDiffLineState(2), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetDiffLineText(3).C_str(), "Line 4");
-//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetDiffLineState(3), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetLineText(0).C_str(), "Line 1");
+//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetLineState(0), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetLineText(1).C_str(), "Line 2");
+//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetLineState(1), DiffLine::Added);
+//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetLineText(2).C_str(), "Line 3");
+//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetLineState(2), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetLineText(3).C_str(), "Line 4");
+//  BOOST_CHECK_EQUAL(rightDiffPartition3.GetLineState(3), DiffLine::Normal);
 //}
 
 
@@ -266,56 +266,56 @@ BOOST_AUTO_TEST_CASE( testcase_04 )
 //  BOOST_CHECK_EQUAL(diffOk, true);
 
 //  BOOST_CHECK_EQUAL(leftDiffPartition.NumLines(), 12);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(0).C_str(), "Line 1");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(0), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(1).C_str(), "");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(1), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(2).C_str(), "");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(2), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(3).C_str(), "Line 4");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(3), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(4).C_str(), "Line 5");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(4), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(5).C_str(), "Line 6");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(5), DiffLine::Deleted);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(6).C_str(), "Line 7");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(6), DiffLine::Deleted);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(7).C_str(), "Line 8");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(7), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(8).C_str(), "ab");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(8), DiffLine::Deleted);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(9).C_str(), "Line 9");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(9), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(10).C_str(), "");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(10), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(11).C_str(), "Line 10");
-//  BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(11), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(0).C_str(), "Line 1");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(0), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(1).C_str(), "");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(1), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(2).C_str(), "");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(2), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(3).C_str(), "Line 4");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(3), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(4).C_str(), "Line 5");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(4), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(5).C_str(), "Line 6");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(5), DiffLine::Deleted);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(6).C_str(), "Line 7");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(6), DiffLine::Deleted);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(7).C_str(), "Line 8");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(7), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(8).C_str(), "ab");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(8), DiffLine::Deleted);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(9).C_str(), "Line 9");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(9), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(10).C_str(), "");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(10), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(11).C_str(), "Line 10");
+//  BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(11), DiffLine::Normal);
 
 //  BOOST_CHECK_EQUAL(rightDiffPartition.NumLines(), 12);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(0).C_str(), "Line 1");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(0), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(1).C_str(), "Line 2");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(1), DiffLine::Added);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(2).C_str(), "Line 3");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(2), DiffLine::Added);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(3).C_str(), "Line 4");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(3), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(4).C_str(), "Line 5");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(4), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(5).C_str(), "");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(5), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(6).C_str(), "");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(6), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(7).C_str(), "Line 8");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(7), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(8).C_str(), "");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(8), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(9).C_str(), "Line 9");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(9), DiffLine::Normal);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(10).C_str(), "cd");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(10), DiffLine::Added);
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(11).C_str(), "Line 10");
-//  BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(11), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(0).C_str(), "Line 1");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(0), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(1).C_str(), "Line 2");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(1), DiffLine::Added);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(2).C_str(), "Line 3");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(2), DiffLine::Added);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(3).C_str(), "Line 4");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(3), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(4).C_str(), "Line 5");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(4), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(5).C_str(), "");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(5), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(6).C_str(), "");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(6), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(7).C_str(), "Line 8");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(7), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(8).C_str(), "");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(8), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(9).C_str(), "Line 9");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(9), DiffLine::Normal);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(10).C_str(), "cd");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(10), DiffLine::Added);
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(11).C_str(), "Line 10");
+//  BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(11), DiffLine::Normal);
 
 //  int leftAdded, leftChanged, leftDeleted, rightAdded, rightChanged, rightDeleted, sumChanges;
 
@@ -366,32 +366,32 @@ BOOST_AUTO_TEST_CASE( DiffTest_12_EndlessLoop )
 
 
     BOOST_CHECK_EQUAL(leftDiffPartition.NumLines(), 6); // // NOTE: This is a failure. Should be "5" instead.
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(0).C_str(), "Line 1");
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(0), DiffLine::Normal);
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(1).C_str(), "Line 2");
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(1), DiffLine::Normal);
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(2).C_str(), "Line 3");
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(2), DiffLine::Deleted);
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(3).C_str(), "");
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(3), DiffLine::Normal);
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(4).C_str(), ""); // NOTE: This is a failure. Should be "Line 5" instead.
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(4), DiffLine::Normal);
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(5).C_str(), "Line 5");
-    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(5), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(0).C_str(), "Line 1");
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(0), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(1).C_str(), "Line 2");
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(1), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(2).C_str(), "Line 3");
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(2), DiffLine::Deleted);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(3).C_str(), "");
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(3), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(4).C_str(), ""); // NOTE: This is a failure. Should be "Line 5" instead.
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(4), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineText(5).C_str(), "Line 5");
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetLineState(5), DiffLine::Normal);
 
     BOOST_CHECK_EQUAL(rightDiffPartition.NumLines(), 6); // // NOTE: This is a failure. Should be "5" instead.
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(0).C_str(), "Line 1");
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(0), DiffLine::Normal);
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(1).C_str(), "Line 2");
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(1), DiffLine::Normal);
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(2).C_str(), "");
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(2), DiffLine::Normal);
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(3).C_str(), "");
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(3), DiffLine::Added);
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(4).C_str(), "");
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(4), DiffLine::Normal);
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(5).C_str(), "Line 5");
-    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(5), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(0).C_str(), "Line 1");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(0), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(1).C_str(), "Line 2");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(1), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(2).C_str(), "");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(2), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(3).C_str(), "");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(3), DiffLine::Added);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(4).C_str(), "");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(4), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineText(5).C_str(), "Line 5");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetLineState(5), DiffLine::Normal);
 }
 
 
