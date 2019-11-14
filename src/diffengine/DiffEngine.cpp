@@ -57,8 +57,8 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
      && (srcB.GetLineState(lineB) == DiffLine::Normal))
     {
       // equal lines
-      diffA.AddString(srcA.GetLineText(lineA), DiffLine::Normal);
-      diffB.AddString(srcB.GetLineText(lineB), DiffLine::Normal);
+      diffA.AddString(srcA.GetLine(lineA)->Text(), DiffLine::Normal);
+      diffB.AddString(srcB.GetLine(lineB)->Text(), DiffLine::Normal);
 
       lineA++;
       lineB++;
@@ -69,7 +69,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
       while((lineA < srcA.NumLines())
         && (lineB >= srcB.NumLines() || (srcA.GetLineState(lineA) != DiffLine::Normal)))
       {
-        diffA.AddString(srcA.GetLineText(lineA), srcA.GetLineState(lineA));
+        diffA.AddString(srcA.GetLine(lineA)->Text(), srcA.GetLineState(lineA));
         diffB.AddBlankLine();
         lineA++;
       }
@@ -78,7 +78,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
         && (lineA >= srcA.NumLines() || (srcB.GetLineState(lineB) != DiffLine::Normal)))
       {
         diffA.AddBlankLine();
-        diffB.AddString(srcB.GetLineText(lineB), srcB.GetLineState(lineB));
+        diffB.AddString(srcB.GetLine(lineB)->Text(), srcB.GetLineState(lineB));
         lineB++;
       }
     }
@@ -114,7 +114,7 @@ void DiffEngine::lcs(DiffFilePartition& a,
 {
   // Fast walkthrough equal lines at the start
   while((lowerA < upperA) && (lowerB < upperB)
-     && (a.GetLineToken(lowerA) == b.GetLineToken(lowerB)))
+     && (a.GetLine(lowerA)->Token() == b.GetLine(lowerB)->Token()))
   {
     lowerA++;
     lowerB++;
@@ -122,7 +122,7 @@ void DiffEngine::lcs(DiffFilePartition& a,
 
   // Fast walkthrough equal lines at the end
   while((lowerA < upperA) && (lowerB < upperB)
-     && (a.GetLineToken(upperA - 1) == b.GetLineToken(upperB - 1)))
+     && (a.GetLine(upperA - 1)->Token() == b.GetLine(upperB - 1)->Token()))
   {
     --upperA;
     --upperB;
@@ -207,8 +207,8 @@ Pair DiffEngine::shortestMiddleSnake(DiffFilePartition& a,
 
       // find the end of the furthest reaching forward D-path in diagonal k.
       while ((x < upperA) && (y < upperB)
-          && (a.GetLineToken(x) == b.GetLineToken(y))
-          && (a.GetLineText(x) == b.GetLineText(y)))
+          && (a.GetLine(x)->Token() == b.GetLine(y)->Token()))
+          //&& (a.GetLine(x)->Text() == b.GetLine(y)->Text()))
       {
         x++;
         y++;
@@ -223,6 +223,7 @@ Pair DiffEngine::shortestMiddleSnake(DiffFilePartition& a,
         {
           sms.Set(pDownVector[downOffset + k],
                   pDownVector[downOffset + k] - k);
+
           return sms;
         }
       }
@@ -251,8 +252,8 @@ Pair DiffEngine::shortestMiddleSnake(DiffFilePartition& a,
       y = x - k;
 
       while ((x > lowerA) && (y > lowerB)
-          && (a.GetLineToken(x - 1) == b.GetLineToken(y - 1))
-          && (a.GetLineText(x - 1) == b.GetLineText(y - 1)))
+          && (a.GetLine(x - 1)->Token() == b.GetLine(y - 1)->Token()))
+          //&& (a.GetLine(x - 1)->Text() == b.GetLine(y - 1)->Text()))
       {
         // diagonal
         x--;
@@ -278,6 +279,6 @@ Pair DiffEngine::shortestMiddleSnake(DiffFilePartition& a,
   }
 
   // The algorithm should never come here
-  Pair nil;
-  return nil;
+  Pair nilPair;
+  return nilPair;
 }
