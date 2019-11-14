@@ -330,6 +330,76 @@ BOOST_AUTO_TEST_CASE( testcase_04 )
 //  BOOST_CHECK_EQUAL(sumChanges, 6);
 //}
 
+BOOST_AUTO_TEST_CASE( DiffTest_12_EndlessLoop )
+{
+  bool cancelRequested = false;
+  bool diffOk = false;
+  DiffEngine diffEngine(cancelRequested);
+
+  //
+  // Test case: endless loop in version 1 from 2003
+  // as spotlighted by an user comment on code
+  //
+  // Left.txt       |   Right.txt
+  // ------------------------------
+  // Line 1         |   Line 1
+  // Line 2         |   Line 2
+  // Line 3         |
+  //                |
+  // Line 5         |   Line 5
+  //                |
+  //
+  // >> Cleared "Line 3" (set to empty) in right file
+  //
+
+  DiffFilePartitionLinux leftSrcPartition(cancelRequested);
+  leftSrcPartition.PreProcess("../../../testfiles/testcase_12_endless_loop_left.txt");
+
+  DiffFilePartitionLinux rightSrcPartition(cancelRequested);
+  rightSrcPartition.PreProcess("../../../testfiles/testcase_12_endless_loop_right.txt");
+
+    DiffFilePartition leftDiffPartition(cancelRequested);
+    DiffFilePartition rightDiffPartition(cancelRequested);
+
+    diffOk = diffEngine.Diff(leftSrcPartition,
+                             rightSrcPartition,
+                             leftDiffPartition,
+                             rightDiffPartition);
+
+    BOOST_CHECK_EQUAL(diffOk, true);
+
+
+    BOOST_CHECK_EQUAL(leftDiffPartition.NumLines(), 6); // // NOTE: This is a failure. Should be "5" instead.
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(0).C_str(), "Line 1");
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(0), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(1).C_str(), "Line 2");
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(1), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(2).C_str(), "Line 3");
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(2), DiffLine::Deleted);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(3).C_str(), "");
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(3), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(4).C_str(), ""); // NOTE: This is a failure. Should be "Line 5" instead.
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(4), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineText(5).C_str(), "Line 5");
+    BOOST_CHECK_EQUAL(leftDiffPartition.GetDiffLineState(5), DiffLine::Normal);
+
+    BOOST_CHECK_EQUAL(rightDiffPartition.NumLines(), 6); // // NOTE: This is a failure. Should be "5" instead.
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(0).C_str(), "Line 1");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(0), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(1).C_str(), "Line 2");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(1), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(2).C_str(), "");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(2), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(3).C_str(), "");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(3), DiffLine::Added);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(4).C_str(), "");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(4), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineText(5).C_str(), "Line 5");
+    BOOST_CHECK_EQUAL(rightDiffPartition.GetDiffLineState(5), DiffLine::Normal);
+}
+
+
+
 
 BOOST_AUTO_TEST_CASE( testcase_13_6000_lines )
 {
@@ -378,33 +448,3 @@ BOOST_AUTO_TEST_CASE( testcase_22_myers_ruby_linearSpace )
   BOOST_CHECK_EQUAL(diffB.NumLines(), 21);
 
 }
-
-
-///**
-// * This test did loop on Amiga..
-// *
-// */
-//BOOST_AUTO_TEST_CASE( testcase_10_myers )
-//{
-//  bool cancelRequested = false;
-//  bool diffOk = false;
-//  DiffEngine diffEngine(cancelRequested);
-
-//  DiffFilePartitionLinux srcA(cancelRequested);
-//  srcA.PreProcess("../../../testfiles/testcase_13_6000_left.cpp");
-
-//  DiffFilePartitionLinux srcB(cancelRequested);
-//  srcB.PreProcess("../../../testfiles/testcase_13_6000_right.cpp");
-
-//  DiffFilePartition targetA(cancelRequested);
-//  DiffFilePartition targetB(cancelRequested);
-
-//  diffOk = diffEngine.Diff(srcA, srcB, targetA, targetB);
-
-//  BOOST_CHECK_EQUAL(diffOk, true);
-
-//  BOOST_CHECK_EQUAL(srcA.NumLines(), 5832);
-//  BOOST_CHECK_EQUAL(srcB.NumLines(), 7183);
-//  BOOST_CHECK_EQUAL(targetA.NumLines(), 7796);
-//  BOOST_CHECK_EQUAL(targetB.NumLines(), 7796);
-//}
