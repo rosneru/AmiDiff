@@ -26,14 +26,14 @@
 class DiffWorker : public BackgroundWorker
 {
 public:
-  DiffWorker(SimpleString& p_LeftFilePath,
-                  SimpleString& p_RightFilePath,
-                  DiffWindow& p_DiffWindow,
-                  FilesWindow& p_FilesWindow,
-                  ProgressWindow& p_ProgressWindow,
-                  struct MsgPort* p_pProgressPort,
-                  bool& p_bCancelRequested,
-                  bool& p_bExitAllowed);
+  DiffWorker(SimpleString& leftFilePath,
+             SimpleString& rightFilePath,
+             DiffWindow& diffWindow,
+             FilesWindow& filesWindow,
+             ProgressWindow& progressWindow,
+             struct MsgPort* pProgressPort,
+             bool& bCancelRequested,
+             bool& bExitAllowed);
 
   virtual ~DiffWorker();
 
@@ -102,7 +102,7 @@ private:
    *      and performing the diff) are reported merged with 0..33%,
    *      33%..66% and 66%..100%.
    */
-  virtual void notifyProgressChanged(int p_Progress);
+  virtual void notifyProgressChanged(int progress);
 
 };
 
