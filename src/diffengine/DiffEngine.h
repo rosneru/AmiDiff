@@ -4,7 +4,6 @@
 #include "LinkedList.h"
 #include "SimpleString.h"
 
-#include "Box.h"
 #include "Pair.h"
 #include "DiffLine.h"
 #include "DiffFilePartition.h"
@@ -32,15 +31,6 @@ public:
             DiffFilePartition& diffB);
 
 
-  void FindPath(DiffFilePartition& a,
-                       long lowerA,
-                       long upperA,
-                       DiffFilePartition& b,
-                       long lowerB,
-                       long upperB,
-                       long* pDownVector,
-                       long* pUpVector);
-
   /**
    * Setting the progress reporter
    */
@@ -51,21 +41,23 @@ private:
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
   long m_Max;
 
-  Pair shortestMiddleSnake(DiffFilePartition& a, long lowerA, long upperA,
-                           DiffFilePartition& b, long lowerB, long upperB,
-                           long* pDownVector, long* pUpVector);
+  Pair shortestMiddleSnake(DiffFilePartition& a,
+                           long lowerA,
+                           long upperA,
+                           DiffFilePartition& b,
+                           long lowerB,
+                           long upperB,
+                           long* pDownVector,
+                           long* pUpVector);
 
-//  bool midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b);
-
-//  bool forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
-//  bool backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
-
-//  void buildDiff(int x1, int y1, int x2, int y2,
-//                 DiffFilePartition& srcA,
-//                 DiffFilePartition& srcB,
-//                 DiffFilePartition& diffA,
-//                 DiffFilePartition& diffB);
-
+  void lcs(DiffFilePartition& a,
+           long lowerA,
+           long upperA,
+           DiffFilePartition& b,
+           long lowerB,
+           long upperB,
+           long* pDownVector,
+           long* pUpVector);
 };
 
 #endif

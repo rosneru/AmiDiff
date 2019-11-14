@@ -72,16 +72,21 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
   //
   // Progress reporting
   //
+
   if(m_pProgressReporter != NULL)
   {
     m_pProgressReporter->notifyProgressChanged(50);
   }
 
+  //
+  // Calculate the Longest common subsequence
+  //
+
   m_Max = srcA.NumLines() + srcB.NumLines() + 1;
   long* pDownVector = new long[2 * m_Max + 2];
   long* pUpVector = new long[2 * m_Max + 2];
 
-  FindPath(srcA, 0, srcA.NumLines(), srcB, 0, srcB.NumLines(), pDownVector, pUpVector);
+  lcs(srcA, 0, srcA.NumLines(), srcB, 0, srcB.NumLines(), pDownVector, pUpVector);
 
   delete[] pUpVector;
   delete[] pDownVector;
@@ -89,8 +94,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
   //
   // Calculate the target diff file partitions
   //
-  long startA;
-  long startB;
+
   long lineA = 0;
   long lineB = 0;
 
@@ -111,9 +115,6 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     else
     {
       // maybe deleted and/or inserted lines
-      startA = lineA;
-      startB = lineB;
-
       while((lineA < srcA.NumLines())
         && (lineB >= srcB.NumLines() || (srcA.GetDiffLineState(lineA) != DiffLine::Normal)))
       {
@@ -129,82 +130,8 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
         diffB.AddString(srcB.GetDiffLineText(lineB), srcB.GetDiffLineState(lineB));
         lineB++;
       }
-
-//      if ((startA < lineA) || (startB < lineB))
-//      {
-//        // store a new difference-item
-//           //   aItem = new DiffItem();
-//           //   aItem.StartLeft = StartA;
-//           //   aItem.StartRight = StartB;
-//           //   aItem.DeletedLeft = LineA - StartA;
-//           //   aItem.InsertedRight = LineB - StartB;
-//           //   a.Add(aItem);
-//      }
     }
   }
-
-  /*
-  LinkedList* pPath = FindPath(srcA, 0, 0, srcB, srcA.NumLines(), srcB.NumLines());
-  if(pPath->Size() == 0)
-  {
-    return false;
-  }
-
-  Pair* pItem = (Pair*)pPath->GetFirst();
-  int x1 = pItem->Left();
-  int y1 = pItem->Top();
-  delete pItem;
-
-
-  while((pItem = (Pair*)pPath->GetNext()) != NULL)
-  {
-    int x2 = pItem->Left();
-    int y2 = pItem->Top();
-
-
-    // Walk diagonal #1
-    while((x1 < x2)
-       && (y1 < y2)
-       && (srcA.GetDiffLine(x1)->Token() == srcB.GetDiffLine(y1)->Token())
-       && (srcA.GetDiffLineText(x1) == srcB.GetDiffLineText(y1)))    // TODO remove and run the tests
-    {
-      buildDiff(x1, y1, x1 + 1, y1 + 1, srcA, srcB, diffA, diffB);
-      x1++;
-      y1++;
-    }
-
-    int dx = x2 - x1;
-    int dy = y2 - y1;
-
-    if(dx < dy)
-    {
-      buildDiff(x1, y1, x1, y1 + 1, srcA, srcB, diffA, diffB);
-      y1++;
-    }
-    else if(dx > dy)
-    {
-      buildDiff(x1, y1, x1 + 1, y1, srcA, srcB, diffA, diffB);
-    }
-
-    // Walk diagonal #2
-    while((x1 < x2)
-       && (y1 < y2)
-       && (srcA.GetDiffLine(x1)->Token() == srcB.GetDiffLine(y1)->Token())
-       && (srcA.GetDiffLineText(x1) == srcB.GetDiffLineText(y1)))    // TODO remove and run the tests
-    {
-      buildDiff(x1, y1, x1 + 1, y1 + 1, srcA, srcB, diffA, diffB);
-      x1++;
-      y1++;
-    }
-
-    x1 = x2;
-    y1 = y2;
-    delete pItem;
-  }
-
-  delete pPath;
-
-  */
 
   //
   // Progress reporting
@@ -223,6 +150,56 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 {
   m_pProgressReporter = p_pProgressReporter;
 }
+
+
+void DiffEngine::lcs(DiffFilePartition& a,
+                     long lowerA,
+                     long upperA,
+                     DiffFilePartition& b,
+                     long lowerB,
+                     long upperB,
+                     long* pDownVector,
+                     long* pUpVector)
+{
+  // Fast walkthrough equal lines at the start
+  while((lowerA < upperA) && (lowerB < upperB)
+     && (a.GetDiffLine(lowerA)->Token() == b.GetDiffLine(lowerB)->Token()))
+  {
+    lowerA++;
+    lowerB++;
+  }
+
+  // Fast walkthrough equal lines at the end
+  while((lowerA < upperA) && (lowerB < upperB)
+     && (a.GetDiffLine(upperA - 1)->Token() == b.GetDiffLine(upperB - 1)->Token()))
+  {
+    --upperA;
+    --upperB;
+  }
+
+  if(lowerA == upperA)
+  {
+    while(lowerB < upperB)
+    {
+      b.GetDiffLine(lowerB++)->SetState(DiffLine::Added);
+    }
+  }
+  else if(lowerB == upperB)
+  {
+    while(lowerA < upperA)
+    {
+      a.GetDiffLine(lowerA++)->SetState(DiffLine::Deleted);
+    }
+  }
+  else
+  {
+    Pair smsrd = shortestMiddleSnake(a, lowerA, upperA, b, lowerB, upperB, pDownVector, pUpVector);
+    lcs(a, lowerA, smsrd.Left(), b, lowerB, smsrd.Top(), pDownVector, pUpVector);
+    lcs(a, smsrd.Left(), upperA, b, smsrd.Top(), upperB, pDownVector, pUpVector);
+  }
+}
+
+
 
 Pair DiffEngine::shortestMiddleSnake(DiffFilePartition& a,
                                      long lowerA,
@@ -353,232 +330,3 @@ Pair DiffEngine::shortestMiddleSnake(DiffFilePartition& a,
   Pair nil;
   return nil;
 }
-
-
-void DiffEngine::FindPath(DiffFilePartition& a,
-                          long lowerA,
-                          long upperA,
-                          DiffFilePartition& b,
-                          long lowerB,
-                          long upperB,
-                          long* pDownVector,
-                          long* pUpVector)
-{
-  // Fast walkthrough equal lines at the start
-  while((lowerA < upperA) && (lowerB < upperB)
-     && (a.GetDiffLine(lowerA)->Token() == b.GetDiffLine(lowerB)->Token()))
-  {
-    lowerA++;
-    lowerB++;
-  }
-
-  // Fast walkthrough equal lines at the end
-  while((lowerA < upperA) && (lowerB < upperB)
-     && (a.GetDiffLine(upperA - 1)->Token() == b.GetDiffLine(upperB - 1)->Token()))
-  {
-    --upperA;
-    --upperB;
-  }
-
-  if(lowerA == upperA)
-  {
-    while(lowerB < upperB)
-    {
-      b.GetDiffLine(lowerB++)->SetState(DiffLine::Added);
-    }
-  }
-  else if(lowerB == upperB)
-  {
-    while(lowerA < upperA)
-    {
-      a.GetDiffLine(lowerA++)->SetState(DiffLine::Deleted);
-    }
-  }
-  else
-  {
-    Pair smsrd = shortestMiddleSnake(a, lowerA, upperA, b, lowerB, upperB, pDownVector, pUpVector);
-    FindPath(a, lowerA, smsrd.Left(), b, lowerB, smsrd.Top(), pDownVector, pUpVector);
-    FindPath(a, smsrd.Left(), upperA, b, smsrd.Top(), upperB, pDownVector, pUpVector);
-  }
-}
-
-
-//bool DiffEngine::midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b)
-//{
-//  if(box.Size() == 0)
-//  {
-//    // If this box is empty return the empty box to signal the failure
-//    return false;
-//  }
-
-//  // Original: max = (box.size / 2.0).ceil
-//  int max = (box.Size() + 1) / 2;
-
-//  int vSize = 2 * max + 1;
-
-//  int* vf = new int[vSize];
-//  vf[1] = box.Left();
-
-//  int* vb = new int[vSize];
-//  vb[1] = box.Bottom();
-
-//  for(int d = 0; d <= max; d++)
-//  {
-//    bool bFoundForwards = forwards(box, vf, vb, vSize, d, a, b);
-//    if(bFoundForwards)
-//    {
-//      delete[] vf;
-//      delete[] vb;
-//      return true;
-//    }
-
-//    bool bFoundBackwards = backward(box, vf, vb, vSize, d, a, b);
-//    if(bFoundBackwards)
-//    {
-//      delete[] vf;
-//      delete[] vb;
-//      return true;
-//    }
-//  }
-
-//  delete[] vf;
-//  delete[] vb;
-
-//  return false;
-//}
-
-//bool DiffEngine::forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
-//{
-//  int x, px, y, py;
-
-//  for(long k = d; k >= -d; k -= 2)
-//  {
-//    long c = k - box.Delta();
-
-//    if((k == -d) || ((k != d) && (vf[IdxConv(k - 1, vSize)] < vf[IdxConv(k + 1, vSize)])))
-//    {
-//      x = px = vf[IdxConv(k + 1, vSize)];
-//    }
-//    else
-//    {
-//      px = vf[IdxConv(k - 1, vSize)];
-//      x = px + 1;
-//    }
-
-//    y = box.Top() + (x - box.Left()) - k;
-
-//    if((d == 0) || (x != px))
-//    {
-//      py = y;
-//    }
-//    else
-//    {
-//      py = y - 1;
-//    }
-
-//    while((x < box.Right())
-//       && (y < box.Bottom())
-//       && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token())
-//       && (a.GetDiffLineText(x) == b.GetDiffLineText(y)))
-//    {
-//      x++;
-//      y++;
-//    }
-
-//    int cId = IdxConv(c, vSize);
-//    int kId = IdxConv(k, vSize);
-
-//    vf[kId] = x;
-
-//    if( ((box.Delta() & 1) == 1)  // true if box.Delta() is odd
-//     && (Between(c, -(d - 1), d - 1))
-//     && (y >= vb[cId]))
-//    {
-//      box.Set(px, py, x, y);
-//      return true;
-//    }
-//  }
-
-//  return false;
-//}
-
-//bool DiffEngine::backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b)
-//{
-//  int x, px, y, py;
-
-//  for(long c = d; c >= -d; c -= 2)
-//  {
-//    long k = c + box.Delta();
-
-//    if((c == -d) || ((c != d) && (vb[IdxConv(c - 1, vSize)] > vb[IdxConv(c + 1, vSize)])))
-//    {
-//      y = py = vb[IdxConv(c + 1, vSize)];
-//    }
-//    else
-//    {
-//      py = vb[IdxConv(c - 1, vSize)];
-//      y = py - 1;
-//    }
-
-//    x = box.Left() + (y - box.Top()) + k;
-
-//    if((d == 0) || (y != py))
-//    {
-//      px = x;
-//    }
-//    else
-//    {
-//      px = x + 1;
-//    }
-
-//    while((x > box.Left())
-//       && (y > box.Top())
-//       && (a.GetDiffLine(x - 1)->Token() == b.GetDiffLine(y - 1)->Token())
-//       && (a.GetDiffLineText(x - 1) == b.GetDiffLineText(y - 1)))
-//    {
-//      x--;
-//      y--;
-//    }
-
-//    int cId = IdxConv(c, vSize);
-//    int kId = IdxConv(k, vSize);
-//    vb[cId] = y;
-
-//    // &1 == 0 => true if box.Delta() is even
-//    if( ((box.Delta() & 1) == 0) && (Between(k, -d, d)) && (x <= vf[kId]))
-//    {
-//      // yield [[x, y], [px, py]]
-//      // TODO
-//      box.Set(x, y, px, py);
-//      return true;
-//    }
-//  }
-
-//  return false;
-//}
-
-//void DiffEngine::buildDiff(int x1, int y1, int x2, int y2,
-//                           DiffFilePartition& srcA,
-//                           DiffFilePartition& srcB,
-//                           DiffFilePartition& diffA,
-//                           DiffFilePartition& diffB)
-//{
-//  if(x1 == x2)
-//  {
-//    // srcB[y1] is an *inserted* line
-//    diffA.AddBlankLine();
-//    diffB.AddString(srcB.GetDiffLineText(y1), DiffLine::Added);
-//  }
-//  else if(y1 == y2)
-//  {
-//    // srcA[x1] is a deleted line
-//    diffA.AddString(srcA.GetDiffLineText(x1), DiffLine::Deleted);
-//    diffB.AddBlankLine();
-//  }
-//  else
-//  {
-//    // line is equal in srcA and srcB
-//    diffA.AddString(srcA.GetDiffLineText(x1), DiffLine::Normal);
-//    diffB.AddString(srcB.GetDiffLineText(y1), DiffLine::Normal);
-//  }
-//}

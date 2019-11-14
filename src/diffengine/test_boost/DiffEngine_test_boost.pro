@@ -21,7 +21,6 @@ SOURCES += \
     ../../oscottlibs/LinkedListNode.cpp \
     ../../oscottlibs/SimpleString.cpp \
     ../DiffFilePartitionLinux.cpp \
-    ../Box.cpp \
     ../Pair.cpp
 
 
@@ -34,5 +33,4 @@ HEADERS += \
     ../../oscottlibs/SimpleString.h \
     ../DiffFilePartitionLinux.h \
     ../../oscottlibs/Array.h \
-    ../Box.h \
     ../Pair.h

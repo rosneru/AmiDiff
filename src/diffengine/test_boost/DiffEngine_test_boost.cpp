@@ -17,10 +17,6 @@
 #include "DiffEngine.h"
 #include "DiffLine.h"
 
-#include "Array.h"
-#include "LinkedList.h"
-#include "Pair.h"
-#include "SimpleString.h"
 
 
 
