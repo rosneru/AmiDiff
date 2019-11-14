@@ -356,48 +356,49 @@ Pair DiffEngine::shortestMiddleSnake(DiffFilePartition& a,
 
 
 void DiffEngine::FindPath(DiffFilePartition& a,
-                          long left,
-                          long top,
+                          long lowerA,
+                          long upperA,
                           DiffFilePartition& b,
-                          long right,
-                          long bottom,
+                          long lowerB,
+                          long upperB,
                           long* pDownVector,
                           long* pUpVector)
 {
-//  Box snake(left, top, right, bottom);
-//  bool bFoundSnake = midPair(snake, a, b);
-
-//  if(!bFoundSnake)
-//  {
-//    return new LinkedList();
-//  }
-
-  while((left < top) && (right < bottom)
-     && (a.GetDiffLine(left)->Token() == b.GetDiffLine(right)->Token()))
+  // Fast walkthrough equal lines at the start
+  while((lowerA < upperA) && (lowerB < upperB)
+     && (a.GetDiffLine(lowerA)->Token() == b.GetDiffLine(lowerB)->Token()))
   {
-    --left;
-    --right;
+    lowerA++;
+    lowerB++;
   }
 
-  if(left == top)
+  // Fast walkthrough equal lines at the end
+  while((lowerA < upperA) && (lowerB < upperB)
+     && (a.GetDiffLine(upperA - 1)->Token() == b.GetDiffLine(upperB - 1)->Token()))
   {
-    while(right < bottom)
+    --upperA;
+    --upperB;
+  }
+
+  if(lowerA == upperA)
+  {
+    while(lowerB < upperB)
     {
-      b.GetDiffLine(right++)->SetState(DiffLine::Added);
+      b.GetDiffLine(lowerB++)->SetState(DiffLine::Added);
     }
   }
-  else if(right == bottom)
+  else if(lowerB == upperB)
   {
-    while(left < top)
+    while(lowerA < upperA)
     {
-      a.GetDiffLine(left++)->SetState(DiffLine::Deleted);
+      a.GetDiffLine(lowerA++)->SetState(DiffLine::Deleted);
     }
   }
   else
   {
-    Pair smsrd = shortestMiddleSnake(a, left, top, b, right, bottom, pDownVector, pUpVector);
-    FindPath(a, left, smsrd.Left(), b, right, smsrd.Top(), pDownVector, pUpVector);
-    FindPath(a, smsrd.Left(), top, b, smsrd.Top(), bottom, pDownVector, pUpVector);
+    Pair smsrd = shortestMiddleSnake(a, lowerA, upperA, b, lowerB, upperB, pDownVector, pUpVector);
+    FindPath(a, lowerA, smsrd.Left(), b, lowerB, smsrd.Top(), pDownVector, pUpVector);
+    FindPath(a, smsrd.Left(), upperA, b, smsrd.Top(), upperB, pDownVector, pUpVector);
   }
 }
 

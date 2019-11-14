@@ -33,11 +33,11 @@ public:
 
 
   void FindPath(DiffFilePartition& a,
-                       long left,
-                       long top,
+                       long lowerA,
+                       long upperA,
                        DiffFilePartition& b,
-                       long right,
-                       long bottom,
+                       long lowerB,
+                       long upperB,
                        long* pDownVector,
                        long* pUpVector);
 
