@@ -32,7 +32,12 @@ public:
             DiffFilePartition& diffB);
 
 
-  LinkedList* FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b);
+  LinkedList* FindPath(DiffFilePartition& a,
+                       long left,
+                       long top,
+                       DiffFilePartition& b,
+                       long right,
+                       long bottom);
 
   /**
    * Setting the progress reporter

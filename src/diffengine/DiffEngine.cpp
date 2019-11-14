@@ -76,7 +76,7 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     m_pProgressReporter->notifyProgressChanged(50);
   }
 
-  LinkedList* pPath = FindPath(0, 0, srcA.NumLines(), srcB.NumLines(), srcA, srcB);
+  LinkedList* pPath = FindPath(srcA, 0, 0, srcB, srcA.NumLines(), srcB.NumLines());
   if(pPath->Size() == 0)
   {
     return false;
@@ -156,7 +156,7 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 }
 
 
-LinkedList* DiffEngine::FindPath(long left, long top, long right, long bottom, DiffFilePartition& a, DiffFilePartition& b)
+LinkedList* DiffEngine::FindPath(DiffFilePartition& a, long left, long top, DiffFilePartition& b, long right, long bottom)
 {
   Box snake(left, top, right, bottom);
   bool bFoundSnake = midPair(snake, a, b);
@@ -166,8 +166,8 @@ LinkedList* DiffEngine::FindPath(long left, long top, long right, long bottom, D
     return new LinkedList();
   }
 
-  LinkedList* pHead = FindPath(left, top, snake.Left(), snake.Top(), a, b);
-  LinkedList* pTail = FindPath(snake.Right(), snake.Bottom(), right, bottom, a, b);
+  LinkedList* pHead = FindPath(a, left, top, b, snake.Left(), snake.Top());
+  LinkedList* pTail = FindPath(a, snake.Right(), snake.Bottom(), b, right, bottom);
 
   if(pHead->Size() > 0)
   {
