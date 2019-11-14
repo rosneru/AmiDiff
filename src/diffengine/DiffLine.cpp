@@ -33,6 +33,11 @@ DiffLine::LineState DiffLine::State() const
   return m_LineState;
 }
 
+void DiffLine::SetState(DiffLine::LineState state)
+{
+  m_LineState = state;
+}
+
 unsigned long DiffLine::Token() const
 {
   return m_Token;

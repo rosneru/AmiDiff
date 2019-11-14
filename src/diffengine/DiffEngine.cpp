@@ -53,7 +53,8 @@ inline bool Between(long number, long min, long max)
 
 DiffEngine::DiffEngine(bool& bCancelRequested)
   : m_bCancelRequested(bCancelRequested),
-    m_pProgressReporter(NULL)
+    m_pProgressReporter(NULL),
+    m_Max(0)
 {
 
 }
@@ -76,6 +77,12 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     m_pProgressReporter->notifyProgressChanged(50);
   }
 
+  m_Max = srcA.NumLines() + srcB.NumLines() + 1;
+  int* pDownVector = new int[2 * m_Max + 2];
+  int* pUpVector = new int[2 * m_Max + 2];
+
+
+  /*
   LinkedList* pPath = FindPath(srcA, 0, 0, srcB, srcA.NumLines(), srcB.NumLines());
   if(pPath->Size() == 0)
   {
@@ -136,6 +143,8 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
 
   delete pPath;
 
+  */
+
   //
   // Progress reporting
   //
@@ -144,8 +153,11 @@ bool DiffEngine::Diff(DiffFilePartition& srcA,
     m_pProgressReporter->notifyProgressChanged(100);
   }
 
+  delete[] pUpVector;
+  delete[] pDownVector;
 
-  return true;
+  return false;
+//  return true;
 }
 
 
@@ -155,59 +167,173 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
   m_pProgressReporter = p_pProgressReporter;
 }
 
-
-LinkedList* DiffEngine::FindPath(DiffFilePartition& a, long left, long top, DiffFilePartition& b, long right, long bottom)
+Pair DiffEngine::shortestMiddleSnake(DiffFilePartition& a,
+                                     long lowerA,
+                                     long upperA,
+                                     DiffFilePartition& b,
+                                     long lowerB,
+                                     long upperB,
+                                     int* pDownVector,
+                                     int* pUpVector)
 {
-  Box snake(left, top, right, bottom);
-  bool bFoundSnake = midPair(snake, a, b);
+  Pair ret;
 
-  if(!bFoundSnake)
+  int downK = lowerA - lowerB; // the k-line to start the forward search
+  int upK = upperA - upperB; // the k-line to start the reverse search
+
+  int delta = (upperA - lowerA) - (upperB - lowerB);
+  bool oddDelta = (delta & 1) != 0;
+
+  // The vectors in the publication accepts negative indexes.
+  // The vectors implemented here are 0-based and are access using
+  // a specific offset: UpOffset pUpVector and DownOffset for
+  // DownVector
+  int downOffset = m_Max - downK;
+  int upOffset = m_Max - upK;
+
+  int maxD = ((upperA - lowerA + upperB - lowerB) / 2) + 1;
+
+  // init vectors
+  pDownVector[downOffset + downK + 1] = lowerA;
+  pUpVector[upOffset + upK - 1] = upperA;
+
+  for (int D = 0; D <= maxD; D++)
   {
-    return new LinkedList();
+
+    // Extend the forward path
+    for (int k = downK - D; k <= downK + D; k += 2)
+    {
+      // find the only or better starting point
+      int x, y;
+      if (k == downK - D)
+      {
+        x = pDownVector[downOffset + k + 1]; // down
+      }
+      else
+      {
+        x = pDownVector[downOffset + k - 1] + 1; // a step to the right
+        if ((k < downK + D) && (pDownVector[downOffset + k + 1] >= x))
+          x = pDownVector[downOffset + k + 1]; // down
+      }
+      y = x - k;
+
+      // find the end of the furthest reaching forward D-path in diagonal k.
+      while ((x < upperA) && (y < upperB)
+          && (a.GetDiffLine(x)->Token() == b.GetDiffLine(y)->Token())
+          && (a.GetDiffLineText(x) == b.GetDiffLineText(y)))
+      {
+        x++; y++;
+      }
+      pDownVector[downOffset + k] = x;
+
+      // overlap ?
+      if (oddDelta && (upK - D < k) && (k < upK + D))
+      {
+        if (pUpVector[upOffset + k] <= pDownVector[downOffset + k])
+        {
+          ret.Set(pDownVector[downOffset + k],
+                  pDownVector[downOffset + k] - k);
+          return (ret);
+        }
+      }
+
+    }
+
+    // Extend the reverse path.
+    for (int k = upK - D; k <= upK + D; k += 2)
+    {
+      // find the only or better starting point
+      int x, y;
+      if (k == upK + D)
+      {
+        x = pUpVector[upOffset + k - 1]; // up
+      }
+      else
+      {
+        x = pUpVector[upOffset + k + 1] - 1; // left
+
+        if ((k > upK - D) && (pUpVector[upOffset + k - 1] < x))
+        {
+          x = pUpVector[upOffset + k - 1]; // up
+        }
+      }
+
+      y = x - k;
+
+      while ((x > lowerA) && (y > lowerB)
+          && (a.GetDiffLine(x - 1)->Token() == b.GetDiffLine(y - 1)->Token())
+          && (a.GetDiffLineText(x - 1) == b.GetDiffLineText(y - 1)))
+      {
+        x--; y--; // diagonal
+      }
+
+      pUpVector[upOffset + k] = x;
+
+      // overlap ?
+      if (!oddDelta && (downK - D <= k) && (k <= downK + D))
+      {
+        if (pUpVector[upOffset + k] <= pDownVector[downOffset + k])
+        {
+          ret.Set(pDownVector[downOffset + k],
+                  pDownVector[downOffset + k] - k);
+
+          return ret;
+        }
+      }
+
+    }
+
   }
 
-  LinkedList* pHead = FindPath(a, left, top, b, snake.Left(), snake.Top());
-  LinkedList* pTail = FindPath(a, snake.Right(), snake.Bottom(), b, right, bottom);
+  // The algorithm should never come here
+  Pair nil;
+  return nil;
+}
 
-  if(pHead->Size() > 0)
+
+void DiffEngine::FindPath(DiffFilePartition& a,
+                          long left,
+                          long top,
+                          DiffFilePartition& b,
+                          long right,
+                          long bottom,
+                          int* pDownVector,
+                          int* pUpVector)
+{
+//  Box snake(left, top, right, bottom);
+//  bool bFoundSnake = midPair(snake, a, b);
+
+//  if(!bFoundSnake)
+//  {
+//    return new LinkedList();
+//  }
+
+  while((left < top) && (right < bottom)
+     && (a.GetDiffLine(left)->Token() == b.GetDiffLine(right)->Token()))
   {
-    if(pTail->Size() > 0)
-    {
-      Pair* pItem = (Pair*)pTail->GetFirst();
-      do
-      {
-        pHead->InsertTail(pItem);
-      }
-      while((pItem = (Pair*)pTail->GetNext()) != NULL);
+    --left;
+    --right;
+  }
 
-      delete pTail;
-      return pHead;
+  if(left == top)
+  {
+    while(right < bottom)
+    {
+      b.GetDiffLine(right++)->SetState(DiffLine::Added);
     }
-    else
+  }
+  else if(right == bottom)
+  {
+    while(left < top)
     {
-      pHead->InsertTail(new Pair(snake.Right(), snake.Bottom()));
-
-      delete pTail;
-      return pHead;
+      a.GetDiffLine(left++)->SetState(DiffLine::Deleted);
     }
   }
   else
   {
-    if(pTail->Size() > 0)
-    {
-      pTail->InsertHead(new Pair(snake.Left(), snake.Top()));
-
-      delete pHead;
-      return pTail;
-    }
-    else
-    {
-      pTail->InsertTail(new Pair(snake.Left(), snake.Top()));
-      pTail->InsertTail(new Pair(snake.Right(), snake.Bottom()));
-
-      delete pHead;
-      return pTail;
-    }
+    Pair smsrd = shortestMiddleSnake(a, left, top, b, right, bottom, pDownVector, pUpVector);
+    FindPath(a, left, smsrd.Left(), b, right, smsrd.Top(), pDownVector, pUpVector);
+    FindPath(a, smsrd.Left(), top, b, smsrd.Top(), bottom, pDownVector, pUpVector);
   }
 }
 

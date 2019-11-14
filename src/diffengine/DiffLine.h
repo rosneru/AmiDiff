@@ -42,6 +42,8 @@ public:
    */
   LineState State() const;
 
+  void SetState(LineState state);
+
   /**
    * Returns the token which is asociated with this line
    */

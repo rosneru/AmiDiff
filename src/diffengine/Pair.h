@@ -18,6 +18,10 @@ public:
   long Left() const;
   long Top() const;
 
+  void SetLeft(long left);
+  void SetTop(long top);
+  void Set(long left, long top);
+
   bool IsNil() const;
 
 private:

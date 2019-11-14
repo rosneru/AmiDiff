@@ -31,9 +31,11 @@ public:
   long NumLines() const;
   void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const;
 
+  DiffLine* GetDiffLine(size_t p_Index) const;
   const SimpleString& GetDiffLineText(size_t p_Index) const;
   DiffLine::LineState GetDiffLineState(size_t p_Index) const;
-  const DiffLine* GetDiffLine(size_t p_Index) const;
+  void SetDiffLineState(size_t p_Index, DiffLine::LineState state);
+
 
 
   bool PreProcess();

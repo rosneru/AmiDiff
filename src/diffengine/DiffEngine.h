@@ -32,12 +32,14 @@ public:
             DiffFilePartition& diffB);
 
 
-  LinkedList* FindPath(DiffFilePartition& a,
+  void FindPath(DiffFilePartition& a,
                        long left,
                        long top,
                        DiffFilePartition& b,
                        long right,
-                       long bottom);
+                       long bottom,
+                       int* pDownVector,
+                       int* pUpVector);
 
   /**
    * Setting the progress reporter
@@ -47,7 +49,11 @@ public:
 private:
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
+  long m_Max;
 
+  Pair shortestMiddleSnake(DiffFilePartition& a, long lowerA, long upperA,
+                           DiffFilePartition& b, long lowerB, long upperB,
+                           int* pDownVector, int* pUpVector);
 
   bool midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b);
 
