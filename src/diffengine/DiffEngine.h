@@ -45,23 +45,18 @@ private:
   DiffFilePartition& m_BDiff;
   bool& m_bCancelRequested;
 
+  ProgressReporter* m_pProgressReporter;
 
-  ProgressReporter* m_pProgressReporter;  ///> for progress reporting
   long m_Max;
+  long* m_pDownVector;
+  long* m_pUpVector;
 
   Pair shortestMiddleSnake(long lowerA,
                            long upperA,
                            long lowerB,
-                           long upperB,
-                           long* pDownVector,
-                           long* pUpVector);
+                           long upperB);
 
-  void lcs(long lowerA,
-           long upperA,
-           long lowerB,
-           long upperB,
-           long* pDownVector,
-           long* pUpVector);
+  void lcs(long lowerA, long upperA, long lowerB, long upperB);
 };
 
 #endif

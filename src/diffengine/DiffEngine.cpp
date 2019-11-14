@@ -13,7 +13,9 @@ DiffEngine::DiffEngine(DiffFilePartition& a,
     m_BDiff(bDiff),
     m_bCancelRequested(bCancelRequested),
     m_pProgressReporter(NULL),
-    m_Max(0)
+    m_Max(0),
+    m_pDownVector(NULL),
+    m_pUpVector(NULL)
 {
 
 }
@@ -39,13 +41,16 @@ bool DiffEngine::Diff()
   //
 
   m_Max = m_A.NumLines() + m_B.NumLines() + 1;
-  long* pDownVector = new long[2 * m_Max + 2];
-  long* pUpVector = new long[2 * m_Max + 2];
+  m_pDownVector = new long[2 * m_Max + 2];
+  m_pUpVector = new long[2 * m_Max + 2];
 
-  lcs(0, m_A.NumLines(), 0, m_B.NumLines(), pDownVector, pUpVector);
+  lcs(0, m_A.NumLines(), 0, m_B.NumLines());
 
-  delete[] pUpVector;
-  delete[] pDownVector;
+  delete[] m_pUpVector;
+  m_pUpVector = NULL;
+
+  delete[] m_pDownVector;
+  m_pDownVector = NULL;
 
   //
   // Calculate the target diff file partitions
@@ -111,9 +116,7 @@ void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 void DiffEngine::lcs(long lowerA,
                      long upperA,
                      long lowerB,
-                     long upperB,
-                     long* pDownVector,
-                     long* pUpVector)
+                     long upperB)
 {
   // Fast walkthrough equal lines at the start
   while((lowerA < upperA) && (lowerB < upperB)
@@ -147,9 +150,9 @@ void DiffEngine::lcs(long lowerA,
   }
   else
   {
-    Pair smsrd = shortestMiddleSnake(lowerA, upperA, lowerB, upperB, pDownVector, pUpVector);
-    lcs(lowerA, smsrd.Left(), lowerB, smsrd.Top(), pDownVector, pUpVector);
-    lcs(smsrd.Left(), upperA, smsrd.Top(), upperB, pDownVector, pUpVector);
+    Pair smsrd = shortestMiddleSnake(lowerA, upperA, lowerB, upperB);
+    lcs(lowerA, smsrd.Left(), lowerB, smsrd.Top());
+    lcs(smsrd.Left(), upperA, smsrd.Top(), upperB);
   }
 }
 
@@ -158,9 +161,7 @@ void DiffEngine::lcs(long lowerA,
 Pair DiffEngine::shortestMiddleSnake(long lowerA,
                                      long upperA,
                                      long lowerB,
-                                     long upperB,
-                                     long* pDownVector,
-                                     long* pUpVector)
+                                     long upperB)
 {
   Pair sms;
 
@@ -172,7 +173,7 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
 
   // The vectors in the publication accepts negative indexes.
   // The vectors implemented here are 0-based and are access using
-  // a specific offset: UpOffset pUpVector and DownOffset for
+  // a specific offset: UpOffset m_pUpVector and DownOffset for
   // DownVector
   long downOffset = m_Max - downK;
   long upOffset = m_Max - upK;
@@ -180,8 +181,8 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
   long maxD = ((upperA - lowerA + upperB - lowerB) / 2) + 1;
 
   // init vectors
-  pDownVector[downOffset + downK + 1] = lowerA;
-  pUpVector[upOffset + upK - 1] = upperA;
+  m_pDownVector[downOffset + downK + 1] = lowerA;
+  m_pUpVector[upOffset + upK - 1] = upperA;
 
   for (long D = 0; D <= maxD; D++)
   {
@@ -193,15 +194,15 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
       long x, y;
       if (k == downK - D)
       {
-        x = pDownVector[downOffset + k + 1]; // down
+        x = m_pDownVector[downOffset + k + 1]; // down
       }
       else
       {
-        x = pDownVector[downOffset + k - 1] + 1; // a step to the right
+        x = m_pDownVector[downOffset + k - 1] + 1; // a step to the right
 
-        if ((k < downK + D) && (pDownVector[downOffset + k + 1] >= x))
+        if ((k < downK + D) && (m_pDownVector[downOffset + k + 1] >= x))
         {
-          x = pDownVector[downOffset + k + 1]; // down
+          x = m_pDownVector[downOffset + k + 1]; // down
         }
       }
       y = x - k;
@@ -215,15 +216,15 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
         y++;
       }
 
-      pDownVector[downOffset + k] = x;
+      m_pDownVector[downOffset + k] = x;
 
       // overlap ?
       if (oddDelta && (upK - D < k) && (k < upK + D))
       {
-        if (pUpVector[upOffset + k] <= pDownVector[downOffset + k])
+        if (m_pUpVector[upOffset + k] <= m_pDownVector[downOffset + k])
         {
-          sms.Set(pDownVector[downOffset + k],
-                  pDownVector[downOffset + k] - k);
+          sms.Set(m_pDownVector[downOffset + k],
+                  m_pDownVector[downOffset + k] - k);
 
           return sms;
         }
@@ -238,15 +239,15 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
       long x, y;
       if (k == upK + D)
       {
-        x = pUpVector[upOffset + k - 1]; // up
+        x = m_pUpVector[upOffset + k - 1]; // up
       }
       else
       {
-        x = pUpVector[upOffset + k + 1] - 1; // left
+        x = m_pUpVector[upOffset + k + 1] - 1; // left
 
-        if ((k > upK - D) && (pUpVector[upOffset + k - 1] < x))
+        if ((k > upK - D) && (m_pUpVector[upOffset + k - 1] < x))
         {
-          x = pUpVector[upOffset + k - 1]; // up
+          x = m_pUpVector[upOffset + k - 1]; // up
         }
       }
 
@@ -261,15 +262,15 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
         y--;
       }
 
-      pUpVector[upOffset + k] = x;
+      m_pUpVector[upOffset + k] = x;
 
       // overlap ?
       if (!oddDelta && (downK - D <= k) && (k <= downK + D))
       {
-        if (pUpVector[upOffset + k] <= pDownVector[downOffset + k])
+        if (m_pUpVector[upOffset + k] <= m_pDownVector[downOffset + k])
         {
-          sms.Set(pDownVector[downOffset + k],
-                  pDownVector[downOffset + k] - k);
+          sms.Set(m_pDownVector[downOffset + k],
+                  m_pDownVector[downOffset + k] - k);
 
           return sms;
         }
@@ -280,6 +281,6 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
   }
 
   // The algorithm should never come here
-  Pair nilPair;
-  return nilPair;
+  Pair smsNil;
+  return smsNil;
 }
