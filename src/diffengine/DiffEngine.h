@@ -22,13 +22,15 @@ class DiffEngine
 {
 
 public:
-  DiffEngine(bool& bCancelRequested);
+  DiffEngine(DiffFilePartition& a,
+             DiffFilePartition& b,
+             DiffFilePartition& aDiff,
+             DiffFilePartition& bDiff,
+             bool& bCancelRequested);
+
   ~DiffEngine();
 
-  bool Diff(DiffFilePartition& srcA,
-            DiffFilePartition& srcB,
-            DiffFilePartition& diffA,
-            DiffFilePartition& diffB);
+  bool Diff();
 
 
   /**
@@ -37,23 +39,25 @@ public:
   void SetProgressReporter(ProgressReporter* p_pProgressReporter);
 
 private:
+  DiffFilePartition& m_A;
+  DiffFilePartition& m_B;
+  DiffFilePartition& m_ADiff;
+  DiffFilePartition& m_BDiff;
   bool& m_bCancelRequested;
+
+
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
   long m_Max;
 
-  Pair shortestMiddleSnake(DiffFilePartition& a,
-                           long lowerA,
+  Pair shortestMiddleSnake(long lowerA,
                            long upperA,
-                           DiffFilePartition& b,
                            long lowerB,
                            long upperB,
                            long* pDownVector,
                            long* pUpVector);
 
-  void lcs(DiffFilePartition& a,
-           long lowerA,
+  void lcs(long lowerA,
            long upperA,
-           DiffFilePartition& b,
            long lowerB,
            long upperB,
            long* pDownVector,
