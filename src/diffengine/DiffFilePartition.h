@@ -41,18 +41,12 @@ public:
 
   bool PreProcess();
 
-  void AddString(const SimpleString& p_String, 
+  void AddString(const SimpleString& p_String,
                  DiffLine::LineState p_LineState);
 
   void AddString(const SimpleString& p_String);
 
   void AddBlankLine();
-
-  /**
-   * @brief
-   * When set to true, all index-based operations are done backwards.
-   */
-  void SetReversedMode(bool bReversed);
 
   /**
    * Setting the progress reporter
@@ -64,7 +58,6 @@ protected:
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 
 private:
-  bool m_bReversedMode;
   Array<SimpleString*> m_InputLinesArray;
   Array<DiffLine*> m_DiffLinesArray;
 };
