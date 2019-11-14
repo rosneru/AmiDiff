@@ -33,6 +33,7 @@ public:
 
   DiffLine* GetLine(size_t p_Index) const;
   const SimpleString& GetLineText(size_t p_Index) const;
+  unsigned long GetLineToken(size_t p_Index) const;
   DiffLine::LineState GetLineState(size_t p_Index) const;
   void SetLineState(size_t p_Index, DiffLine::LineState state);
 

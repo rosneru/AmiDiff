@@ -95,6 +95,17 @@ const SimpleString& DiffFilePartition::GetLineText(size_t p_Index) const
   return GetLine(p_Index)->Text();
 }
 
+unsigned long DiffFilePartition::GetLineToken(size_t p_Index) const
+{
+  size_t numLines = m_DiffLinesArray.Size();
+  if((numLines == 0) || (p_Index >= numLines))
+  {
+    return 0;
+  }
+
+  return GetLine(p_Index)->Token();
+}
+
 DiffLine::LineState DiffFilePartition::GetLineState(size_t p_Index) const
 {
   size_t numLines = m_DiffLinesArray.Size();
