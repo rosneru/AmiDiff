@@ -38,8 +38,8 @@ public:
                        DiffFilePartition& b,
                        long right,
                        long bottom,
-                       int* pDownVector,
-                       int* pUpVector);
+                       long* pDownVector,
+                       long* pUpVector);
 
   /**
    * Setting the progress reporter
@@ -53,18 +53,18 @@ private:
 
   Pair shortestMiddleSnake(DiffFilePartition& a, long lowerA, long upperA,
                            DiffFilePartition& b, long lowerB, long upperB,
-                           int* pDownVector, int* pUpVector);
+                           long* pDownVector, long* pUpVector);
 
-  bool midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b);
+//  bool midPair(Box& box, DiffFilePartition& a, DiffFilePartition& b);
 
-  bool forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
-  bool backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
+//  bool forwards(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
+//  bool backward(Box& box, int* vf, int* vb, int vSize, int d, DiffFilePartition& a, DiffFilePartition& b);
 
-  void buildDiff(int x1, int y1, int x2, int y2,
-                 DiffFilePartition& srcA,
-                 DiffFilePartition& srcB,
-                 DiffFilePartition& diffA,
-                 DiffFilePartition& diffB);
+//  void buildDiff(int x1, int y1, int x2, int y2,
+//                 DiffFilePartition& srcA,
+//                 DiffFilePartition& srcB,
+//                 DiffFilePartition& diffA,
+//                 DiffFilePartition& diffB);
 
 };
 
