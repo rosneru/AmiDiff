@@ -2,55 +2,6 @@
 
 #include "DiffEngine.h"
 
-/**
- * @brief
- * Helper method!
- *
- * Convert the given index into a 'Ruby-like-array-index' in regards to
- * the target-array's dimension (from- and to-value).
- *
- * That means the target arrays index will not be exceeded or deceeded.
- * When due to exceeding the remaining 'id-portion' is added from the
- * start, when due to deceeding it's subtracted from the end.
- */
-inline size_t IdxConv(int idx, int arraySize)
-{
-  if(idx < 0)
-  {
-    if(idx + arraySize < 0)
-    {
-      int factor = -idx / arraySize;
-      idx = idx + factor * arraySize;
-    }
-
-    return arraySize + idx;
-  }
-
-  if(idx >= arraySize)
-  {
-    if(-idx + arraySize <= 0)
-    {
-      int factor = idx / arraySize;
-      idx = idx - factor * arraySize;
-    }
-
-    return idx;
-  }
-
-  return idx;
-}
-
-inline bool Between(long number, long min, long max)
-{
-  if((number < min) || (number > max))
-  {
-    return false;
-  }
-
-  return true;
-}
-
-
 DiffEngine::DiffEngine(bool& bCancelRequested)
   : m_bCancelRequested(bCancelRequested),
     m_pProgressReporter(NULL),
