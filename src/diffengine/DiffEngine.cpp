@@ -27,13 +27,13 @@ DiffEngine::~DiffEngine()
 
 bool DiffEngine::Diff()
 {
-  printf("\n\nNew diff starts..\n");
+  //printf("\n\nNew diff starts..\n");
 
   //
   // Set-up the progress reporting
   //
   const int NUM_NOTIFICATIONS = 20;
-  int numPositions = (m_A.NumLines() + m_B.NumLines()) / 2; // experimental factor
+  int numPositions = (int)(m_A.NumLines() + m_B.NumLines()) / 25.0; // experimental factor
   m_NotifyIncrement = numPositions / NUM_NOTIFICATIONS;
   m_PercentIncrement = (int)100.0 / NUM_NOTIFICATIONS;
   m_CurrentPosition = 0;
@@ -136,19 +136,6 @@ void DiffEngine::lcs(long lowerA,
                      long lowerB,
                      long upperB)
 {
-  //
-  // Notify
-  //
-  if((m_NotifyIncrement > 0)
-   &&(m_CurrentPosition > m_NextNotifyPosition))
-  {
-    m_Percent += m_PercentIncrement;
-    m_NextNotifyPosition += m_NotifyIncrement;
-    reportProgress(m_Percent);
-  }
-
-  m_CurrentPosition++;
-
   // Fast walkthrough equal lines at the start
   while((lowerA < upperA) && (lowerB < upperB)
      && (m_A.GetLine(lowerA)->Token() == m_B.GetLine(lowerB)->Token()))
@@ -187,47 +174,25 @@ void DiffEngine::lcs(long lowerA,
   }
 }
 
-void DiffEngine::optimize(DiffFilePartition& data)
-{
-  long dataLength = data.NumLines();
-  long startPos = 0;
-  long endPos = 0;
-
-  while(startPos < data.NumLines())
-  {
-    while((startPos < dataLength)
-       && (data.GetLineState(startPos) == DiffLine::Normal))  // normal
-    {
-      startPos++;
-    }
-
-    endPos = startPos;
-
-    while((endPos < dataLength)
-      && (data.GetLineState(startPos) != DiffLine::Normal)) // modified
-    {
-      endPos++;
-    }
-
-    if((endPos < dataLength)
-     && (data.GetLine(startPos)->Token() == data.GetLine(endPos)->Token()))
-    {
-      data.SetLineState(endPos, data.GetLine(startPos)->State());
-      data.SetLineState(startPos, DiffLine::Normal);
-    }
-    else
-    {
-      startPos = endPos;
-    }
-  }
-}
-
 
 Pair DiffEngine::shortestMiddleSnake(long lowerA,
                                      long upperA,
                                      long lowerB,
                                      long upperB)
 {
+  //
+  // Notify
+  //
+  if((m_NotifyIncrement > 0)
+   &&(m_CurrentPosition > m_NextNotifyPosition))
+  {
+    m_Percent += m_PercentIncrement;
+    m_NextNotifyPosition += m_NotifyIncrement;
+    reportProgress(m_Percent);
+  }
+
+  m_CurrentPosition++;
+
   Pair sms;
 
   // the k-line to start the forward search
@@ -352,9 +317,45 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
 }
 
 
+void DiffEngine::optimize(DiffFilePartition& data)
+{
+  long dataLength = data.NumLines();
+  long startPos = 0;
+  long endPos = 0;
+
+  while(startPos < data.NumLines())
+  {
+    while((startPos < dataLength)
+       && (data.GetLineState(startPos) == DiffLine::Normal))  // normal
+    {
+      startPos++;
+    }
+
+    endPos = startPos;
+
+    while((endPos < dataLength)
+      && (data.GetLineState(startPos) != DiffLine::Normal)) // modified
+    {
+      endPos++;
+    }
+
+    if((endPos < dataLength)
+     && (data.GetLine(startPos)->Token() == data.GetLine(endPos)->Token()))
+    {
+      data.SetLineState(endPos, data.GetLine(startPos)->State());
+      data.SetLineState(startPos, DiffLine::Normal);
+    }
+    else
+    {
+      startPos = endPos;
+    }
+  }
+}
+
+
 void DiffEngine::reportProgress(int progress)
 {
-  printf("%d..", progress);
+  //printf("%d..", progress);
   if(m_pProgressReporter != NULL)
   {
     m_pProgressReporter->notifyProgressChanged(progress);
