@@ -7,11 +7,8 @@
 /**
  * Represents a line in a Diff which contains of Text and a LineState.
  *
- * This is a port of Stephane Rodriguez source code on CodeProject:
+ * It originates from Stephane Rodriguez open diff implementation:
  * https://www.codeproject.com/Articles/3666/Diff-tool
- *
- * In 2005 he released an updated version:
- * http://www.arstdesign.com/articles/difftool.html
  *
  * @author Uwe Rosner
  * @date 28/09/2018

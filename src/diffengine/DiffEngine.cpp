@@ -27,14 +27,10 @@ DiffEngine::~DiffEngine()
 
 bool DiffEngine::Diff()
 {
-  //
   // Progress reporting
-  //
+  reportProgress(0);
 
-  if(m_pProgressReporter != NULL)
-  {
-    m_pProgressReporter->notifyProgressChanged(50);
-  }
+
 
   //
   // Calculate the Longest common subsequence
@@ -44,6 +40,9 @@ bool DiffEngine::Diff()
   m_pDownVector = new long[2 * m_Max + 2];
   m_pUpVector = new long[2 * m_Max + 2];
 
+  // While calculating the lcs the deleted lines in left file m_A are
+  // marked with DiffLine::Deleted and the inserted lines in right file
+  // m_b are marked with DiffLine::Added
   lcs(0, m_A.NumLines(), 0, m_B.NumLines());
 
   delete[] m_pUpVector;
@@ -52,8 +51,22 @@ bool DiffEngine::Diff()
   delete[] m_pDownVector;
   m_pDownVector = NULL;
 
+  // Progress reporting
+  reportProgress(90);
+
   //
-  // Calculate the target diff file partitions
+  // Optimizing the diffed src files for better diff-readability
+  //
+  optimize(m_A);
+  optimize(m_B);
+
+  // Progress reporting
+  reportProgress(95);
+
+  //
+  // Calculate the target DiffFilePartitions from src diff files.
+  // That means inserting of empty lines in one side when in other
+  // side are insertions or Deletions.
   //
 
   long lineA = 0;
@@ -94,13 +107,8 @@ bool DiffEngine::Diff()
     }
   }
 
-  //
   // Progress reporting
-  //
-  if(m_pProgressReporter != NULL)
-  {
-    m_pProgressReporter->notifyProgressChanged(100);
-  }
+  reportProgress(100);
 
   return true;
 }
@@ -156,6 +164,40 @@ void DiffEngine::lcs(long lowerA,
   }
 }
 
+void DiffEngine::optimize(DiffFilePartition& data)
+{
+  long dataLength = data.NumLines();
+  long startPos = 0;
+  long endPos = 0;
+
+  while(startPos < data.NumLines())
+  {
+    while((startPos < dataLength)
+       && (data.GetLineState(startPos) == DiffLine::Normal))  // normal
+    {
+      startPos++;
+    }
+
+    endPos = startPos;
+
+    while((endPos < dataLength)
+      && (data.GetLineState(startPos) != DiffLine::Normal)) // modified
+    {
+      endPos++;
+    }
+
+    if((endPos < dataLength)
+     && (data.GetLine(startPos)->Token() == data.GetLine(endPos)->Token()))
+    {
+      data.SetLineState(endPos, data.GetLine(startPos)->State());
+      data.SetLineState(startPos, DiffLine::Normal);
+    }
+    else
+    {
+      startPos = endPos;
+    }
+  }
+}
 
 
 Pair DiffEngine::shortestMiddleSnake(long lowerA,
@@ -283,4 +325,13 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
   // The algorithm should never come here
   Pair smsNil;
   return smsNil;
+}
+
+
+void DiffEngine::reportProgress(int progress)
+{
+  if(m_pProgressReporter != NULL)
+  {
+    m_pProgressReporter->notifyProgressChanged(progress);
+  }
 }
