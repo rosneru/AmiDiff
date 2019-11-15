@@ -25,9 +25,9 @@ public:
   bool IsNil() const;
 
 private:
-  bool m_bNil;
   long m_Left;
   long m_Top;
+  bool m_bNil;
 };
 
 #endif

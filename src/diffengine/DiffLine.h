@@ -50,9 +50,9 @@ public:
   unsigned long Token() const;
 
 protected:
-  unsigned long m_Token;
-  LineState m_LineState;
   SimpleString m_LineText;
+  LineState m_LineState;
+  unsigned long m_Token;
 };
 
 #endif
