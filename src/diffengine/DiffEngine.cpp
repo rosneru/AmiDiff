@@ -250,6 +250,7 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
           x = m_pDownVector[downOffset + k + 1]; // down
         }
       }
+
       y = x - k;
 
       // find the end of the furthest reaching forward D-path in diagonal k.
@@ -274,7 +275,6 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
           return sms;
         }
       }
-
     }
 
     // Extend the reverse path.
