@@ -1,37 +1,42 @@
 #include "MessageBox.h"
 #include "DiffWorker.h"
 
-DiffWorker::DiffWorker(SimpleString& p_LeftFilePath,
-                       SimpleString& p_RightFilePath,
-                       DiffWindow& p_DiffWindow,
-                       FilesWindow& p_FilesWindow,
-                       ProgressWindow& p_ProgressWindow,
-                       struct MsgPort* p_pProgressPort,
-                       bool& p_bCancelRequested,
-                       bool& p_bExitAllowed)
-  : BackgroundWorker(p_pProgressPort),
-    m_LeftFilePath(p_LeftFilePath),
-    m_RightFilePath(p_RightFilePath),
-    m_DiffWindow(p_DiffWindow),
-    m_FilesWindow(p_FilesWindow),
-    m_ProgressWindow(p_ProgressWindow),
+DiffWorker::DiffWorker(SimpleString& leftFilePath,
+                       SimpleString& rightFilePath,
+                       DiffWindow& diffWindow,
+                       FilesWindow& filesWindow,
+                       ProgressWindow& progressWindow,
+                       struct MsgPort* pProgressPort,
+                       bool& bCancelRequested,
+                       bool& bExitAllowed)
+  : BackgroundWorker(pProgressPort),
+    m_LeftFilePath(leftFilePath),
+    m_RightFilePath(rightFilePath),
+    m_DiffWindow(diffWindow),
+    m_FilesWindow(filesWindow),
+    m_ProgressWindow(progressWindow),
     m_ProgressOffset(0),
-    m_bCancelRequested(p_bCancelRequested),
-    m_bExitAllowed(p_bExitAllowed),
+    m_bCancelRequested(bCancelRequested),
+    m_bExitAllowed(bExitAllowed),
     m_pLeftDiffDocument(NULL),
     m_pRightDiffDocument(NULL),
     m_LeftSrcPartition(m_bCancelRequested),
     m_RightSrcPartition(m_bCancelRequested),
     m_LeftDiffPartition(m_bCancelRequested),
     m_RightDiffPartition(m_bCancelRequested),
-    m_DiffEngine(m_bCancelRequested)
+    m_DiffEngine(m_LeftSrcPartition,
+                 m_RightSrcPartition,
+                 m_LeftDiffPartition,
+                 m_RightDiffPartition,
+                 m_bCancelRequested)
 {
+
   //
-  // Registering *this* as receiver for progress messages for some 
+  // Registering *this* as receiver for progress messages for some
   // objects.
   //
-  // NOTE *this* is a BackgroundWorker who forwards these messages to 
-  //      the intuition event loop which eventually displays the 
+  // NOTE *this* is a BackgroundWorker who forwards these messages to
+  //      the intuition event loop which eventually displays the
   //      progress in a window.
   //
   m_LeftSrcPartition.SetProgressReporter(this);
@@ -124,12 +129,8 @@ bool DiffWorker::Diff()
   // Comparing the files
   //
   setProgressDescription("Comparing the files..");
-
-  bool diffOk = m_DiffEngine.Diff(
-    m_LeftSrcPartition, m_RightSrcPartition,
-    m_LeftDiffPartition, m_RightDiffPartition);
-
-  long timeSummary = static_cast<long>(m_StopWatch.Stop());
+  bool diffOk = m_DiffEngine.Diff();
+  long timeSummary = static_cast<long>(m_StopWatch.Pick());
 
   // If there was an error return to FilesWindow
   if(!diffOk)
@@ -151,13 +152,13 @@ bool DiffWorker::Diff()
   int leftNumAdded;
   int leftNumChanged;
   int leftNumDeleted;
-  m_LeftDiffPartition.NumChanges(leftNumAdded, leftNumChanged, 
+  m_LeftDiffPartition.NumChanges(leftNumAdded, leftNumChanged,
                                  leftNumDeleted);
 
   int rightNumAdded;
   int rightNumChanged;
   int rightNumDeleted;
-  m_RightDiffPartition.NumChanges(rightNumAdded, rightNumChanged, 
+  m_RightDiffPartition.NumChanges(rightNumAdded, rightNumChanged,
                                   rightNumDeleted);
 
   // If there are no changes return to FilesWindow
@@ -223,7 +224,7 @@ void DiffWorker::doWork()
   Diff();
 }
 
-void DiffWorker::notifyProgressChanged(int p_Progress)
+void DiffWorker::notifyProgressChanged(int progress)
 {
   //
   // Reporting the 3 stages of diff-progress (preprocessing left file,
@@ -231,28 +232,28 @@ void DiffWorker::notifyProgressChanged(int p_Progress)
   // and 66%..100%.
   //
 
-  if(p_Progress == 100)
+  if(progress == 100)
   {
     if(m_ProgressOffset == 0)
     {
       m_ProgressOffset = 33;
-      p_Progress = 0;
+      progress = 0;
     }
     else if(m_ProgressOffset == 33)
     {
       m_ProgressOffset = 66;
-      p_Progress = 0;
+      progress = 0;
     }
     else if(m_ProgressOffset == 66)
     {
       m_ProgressOffset = 0;
-      p_Progress = -1;
+      progress = -1;
     }
   }
   else
   {
-    p_Progress = p_Progress / 3 + 1;
+    progress = progress / 3 + 1;
   }
 
-  BackgroundWorker::notifyProgressChanged(m_ProgressOffset + p_Progress);
+  BackgroundWorker::notifyProgressChanged(m_ProgressOffset + progress);
 }

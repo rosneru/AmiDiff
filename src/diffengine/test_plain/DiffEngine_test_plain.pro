@@ -5,22 +5,20 @@ CONFIG -= qt
 
 QMAKE_CXXFLAGS += -std=c++11 -Wall -Wconversion -Wextra -pedantic #-Weffc++
 
-LIBS += -lncurses \
-        -lboost_unit_test_framework \
-
 INCLUDEPATH +=  ../ \
                 ../../thread \
                 ../../oscottlibs
 
 SOURCES += \
-    DiffEngine_test.cpp \
+    DiffEngine_test_plain.cpp \
     ../DiffEngine.cpp \
     ../DiffFilePartition.cpp \
     ../DiffLine.cpp \
     ../../oscottlibs/LinkedList.cpp \
     ../../oscottlibs/LinkedListNode.cpp \
     ../../oscottlibs/SimpleString.cpp \
-    ../DiffFilePartitionLinux.cpp
+    ../DiffFilePartitionLinux.cpp \
+    ../Pair.cpp \
 
 
 HEADERS += \
@@ -31,4 +29,5 @@ HEADERS += \
     ../../oscottlibs/LinkedListNode.h \
     ../../oscottlibs/SimpleString.h \
     ../DiffFilePartitionLinux.h \
-    ../../oscottlibs/Array.h
+    ../../oscottlibs/Array.h \
+    ../Pair.h \

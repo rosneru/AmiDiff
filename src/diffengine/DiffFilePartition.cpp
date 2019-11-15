@@ -37,8 +37,8 @@ long DiffFilePartition::NumLines() const
   return m_DiffLinesArray.Size();
 }
 
-void DiffFilePartition::NumChanges(int& p_Added, 
-                                   int& p_Changed, 
+void DiffFilePartition::NumChanges(int& p_Added,
+                                   int& p_Changed,
                                    int& p_Deleted) const
 {
   p_Added = p_Changed = p_Deleted = 0;
@@ -50,7 +50,7 @@ void DiffFilePartition::NumChanges(int& p_Added,
   for(int i = 0; i < NumLines(); i++)
   {
 
-    DiffLine::LineState lineState = GetDiffLineState(i);
+    DiffLine::LineState lineState = GetLineState(i);
     switch(lineState)
     {
       case DiffLine::Added: p_Added++; break;
@@ -64,9 +64,10 @@ void DiffFilePartition::NumChanges(int& p_Added,
   }
 }
 
-const DiffLine* DiffFilePartition::GetDiffLine(size_t p_Index) const
+DiffLine* DiffFilePartition::GetLine(size_t p_Index) const
 {
-  if(p_Index >= m_DiffLinesArray.Size())
+  size_t numLines = m_DiffLinesArray.Size();
+  if((numLines == 0) || (p_Index >= numLines))
   {
     return NULL;
   }
@@ -74,32 +75,54 @@ const DiffLine* DiffFilePartition::GetDiffLine(size_t p_Index) const
   return m_DiffLinesArray[p_Index];
 }
 
+
 static const SimpleString emptyStr = "";
 
-const SimpleString& DiffFilePartition::GetDiffLineText(size_t p_Index) const
+const SimpleString& DiffFilePartition::GetLineText(size_t p_Index) const
 {
-  if(m_DiffLinesArray.IsEmpty()|| p_Index >= m_DiffLinesArray.Size())
+  size_t numLines = m_DiffLinesArray.Size();
+  if((numLines == 0) || (p_Index >= numLines))
   {
     return emptyStr;
   }
 
-  return GetDiffLine(p_Index)->Text();
+  return GetLine(p_Index)->Text();
 }
 
-DiffLine::LineState DiffFilePartition::GetDiffLineState(size_t p_Index) const
+unsigned long DiffFilePartition::GetLineToken(size_t p_Index) const
 {
-  if(m_DiffLinesArray.IsEmpty() || p_Index >= m_DiffLinesArray.Size())
+  DiffLine* pLine = GetLine(p_Index);
+  if(pLine == NULL)
+  {
+    return 0;
+  }
+
+  return GetLine(p_Index)->Token();
+}
+
+DiffLine::LineState DiffFilePartition::GetLineState(size_t p_Index) const
+{
+  size_t numLines = m_DiffLinesArray.Size();
+  if((numLines == 0) || (p_Index >= numLines))
   {
     return DiffLine::Undefined;
   }
 
-  return GetDiffLine(p_Index)->State();
+  return GetLine(p_Index)->State();
 }
 
-Array<unsigned long>& DiffFilePartition::TokensList()
+void DiffFilePartition::SetLineState(size_t p_Index, DiffLine::LineState state)
 {
-  return m_TokensArray;
+  DiffLine* pDiffLine = GetLine(p_Index);
+  if(pDiffLine == NULL)
+  {
+    // TODO Maybe change method to type bool and return false
+    return;
+  }
+
+  pDiffLine->SetState(state);
 }
+
 
 bool DiffFilePartition::PreProcess()
 {
@@ -116,94 +139,29 @@ bool DiffFilePartition::PreProcess()
   return true;
 }
 
-bool DiffFilePartition::MatchLine(long i1, 
-                                  DiffFilePartition& p_OtherFile, 
-                                  long& i2)
-{
-  if(m_TokensArray.Size() == 0)
-  {
-    return false;
-  }
 
-  if((i1 < 0 ) || (i1 > NumLines()))
-  {
-    return false;
-  }
-
-  unsigned long* otherFileTokenArray = p_OtherFile.TokensList().Data();
-  if(otherFileTokenArray == NULL)
-  {
-    return false;
-  }
-
-  const SimpleString lineThisFile = GetDiffLine(i1)->Text();
-
-  bool bFound = false;
-  long i = 0;
-  long otherFileSubsetLines = p_OtherFile.NumLines() - i2;
-
-  unsigned long* pOtherFileToken = otherFileTokenArray + i2;
-
-  while(!bFound && i < otherFileSubsetLines)
-  {
-    if(m_TokensArray[i1] == *pOtherFileToken)  // Fast compare
-    {
-      // Make sure strings really match
-      const SimpleString lineOtherFile = 
-        p_OtherFile.GetDiffLine(i2 + i)->Text();
-      
-      bFound = (lineThisFile == lineOtherFile);
-    }
-
-    pOtherFileToken++;
-    i++;
-    if(pOtherFileToken == NULL)
-    {
-      break;
-    }
-  }
-
-  i--;
-
-  if(bFound)
-  {
-    i2 += i;
-    return true;
-  }
-
-  return false;
-}
-
-void DiffFilePartition::AddString(const SimpleString& p_String, 
+void DiffFilePartition::AddString(const SimpleString& p_String,
                                   DiffLine::LineState p_LineState)
 {
-  DiffLine* pDiffLine = new DiffLine();
+  DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
   if(pDiffLine == NULL)
   {
     return;
   }
 
-  pDiffLine->SetLine(p_String, p_LineState);
   m_DiffLinesArray.Push(pDiffLine);
 }
 
 void DiffFilePartition::AddString(const SimpleString& p_String)
 {
-  DiffLine* pDiffLine = new DiffLine();
+  DiffLine* pDiffLine = new DiffLine(p_String);
   if(pDiffLine == NULL)
   {
     return;
   }
 
-  // Set string in DiffLine gets us the token
-  unsigned long token = pDiffLine->SetLine(p_String);
-
-  // Append token to list
-  m_TokensArray.Push(token);
-
   // Append DiffLine to list
   m_DiffLinesArray.Push(pDiffLine);
-
 }
 
 void DiffFilePartition::AddBlankLine()

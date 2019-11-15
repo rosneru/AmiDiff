@@ -51,7 +51,7 @@ Defines (End)
 1 0 0 1 0
 3 0 0 0 1 1 0
 0 2 1 0 0
-0 0 1 0 1 0 0
+0 0 0 0 1 1 0
 0 0 0 0
 0 ""
 2 0 0 0
@@ -78,7 +78,7 @@ Linker
 Run
 30 "" "" "" 0
 ""
-/testfiles/testcase_10_left.txt /testfiles/testcase_10_right.txt
+/testfiles/testcase_13_6000_left.cpp /testfiles/testcase_13_6000_right.cpp
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 0 0
 0 0 0 "" ""
@@ -144,6 +144,7 @@ File
 "model/TextDocument.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -163,6 +164,7 @@ File
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
 "thread/ProgressReporter.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
 ""
@@ -192,6 +194,7 @@ File
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
 ""
@@ -231,6 +234,7 @@ File
 "diffengine/DiffLine.h"
 "oscottlibs/LinkedListNode.h"
 "diffengine/DiffFilePartition.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffEngine.o" "objects_debug/DiffEngine.debug"
 ""
@@ -263,6 +267,14 @@ File
 "oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffLine.o" "objects_debug/DiffLine.debug"
+""
+1 1
+File
+1 "diffengine/Pair.cpp"
+"diffengine/Pair.cpp"
+"diffengine/Pair.h"
+Storm Shell Project (Dependencies)
+"objects_debug/Pair.o" "objects_debug/Pair.debug"
 ""
 1 1
 File
@@ -385,6 +397,7 @@ File
 "model/TextDocument.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -551,6 +564,13 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "diffengine/Pair.h"
+"diffengine/Pair.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "gui/AmigaDiffPens.h"
 "gui/AmigaDiffPens.h"
 Storm Shell Project (Dependencies)
@@ -644,13 +664,6 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "oscottlibs/LinkedListNode.h"
-"oscottlibs/LinkedListNode.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
 2 "oscottlibs/SimpleString.h"
 "oscottlibs/SimpleString.h"
 Storm Shell Project (Dependencies)
@@ -691,7 +704,6 @@ Section
 7
 File
 10 "ADiffView"
-"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

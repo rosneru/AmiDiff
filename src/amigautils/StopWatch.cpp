@@ -5,7 +5,8 @@
 struct Device* TimerBase = NULL;
 
 StopWatch::StopWatch()
-  : m_pMsgPort(NULL),
+  : m_ClocksPerSecond(0),
+    m_pMsgPort(NULL),
     m_pIORequest(NULL),
     m_bInitialized(false)
 {
@@ -74,8 +75,8 @@ void StopWatch::Start()
   m_ClocksPerSecond = ReadEClock(&m_StartClock);
 }
 
-// stoppt Zeitmessung und liefert das Ergebnis in Millisekunden
-double StopWatch::Stop()
+
+double StopWatch::Pick(bool p_bKeepStartPoint)
 {
   if(m_bInitialized == false)
   {
@@ -94,7 +95,10 @@ double StopWatch::Stop()
   double seconds = m_StopClock.ev_lo - m_StartClock.ev_lo;
   seconds /= (double)m_ClocksPerSecond;
 
-  m_ClocksPerSecond = 0;
+  if(p_bKeepStartPoint == false)
+  {
+    ReadEClock(&m_StartClock);
+  }
 
   // Returning the elapsed time in milliseconds
   return seconds * 1000.0;
