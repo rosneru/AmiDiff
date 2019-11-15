@@ -29,7 +29,15 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
   int i = 0;
   while((pLine = file.ReadLine()) != NULL)
   {
-	  AddString(pLine);
+    DiffLine* pDiffLine = new DiffLine(pLine);
+    if(pDiffLine == NULL)
+    {
+      break;
+    }
+
+    // Append DiffLine to list
+    m_DiffLinesArray.Push(pDiffLine);
+
 	  i++;
 
     //

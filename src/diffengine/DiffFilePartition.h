@@ -34,14 +34,8 @@ public:
   DiffLine::LineState GetLineState(size_t p_Index) const;
   void SetLineState(size_t p_Index, DiffLine::LineState state);
 
-
-
-//  bool PreProcess();
-
   void AddString(const SimpleString& p_String,
                  DiffLine::LineState p_LineState);
-
-  void AddString(const char* pString);
 
   void AddBlankLine();
 
@@ -52,10 +46,7 @@ public:
 
 protected:
   bool& m_bCancelRequested;
-  ProgressReporter* m_pProgressReporter;  ///> for progress reporting
-
-private:
-  Array<SimpleString*> m_InputLinesArray;
+  ProgressReporter* m_pProgressReporter;
   Array<DiffLine*> m_DiffLinesArray;
 };
 

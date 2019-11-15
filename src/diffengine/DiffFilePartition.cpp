@@ -152,17 +152,10 @@ void DiffFilePartition::AddString(const SimpleString& p_String,
   m_DiffLinesArray.Push(pDiffLine);
 }
 
-void DiffFilePartition::AddString(const char* pString)
-{
-  DiffLine* pDiffLine = new DiffLine(pString);
-  if(pDiffLine == NULL)
-  {
-    return;
-  }
+//void DiffFilePartition::AddString(const char* pString)
+//{
 
-  // Append DiffLine to list
-  m_DiffLinesArray.Push(pDiffLine);
-}
+//}
 
 void DiffFilePartition::AddBlankLine()
 {

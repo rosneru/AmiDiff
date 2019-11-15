@@ -27,7 +27,15 @@ bool DiffFilePartitionLinux::PreProcess(const SimpleString& p_FileName)
   std::string line;
   while(getline(inputFileStream, line))
   {
-    AddString(line.c_str());
+    DiffLine* pDiffLine = new DiffLine(line.c_str());
+    if(pDiffLine == NULL)
+    {
+      break;
+    }
+
+    // Append DiffLine to list
+    m_DiffLinesArray.Push(pDiffLine);
+
   }
 
   inputFileStream.close();
