@@ -207,16 +207,19 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
 {
   Pair sms;
 
-  long downK = lowerA - lowerB; // the k-line to start the forward search
-  long upK = upperA - upperB; // the k-line to start the reverse search
+  // the k-line to start the forward search
+  long downK = lowerA - lowerB;
+
+  // the k-line to start the reverse search
+  long upK = upperA - upperB;
 
   long delta = (upperA - lowerA) - (upperB - lowerB);
   bool oddDelta = (delta & 1) != 0;
 
-  // The vectors in the publication accepts negative indexes.
-  // The vectors implemented here are 0-based and are access using
-  // a specific offset: UpOffset m_pUpVector and DownOffset for
-  // DownVector
+  // The vectors in the E. Myers publication accept negative indexes.
+  // The vectors implemented here are 0-based and are accessed using
+  // a specific offset: UpOffset for m_pUpVector and DownOffset for
+  // m_pDownVector
   long downOffset = m_Max - downK;
   long upOffset = m_Max - upK;
 
@@ -318,7 +321,6 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
         }
       }
     }
-
   }
 
   // The algorithm should never come here
