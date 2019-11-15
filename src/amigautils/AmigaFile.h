@@ -106,6 +106,8 @@ public:
    */
   bool ReadLine(SimpleString& p_Line);
 
+  char* ReadLine();
+
   /**
    * Setting the progress reporter
    */

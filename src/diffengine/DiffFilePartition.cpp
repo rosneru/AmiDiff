@@ -124,20 +124,20 @@ void DiffFilePartition::SetLineState(size_t p_Index, DiffLine::LineState state)
 }
 
 
-bool DiffFilePartition::PreProcess()
-{
-  int i = 0;
-  SimpleString* pSrcLine = m_InputLinesArray[i];
-  while(pSrcLine != NULL)
-  {
-    AddString(*pSrcLine);
+//bool DiffFilePartition::PreProcess()
+//{
+//  int i = 0;
+//  SimpleString* pSrcLine = m_InputLinesArray[i];
+//  while(pSrcLine != NULL)
+//  {
+//    AddString(*pSrcLine);
 
-    pSrcLine = m_InputLinesArray[i];
-    i++;
-  }
+//    pSrcLine = m_InputLinesArray[i];
+//    i++;
+//  }
 
-  return true;
-}
+//  return true;
+//}
 
 
 void DiffFilePartition::AddString(const SimpleString& p_String,
@@ -152,9 +152,9 @@ void DiffFilePartition::AddString(const SimpleString& p_String,
   m_DiffLinesArray.Push(pDiffLine);
 }
 
-void DiffFilePartition::AddString(const SimpleString& p_String)
+void DiffFilePartition::AddString(const char* pString)
 {
-  DiffLine* pDiffLine = new DiffLine(p_String);
+  DiffLine* pDiffLine = new DiffLine(pString);
   if(pDiffLine == NULL)
   {
     return;

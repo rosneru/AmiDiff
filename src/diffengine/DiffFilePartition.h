@@ -36,12 +36,12 @@ public:
 
 
 
-  bool PreProcess();
+//  bool PreProcess();
 
   void AddString(const SimpleString& p_String,
                  DiffLine::LineState p_LineState);
 
-  void AddString(const SimpleString& p_String);
+  void AddString(const char* pString);
 
   void AddBlankLine();
 

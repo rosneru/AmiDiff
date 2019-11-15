@@ -2,7 +2,6 @@
 #define DIFF_FILE_PARTITION_LINUX_H
 
 #include "DiffFilePartition.h"
-#include "SimpleString.h"
 
 /**
  * Extends the DiffFilePartition::PreProcess with Linux file loading 

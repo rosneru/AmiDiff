@@ -25,11 +25,11 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
     numLines = file.CountLines();
   }
 
-  SimpleString line;
+  char* pLine = NULL;
   int i = 0;
-  while(file.ReadLine(line))
+  while((pLine = file.ReadLine()) != NULL)
   {
-	  AddString(line);
+	  AddString(pLine);
 	  i++;
 
     //

@@ -181,6 +181,17 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
 
 bool AmigaFile::ReadLine(SimpleString& p_Line)
 {
+  if(ReadLine() == NULL)
+  {
+    return false;
+  }
+
+  p_Line = m_pLineBuf;
+  return true;
+}
+
+char* AmigaFile::ReadLine()
+{
   if(m_pFile == NULL)
   {
     // File not opened
@@ -191,7 +202,7 @@ bool AmigaFile::ReadLine(SimpleString& p_Line)
 
   if(FGets(m_pFile, m_pLineBuf, readBufSize) == NULL)
   {
-    return false;
+    return NULL;
   }
 
   for(size_t i = 0; i < readBufSize; i++)
@@ -204,8 +215,7 @@ bool AmigaFile::ReadLine(SimpleString& p_Line)
     }
   }
 
-  p_Line = m_pLineBuf;
-  return true;
+  return m_pLineBuf;
 }
 
 void AmigaFile::SetProgressReporter(ProgressReporter* p_pProgressReporter)
