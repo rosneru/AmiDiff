@@ -317,7 +317,6 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
           return sms;
         }
       }
-
     }
 
   }
