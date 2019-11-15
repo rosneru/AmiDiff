@@ -27,22 +27,32 @@ DiffEngine::~DiffEngine()
 
 bool DiffEngine::Diff()
 {
-  // Progress reporting
+  printf("\n\nNew diff starts..\n");
+
+  //
+  // Set-up the progress reporting
+  //
+  const int NUM_NOTIFICATIONS = 20;
+  int numPositions = (m_A.NumLines() + m_B.NumLines()) / 2; // experimental factor
+  m_NotifyIncrement = numPositions / NUM_NOTIFICATIONS;
+  m_PercentIncrement = (int)100.0 / NUM_NOTIFICATIONS;
+  m_CurrentPosition = 0;
+  m_NextNotifyPosition = m_NotifyIncrement;
+  m_Percent = 0;
   reportProgress(0);
 
-
-
   //
-  // Calculate the Longest common subsequence
+  // Calculate some needed values
   //
-
   m_Max = m_A.NumLines() + m_B.NumLines() + 1;
   m_pDownVector = new long[2 * m_Max + 2];
   m_pUpVector = new long[2 * m_Max + 2];
 
-  // While calculating the lcs the deleted lines in left file m_A are
-  // marked with DiffLine::Deleted and the inserted lines in right file
-  // m_b are marked with DiffLine::Added
+  //
+  // Calculate the Longest common subsequence
+  //   While calculating the lcs the deleted lines in left file m_A are
+  //   marked with DiffLine::Deleted and the inserted lines in right
+  //   file m_b are marked with DiffLine::Added
   lcs(0, m_A.NumLines(), 0, m_B.NumLines());
 
   delete[] m_pUpVector;
@@ -126,6 +136,19 @@ void DiffEngine::lcs(long lowerA,
                      long lowerB,
                      long upperB)
 {
+  //
+  // Notify
+  //
+  if((m_NotifyIncrement > 0)
+   &&(m_CurrentPosition > m_NextNotifyPosition))
+  {
+    m_Percent += m_PercentIncrement;
+    m_NextNotifyPosition += m_NotifyIncrement;
+    reportProgress(m_Percent);
+  }
+
+  m_CurrentPosition++;
+
   // Fast walkthrough equal lines at the start
   while((lowerA < upperA) && (lowerB < upperB)
      && (m_A.GetLine(lowerA)->Token() == m_B.GetLine(lowerB)->Token()))
@@ -331,6 +354,7 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
 
 void DiffEngine::reportProgress(int progress)
 {
+  printf("%d..", progress);
   if(m_pProgressReporter != NULL)
   {
     m_pProgressReporter->notifyProgressChanged(progress);

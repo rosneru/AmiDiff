@@ -87,6 +87,14 @@ private:
   long* m_pDownVector;
   long* m_pUpVector;
 
+  // The next five fields are for progress notification
+  int m_Percent;
+  int m_PercentIncrement;
+  int m_NotifyIncrement;
+  long m_CurrentPosition;
+  long m_NextNotifyPosition;
+
+
   /**
    * The divide-and-conquer implementation of the longest-common-
    * subsequence (LCS) algorithm. The published algorithm passes

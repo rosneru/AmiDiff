@@ -11,7 +11,6 @@ int main()
 {
   bool cancelRequested = false;
   bool diffOk = false;
-  DiffEngine diffEngine(cancelRequested);
 
   DiffFilePartitionLinux srcA(cancelRequested);
   srcA.PreProcess("../../../testfiles/testcase_13_6000_left.cpp");
@@ -22,7 +21,8 @@ int main()
   DiffFilePartition targetA(cancelRequested);
   DiffFilePartition targetB(cancelRequested);
 
-  diffOk = diffEngine.Diff(srcA, srcB, targetA, targetB);
+  DiffEngine diffEngine(srcA, srcB, targetA, targetB, cancelRequested);
+  diffOk = diffEngine.Diff();
   
   if(!diffOk)
   {
