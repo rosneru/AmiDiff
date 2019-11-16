@@ -58,12 +58,12 @@ bool BackgroundWorker::Run()
 
 void BackgroundWorker::startup()
 {
-  struct Process* proc = (struct Process *)FindTask(NULL);
+  struct Process* pProcess = (struct Process *)FindTask(NULL);
 
-  WaitPort(&proc->pr_MsgPort);
+  WaitPort(&pProcess->pr_MsgPort);
 
   struct WorkerStartupMsg* pStartupMsg = (struct WorkerStartupMsg*)
-    GetMsg(&proc->pr_MsgPort);
+    GetMsg(&pProcess->pr_MsgPort);
 
   if((pStartupMsg == NULL) || (pStartupMsg->that == NULL))
   {
