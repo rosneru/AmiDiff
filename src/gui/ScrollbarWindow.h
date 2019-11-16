@@ -6,7 +6,6 @@
 
 #include "AppScreen.h"
 #include "SimpleString.h"
-#include "TextDocument.h"
 #include "WindowBase.h"
 
 /**

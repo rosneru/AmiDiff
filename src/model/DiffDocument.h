@@ -4,7 +4,7 @@
 #include "DiffFilePartition.h"
 #include "DiffLine.h"
 #include "SimpleString.h"
-#include "TextDocument.h"
+#include "Document.h"
 
 class DiffDocument : public Document
 {

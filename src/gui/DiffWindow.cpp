@@ -460,8 +460,8 @@ void DiffWindow::paintDocument(bool  p_bDisplayFromStart)
       break;
     }
 
-    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
-    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
+    const DiffLine* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
+    const DiffLine* pRightLine = m_pRightDocument->GetIndexedLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -472,43 +472,45 @@ void DiffWindow::paintDocument(bool  p_bDisplayFromStart)
   }
 }
 
-void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
-    const SimpleString* p_pRightLine, WORD p_TopEdge,
-    int p_StartCharIndex, int p_NumChars)
+void DiffWindow::paintLine(const DiffLine* pLeftLine,
+                           const DiffLine* pRightLine, 
+                           WORD topEdge,
+                           int startIndex, 
+                           int numChars)
 {
   size_t indent = 0;
 
-  if(p_StartCharIndex < 0)
+  if(startIndex < 0)
   {
-    p_StartCharIndex = m_X;
+    startIndex = m_X;
   }
 
-  if(p_NumChars < 0)
+  if(numChars < 0)
   {
-    // A negative p_NumChars means that the text is to be inserted
+    // A negative numChars means that the text is to be inserted
     // right-adjusted. So here an indent for the text is calculated
-    // and p_NumChars is made positive to get used below.
-    p_NumChars = -p_NumChars;
-    indent = (m_MaxTextAreaChars - p_NumChars) * m_TextFontWidth_pix;
+    // and numChars is made positive to get used below.
+    numChars = -numChars;
+    indent = (m_MaxTextAreaChars - numChars) * m_TextFontWidth_pix;
   }
 
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
     m_TextArea1Left + 3 + indent,
-    p_TopEdge + m_TextAreasTop + m_TextFontHeight_pix);
+    topEdge + m_TextAreasTop + m_TextFontHeight_pix);
 
   // Set the left line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pLeftDocument->LineColor()));
 
   int numChars = 0;
-  if(p_NumChars > 0)
+  if(numChars > 0)
   {
-    numChars = p_NumChars;
+    numChars = numChars;
   }
   else
   {
     // Determine how many characters would be print theoretically
-    numChars = p_pLeftLine->Length() - m_X;
+    numChars = pLeftLine->Length() - m_X;
   }
 
   // Limit the number of printed chars to fit into the text area
@@ -519,17 +521,17 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
 
   // When p_StartChar is set: limit the number of printed chars to not
   // exceed the line length
-  if((p_StartCharIndex > -1) &&
-     (numChars + p_StartCharIndex > p_pLeftLine->Length()))
+  if((startIndex > -1) &&
+     (numChars + startIndex > pLeftLine->Length()))
   {
-    numChars = p_pLeftLine->Length() - p_StartCharIndex;
+    numChars = pLeftLine->Length() - startIndex;
   }
 
   // Print the left line if is visible regarding current x scroll
   if(numChars > 0)
   {
     Text(m_pWindow->RPort,
-      p_pLeftLine->C_str() + p_StartCharIndex,
+      pLeftLine->C_str() + startIndex,
       numChars
     );
   }
@@ -537,21 +539,21 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
   // Move rastport cursor to start of right line
   ::Move(m_pWindow->RPort,
     m_TextArea2Left + 3  + indent,
-    p_TopEdge + m_TextAreasTop + m_TextFontHeight_pix
+    topEdge + m_TextAreasTop + m_TextFontHeight_pix
   );
 
   // Set the right line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pRightDocument->LineColor()));
 
   numChars = 0;
-  if(p_NumChars > 0)
+  if(numChars > 0)
   {
-    numChars = p_NumChars;
+    numChars = numChars;
   }
   else
   {
     // Determine how many characters would be print theoretically
-    numChars = p_pRightLine->Length() - m_X;
+    numChars = pRightLine->Length() - m_X;
   }
 
   // Limit the number of printed chars to fit into the text area
@@ -562,17 +564,17 @@ void DiffWindow::paintLine(const SimpleString* p_pLeftLine,
 
   // When p_StartChar is set: limit the number of printed chars to not
   // exceed the line length
-  if((p_StartCharIndex > -1) &&
-     (numChars + p_StartCharIndex > p_pRightLine->Length()))
+  if((startIndex > -1) &&
+     (numChars + startIndex > pRightLine->Length()))
   {
-    numChars = p_pRightLine->Length() - p_StartCharIndex;
+    numChars = pRightLine->Length() - startIndex;
   }
 
   // Print the right line if is visible regarding current x scroll
   if(numChars > 0)
   {
     Text(m_pWindow->RPort,
-      p_pRightLine->C_str() + p_StartCharIndex,
+      pRightLine->C_str() + startIndex,
       numChars
     );
   }

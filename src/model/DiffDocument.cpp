@@ -1,5 +1,6 @@
 #include "DiffDocument.h"
 
+
 DiffDocument::DiffDocument(DiffFilePartition& p_DiffFilePartition)
   : m_DiffFilePartition(p_DiffFilePartition),
     m_LineId(0)

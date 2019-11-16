@@ -1,6 +1,8 @@
 #include "Document.h"
 
 Document::Document()
+: m_MaxLineLength(0),
+  m_LastScrollDirection(None)
 {
 
 }

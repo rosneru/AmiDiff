@@ -5,8 +5,8 @@
 #include <intuition/screens.h>
 
 #include "AppScreen.h"
-#include "SimpleString.h"
 #include "DiffDocument.h"
+#include "DiffLine.h"
 #include "ScrollbarWindow.h"
 
 /**
@@ -223,9 +223,11 @@ private:
    * Prints the given line (p_pLeftLine and p_pRightLine) at given
    * y-position p_TopEdge.
    */
-  void paintLine(const SimpleString* p_pLeftLine,
-    const SimpleString* p_pRightLine, WORD p_TopEdge,
-    int p_StartCharIndex = -1, int p_NumChars = 0);
+  void paintLine(const DiffLine* pLeftLine,
+                 const DiffLine* pRightLine, 
+                 WORD topEdge,
+                 int startIndex = -1, 
+                 int numChars = 0);
 
   /**
    * Paints the basic window content: the 2 BevelBoxes for the original
