@@ -60,8 +60,8 @@ public:
   DiffFileBase& RightFileDiff();
 
 private:
-  SimpleString& m_LeftFilePath;
-  SimpleString& m_RightFilePath;
+  SimpleString& m_LeftSrcFilePath;
+  SimpleString& m_RightSrcFilePath;
 
   DiffWindow& m_DiffWindow;
   FilesWindow& m_FilesWindow;
@@ -70,13 +70,15 @@ private:
   bool& m_bCancelRequested;
   bool& m_bExitAllowed;
 
+  APTR m_pPoolHeader;
+
   DiffDocument* m_pDiffDocumentLeft;
   DiffDocument* m_pDiffDocumentRight;
 
-  DiffFileAmiga m_LeftFile;
-  DiffFileAmiga m_RightFile;
-  DiffFileAmiga m_LeftFileDiff;
-  DiffFileAmiga m_RightFileDiff;
+  DiffFileAmiga m_LeftSrcFile;
+  DiffFileAmiga m_RightSrcFile;
+  DiffFileAmiga m_LeftDiffFile;
+  DiffFileAmiga m_RightDiffFile;
 
   DiffEngine m_DiffEngine;
 

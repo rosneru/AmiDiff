@@ -1,3 +1,5 @@
+#include <clib/exec_protos.h>
+
 #include "MessageBox.h"
 #include "DiffWorker.h"
 
@@ -10,24 +12,25 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
                        bool& bCancelRequested,
                        bool& bExitAllowed)
   : BackgroundWorker(pProgressPort),
-    m_LeftFilePath(leftFilePath),
-    m_RightFilePath(rightFilePath),
+    m_LeftSrcFilePath(leftFilePath),
+    m_RightSrcFilePath(rightFilePath),
     m_DiffWindow(diffWindow),
     m_FilesWindow(filesWindow),
     m_ProgressWindow(progressWindow),
     m_ProgressOffset(0),
     m_bCancelRequested(bCancelRequested),
     m_bExitAllowed(bExitAllowed),
+    m_pPoolHeader(NULL),
     m_pDiffDocumentLeft(NULL),
     m_pDiffDocumentRight(NULL),
-    m_LeftFile(m_bCancelRequested),
-    m_RightFile(m_bCancelRequested),
-    m_LeftFileDiff(m_bCancelRequested),
-    m_RightFileDiff(m_bCancelRequested),
-    m_DiffEngine(m_LeftFile,
-                 m_RightFile,
-                 m_LeftFileDiff,
-                 m_RightFileDiff,
+    m_LeftSrcFile(m_bCancelRequested),
+    m_RightSrcFile(m_bCancelRequested),
+    m_LeftDiffFile(m_bCancelRequested),
+    m_RightDiffFile(m_bCancelRequested),
+    m_DiffEngine(m_LeftSrcFile,
+                 m_RightSrcFile,
+                 m_LeftDiffFile,
+                 m_RightDiffFile,
                  m_bCancelRequested)
 {
 
@@ -39,8 +42,8 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
   //      the intuition event loop which eventually displays the
   //      progress in a window.
   //
-  m_LeftFile.SetProgressReporter(this);
-  m_RightFile.SetProgressReporter(this);
+  m_LeftSrcFile.SetProgressReporter(this);
+  m_RightSrcFile.SetProgressReporter(this);
   m_DiffEngine.SetProgressReporter(this);
 }
 
@@ -59,7 +62,7 @@ bool DiffWorker::Diff()
   //
   // Checking some obvious things
   //
-  if(m_LeftFilePath.Length() == 0)
+  if(m_LeftSrcFilePath.Length() == 0)
   {
     request.Show("Error: Left file name not set.", "Ok");
 
@@ -68,7 +71,7 @@ bool DiffWorker::Diff()
     return false;
   }
 
-  if(m_RightFilePath.Length() == 0)
+  if(m_RightSrcFilePath.Length() == 0)
   {
     request.Show("Error: Right file name not set.", "Ok");
 
@@ -85,6 +88,21 @@ bool DiffWorker::Diff()
   m_FilesWindow.Close();
   m_DiffWindow.Close();
   disposeDocuments();
+
+  m_pPoolHeader = CreatePool(MEMF_CLEAR, 1024, 512);
+  if(m_pPoolHeader == NULL)
+  {
+    request.Show(m_ProgressWindow.IntuiWindow(),
+                 "Failed to create the memory pool.", "Ok");
+
+    m_FilesWindow.Open(pDisabledMenuItem);
+    m_ProgressWindow.Close();
+
+    workDone();
+    m_bExitAllowed = true;
+    return false;
+  }
+
   m_StopWatch.Start();
 
   //
@@ -93,7 +111,7 @@ bool DiffWorker::Diff()
   setProgressDescription("Pre-processing left file..");
 
   // If there was an error return to FilesWindow
-  if(m_LeftFile.PreProcess(m_LeftFilePath.C_str()) == false)
+  if(m_LeftSrcFile.PreProcess(m_LeftSrcFilePath.C_str()) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "Error: Can't read left file.", "Ok");
@@ -112,7 +130,7 @@ bool DiffWorker::Diff()
   setProgressDescription("Pre-processing right file..");
 
   // If there was an error return to FilesWindow
-  if(m_RightFile.PreProcess(m_RightFilePath.C_str()) == false)
+  if(m_RightSrcFile.PreProcess(m_RightSrcFilePath.C_str()) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "Error: Can't read right file.", "Ok");
@@ -152,14 +170,14 @@ bool DiffWorker::Diff()
   int leftNumAdded;
   int leftNumChanged;
   int leftNumDeleted;
-  m_LeftFileDiff.NumChanges(leftNumAdded, leftNumChanged,
-                                 leftNumDeleted);
+  m_LeftDiffFile.NumChanges(leftNumAdded, leftNumChanged,
+                            leftNumDeleted);
 
   int rightNumAdded;
   int rightNumChanged;
   int rightNumDeleted;
-  m_RightFileDiff.NumChanges(rightNumAdded, rightNumChanged,
-                                  rightNumDeleted);
+  m_RightDiffFile.NumChanges(rightNumAdded, rightNumChanged,
+                             rightNumDeleted);
 
   // If there are no changes return to FilesWindow
   if((leftNumAdded + leftNumChanged + leftNumDeleted +
@@ -180,11 +198,11 @@ bool DiffWorker::Diff()
   // Prepare diff window and set results
   //
 
-  m_pDiffDocumentLeft = new DiffDocument(m_LeftFileDiff);
-  m_pDiffDocumentRight = new DiffDocument(m_RightFileDiff);
+  m_pDiffDocumentLeft = new DiffDocument(m_LeftDiffFile);
+  m_pDiffDocumentRight = new DiffDocument(m_RightDiffFile);
 
-  m_pDiffDocumentLeft->SetFileName(m_LeftFilePath.C_str());
-  m_pDiffDocumentRight->SetFileName(m_RightFilePath.C_str());
+  m_pDiffDocumentLeft->SetFileName(m_LeftSrcFilePath.C_str());
+  m_pDiffDocumentRight->SetFileName(m_RightSrcFilePath.C_str());
 
   m_DiffWindow.Open();
   m_ProgressWindow.Close();
@@ -213,10 +231,15 @@ void DiffWorker::disposeDocuments()
     m_pDiffDocumentRight = NULL;
   }
 
-  m_LeftFile.Clear();
-  m_RightFile.Clear();
-  m_LeftFileDiff.Clear();
-  m_RightFileDiff.Clear();
+  m_LeftSrcFile.Clear();
+  m_RightSrcFile.Clear();
+  m_LeftDiffFile.Clear();
+  m_RightDiffFile.Clear();
+
+  // Deleting the memory pool as a whole gives an extreme
+  // performence boost at exit or when starting another compare.
+  DeletePool(m_pPoolHeader);
+  m_pPoolHeader = NULL;
 }
 
 void DiffWorker::doWork()
