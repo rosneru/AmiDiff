@@ -444,7 +444,7 @@ void DiffWindow::paintDocument(bool  p_bDisplayFromStart)
     return;
   }
 
-  if( p_bDisplayFromStart == true)
+  if(p_bDisplayFromStart == true)
   {
     m_X = 0;
     m_Y = 0;
