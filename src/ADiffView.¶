@@ -140,8 +140,6 @@ File
 "thread/ProgressReporter.h"
 "thread/WorkerStartupMsg.h"
 "diffengine/DiffLine.h"
-"oscottlibs/LinkedListNode.h"
-"model/TextDocument.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
 "diffengine/Pair.h"
@@ -153,10 +151,8 @@ File
 1 "application/DiffWorker.cpp"
 "application/DiffWorker.cpp"
 "diffengine/DiffLine.h"
-"oscottlibs/LinkedListNode.h"
 "application/DiffWorker.h"
 "thread/WorkerStartupMsg.h"
-"model/TextDocument.h"
 "model/Document.h"
 "gui/AppScreen.h"
 "gui/AmigaDiffPens.h"
@@ -186,8 +182,6 @@ File
 "thread/ProgressReporter.h"
 "thread/WorkerStartupMsg.h"
 "diffengine/DiffLine.h"
-"oscottlibs/LinkedListNode.h"
-"model/TextDocument.h"
 "model/Document.h"
 "gui/AppScreen.h"
 "gui/AmigaDiffPens.h"
@@ -232,7 +226,6 @@ File
 "diffengine/DiffEngine.cpp"
 "diffengine/DiffEngine.h"
 "diffengine/DiffLine.h"
-"oscottlibs/LinkedListNode.h"
 "diffengine/DiffFilePartition.h"
 "diffengine/Pair.h"
 Storm Shell Project (Dependencies)
@@ -243,7 +236,6 @@ File
 1 "diffengine/DiffFilePartition.cpp"
 "diffengine/DiffFilePartition.cpp"
 "diffengine/DiffFilePartition.h"
-"oscottlibs/LinkedListNode.h"
 "diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffFilePartition.o" "objects_debug/DiffFilePartition.debug"
@@ -254,7 +246,6 @@ File
 "diffengine/DiffFilePartitionAmiga.cpp"
 "diffengine/DiffFilePartitionAmiga.h"
 "diffengine/DiffFilePartition.h"
-"oscottlibs/LinkedListNode.h"
 "diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffFilePartitionAmiga.o" "objects_debug/DiffFilePartitionAmiga.debug"
@@ -264,7 +255,6 @@ File
 1 "diffengine/DiffLine.cpp"
 "diffengine/DiffLine.cpp"
 "diffengine/DiffLine.h"
-"oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffLine.o" "objects_debug/DiffLine.debug"
 ""
@@ -310,11 +300,9 @@ File
 "gui/DiffWindow.cpp"
 "gui/DiffWindow.h"
 "gui/AppScreen.h"
-"oscottlibs/LinkedListNode.h"
 "gui/WindowBase.h"
 "gui/AmigaDiffPens.h"
 "diffengine/DiffLine.h"
-"model/TextDocument.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
 "gui/ApplicationMenu.h"
@@ -352,7 +340,6 @@ File
 "gui/ScrollbarWindow.h"
 "gui/AppScreen.h"
 "gui/AmigaDiffPens.h"
-"model/Document.h"
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
 Storm Shell Project (Dependencies)
@@ -379,8 +366,6 @@ File
 "thread/ProgressReporter.h"
 "thread/WorkerStartupMsg.h"
 "diffengine/DiffLine.h"
-"oscottlibs/LinkedListNode.h"
-"model/TextDocument.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
 "diffengine/Pair.h"
@@ -392,8 +377,6 @@ File
 1 "model/DiffDocument.cpp"
 "model/DiffDocument.cpp"
 "model/DiffDocument.h"
-"oscottlibs/LinkedListNode.h"
-"model/TextDocument.h"
 "model/Document.h"
 "diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
@@ -667,6 +650,7 @@ Section
 7
 File
 10 "ADiffView"
+"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

@@ -473,9 +473,9 @@ void DiffWindow::paintDocument(bool  p_bDisplayFromStart)
 }
 
 void DiffWindow::paintLine(const DiffLine* pLeftLine,
-                           const DiffLine* pRightLine, 
+                           const DiffLine* pRightLine,
                            WORD topEdge,
-                           int startIndex, 
+                           int startIndex,
                            int numChars)
 {
   size_t indent = 0;
@@ -502,37 +502,37 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // Set the left line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pLeftDocument->LineColor()));
 
-  int numChars = 0;
+  int numCharsToPrint = 0;
   if(numChars > 0)
   {
-    numChars = numChars;
+    numCharsToPrint = numChars;
   }
   else
   {
     // Determine how many characters would be print theoretically
-    numChars = pLeftLine->Length() - m_X;
+    numCharsToPrint = pLeftLine->Length() - m_X;
   }
 
   // Limit the number of printed chars to fit into the text area
-  if(numChars > m_MaxTextAreaChars)
+  if(numCharsToPrint > m_MaxTextAreaChars)
   {
-    numChars = m_MaxTextAreaChars;
+    numCharsToPrint = m_MaxTextAreaChars;
   }
 
   // When p_StartChar is set: limit the number of printed chars to not
   // exceed the line length
   if((startIndex > -1) &&
-     (numChars + startIndex > pLeftLine->Length()))
+     (numCharsToPrint + startIndex > pLeftLine->Length()))
   {
-    numChars = pLeftLine->Length() - startIndex;
+    numCharsToPrint = pLeftLine->Length() - startIndex;
   }
 
   // Print the left line if is visible regarding current x scroll
-  if(numChars > 0)
+  if(numCharsToPrint > 0)
   {
     Text(m_pWindow->RPort,
       pLeftLine->Text() + startIndex,
-      numChars
+      numCharsToPrint
     );
   }
 
@@ -545,37 +545,37 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // Set the right line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pRightDocument->LineColor()));
 
-  numChars = 0;
+  numCharsToPrint = 0;
   if(numChars > 0)
   {
-    numChars = numChars;
+    numCharsToPrint = numChars;
   }
   else
   {
     // Determine how many characters would be print theoretically
-    numChars = pRightLine->Length() - m_X;
+    numCharsToPrint = pRightLine->Length() - m_X;
   }
 
   // Limit the number of printed chars to fit into the text area
-  if(numChars > m_MaxTextAreaChars)
+  if(numCharsToPrint > m_MaxTextAreaChars)
   {
-    numChars = m_MaxTextAreaChars;
+    numCharsToPrint = m_MaxTextAreaChars;
   }
 
   // When p_StartChar is set: limit the number of printed chars to not
   // exceed the line length
   if((startIndex > -1) &&
-     (numChars + startIndex > pRightLine->Length()))
+     (numCharsToPrint + startIndex > pRightLine->Length()))
   {
-    numChars = pRightLine->Length() - startIndex;
+    numCharsToPrint = pRightLine->Length() - startIndex;
   }
 
   // Print the right line if is visible regarding current x scroll
-  if(numChars > 0)
+  if(numCharsToPrint > 0)
   {
     Text(m_pWindow->RPort,
       pRightLine->Text() + startIndex,
-      numChars
+      numCharsToPrint
     );
   }
 }
