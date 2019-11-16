@@ -14,7 +14,7 @@
 class DiffFileAmiga : public DiffFileBase
 {
 public:
-  DiffFileAmiga(bool& p_bCancelRequested);
+  DiffFileAmiga(APTR& pPoolHeader, bool& p_bCancelRequested);
   ~DiffFileAmiga();
 
   void Clear();
@@ -23,6 +23,9 @@ public:
 
   void AddString(const char* p_String,
                  DiffLine::LineState p_LineState);
+
+private:
+  APTR& m_pPoolHeader;
 };
 
 #endif // DIFF_FILE_PARTITION_AMIGA_H

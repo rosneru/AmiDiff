@@ -1,10 +1,13 @@
 #include <clib/dos_protos.h>
+#include <clib/exec_protos.h>
 
 #include "AmigaFile.h"
 #include "DiffFileAmiga.h"
 
-DiffFileAmiga::DiffFileAmiga(bool& p_bCancelRequested)
-  : DiffFileBase(p_bCancelRequested)
+DiffFileAmiga::DiffFileAmiga(APTR& pPoolHeader, 
+                             bool& p_bCancelRequested)
+  : DiffFileBase(p_bCancelRequested),
+    m_pPoolHeader(pPoolHeader)
 {
 }
 
@@ -15,30 +18,21 @@ DiffFileAmiga::~DiffFileAmiga()
 
 void DiffFileAmiga::Clear()
 {
-  if(m_DiffLinesArray.Size() == 0)
-  {
-    return;
-  }
-
-  DiffLine* pItem;
-  while((pItem = m_DiffLinesArray.Pop()) != NULL)
-  {
-    if(!pItem->TextIsLinked() && (pItem->Text() != NULL))
-    {
-      delete[] pItem->Text();
-    }
-
-    delete pItem;
-
-    if(m_DiffLinesArray.Size() == 0)
-    {
-      break;
-    }
-  }
+  // Nothing is deleted or freed here, because an external memory pool 
+  // is used for all allocations. On exit or when performing another 
+  // diff this memory pool is deleted outside with just one call.
+  // On the Amiga this is way faster than e.g. calling 5000 single 
+  // delete [] in random order.
 }
 
 bool DiffFileAmiga::PreProcess(const char* pFileName)
 {
+  if(m_pPoolHeader == NULL)
+  {
+    // Won't work without memory pool
+    return false;
+  }
+
   AmigaFile file;
   if(!file.Open(pFileName, AmigaFile::AM_OldFile))
   {
@@ -57,10 +51,17 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
   int i = 0;
   while((pReadLine = file.ReadLine()) != NULL)
   {
-    char* pLine = new char[strlen(pReadLine) + 1];
+    char* pLine = (char*) AllocPooled(m_pPoolHeader, 
+                                      strlen(pReadLine) + 1);
+
     strcpy(pLine, pReadLine);
 
-    DiffLine* pDiffLine = new DiffLine(pLine);
+    DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader, 
+                                                  sizeof(DiffLine));
+
+    // Because of using a memory pool the constructor has to be called manually
+    new (pDiffLine) DiffLine(pLine);
+
     if(pDiffLine == NULL)
     {
       break;

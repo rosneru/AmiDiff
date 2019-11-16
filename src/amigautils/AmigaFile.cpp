@@ -3,7 +3,7 @@
 #include "AmigaFile.h"
 
 AmigaFile::AmigaFile()
-  : MAX_LINE_LENGTH(512), // TODO A better solution needed?
+  : MAX_LINE_LENGTH(1024), // TODO A better solution needed?
     m_pFile(NULL),
     m_pProgressReporter(NULL)
 {
