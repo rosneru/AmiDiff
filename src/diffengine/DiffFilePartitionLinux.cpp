@@ -3,6 +3,8 @@
 #include <fstream>
 #include <string>
 
+#include <string.h>
+
 #include "DiffFilePartitionLinux.h"
 
 DiffFilePartitionLinux::DiffFilePartitionLinux(
@@ -11,15 +13,39 @@ DiffFilePartitionLinux::DiffFilePartitionLinux(
 {
 }
 
-
-bool DiffFilePartitionLinux::PreProcess(const SimpleString& p_FileName)
+DiffFilePartitionLinux::~DiffFilePartitionLinux()
 {
-  ifstream inputFileStream;
+  if(m_DiffLinesArray.Size() == 0)
+  {
+    return;
+  }
+
+  DiffLine* pItem;
+  while((pItem = m_DiffLinesArray.Pop()) != NULL)
+  {
+    if(!pItem->TextIsLinked() && (pItem->Text() != NULL))
+    {
+      delete[] pItem->Text();
+    }
+
+    delete pItem;
+
+    if(m_DiffLinesArray.Size() == 0)
+    {
+      break;
+    }
+  }
+}
+
+
+bool DiffFilePartitionLinux::PreProcess(const char* pFileName)
+{
+  std::ifstream inputFileStream;
   try
   {
-    inputFileStream.open(p_FileName.C_str());
+    inputFileStream.open(pFileName);
   }
-  catch (exception& e)
+  catch (std::exception& e)
   {
     return false;
   }
@@ -27,7 +53,11 @@ bool DiffFilePartitionLinux::PreProcess(const SimpleString& p_FileName)
   std::string line;
   while(getline(inputFileStream, line))
   {
-    DiffLine* pDiffLine = new DiffLine(line.c_str());
+    std::size_t size = line.length();
+    char* pLine = new char[size + 1];
+    strcpy(pLine, line.c_str());
+
+    DiffLine* pDiffLine = new DiffLine(pLine);
     if(pDiffLine == NULL)
     {
       break;
@@ -41,4 +71,16 @@ bool DiffFilePartitionLinux::PreProcess(const SimpleString& p_FileName)
   inputFileStream.close();
 
   return NumLines() > 0;
+}
+
+void DiffFilePartitionLinux::AddString(const char* p_String,
+                                       DiffLine::LineState p_LineState)
+{
+  DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
+  if(pDiffLine == NULL)
+  {
+    return;
+  }
+
+  m_DiffLinesArray.Push(pDiffLine);
 }

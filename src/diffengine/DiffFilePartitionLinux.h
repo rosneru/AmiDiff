@@ -15,7 +15,12 @@ class DiffFilePartitionLinux : public DiffFilePartition
 {
 public:
   DiffFilePartitionLinux(bool& p_bCancelRequested);
-  bool PreProcess(const SimpleString& p_FileName);
+  ~DiffFilePartitionLinux();
+
+  bool PreProcess(const char* p_FileName);
+
+  void AddString(const char* p_String,
+                 DiffLine::LineState p_LineState);
 };
 
 #endif // DIFF_FILE_PARTITION_LINUX_H

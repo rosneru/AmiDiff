@@ -1,9 +1,6 @@
 #ifndef DIFF_LINE_H
 #define DIFF_LINE_H
 
-#include "LinkedList.h"
-#include "SimpleString.h"
-
 /**
  * Represents a line in a Diff which contains of Text and a LineState.
  *
@@ -25,14 +22,25 @@ public:
     Undefined
   };
 
-  DiffLine(const SimpleString& p_String);
-  DiffLine(const SimpleString& p_String, LineState p_LineState);
+  DiffLine(const char* pText);
+  DiffLine(const char* pText, LineState p_LineState);
   ~DiffLine();
 
   /**
    * Returns the text of the diff line
    */
-  const SimpleString& Text() const;
+  const char* Text() const;
+
+  /**
+   * Sets the text pointer to NULL. Can be done as remark that text
+   * already has been deleted.
+   */
+  bool TextIsLinked() const;
+
+  /**
+   * Returns the text length of the diff line
+   */
+  size_t Length() const;
 
   /**
    * Returns the state of the diff line
@@ -47,9 +55,11 @@ public:
   unsigned long Token() const;
 
 protected:
-  SimpleString m_LineText;
-  LineState m_LineState;
+  const char* m_Text;
+  const size_t m_Length;
+  LineState m_State;
   unsigned long m_Token;
+  bool m_bLinkedText;
 };
 
 #endif

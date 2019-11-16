@@ -1,21 +1,26 @@
+#include <string.h>
 #include "DiffLine.h"
 
-DiffLine::DiffLine(const SimpleString& p_String)
-  : m_LineText(p_String),
-    m_LineState(Normal),
-    m_Token(0)
+DiffLine::DiffLine(const char* pText)
+  : m_Text(pText),
+    m_Length(strlen(pText)),
+    m_State(Normal),
+    m_Token(0),
+    m_bLinkedText(false)
 {
-  const char* pBuf = p_String.C_str();
-  for(size_t i = 0; i < p_String.Length(); i++)
+  const char* pBuf = pText;
+  for(size_t i = 0; i < m_Length; i++)
   {
     m_Token += 2 * m_Token + *(pBuf++); // (George V. Reilly hint)
   }
 }
 
-DiffLine::DiffLine(const SimpleString& p_String, LineState p_LineState)
-  : m_LineText(p_String),
-    m_LineState(p_LineState),
-    m_Token(0)
+DiffLine::DiffLine(const char* pText, LineState p_LineState)
+  : m_Text(pText),
+    m_Length(strlen(pText)),
+    m_State(p_LineState),
+    m_Token(0),
+    m_bLinkedText(true)
 {
 }
 
@@ -23,19 +28,29 @@ DiffLine::~DiffLine()
 {
 }
 
-const SimpleString& DiffLine::Text() const
+const char* DiffLine::Text() const
 {
-  return m_LineText;
+  return m_Text;
+}
+
+bool DiffLine::TextIsLinked() const
+{
+  return m_bLinkedText;
+}
+
+size_t DiffLine::Length() const
+{
+  return m_Length;
 }
 
 DiffLine::LineState DiffLine::State() const
 {
-  return m_LineState;
+  return m_State;
 }
 
 void DiffLine::SetState(DiffLine::LineState state)
 {
-  m_LineState = state;
+  m_State = state;
 }
 
 unsigned long DiffLine::Token() const

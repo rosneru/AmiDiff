@@ -2,8 +2,6 @@
 #include "DiffFilePartitionLinux.h"
 #include "DiffEngine.h"
 #include "DiffLine.h"
-#include "LinkedList.h"
-#include "SimpleString.h"
 
 #include <stdio.h>
 

@@ -7,30 +7,6 @@ DiffFilePartition::DiffFilePartition(bool& p_bCancelRequested)
 
 }
 
-DiffFilePartition::~DiffFilePartition()
-{
-  Clear();
-}
-
-void DiffFilePartition::Clear()
-{
-  if(m_DiffLinesArray.Size() == 0)
-  {
-    return;
-  }
-
-  DiffLine* pItem;
-  while((pItem = m_DiffLinesArray.Pop()) != NULL)
-  {
-    delete pItem;
-
-    if(m_DiffLinesArray.Size() == 0)
-    {
-      break;
-    }
-  }
-}
-
 
 long DiffFilePartition::NumLines() const
 {
@@ -76,14 +52,14 @@ DiffLine* DiffFilePartition::GetLine(size_t p_Index) const
 }
 
 
-static const SimpleString emptyStr = "";
+static const char* pEmptyText = "";
 
-const SimpleString& DiffFilePartition::GetLineText(size_t p_Index) const
+const char* DiffFilePartition::GetLineText(size_t p_Index) const
 {
   size_t numLines = m_DiffLinesArray.Size();
   if((numLines == 0) || (p_Index >= numLines))
   {
-    return emptyStr;
+    return pEmptyText;
   }
 
   return GetLine(p_Index)->Text();
@@ -123,43 +99,10 @@ void DiffFilePartition::SetLineState(size_t p_Index, DiffLine::LineState state)
   pDiffLine->SetState(state);
 }
 
-
-//bool DiffFilePartition::PreProcess()
-//{
-//  int i = 0;
-//  SimpleString* pSrcLine = m_InputLinesArray[i];
-//  while(pSrcLine != NULL)
-//  {
-//    AddString(*pSrcLine);
-
-//    pSrcLine = m_InputLinesArray[i];
-//    i++;
-//  }
-
-//  return true;
-//}
-
-
-void DiffFilePartition::AddString(const SimpleString& p_String,
-                                  DiffLine::LineState p_LineState)
-{
-  DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
-  if(pDiffLine == NULL)
-  {
-    return;
-  }
-
-  m_DiffLinesArray.Push(pDiffLine);
-}
-
-//void DiffFilePartition::AddString(const char* pString)
-//{
-
-//}
-
 void DiffFilePartition::AddBlankLine()
 {
-  AddString(SimpleString(), DiffLine::Normal);
+  static const char* pEmptyLine = "";
+  AddString(pEmptyLine, DiffLine::Normal);
 }
 
 void DiffFilePartition::SetProgressReporter(ProgressReporter* p_pProgressReporter)

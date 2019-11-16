@@ -1,9 +1,6 @@
 #ifndef DIFF_ENGINE_H
 #define DIFF_ENGINE_H
 
-#include "LinkedList.h"
-#include "SimpleString.h"
-
 #include "Pair.h"
 #include "DiffLine.h"
 #include "DiffFilePartition.h"

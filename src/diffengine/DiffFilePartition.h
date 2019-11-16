@@ -4,7 +4,6 @@
 #include "Array.h"
 #include "DiffLine.h"
 #include "ProgressReporter.h"
-#include "SimpleString.h"
 
 
 /**
@@ -21,21 +20,17 @@ class DiffFilePartition
   // Constructor
 public:
   DiffFilePartition(bool& p_bCancelRequested);
-  virtual ~DiffFilePartition();
-
-  void Clear();
 
   long NumLines() const;
   void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const;
 
   DiffLine* GetLine(size_t p_Index) const;
-  const SimpleString& GetLineText(size_t p_Index) const;
+  const char* GetLineText(size_t p_Index) const;
   unsigned long GetLineToken(size_t p_Index) const;
   DiffLine::LineState GetLineState(size_t p_Index) const;
   void SetLineState(size_t p_Index, DiffLine::LineState state);
 
-  void AddString(const SimpleString& p_String,
-                 DiffLine::LineState p_LineState);
+  virtual void AddString(const char*, DiffLine::LineState) = 0;
 
   void AddBlankLine();
 
