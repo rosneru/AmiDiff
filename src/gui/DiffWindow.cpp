@@ -531,7 +531,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   if(numChars > 0)
   {
     Text(m_pWindow->RPort,
-      pLeftLine->C_str() + startIndex,
+      pLeftLine->Text() + startIndex,
       numChars
     );
   }
@@ -574,7 +574,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   if(numChars > 0)
   {
     Text(m_pWindow->RPort,
-      pRightLine->C_str() + startIndex,
+      pRightLine->Text() + startIndex,
       numChars
     );
   }
@@ -615,11 +615,11 @@ void DiffWindow::paintDocumentNames()
   intuiText.TopEdge   = m_TextAreasTop - m_AppScreen.FontHeight() - 2;
 
   intuiText.LeftEdge  = m_TextArea1Left + 2;
-  intuiText.IText = (UBYTE*)m_pLeftDocument->FileName().C_str();
+  intuiText.IText = (UBYTE*)m_pLeftDocument->FileName();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   intuiText.LeftEdge  = m_TextArea2Left + 2;
-  intuiText.IText = (UBYTE*)m_pRightDocument->FileName().C_str();
+  intuiText.IText = (UBYTE*)m_pRightDocument->FileName();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
 
@@ -731,8 +731,8 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
   // fill the gap with the previous chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
-    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
-    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
+    const DiffLine* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
+    const DiffLine* pRightLine = m_pRightDocument->GetIndexedLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -803,8 +803,8 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
   // Fill the gap with the following chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
-    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
-    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(i);
+    const DiffLine* pLeftLine = m_pLeftDocument->GetIndexedLine(i);
+    const DiffLine* pRightLine = m_pRightDocument->GetIndexedLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -861,8 +861,8 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
   for(int i = 0; i < p_ScrollNumLinesDown; i++)
   {
     int lineIndex = m_Y - p_ScrollNumLinesDown + i;
-    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
-    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
+    const DiffLine* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
+    const DiffLine* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -924,8 +924,8 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
   for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
     int lineIndex = m_Y + m_MaxTextAreaLines + i;
-    const SimpleString* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
-    const SimpleString* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
+    const DiffLine* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
+    const DiffLine* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {

@@ -183,8 +183,8 @@ bool DiffWorker::Diff()
   m_pLeftDiffDocument = new DiffDocument(m_LeftDiffPartition);
   m_pRightDiffDocument = new DiffDocument(m_RightDiffPartition);
 
-  m_pLeftDiffDocument->SetFileName(m_LeftFilePath);
-  m_pRightDiffDocument->SetFileName(m_RightFilePath);
+  m_pLeftDiffDocument->SetFileName(m_LeftFilePath.C_str());
+  m_pRightDiffDocument->SetFileName(m_RightFilePath.C_str());
 
   m_DiffWindow.Open();
   m_ProgressWindow.Close();

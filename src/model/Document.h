@@ -9,8 +9,10 @@ class Document
 public:
   Document();
   virtual ~Document();
-  virtual bool Load(const char* pFileName) = 0;
-  virtual void Clear() = 0;
+
+  // TODO Fix this
+  // virtual bool Load(const char* pFileName) = 0;
+  // virtual void Clear() = 0;
 
   const char*FileName() const;
   void SetFileName(const char* pFileName);

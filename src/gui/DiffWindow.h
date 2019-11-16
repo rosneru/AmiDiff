@@ -7,6 +7,7 @@
 #include "AppScreen.h"
 #include "DiffDocument.h"
 #include "DiffLine.h"
+#include "SimpleString.h"
 #include "ScrollbarWindow.h"
 
 /**
