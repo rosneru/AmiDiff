@@ -1,12 +1,12 @@
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
 
-#include <new>
+#include <new.h>
 
 #include "AmigaFile.h"
 #include "DiffFileAmiga.h"
 
-DiffFileAmiga::DiffFileAmiga(APTR& pPoolHeader, 
+DiffFileAmiga::DiffFileAmiga(APTR& pPoolHeader,
                              bool& p_bCancelRequested)
   : DiffFileBase(p_bCancelRequested),
     m_pPoolHeader(pPoolHeader)
@@ -20,10 +20,10 @@ DiffFileAmiga::~DiffFileAmiga()
 
 void DiffFileAmiga::Clear()
 {
-  // Nothing is deleted or freed here, because an external memory pool 
-  // is used for all allocations. On exit or when performing another 
+  // Nothing is deleted or freed here, because an external memory pool
+  // is used for all allocations. On exit or when performing another
   // diff this memory pool is deleted outside with just one call.
-  // On the Amiga this is way faster than e.g. calling 5000 single 
+  // On the Amiga this is way faster than e.g. calling 5000 single
   // delete [] in random order.
 }
 
@@ -53,12 +53,12 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
   int i = 0;
   while((pReadLine = file.ReadLine()) != NULL)
   {
-    char* pLine = (char*) AllocPooled(m_pPoolHeader, 
+    char* pLine = (char*) AllocPooled(m_pPoolHeader,
                                       strlen(pReadLine) + 1);
 
     strcpy(pLine, pReadLine);
 
-    DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader, 
+    DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
                                                   sizeof(DiffLine));
 
     // Because of using a memory pool the constructor has to be called manually

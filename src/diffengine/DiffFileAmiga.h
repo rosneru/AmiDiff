@@ -1,6 +1,8 @@
 #ifndef DIFF_FILE_PARTITION_AMIGA_H
 #define DIFF_FILE_PARTITION_AMIGA_H
 
+#include <exec/types.h>
+
 #include "DiffFileBase.h"
 
 /**
