@@ -139,10 +139,11 @@ File
 "gui/AmigaDiffPens.h"
 "thread/ProgressReporter.h"
 "thread/WorkerStartupMsg.h"
-"diffengine/DiffLine.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
 "diffengine/Pair.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -150,7 +151,6 @@ Storm Shell Project (Dependencies)
 File
 1 "application/DiffWorker.cpp"
 "application/DiffWorker.cpp"
-"diffengine/DiffLine.h"
 "application/DiffWorker.h"
 "thread/WorkerStartupMsg.h"
 "model/Document.h"
@@ -161,6 +161,8 @@ File
 "gui/ApplicationMenu.h"
 "thread/ProgressReporter.h"
 "diffengine/Pair.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
 ""
@@ -181,7 +183,6 @@ File
 "commands/CmdDiff.h"
 "thread/ProgressReporter.h"
 "thread/WorkerStartupMsg.h"
-"diffengine/DiffLine.h"
 "model/Document.h"
 "gui/AppScreen.h"
 "gui/AmigaDiffPens.h"
@@ -189,6 +190,8 @@ File
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
 "diffengine/Pair.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
 ""
@@ -226,29 +229,29 @@ File
 "diffengine/DiffEngine.cpp"
 "diffengine/DiffEngine.h"
 "diffengine/DiffLine.h"
-"diffengine/DiffFilePartition.h"
 "diffengine/Pair.h"
+"diffengine/DiffFileBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffEngine.o" "objects_debug/DiffEngine.debug"
 ""
 1 1
 File
-1 "diffengine/DiffFilePartition.cpp"
-"diffengine/DiffFilePartition.cpp"
-"diffengine/DiffFilePartition.h"
+1 "diffengine/DiffFileAmiga.cpp"
+"diffengine/DiffFileAmiga.cpp"
+"diffengine/DiffFileAmiga.h"
+"diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
-"objects_debug/DiffFilePartition.o" "objects_debug/DiffFilePartition.debug"
+"objects_debug/DiffFileAmiga.o" "objects_debug/DiffFileAmiga.debug"
 ""
 1 1
 File
-1 "diffengine/DiffFilePartitionAmiga.cpp"
-"diffengine/DiffFilePartitionAmiga.cpp"
-"diffengine/DiffFilePartitionAmiga.h"
-"diffengine/DiffFilePartition.h"
+1 "diffengine/DiffFileBase.cpp"
+"diffengine/DiffFileBase.cpp"
+"diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
-"objects_debug/DiffFilePartitionAmiga.o" "objects_debug/DiffFilePartitionAmiga.debug"
+"objects_debug/DiffFileBase.o" "objects_debug/DiffFileBase.debug"
 ""
 1 1
 File
@@ -306,6 +309,7 @@ File
 "model/Document.h"
 "gui/ScrollbarWindow.h"
 "gui/ApplicationMenu.h"
+"diffengine/DiffFileBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
 ""
@@ -367,9 +371,9 @@ File
 "commands/Command.h"
 "thread/ProgressReporter.h"
 "thread/WorkerStartupMsg.h"
-"diffengine/DiffFilePartition.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
+"diffengine/DiffFileBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -380,6 +384,7 @@ File
 "model/DiffDocument.h"
 "model/Document.h"
 "diffengine/DiffLine.h"
+"diffengine/DiffFileBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffDocument.o" "objects_debug/DiffDocument.debug"
 ""
@@ -504,15 +509,15 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "diffengine/DiffFilePartition.h"
-"diffengine/DiffFilePartition.h"
+2 "diffengine/DiffFileAmiga.h"
+"diffengine/DiffFileAmiga.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
-2 "diffengine/DiffFilePartitionAmiga.h"
-"diffengine/DiffFilePartitionAmiga.h"
+2 "diffengine/DiffFileBase.h"
+"diffengine/DiffFileBase.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

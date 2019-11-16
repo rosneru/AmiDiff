@@ -1,7 +1,7 @@
 #ifndef DIFF_DOCUMENT_H
 #define DIFF_DOCUMENT_H
 
-#include "DiffFilePartitionAmiga.h"
+#include "DiffFileAmiga.h"
 #include "DiffLine.h"
 #include "SimpleString.h"
 #include "Document.h"
@@ -21,7 +21,7 @@ public:
     CN_Yellow
   };
 
-  DiffDocument(DiffFilePartitionAmiga& p_DiffFilePartition);
+  DiffDocument(DiffFileAmiga& p_DiffFile);
   virtual ~DiffDocument();
 
   size_t NumLines() const;
@@ -32,7 +32,7 @@ public:
   ColorName LineColor() const;
 
 private:
-  DiffFilePartitionAmiga& m_DiffFilePartition;
+  DiffFileAmiga& m_DiffFile;
   size_t m_LineId;
   ColorName m_LineColor;
   const DiffLine* evaluateLine(const DiffLine* pDiffLine);

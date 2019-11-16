@@ -1,8 +1,8 @@
 #include "DiffDocument.h"
 
 
-DiffDocument::DiffDocument(DiffFilePartitionAmiga& p_DiffFilePartition)
-  : m_DiffFilePartition(p_DiffFilePartition),
+DiffDocument::DiffDocument(DiffFileAmiga& p_DiffFile)
+  : m_DiffFile(p_DiffFile),
     m_LineId(0)
 {
 
@@ -15,7 +15,7 @@ DiffDocument::~DiffDocument()
 
 size_t DiffDocument::NumLines() const
 {
-  return m_DiffFilePartition.NumLines();
+  return m_DiffFile.NumLines();
 }
 
 size_t DiffDocument::MaxLineLength()
@@ -27,9 +27,9 @@ size_t DiffDocument::MaxLineLength()
 
   for(size_t i = 0; i < NumLines(); i++)
   {
-    if(m_DiffFilePartition.GetLine(i)->Length() > m_MaxLineLength)
+    if(m_DiffFile.GetLine(i)->Length() > m_MaxLineLength)
     {
-      m_MaxLineLength = m_DiffFilePartition.GetLine(i)->Length();
+      m_MaxLineLength = m_DiffFile.GetLine(i)->Length();
     }
   }
 
@@ -42,7 +42,7 @@ const DiffLine* DiffDocument::GetIndexedLine(int p_LineId)
   m_LastScrollDirection = None;
 
   m_LineId = p_LineId;
-  const DiffLine* pDiffLine = m_DiffFilePartition.GetLine(m_LineId);
+  const DiffLine* pDiffLine = m_DiffFile.GetLine(m_LineId);
 
   if(pDiffLine == NULL)
   {

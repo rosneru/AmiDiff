@@ -51,13 +51,13 @@ public:
    * Returns the diff partition for left file or NULL if no diff was
    * performed.
    */
-  DiffFilePartition& LeftFileDiff();
+  DiffFileBase& LeftFileDiff();
 
   /**
    * Returns the diff partition for right file or NULL if no diff was
    * performed.
    */
-  DiffFilePartition& RightFileDiff();
+  DiffFileBase& RightFileDiff();
 
 private:
   SimpleString& m_LeftFilePath;
