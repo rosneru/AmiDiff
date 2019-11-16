@@ -18,8 +18,7 @@ AmigaFile::~AmigaFile()
   }
 }
 
-bool AmigaFile::Open(const SimpleString& p_FileName,
-  AccessMode p_AccessMode)
+bool AmigaFile::Open(const char* pFileName, AccessMode p_AccessMode)
 {
   if(m_pFile != NULL)
   {
@@ -27,7 +26,7 @@ bool AmigaFile::Open(const SimpleString& p_FileName,
     return false;
   }
 
-  m_FileName = p_FileName;
+  m_FileName = pFileName;
 
   // Determining the corresponding accessMode for AmigaDOS
   int amigaDosAccessMode;
@@ -53,7 +52,7 @@ bool AmigaFile::Open(const SimpleString& p_FileName,
   }
 
   // Opening the file
-  m_pFile = ::Open(p_FileName.C_str(), amigaDosAccessMode);
+  m_pFile = ::Open(pFileName, amigaDosAccessMode);
   if(m_pFile == NULL)
   {
     // Opening failed

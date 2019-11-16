@@ -15,6 +15,11 @@ DiffFilePartitionLinux::DiffFilePartitionLinux(
 
 DiffFilePartitionLinux::~DiffFilePartitionLinux()
 {
+  Clear();
+}
+
+void DiffFilePartitionLinux::Clear()
+{
   if(m_DiffLinesArray.Size() == 0)
   {
     return;

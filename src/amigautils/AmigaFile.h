@@ -45,8 +45,8 @@ public:
    * @returns
    * If file successfully opened: true; if not: false
    */
-  bool Open(const SimpleString& p_FileName,
-    AccessMode p_AccessMode = AM_OldFile);
+  bool Open(const char* pFileName,
+            AccessMode p_AccessMode = AM_OldFile);
 
   /**
    * Closes the file

@@ -17,6 +17,8 @@ public:
   DiffFilePartitionLinux(bool& p_bCancelRequested);
   ~DiffFilePartitionLinux();
 
+  void Clear();
+
   bool PreProcess(const char* p_FileName);
 
   void AddString(const char* p_String,

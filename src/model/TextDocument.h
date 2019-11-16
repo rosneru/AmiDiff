@@ -11,12 +11,12 @@ class TextDocument : public Document
 public:
   TextDocument();
   virtual ~TextDocument();
-  bool Load(const SimpleString& p_FileName);
+  bool Load(const char* pFileName);
   void Clear();
 
   virtual size_t NumLines() const;
   virtual size_t MaxLineLength();
-  virtual const SimpleString* GetIndexedLine(int p_LineIdx);
+  virtual const char* GetIndexedLine(int idx);
 
 protected:
   size_t m_MaxLineLength;
@@ -39,7 +39,7 @@ protected:
   LastScrollDirection m_LastScrollDirection;
 
 private:
-  Array<SimpleString*> m_Lines;
+  Array<const char*> m_Lines;
 };
 
 

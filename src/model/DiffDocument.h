@@ -27,7 +27,7 @@ public:
   size_t NumLines() const;
   size_t MaxLineLength();
 
-  const SimpleString* GetIndexedLine(int p_LineId);
+  const char* GetIndexedLine(int p_LineId);
 
   ColorName LineColor() const;
 
@@ -37,7 +37,7 @@ private:
   DiffFilePartition& m_DiffFilePartition;
   size_t m_LineId;
   ColorName m_LineColor;
-  const SimpleString* evaluateLine(const DiffLine* p_pDiffLine);
+  const char* evaluateLine(const DiffLine* pDiffLine);
 };
 
 #endif // DIFF_DOCUMENT_H

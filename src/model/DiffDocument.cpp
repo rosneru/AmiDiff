@@ -26,9 +26,9 @@ size_t DiffDocument::MaxLineLength()
 
   for(size_t i = 0; i < NumLines(); i++)
   {
-    if(m_DiffFilePartition.GetLine(i)->Text().Length() > m_MaxLineLength)
+    if(m_DiffFilePartition.GetLine(i)->Length() > m_MaxLineLength)
     {
-      m_MaxLineLength = m_DiffFilePartition.GetLine(i)->Text().Length();
+      m_MaxLineLength = m_DiffFilePartition.GetLine(i)->Length();
     }
   }
 
@@ -36,7 +36,7 @@ size_t DiffDocument::MaxLineLength()
 }
 
 
-const SimpleString* DiffDocument::GetIndexedLine(int p_LineId)
+const char* DiffDocument::GetIndexedLine(int p_LineId)
 {
   m_LastScrollDirection = None;
 
@@ -57,9 +57,9 @@ DiffDocument::ColorName DiffDocument::LineColor() const
   return m_LineColor;
 }
 
-const SimpleString* DiffDocument::evaluateLine(const DiffLine* p_pDiffLine)
+const char* DiffDocument::evaluateLine(const DiffLine* pDiffLine)
 {
-  switch(p_pDiffLine->State())
+  switch(pDiffLine->State())
   {
     case DiffLine::Normal:
       m_LineColor = DiffDocument::CN_Default;
@@ -82,5 +82,5 @@ const SimpleString* DiffDocument::evaluateLine(const DiffLine* p_pDiffLine)
       break;
   }
 
-  return &(p_pDiffLine->Text());
+  return pDiffLine->Text();
 }

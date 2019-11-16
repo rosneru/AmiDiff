@@ -93,7 +93,7 @@ bool DiffWorker::Diff()
   setProgressDescription("Pre-processing left file..");
 
   // If there was an error return to FilesWindow
-  if(m_LeftSrcPartition.PreProcess(m_LeftFilePath) == false)
+  if(m_LeftSrcPartition.PreProcess(m_LeftFilePath.C_str()) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "Error: Can't read left file.", "Ok");
@@ -112,7 +112,7 @@ bool DiffWorker::Diff()
   setProgressDescription("Pre-processing right file..");
 
   // If there was an error return to FilesWindow
-  if(m_RightSrcPartition.PreProcess(m_RightFilePath) == false)
+  if(m_RightSrcPartition.PreProcess(m_RightFilePath.C_str()) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "Error: Can't read right file.", "Ok");

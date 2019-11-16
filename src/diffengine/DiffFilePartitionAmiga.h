@@ -2,7 +2,6 @@
 #define DIFF_FILE_PARTITION_AMIGA_H
 
 #include "DiffFilePartition.h"
-#include "SimpleString.h"
 
 /**
  * Extends the DiffFilePartition::PreProcess with Amiga file loading
@@ -16,7 +15,14 @@ class DiffFilePartitionAmiga : public DiffFilePartition
 {
 public:
   DiffFilePartitionAmiga(bool& p_bCancelRequested);
-  bool PreProcess(const SimpleString& p_FileName);
+  ~DiffFilePartitionAmiga();
+
+  void Clear();
+
+  bool PreProcess(const char* pFileName);
+
+  void AddString(const char* p_String,
+                 DiffLine::LineState p_LineState);
 };
 
 #endif // DIFF_FILE_PARTITION_AMIGA_H

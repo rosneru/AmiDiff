@@ -9,10 +9,39 @@ DiffFilePartitionAmiga::DiffFilePartitionAmiga(
 {
 }
 
-bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
+DiffFilePartitionAmiga::~DiffFilePartitionAmiga()
+{
+  Clear();
+}
+
+void DiffFilePartitionAmiga::Clear()
+{
+  if(m_DiffLinesArray.Size() == 0)
+  {
+    return;
+  }
+
+  DiffLine* pItem;
+  while((pItem = m_DiffLinesArray.Pop()) != NULL)
+  {
+    if(!pItem->TextIsLinked() && (pItem->Text() != NULL))
+    {
+      delete[] pItem->Text();
+    }
+
+    delete pItem;
+
+    if(m_DiffLinesArray.Size() == 0)
+    {
+      break;
+    }
+  }
+}
+
+bool DiffFilePartitionAmiga::PreProcess(const char* pFileName)
 {
   AmigaFile file;
-  if(!file.Open(p_FileName, AmigaFile::AM_OldFile))
+  if(!file.Open(pFileName, AmigaFile::AM_OldFile))
   {
   	return false;
   }
@@ -83,3 +112,16 @@ bool DiffFilePartitionAmiga::PreProcess(const SimpleString& p_FileName)
 
   return true;
 }
+
+
+  void DiffFilePartitionAmiga::AddString(const char* p_String,
+                                         DiffLine::LineState p_LineState)
+  {
+    DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
+    if(pDiffLine == NULL)
+    {
+      return;
+    }
+
+    m_DiffLinesArray.Push(pDiffLine); 
+  }

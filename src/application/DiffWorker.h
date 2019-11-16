@@ -77,8 +77,8 @@ private:
   DiffFilePartitionAmiga m_LeftSrcPartition;
   DiffFilePartitionAmiga m_RightSrcPartition;
 
-  DiffFilePartition m_LeftDiffPartition;
-  DiffFilePartition m_RightDiffPartition;
+  DiffFilePartitionAmiga m_LeftDiffPartition;
+  DiffFilePartitionAmiga m_RightDiffPartition;
 
   DiffEngine m_DiffEngine;
 
