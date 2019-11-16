@@ -10,12 +10,12 @@ Document::~Document()
 
 }
 
-const SimpleString& Document::FileName() const
+const char* Document::FileName() const
 {
   return m_FileName;
 }
 
-void Document::SetFileName(const SimpleString& p_FileName)
+void Document::SetFileName(const char* pFileName)
 {
-  m_FileName = p_FileName;
+  m_FileName = const_cast<char*>(pFileName);
 }

@@ -6,7 +6,7 @@
 #include "SimpleString.h"
 #include "TextDocument.h"
 
-class DiffDocument : public TextDocument
+class DiffDocument : public Document
 {
 public:
   /**
@@ -27,17 +27,15 @@ public:
   size_t NumLines() const;
   size_t MaxLineLength();
 
-  const char* GetIndexedLine(int p_LineId);
+  const DiffLine* GetIndexedLine(int p_LineId);
 
   ColorName LineColor() const;
-
-
 
 private:
   DiffFilePartition& m_DiffFilePartition;
   size_t m_LineId;
   ColorName m_LineColor;
-  const char* evaluateLine(const DiffLine* pDiffLine);
+  const DiffLine* evaluateLine(const DiffLine* pDiffLine);
 };
 
 #endif // DIFF_DOCUMENT_H

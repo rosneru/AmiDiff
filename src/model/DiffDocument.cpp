@@ -36,7 +36,7 @@ size_t DiffDocument::MaxLineLength()
 }
 
 
-const char* DiffDocument::GetIndexedLine(int p_LineId)
+const DiffLine* DiffDocument::GetIndexedLine(int p_LineId)
 {
   m_LastScrollDirection = None;
 
@@ -57,7 +57,7 @@ DiffDocument::ColorName DiffDocument::LineColor() const
   return m_LineColor;
 }
 
-const char* DiffDocument::evaluateLine(const DiffLine* pDiffLine)
+const DiffLine* DiffDocument::evaluateLine(const DiffLine* pDiffLine)
 {
   switch(pDiffLine->State())
   {
@@ -82,5 +82,5 @@ const char* DiffDocument::evaluateLine(const DiffLine* pDiffLine)
       break;
   }
 
-  return pDiffLine->Text();
+  return pDiffLine;
 }

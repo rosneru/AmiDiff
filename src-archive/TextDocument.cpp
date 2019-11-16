@@ -21,34 +21,31 @@ TextDocument::~TextDocument()
  * Name of text file to load
  *
  */
-bool TextDocument::Load(const char* pFileName)
+bool TextDocument::Load(const SimpleString& p_FileName)
 {
-  if(pFileName == NULL)
+  if(p_FileName.Length() == 0)
   {
     return false;
   }
 
-  return false;
-  // TODO Re-implement with char* instead SimpleString
-  
-  // Clear();
+  Clear();
 
-  // // Open file
-  // AmigaFile file;
-  // if(file.Open(pFileName, AmigaFile::AM_OldFile) == false)
-  // {
-  //   return false;
-  // }
+  // Open file
+  AmigaFile file;
+  if(file.Open(p_FileName.C_str(), AmigaFile::AM_OldFile) == false)
+  {
+    return false;
+  }
 
-  // // Read line by line into list
-  // bool bSuccess = file.ReadLines(m_Lines);
-  // if(bSuccess == true)
-  // {
-  //   m_FileName = pFileName;
-  // }
+  // Read line by line into list
+  bool bSuccess = file.ReadLines(m_Lines);
+  if(bSuccess == true)
+  {
+    m_FileName = p_FileName;
+  }
 
-  // file.Close();
-  // return bSuccess;
+  file.Close();
+  return bSuccess;
 
 }
 
@@ -97,8 +94,8 @@ size_t TextDocument::MaxLineLength()
 }
 
 
-const char* TextDocument::GetIndexedLine(int idx)
+const SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
 {
   m_LastScrollDirection = None;
-  return m_Lines[idx];
+  return m_Lines[p_LineIdx];
 }

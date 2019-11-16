@@ -9,14 +9,33 @@ class Document
 public:
   Document();
   virtual ~Document();
-  virtual bool Load(const SimpleString& p_FileName) = 0;
+  virtual bool Load(const char* pFileName) = 0;
   virtual void Clear() = 0;
 
-  const SimpleString& FileName() const;
-  void SetFileName(const SimpleString& p_FileName);
+  const char*FileName() const;
+  void SetFileName(const char* pFileName);
+
+  /**
+   * Used to describe if the last line obtaining method was
+   * getNextLine(), getPreviousLine() ore none of both.
+   */
+  enum LastScrollDirection
+  {
+    None,
+    NextLine,
+    PreviousLine,
+  };
+
 
 protected:
-  SimpleString m_FileName;
+  char* m_FileName;
+  size_t m_MaxLineLength;
+
+  /**
+   * Stores if the last scroll line obtaining method was getNextLine(),
+   * getPreviousLine() ore none of both.
+   */
+  LastScrollDirection m_LastScrollDirection;
 };
 
 
