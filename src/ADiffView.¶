@@ -360,20 +360,6 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "gui/TextWindow.cpp"
-"gui/TextWindow.cpp"
-"gui/TextWindow.h"
-"gui/AppScreen.h"
-"gui/WindowBase.h"
-"model/Document.h"
-"gui/AmigaDiffPens.h"
-"gui/ScrollbarWindow.h"
-"gui/ApplicationMenu.h"
-Storm Shell Project (Dependencies)
-"objects_debug/TextWindow.o" "objects_debug/TextWindow.debug"
-""
-1 1
-File
 1 "gui/WindowBase.cpp"
 "gui/AppScreen.h"
 "gui/WindowBase.cpp"
@@ -420,15 +406,6 @@ File
 "model/Document.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Document.o" "objects_debug/Document.debug"
-""
-1 1
-File
-1 "model/TextDocument.cpp"
-"model/TextDocument.cpp"
-"model/TextDocument.h"
-"model/Document.h"
-Storm Shell Project (Dependencies)
-"objects_debug/TextDocument.o" "objects_debug/TextDocument.debug"
 ""
 1 1
 File
@@ -621,13 +598,6 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "gui/TextWindow.h"
-"gui/TextWindow.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
 2 "gui/WindowBase.h"
 "gui/Window.h"
 "gui/WindowBase.h"
@@ -645,13 +615,6 @@ Storm Shell Project (Dependencies)
 File
 2 "model/Document.h"
 "model/Document.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "model/TextDocument.h"
-"model/TextDocument.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
