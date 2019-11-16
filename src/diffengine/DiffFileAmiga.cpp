@@ -1,6 +1,8 @@
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
 
+#include <new>
+
 #include "AmigaFile.h"
 #include "DiffFileAmiga.h"
 
