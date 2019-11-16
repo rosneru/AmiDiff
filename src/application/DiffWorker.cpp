@@ -18,16 +18,16 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
     m_ProgressOffset(0),
     m_bCancelRequested(bCancelRequested),
     m_bExitAllowed(bExitAllowed),
-    m_pLeftDiffDocument(NULL),
-    m_pRightDiffDocument(NULL),
-    m_LeftSrcPartition(m_bCancelRequested),
-    m_RightSrcPartition(m_bCancelRequested),
-    m_LeftDiffPartition(m_bCancelRequested),
-    m_RightDiffPartition(m_bCancelRequested),
-    m_DiffEngine(m_LeftSrcPartition,
-                 m_RightSrcPartition,
-                 m_LeftDiffPartition,
-                 m_RightDiffPartition,
+    m_pDiffDocumentLeft(NULL),
+    m_pDiffDocumentRight(NULL),
+    m_LeftFile(m_bCancelRequested),
+    m_RightFile(m_bCancelRequested),
+    m_LeftFileDiff(m_bCancelRequested),
+    m_RightFileDiff(m_bCancelRequested),
+    m_DiffEngine(m_LeftFile,
+                 m_RightFile,
+                 m_LeftFileDiff,
+                 m_RightFileDiff,
                  m_bCancelRequested)
 {
 
@@ -39,8 +39,8 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
   //      the intuition event loop which eventually displays the
   //      progress in a window.
   //
-  m_LeftSrcPartition.SetProgressReporter(this);
-  m_RightSrcPartition.SetProgressReporter(this);
+  m_LeftFile.SetProgressReporter(this);
+  m_RightFile.SetProgressReporter(this);
   m_DiffEngine.SetProgressReporter(this);
 }
 
@@ -93,7 +93,7 @@ bool DiffWorker::Diff()
   setProgressDescription("Pre-processing left file..");
 
   // If there was an error return to FilesWindow
-  if(m_LeftSrcPartition.PreProcess(m_LeftFilePath.C_str()) == false)
+  if(m_LeftFile.PreProcess(m_LeftFilePath.C_str()) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "Error: Can't read left file.", "Ok");
@@ -112,7 +112,7 @@ bool DiffWorker::Diff()
   setProgressDescription("Pre-processing right file..");
 
   // If there was an error return to FilesWindow
-  if(m_RightSrcPartition.PreProcess(m_RightFilePath.C_str()) == false)
+  if(m_RightFile.PreProcess(m_RightFilePath.C_str()) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "Error: Can't read right file.", "Ok");
@@ -152,13 +152,13 @@ bool DiffWorker::Diff()
   int leftNumAdded;
   int leftNumChanged;
   int leftNumDeleted;
-  m_LeftDiffPartition.NumChanges(leftNumAdded, leftNumChanged,
+  m_LeftFileDiff.NumChanges(leftNumAdded, leftNumChanged,
                                  leftNumDeleted);
 
   int rightNumAdded;
   int rightNumChanged;
   int rightNumDeleted;
-  m_RightDiffPartition.NumChanges(rightNumAdded, rightNumChanged,
+  m_RightFileDiff.NumChanges(rightNumAdded, rightNumChanged,
                                   rightNumDeleted);
 
   // If there are no changes return to FilesWindow
@@ -180,16 +180,16 @@ bool DiffWorker::Diff()
   // Prepare diff window and set results
   //
 
-  m_pLeftDiffDocument = new DiffDocument(m_LeftDiffPartition);
-  m_pRightDiffDocument = new DiffDocument(m_RightDiffPartition);
+  m_pDiffDocumentLeft = new DiffDocument(m_LeftFileDiff);
+  m_pDiffDocumentRight = new DiffDocument(m_RightFileDiff);
 
-  m_pLeftDiffDocument->SetFileName(m_LeftFilePath.C_str());
-  m_pRightDiffDocument->SetFileName(m_RightFilePath.C_str());
+  m_pDiffDocumentLeft->SetFileName(m_LeftFilePath.C_str());
+  m_pDiffDocumentRight->SetFileName(m_RightFilePath.C_str());
 
   m_DiffWindow.Open();
   m_ProgressWindow.Close();
 
-  m_DiffWindow.SetContent(m_pLeftDiffDocument, m_pRightDiffDocument);
+  m_DiffWindow.SetContent(m_pDiffDocumentLeft, m_pDiffDocumentRight);
   m_DiffWindow.SetStatusBar(timeSummary, leftNumAdded + rightNumAdded,
                             leftNumChanged + rightNumChanged,
                             leftNumDeleted + rightNumDeleted);
@@ -201,22 +201,22 @@ bool DiffWorker::Diff()
 
 void DiffWorker::disposeDocuments()
 {
-  if(m_pLeftDiffDocument != NULL)
+  if(m_pDiffDocumentLeft != NULL)
   {
-    delete m_pLeftDiffDocument;
-    m_pLeftDiffDocument = NULL;
+    delete m_pDiffDocumentLeft;
+    m_pDiffDocumentLeft = NULL;
   }
 
-  if(m_pRightDiffDocument != NULL)
+  if(m_pDiffDocumentRight != NULL)
   {
-    delete m_pRightDiffDocument;
-    m_pRightDiffDocument = NULL;
+    delete m_pDiffDocumentRight;
+    m_pDiffDocumentRight = NULL;
   }
 
-  m_LeftSrcPartition.Clear();
-  m_RightSrcPartition.Clear();
-  m_LeftDiffPartition.Clear();
-  m_RightDiffPartition.Clear();
+  m_LeftFile.Clear();
+  m_RightFile.Clear();
+  m_LeftFileDiff.Clear();
+  m_RightFileDiff.Clear();
 }
 
 void DiffWorker::doWork()

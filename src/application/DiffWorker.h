@@ -6,8 +6,7 @@
 #include "BackgroundWorker.h"
 #include "DiffDocument.h"
 #include "DiffEngine.h"
-#include "DiffFilePartition.h"
-#include "DiffFilePartitionAmiga.h"
+#include "DiffFileAmiga.h"
 #include "DiffWindow.h"
 #include "FilesWindow.h"
 #include "ProgressWindow.h"
@@ -71,14 +70,13 @@ private:
   bool& m_bCancelRequested;
   bool& m_bExitAllowed;
 
-  DiffDocument* m_pLeftDiffDocument;
-  DiffDocument* m_pRightDiffDocument;
+  DiffDocument* m_pDiffDocumentLeft;
+  DiffDocument* m_pDiffDocumentRight;
 
-  DiffFilePartitionAmiga m_LeftSrcPartition;
-  DiffFilePartitionAmiga m_RightSrcPartition;
-
-  DiffFilePartitionAmiga m_LeftDiffPartition;
-  DiffFilePartitionAmiga m_RightDiffPartition;
+  DiffFileAmiga m_LeftFile;
+  DiffFileAmiga m_RightFile;
+  DiffFileAmiga m_LeftFileDiff;
+  DiffFileAmiga m_RightFileDiff;
 
   DiffEngine m_DiffEngine;
 
