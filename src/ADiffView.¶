@@ -360,15 +360,16 @@ Storm Shell Project (Dependencies)
 File
 1 "main.cpp"
 "main.cpp"
+"diffengine/DiffLine.h"
+"diffengine/Pair.h"
 "gui/AppScreen.h"
 "gui/AmigaDiffPens.h"
 "commands/Command.h"
 "thread/ProgressReporter.h"
 "thread/WorkerStartupMsg.h"
-"diffengine/DiffLine.h"
+"diffengine/DiffFilePartition.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
-"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
