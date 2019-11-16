@@ -5,20 +5,20 @@
 
 #include <string.h>
 
-#include "DiffFilePartitionLinux.h"
+#include "DiffFileLinux.h"
 
-DiffFilePartitionLinux::DiffFilePartitionLinux(
+DiffFileLinux::DiffFileLinux(
   bool& p_bCancelRequested)
-  : DiffFilePartition(p_bCancelRequested)
+  : DiffFileBase(p_bCancelRequested)
 {
 }
 
-DiffFilePartitionLinux::~DiffFilePartitionLinux()
+DiffFileLinux::~DiffFileLinux()
 {
   Clear();
 }
 
-void DiffFilePartitionLinux::Clear()
+void DiffFileLinux::Clear()
 {
   if(m_DiffLinesArray.Size() == 0)
   {
@@ -43,7 +43,7 @@ void DiffFilePartitionLinux::Clear()
 }
 
 
-bool DiffFilePartitionLinux::PreProcess(const char* pFileName)
+bool DiffFileLinux::PreProcess(const char* pFileName)
 {
   std::ifstream inputFileStream;
   try
@@ -78,7 +78,7 @@ bool DiffFilePartitionLinux::PreProcess(const char* pFileName)
   return NumLines() > 0;
 }
 
-void DiffFilePartitionLinux::AddString(const char* p_String,
+void DiffFileLinux::AddString(const char* p_String,
                                        DiffLine::LineState p_LineState)
 {
   DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);

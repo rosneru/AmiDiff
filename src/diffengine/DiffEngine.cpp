@@ -2,10 +2,10 @@
 
 #include "DiffEngine.h"
 
-DiffEngine::DiffEngine(DiffFilePartition& a,
-                       DiffFilePartition& b,
-                       DiffFilePartition& aDiff,
-                       DiffFilePartition& bDiff,
+DiffEngine::DiffEngine(DiffFileBase& a,
+                       DiffFileBase& b,
+                       DiffFileBase& aDiff,
+                       DiffFileBase& bDiff,
                        bool& bCancelRequested)
   : m_A(a),
     m_B(b),
@@ -317,7 +317,7 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
 }
 
 
-void DiffEngine::optimize(DiffFilePartition& data)
+void DiffEngine::optimize(DiffFileBase& data)
 {
   long dataLength = data.NumLines();
   long startPos = 0;

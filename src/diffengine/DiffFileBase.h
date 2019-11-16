@@ -9,17 +9,14 @@
 /**
  * Class for storing a file line by line with diff information.
  *
- * It originates from Stephane Rodriguez open diff implementation:
- * https://www.codeproject.com/Articles/3666/Diff-tool
- *
  * @author Uwe Rosner
  * @date 28/09/2018
  */
-class DiffFilePartition
+class DiffFileBase
 {
   // Constructor
 public:
-  DiffFilePartition(bool& p_bCancelRequested);
+  DiffFileBase(bool& p_bCancelRequested);
 
   long NumLines() const;
   void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const;
@@ -31,7 +28,6 @@ public:
   void SetLineState(size_t p_Index, DiffLine::LineState state);
 
   virtual void AddString(const char*, DiffLine::LineState) = 0;
-
   void AddBlankLine();
 
   /**

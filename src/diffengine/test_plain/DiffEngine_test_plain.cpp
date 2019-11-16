@@ -1,5 +1,5 @@
-#include "DiffFilePartition.h"
-#include "DiffFilePartitionLinux.h"
+#include "DiffFileBase.h"
+#include "DiffFileLinux.h"
 #include "DiffEngine.h"
 #include "DiffLine.h"
 
@@ -10,14 +10,14 @@ int main()
   bool cancelRequested = false;
   bool diffOk = false;
 
-  DiffFilePartitionLinux srcA(cancelRequested);
+  DiffFileLinux srcA(cancelRequested);
   srcA.PreProcess("../../../testfiles/testcase_13_6000_left.cpp");
 
-  DiffFilePartitionLinux srcB(cancelRequested);
+  DiffFileLinux srcB(cancelRequested);
   srcB.PreProcess("../../../testfiles/testcase_13_6000_right.cpp");
 
-  DiffFilePartitionLinux targetA(cancelRequested);
-  DiffFilePartitionLinux targetB(cancelRequested);
+  DiffFileLinux targetA(cancelRequested);
+  DiffFileLinux targetB(cancelRequested);
 
   DiffEngine diffEngine(srcA, srcB, targetA, targetB, cancelRequested);
   diffOk = diffEngine.Diff();
@@ -28,13 +28,7 @@ int main()
     return -30;
   }
 
-  printf("Diff erfolgreich:\n\n");
-
-  for(int i = 0; i < targetA.NumLines(); i++)
-  {
-    printf(">> %s\n", targetA.GetLineText(i));
-  }
-
+  printf("Diff erfolgreich\n");
 
   return 0;
 }

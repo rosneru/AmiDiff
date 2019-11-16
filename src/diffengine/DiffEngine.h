@@ -3,7 +3,7 @@
 
 #include "Pair.h"
 #include "DiffLine.h"
-#include "DiffFilePartition.h"
+#include "DiffFileBase.h"
 
 #include "ProgressReporter.h"
 
@@ -55,10 +55,10 @@ class DiffEngine
 {
 
 public:
-  DiffEngine(DiffFilePartition& a,
-             DiffFilePartition& b,
-             DiffFilePartition& aDiff,
-             DiffFilePartition& bDiff,
+  DiffEngine(DiffFileBase& a,
+             DiffFileBase& b,
+             DiffFileBase& aDiff,
+             DiffFileBase& bDiff,
              bool& bCancelRequested);
 
   ~DiffEngine();
@@ -72,10 +72,10 @@ public:
   void SetProgressReporter(ProgressReporter* p_pProgressReporter);
 
 private:
-  DiffFilePartition& m_A;
-  DiffFilePartition& m_B;
-  DiffFilePartition& m_ADiff;
-  DiffFilePartition& m_BDiff;
+  DiffFileBase& m_A;
+  DiffFileBase& m_B;
+  DiffFileBase& m_ADiff;
+  DiffFileBase& m_BDiff;
   bool& m_bCancelRequested;
 
   ProgressReporter* m_pProgressReporter;
@@ -119,7 +119,7 @@ private:
    * This leads to more readable diff sequences when comparing
    * text files.
    */
-  void optimize(DiffFilePartition& data);
+  void optimize(DiffFileBase& data);
 
   void reportProgress(int progress);
 };

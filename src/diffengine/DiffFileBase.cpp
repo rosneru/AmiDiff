@@ -1,6 +1,6 @@
-#include "DiffFilePartition.h"
+#include "DiffFileBase.h"
 
-DiffFilePartition::DiffFilePartition(bool& p_bCancelRequested)
+DiffFileBase::DiffFileBase(bool& p_bCancelRequested)
   : m_bCancelRequested(p_bCancelRequested),
     m_pProgressReporter(NULL)
 {
@@ -8,12 +8,12 @@ DiffFilePartition::DiffFilePartition(bool& p_bCancelRequested)
 }
 
 
-long DiffFilePartition::NumLines() const
+long DiffFileBase::NumLines() const
 {
   return m_DiffLinesArray.Size();
 }
 
-void DiffFilePartition::NumChanges(int& p_Added,
+void DiffFileBase::NumChanges(int& p_Added,
                                    int& p_Changed,
                                    int& p_Deleted) const
 {
@@ -40,7 +40,7 @@ void DiffFilePartition::NumChanges(int& p_Added,
   }
 }
 
-DiffLine* DiffFilePartition::GetLine(size_t p_Index) const
+DiffLine* DiffFileBase::GetLine(size_t p_Index) const
 {
   size_t numLines = m_DiffLinesArray.Size();
   if((numLines == 0) || (p_Index >= numLines))
@@ -54,7 +54,7 @@ DiffLine* DiffFilePartition::GetLine(size_t p_Index) const
 
 static const char* pEmptyText = "";
 
-const char* DiffFilePartition::GetLineText(size_t p_Index) const
+const char* DiffFileBase::GetLineText(size_t p_Index) const
 {
   size_t numLines = m_DiffLinesArray.Size();
   if((numLines == 0) || (p_Index >= numLines))
@@ -65,7 +65,7 @@ const char* DiffFilePartition::GetLineText(size_t p_Index) const
   return GetLine(p_Index)->Text();
 }
 
-unsigned long DiffFilePartition::GetLineToken(size_t p_Index) const
+unsigned long DiffFileBase::GetLineToken(size_t p_Index) const
 {
   DiffLine* pLine = GetLine(p_Index);
   if(pLine == NULL)
@@ -76,7 +76,7 @@ unsigned long DiffFilePartition::GetLineToken(size_t p_Index) const
   return GetLine(p_Index)->Token();
 }
 
-DiffLine::LineState DiffFilePartition::GetLineState(size_t p_Index) const
+DiffLine::LineState DiffFileBase::GetLineState(size_t p_Index) const
 {
   size_t numLines = m_DiffLinesArray.Size();
   if((numLines == 0) || (p_Index >= numLines))
@@ -87,7 +87,7 @@ DiffLine::LineState DiffFilePartition::GetLineState(size_t p_Index) const
   return GetLine(p_Index)->State();
 }
 
-void DiffFilePartition::SetLineState(size_t p_Index, DiffLine::LineState state)
+void DiffFileBase::SetLineState(size_t p_Index, DiffLine::LineState state)
 {
   DiffLine* pDiffLine = GetLine(p_Index);
   if(pDiffLine == NULL)
@@ -99,13 +99,13 @@ void DiffFilePartition::SetLineState(size_t p_Index, DiffLine::LineState state)
   pDiffLine->SetState(state);
 }
 
-void DiffFilePartition::AddBlankLine()
+void DiffFileBase::AddBlankLine()
 {
   static const char* pEmptyLine = "";
   AddString(pEmptyLine, DiffLine::Normal);
 }
 
-void DiffFilePartition::SetProgressReporter(ProgressReporter* p_pProgressReporter)
+void DiffFileBase::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 {
   m_pProgressReporter = p_pProgressReporter;
 }

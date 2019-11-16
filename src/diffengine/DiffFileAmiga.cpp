@@ -1,20 +1,19 @@
 #include <clib/dos_protos.h>
 
 #include "AmigaFile.h"
-#include "DiffFilePartitionAmiga.h"
+#include "DiffFileAmiga.h"
 
-DiffFilePartitionAmiga::DiffFilePartitionAmiga(
-  bool& p_bCancelRequested)
-  : DiffFilePartition(p_bCancelRequested)
+DiffFileAmiga::DiffFileAmiga(bool& p_bCancelRequested)
+  : DiffFileBase(p_bCancelRequested)
 {
 }
 
-DiffFilePartitionAmiga::~DiffFilePartitionAmiga()
+DiffFileAmiga::~DiffFileAmiga()
 {
   Clear();
 }
 
-void DiffFilePartitionAmiga::Clear()
+void DiffFileAmiga::Clear()
 {
   if(m_DiffLinesArray.Size() == 0)
   {
@@ -38,7 +37,7 @@ void DiffFilePartitionAmiga::Clear()
   }
 }
 
-bool DiffFilePartitionAmiga::PreProcess(const char* pFileName)
+bool DiffFileAmiga::PreProcess(const char* pFileName)
 {
   AmigaFile file;
   if(!file.Open(pFileName, AmigaFile::AM_OldFile))
@@ -117,8 +116,8 @@ bool DiffFilePartitionAmiga::PreProcess(const char* pFileName)
 }
 
 
-void DiffFilePartitionAmiga::AddString(const char* p_String,
-                                       DiffLine::LineState p_LineState)
+void DiffFileAmiga::AddString(const char* p_String,
+                              DiffLine::LineState p_LineState)
 {
   DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
   if(pDiffLine == NULL)

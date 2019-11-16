@@ -12,22 +12,22 @@ INCLUDEPATH +=  ../ \
 SOURCES += \
     DiffEngine_test_plain.cpp \
     ../DiffEngine.cpp \
-    ../DiffFilePartition.cpp \
     ../DiffLine.cpp \
     ../../oscottlibs/LinkedList.cpp \
     ../../oscottlibs/LinkedListNode.cpp \
     ../../oscottlibs/SimpleString.cpp \
-    ../DiffFilePartitionLinux.cpp \
+    ../DiffFileLinux.cpp \
     ../Pair.cpp \
+    ../DiffFileBase.cpp
 
 
 HEADERS += \
     ../DiffEngine.h \
-    ../DiffFilePartition.h \
     ../DiffLine.h \
     ../../oscottlibs/LinkedList.h \
     ../../oscottlibs/LinkedListNode.h \
     ../../oscottlibs/SimpleString.h \
-    ../DiffFilePartitionLinux.h \
+    ../DiffFileLinux.h \
     ../../oscottlibs/Array.h \
     ../Pair.h \
+    ../DiffFileBase.h

@@ -1,7 +1,7 @@
 #ifndef DIFF_FILE_PARTITION_AMIGA_H
 #define DIFF_FILE_PARTITION_AMIGA_H
 
-#include "DiffFilePartition.h"
+#include "DiffFileBase.h"
 
 /**
  * Extends the DiffFilePartition::PreProcess with Amiga file loading
@@ -11,11 +11,11 @@
  * @author Uwe Rosner
  * @date 09/11/2018
  */
-class DiffFilePartitionAmiga : public DiffFilePartition
+class DiffFileAmiga : public DiffFileBase
 {
 public:
-  DiffFilePartitionAmiga(bool& p_bCancelRequested);
-  ~DiffFilePartitionAmiga();
+  DiffFileAmiga(bool& p_bCancelRequested);
+  ~DiffFileAmiga();
 
   void Clear();
 

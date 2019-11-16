@@ -12,8 +12,8 @@
 #endif
 #include <boost/test/unit_test.hpp>
 
-#include "DiffFilePartition.h"
-#include "DiffFilePartitionLinux.h"
+#include "DiffFileBase.h"
+#include "DiffFileLinux.h"
 #include "DiffEngine.h"
 #include "DiffLine.h"
 
@@ -43,14 +43,14 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
   //
   // >> Deleted "Line 3" in right file.
 
-  DiffFilePartitionLinux srcA(cancelRequested);
+  DiffFileLinux srcA(cancelRequested);
   srcA.PreProcess("../../../testfiles/testcase_02_left.txt");
 
-  DiffFilePartitionLinux srcB(cancelRequested);
+  DiffFileLinux srcB(cancelRequested);
   srcB.PreProcess("../../../testfiles/testcase_02_right.txt");
 
-  DiffFilePartitionLinux diffA(cancelRequested);
-  DiffFilePartitionLinux diffB(cancelRequested);
+  DiffFileLinux diffA(cancelRequested);
+  DiffFileLinux diffB(cancelRequested);
 
   DiffEngine diffEngine(srcA, srcB, diffA, diffB, cancelRequested);
   diffOk = diffEngine.Diff();
@@ -126,14 +126,14 @@ BOOST_AUTO_TEST_CASE( testcase_04 )
   bool cancelRequested = false;
   bool diffOk = false;
 
-  DiffFilePartitionLinux leftSrcPartition2(cancelRequested);
+  DiffFileLinux leftSrcPartition2(cancelRequested);
   leftSrcPartition2.PreProcess("../../../testfiles/testcase_04_left.txt");
 
-  DiffFilePartitionLinux rightSrcPartition2(cancelRequested);
+  DiffFileLinux rightSrcPartition2(cancelRequested);
   rightSrcPartition2.PreProcess("../../../testfiles/testcase_04_right.txt");
 
-  DiffFilePartitionLinux leftDiffPartition2(cancelRequested);
-  DiffFilePartitionLinux rightDiffPartition2(cancelRequested);
+  DiffFileLinux leftDiffPartition2(cancelRequested);
+  DiffFileLinux rightDiffPartition2(cancelRequested);
 
   DiffEngine diffEngine(leftSrcPartition2,
                         rightSrcPartition2,
@@ -347,14 +347,14 @@ BOOST_AUTO_TEST_CASE( DiffTest_12_EndlessLoop )
   // >> Cleared "Line 3" (set to empty) in right file
   //
 
-  DiffFilePartitionLinux leftSrcPartition(cancelRequested);
+  DiffFileLinux leftSrcPartition(cancelRequested);
   leftSrcPartition.PreProcess("../../../testfiles/testcase_12_endless_loop_left.txt");
 
-  DiffFilePartitionLinux rightSrcPartition(cancelRequested);
+  DiffFileLinux rightSrcPartition(cancelRequested);
   rightSrcPartition.PreProcess("../../../testfiles/testcase_12_endless_loop_right.txt");
 
-  DiffFilePartitionLinux leftDiffPartition(cancelRequested);
-  DiffFilePartitionLinux rightDiffPartition(cancelRequested);
+  DiffFileLinux leftDiffPartition(cancelRequested);
+  DiffFileLinux rightDiffPartition(cancelRequested);
 
   DiffEngine diffEngine(leftSrcPartition,
                         rightSrcPartition,
@@ -404,14 +404,14 @@ BOOST_AUTO_TEST_CASE( testcase_13_6000_lines )
   bool cancelRequested = false;
   bool diffOk = false;
 
-  DiffFilePartitionLinux srcA(cancelRequested);
+  DiffFileLinux srcA(cancelRequested);
   srcA.PreProcess("../../../testfiles/testcase_13_6000_left.cpp");
 
-  DiffFilePartitionLinux srcB(cancelRequested);
+  DiffFileLinux srcB(cancelRequested);
   srcB.PreProcess("../../../testfiles/testcase_13_6000_right.cpp");
 
-  DiffFilePartitionLinux diffA(cancelRequested);
-  DiffFilePartitionLinux diffB(cancelRequested);
+  DiffFileLinux diffA(cancelRequested);
+  DiffFileLinux diffB(cancelRequested);
 
   DiffEngine diffEngine(srcA, srcB, diffA, diffB, cancelRequested);
   diffOk = diffEngine.Diff();
@@ -426,14 +426,14 @@ BOOST_AUTO_TEST_CASE( testcase_22_myers_ruby_linearSpace )
   bool cancelRequested = false;
   bool diffOk = false;
 
-  DiffFilePartitionLinux srcA(cancelRequested);
+  DiffFileLinux srcA(cancelRequested);
   srcA.PreProcess("../../../testfiles/testcase_22_myersruby_left.c");
 
-  DiffFilePartitionLinux srcB(cancelRequested);
+  DiffFileLinux srcB(cancelRequested);
   srcB.PreProcess("../../../testfiles/testcase_22_myersruby_right.c");
 
-  DiffFilePartitionLinux diffA(cancelRequested);
-  DiffFilePartitionLinux diffB(cancelRequested);
+  DiffFileLinux diffA(cancelRequested);
+  DiffFileLinux diffB(cancelRequested);
 
   DiffEngine diffEngine(srcA, srcB, diffA, diffB, cancelRequested);
   diffOk = diffEngine.Diff();

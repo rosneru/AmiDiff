@@ -15,22 +15,22 @@ INCLUDEPATH +=  ../ \
 SOURCES += \
     DiffEngine_test_boost.cpp \
     ../DiffEngine.cpp \
-    ../DiffFilePartition.cpp \
+    ../DiffFileBase.cpp \
     ../DiffLine.cpp \
     ../../oscottlibs/LinkedList.cpp \
     ../../oscottlibs/LinkedListNode.cpp \
     ../../oscottlibs/SimpleString.cpp \
-    ../DiffFilePartitionLinux.cpp \
-    ../Pair.cpp
+    ../Pair.cpp \
+    ../DiffFileLinux.cpp
 
 
 HEADERS += \
     ../DiffEngine.h \
-    ../DiffFilePartition.h \
+    ../DiffFileBase.h \
     ../DiffLine.h \
     ../../oscottlibs/LinkedList.h \
     ../../oscottlibs/LinkedListNode.h \
     ../../oscottlibs/SimpleString.h \
-    ../DiffFilePartitionLinux.h \
     ../../oscottlibs/Array.h \
-    ../Pair.h
+    ../Pair.h \
+    ../DiffFileLinux.h

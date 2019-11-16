@@ -1,7 +1,7 @@
 #ifndef DIFF_FILE_PARTITION_LINUX_H
 #define DIFF_FILE_PARTITION_LINUX_H
 
-#include "DiffFilePartition.h"
+#include "DiffFileBase.h"
 
 /**
  * Extends the DiffFilePartition::PreProcess with Linux file loading 
@@ -11,11 +11,11 @@
  * @author Uwe Rosner
  * @date 14/11/2018
  */
-class DiffFilePartitionLinux : public DiffFilePartition
+class DiffFileLinux : public DiffFileBase
 {
 public:
-  DiffFilePartitionLinux(bool& p_bCancelRequested);
-  ~DiffFilePartitionLinux();
+  DiffFileLinux(bool& p_bCancelRequested);
+  ~DiffFileLinux();
 
   void Clear();
 
