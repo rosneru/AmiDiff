@@ -54,10 +54,13 @@ bool DiffFilePartitionAmiga::PreProcess(const char* pFileName)
     numLines = file.CountLines();
   }
 
-  char* pLine = NULL;
+  char* pReadLine = NULL;
   int i = 0;
-  while((pLine = file.ReadLine()) != NULL)
+  while((pReadLine = file.ReadLine()) != NULL)
   {
+    char* pLine = new char[strlen(pReadLine) + 1];
+    strcpy(pLine, pReadLine);
+
     DiffLine* pDiffLine = new DiffLine(pLine);
     if(pDiffLine == NULL)
     {
@@ -114,14 +117,14 @@ bool DiffFilePartitionAmiga::PreProcess(const char* pFileName)
 }
 
 
-  void DiffFilePartitionAmiga::AddString(const char* p_String,
-                                         DiffLine::LineState p_LineState)
+void DiffFilePartitionAmiga::AddString(const char* p_String,
+                                       DiffLine::LineState p_LineState)
+{
+  DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
+  if(pDiffLine == NULL)
   {
-    DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
-    if(pDiffLine == NULL)
-    {
-      return;
-    }
-
-    m_DiffLinesArray.Push(pDiffLine); 
+    return;
   }
+
+  m_DiffLinesArray.Push(pDiffLine);
+}
