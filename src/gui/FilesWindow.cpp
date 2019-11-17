@@ -11,16 +11,16 @@
 #include <intuition/icclass.h>
 #include <libraries/gadtools.h>
 
-#include "AslFileRequest.h"
 #include "FilesWindow.h"
 
 FilesWindow::FilesWindow(AppScreen& p_AppScreen,
-                         struct MsgPort* p_pMsgPort, 
+                         struct MsgPort* p_pMsgPort,
                          int& p_NumWindowsOpen,
                          SimpleString& p_LeftFilePath,
                          SimpleString& p_RightFilePath,
                          const Command& p_CmdDiff)
   : WindowBase(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
+    m_AslRequest(m_pWindow),
     m_bFileRequestOpen(false),
     m_LeftFilePath(p_LeftFilePath),
     m_RightFilePath(p_RightFilePath),
@@ -35,6 +35,7 @@ FilesWindow::FilesWindow(AppScreen& p_AppScreen,
 {
 
 }
+
 
 FilesWindow::~FilesWindow()
 {
@@ -52,9 +53,6 @@ FilesWindow::~FilesWindow()
     m_pCancelButton = NULL;
   }
 }
-
-
-
 
 
 void FilesWindow::Refresh()
@@ -78,6 +76,90 @@ bool FilesWindow::Open(const APTR p_pUserDataMenuItemToDisable)
   setStringGadgetText(m_pRightFileStringGadget, m_RightFilePath);
 
   return true;
+}
+
+
+bool FilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+{
+  if(!IsOpen())
+  {
+    return false;
+  }
+
+  switch (p_Class)
+  {
+    case IDCMP_GADGETUP:
+    {
+      struct Gadget* pGadget = (struct Gadget*) p_IAddress;
+      if(pGadget->GadgetID == GID_LeftFileButton)
+      {
+        // Button "..." to select left file was clicked
+        return selectLeftFile();
+      }
+      else if(pGadget->GadgetID == GID_RightFileButton)
+      {
+        // Button "..." to select right file was clicked
+        return selectRightFile();
+      }
+      else if(pGadget->GadgetID == GID_CancelButton)
+      {
+        // Button "Cancel" was clicked
+        Close();
+      }
+      else if(pGadget->GadgetID == GID_DiffButton)
+      {
+        // Button "Diff" was clicked
+
+        // Read latest string gadgets contents before continue
+        readStringGadgetsText();
+
+        // If now one of the texts is empty, do not perform the Diff
+        if((m_LeftFilePath.Length()) == 0 ||
+           (m_RightFilePath.Length()) == 0)
+        {
+          // Note: true marks that the *idcmp* was handled properly,
+          //       regardless of the diff not being performed
+          return true;
+        }
+
+        // Perform the diff
+        m_CmdDiff.Execute();
+      }
+      else if(pGadget->GadgetID == GID_LeftFileString)
+      {
+        // Text in left file string gadget was changed
+        readStringGadgetsText();
+      }
+      else if(pGadget->GadgetID == GID_RightFileString)
+      {
+        // Text in right file string gadget was changed
+        readStringGadgetsText();
+      }
+      return true;
+      break;
+    }
+
+    case IDCMP_REFRESHWINDOW:
+    {
+      // This handling is REQUIRED with GadTools
+      GT_BeginRefresh(IntuiWindow());
+      GT_EndRefresh(IntuiWindow(), TRUE);
+      return true;
+      break;
+    }
+
+    case IDCMP_CLOSEWINDOW:
+    {
+      if(!m_bFileRequestOpen)
+      {
+        Close();
+      }
+      return true;
+      break;
+    }
+  }
+
+  return false;
 }
 
 
@@ -117,7 +199,7 @@ void FilesWindow::initialize()
   // Declare the basic gadget structure
   struct NewGadget newGadget;
 
-  // Line 1  contains  a label
+  // Row 1  contains  a label
   newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
   newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
@@ -130,7 +212,7 @@ void FilesWindow::initialize()
   struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
     pContext, &newGadget, TAG_END);
 
-  // Line 2 contains a string gadget and selection button for the
+  // Row 2 contains a string gadget and selection button for the
   // filename of the left file
 
   // Creating the string gadget
@@ -157,7 +239,7 @@ void FilesWindow::initialize()
   m_pSelectLeftFileButton = CreateGadget(BUTTON_KIND,
     m_pLeftFileStringGadget, &newGadget, TAG_END);
 
-  // Line 3  contains a label
+  // Row 3  contains a label
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    += buttonHeight + vSpace;
   newGadget.ng_Width      = stringGadgetWidth;
@@ -168,7 +250,7 @@ void FilesWindow::initialize()
   pLabelGadget = CreateGadget(TEXT_KIND, m_pSelectLeftFileButton,
     &newGadget, TAG_END);
 
-  // Line 4 contains a string gadget and selection button for the
+  // Row 4 contains a string gadget and selection button for the
   // filename of the right file
 
   // Creating the string gadget
@@ -195,7 +277,7 @@ void FilesWindow::initialize()
   m_pSelectRightFileButton = CreateGadget(BUTTON_KIND,
     m_pRightFileStringGadget, &newGadget, TAG_END);
 
-  // Line 5 conatins the buttons Diff and Cancel
+  // Row 5 conatins the buttons Diff and Cancel
 
   // Creating the Diff button
   newGadget.ng_LeftEdge   = left;
@@ -241,159 +323,82 @@ void FilesWindow::initialize()
   m_bInitialized = true;
 }
 
-bool FilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+
+bool FilesWindow::selectLeftFile()
 {
-  if(!IsOpen())
-  {
-    return false;
-  }
-
-  switch (p_Class)
-  {
-    case IDCMP_GADGETUP:
-    {
-      struct Gadget* pGadget = (struct Gadget*) p_IAddress;
-      if(pGadget->GadgetID == GID_LeftFileButton)
-      {
-        // Button "..." to select left file was clicked
-
-        // Read latest string gadgets contents before continue
-        readStringGadgetsText();
-
-        // Open an ASL file request to let the user select the file
-        if(selectFile(m_LeftFilePath, "Select left (original) file"))
-        {
-          setStringGadgetText(m_pLeftFileStringGadget, m_LeftFilePath);
-          setDiffButtonState();
-        }
-      }
-      else if(pGadget->GadgetID == GID_RightFileButton)
-      {
-        // Button "..." to select right file was clicked
-
-        // Read latest string gadgets contents before continue
-        readStringGadgetsText();
-
-        // Open an ASL file request to let the user select the file
-        if(selectFile(m_RightFilePath, "Select right (changed) file"))
-        {
-          setStringGadgetText(m_pRightFileStringGadget, m_RightFilePath);
-          setDiffButtonState();
-        }
-      }
-      else if(pGadget->GadgetID == GID_CancelButton)
-      {
-        // Button "Cancel" was clicked
-        Close();
-      }
-      else if(pGadget->GadgetID == GID_DiffButton)
-      {
-        // Button "Diff" was clicked
-
-        // Read latest string gadgets contents before continue
-        readStringGadgetsText();
-
-        // If now one of the texts is empty, do not perform the Diff
-        if(m_LeftFilePath.Length() == 0 ||
-           m_RightFilePath.Length() == 0)
-        {
-          // Note: true marks that the *idcmp* was handled properly,
-          //       regardless of the diff not being performed
-          return true;
-        }
-
-        // Perform the diff
-        m_CmdDiff.Execute();
-/*
-        if(m_DiffFacade.Diff() == true)
-        {
-          // Diff was successful. Left and right diff windows should
-          // be open now, so this window can be closed
-          enableAll();
-          Close();
-        }
-        else
-        {
-          // TODO FileRequest to inform the user about diff error
-          enableAll();
-        }
-*/
-      }
-      else if(pGadget->GadgetID == GID_LeftFileString)
-      {
-        // Text in left file string gadget was changed
-        readStringGadgetsText();
-      }
-      else if(pGadget->GadgetID == GID_RightFileString)
-      {
-        // Text in right file string gadget was changed
-        readStringGadgetsText();
-      }
-      return true;
-      break;
-    }
-
-    case IDCMP_REFRESHWINDOW:
-    {
-      // This handling is REQUIRED with GadTools
-      GT_BeginRefresh(IntuiWindow());
-      GT_EndRefresh(IntuiWindow(), TRUE);
-      return true;
-      break;
-    }
-
-    case IDCMP_CLOSEWINDOW:
-    {
-      if(!m_bFileRequestOpen)
-      {
-        Close();
-      }
-      return true;
-      break;
-    }
-  }
-
-  return false;
-}
-
-bool FilesWindow::selectFile(SimpleString& p_FilePath,
-  const SimpleString& p_RequestTitle)
-{
-  if(m_bFileRequestOpen)
-  {
-    // Shouldn't be possible, but anyhow
-    return false;
-  }
-
-  m_bFileRequestOpen = true;
   disableAll();
 
-  AslFileRequest request(IntuiWindow());
-  SimpleString selectedFile = request.SelectFile(p_RequestTitle, p_FilePath);
+  // Read latest string gadgets contents before continue
+  readStringGadgetsText();
 
-  if(selectedFile.Length() == 0)
+  SimpleString path = m_LeftFilePath;
+  bool bPathOnly = false;
+  if((m_LeftFilePath.Length() == 0) &&
+     (m_RightFilePath.Length() > 0))
   {
-    // Cancelled or nothing selected
-    m_bFileRequestOpen = false;
-    enableAll();
-    return false;
+    // Left file path is empty, so use the path of the right file for
+    // pre-selection
+    path = m_RightFilePath;
+    bPathOnly = true;
   }
 
-  // Note: This will copy selectedFile to the target of p_FilePath
-  //       (the variable p_FilePath points to).
-  //       @see  SimpleString& operator=(const SimpleString& p_Other);
-  //
-  //       The reference itself is not rebound to p_FilePath as by
-  //       design refereces can't be rebound after initialization.
-  //
-  //       Because of the copying p_FilePath will 'point to' the valid
-  //       copied value of selectedFile after leaving the method scope.
-  p_FilePath = selectedFile;
+  SimpleString title("Select left (original) file");
+  SimpleString sel = m_AslRequest.SelectFile(title,
+                                             path,
+                                             bPathOnly);
+
+  if(sel.Length() == 0)
+  {
+    enableAll();
+
+    // Exit with success because idcmp was properly handled
+    return true;
+  }
+
+  m_LeftFilePath = sel;
+  setStringGadgetText(m_pLeftFileStringGadget, m_LeftFilePath);
 
   enableAll();
-  m_bFileRequestOpen = false;
   return true;
 }
+
+
+bool FilesWindow::selectRightFile()
+{
+  disableAll();
+
+  // Read latest string gadgets contents before continue
+  readStringGadgetsText();
+
+  SimpleString path = m_RightFilePath;
+  bool bPathOnly = false;
+  if((m_RightFilePath.Length() == 0) &&
+     (m_LeftFilePath.Length() > 0))
+  {
+    // Right file path is empty, so use the path of the left file for
+    // pre-selection
+    path = m_LeftFilePath;
+    bPathOnly = true;
+  }
+
+  SimpleString title("Select right (changed) file");
+  SimpleString sel = m_AslRequest.SelectFile(title, path, bPathOnly);
+
+  if(sel.Length() == 0)
+  {
+    enableAll();
+
+    // Exit with success because idcmp was properly handled
+    return true;
+  }
+
+  m_RightFilePath = sel;
+  setStringGadgetText(m_pRightFileStringGadget, m_RightFilePath);
+
+  enableAll();
+  return true;
+}
+
 
 void FilesWindow::enableAll()
 {
@@ -507,5 +512,5 @@ void FilesWindow::readStringGadgetsText()
   // Enable the 'Diff' button when both string gadgets contain text.
   // If not not: disable it.
   setDiffButtonState();
-
 }
+

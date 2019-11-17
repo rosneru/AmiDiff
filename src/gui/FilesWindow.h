@@ -4,6 +4,7 @@
 #include <exec/ports.h>
 #include <intuition/screens.h>
 
+#include "AslFileRequest.h"
 #include "AppScreen.h"
 #include "Command.h"
 #include "SimpleString.h"
@@ -21,7 +22,7 @@ class FilesWindow : public WindowBase
 {
 public:
   FilesWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
-              int& p_NumWindowsOpen, SimpleString& p_LeftFilePath, 
+              int& p_NumWindowsOpen, SimpleString& p_LeftFilePath,
               SimpleString& p_RightFilePath, const Command& p_CmdDiff);
 
   virtual ~FilesWindow();
@@ -45,11 +46,13 @@ public:
   /**
    * Handles given IDCMP event.
    *
-   * @returns If this event was handled: true; else: false.
+   * @returns
+   * If this event was handled: true; if it was not handled: false..
    */
   bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
 private:
+  AslFileRequest m_AslRequest;
   SimpleString& m_LeftFilePath;
   SimpleString& m_RightFilePath;
   const Command& m_CmdDiff;
@@ -85,23 +88,8 @@ private:
    */
   void initialize();
 
-  /**
-   * Opens a file requestor and lets the user select a file.
-   *
-   * @param p_FilePath
-   * Reference to a string variable to set the text of the user
-   * selected path/file into. If the user cancels the file requestor
-   * this variable is not changed.
-   *
-   * @param p_RequestTitle
-   * Title to set in the filer requestor window
-   *
-   * @returns
-   * When user selected a file: true; when user cancelled the
-   * requestor: false
-   */
-  bool selectFile(SimpleString& p_FilePath,
-    const SimpleString& p_RequestTitle);
+  bool selectLeftFile();
+  bool selectRightFile();
 
   /**
    * Enables all gadgets in the window except the 'Diff' button which

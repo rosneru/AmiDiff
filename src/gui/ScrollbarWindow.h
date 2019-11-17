@@ -35,7 +35,8 @@ public:
   /**
    * Handles given IDCMP event.
    *
-   * @returns If this event was handled: true; else: false.
+   * @returns
+   * If this event was handled: true; if it was not handled: false..
    */
   virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 

@@ -13,7 +13,7 @@
 class AslFileRequest
 {
 public:
-  AslFileRequest(struct Window* pIntuiWindow);
+  AslFileRequest(struct Window*& pIntuiWindow);
   virtual ~AslFileRequest();
 
   /**
@@ -22,20 +22,26 @@ public:
    * @param title
    * Text to be displayed in the file requesters title bar
    *
-   * @param initialFullFilePath
-   * A string with a full path and file name to pre-select this file 
+   * @param initialFileFullPath
+   * A string with a full path and file name to pre-select this file
    * at request opening time. If empty or invalid, no file is pre-
    * selected.
    *
+   * @param bPreselectPathOnly
+   * When set to true, only the path of initialFileFullPath will be
+   * pre-selected but not the file itself.
+   *
    * @returns
-   * Full path to the selected file or an empty string if dialog was 
+   * Full path to the selected file or an empty string if dialog was
    * canceled by the user.
    */
-  SimpleString SelectFile(const SimpleString& title, 
-    const SimpleString& initialFullFilePath);
+  SimpleString SelectFile(const SimpleString& title,
+                          const SimpleString& initialFileFullPath,
+                          bool bPreselectPathOnly = false);
 
 private:
-  struct Window* m_pIntuiWindow;
+  struct Window*& m_pIntuiWindow;
 };
 
 #endif
+

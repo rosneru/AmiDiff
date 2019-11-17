@@ -41,7 +41,8 @@ public:
   /**
    * Handles given IDCMP event.
    *
-   * @returns If this event was handled: true; else: false.
+   * @returns
+   * If this event was handled: true; if it was not handled: false..
    */
   bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
@@ -68,7 +69,7 @@ private:
   WORD m_FontHeight;  ///> Height of current text font
 
   bool& m_bCancelRequested;
-  
+
   struct Gadget* m_pGadgetList;
   struct Gadget* m_pLabelDescription;
   struct Gadget* m_pButtonCancel;

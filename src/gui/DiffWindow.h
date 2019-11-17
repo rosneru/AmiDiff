@@ -57,29 +57,29 @@ public:
 
   /**
    * Setting the data to be shown on the status bar.
-   * 
+   *
    * A reapienting of the status bar is triggered afterwards.
-   * 
+   *
    * @param p_DiffTime
    * How long did comparing the files take (in milli seconds)
-   * 
+   *
    * @param p_NumAdded
    * Number of added lines (sum of left  and right file)
-   * 
+   *
    * @param p_NumChanged
    * Number of changed lines (sum of left  and right file)
-   * 
+   *
    * @param p_NumDeleted
    * Number of deleted lines (sum of left  and right file)
-   * 
+   *
    */
-  void SetStatusBar(long p_DiffTime, int p_NumAdded, int p_NumChanged, 
+  void SetStatusBar(long p_DiffTime, int p_NumAdded, int p_NumChanged,
                     int p_NumDeleted);
 
   /**
    * Set the number of changes to be displayed at the status bar.
    * A reapienting of the status bar is triggered afterwards.
-   * 
+   *
    */
   void SetNumChanges(int p_NumAdded,int p_NumChanged, int p_NumDeleted);
 
@@ -88,7 +88,8 @@ public:
   /**
    * Handles given IDCMP event.
    *
-   * @returns If this event was handled: true; else: false.
+   * @returns
+   * If this event was handled: true; if it was not handled: false..
    */
   virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
@@ -188,7 +189,7 @@ private:
   unsigned short m_TextAreasTop;    ///> Y-position of the text areas
   unsigned short m_TextAreasWidth;  ///> Width of each text area
   unsigned short m_TextAreasHeight; ///> Height of the text areas (equally heigh)
-  
+
   SimpleString m_ChangedText;
   SimpleString m_AddedText;
   SimpleString m_DeletedText;
@@ -225,9 +226,9 @@ private:
    * y-position p_TopEdge.
    */
   void paintLine(const DiffLine* pLeftLine,
-                 const DiffLine* pRightLine, 
+                 const DiffLine* pRightLine,
                  WORD topEdge,
-                 int startIndex = -1, 
+                 int startIndex = -1,
                  int numChars = 0);
 
   /**

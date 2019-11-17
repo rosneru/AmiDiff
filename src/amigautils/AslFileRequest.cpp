@@ -8,7 +8,7 @@
 
 #include "AslFileRequest.h"
 
-AslFileRequest::AslFileRequest(struct Window* pIntuiWindow)
+AslFileRequest::AslFileRequest(struct Window*& pIntuiWindow)
   : m_pIntuiWindow(pIntuiWindow)
 {
 
@@ -20,36 +20,42 @@ AslFileRequest::~AslFileRequest()
 }
 
 SimpleString AslFileRequest::SelectFile(const SimpleString& title,
-  const SimpleString& initialFullFilePath)
+  const SimpleString& initialFileFullPath,
+  bool bPreselectPathOnly)
 {
   SimpleString selectedFileFullPath = "";
 
   SimpleString initialFilePart = "";
   SimpleString initialPathPart = "";
-  if(initialFullFilePath.Length() > 0)
+  if(initialFileFullPath.Length() > 0)
   {
     // Extract path and file name from initial full file name path
-    const char* pFullPath = initialFullFilePath.C_str();
+    const char* pFullPath = initialFileFullPath.C_str();
     const char* pPathPart = PathPart(pFullPath);
     const char* pFilePart = FilePart(pFullPath);
 
     size_t pathLen = pPathPart - pFullPath;
     if(pathLen > 0)
     {
-      initialPathPart = initialFullFilePath.SubStr(0, pathLen);
+      initialPathPart = initialFileFullPath.SubStr(0, pathLen);
     }
 
     initialFilePart = pFilePart;
   }
 
+  if(bPreselectPathOnly)
+  {
+    // Only take the path-part for pre-selection, not the file name
+    initialFilePart = "";
+  }
+
   // Allocate data structure for the ASL requester
   struct FileRequester* pFileRequest = (struct FileRequester*)
-    AllocAslRequestTags(
-      ASL_FileRequest,
-      ASL_Hail, (ULONG) title.C_str(),
-      ASL_Dir, (ULONG) initialPathPart.C_str(),
-      ASL_File, (ULONG) initialFilePart.C_str(),
-      TAG_DONE);
+    AllocAslRequestTags(ASL_FileRequest,
+                        ASL_Hail, (ULONG) title.C_str(),
+                        ASL_Dir, (ULONG) initialPathPart.C_str(),
+                        ASL_File, (ULONG) initialFilePart.C_str(),
+                        TAG_DONE);
 
   if(pFileRequest == NULL)
   {
