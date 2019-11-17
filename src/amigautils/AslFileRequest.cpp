@@ -58,8 +58,10 @@ SimpleString AslFileRequest::SelectFile(const SimpleString& p_Title,
   }
 
   // Open the file requester and wait until the user selected a file
-  if(AslRequestTags(pFileRequest, ASLFR_Window, (ULONG)m_pIntuiWindow,
-    TAG_DONE) == FALSE)
+  if(AslRequestTags(pFileRequest,
+                    ASLFR_Window, (ULONG)m_pIntuiWindow,
+                    ASLFR_RejectIcons, TRUE,
+                    TAG_DONE) == FALSE)
   {
     // Requester opening failed
     FreeAslRequest(pFileRequest);
