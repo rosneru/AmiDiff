@@ -5,6 +5,7 @@
 AmigaFile::AmigaFile()
   : MAX_LINE_LENGTH(1024), // TODO A better solution needed?
     m_pFile(NULL),
+    m_ErrorMsg("Unknown error in class AmigaFile.\n"),
     m_pProgressReporter(NULL)
 {
   m_pLineBuf = (STRPTR) AllocVec(MAX_LINE_LENGTH, 0L);
@@ -22,7 +23,11 @@ bool AmigaFile::Open(const char* pFileName, AccessMode p_AccessMode)
 {
   if(m_pFile != NULL)
   {
-    // There is already a file opened
+    m_ErrorMsg = "Failed to open the file '";
+    m_ErrorMsg += pFileName;
+    m_ErrorMsg += "' because another file is still open and hasn't ";
+    m_ErrorMsg += "been closed.\n";
+
     return false;
   }
 
@@ -56,6 +61,10 @@ bool AmigaFile::Open(const char* pFileName, AccessMode p_AccessMode)
   if(m_pFile == NULL)
   {
     // Opening failed
+    m_ErrorMsg = "Failed to open the file '";
+    m_ErrorMsg += pFileName;
+    m_ErrorMsg += "'.\n";
+
     return false;
   }
 
@@ -116,6 +125,10 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
   if(m_pFile == NULL)
   {
     // File not opened
+    m_ErrorMsg = "Failed to perform ReadLines() because the file '";
+    m_ErrorMsg += m_FileName;
+    m_ErrorMsg += "' hasn't been opened yet.\n";
+
     return false;
   }
 
@@ -215,6 +228,11 @@ char* AmigaFile::ReadLine()
   }
 
   return m_pLineBuf;
+}
+
+const char* AmigaFile::Error()
+{
+  return m_ErrorMsg.C_str();
 }
 
 void AmigaFile::SetProgressReporter(ProgressReporter* p_pProgressReporter)

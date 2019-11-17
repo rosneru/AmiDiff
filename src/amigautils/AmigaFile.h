@@ -108,6 +108,8 @@ public:
 
   char* ReadLine();
 
+  const char* Error();
+
   /**
    * Setting the progress reporter
    */
@@ -118,6 +120,7 @@ private:
   STRPTR m_pLineBuf;
   BPTR m_pFile;
   SimpleString m_FileName;
+  SimpleString m_ErrorMsg;
 
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 

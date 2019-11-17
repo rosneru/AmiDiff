@@ -21,7 +21,7 @@ public:
 
   bool PreProcess(const char* p_FileName);
 
-  void AddString(const char* p_String,
+  bool AddString(const char* p_String,
                  DiffLine::LineState p_LineState);
 };
 

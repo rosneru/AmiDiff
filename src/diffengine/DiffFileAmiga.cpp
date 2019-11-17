@@ -3,13 +3,16 @@
 
 #include <new.h>
 
-#include "AmigaFile.h"
 #include "DiffFileAmiga.h"
 
 DiffFileAmiga::DiffFileAmiga(APTR& pPoolHeader,
                              bool& p_bCancelRequested)
   : DiffFileBase(p_bCancelRequested),
-    m_pPoolHeader(pPoolHeader)
+    m_pPoolHeader(pPoolHeader),
+    m_pErrMsgLowMem("Not enough memory.\n"),
+    m_pErrMsgMemPool("Memory pool not initialized.\n"),
+    m_pErrMsgUnknown("Unknown error in class DiffFileAmiga.\n"),
+    m_pError(m_pErrMsgUnknown)
 {
 }
 
@@ -32,12 +35,13 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
   if(m_pPoolHeader == NULL)
   {
     // Won't work without memory pool
+    m_pError = m_pErrMsgMemPool;
     return false;
   }
 
-  AmigaFile file;
-  if(!file.Open(pFileName, AmigaFile::AM_OldFile))
+  if(!m_File.Open(pFileName, AmigaFile::AM_OldFile))
   {
+    m_pError = m_File.Error();
   	return false;
   }
 
@@ -46,31 +50,45 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
   int numLines = 0;
   if(m_pProgressReporter != NULL)
   {
-    numLines = file.CountLines();
+    numLines = m_File.CountLines();
   }
 
   char* pReadLine = NULL;
   int i = 0;
-  while((pReadLine = file.ReadLine()) != NULL)
+  while((pReadLine = m_File.ReadLine()) != NULL)
   {
     char* pLine = (char*) AllocPooled(m_pPoolHeader,
                                       strlen(pReadLine) + 1);
+    if(pLine == NULL)
+    {
+      m_pError = m_pErrMsgLowMem;
+      return false;
+    }
 
     strcpy(pLine, pReadLine);
 
     DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
                                                   sizeof(DiffLine));
 
-    // Because of using a memory pool the constructor has to be called manually
-    new (pDiffLine) DiffLine(pLine);
-
     if(pDiffLine == NULL)
     {
-      break;
+      m_pError = m_pErrMsgLowMem;
+      return false;
     }
 
+    // The next line is called 'replacement new'. It creates an object 
+    // of DiffLine on the known address pDiffLine and calls the 
+    // constructor. This has to be done here because a memory pool is
+    // used and the normal operator 'new' which reserves memory 
+    // automatically wouldn't be appropriate.
+    new (pDiffLine) DiffLine(pLine);
+
     // Append DiffLine to list
-    m_DiffLinesArray.Push(pDiffLine);
+    if(m_DiffLinesArray.Push(pDiffLine) == false)
+    {
+      m_pError = m_pErrMsgLowMem;
+      return false;
+    }
 
 	  i++;
 
@@ -113,20 +131,35 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
   }
 
 
-  file.Close();
+  m_File.Close();
 
   return true;
 }
 
 
-void DiffFileAmiga::AddString(const char* p_String,
+bool DiffFileAmiga::AddString(const char* p_String,
                               DiffLine::LineState p_LineState)
 {
-  DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
+  DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
+                                                sizeof(DiffLine));
+
   if(pDiffLine == NULL)
   {
-    return;
+    m_pError = m_pErrMsgLowMem;
+    return false;
   }
 
+  // The next line is called 'replacement new'. It creates an object 
+  // of DiffLine on the known address pDiffLine and calls the 
+  // constructor. This has to be done here because a memory pool is
+  // used and the normal operator 'new' which reserves memory 
+  // automatically wouldn't be appropriate.
+  new (pDiffLine) DiffLine(p_String, p_LineState);
+
   m_DiffLinesArray.Push(pDiffLine);
+}
+
+const char* DiffFileAmiga::Error()
+{
+  return m_pError;
 }

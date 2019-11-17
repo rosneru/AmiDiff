@@ -27,7 +27,7 @@ public:
   DiffLine::LineState GetLineState(size_t p_Index) const;
   void SetLineState(size_t p_Index, DiffLine::LineState state);
 
-  virtual void AddString(const char*, DiffLine::LineState) = 0;
+  virtual bool AddString(const char*, DiffLine::LineState) = 0;
   void AddBlankLine();
 
   /**

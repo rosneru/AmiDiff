@@ -78,13 +78,13 @@ bool DiffFileLinux::PreProcess(const char* pFileName)
   return NumLines() > 0;
 }
 
-void DiffFileLinux::AddString(const char* p_String,
+bool DiffFileLinux::AddString(const char* p_String,
                                        DiffLine::LineState p_LineState)
 {
   DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
   if(pDiffLine == NULL)
   {
-    return;
+    return false;
   }
 
   m_DiffLinesArray.Push(pDiffLine);

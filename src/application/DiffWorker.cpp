@@ -114,7 +114,7 @@ bool DiffWorker::Diff()
   if(m_LeftSrcFile.PreProcess(m_LeftSrcFilePath.C_str()) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
-                 "Error: Can't read left file.", "Ok");
+                 m_LeftSrcFile.Error, "Ok");
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
@@ -133,7 +133,7 @@ bool DiffWorker::Diff()
   if(m_RightSrcFile.PreProcess(m_RightSrcFilePath.C_str()) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
-                 "Error: Can't read right file.", "Ok");
+                 m_RightSrcFile.Error, "Ok");
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
