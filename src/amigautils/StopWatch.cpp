@@ -76,7 +76,7 @@ void StopWatch::Start()
 }
 
 
-double StopWatch::Pick(bool p_bKeepStartPoint)
+double StopWatch::Pick(bool bKeepStartPoint)
 {
   if(m_bInitialized == false)
   {
@@ -95,7 +95,7 @@ double StopWatch::Pick(bool p_bKeepStartPoint)
   double seconds = m_StopClock.ev_lo - m_StartClock.ev_lo;
   seconds /= (double)m_ClocksPerSecond;
 
-  if(p_bKeepStartPoint == false)
+  if(bKeepStartPoint == false)
   {
     ReadEClock(&m_StartClock);
   }

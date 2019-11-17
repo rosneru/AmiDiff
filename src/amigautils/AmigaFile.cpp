@@ -19,7 +19,7 @@ AmigaFile::~AmigaFile()
   }
 }
 
-bool AmigaFile::Open(const char* pFileName, AccessMode p_AccessMode)
+bool AmigaFile::Open(const char* pFileName, AccessMode accessMode)
 {
   if(m_pFile != NULL)
   {
@@ -35,7 +35,7 @@ bool AmigaFile::Open(const char* pFileName, AccessMode p_AccessMode)
 
   // Determining the corresponding accessMode for AmigaDOS
   int amigaDosAccessMode;
-  switch(p_AccessMode)
+  switch(accessMode)
   {
     case AM_NewFile:
     {
@@ -120,7 +120,7 @@ ULONG AmigaFile::GetSize()
   return size;
 }
 
-bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
+bool AmigaFile::ReadLines(Array<SimpleString*>& array)
 {
   if(m_pFile == NULL)
   {
@@ -153,7 +153,7 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
   int i = 0;
   while(ReadLine(line))
   {
-    p_Array.Push(new SimpleString(line));
+    array.Push(new SimpleString(line));
     i++;
 
     //
@@ -191,14 +191,14 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& p_Array)
   return true;
 }
 
-bool AmigaFile::ReadLine(SimpleString& p_Line)
+bool AmigaFile::ReadLine(SimpleString& line)
 {
   if(ReadLine() == NULL)
   {
     return false;
   }
 
-  p_Line = m_pLineBuf;
+  line = m_pLineBuf;
   return true;
 }
 
@@ -235,7 +235,7 @@ const char* AmigaFile::Error()
   return m_ErrorMsg.C_str();
 }
 
-void AmigaFile::SetProgressReporter(ProgressReporter* p_pProgressReporter)
+void AmigaFile::SetProgressReporter(ProgressReporter* pProgressReporter)
 {
-  m_pProgressReporter = p_pProgressReporter;
+  m_pProgressReporter = pProgressReporter;
 }

@@ -45,8 +45,7 @@ public:
    * @returns
    * If file successfully opened: true; if not: false
    */
-  bool Open(const char* pFileName,
-            AccessMode p_AccessMode = AM_OldFile);
+  bool Open(const char* pFileName, AccessMode accessMode = AM_OldFile);
 
   /**
    * Closes the file
@@ -93,18 +92,18 @@ public:
    * @param p_List
    * List to store the lines
    */
-  bool ReadLines(Array<SimpleString*>& p_Array);
+  bool ReadLines(Array<SimpleString*>& array);
 
   /**
    * Reads the next line from file
    *
-   * @param p_Line
+   * @param line
    * Reference to a string variable to read into
    *
    * @returns
    * true when reading was successful or false if eof or file not open
    */
-  bool ReadLine(SimpleString& p_Line);
+  bool ReadLine(SimpleString& line);
 
   char* ReadLine();
 
@@ -113,7 +112,7 @@ public:
   /**
    * Setting the progress reporter
    */
-  void SetProgressReporter(ProgressReporter* p_pProgressReporter);
+  void SetProgressReporter(ProgressReporter* pProgressReporter);
 
 private:
   const ULONG MAX_LINE_LENGTH;

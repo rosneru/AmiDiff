@@ -16,17 +16,17 @@ public:
   MessageBox();
   virtual ~MessageBox();
 
-  void Show(struct Window* p_pWindow,
-            const SimpleString& p_WindowTitle,
-            const SimpleString& p_Message,
-            const SimpleString& p_ButtonText);
+  void Show(struct Window* pWindow,
+            const SimpleString& windowTitle,
+            const SimpleString& message,
+            const SimpleString& buttonText);
 
   void Show(struct Window* p_pWindow,
-            const SimpleString& p_Message,
-            const SimpleString& p_ButtonText);
+            const SimpleString& message,
+            const SimpleString& buttonText);
 
-  void Show(const SimpleString& p_Message,
-            const SimpleString& p_ButtonText);
+  void Show(const SimpleString& message,
+            const SimpleString& buttonText);
 
 private:
     struct EasyStruct* m_pEasyStruct;

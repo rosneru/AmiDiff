@@ -8,8 +8,8 @@
 
 #include "AslFileRequest.h"
 
-AslFileRequest::AslFileRequest(struct Window* p_pIntuiWindow)
-  : m_pIntuiWindow(p_pIntuiWindow)
+AslFileRequest::AslFileRequest(struct Window* pIntuiWindow)
+  : m_pIntuiWindow(pIntuiWindow)
 {
 
 }
@@ -19,24 +19,24 @@ AslFileRequest::~AslFileRequest()
 
 }
 
-SimpleString AslFileRequest::SelectFile(const SimpleString& p_Title,
-  const SimpleString& p_InitialFileFullPath)
+SimpleString AslFileRequest::SelectFile(const SimpleString& title,
+  const SimpleString& initialFullFilePath)
 {
   SimpleString selectedFileFullPath = "";
 
   SimpleString initialFilePart = "";
   SimpleString initialPathPart = "";
-  if(p_InitialFileFullPath.Length() > 0)
+  if(initialFullFilePath.Length() > 0)
   {
     // Extract path and file name from initial full file name path
-    const char* pFullPath = p_InitialFileFullPath.C_str();
+    const char* pFullPath = initialFullFilePath.C_str();
     const char* pPathPart = PathPart(pFullPath);
     const char* pFilePart = FilePart(pFullPath);
 
     size_t pathLen = pPathPart - pFullPath;
     if(pathLen > 0)
     {
-      initialPathPart = p_InitialFileFullPath.SubStr(0, pathLen);
+      initialPathPart = initialFullFilePath.SubStr(0, pathLen);
     }
 
     initialFilePart = pFilePart;
@@ -46,7 +46,7 @@ SimpleString AslFileRequest::SelectFile(const SimpleString& p_Title,
   struct FileRequester* pFileRequest = (struct FileRequester*)
     AllocAslRequestTags(
       ASL_FileRequest,
-      ASL_Hail, (ULONG) p_Title.C_str(),
+      ASL_Hail, (ULONG) title.C_str(),
       ASL_Dir, (ULONG) initialPathPart.C_str(),
       ASL_File, (ULONG) initialFilePart.C_str(),
       TAG_DONE);
