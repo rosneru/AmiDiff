@@ -35,7 +35,7 @@ private:
   const char* m_pErrMsgLowMem;
   const char* m_pErrMsgMemPool;
   const char* m_pErrMsgUnknown;
-  char* m_pError;
+  const char* m_pError;
 
   DiffLine* createDiffLine();
 };

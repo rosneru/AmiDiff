@@ -9,25 +9,41 @@ DiffFileAmiga::DiffFileAmiga(APTR& pPoolHeader,
                              bool& p_bCancelRequested)
   : DiffFileBase(p_bCancelRequested),
     m_pPoolHeader(pPoolHeader),
-    m_pErrMsgLowMem("Not enough memory.\n"),
-    m_pErrMsgMemPool("Memory pool not initialized.\n"),
-    m_pErrMsgUnknown("Unknown error in class DiffFileAmiga.\n"),
+    m_pErrMsgLowMem("Not enough memory."),
+    m_pErrMsgMemPool("Memory pool not initialized."),
+    m_pErrMsgUnknown("Unknown error in class DiffFileAmiga."),
     m_pError(m_pErrMsgUnknown)
 {
 }
+
 
 DiffFileAmiga::~DiffFileAmiga()
 {
   Clear();
 }
 
+
 void DiffFileAmiga::Clear()
 {
-  // Nothing is deleted or freed here, because an external memory pool
-  // is used for all allocations. On exit or when performing another
-  // diff this memory pool is deleted outside with just one call.
-  // On the Amiga this is way faster than e.g. calling 5000 single
-  // delete [] in random order.
+  // The array is cleared but nothing else is deleted or freed here,
+  // because an external memory pool is used for all heap allocations.
+  // On exit or when performing another diff that memory pool is
+  // deleted outside with just one call. On the Amiga this is way
+  // faster than e.g. calling 5000 single delete [] in random order.
+
+  if(m_DiffLinesArray.Size() == 0)
+  {
+    return;
+  }
+
+  while(m_DiffLinesArray.Pop() != NULL)
+  {
+    if(m_DiffLinesArray.Size() == 0)
+    {
+      break;
+    }
+  }
+
 }
 
 bool DiffFileAmiga::PreProcess(const char* pFileName)
@@ -76,10 +92,10 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
       return false;
     }
 
-    // The next line is called 'replacement new'. It creates an object 
-    // of DiffLine on the known address pDiffLine and calls the 
+    // The next line is called 'replacement new'. It creates an object
+    // of DiffLine on the known address pDiffLine and calls the
     // constructor. This has to be done here because a memory pool is
-    // used and the normal operator 'new' which reserves memory 
+    // used and the normal operator 'new' which reserves memory
     // automatically wouldn't be appropriate.
     new (pDiffLine) DiffLine(pLine);
 
@@ -130,9 +146,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     m_pProgressReporter->notifyProgressChanged(100);
   }
 
-
   m_File.Close();
-
   return true;
 }
 
@@ -149,14 +163,20 @@ bool DiffFileAmiga::AddString(const char* p_String,
     return false;
   }
 
-  // The next line is called 'replacement new'. It creates an object 
-  // of DiffLine on the known address pDiffLine and calls the 
+  // The next line is called 'replacement new'. It creates an object
+  // of DiffLine on the known address pDiffLine and calls the
   // constructor. This has to be done here because a memory pool is
-  // used and the normal operator 'new' which reserves memory 
+  // used and the normal operator 'new' which reserves memory
   // automatically wouldn't be appropriate.
   new (pDiffLine) DiffLine(p_String, p_LineState);
 
-  m_DiffLinesArray.Push(pDiffLine);
+  if(m_DiffLinesArray.Push(pDiffLine) == false)
+  {
+    m_pError = m_pErrMsgLowMem;
+    return false;
+  }
+
+  return true;
 }
 
 const char* DiffFileAmiga::Error()

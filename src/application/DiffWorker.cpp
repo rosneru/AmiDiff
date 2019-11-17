@@ -89,7 +89,7 @@ bool DiffWorker::Diff()
   m_DiffWindow.Close();
   disposeDocuments();
 
-  m_pPoolHeader = CreatePool(MEMF_CLEAR, 1024, 512);
+  m_pPoolHeader = CreatePool(MEMF_CLEAR, 50000, 25000);
   if(m_pPoolHeader == NULL)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
@@ -114,7 +114,7 @@ bool DiffWorker::Diff()
   if(m_LeftSrcFile.PreProcess(m_LeftSrcFilePath.C_str()) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
-                 m_LeftSrcFile.Error, "Ok");
+                 m_LeftSrcFile.Error(), "Ok");
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
@@ -133,7 +133,7 @@ bool DiffWorker::Diff()
   if(m_RightSrcFile.PreProcess(m_RightSrcFilePath.C_str()) == false)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
-                 m_RightSrcFile.Error, "Ok");
+                 m_RightSrcFile.Error(), "Ok");
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
@@ -144,7 +144,7 @@ bool DiffWorker::Diff()
   }
 
   //
-  // Comparing the files
+  // Compare the files
   //
   setProgressDescription("Comparing the files..");
   bool diffOk = m_DiffEngine.Diff();
