@@ -30,20 +30,20 @@ void DiffFileAmiga::Clear()
   // On exit or when performing another diff that memory pool is
   // deleted outside with just one call. On the Amiga this is way
   // faster than e.g. calling 5000 single delete [] in random order.
-
-  if(m_DiffLinesArray.Size() == 0)
+/*
+  if(m_pDiffLines.Size() == 0)
   {
     return;
   }
 
-  while(m_DiffLinesArray.Pop() != NULL)
+  while(m_pDiffLines.Pop() != NULL)
   {
-    if(m_DiffLinesArray.Size() == 0)
+    if(m_pDiffLines.Size() == 0)
     {
       break;
     }
   }
-
+*/
 }
 
 bool DiffFileAmiga::PreProcess(const char* pFileName)
@@ -55,6 +55,13 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     return false;
   }
 
+  if(m_pDiffLines != NULL)
+  {
+    // ALready initialized
+    return true;
+  }
+
+
   if(!m_File.Open(pFileName, AmigaFile::AM_OldFile))
   {
     m_pError = m_File.Error();
@@ -63,10 +70,26 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
 
   // Initialize some variables needed for progress reporting
   int lastProgressValue = -1;
-  int numLines = 0;
+  m_NumLines = 0;
   if(m_pProgressReporter != NULL)
   {
-    numLines = m_File.CountLines();
+    m_NumLines = m_File.CountLines();
+  }
+
+  if(m_NumLines == 0)
+  {
+    // Empty file
+    return false;
+  }
+
+  // Create an array of DiffLine-pointers to hold all needed lines
+  size_t arraySize = sizeof(DiffLine*) * m_NumLines;
+  m_pDiffLines = (DiffLine**) AllocPooled(m_pPoolHeader, arraySize);
+  if(m_pDiffLines == NULL)
+  {
+    m_pError = m_pErrMsgLowMem;
+    m_File.Close();
+    return false;
   }
 
   char* pReadLine = NULL;
@@ -102,14 +125,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     new (pDiffLine) DiffLine(pLine);
 
     // Append DiffLine to list
-    if(m_DiffLinesArray.Push(pDiffLine) == false)
-    {
-      m_pError = m_pErrMsgLowMem;
-      m_File.Close();
-      return false;
-    }
-
-	  i++;
+    m_pDiffLines[i++] = pDiffLine;
 
     //
     // Progress reporting
@@ -118,7 +134,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     {
       // Report the 'lastProgressValue - 1' to ensure that the final
       // value of 100 (%) is sent after the last line is read.
-      int newProgressValue = (i * 100 / numLines) - 1;
+      int newProgressValue = (i * 100 / m_NumLines) - 1;
 
       if(newProgressValue > lastProgressValue)
       {
@@ -157,6 +173,25 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
 bool DiffFileAmiga::AddString(const char* p_String,
                               DiffLine::LineState p_LineState)
 {
+  if(m_NumLines < 1)
+  {
+    // Not initialized
+    return false;
+  }
+
+  if(m_pDiffLines == NULL)
+  {
+    // Create an array of DiffLine-pointers to hold all needed lines
+    size_t arraySize = sizeof(DiffLine*) * m_NumLines;
+    m_pDiffLines = (DiffLine**) AllocPooled(m_pPoolHeader, arraySize);
+    if(m_pDiffLines == NULL)
+    {
+      m_pError = m_pErrMsgLowMem;
+      m_File.Close();
+      return false;
+    }
+  }
+
   DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
                                                 sizeof(DiffLine));
 
@@ -173,11 +208,7 @@ bool DiffFileAmiga::AddString(const char* p_String,
   // automatically wouldn't be appropriate.
   new (pDiffLine) DiffLine(p_String, p_LineState);
 
-  if(m_DiffLinesArray.Push(pDiffLine) == false)
-  {
-    m_pError = m_pErrMsgLowMem;
-    return false;
-  }
+  m_pDiffLines[m_NextAddedLineIdx++] = pDiffLine;
 
   return true;
 }
