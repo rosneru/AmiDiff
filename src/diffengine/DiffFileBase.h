@@ -19,6 +19,16 @@ public:
   DiffFileBase(bool& p_bCancelRequested);
 
   long NumLines() const;
+
+  /**
+   * IMPORTANT: This is and only has to be used before the first
+   * AddString() call when filling the difference represenation file.
+   *
+   * A better solution has to be found in future to avoid this
+   * unnatural behavior!
+   */
+  void SetNumLines(long numLines);
+
   void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const;
 
   DiffLine* GetLine(size_t p_Index) const;
@@ -38,7 +48,15 @@ public:
 protected:
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;
-  Array<DiffLine*> m_DiffLinesArray;
+
+  unsigned long m_NumLines;
+  DiffLine** m_pDiffLines;
+
+  /**
+   * The index which will be used on m_pDiffLines[] at the next
+   * AddString() call.
+   */
+  long m_NextAddedLineIdx;
 };
 
 #endif

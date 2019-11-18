@@ -2,7 +2,10 @@
 
 DiffFileBase::DiffFileBase(bool& p_bCancelRequested)
   : m_bCancelRequested(p_bCancelRequested),
-    m_pProgressReporter(NULL)
+    m_pProgressReporter(NULL),
+    m_NumLines(0),
+    m_pDiffLines(NULL),
+    m_NextAddedLineIdx(0)
 {
 
 }
@@ -10,7 +13,13 @@ DiffFileBase::DiffFileBase(bool& p_bCancelRequested)
 
 long DiffFileBase::NumLines() const
 {
-  return m_DiffLinesArray.Size();
+  return m_NumLines;
+}
+
+void DiffFileBase::SetNumLines(long numLines)
+{
+  m_NumLines = numLines;
+  m_NextAddedLineIdx = 0;
 }
 
 void DiffFileBase::NumChanges(int& p_Added,
@@ -42,13 +51,12 @@ void DiffFileBase::NumChanges(int& p_Added,
 
 DiffLine* DiffFileBase::GetLine(size_t p_Index) const
 {
-  size_t numLines = m_DiffLinesArray.Size();
-  if((numLines == 0) || (p_Index >= numLines))
+  if(p_Index >= m_NumLines)
   {
     return NULL;
   }
 
-  return m_DiffLinesArray[p_Index];
+  return m_pDiffLines[p_Index];
 }
 
 
@@ -56,8 +64,7 @@ static const char* pEmptyText = "";
 
 const char* DiffFileBase::GetLineText(size_t p_Index) const
 {
-  size_t numLines = m_DiffLinesArray.Size();
-  if((numLines == 0) || (p_Index >= numLines))
+  if(p_Index >= m_NumLines)
   {
     return pEmptyText;
   }
@@ -78,8 +85,7 @@ unsigned long DiffFileBase::GetLineToken(size_t p_Index) const
 
 DiffLine::LineState DiffFileBase::GetLineState(size_t p_Index) const
 {
-  size_t numLines = m_DiffLinesArray.Size();
-  if((numLines == 0) || (p_Index >= numLines))
+  if(p_Index >= m_NumLines)
   {
     return DiffLine::Undefined;
   }

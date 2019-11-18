@@ -11,6 +11,8 @@ DiffEngine::DiffEngine(DiffFileBase& a,
     m_B(b),
     m_ADiff(aDiff),
     m_BDiff(bDiff),
+    m_NumInsertedB(0),
+    m_NumDeletedA(0),
     m_bCancelRequested(bCancelRequested),
     m_pProgressReporter(NULL),
     m_Max(0),
@@ -30,10 +32,10 @@ bool DiffEngine::Diff()
   //
   // Set-up the progress reporting
   //
-  const int NUM_NOTIFICATIONS = 18;
-  int numPositions = m_A.NumLines();
+  const long NUM_NOTIFICATIONS = 18;
+  long numPositions = m_A.NumLines();
   m_NotifyIncrement = numPositions / NUM_NOTIFICATIONS;
-  m_PercentIncrement = (int)90.0 / NUM_NOTIFICATIONS;
+  m_PercentIncrement = (long)90.0 / NUM_NOTIFICATIONS;
   m_NextNotifyPosition = m_NotifyIncrement;
   m_Percent = 0;
   reportProgress(0);
@@ -44,6 +46,9 @@ bool DiffEngine::Diff()
   m_Max = m_A.NumLines() + m_B.NumLines() + 1;
   m_pDownVector = new long[2 * m_Max + 2];
   m_pUpVector = new long[2 * m_Max + 2];
+
+  m_NumInsertedB = 0;
+  m_NumDeletedA = 0;
 
   //
   // Calculate the Longest common subsequence
@@ -78,6 +83,9 @@ bool DiffEngine::Diff()
 
   long lineA = 0;
   long lineB = 0;
+
+  m_ADiff.SetNumLines(m_A.NumLines() + m_NumInsertedB);
+  m_BDiff.SetNumLines(m_B.NumLines() + m_NumDeletedA);
 
   while (lineA < m_A.NumLines() || lineB < m_B.NumLines())
   {
@@ -165,6 +173,7 @@ void DiffEngine::lcs(long lowerA,
     while(lowerB < upperB)
     {
       m_B.GetLine(lowerB++)->SetState(DiffLine::Added);
+      m_NumInsertedB++;
     }
   }
   else if(lowerB == upperB)
@@ -172,6 +181,7 @@ void DiffEngine::lcs(long lowerA,
     while(lowerA < upperA)
     {
       m_A.GetLine(lowerA++)->SetState(DiffLine::Deleted);
+      m_NumDeletedA++;
     }
   }
   else

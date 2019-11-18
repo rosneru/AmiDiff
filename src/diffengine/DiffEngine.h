@@ -76,8 +76,11 @@ private:
   DiffFileBase& m_B;
   DiffFileBase& m_ADiff;
   DiffFileBase& m_BDiff;
-  bool& m_bCancelRequested;
 
+  long m_NumInsertedB;
+  long m_NumDeletedA;
+
+  bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;
 
   long m_Max;
@@ -85,9 +88,9 @@ private:
   long* m_pUpVector;
 
   // The next four fields are for progress notification
-  int m_Percent;
-  int m_PercentIncrement;
-  int m_NotifyIncrement;
+  long m_Percent;
+  long m_PercentIncrement;
+  long m_NotifyIncrement;
   long m_NextNotifyPosition;
 
 
