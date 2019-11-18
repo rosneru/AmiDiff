@@ -113,8 +113,11 @@ bool DiffWorker::Diff()
   // If there was an error return to FilesWindow
   if(m_LeftSrcFile.PreProcess(m_LeftSrcFilePath.C_str()) == false)
   {
-    request.Show(m_ProgressWindow.IntuiWindow(),
-                 m_LeftSrcFile.Error(), "Ok");
+    if(!m_bCancelRequested)
+    {
+      request.Show(m_ProgressWindow.IntuiWindow(),
+                   m_LeftSrcFile.Error(), "Ok");
+    }
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
@@ -132,8 +135,11 @@ bool DiffWorker::Diff()
   // If there was an error return to FilesWindow
   if(m_RightSrcFile.PreProcess(m_RightSrcFilePath.C_str()) == false)
   {
-    request.Show(m_ProgressWindow.IntuiWindow(),
-                 m_RightSrcFile.Error(), "Ok");
+    if(!m_bCancelRequested)
+    {
+      request.Show(m_ProgressWindow.IntuiWindow(),
+                   m_RightSrcFile.Error(), "Ok");
+    }
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
@@ -153,8 +159,11 @@ bool DiffWorker::Diff()
   // If there was an error return to FilesWindow
   if(!diffOk)
   {
-    request.Show(m_ProgressWindow.IntuiWindow(),
-                 "Error while performing the diff.", "Ok");
+    if(!m_bCancelRequested)
+    {
+      request.Show(m_ProgressWindow.IntuiWindow(),
+                   "Error while performing the diff.", "Ok");
+    }
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();

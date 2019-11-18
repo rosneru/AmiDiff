@@ -53,16 +53,18 @@ public:
    void Close();
 
   /**
-   * Counts the number of lines in file. The file has  to be opened
+   * Counts the number of lines in file. The file has to be opened
    * before calling this method.
    *
    * NOTE After this call the file reading pointer will be reset to
    *      the start of the file.
    *
    * @returns
-   * Number of lines in file or -1 if file is not opened.
+   * Number of lines in file. A value of '0' can mean that the file
+   * isn't opened or that the number of lines = 0. Check the Open()
+   * result to be sure.
    */
-  int CountLines();
+  ULONG CountLines();
 
   /**
    * Gets the file size in bytes. The file has  to be opened before
@@ -72,7 +74,9 @@ public:
    * file handle points to the start of the file.
    *
    * @returns
-   * File size in bytes, 0 if not opened.
+   * File size in bytes. A value of '0' can mean that the file isn't
+   * opened or that the file size = 0. Check the Open() result to be
+   * sure.
    */
   ULONG GetSize();
 

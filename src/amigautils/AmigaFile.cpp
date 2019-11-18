@@ -11,6 +11,7 @@ AmigaFile::AmigaFile()
   m_pLineBuf = (STRPTR) AllocVec(MAX_LINE_LENGTH, 0L);
 }
 
+
 AmigaFile::~AmigaFile()
 {
   if(m_pLineBuf != NULL)
@@ -19,13 +20,15 @@ AmigaFile::~AmigaFile()
   }
 }
 
+
 bool AmigaFile::Open(const char* pFileName, AccessMode accessMode)
 {
   if(m_pFile != NULL)
   {
-    m_ErrorMsg = "Failed to open the file '";
+    m_ErrorMsg = "The file \n'";
     m_ErrorMsg += pFileName;
-    m_ErrorMsg += "' because another file is still open and hasn't ";
+    m_ErrorMsg += "'\ncan not be opened.\n\n";
+    m_ErrorMsg += "Reason: Another file is still open and hasn't\n";
     m_ErrorMsg += "been closed.";
 
     return false;
@@ -61,15 +64,16 @@ bool AmigaFile::Open(const char* pFileName, AccessMode accessMode)
   if(m_pFile == NULL)
   {
     // Opening failed
-    m_ErrorMsg = "Failed to open the file '";
+    m_ErrorMsg = "The file \n'";
     m_ErrorMsg += pFileName;
-    m_ErrorMsg += "'.";
+    m_ErrorMsg += "'\ncan not be opened.";
 
     return false;
   }
 
   return true;
 }
+
 
 void AmigaFile::Close()
 {
@@ -78,15 +82,16 @@ void AmigaFile::Close()
   m_FileName = "";
 }
 
-int AmigaFile::CountLines()
+
+ULONG AmigaFile::CountLines()
 {
   if(m_pFile == NULL)
   {
     // File not opened
-    return -1;
+    return 0;
   }
 
-  int numLines = 0;
+  ULONG numLines = 0;
   size_t readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a
                                             // bug in AmigaOS v36/37
 
@@ -105,6 +110,7 @@ int AmigaFile::CountLines()
   return numLines;
 }
 
+
 ULONG AmigaFile::GetSize()
 {
   if(m_pFile == NULL)
@@ -120,14 +126,15 @@ ULONG AmigaFile::GetSize()
   return size;
 }
 
+
 bool AmigaFile::ReadLines(Array<SimpleString*>& array)
 {
   if(m_pFile == NULL)
   {
     // File not opened
-    m_ErrorMsg = "Failed to perform ReadLines() because the file '";
+    m_ErrorMsg = "Failed to perform ReadLines() because the file\n'";
     m_ErrorMsg += m_FileName;
-    m_ErrorMsg += "' hasn't been opened yet.";
+    m_ErrorMsg += "'\nhasn't been opened yet.";
 
     return false;
   }
@@ -191,6 +198,7 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& array)
   return true;
 }
 
+
 bool AmigaFile::ReadLine(SimpleString& line)
 {
   if(ReadLine() == NULL)
@@ -201,6 +209,7 @@ bool AmigaFile::ReadLine(SimpleString& line)
   line = m_pLineBuf;
   return true;
 }
+
 
 char* AmigaFile::ReadLine()
 {
@@ -230,10 +239,12 @@ char* AmigaFile::ReadLine()
   return m_pLineBuf;
 }
 
+
 const char* AmigaFile::Error()
 {
   return m_ErrorMsg.C_str();
 }
+
 
 void AmigaFile::SetProgressReporter(ProgressReporter* pProgressReporter)
 {

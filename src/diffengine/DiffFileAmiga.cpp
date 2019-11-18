@@ -78,6 +78,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     if(pLine == NULL)
     {
       m_pError = m_pErrMsgLowMem;
+      m_File.Close();
       return false;
     }
 
@@ -89,6 +90,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     if(pDiffLine == NULL)
     {
       m_pError = m_pErrMsgLowMem;
+      m_File.Close();
       return false;
     }
 
@@ -103,6 +105,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     if(m_DiffLinesArray.Push(pDiffLine) == false)
     {
       m_pError = m_pErrMsgLowMem;
+      m_File.Close();
       return false;
     }
 
@@ -133,7 +136,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     //
     if(m_bCancelRequested == true)
     {
-      m_bCancelRequested = false;
+      m_File.Close();
       return false;
     }
   }
