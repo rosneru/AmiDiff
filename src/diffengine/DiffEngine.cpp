@@ -27,16 +27,13 @@ DiffEngine::~DiffEngine()
 
 bool DiffEngine::Diff()
 {
-  //printf("\n\nNew diff starts..\n");
-
   //
   // Set-up the progress reporting
   //
-  const int NUM_NOTIFICATIONS = 20;
-  int numPositions = (int)(m_A.NumLines() + m_B.NumLines()) / 25.0; // experimental factor
+  const int NUM_NOTIFICATIONS = 18;
+  int numPositions = m_A.NumLines();
   m_NotifyIncrement = numPositions / NUM_NOTIFICATIONS;
-  m_PercentIncrement = (int)100.0 / NUM_NOTIFICATIONS;
-  m_CurrentPosition = 0;
+  m_PercentIncrement = (int)90.0 / NUM_NOTIFICATIONS;
   m_NextNotifyPosition = m_NotifyIncrement;
   m_Percent = 0;
   reportProgress(0);
@@ -136,6 +133,17 @@ void DiffEngine::lcs(long lowerA,
                      long lowerB,
                      long upperB)
 {
+  //
+  // Notify
+  //
+  if((m_NotifyIncrement > 0)
+   &&(lowerA > m_NextNotifyPosition))
+  {
+    m_Percent += m_PercentIncrement;
+    m_NextNotifyPosition += m_NotifyIncrement;
+    reportProgress(m_Percent);
+  }
+
   // Fast walkthrough equal lines at the start
   while((lowerA < upperA) && (lowerB < upperB)
      && (m_A.GetLine(lowerA)->Token() == m_B.GetLine(lowerB)->Token()))
@@ -180,19 +188,6 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
                                      long lowerB,
                                      long upperB)
 {
-  //
-  // Notify
-  //
-  if((m_NotifyIncrement > 0)
-   &&(m_CurrentPosition > m_NextNotifyPosition))
-  {
-    m_Percent += m_PercentIncrement;
-    m_NextNotifyPosition += m_NotifyIncrement;
-    reportProgress(m_Percent);
-  }
-
-  m_CurrentPosition++;
-
   Pair sms;
 
   // the k-line to start the forward search
@@ -355,7 +350,6 @@ void DiffEngine::optimize(DiffFileBase& data)
 
 void DiffEngine::reportProgress(int progress)
 {
-  //printf("%d..", progress);
   if(m_pProgressReporter != NULL)
   {
     m_pProgressReporter->notifyProgressChanged(progress);
