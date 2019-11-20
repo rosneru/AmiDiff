@@ -1,6 +1,8 @@
 #ifndef DIFF_FILE_PARTITION_H
 #define DIFF_FILE_PARTITION_H
 
+#include "stdio.h"
+
 #include "DiffLine.h"
 #include "ProgressReporter.h"
 
