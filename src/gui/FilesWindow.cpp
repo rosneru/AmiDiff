@@ -25,14 +25,14 @@ FilesWindow::FilesWindow(AppScreen& appScreen,
     m_LeftFilePath(leftFilePath),
     m_RightFilePath(rightFilePath),
     m_CmdDiff(cmdDiff),
-    m_pGadgetListHead(NULL),
-    m_pGadgetLeftFile(NULL),
-    m_pGadgetRightFile(NULL),
-    m_pGadgetSelectLeft(NULL),
-    m_pGadgetSelectRight(NULL),
-    m_pGadgetDiff(NULL),
-    m_pGadgetSwap(NULL),
-    m_pGadgetCancel(NULL)
+    m_pGadgetsHeader(NULL),
+    m_pGadStrLeftFile(NULL),
+    m_pGadStrRightFile(NULL),
+    m_pGadBtnSelectLeft(NULL),
+    m_pGadBtnSelectRight(NULL),
+    m_pGadBtnDiff(NULL),
+    m_pGadBtnSwap(NULL),
+    m_pGadBtnCancel(NULL)
 {
 
 }
@@ -42,17 +42,17 @@ FilesWindow::~FilesWindow()
 {
   Close();
 
-  if(m_pGadgetListHead != NULL)
+  if(m_pGadgetsHeader != NULL)
   {
-    FreeGadgets(m_pGadgetListHead);
-    m_pGadgetListHead = NULL;
-    m_pGadgetLeftFile = NULL;
-    m_pGadgetRightFile = NULL;
-    m_pGadgetSelectLeft = NULL;
-    m_pGadgetSelectRight = NULL;
-    m_pGadgetDiff = NULL;
-    m_pGadgetSwap = NULL;
-    m_pGadgetCancel = NULL;
+    FreeGadgets(m_pGadgetsHeader);
+    m_pGadgetsHeader = NULL;
+    m_pGadStrLeftFile = NULL;
+    m_pGadStrRightFile = NULL;
+    m_pGadBtnSelectLeft = NULL;
+    m_pGadBtnSelectRight = NULL;
+    m_pGadBtnDiff = NULL;
+    m_pGadBtnSwap = NULL;
+    m_pGadBtnCancel = NULL;
   }
 }
 
@@ -74,8 +74,8 @@ bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen)
   // Set the Diff button to an initial enabled / disabled state
   setDiffButtonState();
 
-  setStringGadgetText(m_pGadgetLeftFile, m_LeftFilePath);
-  setStringGadgetText(m_pGadgetRightFile, m_RightFilePath);
+  setStringGadgetText(m_pGadStrLeftFile, m_LeftFilePath);
+  setStringGadgetText(m_pGadStrRightFile, m_RightFilePath);
 
   return true;
 }
@@ -146,8 +146,8 @@ bool FilesWindow::HandleIdcmp(ULONG msgClass,
     case IDCMP_REFRESHWINDOW:
     {
       // This handling is REQUIRED with GadTools
-      GT_BeginRefresh(IntuiWindow());
-      GT_EndRefresh(IntuiWindow(), TRUE);
+      GT_BeginRefresh(m_pWindow);
+      GT_EndRefresh(m_pWindow, TRUE);
       return true;
       break;
     }
@@ -178,15 +178,18 @@ void FilesWindow::initialize()
 
   WORD hSpace = 10;
   WORD vSpace = 10;
+
   WORD top = barHeight + vSpace;
   WORD left = hSpace;
   WORD right = m_WinWidth - hSpace;
-  WORD buttonWidth = 60;
-  WORD buttonHeight = m_FontHeight + 6;
-  WORD selectButtonWidth = TextLength(
-    &m_AppScreen.IntuiScreen()->RastPort, "...", 3) + 8;
-  WORD stringGadgetWidth = right - left - hSpace / 2 - selectButtonWidth;
-  WORD selectButtonLeft = right - selectButtonWidth;
+
+  WORD btnsWidth = 60;
+  WORD btnsHeight = m_FontHeight + 6;
+
+  WORD btnSelectWidth = TextLength(&m_AppScreen.IntuiScreen()->RastPort, "...", 3) + 8;
+  WORD btnSelectLeft = right - btnSelectWidth;
+
+  WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
 
   //
   // Setting up the gadgets
@@ -194,7 +197,7 @@ void FilesWindow::initialize()
 
   // Create a place for GadTools context data
   struct Gadget* pContext;
-  pContext = (struct Gadget*) CreateContext(&m_pGadgetListHead);
+  pContext = (struct Gadget*) CreateContext(&m_pGadgetsHeader);
   if(pContext == NULL)
   {
     return;
@@ -208,13 +211,15 @@ void FilesWindow::initialize()
   newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    = top;
-  newGadget.ng_Width      = stringGadgetWidth;
+  newGadget.ng_Width      = stringGadWidth;
   newGadget.ng_Height     = m_FontHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Left file";
   newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
   struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
-    pContext, &newGadget, TAG_END);
+                                             pContext,
+                                             &newGadget,
+                                             TAG_END);
 
   // Row 2 contains a string gadget and selection button for the
   // filename of the left file
@@ -222,37 +227,42 @@ void FilesWindow::initialize()
   // Creating the string gadget
   newGadget.ng_LeftEdge   = left;
   newGadget.ng_TopEdge    += m_FontHeight + 2;
-  newGadget.ng_Width      = stringGadgetWidth;
-  newGadget.ng_Height     = buttonHeight;
+  newGadget.ng_Width      = stringGadWidth;
+  newGadget.ng_Height     = btnsHeight;
   newGadget.ng_GadgetText = NULL;
   newGadget.ng_GadgetID   = GID_LeftFileString;
   newGadget.ng_Flags      = 0;
 
-  m_pGadgetLeftFile = CreateGadget(STRING_KIND,
-    pLabelGadget, &newGadget,
-    GTST_MaxChars, 200, // TODO remove constant
-    TAG_END);
+  m_pGadStrLeftFile = CreateGadget(STRING_KIND,
+                                   pLabelGadget,
+                                   &newGadget,
+                                   GTST_MaxChars, 200, // TODO remove constant
+                                   TAG_END);
 
   // Creating the Select button
-  newGadget.ng_LeftEdge   = selectButtonLeft;
-  newGadget.ng_Width      = selectButtonWidth;
+  newGadget.ng_LeftEdge   = btnSelectLeft;
+  newGadget.ng_Width      = btnSelectWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
   newGadget.ng_GadgetID   = GID_LeftFileButton;
   newGadget.ng_Flags      = 0;
 
-  m_pGadgetSelectLeft = CreateGadget(BUTTON_KIND,
-    m_pGadgetLeftFile, &newGadget, TAG_END);
+  m_pGadBtnSelectLeft = CreateGadget(BUTTON_KIND,
+                                     m_pGadStrLeftFile,
+                                     &newGadget,
+                                     TAG_END);
 
   // Row 3  contains a label
   newGadget.ng_LeftEdge   = left + 2;
-  newGadget.ng_TopEdge    += buttonHeight + vSpace;
-  newGadget.ng_Width      = stringGadgetWidth;
+  newGadget.ng_TopEdge    += btnsHeight + vSpace;
+  newGadget.ng_Width      = stringGadWidth;
   newGadget.ng_Height     = m_FontHeight;
   newGadget.ng_GadgetText = (UBYTE*) "Right file";
   newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
-  pLabelGadget = CreateGadget(TEXT_KIND, m_pGadgetSelectLeft,
-    &newGadget, TAG_END);
+  pLabelGadget = CreateGadget(TEXT_KIND,
+                              m_pGadBtnSelectLeft,
+                              &newGadget,
+                              TAG_END);
 
   // Row 4 contains a string gadget and selection button for the
   // filename of the right file
@@ -260,46 +270,65 @@ void FilesWindow::initialize()
   // Creating the string gadget
   newGadget.ng_LeftEdge   = left;
   newGadget.ng_TopEdge    += m_FontHeight + 2;
-  newGadget.ng_Width      = stringGadgetWidth;
-  newGadget.ng_Height     = buttonHeight;
+  newGadget.ng_Width      = stringGadWidth;
+  newGadget.ng_Height     = btnsHeight;
   newGadget.ng_GadgetText = NULL;
   newGadget.ng_GadgetID   = GID_RightFileString;
   newGadget.ng_Flags      = 0;
 
-  m_pGadgetRightFile = CreateGadget(STRING_KIND,
-    pLabelGadget, &newGadget,
-    GTST_MaxChars, 200, // TODO remove constant
-    TAG_END);
+  m_pGadStrRightFile = CreateGadget(STRING_KIND,
+                                    pLabelGadget,
+                                    &newGadget,
+                                    GTST_MaxChars, 200, // TODO remove constant
+                                    TAG_END);
 
   // Creating the Select button
-  newGadget.ng_LeftEdge   = selectButtonLeft;
-  newGadget.ng_Width      = selectButtonWidth;
+  newGadget.ng_LeftEdge   = btnSelectLeft;
+  newGadget.ng_Width      = btnSelectWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
   newGadget.ng_GadgetID   = GID_RightFileButton;
   newGadget.ng_Flags      = 0;
 
-  m_pGadgetSelectRight = CreateGadget(BUTTON_KIND,
-    m_pGadgetRightFile, &newGadget, TAG_END);
+  m_pGadBtnSelectRight = CreateGadget(BUTTON_KIND,
+                                      m_pGadStrRightFile,
+                                      &newGadget,
+                                      TAG_END);
 
-  // Row 5 conatins the buttons Diff and Cancel
+  // Row 5 conatins the buttons Diff, Swap and Cancel
 
   // Creating the Diff button
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += buttonHeight + vSpace + vSpace;
-  newGadget.ng_Width      = buttonWidth;
+  newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
+  newGadget.ng_Width      = btnsWidth;
   newGadget.ng_GadgetText = (UBYTE*) "_Diff";
   newGadget.ng_GadgetID   = GID_DiffButton;
 
-  m_pGadgetDiff = CreateGadget(BUTTON_KIND,
-    m_pGadgetSelectRight, &newGadget, GT_Underscore, '_', TAG_END);
+  m_pGadBtnDiff = CreateGadget(BUTTON_KIND,
+                               m_pGadBtnSelectRight,
+                               &newGadget,
+                               GT_Underscore, '_', TAG_END);
+
+  // Creating the Swap button
+  newGadget.ng_LeftEdge   = (right - left - btnsWidth) / 2;
+  newGadget.ng_GadgetText = (UBYTE*) "_Swap";
+  newGadget.ng_GadgetID   = GID_SwapButton;
+
+  m_pGadBtnSwap = CreateGadget(BUTTON_KIND,
+                               m_pGadBtnDiff,
+                               &newGadget,
+                               GT_Underscore, '_', TAG_END);
+
 
   // Creating the Cancel button
-  newGadget.ng_LeftEdge   = right - buttonWidth;
+  newGadget.ng_LeftEdge   = right - btnsWidth;
   newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
   newGadget.ng_GadgetID   = GID_CancelButton;
 
-  m_pGadgetCancel = CreateGadget(BUTTON_KIND,
-    m_pGadgetDiff, &newGadget, GT_Underscore, '_', TAG_END);
+  m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
+                                m_pGadBtnSwap,
+                                &newGadget,
+                                GT_Underscore, '_',
+                                TAG_END);
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
@@ -322,7 +351,7 @@ void FilesWindow::initialize()
            BUTTONIDCMP);          // Inform about GadTools button events
 
   // Setting the first gadget of the gadet list for the window
-  setFirstGadget(m_pGadgetListHead);
+  setFirstGadget(m_pGadgetsHeader);
 
   m_bInitialized = true;
 }
@@ -360,7 +389,7 @@ bool FilesWindow::selectLeftFile()
   }
 
   m_LeftFilePath = sel;
-  setStringGadgetText(m_pGadgetLeftFile, m_LeftFilePath);
+  setStringGadgetText(m_pGadStrLeftFile, m_LeftFilePath);
 
   enableAll();
   return true;
@@ -397,7 +426,7 @@ bool FilesWindow::selectRightFile()
   }
 
   m_RightFilePath = sel;
-  setStringGadgetText(m_pGadgetRightFile, m_RightFilePath);
+  setStringGadgetText(m_pGadStrRightFile, m_RightFilePath);
 
   enableAll();
   return true;
@@ -406,25 +435,25 @@ bool FilesWindow::selectRightFile()
 
 void FilesWindow::enableAll()
 {
-  GT_SetGadgetAttrs(m_pGadgetLeftFile, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_END);
+  GT_SetGadgetAttrs(m_pGadStrLeftFile, m_pWindow, NULL,
+                    GA_Disabled, FALSE,
+                    TAG_END);
 
-  GT_SetGadgetAttrs(m_pGadgetRightFile, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_END);
+  GT_SetGadgetAttrs(m_pGadStrRightFile, m_pWindow, NULL,
+                    GA_Disabled, FALSE,
+                    TAG_END);
 
-  GT_SetGadgetAttrs(m_pGadgetSelectLeft, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_END);
+  GT_SetGadgetAttrs(m_pGadBtnSelectLeft, m_pWindow, NULL,
+                    GA_Disabled, FALSE,
+                    TAG_END);
 
-  GT_SetGadgetAttrs(m_pGadgetSelectRight, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_END);
+  GT_SetGadgetAttrs(m_pGadBtnSelectRight, m_pWindow, NULL,
+                    GA_Disabled, FALSE,
+                    TAG_END);
 
-  GT_SetGadgetAttrs(m_pGadgetCancel, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_END);
+  GT_SetGadgetAttrs(m_pGadBtnCancel, m_pWindow, NULL,
+                    GA_Disabled, FALSE,
+                    TAG_END);
 
   setDiffButtonState();
 
@@ -433,27 +462,27 @@ void FilesWindow::enableAll()
 
 void FilesWindow::disableAll()
 {
-  GT_SetGadgetAttrs(m_pGadgetLeftFile, IntuiWindow(), NULL,
+  GT_SetGadgetAttrs(m_pGadStrLeftFile, m_pWindow, NULL,
     GA_Disabled, TRUE,
     TAG_END);
 
-  GT_SetGadgetAttrs(m_pGadgetRightFile, IntuiWindow(), NULL,
+  GT_SetGadgetAttrs(m_pGadStrRightFile, m_pWindow, NULL,
     GA_Disabled, TRUE,
     TAG_END);
 
-  GT_SetGadgetAttrs(m_pGadgetSelectLeft, IntuiWindow(), NULL,
+  GT_SetGadgetAttrs(m_pGadBtnSelectLeft, m_pWindow, NULL,
     GA_Disabled, TRUE,
     TAG_END);
 
-  GT_SetGadgetAttrs(m_pGadgetSelectRight, IntuiWindow(), NULL,
+  GT_SetGadgetAttrs(m_pGadBtnSelectRight, m_pWindow, NULL,
     GA_Disabled, TRUE,
     TAG_END);
 
-  GT_SetGadgetAttrs(m_pGadgetCancel, IntuiWindow(), NULL,
+  GT_SetGadgetAttrs(m_pGadBtnCancel, m_pWindow, NULL,
     GA_Disabled, TRUE,
     TAG_END);
 
-  GT_SetGadgetAttrs(m_pGadgetDiff, IntuiWindow(), NULL,
+  GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
     GA_Disabled, TRUE,
     TAG_END);
 
@@ -463,7 +492,7 @@ void FilesWindow::disableAll()
 
 void FilesWindow::setDiffButtonState()
 {
-  if(!IsOpen() || m_pGadgetDiff == NULL)
+  if(!IsOpen() || m_pGadBtnDiff == NULL)
   {
     return;
   }
@@ -472,14 +501,14 @@ void FilesWindow::setDiffButtonState()
      m_RightFilePath.Length() > 0)
   {
     // Enable "Diff" button
-    GT_SetGadgetAttrs(m_pGadgetDiff, m_pWindow, NULL,
+    GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
       GA_Disabled, FALSE,
       TAG_END);
   }
   else
   {
     // Disable "Diff" button
-    GT_SetGadgetAttrs(m_pGadgetDiff, m_pWindow, NULL,
+    GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
       GA_Disabled, TRUE,
       TAG_END);
 
@@ -503,13 +532,13 @@ void FilesWindow::readStringGadgetsText()
 {
   // Set the changed string gadget text as left file path
   UBYTE* pBuf = ((struct StringInfo*)
-    m_pGadgetLeftFile->SpecialInfo)->Buffer;
+    m_pGadStrLeftFile->SpecialInfo)->Buffer;
 
   m_LeftFilePath = (const char*)pBuf;
 
   // Set the changed string gadget text as right file path
   pBuf = ((struct StringInfo*)
-    m_pGadgetRightFile->SpecialInfo)->Buffer;
+    m_pGadStrRightFile->SpecialInfo)->Buffer;
 
   m_RightFilePath = (const char*)pBuf;
 

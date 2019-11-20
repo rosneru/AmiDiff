@@ -21,9 +21,12 @@
 class FilesWindow : public WindowBase
 {
 public:
-  FilesWindow(AppScreen& appScreen, struct MsgPort* pMsgPort,
-              int& numWindowsOpen, SimpleString& leftFilePath,
-              SimpleString& rightFilePath, const Command& cmdDiff);
+  FilesWindow(AppScreen& appScreen,
+              struct MsgPort* pMsgPort,
+              int& numWindowsOpen,
+              SimpleString& leftFilePath,
+              SimpleString& rightFilePath,
+              const Command& cmdDiff);
 
   virtual ~FilesWindow();
 
@@ -76,14 +79,14 @@ private:
 
   WORD m_FontHeight;  ///> Height of current text font
 
-  struct Gadget* m_pGadgetListHead;
-  struct Gadget* m_pGadgetLeftFile;
-  struct Gadget* m_pGadgetRightFile;
-  struct Gadget* m_pGadgetSelectLeft;
-  struct Gadget* m_pGadgetSelectRight;
-  struct Gadget* m_pGadgetDiff;
-  struct Gadget* m_pGadgetSwap;
-  struct Gadget* m_pGadgetCancel;
+  struct Gadget* m_pGadgetsHeader;
+  struct Gadget* m_pGadStrLeftFile;
+  struct Gadget* m_pGadStrRightFile;
+  struct Gadget* m_pGadBtnSelectLeft;
+  struct Gadget* m_pGadBtnSelectRight;
+  struct Gadget* m_pGadBtnDiff;
+  struct Gadget* m_pGadBtnSwap;
+  struct Gadget* m_pGadBtnCancel;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.
@@ -110,7 +113,7 @@ private:
   /**
    * Enables or disables the buttons of this window in dependency of
    * some conditions, e.g. is text in both string gadgets or is there
-   * an ASL request openened etc.
+   * an ASL file request openened etc.
    */
   void setDiffButtonState();
 
