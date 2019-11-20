@@ -32,7 +32,7 @@ public:
   /**
    * Opening the window.
    *
-   * @param p_pUserDataMenuItemToDisable
+   * @param pMenuItemDisableAtOpen
    * A pointer to an user data field of a menu item which is associated
    * with this window. If the menu item is found by the given user data
    * it will be disabled at window opening time and enabled when the
@@ -49,9 +49,7 @@ public:
    * @returns
    * If this event was handled: true; if it was not handled: false..
    */
-  virtual bool HandleIdcmp(ULONG msgClass, 
-                           UWORD msgCode, 
-                           APTR pItemAddress);
+  bool HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddress);
 
 private:
   AslFileRequest m_AslRequest;
@@ -72,6 +70,7 @@ private:
     GID_LeftFileButton,
     GID_RightFileButton,
     GID_DiffButton,
+    GID_SwapButton,
     GID_CancelButton,
   };
 
@@ -83,6 +82,7 @@ private:
   struct Gadget* m_pGadgetSelectLeft;
   struct Gadget* m_pGadgetSelectRight;
   struct Gadget* m_pGadgetDiff;
+  struct Gadget* m_pGadgetSwap;
   struct Gadget* m_pGadgetCancel;
 
   /**
@@ -114,8 +114,11 @@ private:
    */
   void setDiffButtonState();
 
-  void setStringGadgetText(struct Gadget* p_pGadget,
-                           const SimpleString& p_Text);
+  /**
+   * Sets the text of given string gadget to given value
+   */
+  void setStringGadgetText(struct Gadget* pGadget,
+                           const SimpleString& text);
 
   /**
    * Reads the text from both string gadgets and updates the

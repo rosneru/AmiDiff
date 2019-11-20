@@ -13,11 +13,11 @@
 
 #include "FilesWindow.h"
 
-FilesWindow::FilesWindow(AppScreen& appScreen, 
+FilesWindow::FilesWindow(AppScreen& appScreen,
                          struct MsgPort* pMsgPort,
-                         int& numWindowsOpen, 
+                         int& numWindowsOpen,
                          SimpleString& leftFilePath,
-                         SimpleString& rightFilePath, 
+                         SimpleString& rightFilePath,
                          const Command& cmdDiff)
   : WindowBase(appScreen, pMsgPort, numWindowsOpen),
     m_AslRequest(m_pWindow),
@@ -31,6 +31,7 @@ FilesWindow::FilesWindow(AppScreen& appScreen,
     m_pGadgetSelectLeft(NULL),
     m_pGadgetSelectRight(NULL),
     m_pGadgetDiff(NULL),
+    m_pGadgetSwap(NULL),
     m_pGadgetCancel(NULL)
 {
 
@@ -63,9 +64,9 @@ void FilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool FilesWindow::Open(const APTR pUserDataMenuItemToDisable)
+bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen)
 {
-  if(WindowBase::Open(pUserDataMenuItemToDisable) == false)
+  if(WindowBase::Open(pMenuItemDisableAtOpen) == false)
   {
     return false;
   }
@@ -80,8 +81,8 @@ bool FilesWindow::Open(const APTR pUserDataMenuItemToDisable)
 }
 
 
-bool FilesWindow::HandleIdcmp(ULONG msgClass, 
-                              UWORD msgCode, 
+bool FilesWindow::HandleIdcmp(ULONG msgClass,
+                              UWORD msgCode,
                               APTR pItemAddress)
 {
   if(!IsOpen())
@@ -313,12 +314,12 @@ void FilesWindow::initialize()
            WFLG_DEPTHGADGET);     // Add a depth gadget
 
   // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
-           IDCMP_VANILLAKEY |     // Inform us about RAW key press
-           IDCMP_RAWKEY |         // Inform us about printable key press
-           IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
-           IDCMP_REFRESHWINDOW |  // Inform us when refreshing is necessary
-           BUTTONIDCMP);          // Inform us about GadTools button events
+  setIDCMP(IDCMP_MENUPICK |       // Inform about menu selection
+           IDCMP_VANILLAKEY |     // Inform about RAW key press
+           IDCMP_RAWKEY |         // Inform about printable key press
+           IDCMP_CLOSEWINDOW |    // Inform about click on close gadget
+           IDCMP_REFRESHWINDOW |  // Inform when refreshing is necessary
+           BUTTONIDCMP);          // Inform about GadTools button events
 
   // Setting the first gadget of the gadet list for the window
   setFirstGadget(m_pGadgetListHead);
@@ -485,16 +486,16 @@ void FilesWindow::setDiffButtonState()
   }
 }
 
-void FilesWindow::setStringGadgetText(struct Gadget* p_pGadget,
-  const SimpleString& p_Text)
+void FilesWindow::setStringGadgetText(struct Gadget* pGadget,
+  const SimpleString& text)
 {
-  if(!IsOpen() || p_pGadget == NULL)
+  if(!IsOpen() || pGadget == NULL)
   {
     return;
   }
 
-  GT_SetGadgetAttrs(p_pGadget, m_pWindow, NULL,
-    GTST_String, p_Text.C_str(),
+  GT_SetGadgetAttrs(pGadget, m_pWindow, NULL,
+    GTST_String, text.C_str(),
     TAG_END);
 }
 
