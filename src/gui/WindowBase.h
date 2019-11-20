@@ -58,12 +58,15 @@ public:
   const APTR DisabledMenuItem() const;
 
   /**
-   * Handles given IDCMP event.
+   * Abstract method. Forces inheriting classes to handle the given 
+   * IDCMP event.
    *
    * @returns
-   * If this event was handled: true; if it was not handled: false..
+   * If this event was handled: true; if it was not handled: false.
    */
-  virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress) = 0;
+  virtual bool HandleIdcmp(ULONG msgClass, 
+                           UWORD msgCode, 
+                           APTR pItemAddress) = 0;
 
   /**
    * Returns true if the window is opened.

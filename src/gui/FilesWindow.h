@@ -21,9 +21,9 @@
 class FilesWindow : public WindowBase
 {
 public:
-  FilesWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
-              int& p_NumWindowsOpen, SimpleString& p_LeftFilePath,
-              SimpleString& p_RightFilePath, const Command& p_CmdDiff);
+  FilesWindow(AppScreen& appScreen, struct MsgPort* pMsgPort,
+              int& numWindowsOpen, SimpleString& leftFilePath,
+              SimpleString& rightFilePath, const Command& cmdDiff);
 
   virtual ~FilesWindow();
 
@@ -41,7 +41,7 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(const APTR p_pMenuItemDisableAtOpen);
+  bool Open(const APTR pMenuItemDisableAtOpen);
 
   /**
    * Handles given IDCMP event.
@@ -49,7 +49,9 @@ public:
    * @returns
    * If this event was handled: true; if it was not handled: false..
    */
-  bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
+  virtual bool HandleIdcmp(ULONG msgClass, 
+                           UWORD msgCode, 
+                           APTR pItemAddress);
 
 private:
   AslFileRequest m_AslRequest;
@@ -75,13 +77,13 @@ private:
 
   WORD m_FontHeight;  ///> Height of current text font
 
-  struct Gadget* m_pGadgetList;
-  struct Gadget* m_pLeftFileStringGadget;
-  struct Gadget* m_pRightFileStringGadget;
-  struct Gadget* m_pSelectLeftFileButton;
-  struct Gadget* m_pSelectRightFileButton;
-  struct Gadget* m_pDiffButton;
-  struct Gadget* m_pCancelButton;
+  struct Gadget* m_pGadgetListHead;
+  struct Gadget* m_pGadgetLeftFile;
+  struct Gadget* m_pGadgetRightFile;
+  struct Gadget* m_pGadgetSelectLeft;
+  struct Gadget* m_pGadgetSelectRight;
+  struct Gadget* m_pGadgetDiff;
+  struct Gadget* m_pGadgetCancel;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.
@@ -113,7 +115,7 @@ private:
   void setDiffButtonState();
 
   void setStringGadgetText(struct Gadget* p_pGadget,
-    const SimpleString& p_Text);
+                           const SimpleString& p_Text);
 
   /**
    * Reads the text from both string gadgets and updates the

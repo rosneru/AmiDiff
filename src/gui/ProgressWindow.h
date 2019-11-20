@@ -44,7 +44,9 @@ public:
    * @returns
    * If this event was handled: true; if it was not handled: false..
    */
-  bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
+  virtual bool HandleIdcmp(ULONG msgClass, 
+                           UWORD msgCode, 
+                           APTR pItemAddress);
 
   /**
    * Handles the given progress event.

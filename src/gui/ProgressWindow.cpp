@@ -91,6 +91,116 @@ bool ProgressWindow::Open(const APTR p_pUserDataMenuItemToDisable)
 }
 
 
+bool ProgressWindow::HandleIdcmp(ULONG msgClass, 
+                                 UWORD msgCode, 
+                                 APTR pItemAddress)
+{
+  if(!IsOpen())
+  {
+    return false;
+  }
+
+  switch (msgClass)
+  {
+    case IDCMP_GADGETUP:
+    {
+      struct Gadget* pGadget = (struct Gadget*) pItemAddress;
+      if(pGadget->GadgetID == GID_ButtonCancel)
+      {
+        // Set the flag which will stop background process as soon as
+        // possible
+        m_bCancelRequested = true;
+
+        // Disable the Cancel button
+        GT_SetGadgetAttrs(m_pButtonCancel, IntuiWindow(), NULL,
+          GA_Disabled, TRUE,
+          TAG_END);
+      }
+
+      return true;
+      break;
+    }
+
+    case IDCMP_REFRESHWINDOW:
+    {
+      // This handling is REQUIRED with GadTools
+      GT_BeginRefresh(IntuiWindow());
+      GT_EndRefresh(IntuiWindow(), TRUE);
+      return true;
+      break;
+    }
+  }
+
+  return false;
+}
+
+
+void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
+                                    p_pProgressMsg)
+{
+  if(p_pProgressMsg == NULL)
+  {
+    return;
+  }
+
+  if(p_pProgressMsg->progress < 0)
+  {
+    m_pProgressDescription = NULL;
+    return;
+  }
+
+  int progrWidth = 1;
+  if(p_pProgressMsg->progress > 0)
+  {
+    progrWidth = (m_ProgressBarWidth - 2) *
+      p_pProgressMsg->progress / 100;
+  }
+
+  // Set color to <blue> for painting the progress bar
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Fill());
+
+  // Fill the progress bar area
+  RectFill(m_pWindow->RPort,
+           m_ProgressBarLeft + 2,
+           m_ProgressBarTop + 1,
+           m_ProgressBarLeft + progrWidth - 1,
+           m_ProgressBarTop + m_ProgressBarHeight - 2);
+
+  // Set color to <background> for painting the grey background of the
+  // yet uncovered area of the progress bar
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+
+  // Fill the yet uncovered progress bar area with the background
+  // color. This is necessary to clear the formerly printed text.
+  RectFill(m_pWindow->RPort,
+           m_ProgressBarLeft + 2 + progrWidth,
+           m_ProgressBarTop + 1,
+           m_ProgressBarLeft + m_ProgressBarWidth - 3,
+           m_ProgressBarTop + m_ProgressBarHeight - 2);
+
+
+  if( p_pProgressMsg != NULL &&
+     (p_pProgressMsg->pDescription != m_pProgressDescription))
+  {
+    m_pProgressDescription = p_pProgressMsg->pDescription;
+
+    GT_SetGadgetAttrs(m_pLabelDescription, m_pWindow, NULL,
+      GTTX_Text, m_pProgressDescription,
+      TAG_END);
+  }
+
+  SimpleString progrText = p_pProgressMsg->progress;
+  progrText += " %";
+
+  m_ProgressValueIText.IText = (UBYTE*) progrText.C_str();
+
+  int textLength = IntuiTextLength(&m_ProgressValueIText);
+  int x = (m_ProgressBarWidth - textLength) / 2;
+
+  PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 0);
+}
+
+
 void ProgressWindow::initialize()
 {
   //
@@ -187,110 +297,4 @@ void ProgressWindow::initialize()
   SetSmartRefresh(true);
 
   m_bInitialized = true;
-}
-
-bool ProgressWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
-{
-  if(!IsOpen())
-  {
-    return false;
-  }
-
-  switch (p_Class)
-  {
-    case IDCMP_GADGETUP:
-    {
-      struct Gadget* pGadget = (struct Gadget*) p_IAddress;
-      if(pGadget->GadgetID == GID_ButtonCancel)
-      {
-        // Set the flag which will stop background process as soon as
-        // possible
-        m_bCancelRequested = true;
-
-        // Disable the Cancel button
-        GT_SetGadgetAttrs(m_pButtonCancel, IntuiWindow(), NULL,
-          GA_Disabled, TRUE,
-          TAG_END);
-      }
-
-      return true;
-      break;
-    }
-
-    case IDCMP_REFRESHWINDOW:
-    {
-      // This handling is REQUIRED with GadTools
-      GT_BeginRefresh(IntuiWindow());
-      GT_EndRefresh(IntuiWindow(), TRUE);
-      return true;
-      break;
-    }
-  }
-
-  return false;
-}
-
-void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
-                                    p_pProgressMsg)
-{
-  if(p_pProgressMsg == NULL)
-  {
-    return;
-  }
-
-  if(p_pProgressMsg->progress < 0)
-  {
-    m_pProgressDescription = NULL;
-    return;
-  }
-
-  int progrWidth = 1;
-  if(p_pProgressMsg->progress > 0)
-  {
-    progrWidth = (m_ProgressBarWidth - 2) *
-      p_pProgressMsg->progress / 100;
-  }
-
-  // Set color to <blue> for painting the progress bar
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Fill());
-
-  // Fill the progress bar area
-  RectFill(m_pWindow->RPort,
-           m_ProgressBarLeft + 2,
-           m_ProgressBarTop + 1,
-           m_ProgressBarLeft + progrWidth - 1,
-           m_ProgressBarTop + m_ProgressBarHeight - 2);
-
-  // Set color to <background> for painting the grey background of the
-  // yet uncovered area of the progress bar
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
-
-  // Fill the yet uncovered progress bar area with the background
-  // color. This is necessary to clear the formerly printed text.
-  RectFill(m_pWindow->RPort,
-           m_ProgressBarLeft + 2 + progrWidth,
-           m_ProgressBarTop + 1,
-           m_ProgressBarLeft + m_ProgressBarWidth - 3,
-           m_ProgressBarTop + m_ProgressBarHeight - 2);
-
-
-  if( p_pProgressMsg != NULL &&
-     (p_pProgressMsg->pDescription != m_pProgressDescription))
-  {
-    m_pProgressDescription = p_pProgressMsg->pDescription;
-
-    GT_SetGadgetAttrs(m_pLabelDescription, m_pWindow, NULL,
-      GTTX_Text, m_pProgressDescription,
-      TAG_END);
-  }
-
-  SimpleString progrText = p_pProgressMsg->progress;
-  progrText += " %";
-
-  m_ProgressValueIText.IText = (UBYTE*) progrText.C_str();
-
-  int textLength = IntuiTextLength(&m_ProgressValueIText);
-  int x = (m_ProgressBarWidth - textLength) / 2;
-
-  PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 0);
 }

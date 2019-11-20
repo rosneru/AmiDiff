@@ -263,18 +263,18 @@ void ScrollbarWindow::initialize()
 
 }
 
-bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+bool ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddress)
 {
   if(!IsOpen())
   {
     return false;
   }
 
-  switch (p_Class)
+  switch (msgClass)
   {
     case IDCMP_IDCMPUPDATE:
     {
-      ULONG tagData = GetTagData(GA_ID, 0, (struct TagItem *)p_IAddress);
+      ULONG tagData = GetTagData(GA_ID, 0, (struct TagItem *)pItemAddress);
       switch(tagData)
       {
         case ScrollbarWindow::GID_PropX:
@@ -282,7 +282,7 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
           // Get the top value of the prop gadget from the tag data of
           // the message
           size_t newX = GetTagData(PGA_Top, 0, (struct TagItem *)
-            p_IAddress);
+            pItemAddress);
 
           // If there are other GID_PropX addressed to this window,
           // delete them and get the top value from the latest found
@@ -301,8 +301,9 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         {
           // Get the top value of the prop gadget from the tag data of
           // the message
-          size_t newY = GetTagData(PGA_Top, 0, (struct TagItem *)
-            p_IAddress);
+          size_t newY = GetTagData(PGA_Top, 
+                                   0, 
+                                   (struct TagItem *) pItemAddress);
 
           // If there are other GID_PropY addressed to this window,
           // delete them and get the top value from the latest found
@@ -351,22 +352,22 @@ bool ScrollbarWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 
     case IDCMP_RAWKEY:
     {
-      if(p_Code == CURSORLEFT)
+      if(msgCode == CURSORLEFT)
       {
         XDecrease(2);
         return true;
       }
-      else if(p_Code == CURSORRIGHT)
+      else if(msgCode == CURSORRIGHT)
       {
         XIncrease(2);
         return true;
       }
-      else if(p_Code == CURSORDOWN)
+      else if(msgCode == CURSORDOWN)
       {
         YIncrease(2);
         return true;
       }
-      else if(p_Code == CURSORUP)
+      else if(msgCode == CURSORUP)
       {
         YDecrease(2);
         return true;

@@ -38,7 +38,9 @@ public:
    * @returns
    * If this event was handled: true; if it was not handled: false..
    */
-  virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
+  virtual bool HandleIdcmp(ULONG msgClass, 
+                           UWORD msgCode, 
+                           APTR pItemAddress);
 
   /**
    * This handles the x-changes triggered by the horizontal scrollbar

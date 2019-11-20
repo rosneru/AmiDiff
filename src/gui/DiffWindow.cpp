@@ -378,14 +378,16 @@ void DiffWindow::initialize()
 
 }
 
-bool DiffWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+bool DiffWindow::HandleIdcmp(ULONG msgClass, 
+                             UWORD msgCode, 
+                             APTR pItemAddress)
 {
-  if(ScrollbarWindow::HandleIdcmp(p_Class, p_Code, p_IAddress) == true)
+  if(ScrollbarWindow::HandleIdcmp(msgClass, msgCode, pItemAddress) == true)
   {
     return true;
   }
 
-  switch (p_Class)
+  switch (msgClass)
   {
     case IDCMP_NEWSIZE:
     {
