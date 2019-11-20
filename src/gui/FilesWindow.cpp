@@ -95,50 +95,7 @@ bool FilesWindow::HandleIdcmp(ULONG msgClass,
     case IDCMP_GADGETUP:
     {
       struct Gadget* pGadget = (struct Gadget*) pItemAddress;
-      if(pGadget->GadgetID == GID_LeftFileButton)
-      {
-        // Button "..." to select left file was clicked
-        return selectLeftFile();
-      }
-      else if(pGadget->GadgetID == GID_RightFileButton)
-      {
-        // Button "..." to select right file was clicked
-        return selectRightFile();
-      }
-      else if(pGadget->GadgetID == GID_CancelButton)
-      {
-        // Button "Cancel" was clicked
-        Close();
-      }
-      else if(pGadget->GadgetID == GID_DiffButton)
-      {
-        // Button "Diff" was clicked
-
-        // Read latest string gadgets contents before continue
-        readStringGadgetsText();
-
-        // If now one of the texts is empty, do not perform the Diff
-        if((m_LeftFilePath.Length()) == 0 ||
-           (m_RightFilePath.Length()) == 0)
-        {
-          // Note: true marks that the *idcmp* was handled properly,
-          //       regardless of the diff not being performed
-          return true;
-        }
-
-        // Perform the diff
-        m_CmdDiff.Execute();
-      }
-      else if(pGadget->GadgetID == GID_LeftFileString)
-      {
-        // Text in left file string gadget was changed
-        readStringGadgetsText();
-      }
-      else if(pGadget->GadgetID == GID_RightFileString)
-      {
-        // Text in right file string gadget was changed
-        readStringGadgetsText();
-      }
+      handleGadgetEvent(pGadget);
       return true;
       break;
     }
@@ -161,9 +118,87 @@ bool FilesWindow::HandleIdcmp(ULONG msgClass,
       return true;
       break;
     }
+
+    case IDCMP_VANILLAKEY:
+    {
+      handleVanillaKey(msgCode);
+      return true;
+      break;
+    }
   }
 
   return false;
+}
+
+
+void FilesWindow::handleGadgetEvent(struct Gadget* pGadget)
+{
+  if(pGadget == NULL)
+  {
+    return;
+  }
+
+  switch(pGadget->GadgetID)
+  {
+    case GID_LeftFileString:
+    case GID_RightFileString:
+      readStringGadgetsText();
+      break;
+
+    case GID_LeftFileButton:  // Select left file
+      selectLeftFile();
+      break;
+
+    case GID_RightFileButton: // Select right file
+      selectRightFile();
+      break;
+
+    case GID_SwapButton:      // Swap left and right file
+      swapFiles();
+      break;
+
+    case GID_DiffButton:      // Compare the files and display the diff
+      compare();
+      break;
+
+    case GID_CancelButton:
+      Close();
+      break;
+  }
+}
+
+
+void FilesWindow::handleVanillaKey(UWORD code)
+{
+  switch(code)
+  {
+    case 'l': // Select left file
+    case 'L':
+      selectLeftFile();
+      break;
+
+    case 'r': // Select right file
+    case 'R':
+      selectRightFile();
+      break;
+
+    case 's': // Swap left and right file
+    case 'S':
+      swapFiles();
+      break;
+
+    case 'd': // Compare the files and display the diff
+    case 'D':
+      compare();
+      break;
+
+
+    case 'c': // Cancel
+    case 'C':
+      Close();
+      break;
+
+  }
 }
 
 
@@ -213,12 +248,13 @@ void FilesWindow::initialize()
   newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadWidth;
   newGadget.ng_Height     = m_FontHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "Left file";
+  newGadget.ng_GadgetText = (UBYTE*) "_Left file";
   newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
   struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
                                              pContext,
                                              &newGadget,
+                                             GT_Underscore, '_',
                                              TAG_END);
 
   // Row 2 contains a string gadget and selection button for the
@@ -256,12 +292,13 @@ void FilesWindow::initialize()
   newGadget.ng_TopEdge    += btnsHeight + vSpace;
   newGadget.ng_Width      = stringGadWidth;
   newGadget.ng_Height     = m_FontHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "Right file";
+  newGadget.ng_GadgetText = (UBYTE*) "_Right file";
   newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
   pLabelGadget = CreateGadget(TEXT_KIND,
                               m_pGadBtnSelectLeft,
                               &newGadget,
+                              GT_Underscore, '_',
                               TAG_END);
 
   // Row 4 contains a string gadget and selection button for the
@@ -306,7 +343,8 @@ void FilesWindow::initialize()
   m_pGadBtnDiff = CreateGadget(BUTTON_KIND,
                                m_pGadBtnSelectRight,
                                &newGadget,
-                               GT_Underscore, '_', TAG_END);
+                               GT_Underscore, '_',
+                               TAG_END);
 
   // Creating the Swap button
   newGadget.ng_LeftEdge   = (right - left - btnsWidth) / 2;
@@ -316,7 +354,8 @@ void FilesWindow::initialize()
   m_pGadBtnSwap = CreateGadget(BUTTON_KIND,
                                m_pGadBtnDiff,
                                &newGadget,
-                               GT_Underscore, '_', TAG_END);
+                               GT_Underscore, '_',
+                               TAG_END);
 
 
   // Creating the Cancel button
@@ -325,10 +364,10 @@ void FilesWindow::initialize()
   newGadget.ng_GadgetID   = GID_CancelButton;
 
   m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
-                                m_pGadBtnSwap,
-                                &newGadget,
-                                GT_Underscore, '_',
-                                TAG_END);
+                                 m_pGadBtnSwap,
+                                 &newGadget,
+                                 GT_Underscore, '_',
+                                 TAG_END);
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
@@ -344,11 +383,10 @@ void FilesWindow::initialize()
 
   // Setting the IDCMP messages we want to receive for this window
   setIDCMP(IDCMP_MENUPICK |       // Inform about menu selection
-           IDCMP_VANILLAKEY |     // Inform about RAW key press
-           IDCMP_RAWKEY |         // Inform about printable key press
+           IDCMP_VANILLAKEY |     // Inform about key press
            IDCMP_CLOSEWINDOW |    // Inform about click on close gadget
            IDCMP_REFRESHWINDOW |  // Inform when refreshing is necessary
-           BUTTONIDCMP);          // Inform about GadTools button events
+           BUTTONIDCMP);          // Inform about Gadget events
 
   // Setting the first gadget of the gadet list for the window
   setFirstGadget(m_pGadgetsHeader);
@@ -357,7 +395,7 @@ void FilesWindow::initialize()
 }
 
 
-bool FilesWindow::selectLeftFile()
+void FilesWindow::selectLeftFile()
 {
   disableAll();
 
@@ -372,6 +410,8 @@ bool FilesWindow::selectLeftFile()
     // Left file path is empty, so use the path of the right file for
     // pre-selection
     path = m_RightFilePath;
+
+    // Do not use the file name 'though
     bPathOnly = true;
   }
 
@@ -383,20 +423,18 @@ bool FilesWindow::selectLeftFile()
   if(sel.Length() == 0)
   {
     enableAll();
-
-    // Exit with success because idcmp was properly handled
-    return true;
+    return;
   }
 
   m_LeftFilePath = sel;
   setStringGadgetText(m_pGadStrLeftFile, m_LeftFilePath);
 
   enableAll();
-  return true;
+  return;
 }
 
 
-bool FilesWindow::selectRightFile()
+void FilesWindow::selectRightFile()
 {
   disableAll();
 
@@ -411,6 +449,8 @@ bool FilesWindow::selectRightFile()
     // Right file path is empty, so use the path of the left file for
     // pre-selection
     path = m_LeftFilePath;
+
+    // Do not use the file name 'though
     bPathOnly = true;
   }
 
@@ -420,16 +460,36 @@ bool FilesWindow::selectRightFile()
   if(sel.Length() == 0)
   {
     enableAll();
-
-    // Exit with success because idcmp was properly handled
-    return true;
+    return;
   }
 
   m_RightFilePath = sel;
   setStringGadgetText(m_pGadStrRightFile, m_RightFilePath);
 
   enableAll();
-  return true;
+  return;
+}
+
+void FilesWindow::swapFiles()
+{
+  // TODO
+}
+
+void FilesWindow::compare()
+{
+  // Read latest string gadgets contents before continue
+  readStringGadgetsText();
+
+  // If now one of the texts is empty, do not perform the Diff
+  if((m_LeftFilePath.Length()) == 0 ||
+     (m_RightFilePath.Length()) == 0)
+  {
+    return;
+  }
+
+  // Perform the diff
+  m_CmdDiff.Execute();
+
 }
 
 

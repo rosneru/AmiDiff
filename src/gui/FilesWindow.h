@@ -88,13 +88,19 @@ private:
   struct Gadget* m_pGadBtnSwap;
   struct Gadget* m_pGadBtnCancel;
 
+  void handleGadgetEvent(struct Gadget* pGadget);
+  void handleVanillaKey(UWORD code);
+
   /**
    * Initializes some window specific feature. Gadgets, etc.
    */
   void initialize();
 
-  bool selectLeftFile();
-  bool selectRightFile();
+
+  void selectLeftFile();
+  void selectRightFile();
+  void swapFiles();
+  void compare();
 
   /**
    * Enables all gadgets in the window except the 'Diff' button which

@@ -157,9 +157,9 @@ void Application::intuiEventLoop()
 
   do
   {
-    const ULONG activeSignals = Wait(signals);
+    const ULONG received = Wait(signals);
 
-    if(activeSignals & sigProgress)
+    if(received & sigProgress)
     {
       struct WorkerProgressMsg* pProgressMsg = NULL;
       while(pProgressMsg = (struct WorkerProgressMsg *)
@@ -170,11 +170,12 @@ void Application::intuiEventLoop()
           m_ProgressWindow.HandleProgress(pProgressMsg);
         }
 
+        // When we're through with a message, reply
         ReplyMsg(pProgressMsg);
       }
     }
 
-    if(activeSignals & sigIDCMP)
+    if(received & sigIDCMP)
     {
       struct IntuiMessage* pIdcmpMsg = NULL;
       while (pIdcmpMsg = GT_GetIMsg(m_pMsgPortIDCMP))
