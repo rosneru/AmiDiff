@@ -71,11 +71,13 @@ bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen)
     return false;
   }
 
-  // Set the Diff button to an initial enabled / disabled state
-  setDiffButtonState();
-
   setStringGadgetText(m_pGadStrLeftFile, m_LeftFilePath);
   setStringGadgetText(m_pGadStrRightFile, m_RightFilePath);
+
+  // Enable or disable the 'Diff' and 'Swap' buttons depending on some
+  // conditions
+  enableIfPossible();
+
 
   return true;
 }
@@ -184,13 +186,19 @@ void FilesWindow::handleVanillaKey(UWORD code)
 
     case 's': // Swap left and right file
     case 'S':
+      // TODO Allow only if Swap button is enabled
+      //GT_GetGadgetAttrs
       swapFiles();
       break;
 
     case 'd': // Compare the files and display the diff
     case 'D':
+    {
+      // TODO Allow only if Diff button is enabled
+      //GT_GetGadgetAttrs
       compare();
       break;
+    }
 
 
     case 'c': // Cancel
@@ -470,10 +478,12 @@ void FilesWindow::selectRightFile()
   return;
 }
 
+
 void FilesWindow::swapFiles()
 {
   // TODO
 }
+
 
 void FilesWindow::compare()
 {
@@ -515,7 +525,9 @@ void FilesWindow::enableAll()
                     GA_Disabled, FALSE,
                     TAG_END);
 
-  setDiffButtonState();
+  // Enable or disable the 'Diff' and 'Swap' buttons depending on some
+  // conditions
+  enableIfPossible();
 
   // TODO enable menu item "Quit"
 }
@@ -542,6 +554,10 @@ void FilesWindow::disableAll()
     GA_Disabled, TRUE,
     TAG_END);
 
+  GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
+    GA_Disabled, TRUE,
+    TAG_END);
+
   GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
     GA_Disabled, TRUE,
     TAG_END);
@@ -550,29 +566,46 @@ void FilesWindow::disableAll()
 }
 
 
-void FilesWindow::setDiffButtonState()
+void FilesWindow::enableIfPossible()
 {
-  if(!IsOpen() || m_pGadBtnDiff == NULL)
+  if(!IsOpen() || (m_pGadBtnDiff == NULL) || (m_pGadBtnSwap == NULL))
   {
     return;
   }
 
-  if(m_LeftFilePath.Length() > 0 &&
-     m_RightFilePath.Length() > 0)
+  if((m_LeftFilePath.Length()) > 0
+   &&(m_RightFilePath.Length()) > 0)
   {
     // Enable "Diff" button
     GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
-      GA_Disabled, FALSE,
-      TAG_END);
+                      GA_Disabled, FALSE,
+                      TAG_END);
   }
   else
   {
     // Disable "Diff" button
     GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
-      GA_Disabled, TRUE,
-      TAG_END);
-
+                      GA_Disabled, TRUE,
+                      TAG_END);
   }
+
+  if((m_LeftFilePath.Length()) > 0
+   ||(m_RightFilePath.Length()) > 0)
+  {
+    // Enable "Swap" button
+    GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
+                      GA_Disabled, FALSE,
+                      TAG_END);
+  }
+  else
+  {
+    // Disable "Swap" button
+    GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
+                      GA_Disabled, TRUE,
+                      TAG_END);
+  }
+
+
 }
 
 void FilesWindow::setStringGadgetText(struct Gadget* pGadget,
@@ -602,8 +635,8 @@ void FilesWindow::readStringGadgetsText()
 
   m_RightFilePath = (const char*)pBuf;
 
-  // Enable the 'Diff' button when both string gadgets contain text.
-  // If not not: disable it.
-  setDiffButtonState();
+  // Enable or disable the 'Diff' and 'Swap' buttons depending on some
+  // conditions
+  enableIfPossible();
 }
 

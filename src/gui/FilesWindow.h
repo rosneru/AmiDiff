@@ -88,15 +88,23 @@ private:
   struct Gadget* m_pGadBtnSwap;
   struct Gadget* m_pGadBtnCancel;
 
+  //
+  // The next two are called from HandleIDCMP() to get that method not
+  // so overloaded.
+  //
   void handleGadgetEvent(struct Gadget* pGadget);
   void handleVanillaKey(UWORD code);
 
+
   /**
-   * Initializes some window specific feature. Gadgets, etc.
+   * Initializes the window specific features. Gadgets, etc.
    */
   void initialize();
 
-
+  //
+  // These next four methods are the main functions of this window
+  // which are mapped to the butons and keys.
+  //
   void selectLeftFile();
   void selectRightFile();
   void swapFiles();
@@ -108,6 +116,7 @@ private:
    */
   void enableAll();
 
+
   /**
    * Disables all gadgets in the window.
    *
@@ -116,18 +125,20 @@ private:
    */
   void disableAll();
 
+
   /**
-   * Enables or disables the buttons of this window in dependency of
-   * some conditions, e.g. is text in both string gadgets or is there
-   * an ASL file request openened etc.
+   * Enables or disables the 'Diff' and 'Swap' buttons depending on
+   * some conditions.
    */
-  void setDiffButtonState();
+  void enableIfPossible();
+
 
   /**
    * Sets the text of given string gadget to given value
    */
   void setStringGadgetText(struct Gadget* pGadget,
                            const SimpleString& text);
+
 
   /**
    * Reads the text from both string gadgets and updates the
