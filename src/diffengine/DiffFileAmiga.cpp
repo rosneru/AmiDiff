@@ -25,25 +25,13 @@ DiffFileAmiga::~DiffFileAmiga()
 
 void DiffFileAmiga::Clear()
 {
-  // The array is cleared but nothing else is deleted or freed here,
-  // because an external memory pool is used for all heap allocations.
+  // The array address is cleared but nothing else is deleted or freed
+  // here, because an external memory pool is used for all heap allocs.
   // On exit or when performing another diff that memory pool is
   // deleted outside with just one call. On the Amiga this is way
   // faster than e.g. calling 5000 single delete [] in random order.
-/*
-  if(m_pDiffLines.Size() == 0)
-  {
-    return;
-  }
 
-  while(m_pDiffLines.Pop() != NULL)
-  {
-    if(m_pDiffLines.Size() == 0)
-    {
-      break;
-    }
-  }
-*/
+  m_pDiffLines = NULL;
 }
 
 bool DiffFileAmiga::PreProcess(const char* pFileName)
@@ -57,7 +45,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
 
   if(m_pDiffLines != NULL)
   {
-    // ALready initialized
+    // Already initialized
     return true;
   }
 
