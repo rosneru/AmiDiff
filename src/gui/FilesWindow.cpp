@@ -71,13 +71,12 @@ bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen)
     return false;
   }
 
-  setStringGadgetText(m_pGadStrLeftFile, m_LeftFilePath);
-  setStringGadgetText(m_pGadStrRightFile, m_RightFilePath);
+  setStringGadgetText(m_pGadStrLeftFile, m_LeftFilePath.C_str());
+  setStringGadgetText(m_pGadStrRightFile, m_RightFilePath.C_str());
 
   // Enable or disable the 'Diff' and 'Swap' buttons depending on some
   // conditions
   enableIfPossible();
-
 
   return true;
 }
@@ -144,7 +143,7 @@ void FilesWindow::handleGadgetEvent(struct Gadget* pGadget)
   {
     case GID_LeftFileString:
     case GID_RightFileString:
-      readStringGadgetsText();
+      //readStringGadgetsText();
       break;
 
     case GID_LeftFileButton:  // Select left file
@@ -408,16 +407,21 @@ void FilesWindow::selectLeftFile()
   disableAll();
 
   // Read latest string gadgets contents before continue
-  readStringGadgetsText();
+  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
+  STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
 
-  SimpleString path = m_LeftFilePath;
+  if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
+  {
+    return;
+  }
+
+  SimpleString path = pLeftStrGadgetText;
   bool bPathOnly = false;
-  if((m_LeftFilePath.Length() == 0) &&
-     (m_RightFilePath.Length() > 0))
+  if(path.Length() == 0)
   {
     // Left file path is empty, so use the path of the right file for
-    // pre-selection
-    path = m_RightFilePath;
+    // pre-selection (regardless if that also is empty)
+    path = pRightStrGadgetText;
 
     // Do not use the file name 'though
     bPathOnly = true;
@@ -434,8 +438,7 @@ void FilesWindow::selectLeftFile()
     return;
   }
 
-  m_LeftFilePath = sel;
-  setStringGadgetText(m_pGadStrLeftFile, m_LeftFilePath);
+  setStringGadgetText(m_pGadStrLeftFile, sel.C_str());
 
   enableAll();
   return;
@@ -447,16 +450,21 @@ void FilesWindow::selectRightFile()
   disableAll();
 
   // Read latest string gadgets contents before continue
-  readStringGadgetsText();
+  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
+  STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
 
-  SimpleString path = m_RightFilePath;
+  if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
+  {
+    return;
+  }
+
+  SimpleString path = pRightStrGadgetText;
   bool bPathOnly = false;
-  if((m_RightFilePath.Length() == 0) &&
-     (m_LeftFilePath.Length() > 0))
+  if(path.Length() == 0)
   {
     // Right file path is empty, so use the path of the left file for
-    // pre-selection
-    path = m_LeftFilePath;
+    // pre-selection (regardless if that also is empty)
+    path = pLeftStrGadgetText;
 
     // Do not use the file name 'though
     bPathOnly = true;
@@ -471,8 +479,7 @@ void FilesWindow::selectRightFile()
     return;
   }
 
-  m_RightFilePath = sel;
-  setStringGadgetText(m_pGadStrRightFile, m_RightFilePath);
+  setStringGadgetText(m_pGadStrRightFile, sel.C_str());
 
   enableAll();
   return;
@@ -481,14 +488,25 @@ void FilesWindow::selectRightFile()
 
 void FilesWindow::swapFiles()
 {
-  // TODO
+  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
+  STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
+
+  if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
+  {
+    return;
+  }
+
+  SimpleString formerLeftFilePath = pLeftStrGadgetText;
+
+  setStringGadgetText(m_pGadStrLeftFile, pRightStrGadgetText);
+  setStringGadgetText(m_pGadStrRightFile, formerLeftFilePath.C_str());
 }
 
 
 void FilesWindow::compare()
 {
   // Read latest string gadgets contents before continue
-  readStringGadgetsText();
+  //readStringGadgetsText();
 
   // If now one of the texts is empty, do not perform the Diff
   if((m_LeftFilePath.Length()) == 0 ||
@@ -573,6 +591,14 @@ void FilesWindow::enableIfPossible()
     return;
   }
 
+  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
+  STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
+
+  if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
+  {
+    return;
+  }
+/*
   if((m_LeftFilePath.Length()) > 0
    &&(m_RightFilePath.Length()) > 0)
   {
@@ -604,39 +630,40 @@ void FilesWindow::enableIfPossible()
                       GA_Disabled, TRUE,
                       TAG_END);
   }
-
+*/
 
 }
 
 void FilesWindow::setStringGadgetText(struct Gadget* pGadget,
-  const SimpleString& text)
+                                      const char* pText)
 {
-  if(!IsOpen() || pGadget == NULL)
+  if(!IsOpen() || (pGadget == NULL) || (pText == NULL))
   {
     return;
   }
 
   GT_SetGadgetAttrs(pGadget, m_pWindow, NULL,
-    GTST_String, text.C_str(),
-    TAG_END);
+                    GTST_String, pText,
+                    TAG_END);
 }
 
-void FilesWindow::readStringGadgetsText()
+STRPTR FilesWindow::getStringGadgetText(struct Gadget* pGadget)
 {
-  // Set the changed string gadget text as left file path
-  UBYTE* pBuf = ((struct StringInfo*)
-    m_pGadStrLeftFile->SpecialInfo)->Buffer;
+  if(!IsOpen() || pGadget == NULL)
+  {
+    return NULL;
+  }
 
-  m_LeftFilePath = (const char*)pBuf;
+  long pTextPointerStorage;
+  long numProcessed;
 
-  // Set the changed string gadget text as right file path
-  pBuf = ((struct StringInfo*)
-    m_pGadStrRightFile->SpecialInfo)->Buffer;
+  numProcessed  = GT_GetGadgetAttrs(pGadget, m_pWindow, NULL,
+                                    GTST_String, &pTextPointerStorage,
+                                    TAG_END);
+  if(numProcessed != 1)
+  {
+    return NULL;
+  }
 
-  m_RightFilePath = (const char*)pBuf;
-
-  // Enable or disable the 'Diff' and 'Swap' buttons depending on some
-  // conditions
-  enableIfPossible();
+  return (STRPTR)pTextPointerStorage;
 }
-

@@ -137,17 +137,15 @@ private:
    * Sets the text of given string gadget to given value
    */
   void setStringGadgetText(struct Gadget* pGadget,
-                           const SimpleString& text);
-
+                           const char* pText);
 
   /**
-   * Reads the text from both string gadgets and updates the
-   * LeftFilePath and RightFilePath in m_DiffFacade accordingly.
+   * Returns the text from given string gadget. This can also be an
+   * empty string.
    *
-   * Also sets the 'Diff' button state to enabled or disabled
-   * depending if both string gadgets contain text.
+   * Returns NULL if an internal error occurs.
    */
-  void readStringGadgetsText();
+  STRPTR getStringGadgetText(struct Gadget* pGadget);
 };
 
 
