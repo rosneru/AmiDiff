@@ -115,7 +115,6 @@ bool Application::Run(bool p_bDoNotAsk)
   //
   // Prepare the DiffWindow
   //
-  m_DiffWindow.SetInitialPosition(WindowBase::IP_Fill);
   m_DiffWindow.SetSmartRefresh(true);
 
 

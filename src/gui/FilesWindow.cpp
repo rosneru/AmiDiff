@@ -64,9 +64,10 @@ void FilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen)
+bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen, 
+                      InitialPosition initialPosition)
 {
-  if(WindowBase::Open(pMenuItemDisableAtOpen) == false)
+  if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPosition))
   {
     return false;
   }

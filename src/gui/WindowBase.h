@@ -23,7 +23,7 @@ public:
    */
   enum InitialPosition
   {
-    IP_Center,  ///> Center of the screen; depending on window dimensions
+    IP_Center,  ///> Default. Centered on screen. Depends on window dimensions
     IP_Fill,    ///> Fit to screen below title bar; changes window dimesions
     IP_Left,    ///> Left half of the screen; changes window dimesions
     IP_Right,   ///> Right half of the screen; changes window dimesions
@@ -48,7 +48,8 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  virtual bool Open(const APTR pMenuItemDisableAtOpen) = 0;
+  virtual bool Open(const APTR pMenuItemDisableAtOpen, 
+                    InitialPosition initialPosition) = 0;
 
   /**
    * Closes the window.
@@ -76,33 +77,30 @@ public:
   const char* Title() const;
   void SetTitle(SimpleString p_NewTitle);
 
+  
   /**
-   * Sets the initial position of the window. Only is applied when
-   * called before opening the window.
+   * Sets the initial position and size of the window. Only applied 
+   * when called before opening the window. 
    *
-   * @param p_InitialPosition
-   * One of the positions defined in @see InitialPosition
+   * NOTE: Sets The initial position to IP_Explicit.
    *
-   * @param p_Left
-   * Left edge of the Window. Only used when InitialPosition is set to
-   * IP_Explicit.
+   * @param left
+   * Left edge of the Window.
    *
-   * @param p_Top
-   * Top edge of the Window. Only used when InitialPosition is set to
-   * IP_Explicit.
+   * @param top
+   * Top edge of the Window.
    *
    * @param width
-   * Width of the Window. Only used when InitialPosition is set to
-   * IP_Explicit.
+   * Width of the Window.
    *
    * @param height
-   * Height of the Window. Only used when InitialPosition is set to
-   * IP_Explicit.
-   *
+   * Height of the Window.
    */
-  void SetInitialPosition(InitialPosition p_InitialPosition,
-    long p_Left = 0, long p_Top = 0, long width = 0,
-    long height = 0);
+  void SetInitialDimension(ULONG left, 
+                           ULONG top, 
+                           ULONG width, 
+                           ULONG height);
+
 
   /**
    * Sets if the window appears fixed or if it is draggable with the
@@ -181,10 +179,10 @@ protected:
   struct Window* m_pWindow;
   bool m_bBorderless;
   bool m_bSmartRefresh;
-  long m_WinLeft;
-  long m_WinTop;
-  long m_WinWidth;
-  long m_WinHeight;
+  ULONG m_WinLeft;
+  ULONG m_WinTop;
+  ULONG m_WinWidth;
+  ULONG m_WinHeight;
   bool m_bInitialized;
   ApplicationMenu* m_pMenu;
   SimpleString m_Title;

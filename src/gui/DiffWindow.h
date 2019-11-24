@@ -41,7 +41,8 @@ public:
    * @returns
    * false if opening fails
    */
-  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL);
+  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL, 
+                    InitialPosition initialPosition = WindowBase::IP_Center);
 
 
   /**
@@ -144,7 +145,7 @@ public:
    * Increases the Y position of the text by the given amount and
    * performs a scrolling as needed.
    *
-   * @param numChars
+   * @param numLines
    * Amount to increase the y-position by
    *
    * @param bTriggeredByScrollPot
@@ -157,7 +158,7 @@ public:
    * Decreases the Y position of the text by the given amount and
    * performs a scrolling as needed.
    *
-   * @param numChars
+   * @param numLines
    * Amount to decrease the y-position by
    *
    * @param bTriggeredByScrollPot
@@ -169,6 +170,10 @@ public:
 private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
+
+  struct Gadget* m_pGadgetsHeader;
+  struct Gadget* m_pGadTxtLeftFile;
+  struct Gadget* m_pGadTxtRightFile;
 
   unsigned short m_TextFontWidth_pix;  ///> Width of the rastport text font
   unsigned short m_TextFontHeight_pix; ///> Height of the rastport text font
@@ -252,19 +257,18 @@ private:
 
   /**
    * Displays a status bar with statistical information and a legend
-   *  below the two text areas
+   * below the two text areas
    */
   void paintStatusBar();
 
   /**
-   * Gets an appropriate pen from a given ColorName
+   * Returns the appropriate pen for a given ColorName
    */
   LONG colorNameToPen(DiffDocument::ColorName colorName);
 
   /**
-   * Scrolls the current text in the text area left by
-   * numChars chars and fills the gap at right with the
-   * following chars
+   * Scrolls the text in both text areas left by numChars chars and
+   * fills the gap at right with the following chars
    *
    * NOTE: Does *not* change the current left line position m_X!
    *
@@ -274,11 +278,10 @@ private:
   size_t scrollLeft(int numChars);
 
   /**
-   * Scrolls the current text in the text area right by
-   * numChars chars and fills the gap at left with the
-   * previous chars
+   * Scrolls the text in both text areas right by numChars chars and
+   * fills the gap at left with the previous chars
    *
-   * NOTE: Does *not* change the current top line position m_Y!
+   * NOTE: Does *not* change the current top line position m_X!
    *
    * @returns Number of lines scrolled. Can be smaller than expected
    * when first char of text reached.
@@ -286,9 +289,8 @@ private:
   size_t scrollRight(int numChars);
 
   /**
-   * Scrolls the current text in the text area down by
-   * numLines lines and fills the gap at top with the
-   * previous lines
+   * Scrolls the text in both text areas down by numLines lines and
+   * fills the gap at top with the previous lines
    *
    * NOTE: Does *not* change the current top line position m_Y!
    *
@@ -298,9 +300,8 @@ private:
   size_t scrollDown(int numLines);
 
   /**
-   * Scrolls the current text in the text area up by
-   * numLines lines and fills the gap at bottom with the
-   * next lines
+   * Scrolls the text in both text areas up by numLines lines and fills
+   * the gap at bottom with the next lines.
    *
    * NOTE: Does *not* change the current top line position m_Y!
    *

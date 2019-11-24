@@ -30,7 +30,8 @@ public:
    * @returns
    * false if opening fails
    */
-  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL);
+  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL, 
+                    InitialPosition initialPosition = WindowBase::IP_Center);
 
   /**
    * Handles given IDCMP event.

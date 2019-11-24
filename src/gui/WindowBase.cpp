@@ -24,8 +24,8 @@ WindowBase::WindowBase(AppScreen& appScreen,
     m_bSmartRefresh(false),
     m_WinLeft(0),
     m_WinTop(0),
-    m_WinWidth(160),
-    m_WinHeight(120),
+    m_WinWidth(0),
+    m_WinHeight(0),
     m_pFirstGadget(NULL),
     m_pMenu(NULL),
     m_bInitialized(false),
@@ -43,9 +43,11 @@ WindowBase::~WindowBase()
   Close();
 }
 
-bool WindowBase::Open(const APTR pMenuItemDisableAtOpen)
+bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
+                      InitialPosition initialPosition)
 {
   m_pMenuItemDisableAtOpen = pMenuItemDisableAtOpen;
+  m_InitialPosition = initialPosition;
 
   //
   // Initial validations
@@ -73,6 +75,18 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen)
   switch(m_InitialPosition)
   {
     case IP_Center:
+      if(m_WinWidth == 0)
+      {
+        // Initial window width not set in initialize()
+        m_WinWidth = screenWidth * 60 / 10;
+      }
+
+      if(m_WinHeight == 0)
+      {
+        // Initial window heigth not set in initialize()
+        m_WinHeight = screenHeight * 60 / 10;
+      }
+
       m_WinTop = screenHeight / 2 - m_WinHeight / 2;
       m_WinLeft = screenWidth / 2 - m_WinWidth / 2;
       break;
@@ -96,6 +110,10 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen)
       m_WinHeight = screenHeight - screenBarHeight - 1;
       m_WinTop = screenBarHeight + 1;
       m_WinLeft = m_WinWidth;
+      break;
+
+    case IP_Explicit:
+      // Nothing to do
       break;
   }
 
@@ -141,8 +159,8 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen)
     return false;
   }
 
-  // The window should be using this message port which might be shared
-  // with other windows
+  // The window uses this message port which can be the same as used by
+  // other windows
   m_pWindow->UserPort = m_pMsgPort;
 
   ModifyIDCMP(m_pWindow, m_WindowIdcmp);
@@ -222,23 +240,21 @@ void WindowBase::SetTitle(SimpleString p_NewTitle)
   SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
 }
 
-void WindowBase::SetInitialPosition(InitialPosition p_InitialPosition,
-  long p_Left, long p_Top, long width, long height)
+void WindowBase::SetInitialDimension(ULONG left,
+                                     ULONG top,
+                                     ULONG width,
+                                     ULONG height)
 {
   if(IsOpen())
   {
     return;
   }
 
-  m_InitialPosition = p_InitialPosition;
-
-  if(p_InitialPosition == WindowBase::IP_Explicit)
-  {
-    m_WinLeft = p_Left;
-    m_WinTop = p_Top;
-    m_WinWidth = width;
-    m_WinHeight = height;
-  }
+  m_InitialPosition = WindowBase::IP_Explicit;
+  m_WinLeft = left;
+  m_WinTop = top;
+  m_WinWidth = width;
+  m_WinHeight = height;
 }
 
 void WindowBase::SetFixed(bool p_bFixWindow)

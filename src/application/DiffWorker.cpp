@@ -230,7 +230,7 @@ bool DiffWorker::Diff()
   m_pDiffDocumentLeft->SetFileName(m_LeftSrcFilePath.C_str());
   m_pDiffDocumentRight->SetFileName(m_RightSrcFilePath.C_str());
 
-  m_DiffWindow.Open();
+  m_DiffWindow.Open(NULL, WindowBase::IP_Fill);
   m_ProgressWindow.Close();
 
   m_DiffWindow.SetContent(m_pDiffDocumentLeft, m_pDiffDocumentRight);
