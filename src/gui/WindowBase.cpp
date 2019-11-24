@@ -105,57 +105,35 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen)
     m_WindowFlags |= WFLG_DRAGBAR;
   }
 
-  //
-  // Opening the window
-  //
-  // NOTE: Two separate calls because WA_SmartRefresh and
-  //       WA_SimpleRefresh mutually excluding each other and should
-  //       only be permitted if true.
-  //
-  if(m_bSmartRefresh == true)
+  ULONG smartOrSimpleRefresh = WA_SmartRefresh;
+  if(m_bSmartRefresh == false)
   {
-    m_pWindow = OpenWindowTags(NULL,
-      WA_Left, m_WinLeft,
-      WA_Top, m_WinTop,
-      WA_Width, m_WinWidth,
-      WA_Height, m_WinHeight,
-      WA_Title, (ULONG) m_Title.C_str(),
-      WA_Activate, TRUE,
-      WA_PubScreen, (UBYTE*) m_AppScreen.IntuiScreen(),
-//      WA_CustomScreen, (UBYTE*) m_AppScreen.IntuiScreen(),
-      WA_Flags, m_WindowFlags,
-      WA_MinWidth, 120,
-      WA_MinHeight, 90,
-      WA_MaxWidth, -1,
-      WA_MaxHeight, -1,
-      WA_NewLookMenus, TRUE,          // Ignored before v39
-      WA_Borderless, m_bBorderless,
-      WA_Gadgets, m_pFirstGadget,
-      WA_SmartRefresh, TRUE,
-      TAG_END);
+    // Simple-refresh mode
+    smartOrSimpleRefresh = WA_SimpleRefresh;
   }
-  else
-  {
-    m_pWindow = OpenWindowTags(NULL,
-      WA_Left, m_WinLeft,
-      WA_Top, m_WinTop,
-      WA_Width, m_WinWidth,
-      WA_Height, m_WinHeight,
-      WA_Title, (ULONG) m_Title.C_str(),
-      WA_Activate, TRUE,
-      WA_PubScreen, (UBYTE*) m_AppScreen.IntuiScreen(),
-//      WA_CustomScreen, (UBYTE*) m_AppScreen.IntuiScreen(),
-      WA_Flags, m_WindowFlags,
-      WA_MinWidth, 120,
-      WA_MinHeight, 90,
-      WA_MaxWidth, -1,
-      WA_MaxHeight, -1,
-      WA_NewLookMenus, TRUE,          // Ignored before v39
-      WA_Borderless, m_bBorderless,
-      WA_Gadgets, m_pFirstGadget,
-      WA_SimpleRefresh, TRUE,
-      TAG_END);
-  }
+
+  //
+  // Open the window
+  //
+  m_pWindow = OpenWindowTags(NULL,
+    smartOrSimpleRefresh, TRUE,
+    WA_Left, m_WinLeft,
+    WA_Top, m_WinTop,
+    WA_Width, m_WinWidth,
+    WA_Height, m_WinHeight,
+    WA_Title, (ULONG) m_Title.C_str(),
+    WA_Activate, TRUE,
+    WA_PubScreen, (UBYTE*) m_AppScreen.IntuiScreen(),
+//    WA_CustomScreen, (UBYTE*) m_AppScreen.IntuiScreen(),
+    WA_Flags, m_WindowFlags,
+    WA_MinWidth, 120,
+    WA_MinHeight, 90,
+    WA_MaxWidth, -1,
+    WA_MaxHeight, -1,
+    WA_NewLookMenus, TRUE,          // Ignored before v39
+    WA_Borderless, m_bBorderless,
+    WA_Gadgets, m_pFirstGadget,
+    TAG_DONE);
 
   if(!IsOpen())
   {
@@ -413,16 +391,16 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId, ULONG& width, ULONG& 
 {
   struct Image* pImage = (struct Image*) NewObject(
       NULL, SYSICLASS,
-			SYSIA_Which, sysImageId,
-			SYSIA_Size, SYSISIZE_MEDRES,
-			SYSIA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
-			TAG_END);
+      SYSIA_Which, sysImageId,
+      SYSIA_Size, SYSISIZE_MEDRES,
+      SYSIA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
+      TAG_END);
 
-	if(pImage != NULL)
-	{
-	  GetAttr(IA_Width, pImage, &width);
-	  GetAttr(IA_Height, pImage, &height);
-	}
+  if(pImage != NULL)
+  {
+    GetAttr(IA_Width, pImage, &width);
+    GetAttr(IA_Height, pImage, &height);
+  }
 
   return pImage;
 }

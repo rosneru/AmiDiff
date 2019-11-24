@@ -58,14 +58,14 @@ public:
   const APTR DisabledMenuItem() const;
 
   /**
-   * Abstract method. Forces inheriting classes to handle the given 
+   * Abstract method. Forces inheriting classes to handle the given
    * IDCMP event.
    *
    * @returns
    * If this event was handled: true; if it was not handled: false.
    */
-  virtual bool HandleIdcmp(ULONG msgClass, 
-                           UWORD msgCode, 
+  virtual bool HandleIdcmp(ULONG msgClass,
+                           UWORD msgCode,
                            APTR pItemAddress) = 0;
 
   /**
@@ -226,9 +226,10 @@ protected:
   virtual void setFlags(ULONG flags);
 
   /**
-   * Setting the window IDCMP flags. Should be done before window
-   * opening. Can be called multiple times. the given idcmp are
-   * then added by performing an OR-operation.
+   * Setting the window IDCMP flags, oring them to the already existing
+   * ones.
+   *
+   * Should be done before window opening.
    *
    * Derived classes can and should set this inside their initialize()
    * implementation to set the needed window idcmp messages.
