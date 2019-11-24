@@ -17,9 +17,9 @@
 
 extern struct GfxBase* GfxBase;
 
-DiffWindow::DiffWindow(AppScreen& p_AppScreen,
-                       struct MsgPort* p_pMsgPort, int& p_NumWindowsOpen)
-  : ScrollbarWindow(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
+DiffWindow::DiffWindow(AppScreen& appScreen,
+                       struct MsgPort* pMsgPort, int& numOpenWindows)
+  : ScrollbarWindow(appScreen, pMsgPort, numOpenWindows),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
     m_TextFontWidth_pix(0),
@@ -91,9 +91,9 @@ void DiffWindow::Resized()
 
 }
 
-bool DiffWindow::Open(const APTR p_pMenuItemDisableAtOpen)
+bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen)
 {
-  if(ScrollbarWindow::Open(p_pMenuItemDisableAtOpen) == false)
+  if(ScrollbarWindow::Open(pMenuItemDisableAtOpen) == false)
   {
     return false;
   }
@@ -128,16 +128,16 @@ bool DiffWindow::Open(const APTR p_pMenuItemDisableAtOpen)
   return true;
 }
 
-bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
-  DiffDocument* p_pRightDocument)
+bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
+  DiffDocument* pRightDocument)
 {
-  if((p_pLeftDocument == NULL) || (p_pRightDocument == NULL))
+  if((pLeftDocument == NULL) || (pRightDocument == NULL))
   {
     return false;
   }
 
-  m_pLeftDocument = p_pLeftDocument;
-  m_pRightDocument = p_pRightDocument;
+  m_pLeftDocument = pLeftDocument;
+  m_pRightDocument = pRightDocument;
   m_X = 0;
   m_Y = 0;
 
@@ -161,8 +161,8 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   // Paint the status bar
   paintStatusBar();
 
-  size_t maxCharsLeft = p_pLeftDocument->MaxLineLength();
-  size_t maxCharsRight = p_pRightDocument->MaxLineLength();
+  size_t maxCharsLeft = pLeftDocument->MaxLineLength();
+  size_t maxCharsRight = pRightDocument->MaxLineLength();
   m_MaxLineLength = 0;
   if(maxCharsLeft > maxCharsRight)
   {
@@ -182,28 +182,28 @@ bool DiffWindow::SetContent(DiffDocument* p_pLeftDocument,
   return true;
 }
 
-void DiffWindow::SetStatusBar(long p_DiffTime, int p_NumAdded,
-                              int p_NumChanged, int p_NumDeleted)
+void DiffWindow::SetStatusBar(long diffTime, int numAdded,
+                              int p_NumChanged, int numDeleted)
 {
-  long totalChanges = p_NumAdded + p_NumChanged + p_NumDeleted;
+  long totalChanges = numAdded + p_NumChanged + numDeleted;
 
   m_StatusBarText = "Diff performed in ";
-  m_StatusBarText += p_DiffTime;
+  m_StatusBarText += diffTime;
   m_StatusBarText += " ms. Total changes: ";
   m_StatusBarText += totalChanges;
 
 
   SimpleString emptyStr = "";
-  m_AddedText = emptyStr + p_NumAdded + " Added ";
+  m_AddedText = emptyStr + numAdded + " Added ";
   m_ChangedText = emptyStr + p_NumChanged + " Changed ";
-  m_DeletedText = emptyStr + p_NumDeleted + " Deleted ";
+  m_DeletedText = emptyStr + numDeleted + " Deleted ";
 
   paintStatusBar();
 }
 
-void DiffWindow::XChangedHandler(size_t p_NewX)
+void DiffWindow::XChangedHandler(size_t newX)
 {
-  int delta = p_NewX - m_X;
+  int delta = newX - m_X;
   if(delta == 0)
   {
     return;
@@ -221,11 +221,11 @@ void DiffWindow::XChangedHandler(size_t p_NewX)
   {
     if(delta > 0)
     {
-      m_X += scrollNCharsLeft(deltaAbs);
+      m_X += scrollLeft(deltaAbs);
     }
     else if(delta < 0)
     {
-      m_X -= scrollNCharsRight(deltaAbs);
+      m_X -= scrollRight(deltaAbs);
     }
 
     return;
@@ -235,7 +235,7 @@ void DiffWindow::XChangedHandler(size_t p_NewX)
   // Scroll bigger amounts by re-painting the whole page at the new
   // x-position
   //
-  m_X = p_NewX;
+  m_X = newX;
 
   // Clear both text areas completely
   EraseRect(m_pWindow->RPort,
@@ -252,9 +252,9 @@ void DiffWindow::XChangedHandler(size_t p_NewX)
 
 }
 
-void DiffWindow::YChangedHandler(size_t p_NewY)
+void DiffWindow::YChangedHandler(size_t newY)
 {
-  int delta = p_NewY - m_Y;
+  int delta = newY - m_Y;
   if(delta == 0)
   {
     return;
@@ -272,11 +272,11 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   {
     if(delta > 0)
     {
-      m_Y += scrollNLinesUp(deltaAbs);
+      m_Y += scrollUp(deltaAbs);
     }
     else if(delta < 0)
     {
-      m_Y -= scrollNLinesDown(deltaAbs);
+      m_Y -= scrollDown(deltaAbs);
     }
 
     return;
@@ -286,7 +286,7 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   // Scroll bigger amounts by re-painting the whole page at the new
   // y-position
   //
-  m_Y = p_NewY;
+  m_Y = newY;
 
   // Clear both text areas completely
   EraseRect(m_pWindow->RPort,
@@ -302,12 +302,12 @@ void DiffWindow::YChangedHandler(size_t p_NewY)
   paintDocument(false);
 }
 
-void DiffWindow::XIncrease(size_t p_IncreaseBy,
-  bool p_bTriggeredByScrollbarPot)
+void DiffWindow::XIncrease(size_t numChars,
+  bool bTriggeredByScrollPot)
 {
-  m_X += scrollNCharsLeft(p_IncreaseBy);
+  m_X += scrollLeft(numChars);
 
-  if(!p_bTriggeredByScrollbarPot)
+  if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
@@ -315,12 +315,12 @@ void DiffWindow::XIncrease(size_t p_IncreaseBy,
   }
 }
 
-void DiffWindow::XDecrease(size_t p_DecreaseBy,
-  bool p_bTriggeredByScrollbarPot)
+void DiffWindow::XDecrease(size_t numChars,
+  bool bTriggeredByScrollPot)
 {
-  m_X -= scrollNCharsRight(p_DecreaseBy);
+  m_X -= scrollRight(numChars);
 
-  if(!p_bTriggeredByScrollbarPot)
+  if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
@@ -328,12 +328,12 @@ void DiffWindow::XDecrease(size_t p_DecreaseBy,
   }
 }
 
-void DiffWindow::YIncrease(size_t p_IncreaseBy,
-  bool p_bTriggeredByScrollbarPot)
+void DiffWindow::YIncrease(size_t numLines,
+  bool bTriggeredByScrollPot)
 {
-  m_Y += scrollNLinesUp(p_IncreaseBy);
+  m_Y += scrollUp(numLines);
 
-  if(!p_bTriggeredByScrollbarPot)
+  if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
@@ -341,12 +341,12 @@ void DiffWindow::YIncrease(size_t p_IncreaseBy,
   }
 }
 
-void DiffWindow::YDecrease(size_t p_DecreaseBy,
-  bool p_bTriggeredByScrollbarPot)
+void DiffWindow::YDecrease(size_t numLines,
+  bool bTriggeredByScrollPot)
 {
-  m_Y -= scrollNLinesDown(p_DecreaseBy);
+  m_Y -= scrollDown(numLines);
 
-  if(!p_bTriggeredByScrollbarPot)
+  if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
@@ -356,8 +356,7 @@ void DiffWindow::YDecrease(size_t p_DecreaseBy,
 
 void DiffWindow::initialize()
 {
-  // Call parent method to get to utilize scroll gadgets iside the
-  // window borders
+  // Call parent method to initialize scroll gadgets inside the borders
   ScrollbarWindow::initialize();
 
   // Set the default title
@@ -375,11 +374,10 @@ void DiffWindow::initialize()
            IDCMP_NEWSIZE);        // Inform us about resizing
 
   m_bInitialized = true;
-
 }
 
-bool DiffWindow::HandleIdcmp(ULONG msgClass, 
-                             UWORD msgCode, 
+bool DiffWindow::HandleIdcmp(ULONG msgClass,
+                             UWORD msgCode,
                              APTR pItemAddress)
 {
   if(ScrollbarWindow::HandleIdcmp(msgClass, msgCode, pItemAddress) == true)
@@ -439,14 +437,14 @@ void DiffWindow::calcSizes()
   setYScrollPotSize(m_MaxTextAreaLines);
 }
 
-void DiffWindow::paintDocument(bool  p_bDisplayFromStart)
+void DiffWindow::paintDocument(bool  fromStart)
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {
     return;
   }
 
-  if(p_bDisplayFromStart == true)
+  if(fromStart == true)
   {
     m_X = 0;
     m_Y = 0;
@@ -606,7 +604,7 @@ void DiffWindow::paintDocumentNames()
   {
     return;
   }
-
+/*
   struct IntuiText intuiText;
   intuiText.FrontPen  = m_AppScreen.Pens().HighlightedText();
   intuiText.BackPen   = m_AppScreen.Pens().Background();
@@ -623,6 +621,7 @@ void DiffWindow::paintDocumentNames()
   intuiText.LeftEdge  = m_TextArea2Left + 2;
   intuiText.IText = (UBYTE*)m_pRightDocument->FileName();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+*/
 }
 
 void DiffWindow::paintStatusBar()
@@ -662,17 +661,17 @@ void DiffWindow::paintStatusBar()
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
 
-LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
+LONG DiffWindow::colorNameToPen(DiffDocument::ColorName colorName)
 {
-  if(p_pColorName == DiffDocument::CN_Green)
+  if(colorName == DiffDocument::CN_Green)
   {
     return m_AppScreen.Pens().Green();
   }
-  else if(p_pColorName== DiffDocument::CN_Yellow)
+  else if(colorName== DiffDocument::CN_Yellow)
   {
     return m_AppScreen.Pens().Yellow();
   }
-  else if(p_pColorName == DiffDocument::CN_Red)
+  else if(colorName == DiffDocument::CN_Red)
   {
     return m_AppScreen.Pens().Red();
   }
@@ -683,9 +682,9 @@ LONG DiffWindow::colorNameToPen(DiffDocument::ColorName p_pColorName)
 }
 
 
-size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
+size_t DiffWindow::scrollRight(int numChars)
 {
-  if(p_ScrollNumCharsRight < 1)
+  if(numChars < 1)
   {
     // Nothing to do
     return 0;
@@ -697,15 +696,15 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
     return 0;
   }
 
-  if(p_ScrollNumCharsRight > m_X)
+  if(numChars > m_X)
   {
     // Limit the scrolling to only scroll only as many chars as necessary
-    p_ScrollNumCharsRight = m_X;
+    numChars = m_X;
   }
 
-  if(p_ScrollNumCharsRight > m_MaxTextAreaChars)
+  if(numChars > m_MaxTextAreaChars)
   {
-    p_ScrollNumCharsRight = m_MaxTextAreaChars;
+    numChars = m_MaxTextAreaChars;
   }
 
 
@@ -717,14 +716,14 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
 
   // Move each text area right by n * the height of one text line
   ScrollRaster(m_pWindow->RPort,
-    -p_ScrollNumCharsRight * m_TextFontWidth_pix, // n * width
+    -numChars * m_TextFontWidth_pix, // n * width
     0,
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea1Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
   ScrollRaster(m_pWindow->RPort,
-    -p_ScrollNumCharsRight * m_TextFontWidth_pix,  // n * width
+    -numChars * m_TextFontWidth_pix,  // n * width
     0,
     m_TextArea2Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
@@ -742,23 +741,23 @@ size_t DiffWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
     }
 
     paintLine(pLeftLine, pRightLine, (i - m_Y) * m_TextFontHeight_pix,
-      m_X - p_ScrollNumCharsRight, p_ScrollNumCharsRight);
+      m_X - numChars, numChars);
   }
 
-  return p_ScrollNumCharsRight;
+  return numChars;
 }
 
-size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
+size_t DiffWindow::scrollLeft(int numChars)
 {
-  if(p_ScrollNumCharsLeft < 1)
+  if(numChars < 1)
   {
     // Noting to do
     return 0;
   }
 
-  if(p_ScrollNumCharsLeft > m_MaxTextAreaChars)
+  if(numChars > m_MaxTextAreaChars)
   {
-    p_ScrollNumCharsLeft = m_MaxTextAreaChars;
+    numChars = m_MaxTextAreaChars;
   }
 
   if(m_MaxLineLength < m_MaxTextAreaChars)
@@ -775,10 +774,10 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
     return 0;
   }
 
-  if((m_X + m_MaxTextAreaChars + p_ScrollNumCharsLeft) > m_MaxLineLength)
+  if((m_X + m_MaxTextAreaChars + numChars) > m_MaxLineLength)
   {
     // Limit the scrolling to only scroll only as many chars as necessary
-    p_ScrollNumCharsLeft = m_MaxLineLength - (m_X + m_MaxTextAreaChars);
+    numChars = m_MaxLineLength - (m_X + m_MaxTextAreaChars);
   }
 
   // Set foreground color for document painting
@@ -789,14 +788,14 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
 
   // Move each text area left by n * the width of one char
   ScrollRaster(m_pWindow->RPort,
-    p_ScrollNumCharsLeft * m_TextFontWidth_pix,
+    numChars * m_TextFontWidth_pix,
     0,
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea1Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
   ScrollRaster(m_pWindow->RPort,
-    p_ScrollNumCharsLeft * m_TextFontWidth_pix,
+    numChars * m_TextFontWidth_pix,
     0,
     m_TextArea2Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
@@ -814,15 +813,15 @@ size_t DiffWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
     }
 
     paintLine(pLeftLine, pRightLine, (i - m_Y)  * m_TextFontHeight_pix,
-      m_X + m_MaxTextAreaChars, -p_ScrollNumCharsLeft);
+      m_X + m_MaxTextAreaChars, -numChars);
   }
 
-  return p_ScrollNumCharsLeft;
+  return numChars;
 }
 
-size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
+size_t DiffWindow::scrollDown(int numLines)
 {
-  if(p_ScrollNumLinesDown < 1)
+  if(numLines < 1)
   {
     // Nothing to do
     return 0;
@@ -834,10 +833,10 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     return 0;
   }
 
-  if(p_ScrollNumLinesDown > m_Y)
+  if(numLines > m_Y)
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    p_ScrollNumLinesDown = m_Y;
+    numLines = m_Y;
   }
 
   // Set foreground color for document painting
@@ -848,21 +847,21 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
 
   // Move each text area downward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
-    -p_ScrollNumLinesDown * m_TextFontHeight_pix,  // n * height
+    -numLines * m_TextFontHeight_pix,  // n * height
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea1Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
   ScrollRaster(m_pWindow->RPort, 0,
-    -p_ScrollNumLinesDown * m_TextFontHeight_pix,  // n * height
+    -numLines * m_TextFontHeight_pix,  // n * height
     m_TextArea2Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
   // fill the gap with the previous text lines
-  for(int i = 0; i < p_ScrollNumLinesDown; i++)
+  for(int i = 0; i < numLines; i++)
   {
-    int lineIndex = m_Y - p_ScrollNumLinesDown + i;
+    int lineIndex = m_Y - numLines + i;
     const DiffLine* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
     const DiffLine* pRightLine = m_pRightDocument->GetIndexedLine(lineIndex);
 
@@ -874,12 +873,12 @@ size_t DiffWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
     paintLine(pLeftLine, pRightLine, i * m_TextFontHeight_pix);
   }
 
-  return p_ScrollNumLinesDown;
+  return numLines;
 }
 
-size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
+size_t DiffWindow::scrollUp(int numLines)
 {
-  if(p_ScrollUpNumLinesUp < 1)
+  if(numLines < 1)
   {
     // Noting to do
     return 0;
@@ -898,10 +897,10 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     return 0;
   }
 
-  if((m_Y + m_MaxTextAreaLines + p_ScrollUpNumLinesUp) > m_pLeftDocument->NumLines())
+  if((m_Y + m_MaxTextAreaLines + numLines) > m_pLeftDocument->NumLines())
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    p_ScrollUpNumLinesUp = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextAreaLines);
+    numLines = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextAreaLines);
   }
 
   // Set foreground color for document painting
@@ -912,18 +911,18 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
 
   // Move each text area upward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
-    p_ScrollUpNumLinesUp * m_TextFontHeight_pix,
+    numLines * m_TextFontHeight_pix,
     m_TextArea1Left + 3, m_TextAreasTop + 2,
     m_TextArea1Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
   ScrollRaster(m_pWindow->RPort, 0,
-    p_ScrollUpNumLinesUp * m_TextFontHeight_pix,
+    numLines * m_TextFontHeight_pix,
     m_TextArea2Left + 3, m_TextAreasTop + 2,
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
-  for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
+  for(int i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y + m_MaxTextAreaLines + i;
     const DiffLine* pLeftLine = m_pLeftDocument->GetIndexedLine(lineIndex);
@@ -934,12 +933,12 @@ size_t DiffWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
       break;
     }
 
-    int paintLineIndex = m_MaxTextAreaLines - p_ScrollUpNumLinesUp + i;
+    int paintLineIndex = m_MaxTextAreaLines - numLines + i;
     paintLine(pLeftLine, pRightLine, paintLineIndex * m_TextFontHeight_pix);
   }
 
   // Repaint window decoration
   //paintWindowDecoration();
 
-  return p_ScrollUpNumLinesUp;
+  return numLines;
 }

@@ -11,10 +11,10 @@
 #include <intuition/icclass.h>
 #include "ScrollbarWindow.h"
 
-ScrollbarWindow::ScrollbarWindow(AppScreen& p_AppScreen, 
-                                 struct MsgPort* p_pMsgPort,
-                                 int& p_NumWindowsOpen)
-  : WindowBase(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
+ScrollbarWindow::ScrollbarWindow(AppScreen& appScreen, 
+                                 struct MsgPort* pMsgPort,
+                                 int& numOpenWindows)
+  : WindowBase(appScreen, pMsgPort, numOpenWindows),
     m_SizeImageWidth(18),
     m_SizeImageHeight(10),
     m_InnerWindowRight(0),
@@ -100,9 +100,9 @@ ScrollbarWindow::~ScrollbarWindow()
 
 
 
-bool ScrollbarWindow::Open(const APTR p_pMenuItemDisableAtOpen)
+bool ScrollbarWindow::Open(const APTR pMenuItemDisableAtOpen)
 {
-  if(WindowBase::Open(p_pMenuItemDisableAtOpen) == false)
+  if(WindowBase::Open(pMenuItemDisableAtOpen) == false)
   {
     return false;
   }
@@ -391,95 +391,97 @@ void ScrollbarWindow::calcSizes()
     - m_SizeImageHeight;
 }
 
-void ScrollbarWindow::setXScrollPotSize(int p_MaxVisible, int p_Total)
+void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars, 
+                                        int totalChars)
 {
   if(m_pXPropGadget == NULL)
   {
     return;
   }
 
-  if(p_Total < 0)
+  if(totalChars < 0)
   {
     // Only max visible lines  provided
 	  SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
-    	PGA_Visible, p_MaxVisible,
+    	PGA_Visible, maxVisibleChars,
     	TAG_DONE);
   }
-  else if(p_MaxVisible >= 0)
+  else if(maxVisibleChars >= 0)
   {
     // Number of total lines and number of max visible lines provided:
     // Set the y-scrollbar to an initial state
     SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
-      PGA_Total, p_Total,
+      PGA_Total, totalChars,
       PGA_Top, 0,
-      PGA_Visible, p_MaxVisible,
+      PGA_Visible, maxVisibleChars,
       TAG_DONE);
   }
 }
 
-void ScrollbarWindow::setYScrollPotSize(int p_MaxVisible, int p_Total)
+void ScrollbarWindow::setYScrollPotSize(int maxVisibleLines, 
+                                        int totalLines)
 {
   if(m_pYPropGadget == NULL)
   {
     return;
   }
 
-  if(p_Total < 0)
+  if(totalLines < 0)
   {
     // Only max visible lines  provided
 	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Visible, p_MaxVisible,
+    	PGA_Visible, maxVisibleLines,
     	TAG_DONE);
   }
-  else if(p_MaxVisible >= 0)
+  else if(maxVisibleLines >= 0)
   {
     // Number of total lines and number of max visible lines provided:
     // Set the y-scrollbar to an initial state
     SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-      PGA_Total, p_Total,
+      PGA_Total, totalLines,
       PGA_Top, 0,
-      PGA_Visible, p_MaxVisible,
+      PGA_Visible, maxVisibleLines,
       TAG_DONE);
   }
 }
 
-void ScrollbarWindow::setXScrollLeft(int p_Left)
+void ScrollbarWindow::setXScrollLeft(int left)
 {
   if(m_pYPropGadget == NULL)
   {
     return;
   }
 
-  if(p_Left < 0)
+  if(left < 0)
   {
     return;
   }
 
   SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
-    PGA_Top, p_Left,
+    PGA_Top, left,
     TAG_DONE);
 }
 
 
-void ScrollbarWindow::setYScrollTop(int p_Top)
+void ScrollbarWindow::setYScrollTop(int top)
 {
   if(m_pYPropGadget == NULL)
   {
     return;
   }
 
-  if(p_Top < 0)
+  if(top < 0)
   {
     return;
   }
 
   SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    PGA_Top, p_Top,
+    PGA_Top, top,
     TAG_DONE);
 }
 
-void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId p_GadgetId,
-  size_t& p_LatestValue)
+void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId gadgetId,
+  size_t& lastVal)
 {
   Forbid();
 
@@ -498,9 +500,9 @@ void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId p_GadgetId,
       ULONG msgTagData = GetTagData(GA_ID, 0,
         (struct TagItem *)pMessage->IAddress);
 
-      if(msgTagData == p_GadgetId)
+      if(msgTagData == gadgetId)
       {
-        p_LatestValue = GetTagData(PGA_Top, 0, (struct TagItem*)
+        lastVal = GetTagData(PGA_Top, 0, (struct TagItem*)
           pMessage->IAddress);
 
         // Intuition is about to free this message. Make sure

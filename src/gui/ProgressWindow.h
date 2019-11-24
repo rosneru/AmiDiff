@@ -17,8 +17,8 @@
 class ProgressWindow : public WindowBase
 {
 public:
-  ProgressWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
-                 int& p_NumWindowsOpen, bool& p_bCancelRequested);
+  ProgressWindow(AppScreen& appScreen, struct MsgPort* pMsgPort,
+                 int& numOpenWindows, bool& bCancelRequested);
 
   virtual ~ProgressWindow();
 
@@ -36,13 +36,13 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(const APTR p_pMenuItemDisableAtOpen = NULL);
+  bool Open(const APTR pMenuItemDisableAtOpen = NULL);
 
   /**
    * Handles given IDCMP event.
    *
    * @returns
-   * If this event was handled: true; if it was not handled: false..
+   * If this event was handled: true; if it was not handled: false.
    */
   virtual bool HandleIdcmp(ULONG msgClass, 
                            UWORD msgCode, 
@@ -51,10 +51,10 @@ public:
   /**
    * Handles the given progress event.
    *
-   * Prints the current pDescription text of given p_pProgressMsg and
+   * Prints the current pDescription text of given pProgrMsg and
    * draws a progress bar representing the actual percentual value.
    */
-  void HandleProgress(struct WorkerProgressMsg* p_pProgressMsg);
+  void HandleProgress(struct WorkerProgressMsg* pProgrMsg);
 
 
 private:

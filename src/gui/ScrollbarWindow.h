@@ -18,8 +18,8 @@
 class ScrollbarWindow : public WindowBase
 {
 public:
-  ScrollbarWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
-                  int& p_NumWindowsOpen);
+  ScrollbarWindow(AppScreen& appScreen, struct MsgPort* pMsgPort,
+                  int& numOpenWindows);
 
   virtual ~ScrollbarWindow();
 
@@ -30,7 +30,7 @@ public:
    * @returns
    * false if opening fails
    */
-  virtual bool Open(const APTR p_pMenuItemDisableAtOpen = NULL);
+  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL);
 
   /**
    * Handles given IDCMP event.
@@ -50,7 +50,7 @@ public:
    * Child classes must implement it and therin should perform the
    * scrolling to the new x-position.
    */
-  virtual void XChangedHandler(size_t p_NewX) = 0;
+  virtual void XChangedHandler(size_t newX) = 0;
 
   /**
    * This handles the y-changes triggered by the vertical scrollbar
@@ -60,7 +60,7 @@ public:
    * Child classes must implement it and therin should perform the
    * scrolling to the new y-position.
    */
-  virtual void YChangedHandler(size_t p_NewY) = 0;
+  virtual void YChangedHandler(size_t newY) = 0;
 
   /**
    * This handles the increase by 1 of the x-position triggered by the
@@ -70,15 +70,15 @@ public:
    * Child classes must implement it and therein should perform the
    * scrolling to x+1.
    *
-   * @param p_IncreaseBy
+   * @param numChars
    * Amount to increase the x-position by
    *
-   * @param p_bTriggeredByScrollbarPot
+   * @param bTriggeredByScrollPot
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  virtual void XIncrease(size_t p_IncreaseBy,
-    bool p_bTriggeredByScrollbarPot = false) = 0;
+  virtual void XIncrease(size_t numChars,
+    bool bTriggeredByScrollPot = false) = 0;
 
   /**
    * This handles the decrease by 1 of the x-position triggered by the
@@ -88,15 +88,15 @@ public:
    * Child classes must implement it and therein should perform the
    * scrolling to x-1.
    *
-   * @param p_DecreaseBy
+   * @param numChars
    * Amount to decrease the x-position by
    *
-   * @param p_bTriggeredByScrollbarPot
+   * @param bTriggeredByScrollPot
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  virtual void XDecrease(size_t p_DecreaseBy,
-    bool p_bTriggeredByScrollbarPot = false) = 0;
+  virtual void XDecrease(size_t numChars,
+    bool bTriggeredByScrollPot = false) = 0;
 
   /**
    * This handles the increase by 1 of the y-position triggered by the
@@ -106,15 +106,15 @@ public:
    * Child classes must implement it and therein should perform the
    * scrolling to y+1.
    *
-   * @param p_IncreaseBy
+   * @param numChars
    * Amount to increase the y-position by
    *
-   * @param p_bTriggeredByScrollbarPot
+   * @param bTriggeredByScrollPot
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  virtual void YIncrease(size_t p_IncreaseBy,
-    bool p_bTriggeredByScrollbarPot = false) = 0;
+  virtual void YIncrease(size_t numChars,
+    bool bTriggeredByScrollPot = false) = 0;
 
   /**
    * This handles the decrease by 1 of the y-position triggered by the
@@ -124,15 +124,15 @@ public:
    * Child classes must implement it and therein should perform the
    * scrolling to y-1.
    *
-   * @param p_DecreaseBy
+   * @param numChars
    * Amount to decrease the y-position by
    *
-   * @param p_bTriggeredByScrollbarPot
+   * @param bTriggeredByScrollPot
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  virtual void YDecrease(size_t p_DecreaseBy,
-    bool p_bTriggeredByScrollbarPot = false) = 0;
+  virtual void YDecrease(size_t numChars,
+    bool bTriggeredByScrollPot = false) = 0;
 
 
 protected:
@@ -153,40 +153,40 @@ protected:
   /**
    * Setting the pot size of the x-scrollbar.
    *
-   * @param p_MaxVisible
+   * @param maxVisibleChars
    * Number of max visible chars / points / etc in window. Has to be
    * updated e.g. after the window resizes.
    *
-   * @param p_Total
+   * @param totalChars
    * Optional parameter. Number of total visible chars / points / etc
    * in document. Has to be set once after opening the document and can
    * then left untouched (or skipped by giving -1).
    */
-  void setXScrollPotSize(int p_MaxVisible, int p_Total = - 1);
+  void setXScrollPotSize(int maxVisibleChars, int totalChars = - 1);
 
   /**
    * Setting the pot size of the y-scrollbar.
    *
-   * @param p_MaxVisible
+   * @param maxVisibleLines
    * Number of max visible lines / points / etc in window. Has to be
    * updated e.g. after the window resizes.
    *
-   * @param p_Total
+   * @param totalLines
    * Optional parameter. Number of total visible lines / points / etc
    * in document. Has to be set once after opening the document and can
    * then left untouched (or skipped by giving -1).
    */
-  void setYScrollPotSize(int p_MaxVisible, int p_Total = - 1);
+  void setYScrollPotSize(int maxVisibleLines, int totalLines = - 1);
 
   /**
    * Setting a new top position to the x-scrollbar pot.
    */
-  void setXScrollLeft(int p_Left);
+  void setXScrollLeft(int left);
 
   /**
    * Setting a new top position to the y-scrollbar pot.
    */
-  void setYScrollTop(int p_Top);
+  void setYScrollTop(int top);
 
 private:
   /**
@@ -229,14 +229,16 @@ private:
    * top value and delete all previous messages of this kind. Usefull
    * on slow systems to not get flooded by messages for this gadget.
    *
-   * @param p_GadgetId of the BOOPSI gadget to browse for messages
+   * @param gadgetId 
+   * Id of the BOOPSI gadget to browse for messages
    *
-   * @param If one or more IDCMP_IDCMPUPDATE messages are found while
-   * browsing, the tag value of the latest found message is written to
-   * this given argument. If no appropriate message is found the
-   * argument variable will not be overwritten.
+   * @param lastVal 
+   * If one or more IDCMP_IDCMPUPDATE messages are found while browsing,
+   * the tag value of the latest found message is written to this given 
+   * argument. If no appropriate message is found the argument variable 
+   * will not be overwritten.
    */
-  void extractLatestPropGadTopValue(GadgetId p_GadgetId, size_t& p_LatestValue);
+  void extractLatestPropGadTopValue(GadgetId gadgetId, size_t& lastVal);
 };
 
 

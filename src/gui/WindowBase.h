@@ -48,7 +48,7 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  virtual bool Open(const APTR p_pMenuItemDisableAtOpen) = 0;
+  virtual bool Open(const APTR pMenuItemDisableAtOpen) = 0;
 
   /**
    * Closes the window.
@@ -91,18 +91,18 @@ public:
    * Top edge of the Window. Only used when InitialPosition is set to
    * IP_Explicit.
    *
-   * @param p_Width
+   * @param width
    * Width of the Window. Only used when InitialPosition is set to
    * IP_Explicit.
    *
-   * @param p_Height
+   * @param height
    * Height of the Window. Only used when InitialPosition is set to
    * IP_Explicit.
    *
    */
   void SetInitialPosition(InitialPosition p_InitialPosition,
-    long p_Left = 0, long p_Top = 0, long p_Width = 0,
-    long p_Height = 0);
+    long p_Left = 0, long p_Top = 0, long width = 0,
+    long height = 0);
 
   /**
    * Sets if the window appears fixed or if it is draggable with the
@@ -158,8 +158,8 @@ public:
    * Resizes an opened window and moves it to a new position.
    * Coordinates are absolute and no deltas.
    */
-  void ChangeWindowBox(long p_Left, long p_Top, long p_Width,
-    long p_Height);
+  void ChangeWindowBox(long p_Left, long p_Top, long width,
+    long height);
 
   /**
    * Returns the intuition window structure or NULL if window is not
@@ -195,17 +195,17 @@ protected:
    * @param p_pAppScreen
    * Screen on which the window will occur at opening time
    *
-   * @param p_pMsgPort
+   * @param pMsgPort
    * Message port which is used for this window. Can be shared
    * with other windows.
    *
-   * @param p_NumWindowsOpen
+   * @param numOpenWindows
    * Reference to a counter variable. Will be increased at each
    * successful opening and decreased at each closing of a window.
    *
    */
-  WindowBase(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
-             int& p_NumWindowsOpen);
+  WindowBase(AppScreen& appScreen, struct MsgPort* pMsgPort,
+             int& numOpenWindows);
 
   virtual ~WindowBase();
 
@@ -220,20 +220,20 @@ protected:
    *
    * Derived classes can and should set this inside their initialize()
    * implementation to set the needed window flags. Can be called
-   * multiple times. the given p_Flags are then added by performing an
+   * multiple times. the given flags are then added by performing an
    * OR-operation.
    */
-  virtual void setFlags(ULONG p_Flags);
+  virtual void setFlags(ULONG flags);
 
   /**
    * Setting the window IDCMP flags. Should be done before window
-   * opening. Can be called multiple times. the given p_Idcmp are
+   * opening. Can be called multiple times. the given idcmp are
    * then added by performing an OR-operation.
    *
    * Derived classes can and should set this inside their initialize()
    * implementation to set the needed window idcmp messages.
    */
-  virtual void setIDCMP(ULONG p_Idcmp);
+  virtual void setIDCMP(ULONG idcmp);
 
   /**
    * Setting the first gadget of a potential list of gadgets to be
@@ -242,33 +242,33 @@ protected:
    * Derived classes can and should set this inside their initialize()
    * implementation to set the needed window idcmp messages.
    */
-  virtual void setFirstGadget(struct Gadget* p_pFirstGadget);
+  virtual void setFirstGadget(struct Gadget* pFirstGadget);
 
 
   /**
    * Creates an BOOPSI image object of one of the system shipped with
    * the operating system from OS2.04 onward.
    *
-   * @param p_SysImageId
+   * @param sysImageId
    * Id of the system image
    *
    * @see intuition/imageclass.h
    *
-   * @param p_Width
+   * @param width
    * If image creation is successful the width of the image will be
    * stored here.
    *
-   * @param p_Height
+   * @param height
    * If image creation is successful the height of the image will be
    * stored here.
    *
    * @returns
    * A pointer to the image struct if successful or NULL if failed.
    */
-  struct Image* createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height);
+  struct Image* createImageObj(ULONG sysImageId, ULONG& width, ULONG& height);
 
 private:
-  int& m_NumWindowsOpen;
+  int& m_NumOpenWindows;
   bool m_bIsFixed;
   InitialPosition m_InitialPosition;
   ULONG m_WindowFlags;

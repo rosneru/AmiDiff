@@ -13,12 +13,12 @@
 #include <libraries/dos.h>
 #include "WindowBase.h"
 
-WindowBase::WindowBase(AppScreen& p_AppScreen,
-                       struct MsgPort* p_pMsgPort,
-                       int& p_NumWindowsOpen)
-  : m_AppScreen(p_AppScreen),
-    m_pMsgPort(p_pMsgPort),
-    m_NumWindowsOpen(p_NumWindowsOpen),
+WindowBase::WindowBase(AppScreen& appScreen,
+                       struct MsgPort* pMsgPort,
+                       int& numOpenWindows)
+  : m_AppScreen(appScreen),
+    m_pMsgPort(pMsgPort),
+    m_NumOpenWindows(numOpenWindows),
     m_pWindow(NULL),
     m_bBorderless(false),
     m_bSmartRefresh(false),
@@ -43,9 +43,9 @@ WindowBase::~WindowBase()
   Close();
 }
 
-bool WindowBase::Open(const APTR p_pMenuItemDisableAtOpen)
+bool WindowBase::Open(const APTR pMenuItemDisableAtOpen)
 {
-  m_pMenuItemDisableAtOpen = p_pMenuItemDisableAtOpen;
+  m_pMenuItemDisableAtOpen = pMenuItemDisableAtOpen;
 
   //
   // Initial validations
@@ -169,7 +169,7 @@ bool WindowBase::Open(const APTR p_pMenuItemDisableAtOpen)
 
   ModifyIDCMP(m_pWindow, m_WindowIdcmp);
 
-  m_NumWindowsOpen++;
+  m_NumOpenWindows++;
 
   if(m_pMenu == NULL)
   {
@@ -185,7 +185,7 @@ bool WindowBase::Open(const APTR p_pMenuItemDisableAtOpen)
     return true;
   }
 
-  if(p_pMenuItemDisableAtOpen != NULL)
+  if(pMenuItemDisableAtOpen != NULL)
   {
     m_pMenu->DisableMenuItem(m_pWindow, m_pMenuItemDisableAtOpen);
   }
@@ -211,7 +211,7 @@ void WindowBase::Close()
   }
 
   closeWindowSafely();
-  m_NumWindowsOpen--;
+  m_NumOpenWindows--;
 }
 
 bool WindowBase::IsOpen() const
@@ -245,7 +245,7 @@ void WindowBase::SetTitle(SimpleString p_NewTitle)
 }
 
 void WindowBase::SetInitialPosition(InitialPosition p_InitialPosition,
-  long p_Left, long p_Top, long p_Width, long p_Height)
+  long p_Left, long p_Top, long width, long height)
 {
   if(IsOpen())
   {
@@ -258,8 +258,8 @@ void WindowBase::SetInitialPosition(InitialPosition p_InitialPosition,
   {
     m_WinLeft = p_Left;
     m_WinTop = p_Top;
-    m_WinWidth = p_Width;
-    m_WinHeight = p_Height;
+    m_WinWidth = width;
+    m_WinHeight = height;
   }
 }
 
@@ -319,14 +319,14 @@ void WindowBase::Size(long p_DX, long p_DY)
 }
 
 void WindowBase::ChangeWindowBox(long p_Left, long p_Top,
-  long p_Width, long p_Height)
+  long width, long height)
 {
   if(!IsOpen())
   {
     return;
   }
 
-  ChangeWindowBox(p_Left, p_Top, p_Width, p_Height);
+  ChangeWindowBox(p_Left, p_Top, width, height);
   m_WinLeft = m_pWindow->LeftEdge;
   m_WinTop = m_pWindow->TopEdge;
   m_WinWidth = m_pWindow->Width;
@@ -373,22 +373,22 @@ void WindowBase::SetMenu(ApplicationMenu* p_pMenu)
 }
 
 
-void WindowBase::setFlags(ULONG p_Flags)
+void WindowBase::setFlags(ULONG flags)
 {
-  m_WindowFlags |= p_Flags;
+  m_WindowFlags |= flags;
 }
 
 
-void WindowBase::setIDCMP(ULONG p_Idcmp)
+void WindowBase::setIDCMP(ULONG idcmp)
 {
-  m_WindowIdcmp |= p_Idcmp;
+  m_WindowIdcmp |= idcmp;
 }
 
-void WindowBase::setFirstGadget(struct Gadget* p_pFirstGadget)
+void WindowBase::setFirstGadget(struct Gadget* pFirstGadget)
 {
   if(m_pFirstGadget == NULL)
   {
-    m_pFirstGadget = p_pFirstGadget;
+    m_pFirstGadget = pFirstGadget;
   }
   else
   {
@@ -397,7 +397,7 @@ void WindowBase::setFirstGadget(struct Gadget* p_pFirstGadget)
     {
       if(pGadget->NextGadget == NULL)
       {
-        pGadget->NextGadget = p_pFirstGadget;
+        pGadget->NextGadget = pFirstGadget;
         break;
       }
       else
@@ -409,19 +409,19 @@ void WindowBase::setFirstGadget(struct Gadget* p_pFirstGadget)
 }
 
 
-struct Image* WindowBase::createImageObj(ULONG p_SysImageId, ULONG& p_Width, ULONG& p_Height)
+struct Image* WindowBase::createImageObj(ULONG sysImageId, ULONG& width, ULONG& height)
 {
   struct Image* pImage = (struct Image*) NewObject(
       NULL, SYSICLASS,
-			SYSIA_Which, p_SysImageId,
+			SYSIA_Which, sysImageId,
 			SYSIA_Size, SYSISIZE_MEDRES,
 			SYSIA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
 			TAG_END);
 
 	if(pImage != NULL)
 	{
-	  GetAttr(IA_Width, pImage, &p_Width);
-	  GetAttr(IA_Height, pImage, &p_Height);
+	  GetAttr(IA_Width, pImage, &width);
+	  GetAttr(IA_Height, pImage, &height);
 	}
 
   return pImage;

@@ -15,12 +15,12 @@
 #include "ProgressWindow.h"
 
 
-ProgressWindow::ProgressWindow(AppScreen& p_AppScreen,
-                               struct MsgPort* p_pMsgPort,
-                               int& p_NumWindowsOpen,
-                               bool& p_bCancelRequested)
-  : WindowBase(p_AppScreen, p_pMsgPort, p_NumWindowsOpen),
-    m_bCancelRequested(p_bCancelRequested),
+ProgressWindow::ProgressWindow(AppScreen& appScreen,
+                               struct MsgPort* pMsgPort,
+                               int& numOpenWindows,
+                               bool& bCancelRequested)
+  : WindowBase(appScreen, pMsgPort, numOpenWindows),
+    m_bCancelRequested(bCancelRequested),
     m_pGadgetList(NULL),
     m_pLabelDescription(NULL),
     m_pButtonCancel(NULL),
@@ -57,9 +57,9 @@ void ProgressWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool ProgressWindow::Open(const APTR p_pUserDataMenuItemToDisable)
+bool ProgressWindow::Open(const APTR pProgrMsg)
 {
-  if(WindowBase::Open(p_pUserDataMenuItemToDisable) == false)
+  if(WindowBase::Open(pProgrMsg) == false)
   {
     return false;
   }
@@ -135,25 +135,24 @@ bool ProgressWindow::HandleIdcmp(ULONG msgClass,
 }
 
 
-void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
-                                    p_pProgressMsg)
+void ProgressWindow::HandleProgress(struct WorkerProgressMsg* pProgrMsg)
 {
-  if(p_pProgressMsg == NULL)
+  if(pProgrMsg == NULL)
   {
     return;
   }
 
-  if(p_pProgressMsg->progress < 0)
+  if(pProgrMsg->progress < 0)
   {
     m_pProgressDescription = NULL;
     return;
   }
 
   int progrWidth = 1;
-  if(p_pProgressMsg->progress > 0)
+  if(pProgrMsg->progress > 0)
   {
     progrWidth = (m_ProgressBarWidth - 2) *
-      p_pProgressMsg->progress / 100;
+      pProgrMsg->progress / 100;
   }
 
   // Set color to <blue> for painting the progress bar
@@ -179,17 +178,17 @@ void ProgressWindow::HandleProgress(struct WorkerProgressMsg*
            m_ProgressBarTop + m_ProgressBarHeight - 2);
 
 
-  if( p_pProgressMsg != NULL &&
-     (p_pProgressMsg->pDescription != m_pProgressDescription))
+  if( pProgrMsg != NULL &&
+     (pProgrMsg->pDescription != m_pProgressDescription))
   {
-    m_pProgressDescription = p_pProgressMsg->pDescription;
+    m_pProgressDescription = pProgrMsg->pDescription;
 
     GT_SetGadgetAttrs(m_pLabelDescription, m_pWindow, NULL,
       GTTX_Text, m_pProgressDescription,
       TAG_END);
   }
 
-  SimpleString progrText = p_pProgressMsg->progress;
+  SimpleString progrText = pProgrMsg->progress;
   progrText += " %";
 
   m_ProgressValueIText.IText = (UBYTE*) progrText.C_str();

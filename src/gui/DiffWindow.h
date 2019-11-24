@@ -19,8 +19,9 @@
 class DiffWindow : public ScrollbarWindow
 {
 public:
-  DiffWindow(AppScreen& p_AppScreen, struct MsgPort* p_pMsgPort,
-             int& p_NumWindowsOpen);
+  DiffWindow(AppScreen& appScreen,
+             struct MsgPort* pMsgPort,
+             int& numOpenWindows);
 
   virtual ~DiffWindow();
 
@@ -40,7 +41,7 @@ public:
    * @returns
    * false if opening fails
    */
-  virtual bool Open(const APTR p_pMenuItemDisableAtOpen = NULL);
+  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL);
 
 
   /**
@@ -52,36 +53,40 @@ public:
    * Full file name with path for to be opened file. If empty a ASL
    * request will be opened asking the user for the file name.
    */
-  bool SetContent(DiffDocument* p_pLeftDocument,
-    DiffDocument* p_pRightDocument);
+  bool SetContent(DiffDocument* pLeftDocument,
+                  DiffDocument* pRightDocument);
 
   /**
    * Setting the data to be shown on the status bar.
    *
    * A reapienting of the status bar is triggered afterwards.
    *
-   * @param p_DiffTime
+   * @param diffTime
    * How long did comparing the files take (in milli seconds)
    *
-   * @param p_NumAdded
+   * @param numAdded
    * Number of added lines (sum of left  and right file)
    *
-   * @param p_NumChanged
+   * @param numChanged
    * Number of changed lines (sum of left  and right file)
    *
-   * @param p_NumDeleted
+   * @param numDeleted
    * Number of deleted lines (sum of left  and right file)
    *
    */
-  void SetStatusBar(long p_DiffTime, int p_NumAdded, int p_NumChanged,
-                    int p_NumDeleted);
+  void SetStatusBar(long diffTime,
+                    int numAdded,
+                    int numChanged,
+                    int numDeleted);
 
   /**
    * Set the number of changes to be displayed at the status bar.
    * A reapienting of the status bar is triggered afterwards.
    *
    */
-  void SetNumChanges(int p_NumAdded,int p_NumChanged, int p_NumDeleted);
+  void SetNumChanges(int numAdded,
+                     int numChanged,
+                     int numDeleted);
 
 
 
@@ -91,8 +96,8 @@ public:
    * @returns
    * If this event was handled: true; if it was not handled: false..
    */
-  virtual bool HandleIdcmp(ULONG msgClass, 
-                           UWORD msgCode, 
+  virtual bool HandleIdcmp(ULONG msgClass,
+                           UWORD msgCode,
                            APTR pItemAddress);
 
   /**
@@ -100,66 +105,66 @@ public:
    * of the window. It is called from the handleIDCMP() method of
    * ScrollbarWindow.
    */
-  void XChangedHandler(size_t p_NewX);
+  void XChangedHandler(size_t newX);
 
   /**
    * This handles the y-changes triggered by the vertical scrollbar
    * of the window. It is called from the handleIDCMP() method of
    * ScrollbarWindow.
    */
-  void YChangedHandler(size_t p_NewY);
+  void YChangedHandler(size_t newY);
 
   /**
    * Increases the X position of the text by the given amount and
    * performs a scrolling as needed.
    *
-   * @param p_IncreaseBy
+   * @param numChars
    * Amount to increase the x-position by
    *
-   * @param p_bTriggeredByScrollbarPot
+   * @param bTriggeredByScrollPot
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void XIncrease(size_t p_IncreaseBy, bool p_bTriggeredByScrollbarPot);
+  void XIncrease(size_t numChars, bool bTriggeredByScrollPot);
 
   /**
    * Decreases the X position of the text by the given amount and
    * performs a scrolling as needed.
    *
-   * @param p_DecreaseBy
+   * @param numChars
    * Amount to decrease the x-position by
    *
-   * @param p_bTriggeredByScrollbarPot
+   * @param bTriggeredByScrollPot
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void XDecrease(size_t p_DecreaseBy, bool p_bTriggeredByScrollbarPot);
+  void XDecrease(size_t numChars, bool bTriggeredByScrollPot);
 
   /**
    * Increases the Y position of the text by the given amount and
    * performs a scrolling as needed.
    *
-   * @param p_IncreaseBy
+   * @param numChars
    * Amount to increase the y-position by
    *
-   * @param p_bTriggeredByScrollbarPot
+   * @param bTriggeredByScrollPot
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByScrollbarPot);
+  void YIncrease(size_t numLines, bool bTriggeredByScrollPot);
 
   /**
    * Decreases the Y position of the text by the given amount and
    * performs a scrolling as needed.
    *
-   * @param p_DecreaseBy
+   * @param numChars
    * Amount to decrease the y-position by
    *
-   * @param p_bTriggeredByScrollbarPot
+   * @param bTriggeredByScrollPot
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void YDecrease(size_t p_DecreaseBy, bool p_bTriggeredByScrollbarPot);
+  void YDecrease(size_t numLines, bool bTriggeredByScrollPot);
 
 private:
   DiffDocument* m_pLeftDocument;
@@ -215,13 +220,13 @@ private:
    * The file is displayed starting from current text position m_Y as
    * first line at the very top of the text area.
    *
-   * @param  p_bDisplayFromStart
+   * @param fromStart
    * When true: Before printing the documents the line and column
    *   indices m_X and m_Y are reset to 0. So the document will be
    *   displayed from start.
    * When false: Printing starts at current position m_Y.
    */
-  void paintDocument(bool  p_bDisplayFromStart = true);
+  void paintDocument(bool fromStart = true);
 
   /**
    * Prints the given line (p_pLeftLine and p_pRightLine) at given
@@ -254,11 +259,11 @@ private:
   /**
    * Gets an appropriate pen from a given ColorName
    */
-  LONG colorNameToPen(DiffDocument::ColorName p_pColorName);
+  LONG colorNameToPen(DiffDocument::ColorName colorName);
 
   /**
    * Scrolls the current text in the text area left by
-   * p_ScrollNumCharsLeft chars and fills the gap at right with the
+   * numChars chars and fills the gap at right with the
    * following chars
    *
    * NOTE: Does *not* change the current left line position m_X!
@@ -266,11 +271,11 @@ private:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when last char of longest line is displayed.
    */
-  size_t scrollNCharsLeft(int p_ScrollNumCharsLeft);
+  size_t scrollLeft(int numChars);
 
   /**
    * Scrolls the current text in the text area right by
-   * p_ScrollNumCharsRight chars and fills the gap at left with the
+   * numChars chars and fills the gap at left with the
    * previous chars
    *
    * NOTE: Does *not* change the current top line position m_Y!
@@ -278,11 +283,11 @@ private:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when first char of text reached.
    */
-  size_t scrollNCharsRight(int p_ScrollNumCharsRight);
+  size_t scrollRight(int numChars);
 
   /**
    * Scrolls the current text in the text area down by
-   * p_ScrollNumLinesDown lines and fills the gap at top with the
+   * numLines lines and fills the gap at top with the
    * previous lines
    *
    * NOTE: Does *not* change the current top line position m_Y!
@@ -290,11 +295,11 @@ private:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when start of text reached.
    */
-  size_t scrollNLinesDown(int p_ScrollNumLinesDown);
+  size_t scrollDown(int numLines);
 
   /**
    * Scrolls the current text in the text area up by
-   * p_ScrollUpNumLinesUp lines and fills the gap at bottom with the
+   * numLines lines and fills the gap at bottom with the
    * next lines
    *
    * NOTE: Does *not* change the current top line position m_Y!
@@ -302,7 +307,7 @@ private:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when end of text reached.
    */
-  size_t scrollNLinesUp(int p_ScrollUpNumLinesUp);
+  size_t scrollUp(int numLines);
 };
 
 
