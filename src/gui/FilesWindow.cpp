@@ -143,7 +143,7 @@ void FilesWindow::handleGadgetEvent(struct Gadget* pGadget)
   {
     case GID_LeftFileString:
     case GID_RightFileString:
-      //readStringGadgetsText();
+      enableIfPossible();
       break;
 
     case GID_LeftFileButton:  // Select left file
@@ -185,16 +185,40 @@ void FilesWindow::handleVanillaKey(UWORD code)
 
     case 's': // Swap left and right file
     case 'S':
-      // TODO Allow only if Swap button is enabled
-      //GT_GetGadgetAttrs
+    {
+      // Allow only if Swap button is enabled
+      long disabled;
+      long numProcessed;
+      numProcessed  = GT_GetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
+                                        GA_Disabled, &disabled,
+                                        TAG_END);
+
+      if((numProcessed != 1) || (disabled == 1))
+      {
+        return;
+      }
+
+      // Button is enabled, perform its action
       swapFiles();
       break;
+    }
 
     case 'd': // Compare the files and display the diff
     case 'D':
     {
-      // TODO Allow only if Diff button is enabled
-      //GT_GetGadgetAttrs
+      // Allow only if Diff button is enabled
+      long disabled;
+      long numProcessed;
+      numProcessed  = GT_GetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
+                                        GA_Disabled, &disabled,
+                                        TAG_END);
+
+      if((numProcessed != 1) || (disabled == 1))
+      {
+        return;
+      }
+
+      // Button is enabled, perform its action
       compare();
       break;
     }
@@ -505,19 +529,24 @@ void FilesWindow::swapFiles()
 
 void FilesWindow::compare()
 {
-  // Read latest string gadgets contents before continue
-  //readStringGadgetsText();
-
-  // If now one of the texts is empty, do not perform the Diff
-  if((m_LeftFilePath.Length()) == 0 ||
-     (m_RightFilePath.Length()) == 0)
+  if(!IsOpen() || (m_pGadBtnDiff == NULL) || (m_pGadBtnSwap == NULL))
   {
     return;
   }
 
+  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
+  STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
+
+  if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
+  {
+    return;
+  }
+
+  m_LeftFilePath = pLeftStrGadgetText;
+  m_RightFilePath = pRightStrGadgetText;
+
   // Perform the diff
   m_CmdDiff.Execute();
-
 }
 
 
@@ -598,9 +627,9 @@ void FilesWindow::enableIfPossible()
   {
     return;
   }
-/*
-  if((m_LeftFilePath.Length()) > 0
-   &&(m_RightFilePath.Length()) > 0)
+
+  if((strlen(pLeftStrGadgetText)) > 0
+   &&(strlen(pRightStrGadgetText)) > 0)
   {
     // Enable "Diff" button
     GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
@@ -615,8 +644,8 @@ void FilesWindow::enableIfPossible()
                       TAG_END);
   }
 
-  if((m_LeftFilePath.Length()) > 0
-   ||(m_RightFilePath.Length()) > 0)
+  if((strlen(pLeftStrGadgetText)) > 0
+   ||(strlen(pRightStrGadgetText)) > 0)
   {
     // Enable "Swap" button
     GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
@@ -630,8 +659,6 @@ void FilesWindow::enableIfPossible()
                       GA_Disabled, TRUE,
                       TAG_END);
   }
-*/
-
 }
 
 void FilesWindow::setStringGadgetText(struct Gadget* pGadget,

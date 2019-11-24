@@ -60,11 +60,46 @@ bool DiffWorker::Diff()
   m_ProgressOffset = 0;
 
   //
+  // Close FilesWindow, open ProgressWindow etc
+  //
+  m_ProgressWindow.Open();
+  APTR pDisabledMenuItem = m_FilesWindow.DisabledMenuItem();
+  m_FilesWindow.Close();
+  m_DiffWindow.Close();
+
+  // Close documents if already existing.
+  // Also deletes the memory pool if already allocated
+  disposeDocuments();
+
+  //
+  // Create the memory pool
+  //
+  m_pPoolHeader = CreatePool(MEMF_CLEAR, 50000, 25000);
+  if(m_pPoolHeader == NULL)
+  {
+    request.Show(m_ProgressWindow.IntuiWindow(),
+                 "Failed to create the memory pool.", "Ok");
+
+    m_FilesWindow.Open(pDisabledMenuItem);
+    m_ProgressWindow.Close();
+
+    workDone();
+    m_bExitAllowed = true;
+    return false;
+  }
+
+
+  //
   // Checking some obvious things
   //
   if(m_LeftSrcFilePath.Length() == 0)
   {
-    request.Show("Error: Left file name not set.", "Ok");
+    request.Show(m_ProgressWindow.IntuiWindow(),
+                 "Error: Left file name not set.",
+                 "Ok");
+
+    m_FilesWindow.Open(pDisabledMenuItem);
+    m_ProgressWindow.Close();
 
     workDone();
     m_bExitAllowed = true;
@@ -73,27 +108,9 @@ bool DiffWorker::Diff()
 
   if(m_RightSrcFilePath.Length() == 0)
   {
-    request.Show("Error: Right file name not set.", "Ok");
-
-    workDone();
-    m_bExitAllowed = true;
-    return false;
-  }
-
-  //
-  // Closing FilesWindow, opening ProgressWindow etc
-  //
-  m_ProgressWindow.Open();
-  APTR pDisabledMenuItem = m_FilesWindow.DisabledMenuItem();
-  m_FilesWindow.Close();
-  m_DiffWindow.Close();
-  disposeDocuments();
-
-  m_pPoolHeader = CreatePool(MEMF_CLEAR, 50000, 25000);
-  if(m_pPoolHeader == NULL)
-  {
     request.Show(m_ProgressWindow.IntuiWindow(),
-                 "Failed to create the memory pool.", "Ok");
+                 "Error: Right file name not set.",
+                 "Ok");
 
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
