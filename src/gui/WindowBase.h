@@ -48,7 +48,7 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  virtual bool Open(const APTR pMenuItemDisableAtOpen, 
+  virtual bool Open(const APTR pMenuItemDisableAtOpen,
                     InitialPosition initialPosition) = 0;
 
   /**
@@ -77,10 +77,10 @@ public:
   const char* Title() const;
   void SetTitle(SimpleString p_NewTitle);
 
-  
+
   /**
-   * Sets the initial position and size of the window. Only applied 
-   * when called before opening the window. 
+   * Sets the initial position and size of the window. Only applied
+   * when called before opening the window.
    *
    * NOTE: Sets The initial position to IP_Explicit.
    *
@@ -96,9 +96,9 @@ public:
    * @param height
    * Height of the Window.
    */
-  void SetInitialDimension(ULONG left, 
-                           ULONG top, 
-                           ULONG width, 
+  void SetInitialDimension(ULONG left,
+                           ULONG top,
+                           ULONG width,
                            ULONG height);
 
 
@@ -235,13 +235,26 @@ protected:
   virtual void setIDCMP(ULONG idcmp);
 
   /**
-   * Setting the first gadget of a potential list of gadgets to be
-   * displayed by the window. Should be done before window opening.
+   * Setting the first gadget of a potential list of gadgets inside
+   * the window. Should be done before window opening.
    *
-   * Derived classes can and should set this inside their initialize()
-   * implementation to set the needed window idcmp messages.
+   * If a first gadget already has been set it is not overwritten.
+   * Instead the given gadget will be put at the end of the gadget
+   * list.
+   *
+   * Derived classes should call this inside their implementation of
+   * initialize() to enhance the gadget list.
    */
   virtual void setFirstGadget(struct Gadget* pFirstGadget);
+
+  /**
+   * Returns a pointer to the first gadget or NULL if none is set.
+   *
+   * Derived classes should call this in their implementation of
+   * initialize() if they want to extend a already existing gadget
+   * list.
+   */
+  struct Gadget* getFirstGadget();
 
 
   /**

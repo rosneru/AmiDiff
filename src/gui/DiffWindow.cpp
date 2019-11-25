@@ -45,12 +45,28 @@ DiffWindow::DiffWindow(AppScreen& appScreen,
     m_DeletedText(" Deleted "),
     m_StatusBarText("No diff performed.")
 {
+  //
+  // Get the width and height of a char of the systems default
+  // monospace font.
+  //
+  struct TextFont* defaultTextFont =
+    ((struct GfxBase *)GfxBase)->DefaultFont;
 
+  m_TextFontWidth_pix = defaultTextFont->tf_XSize;
+  m_TextFontHeight_pix = defaultTextFont->tf_YSize;
 }
 
 DiffWindow::~DiffWindow()
 {
   Close();
+
+  if(m_pGadgetsHeader != NULL)
+  {
+    FreeGadgets(m_pGadgetsHeader);
+  }
+
+  m_pGadTxtLeftFile = NULL;
+  m_pGadTxtRightFile = NULL;
 }
 
 
@@ -98,24 +114,22 @@ void DiffWindow::Resized()
 bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
                       InitialPosition initialPosition)
 {
-  if(!ScrollbarWindow::Open(pMenuItemDisableAtOpen, initialPosition))
-  {
-    return false;
-  }
-
   //
-  // Calculate some initial values which only have to be calculated
-  // once after window opening
+  // Calculate some initial values. It's possible that they are needed
+  // in the initialize() method which is called when opening, so the
+  // Open() call is done afterwards.
   //
   m_IndentY = 2 * m_AppScreen.FontHeight();
   m_TextArea1Left = m_IndentX;
   m_TextAreasTop = m_IndentY;
 
-  // Get the width and height of a char of the default rastport font
-  // (This is the systems default monospace font)
-  struct TextFont* defaultTextFont = ((struct GfxBase *)GfxBase)->DefaultFont;
-  m_TextFontWidth_pix = defaultTextFont->tf_XSize;
-  m_TextFontHeight_pix = defaultTextFont->tf_YSize;
+  //
+  // Open the window
+  //
+  if(!ScrollbarWindow::Open(pMenuItemDisableAtOpen, initialPosition))
+  {
+    return false;
+  }
 
 
   // Calculate some values which have to calculated after window
@@ -361,8 +375,40 @@ void DiffWindow::YDecrease(size_t numLines,
 
 void DiffWindow::initialize()
 {
-  // Call parent method to initialize scroll gadgets inside the borders
+  // Call parent method to ensure that the scroll gadgets in the window
+  // borders are initialized first.
   ScrollbarWindow::initialize();
+
+  struct Gadget* pFirstGadget = getFirstGadget();
+  if(pFirstGadget == NULL)
+  {
+    // No gadgets defined in parent class: context must be created here
+    pFirstGadget = (struct Gadget*) CreateContext(&m_pGadgetsHeader);
+    if(pFirstGadget == NULL)
+    {
+      return;
+    }
+  }
+
+  //
+  // Calculate some basic values
+  //
+  WORD winWidth = (WORD)m_AppScreen.IntuiScreen()->Width;
+  WORD m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+  WORD barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
+
+  WORD hSpace = 10;
+  WORD vSpace = 10;
+
+  WORD top = barHeight + vSpace;
+  WORD left = hSpace;
+  WORD right = m_WinWidth - hSpace;
+
+  // TODO
+  // 1. create gadgets
+  // 2. setFirstGadget()
+  //...
+  // n. (must idcmp be extended for gadgets?)
 
   // Set the default title
   SetTitle("DiffWindow");

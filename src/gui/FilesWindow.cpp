@@ -45,15 +45,17 @@ FilesWindow::~FilesWindow()
   if(m_pGadgetsHeader != NULL)
   {
     FreeGadgets(m_pGadgetsHeader);
-    m_pGadgetsHeader = NULL;
-    m_pGadStrLeftFile = NULL;
-    m_pGadStrRightFile = NULL;
-    m_pGadBtnSelectLeft = NULL;
-    m_pGadBtnSelectRight = NULL;
-    m_pGadBtnDiff = NULL;
-    m_pGadBtnSwap = NULL;
-    m_pGadBtnCancel = NULL;
   }
+
+  m_pGadgetsHeader = NULL;
+  m_pGadStrLeftFile = NULL;
+  m_pGadStrRightFile = NULL;
+  m_pGadBtnSelectLeft = NULL;
+  m_pGadBtnSelectRight = NULL;
+  m_pGadBtnDiff = NULL;
+  m_pGadBtnSwap = NULL;
+  m_pGadBtnCancel = NULL;
+
 }
 
 
@@ -64,7 +66,7 @@ void FilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen, 
+bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen,
                       InitialPosition initialPosition)
 {
   if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPosition))

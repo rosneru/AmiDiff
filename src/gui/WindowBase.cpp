@@ -378,6 +378,7 @@ void WindowBase::setIDCMP(ULONG idcmp)
   m_WindowIdcmp |= idcmp;
 }
 
+
 void WindowBase::setFirstGadget(struct Gadget* pFirstGadget)
 {
   if(m_pFirstGadget == NULL)
@@ -400,6 +401,12 @@ void WindowBase::setFirstGadget(struct Gadget* pFirstGadget)
       }
     }
   }
+}
+
+
+struct Gadget* WindowBase::getFirstGadget()
+{
+  return m_pFirstGadget;
 }
 
 
