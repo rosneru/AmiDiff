@@ -44,7 +44,7 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(const APTR pMenuItemDisableAtOpen = NULL, 
+  bool Open(const APTR pMenuItemDisableAtOpen = NULL,
             InitialPosition initialPosition = WindowBase::IP_Center);
 
   /**
@@ -91,7 +91,7 @@ private:
 
   //
   // The next two are called from HandleIDCMP() to get that method not
-  // so overloaded.
+  // overblown.
   //
   void handleGadgetEvent(struct Gadget* pGadget);
   void handleVanillaKey(UWORD code);

@@ -41,7 +41,7 @@ public:
    * @returns
    * false if opening fails
    */
-  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL, 
+  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL,
                     InitialPosition initialPosition = WindowBase::IP_Center);
 
 
@@ -208,6 +208,14 @@ private:
   SimpleString m_StatusBarText;
 
   struct TextAttr m_TextAttr;
+
+  //
+  // The next two are called from HandleIDCMP() to get that method not
+  // overblown.
+  //
+  void handleGadgetEvent(struct Gadget* pGadget);
+  void handleVanillaKey(UWORD code);
+
 
   /**
    * Initializes some window specific features. Gadgets, etc.

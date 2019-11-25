@@ -392,6 +392,21 @@ bool DiffWindow::HandleIdcmp(ULONG msgClass,
 
   switch (msgClass)
   {
+    case IDCMP_GADGETUP:
+    {
+      struct Gadget* pGadget = (struct Gadget*) pItemAddress;
+      handleGadgetEvent(pGadget);
+      return true;
+      break;
+    }
+
+    case IDCMP_VANILLAKEY:
+    {
+      handleVanillaKey(msgCode);
+      return true;
+      break;
+    }
+
     case IDCMP_NEWSIZE:
     {
       Resized();
@@ -411,6 +426,21 @@ bool DiffWindow::HandleIdcmp(ULONG msgClass,
 }
 
 
+void DiffWindow::handleGadgetEvent(struct Gadget* pGadget)
+{
+  if(pGadget == NULL)
+  {
+    return;
+  }
+
+  // TODO
+}
+
+
+void DiffWindow::handleVanillaKey(UWORD code)
+{
+  // TODO
+}
 
 void DiffWindow::calcSizes()
 {
