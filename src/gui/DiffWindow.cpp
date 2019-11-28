@@ -543,6 +543,24 @@ void DiffWindow::calcSizes()
 
 void resizeGadgets()
 {
+/*
+  struct IntuiText intuiText;
+  intuiText.FrontPen  = m_AppScreen.Pens().HighlightedText();
+  intuiText.BackPen   = m_AppScreen.Pens().Background();
+  intuiText.DrawMode  = JAM2;
+  intuiText.ITextFont = &m_TextAttr;
+  intuiText.NextText  = NULL;
+
+  intuiText.TopEdge   = m_TextAreasTop - m_AppScreen.FontHeight() - 2;
+
+  intuiText.LeftEdge  = m_TextArea1Left + 2;
+  intuiText.IText = (UBYTE*)m_pLeftDocument->FileName();
+  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+
+  intuiText.LeftEdge  = m_TextArea2Left + 2;
+  intuiText.IText = (UBYTE*)m_pRightDocument->FileName();
+  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+*/
 }
 
 void DiffWindow::paintDocument(bool  fromStart)
@@ -712,24 +730,8 @@ void DiffWindow::paintDocumentNames()
   {
     return;
   }
-/*
-  struct IntuiText intuiText;
-  intuiText.FrontPen  = m_AppScreen.Pens().HighlightedText();
-  intuiText.BackPen   = m_AppScreen.Pens().Background();
-  intuiText.DrawMode  = JAM2;
-  intuiText.ITextFont = &m_TextAttr;
-  intuiText.NextText  = NULL;
 
-  intuiText.TopEdge   = m_TextAreasTop - m_AppScreen.FontHeight() - 2;
-
-  intuiText.LeftEdge  = m_TextArea1Left + 2;
-  intuiText.IText = (UBYTE*)m_pLeftDocument->FileName();
-  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
-
-  intuiText.LeftEdge  = m_TextArea2Left + 2;
-  intuiText.IText = (UBYTE*)m_pRightDocument->FileName();
-  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
-*/
+  // TODO set gadgets text to document names
 }
 
 void DiffWindow::paintStatusBar()
