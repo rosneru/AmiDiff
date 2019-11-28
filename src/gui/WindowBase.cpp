@@ -381,32 +381,40 @@ void WindowBase::setIDCMP(ULONG idcmp)
 
 void WindowBase::setFirstGadget(struct Gadget* pFirstGadget)
 {
-  if(m_pFirstGadget == NULL)
+  if(m_pFirstGadget != NULL)
   {
-    m_pFirstGadget = pFirstGadget;
+    return;
   }
-  else
-  {
-    struct Gadget* pGadget = m_pFirstGadget->NextGadget;
-    while(pGadget != NULL)
-    {
-      if(pGadget->NextGadget == NULL)
-      {
-        pGadget->NextGadget = pFirstGadget;
-        break;
-      }
-      else
-      {
-        pGadget = pGadget->NextGadget;
-      }
-    }
-  }
+
+  m_pFirstGadget = pFirstGadget;
 }
 
 
 struct Gadget* WindowBase::getFirstGadget()
 {
   return m_pFirstGadget;
+}
+
+struct Gadget* WindowBase::getLastGadget()
+{
+  if(m_pFirstGadget == NULL)
+  {
+    return NULL;
+  }
+
+  struct Gadget* pGadget = m_pFirstGadget->NextGadget;
+  while(pGadget != NULL)
+  {
+    if(pGadget->NextGadget == NULL)
+    {
+      break;
+    }
+
+    pGadget = pGadget->NextGadget;
+  }
+
+  return pGadget;
+
 }
 
 

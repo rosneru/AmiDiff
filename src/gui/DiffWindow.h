@@ -228,6 +228,8 @@ private:
    */
   void calcSizes();
 
+  void resizeGadgets();
+
   /**
    * Displays the left and right diff file inside the main text area.
    * The file is displayed starting from current text position m_Y as

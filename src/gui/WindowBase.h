@@ -256,6 +256,8 @@ protected:
    */
   struct Gadget* getFirstGadget();
 
+  struct Gadget* getLastGadget();
+
 
   /**
    * Creates an BOOPSI image object of one of the system shipped with

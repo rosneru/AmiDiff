@@ -116,12 +116,17 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
 {
   //
   // Calculate some initial values. It's possible that they are needed
-  // in the initialize() method which is called when opening, so the
-  // Open() call is done afterwards.
+  // in the initialize() method which is called from WindowBase::Open()
+  // shortly before opening, so the Open() call is done afterwards.
   //
   m_IndentY = 2 * m_AppScreen.FontHeight();
   m_TextArea1Left = m_IndentX;
   m_TextAreasTop = m_IndentY;
+
+  m_TextAttr.ta_Name = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
+  m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+  m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
+  m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
   //
   // Open the window
@@ -131,15 +136,12 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
     return false;
   }
 
-
-  // Calculate some values which have to calculated after window
-  // opening and after resizing
+  // Calculate some sizes which are only calculatable with window
+  // already open
   calcSizes();
 
-  m_TextAttr.ta_Name = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
-  m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
-  m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
-  m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
+  // With the calculated sizes the gadgets must be re-sized/positioned
+  resizeGadgets();
 
   // Paint the window decoration
   paintWindowDecoration();
@@ -379,36 +381,57 @@ void DiffWindow::initialize()
   // borders are initialized first.
   ScrollbarWindow::initialize();
 
-  struct Gadget* pFirstGadget = getFirstGadget();
-  if(pFirstGadget == NULL)
-  {
-    // No gadgets defined in parent class: context must be created here
-    pFirstGadget = (struct Gadget*) CreateContext(&m_pGadgetsHeader);
-    if(pFirstGadget == NULL)
-    {
-      return;
-    }
-  }
-
   //
   // Calculate some basic values
   //
-  WORD winWidth = (WORD)m_AppScreen.IntuiScreen()->Width;
   WORD m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
   WORD barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
 
   WORD hSpace = 10;
   WORD vSpace = 10;
 
-  WORD top = barHeight + vSpace;
-  WORD left = hSpace;
-  WORD right = m_WinWidth - hSpace;
+  struct Gadget* pGadget = NULL;
+  struct Gadget* pLastGadget = getLastGadget();
+  if(pLastGadget == NULL)
+  {
+    // No gadgets defined in parent class: context must be created here
+    pGadget = (struct Gadget*) CreateContext(&m_pGadgetsHeader);
+    if(pGadget == NULL)
+    {
+      return;
+    }
 
-  // TODO
-  // 1. create gadgets
-  // 2. setFirstGadget()
-  //...
-  // n. (must idcmp be extended for gadgets?)
+    // As no gadget are already defined this will be the first one
+    setFirstGadget(pGadget);
+  }
+  else
+  {
+    pGadget = pLastGadget;
+  }
+
+  struct NewGadget newGadget;
+  newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
+  newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
+  newGadget.ng_LeftEdge   = m_TextArea1Left;
+  newGadget.ng_TopEdge    = m_TextAreasTop - m_AppScreen.FontHeight() - 2;
+  newGadget.ng_Width      = 120;
+  newGadget.ng_Height     = m_FontHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "";
+  newGadget.ng_Flags = PLACETEXT_RIGHT | NG_HIGHLABEL;
+
+  m_pGadTxtLeftFile  = CreateGadget(TEXT_KIND,
+                                    pGadget,
+                                    &newGadget,
+                                    GTTX_Border, TRUE,
+                                    TAG_END);
+
+  newGadget.ng_LeftEdge += 130;
+
+  m_pGadTxtRightFile  = CreateGadget(TEXT_KIND,
+                                     m_pGadTxtLeftFile,
+                                     &newGadget,
+                                     GTTX_Border, TRUE,
+                                     TAG_END);
 
   // Set the default title
   SetTitle("DiffWindow");
@@ -516,6 +539,10 @@ void DiffWindow::calcSizes()
 
   // Set y-scroll-gadget's pot size in relation of new window size
   setYScrollPotSize(m_MaxTextAreaLines);
+}
+
+void resizeGadgets()
+{
 }
 
 void DiffWindow::paintDocument(bool  fromStart)

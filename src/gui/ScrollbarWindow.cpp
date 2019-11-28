@@ -11,7 +11,7 @@
 #include <intuition/icclass.h>
 #include "ScrollbarWindow.h"
 
-ScrollbarWindow::ScrollbarWindow(AppScreen& appScreen, 
+ScrollbarWindow::ScrollbarWindow(AppScreen& appScreen,
                                  struct MsgPort* pMsgPort,
                                  int& numOpenWindows)
   : WindowBase(appScreen, pMsgPort, numOpenWindows),
@@ -100,7 +100,7 @@ ScrollbarWindow::~ScrollbarWindow()
 
 
 
-bool ScrollbarWindow::Open(const APTR pMenuItemDisableAtOpen, 
+bool ScrollbarWindow::Open(const APTR pMenuItemDisableAtOpen,
                            InitialPosition initialPosition)
 {
   if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPosition))
@@ -302,8 +302,8 @@ bool ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
         {
           // Get the top value of the prop gadget from the tag data of
           // the message
-          size_t newY = GetTagData(PGA_Top, 
-                                   0, 
+          size_t newY = GetTagData(PGA_Top,
+                                   0,
                                    (struct TagItem *) pItemAddress);
 
           // If there are other GID_PropY addressed to this window,
@@ -392,7 +392,7 @@ void ScrollbarWindow::calcSizes()
     - m_SizeImageHeight;
 }
 
-void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars, 
+void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars,
                                         int totalChars)
 {
   if(m_pXPropGadget == NULL)
@@ -419,7 +419,7 @@ void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars,
   }
 }
 
-void ScrollbarWindow::setYScrollPotSize(int maxVisibleLines, 
+void ScrollbarWindow::setYScrollPotSize(int maxVisibleLines,
                                         int totalLines)
 {
   if(m_pYPropGadget == NULL)
@@ -482,7 +482,7 @@ void ScrollbarWindow::setYScrollTop(int top)
 }
 
 void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId gadgetId,
-  size_t& lastVal)
+                                                   size_t& lastVal)
 {
   Forbid();
 

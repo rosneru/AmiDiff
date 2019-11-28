@@ -30,7 +30,7 @@ public:
    * @returns
    * false if opening fails
    */
-  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL, 
+  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL,
                     InitialPosition initialPosition = WindowBase::IP_Center);
 
   /**
@@ -39,8 +39,8 @@ public:
    * @returns
    * If this event was handled: true; if it was not handled: false..
    */
-  virtual bool HandleIdcmp(ULONG msgClass, 
-                           UWORD msgCode, 
+  virtual bool HandleIdcmp(ULONG msgClass,
+                           UWORD msgCode,
                            APTR pItemAddress);
 
   /**
@@ -230,13 +230,13 @@ private:
    * top value and delete all previous messages of this kind. Usefull
    * on slow systems to not get flooded by messages for this gadget.
    *
-   * @param gadgetId 
+   * @param gadgetId
    * Id of the BOOPSI gadget to browse for messages
    *
-   * @param lastVal 
+   * @param lastVal
    * If one or more IDCMP_IDCMPUPDATE messages are found while browsing,
-   * the tag value of the latest found message is written to this given 
-   * argument. If no appropriate message is found the argument variable 
+   * the tag value of the latest found message is written to this given
+   * argument. If no appropriate message is found the argument variable
    * will not be overwritten.
    */
   void extractLatestPropGadTopValue(GadgetId gadgetId, size_t& lastVal);

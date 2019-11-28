@@ -403,6 +403,9 @@ void FilesWindow::initialize()
                                  GT_Underscore, '_',
                                  TAG_END);
 
+  // Setting the first gadget of the gadet list for the window
+  setFirstGadget(m_pGadgetsHeader);
+
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
   m_WinHeight = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
@@ -421,9 +424,6 @@ void FilesWindow::initialize()
            IDCMP_CLOSEWINDOW |    // Inform about click on close gadget
            IDCMP_REFRESHWINDOW |  // Inform when refreshing is necessary
            BUTTONIDCMP);          // Inform about Gadget events
-
-  // Setting the first gadget of the gadet list for the window
-  setFirstGadget(m_pGadgetsHeader);
 
   m_bInitialized = true;
 }
