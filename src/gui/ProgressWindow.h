@@ -36,7 +36,7 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(const APTR pMenuItemDisableAtOpen = NULL, 
+  bool Open(const APTR pMenuItemDisableAtOpen = NULL,
             InitialPosition initialPosition = WindowBase::IP_Center);
 
   /**
@@ -45,8 +45,8 @@ public:
    * @returns
    * If this event was handled: true; if it was not handled: false.
    */
-  virtual bool HandleIdcmp(ULONG msgClass, 
-                           UWORD msgCode, 
+  virtual bool HandleIdcmp(ULONG msgClass,
+                           UWORD msgCode,
                            APTR pItemAddress);
 
   /**
@@ -73,7 +73,7 @@ private:
 
   bool& m_bCancelRequested;
 
-  struct Gadget* m_pGadgetList;
+  struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pLabelDescription;
   struct Gadget* m_pButtonCancel;
 

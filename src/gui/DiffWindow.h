@@ -171,7 +171,8 @@ private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
 
-  struct Gadget* m_pGadgetsHeader;
+  struct Gadget* m_pLastParentGadget;
+  struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pGadTxtLeftFile;
   struct Gadget* m_pGadTxtRightFile;
 
@@ -221,6 +222,8 @@ private:
    * Initializes some window specific features. Gadgets, etc.
    */
   void initialize();
+
+  void createGadgets(int windowInnerWidth = 0);
 
   /**
    * Calculates some inner window sizes which is needed after window

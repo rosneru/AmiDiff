@@ -23,7 +23,8 @@ DiffWindow::DiffWindow(AppScreen& appScreen,
   : ScrollbarWindow(appScreen, pMsgPort, numOpenWindows),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
-    m_pGadgetsHeader(NULL),
+    m_pLastParentGadget(NULL),
+    m_pGadtoolsContext(NULL),
     m_pGadTxtLeftFile(NULL),
     m_pGadTxtRightFile(NULL),
     m_TextFontWidth_pix(0),
@@ -60,9 +61,10 @@ DiffWindow::~DiffWindow()
 {
   Close();
 
-  if(m_pGadgetsHeader != NULL)
+  if(m_pGadtoolsContext != NULL)
   {
-    FreeGadgets(m_pGadgetsHeader);
+    FreeGadgets(m_pGadtoolsContext);
+    m_pGadtoolsContext = NULL;
   }
 
   m_pGadTxtLeftFile = NULL;
@@ -381,57 +383,7 @@ void DiffWindow::initialize()
   // borders are initialized first.
   ScrollbarWindow::initialize();
 
-  //
-  // Calculate some basic values
-  //
-  WORD m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
-  WORD barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
-
-  WORD hSpace = 10;
-  WORD vSpace = 10;
-
-  struct Gadget* pGadget = NULL;
-  struct Gadget* pLastGadget = getLastGadget();
-  if(pLastGadget == NULL)
-  {
-    // No gadgets defined in parent class: context must be created here
-    pGadget = (struct Gadget*) CreateContext(&m_pGadgetsHeader);
-    if(pGadget == NULL)
-    {
-      return;
-    }
-
-    // As no gadget are already defined this will be the first one
-    setFirstGadget(pGadget);
-  }
-  else
-  {
-    pGadget = pLastGadget;
-  }
-
-  struct NewGadget newGadget;
-  newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
-  newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
-  newGadget.ng_LeftEdge   = m_TextArea1Left;
-  newGadget.ng_TopEdge    = m_TextAreasTop - m_AppScreen.FontHeight() - 2;
-  newGadget.ng_Width      = 120;
-  newGadget.ng_Height     = m_FontHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "";
-  newGadget.ng_Flags = PLACETEXT_RIGHT | NG_HIGHLABEL;
-
-  m_pGadTxtLeftFile  = CreateGadget(TEXT_KIND,
-                                    pGadget,
-                                    &newGadget,
-                                    GTTX_Border, TRUE,
-                                    TAG_END);
-
-  newGadget.ng_LeftEdge += 130;
-
-  m_pGadTxtRightFile  = CreateGadget(TEXT_KIND,
-                                     m_pGadTxtLeftFile,
-                                     &newGadget,
-                                     GTTX_Border, TRUE,
-                                     TAG_END);
+  createGadgets();
 
   // Set the default title
   SetTitle("DiffWindow");
@@ -449,6 +401,85 @@ void DiffWindow::initialize()
 
   m_bInitialized = true;
 }
+
+
+void DiffWindow::createGadgets(int windowInnerWidth)
+{
+  //
+  // Calculate some basic values
+  //
+  WORD m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+  WORD barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
+
+  WORD hSpace = 10;
+  WORD vSpace = 10;
+
+  if(m_pLastParentGadget == NULL)
+  {
+    // There is no last parent gadget known
+    if(m_pGadtoolsContext == NULL)
+    {
+      // And this is the first call of this method so we ask for the
+      // last parent gadget
+      m_pLastParentGadget = getLastGadget();
+    }
+  }
+
+  struct Gadget* pFakeGad = NULL;
+  pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
+  if(pFakeGad == NULL)
+  {
+    return;
+  }
+
+  if(m_pLastParentGadget == NULL)
+  {
+    // As no gadgets are already defined this will be the first one
+    if(getLastGadget() == NULL)
+    {
+      // But only if parent gadget list still is empty
+      setFirstGadget(m_pGadtoolsContext);
+    }
+  }
+  else
+  {
+    m_pLastParentGadget->NextGadget = m_pGadtoolsContext;
+  }
+
+  struct NewGadget newGadget;
+  newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
+  newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
+  newGadget.ng_LeftEdge   = m_TextArea1Left;
+  newGadget.ng_TopEdge    = m_TextAreasTop - m_AppScreen.FontHeight() - 2;
+
+  if(windowInnerWidth == 0)
+  {
+    newGadget.ng_Width    = 120;
+  }
+  else
+  {
+    newGadget.ng_Width    = (windowInnerWidth / 2) - 10;
+  }
+
+  newGadget.ng_Height     = m_FontHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "";
+  newGadget.ng_Flags = PLACETEXT_RIGHT | NG_HIGHLABEL;
+
+  m_pGadTxtLeftFile = CreateGadget(TEXT_KIND,
+                                    pFakeGad,
+                                    &newGadget,
+                                    GTTX_Border, TRUE,
+                                    TAG_END);
+
+  newGadget.ng_LeftEdge += newGadget.ng_Width + 5;
+
+  m_pGadTxtRightFile = CreateGadget(TEXT_KIND,
+                                    m_pGadTxtLeftFile,
+                                    &newGadget,
+                                    GTTX_Border, TRUE,
+                                    TAG_END);
+}
+
 
 bool DiffWindow::HandleIdcmp(ULONG msgClass,
                              UWORD msgCode,
@@ -541,8 +572,32 @@ void DiffWindow::calcSizes()
   setYScrollPotSize(m_MaxTextAreaLines);
 }
 
-void resizeGadgets()
+void DiffWindow::resizeGadgets()
 {
+  calcSizes();
+
+  struct Gadget* pOldContext = m_pGadtoolsContext;
+//  struct Gadget* pOldTxtLeft = m_pGadTxtLeftFile;
+//  struct Gadget* pOldTxtRight = m_pGadTxtRightFile;
+
+  m_pLastParentGadget->NextGadget = NULL;
+  RemoveGList(m_pWindow, m_pGadtoolsContext, 3);
+
+  RectFill(m_pWindow->RPort,
+           m_TextArea1Left,
+           m_TextAreasTop - m_AppScreen.FontHeight() - 2,
+           600,
+           m_TextAreasTop);
+
+  createGadgets(800);
+
+  AddGList(m_pWindow, m_pGadtoolsContext, 6, 3, NULL);
+
+  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, 3);
+
+  FreeGadgets(pOldContext);
+
+
 /*
   struct IntuiText intuiText;
   intuiText.FrontPen  = m_AppScreen.Pens().HighlightedText();

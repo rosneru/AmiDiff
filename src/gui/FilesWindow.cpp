@@ -25,7 +25,7 @@ FilesWindow::FilesWindow(AppScreen& appScreen,
     m_LeftFilePath(leftFilePath),
     m_RightFilePath(rightFilePath),
     m_CmdDiff(cmdDiff),
-    m_pGadgetsHeader(NULL),
+    m_pGadtoolsContext(NULL),
     m_pGadStrLeftFile(NULL),
     m_pGadStrRightFile(NULL),
     m_pGadBtnSelectLeft(NULL),
@@ -42,12 +42,12 @@ FilesWindow::~FilesWindow()
 {
   Close();
 
-  if(m_pGadgetsHeader != NULL)
+  if(m_pGadtoolsContext != NULL)
   {
-    FreeGadgets(m_pGadgetsHeader);
+    FreeGadgets(m_pGadtoolsContext);
   }
 
-  m_pGadgetsHeader = NULL;
+  m_pGadtoolsContext = NULL;
   m_pGadStrLeftFile = NULL;
   m_pGadStrRightFile = NULL;
   m_pGadBtnSelectLeft = NULL;
@@ -265,12 +265,15 @@ void FilesWindow::initialize()
   //
 
   // Create a place for GadTools context data
-  struct Gadget* pContext;
-  pContext = (struct Gadget*) CreateContext(&m_pGadgetsHeader);
-  if(pContext == NULL)
+  struct Gadget* pFakeGad;
+  pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
+  if(pFakeGad == NULL)
   {
     return;
   }
+
+  // Setting the first gadget of the gadet list for the window
+  setFirstGadget(m_pGadtoolsContext);
 
   // Declare the basic gadget structure
   struct NewGadget newGadget;
@@ -286,7 +289,7 @@ void FilesWindow::initialize()
   newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
   struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
-                                             pContext,
+                                             pFakeGad,
                                              &newGadget,
                                              GT_Underscore, '_',
                                              TAG_END);
@@ -402,9 +405,6 @@ void FilesWindow::initialize()
                                  &newGadget,
                                  GT_Underscore, '_',
                                  TAG_END);
-
-  // Setting the first gadget of the gadet list for the window
-  setFirstGadget(m_pGadgetsHeader);
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget

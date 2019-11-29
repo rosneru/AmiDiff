@@ -21,7 +21,7 @@ ProgressWindow::ProgressWindow(AppScreen& appScreen,
                                bool& bCancelRequested)
   : WindowBase(appScreen, pMsgPort, numOpenWindows),
     m_bCancelRequested(bCancelRequested),
-    m_pGadgetList(NULL),
+    m_pGadtoolsContext(NULL),
     m_pLabelDescription(NULL),
     m_pButtonCancel(NULL),
     m_ProgressBarLeft(NULL),
@@ -37,10 +37,10 @@ ProgressWindow::~ProgressWindow()
 {
   Close();
 
-  if(m_pGadgetList != NULL)
+  if(m_pGadtoolsContext != NULL)
   {
-    FreeGadgets(m_pGadgetList);
-    m_pGadgetList = NULL;
+    FreeGadgets(m_pGadtoolsContext);
+    m_pGadtoolsContext = NULL;
     m_pLabelDescription = NULL;
     m_pButtonCancel = NULL;
   }
@@ -57,7 +57,7 @@ void ProgressWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool ProgressWindow::Open(const APTR pMenuItemDisableAtOpen, 
+bool ProgressWindow::Open(const APTR pMenuItemDisableAtOpen,
                           InitialPosition initialPosition)
 {
   if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPosition))
@@ -92,8 +92,8 @@ bool ProgressWindow::Open(const APTR pMenuItemDisableAtOpen,
 }
 
 
-bool ProgressWindow::HandleIdcmp(ULONG msgClass, 
-                                 UWORD msgCode, 
+bool ProgressWindow::HandleIdcmp(ULONG msgClass,
+                                 UWORD msgCode,
                                  APTR pItemAddress)
 {
   if(!IsOpen())
@@ -224,12 +224,15 @@ void ProgressWindow::initialize()
   //
 
   // Create a place for GadTools context data
-  struct Gadget* pContext;
-  pContext = (struct Gadget*) CreateContext(&m_pGadgetList);
-  if(pContext == NULL)
+  struct Gadget* pFakeGad;
+  pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
+  if(pFakeGad == NULL)
   {
     return;
   }
+
+  // Setting the first gadget of the gadet list for the window
+  setFirstGadget(m_pGadtoolsContext);
 
   // Declare the basic gadget structure and fill with basic values
   struct NewGadget newGadget;
@@ -246,8 +249,8 @@ void ProgressWindow::initialize()
   newGadget.ng_Flags      = 0;
 
   m_pLabelDescription = CreateGadget(TEXT_KIND,
-    pContext, &newGadget,
-    TAG_END);
+                                     pFakeGad, &newGadget,
+                                     TAG_END);
 
   // Preparing the newGadget struct for the progress value gadget
   newGadget.ng_LeftEdge   = left;
@@ -271,7 +274,9 @@ void ProgressWindow::initialize()
   newGadget.ng_GadgetID   = GID_ButtonCancel;
 
   m_pButtonCancel = CreateGadget(BUTTON_KIND,
-    m_pLabelDescription, &newGadget, GT_Underscore, '_', TAG_END);
+                                 m_pLabelDescription, &newGadget,
+                                 GT_Underscore, '_',
+                                 TAG_END);
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
@@ -290,9 +295,6 @@ void ProgressWindow::initialize()
            IDCMP_RAWKEY |         // Inform us about printable key press
            IDCMP_REFRESHWINDOW |  // Inform us when refreshing is necessary
            BUTTONIDCMP);          // Inform us about GadTools button events
-
-  // Setting the first gadget of the gadet list for the window
-  setFirstGadget(m_pGadgetList);
 
   SetSmartRefresh(true);
 

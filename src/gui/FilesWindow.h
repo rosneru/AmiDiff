@@ -80,7 +80,7 @@ private:
 
   WORD m_FontHeight;  ///> Height of current text font
 
-  struct Gadget* m_pGadgetsHeader;
+  struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pGadStrLeftFile;
   struct Gadget* m_pGadStrRightFile;
   struct Gadget* m_pGadBtnSelectLeft;
