@@ -13,6 +13,7 @@
 #include <libraries/dos.h>
 #include "WindowBase.h"
 
+
 WindowBase::WindowBase(AppScreen& appScreen,
                        struct MsgPort* pMsgPort,
                        int& numOpenWindows)
@@ -38,10 +39,12 @@ WindowBase::WindowBase(AppScreen& appScreen,
 
 }
 
+
 WindowBase::~WindowBase()
 {
   Close();
 }
+
 
 bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
                       InitialPosition initialPosition)
@@ -189,6 +192,7 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
   return true;
 }
 
+
 void WindowBase::Close()
 {
   if(!IsOpen())
@@ -210,20 +214,24 @@ void WindowBase::Close()
   m_NumOpenWindows--;
 }
 
+
 bool WindowBase::IsOpen() const
 {
   return m_pWindow != NULL;
 }
+
 
 const APTR WindowBase::DisabledMenuItem() const
 {
   return m_pMenuItemDisableAtOpen;
 }
 
+
 const char* WindowBase::Title() const
 {
   return m_Title.C_str();
 }
+
 
 void WindowBase::SetTitle(SimpleString p_NewTitle)
 {
@@ -239,6 +247,7 @@ void WindowBase::SetTitle(SimpleString p_NewTitle)
   // Note the ~0 inverts the value and is a value of -1
   SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
 }
+
 
 void WindowBase::SetInitialDimension(ULONG left,
                                      ULONG top,
@@ -256,6 +265,7 @@ void WindowBase::SetInitialDimension(ULONG left,
   m_WinWidth = width;
   m_WinHeight = height;
 }
+
 
 void WindowBase::SetFixed(bool p_bFixWindow)
 {
@@ -278,6 +288,7 @@ void WindowBase::SetBorderless(bool p_bBorderless)
   m_bBorderless = p_bBorderless;
 }
 
+
 void WindowBase::SetSmartRefresh(bool p_bSmartRefresh)
 {
   if(IsOpen())
@@ -287,6 +298,7 @@ void WindowBase::SetSmartRefresh(bool p_bSmartRefresh)
 
   m_bSmartRefresh = p_bSmartRefresh;
 }
+
 
 void WindowBase::Move(long p_DX, long p_DY)
 {
@@ -300,6 +312,7 @@ void WindowBase::Move(long p_DX, long p_DY)
   m_WinTop = m_pWindow->TopEdge;
 }
 
+
 void WindowBase::Size(long p_DX, long p_DY)
 {
   if(!IsOpen())
@@ -311,6 +324,7 @@ void WindowBase::Size(long p_DX, long p_DY)
   m_WinWidth = m_pWindow->Width;
   m_WinHeight = m_pWindow->Height;
 }
+
 
 void WindowBase::ChangeWindowBox(long p_Left, long p_Top,
   long width, long height)
@@ -327,10 +341,12 @@ void WindowBase::ChangeWindowBox(long p_Left, long p_Top,
   m_WinHeight = m_pWindow->Height;
 }
 
+
 struct Window* WindowBase::IntuiWindow()
 {
   return m_pWindow;
 }
+
 
 AppScreen& WindowBase::WindowScreen()
 {
@@ -395,8 +411,11 @@ struct Gadget* WindowBase::getFirstGadget()
   return m_pFirstGadget;
 }
 
-struct Gadget* WindowBase::getLastGadget()
+
+struct Gadget* WindowBase::getLastGadget(int& refNumGadgets)
 {
+  refNumGadgets = 0;
+
   if(m_pFirstGadget == NULL)
   {
     return NULL;
@@ -405,6 +424,7 @@ struct Gadget* WindowBase::getLastGadget()
   struct Gadget* pGadget = m_pFirstGadget->NextGadget;
   while(pGadget != NULL)
   {
+    refNumGadgets++;
     if(pGadget->NextGadget == NULL)
     {
       break;
@@ -436,6 +456,7 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId, ULONG& width, ULONG& 
   return pImage;
 }
 
+
 void WindowBase::closeWindowSafely()
 {
   if(!IsOpen())
@@ -463,6 +484,7 @@ void WindowBase::closeWindowSafely()
   m_pWindow = NULL;
 }
 
+
 void WindowBase::stripIntuiMessages()
 {
   struct MsgPort* pMsgPort = m_pWindow->UserPort;
@@ -484,3 +506,4 @@ void WindowBase::stripIntuiMessages()
     pMessage = (struct IntuiMessage*) pSuccessor;
   }
 }
+

@@ -14,7 +14,7 @@ public:
   // virtual bool Load(const char* pFileName) = 0;
   // virtual void Clear() = 0;
 
-  const char*FileName() const;
+  const char* FileName() const;
   void SetFileName(const char* pFileName);
 
   /**

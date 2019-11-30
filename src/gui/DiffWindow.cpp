@@ -23,6 +23,7 @@ DiffWindow::DiffWindow(AppScreen& appScreen,
   : ScrollbarWindow(appScreen, pMsgPort, numOpenWindows),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
+    m_NumParentGadgets(0),
     m_pLastParentGadget(NULL),
     m_pGadtoolsContext(NULL),
     m_pGadTxtLeftFile(NULL),
@@ -96,10 +97,14 @@ void DiffWindow::Resized()
   // Clear the window completely
   SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
+  // Resize gadgets to fit into new window size
+  resizeGadgets();
+
   if((m_pLeftDocument != NULL) && m_pRightDocument != NULL)
   {
     // Paint the document names
-    paintDocumentNames();
+    //paintDocumentNames();
+    // Now done in resizeGadgets()->createGadgets()
 
     // Paint the content of the two documents
     paintDocument();
@@ -383,6 +388,8 @@ void DiffWindow::initialize()
   // borders are initialized first.
   ScrollbarWindow::initialize();
 
+  m_pLastParentGadget = getLastGadget(m_NumParentGadgets);
+
   createGadgets();
 
   // Set the default title
@@ -403,27 +410,9 @@ void DiffWindow::initialize()
 }
 
 
-void DiffWindow::createGadgets(int windowInnerWidth)
+void DiffWindow::createGadgets()
 {
-  //
-  // Calculate some basic values
-  //
-  WORD m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
-  WORD barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
-
-  WORD hSpace = 10;
-  WORD vSpace = 10;
-
-  if(m_pLastParentGadget == NULL)
-  {
-    // There is no last parent gadget known
-    if(m_pGadtoolsContext == NULL)
-    {
-      // And this is the first call of this method so we ask for the
-      // last parent gadget
-      m_pLastParentGadget = getLastGadget();
-    }
-  }
+  bool isFirstCall = (m_pGadtoolsContext == NULL);
 
   struct Gadget* pFakeGad = NULL;
   pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
@@ -432,38 +421,47 @@ void DiffWindow::createGadgets(int windowInnerWidth)
     return;
   }
 
-  if(m_pLastParentGadget == NULL)
+  if(isFirstCall)
   {
-    // As no gadgets are already defined this will be the first one
-    if(getLastGadget() == NULL)
+    if(m_pLastParentGadget == NULL)
     {
-      // But only if parent gadget list still is empty
       setFirstGadget(m_pGadtoolsContext);
     }
+    else
+    {
+      m_pLastParentGadget->NextGadget = m_pGadtoolsContext;
+    }
   }
-  else
-  {
-    m_pLastParentGadget->NextGadget = m_pGadtoolsContext;
-  }
+
+  WORD m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
 
   struct NewGadget newGadget;
   newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
   newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = m_TextArea1Left;
   newGadget.ng_TopEdge    = m_TextAreasTop - m_AppScreen.FontHeight() - 2;
+  newGadget.ng_Height     = m_FontHeight;
+  newGadget.ng_Flags = PLACETEXT_RIGHT | NG_HIGHLABEL;
 
-  if(windowInnerWidth == 0)
+  if(m_TextAreasWidth == 0)
   {
     newGadget.ng_Width    = 120;
   }
   else
   {
-    newGadget.ng_Width    = (windowInnerWidth / 2) - 10;
+    newGadget.ng_Width    = m_TextAreasWidth;
   }
 
-  newGadget.ng_Height     = m_FontHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "";
-  newGadget.ng_Flags = PLACETEXT_RIGHT | NG_HIGHLABEL;
+  if(m_pLeftDocument == NULL)
+  {
+    newGadget.ng_GadgetText = (UBYTE*) "";
+  }
+  else
+  {
+    newGadget.ng_GadgetText = (UBYTE*) m_pLeftDocument->FileName();
+  }
+
+
 
   m_pGadTxtLeftFile = CreateGadget(TEXT_KIND,
                                     pFakeGad,
@@ -471,7 +469,24 @@ void DiffWindow::createGadgets(int windowInnerWidth)
                                     GTTX_Border, TRUE,
                                     TAG_END);
 
-  newGadget.ng_LeftEdge += newGadget.ng_Width + 5;
+  if(m_TextArea2Left > 0)
+  {
+    newGadget.ng_LeftEdge = m_TextArea2Left;
+  }
+  else
+  {
+    newGadget.ng_LeftEdge += newGadget.ng_Width + 5;
+  }
+
+  if(m_pRightDocument == NULL)
+  {
+    newGadget.ng_GadgetText = (UBYTE*) "";
+  }
+  else
+  {
+    newGadget.ng_GadgetText = (UBYTE*) m_pRightDocument->FileName();
+  }
+
 
   m_pGadTxtRightFile = CreateGadget(TEXT_KIND,
                                     m_pGadTxtLeftFile,
@@ -574,48 +589,22 @@ void DiffWindow::calcSizes()
 
 void DiffWindow::resizeGadgets()
 {
-  calcSizes();
-
   struct Gadget* pOldContext = m_pGadtoolsContext;
-//  struct Gadget* pOldTxtLeft = m_pGadTxtLeftFile;
-//  struct Gadget* pOldTxtRight = m_pGadTxtRightFile;
 
   m_pLastParentGadget->NextGadget = NULL;
-  RemoveGList(m_pWindow, m_pGadtoolsContext, 3);
+  RemoveGList(m_pWindow, m_pGadtoolsContext, -1);
 
   RectFill(m_pWindow->RPort,
            m_TextArea1Left,
            m_TextAreasTop - m_AppScreen.FontHeight() - 2,
-           600,
+           m_TextAreasWidth + m_TextAreasWidth,
            m_TextAreasTop);
 
-  createGadgets(800);
+  createGadgets();
 
-  AddGList(m_pWindow, m_pGadtoolsContext, 6, 3, NULL);
-
-  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, 3);
-
+  AddGList(m_pWindow, m_pGadtoolsContext, m_NumParentGadgets, -1, NULL);
+  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
   FreeGadgets(pOldContext);
-
-
-/*
-  struct IntuiText intuiText;
-  intuiText.FrontPen  = m_AppScreen.Pens().HighlightedText();
-  intuiText.BackPen   = m_AppScreen.Pens().Background();
-  intuiText.DrawMode  = JAM2;
-  intuiText.ITextFont = &m_TextAttr;
-  intuiText.NextText  = NULL;
-
-  intuiText.TopEdge   = m_TextAreasTop - m_AppScreen.FontHeight() - 2;
-
-  intuiText.LeftEdge  = m_TextArea1Left + 2;
-  intuiText.IText = (UBYTE*)m_pLeftDocument->FileName();
-  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
-
-  intuiText.LeftEdge  = m_TextArea2Left + 2;
-  intuiText.IText = (UBYTE*)m_pRightDocument->FileName();
-  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
-*/
 }
 
 void DiffWindow::paintDocument(bool  fromStart)
@@ -765,18 +754,22 @@ void DiffWindow::paintWindowDecoration()
 {
   // Create borders for the two text areas
   DrawBevelBox(m_pWindow->RPort,
-    m_TextArea1Left, m_TextAreasTop,
-    m_TextAreasWidth, m_TextAreasHeight,
-    GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
-    GTBB_Recessed, TRUE,
-    TAG_DONE);
+               m_TextArea1Left,
+               m_TextAreasTop,
+               m_TextAreasWidth,
+               m_TextAreasHeight,
+               GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
+               GTBB_Recessed, TRUE,
+               TAG_DONE);
 
   DrawBevelBox(m_pWindow->RPort,
-    m_TextArea2Left, m_TextAreasTop,
-    m_TextAreasWidth, m_TextAreasHeight,
-    GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
-    GTBB_Recessed, TRUE,
-    TAG_DONE);
+               m_TextArea2Left,
+               m_TextAreasTop,
+               m_TextAreasWidth,
+               m_TextAreasHeight,
+               GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
+               GTBB_Recessed, TRUE,
+               TAG_DONE);
 }
 
 void DiffWindow::paintDocumentNames()

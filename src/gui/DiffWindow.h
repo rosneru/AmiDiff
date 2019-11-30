@@ -171,6 +171,7 @@ private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
 
+  int m_NumParentGadgets;
   struct Gadget* m_pLastParentGadget;
   struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pGadTxtLeftFile;
@@ -223,7 +224,7 @@ private:
    */
   void initialize();
 
-  void createGadgets(int windowInnerWidth = 0);
+  void createGadgets();
 
   /**
    * Calculates some inner window sizes which is needed after window
@@ -231,6 +232,11 @@ private:
    */
   void calcSizes();
 
+  /**
+   * Resizes the gadgets. Should be called after the window size has
+   * changed. As gadget-resizing or re-positioning is not supported
+   * with Gadtools, the gadgets are re-created completely.
+   */
   void resizeGadgets();
 
   /**

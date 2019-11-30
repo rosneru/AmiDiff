@@ -31,13 +31,15 @@ public:
                 ///> the four last parameters of SetInitialPosition
   };
 
+
   /**
    * Base class method for opening the window. Derived classes should
-   * call this in their Open() method after the window has opened.
+   * call this in their Open() method.
    *
-   * Sets the menu strip to the window if one had been provided. If the
-   * given pointer to a menu items user data is not null, this menu
-   * item will be disabled.
+   * Sets the menu strip to the window if one had been provided.
+   *
+   * If there's given a non-NULL pointer to a menu items user data,
+   * this menu item will be disabled at window opening.
    *
    * @param p_pUserDataMenuItemToDisable
    * A pointer to an user data field of a menu item which is associated
@@ -49,14 +51,20 @@ public:
    * When ok: true, false if opening fails
    */
   virtual bool Open(const APTR pMenuItemDisableAtOpen,
-                    InitialPosition initialPosition) = 0;
+                    InitialPosition initialPosition = IP_Center) = 0;
 
   /**
    * Closes the window.
    */
   void Close();
 
+
+  /**
+   * Returns a pointer to the menu item which was disabled at window
+   * opening or NULL if there was no item disabled.
+   */
   const APTR DisabledMenuItem() const;
+
 
   /**
    * Abstract method. Forces inheriting classes to handle the given
@@ -68,6 +76,7 @@ public:
   virtual bool HandleIdcmp(ULONG msgClass,
                            UWORD msgCode,
                            APTR pItemAddress) = 0;
+
 
   /**
    * Returns true if the window is opened.
@@ -111,6 +120,7 @@ public:
    */
   void SetFixed(bool p_bFixWindow);
 
+
   /**
    * Sets if the window is without border. Only is applied when
    * called before opening the window.
@@ -130,6 +140,7 @@ public:
    */
   void SetSmartRefresh(bool p_bSmartRefresh);
 
+
   /**
    * Moves an opened window to new position
    *
@@ -140,6 +151,7 @@ public:
    * Delta of window position on y-axis. Can be pos. or neg.
    */
   void Move(long p_DX, long p_DY);
+
 
   /**
    * Resizes an opened window.
@@ -152,18 +164,20 @@ public:
    */
   void Size(long p_DX, long p_DY);
 
+
   /**
    * Resizes an opened window and moves it to a new position.
    * Coordinates are absolute and no deltas.
    */
-  void ChangeWindowBox(long p_Left, long p_Top, long width,
-    long height);
+  void ChangeWindowBox(long p_Left, long p_Top, long width, long height);
+
 
   /**
    * Returns the intuition window structure or NULL if window is not
    * open.
    */
   struct Window* IntuiWindow();
+
 
   /**
    * Returns the app screen object on which the window is opened or
@@ -187,6 +201,7 @@ protected:
   ApplicationMenu* m_pMenu;
   SimpleString m_Title;
 
+
   /**
    * Creates a new window object
    *
@@ -205,13 +220,16 @@ protected:
   WindowBase(AppScreen& appScreen, struct MsgPort* pMsgPort,
              int& numOpenWindows);
 
+
   virtual ~WindowBase();
+
 
   /**
    * Gadget initialization etc should be done here. Must be
    * implemented by derived classes.
    */
   virtual void initialize() = 0;
+
 
   /**
    * Setting the window flags. Should be done before window opening.
@@ -223,6 +241,7 @@ protected:
    */
   virtual void setFlags(ULONG flags);
 
+
   /**
    * Setting the window IDCMP flags, oring them to the already existing
    * ones.
@@ -233,6 +252,7 @@ protected:
    * implementation to set the needed window idcmp messages.
    */
   virtual void setIDCMP(ULONG idcmp);
+
 
   /**
    * Setting the first gadget of a potential list of gadgets inside
@@ -247,6 +267,7 @@ protected:
    */
   virtual void setFirstGadget(struct Gadget* pFirstGadget);
 
+
   /**
    * Returns a pointer to the first gadget or NULL if none is set.
    *
@@ -256,7 +277,13 @@ protected:
    */
   struct Gadget* getFirstGadget();
 
-  struct Gadget* getLastGadget();
+
+  /**
+   * Returns the last gadget in the gadget list for this window.
+   * Also sets the given variable to the number of gadgets which
+   * are already added to the window.
+   */
+  struct Gadget* getLastGadget(int& refNumGadgets);
 
 
   /**
