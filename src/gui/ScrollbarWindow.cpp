@@ -392,6 +392,7 @@ void ScrollbarWindow::calcSizes()
     - m_SizeImageHeight;
 }
 
+
 void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars,
                                         int totalChars)
 {
@@ -402,21 +403,18 @@ void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars,
 
   if(totalChars < 0)
   {
-    // Only max visible chars  provided
-	  SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
-    	PGA_Visible, maxVisibleChars,
-    	TAG_DONE);
+    totalChars = maxVisibleChars;
   }
-  else if(maxVisibleChars >= 0)
-  {
-    // Number of total chars and number of max visible lines given:
-    // Set the y-scrollbar to an initial state
-    SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
-      PGA_Total, totalChars,
-      PGA_Top, 0,
-      PGA_Visible, maxVisibleChars,
-      TAG_DONE);
-  }
+
+  // Set the size of x-scrollbar "potentiometer"
+  SetGadgetAttrs(m_pXPropGadget,
+                 m_pWindow,
+                 NULL,
+                 PGA_Total, totalChars,
+                 PGA_Top, 0,
+                 PGA_Visible, maxVisibleChars,
+                 TAG_DONE);
+
 }
 
 void ScrollbarWindow::setYScrollPotSize(int maxVisibleLines,
@@ -429,21 +427,18 @@ void ScrollbarWindow::setYScrollPotSize(int maxVisibleLines,
 
   if(totalLines < 0)
   {
-    // Only max visible lines  provided
-	  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    	PGA_Visible, maxVisibleLines,
-    	TAG_DONE);
+    totalLines = maxVisibleLines;
   }
-  else if(maxVisibleLines >= 0)
-  {
-    // Number of total lines and number of max visible lines provided:
-    // Set the y-scrollbar to an initial state
-    SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-      PGA_Total, totalLines,
-      PGA_Top, 0,
-      PGA_Visible, maxVisibleLines,
-      TAG_DONE);
-  }
+
+  // Set the size of y-scrollbar "potentiometer"
+  SetGadgetAttrs(m_pYPropGadget,
+                 m_pWindow,
+                 NULL,
+                 PGA_Total, totalLines,
+                 PGA_Top, 0,
+                 PGA_Visible, maxVisibleLines,
+                 TAG_DONE);
+
 }
 
 void ScrollbarWindow::setXScrollLeft(int left)
