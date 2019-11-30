@@ -388,8 +388,13 @@ void DiffWindow::initialize()
   // borders are initialized first.
   ScrollbarWindow::initialize();
 
+  // If parent window already defined gadgets, we store the last of
+  // these gadgeds and the count of defined gadgets. They are needed
+  // for dynamically re-creating this window's gadgets at window
+  // resizing etc.
   m_pLastParentGadget = getLastGadget(m_NumParentGadgets);
 
+  // Create this window's gadgets
   createGadgets();
 
   // Set the default title
@@ -423,6 +428,11 @@ void DiffWindow::createGadgets()
 
   if(isFirstCall)
   {
+    // When this method is called for the first time, the created
+    // GadTools context either is set as first gadget or, if parent
+    // already contains gadgets, it is linked as successor of parents
+    // last gadget.
+
     if(m_pLastParentGadget == NULL)
     {
       setFirstGadget(m_pGadtoolsContext);
@@ -589,17 +599,24 @@ void DiffWindow::calcSizes()
 
 void DiffWindow::resizeGadgets()
 {
+  // Save a copy of the soon to be obsolete GadgTools context
   struct Gadget* pOldContext = m_pGadtoolsContext;
 
+  // Detach this windows gadgets from the ones defined in parent window
   m_pLastParentGadget->NextGadget = NULL;
+
+  // Remove these gadgets from the windows gadget list
   RemoveGList(m_pWindow, m_pGadtoolsContext, -1);
 
+  // Clear the area on which the new gadgets will be drawn
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
   RectFill(m_pWindow->RPort,
            m_TextArea1Left,
            m_TextAreasTop - m_AppScreen.FontHeight() - 2,
-           m_TextAreasWidth + m_TextAreasWidth,
-           m_TextAreasTop);
+           m_TextAreasWidth + m_TextAreasWidth + 4,
+           m_TextAreasTop - 3);
 
+  // Create the gadgets anew (with the new positions and size)
   createGadgets();
 
   AddGList(m_pWindow, m_pGadtoolsContext, m_NumParentGadgets, -1, NULL);

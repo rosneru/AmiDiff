@@ -402,14 +402,14 @@ void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars,
 
   if(totalChars < 0)
   {
-    // Only max visible lines  provided
+    // Only max visible chars  provided
 	  SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
     	PGA_Visible, maxVisibleChars,
     	TAG_DONE);
   }
   else if(maxVisibleChars >= 0)
   {
-    // Number of total lines and number of max visible lines provided:
+    // Number of total chars and number of max visible lines given:
     // Set the y-scrollbar to an initial state
     SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
       PGA_Total, totalChars,

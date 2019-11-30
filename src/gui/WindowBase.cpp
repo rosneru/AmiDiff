@@ -421,6 +421,8 @@ struct Gadget* WindowBase::getLastGadget(int& refNumGadgets)
     return NULL;
   }
 
+  refNumGadgets++;
+
   struct Gadget* pGadget = m_pFirstGadget->NextGadget;
   while(pGadget != NULL)
   {
