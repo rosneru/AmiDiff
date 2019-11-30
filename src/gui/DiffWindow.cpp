@@ -157,7 +157,7 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
 }
 
 bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
-  DiffDocument* pRightDocument)
+                            DiffDocument* pRightDocument)
 {
   if((pLeftDocument == NULL) || (pRightDocument == NULL))
   {
@@ -176,7 +176,7 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
 
   // Clear the window completely
   SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
-
+/*
   // Display the document file names in the gadgets
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                     m_pWindow,
@@ -189,10 +189,10 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
                     NULL,
                     GTTX_Text, m_pRightDocument->FileName(),
                     TAG_END);
-
+*/
 
   // Ensure that the gadgets are re-drawn
-  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
+//  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
 
   // Display the first [1; m_MaxTextAreaLines] lines
   paintDocument();
@@ -477,9 +477,8 @@ void DiffWindow::createGadgets()
     newGadget.ng_Width    = m_TextAreasWidth;
   }
 
-  const char* pEmptyFileName = "";
-  const char* pFileName = pEmptyFileName;
-  if((m_pLeftDocument != NULL) && (m_pLeftDocument->FileName() != NULL))
+  const char* pFileName = NULL;
+  if(m_pLeftDocument != NULL)
   {
     pFileName = m_pLeftDocument->FileName();
   }
@@ -488,7 +487,7 @@ void DiffWindow::createGadgets()
                                     pFakeGad,
                                     &newGadget,
                                     GTTX_Border, TRUE,
-                                    GTTX_Text, pFileName,
+//                                    GTTX_Text, pFileName,
                                     TAG_END);
 
   if(m_TextArea2Left > 0)
@@ -500,8 +499,8 @@ void DiffWindow::createGadgets()
     newGadget.ng_LeftEdge += newGadget.ng_Width + 5;
   }
 
-  pFileName = pEmptyFileName;
-  if((m_pRightDocument != NULL) && (m_pRightDocument->FileName() != NULL))
+  pFileName = NULL;
+  if(m_pRightDocument != NULL)
   {
     pFileName = m_pRightDocument->FileName();
   }
@@ -511,7 +510,7 @@ void DiffWindow::createGadgets()
                                     m_pGadTxtLeftFile,
                                     &newGadget,
                                     GTTX_Border, TRUE,
-                                    GTTX_Text, pFileName,
+//                                    GTTX_Text, pFileName,
                                     TAG_END);
 }
 
@@ -607,6 +606,7 @@ void DiffWindow::calcSizes()
   setYScrollPotSize(m_MaxTextAreaLines);
 }
 
+
 void DiffWindow::resizeGadgets()
 {
   // Save a copy of the soon to be obsolete GadgTools context
@@ -633,6 +633,7 @@ void DiffWindow::resizeGadgets()
   RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
   FreeGadgets(pOldContext);
 }
+
 
 void DiffWindow::paintDocument(bool  fromStart)
 {
