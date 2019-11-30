@@ -177,8 +177,22 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   // Clear the window completely
   SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
-  // Display the document titles above the text areas
-  paintDocumentNames();
+  // Display the document file names in the gadgets
+  GT_SetGadgetAttrs(m_pGadTxtLeftFile,
+                    m_pWindow,
+                    NULL,
+                    GTTX_Text, m_pLeftDocument->FileName(),
+                    TAG_END);
+
+  GT_SetGadgetAttrs(m_pGadTxtRightFile,
+                    m_pWindow,
+                    NULL,
+                    GTTX_Text, m_pRightDocument->FileName(),
+                    TAG_END);
+
+
+  // Ensure that the gadgets are re-drawn
+  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
 
   // Display the first [1; m_MaxTextAreaLines] lines
   paintDocument();
@@ -417,7 +431,7 @@ void DiffWindow::initialize()
 
 void DiffWindow::createGadgets()
 {
-  bool isFirstCall = (m_pGadtoolsContext == NULL);
+  bool bFirstCall = (m_pGadtoolsContext == NULL);
 
   struct Gadget* pFakeGad = NULL;
   pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
@@ -426,7 +440,7 @@ void DiffWindow::createGadgets()
     return;
   }
 
-  if(isFirstCall)
+  if(bFirstCall)
   {
     // When this method is called for the first time, the created
     // GadTools context either is set as first gadget or, if parent
@@ -449,34 +463,32 @@ void DiffWindow::createGadgets()
   newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
   newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = m_TextArea1Left;
-  newGadget.ng_TopEdge    = m_TextAreasTop - m_AppScreen.FontHeight() - 2;
-  newGadget.ng_Height     = m_FontHeight;
-  newGadget.ng_Flags = PLACETEXT_RIGHT | NG_HIGHLABEL;
+  newGadget.ng_TopEdge    = m_TextAreasTop - m_AppScreen.FontHeight() - 4;
+  newGadget.ng_Height     = m_FontHeight + 2;
+  newGadget.ng_Flags      = PLACETEXT_RIGHT | NG_HIGHLABEL;
+  newGadget.ng_GadgetText = (UBYTE*) "";
 
   if(m_TextAreasWidth == 0)
   {
-    newGadget.ng_Width    = 120;
+    newGadget.ng_Width    = 120; // Some random default
   }
   else
   {
     newGadget.ng_Width    = m_TextAreasWidth;
   }
 
-  if(m_pLeftDocument == NULL)
+  const char* pEmptyFileName = "";
+  const char* pFileName = pEmptyFileName;
+  if((m_pLeftDocument != NULL) && (m_pLeftDocument->FileName() != NULL))
   {
-    newGadget.ng_GadgetText = (UBYTE*) "";
+    pFileName = m_pLeftDocument->FileName();
   }
-  else
-  {
-    newGadget.ng_GadgetText = (UBYTE*) m_pLeftDocument->FileName();
-  }
-
-
 
   m_pGadTxtLeftFile = CreateGadget(TEXT_KIND,
                                     pFakeGad,
                                     &newGadget,
                                     GTTX_Border, TRUE,
+                                    GTTX_Text, pFileName,
                                     TAG_END);
 
   if(m_TextArea2Left > 0)
@@ -488,13 +500,10 @@ void DiffWindow::createGadgets()
     newGadget.ng_LeftEdge += newGadget.ng_Width + 5;
   }
 
-  if(m_pRightDocument == NULL)
+  pFileName = pEmptyFileName;
+  if((m_pRightDocument != NULL) && (m_pRightDocument->FileName() != NULL))
   {
-    newGadget.ng_GadgetText = (UBYTE*) "";
-  }
-  else
-  {
-    newGadget.ng_GadgetText = (UBYTE*) m_pRightDocument->FileName();
+    pFileName = m_pRightDocument->FileName();
   }
 
 
@@ -502,6 +511,7 @@ void DiffWindow::createGadgets()
                                     m_pGadTxtLeftFile,
                                     &newGadget,
                                     GTTX_Border, TRUE,
+                                    GTTX_Text, pFileName,
                                     TAG_END);
 }
 
@@ -789,15 +799,6 @@ void DiffWindow::paintWindowDecoration()
                TAG_DONE);
 }
 
-void DiffWindow::paintDocumentNames()
-{
-  if((m_pLeftDocument == NULL) || (m_pRightDocument == NULL))
-  {
-    return;
-  }
-
-  // TODO set gadgets text to document names
-}
 
 void DiffWindow::paintStatusBar()
 {

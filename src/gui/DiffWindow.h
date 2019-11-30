@@ -269,10 +269,6 @@ private:
    */
   void paintWindowDecoration();
 
-  /**
-   * Displays the names of the documents above the two text areas
-   */
-  void paintDocumentNames();
 
   /**
    * Displays a status bar with statistical information and a legend
