@@ -280,10 +280,8 @@ protected:
 
   /**
    * Returns the last gadget in the gadget list for this window.
-   * Also sets the given variable to the number of gadgets which
-   * are already added to the window.
    */
-  struct Gadget* getLastGadget(int& refNumGadgets);
+  struct Gadget* getLastGadget();
 
 
   /**

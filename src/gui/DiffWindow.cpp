@@ -23,7 +23,6 @@ DiffWindow::DiffWindow(AppScreen& appScreen,
   : ScrollbarWindow(appScreen, pMsgPort, numOpenWindows),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
-    m_NumParentGadgets(0),
     m_pLastParentGadget(NULL),
     m_pGadtoolsContext(NULL),
     m_pGadTxtLeftFile(NULL),
@@ -176,7 +175,7 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
 
   // Clear the window completely
   SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
-/*
+
   // Display the document file names in the gadgets
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                     m_pWindow,
@@ -189,10 +188,10 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
                     NULL,
                     GTTX_Text, m_pRightDocument->FileName(),
                     TAG_END);
-*/
+
 
   // Ensure that the gadgets are re-drawn
-//  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
+  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
 
   // Display the first [1; m_MaxTextAreaLines] lines
   paintDocument();
@@ -406,7 +405,7 @@ void DiffWindow::initialize()
   // these gadgeds and the count of defined gadgets. They are needed
   // for dynamically re-creating this window's gadgets at window
   // resizing etc.
-  m_pLastParentGadget = getLastGadget(m_NumParentGadgets);
+  m_pLastParentGadget = getLastGadget();
 
   // Create this window's gadgets
   createGadgets();
@@ -466,7 +465,7 @@ void DiffWindow::createGadgets()
   newGadget.ng_TopEdge    = m_TextAreasTop - m_AppScreen.FontHeight() - 4;
   newGadget.ng_Height     = m_FontHeight + 2;
   newGadget.ng_Flags      = PLACETEXT_RIGHT | NG_HIGHLABEL;
-  newGadget.ng_GadgetText = (UBYTE*) "";
+  newGadget.ng_GadgetText = NULL;
 
   if(m_TextAreasWidth == 0)
   {
@@ -487,7 +486,7 @@ void DiffWindow::createGadgets()
                                     pFakeGad,
                                     &newGadget,
                                     GTTX_Border, TRUE,
-//                                    GTTX_Text, pFileName,
+                                    GTTX_Text, pFileName,
                                     TAG_END);
 
   if(m_TextArea2Left > 0)
@@ -510,7 +509,7 @@ void DiffWindow::createGadgets()
                                     m_pGadTxtLeftFile,
                                     &newGadget,
                                     GTTX_Border, TRUE,
-//                                    GTTX_Text, pFileName,
+                                    GTTX_Text, pFileName,
                                     TAG_END);
 }
 
@@ -600,10 +599,10 @@ void DiffWindow::calcSizes()
   m_MaxTextAreaChars = (m_TextAreasWidth - 4) / m_TextFontWidth_pix;
 
   // Set x-scroll-gadget's pot size in relation of new window size
-  setXScrollPotSize(m_MaxTextAreaChars);
+  setXScrollPotSize(m_MaxTextAreaChars, m_MaxLineLength);
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_MaxTextAreaLines);
+  setYScrollPotSize(m_MaxTextAreaLines, m_pLeftDocument->NumLines());
 }
 
 
@@ -622,15 +621,30 @@ void DiffWindow::resizeGadgets()
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
   RectFill(m_pWindow->RPort,
            m_TextArea1Left,
-           m_TextAreasTop - m_AppScreen.FontHeight() - 2,
+           m_TextAreasTop - m_AppScreen.FontHeight() - 4,
            m_TextAreasWidth + m_TextAreasWidth + 4,
            m_TextAreasTop - 3);
 
   // Create the gadgets anew (with the new positions and size)
   createGadgets();
 
-  AddGList(m_pWindow, m_pGadtoolsContext, m_NumParentGadgets, -1, NULL);
+  AddGList(m_pWindow, m_pGadtoolsContext, (UWORD)~0, -1, NULL);
+
+  // Display the document file names in the gadgets
+  GT_SetGadgetAttrs(m_pGadTxtLeftFile,
+                    m_pWindow,
+                    NULL,
+                    GTTX_Text, m_pLeftDocument->FileName(),
+                    TAG_END);
+
+  GT_SetGadgetAttrs(m_pGadTxtRightFile,
+                    m_pWindow,
+                    NULL,
+                    GTTX_Text, m_pRightDocument->FileName(),
+                    TAG_END);
+
   RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
+
   FreeGadgets(pOldContext);
 }
 

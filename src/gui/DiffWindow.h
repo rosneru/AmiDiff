@@ -171,7 +171,6 @@ private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
 
-  int m_NumParentGadgets;
   struct Gadget* m_pLastParentGadget;
   struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pGadTxtLeftFile;

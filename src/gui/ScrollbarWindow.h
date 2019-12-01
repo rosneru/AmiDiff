@@ -159,11 +159,9 @@ protected:
    * updated e.g. after the window resizes.
    *
    * @param totalChars
-   * Optional parameter. Number of total visible chars / points / etc
-   * in document. Has to be set once after opening the document and can
-   * then left untouched (or skipped by giving -1).
+   * Number of total visible chars / points / etc in document.
    */
-  void setXScrollPotSize(int maxVisibleChars, int totalChars = - 1);
+  void setXScrollPotSize(int maxVisibleChars, int totalChars);
 
   /**
    * Setting the pot size of the y-scrollbar.
@@ -173,11 +171,9 @@ protected:
    * updated e.g. after the window resizes.
    *
    * @param totalLines
-   * Optional parameter. Number of total visible lines / points / etc
-   * in document. Has to be set once after opening the document and can
-   * then left untouched (or skipped by giving -1).
+   * Number of total visible lines / points / etc in document.
    */
-  void setYScrollPotSize(int maxVisibleLines, int totalLines = - 1);
+  void setYScrollPotSize(int maxVisibleLines, int totalLines);
 
   /**
    * Setting a new top position to the x-scrollbar pot.

@@ -412,21 +412,16 @@ struct Gadget* WindowBase::getFirstGadget()
 }
 
 
-struct Gadget* WindowBase::getLastGadget(int& refNumGadgets)
+struct Gadget* WindowBase::getLastGadget()
 {
-  refNumGadgets = 0;
-
   if(m_pFirstGadget == NULL)
   {
     return NULL;
   }
 
-  refNumGadgets++;
-
   struct Gadget* pGadget = m_pFirstGadget->NextGadget;
   while(pGadget != NULL)
   {
-    refNumGadgets++;
     if(pGadget->NextGadget == NULL)
     {
       break;
