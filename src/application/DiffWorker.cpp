@@ -171,7 +171,7 @@ bool DiffWorker::Diff()
   //
   setProgressDescription("Comparing the files..");
   bool diffOk = m_DiffEngine.Diff();
-  long timeSummary = static_cast<long>(m_StopWatch.Pick());
+  long totalTime = static_cast<long>(m_StopWatch.Pick());
 
   // If there was an error return to FilesWindow
   if(!diffOk)
@@ -193,21 +193,12 @@ bool DiffWorker::Diff()
   //
   // Collecting the number of changes
   //
-  int leftNumAdded;
-  int leftNumChanged;
-  int leftNumDeleted;
-  m_LeftDiffFile.NumChanges(leftNumAdded, leftNumChanged,
-                            leftNumDeleted);
-
-  int rightNumAdded;
-  int rightNumChanged;
-  int rightNumDeleted;
-  m_RightDiffFile.NumChanges(rightNumAdded, rightNumChanged,
-                             rightNumDeleted);
+  int numAdd = m_DiffEngine.NumAdded();
+  int numChn = m_DiffEngine.NumChanged();
+  int numDel = m_DiffEngine.NumDeleted();
 
   // If there are no changes return to FilesWindow
-  if((leftNumAdded + leftNumChanged + leftNumDeleted +
-     rightNumAdded + rightNumChanged + rightNumDeleted) == 0)
+  if((numAdd + numChn + numDel) == 0)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "No differences found: the files are equal.", "Ok");
@@ -234,9 +225,7 @@ bool DiffWorker::Diff()
   m_ProgressWindow.Close();
 
   m_DiffWindow.SetContent(m_pDiffDocumentLeft, m_pDiffDocumentRight);
-  m_DiffWindow.SetStatusBar(timeSummary, leftNumAdded + rightNumAdded,
-                            leftNumChanged + rightNumChanged,
-                            leftNumDeleted + rightNumDeleted);
+  m_DiffWindow.SetStatusBar(totalTime, numAdd, numChn, numDel);
 
   workDone();
   m_bExitAllowed = true;

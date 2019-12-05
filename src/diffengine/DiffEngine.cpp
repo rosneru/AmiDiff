@@ -152,6 +152,23 @@ bool DiffEngine::Diff()
 }
 
 
+long DiffEngine::NumAdded() const
+{
+  return m_NumInsertedB;
+}
+
+
+long DiffEngine::NumChanged() const
+{
+  return m_NumChanged;
+}
+
+
+long DiffEngine::NumDeleted() const
+{
+  return m_NumDeletedA;
+}
+
 
 void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
 {
@@ -232,7 +249,7 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
   long delta = (upperA - lowerA) - (upperB - lowerB);
   bool oddDelta = (delta & 1) != 0;
 
-  // The vectors in the E. Myers publication accept negative indexes.
+  // The vectors in Myers' publication accept negative indexes.
   // The vectors implemented here are 0-based and are accessed using
   // a specific offset: UpOffset for m_pUpVector and DownOffset for
   // m_pDownVector

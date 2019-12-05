@@ -65,6 +65,10 @@ public:
 
   bool Diff();
 
+  long NumAdded() const;
+  long NumChanged() const;
+  long NumDeleted() const;
+
 
   /**
    * Setting the progress reporter
