@@ -22,6 +22,11 @@ void DiffFileBase::SetNumLines(long numLines)
   m_NextAddedLineIdx = 0;
 }
 
+void DiffFileBase::DecrementNumLines()
+{
+  m_NumLines--;
+}
+
 void DiffFileBase::NumChanges(int& p_Added,
                                    int& p_Changed,
                                    int& p_Deleted) const

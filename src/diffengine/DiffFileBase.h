@@ -30,6 +30,11 @@ public:
    */
   void SetNumLines(long numLines);
 
+  /**
+   * Decrements the internal m_NumLines counter by -1
+   */
+  void DecrementNumLines();
+
   void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const;
 
   DiffLine* GetLine(size_t p_Index) const;

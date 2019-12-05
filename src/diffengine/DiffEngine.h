@@ -79,6 +79,7 @@ private:
 
   long m_NumInsertedB;
   long m_NumDeletedA;
+  long m_NumChanged;
 
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;
@@ -101,7 +102,7 @@ private:
    * these arrays the lower and upper bounds are passed while the
    * sequences stay constant.
    */
-  void lcs(long lowerA, long upperA, long lowerB, long upperB);
+  void longestCommonSubsequence(long lowerA, long upperA, long lowerB, long upperB);
 
 
   /**
