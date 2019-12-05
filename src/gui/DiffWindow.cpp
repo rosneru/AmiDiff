@@ -106,7 +106,7 @@ void DiffWindow::Resized()
     // Now done in resizeGadgets()->createGadgets()
 
     // Paint the content of the two documents
-    paintDocument();
+    paintDocument(false);
   }
 
   // Paint the status bar
@@ -649,7 +649,7 @@ void DiffWindow::resizeGadgets()
 }
 
 
-void DiffWindow::paintDocument(bool  fromStart)
+void DiffWindow::paintDocument(bool fromStart)
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {

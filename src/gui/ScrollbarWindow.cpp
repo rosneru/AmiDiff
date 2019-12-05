@@ -411,7 +411,6 @@ void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars,
                  m_pWindow,
                  NULL,
                  PGA_Total, totalChars,
-                 PGA_Top, 0,
                  PGA_Visible, maxVisibleChars,
                  TAG_DONE);
 
@@ -435,7 +434,6 @@ void ScrollbarWindow::setYScrollPotSize(int maxVisibleLines,
                  m_pWindow,
                  NULL,
                  PGA_Total, totalLines,
-                 PGA_Top, 0,
                  PGA_Visible, maxVisibleLines,
                  TAG_DONE);
 
