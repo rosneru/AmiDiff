@@ -71,18 +71,14 @@ int main(int argc, char **argv)
   // Parse the command line or Workbench start arguments
   ADiffViewOptions options(argc, argv);
 
-  // Create the application dynamically, so we can destroy it later
-  // before the message ports are destroyed.
-  Application* pApp = new Application(options);
-  bool bOk = pApp->Run();
+  // Create and run the application
+  Application app(options);
+  bool bOk = app.Run();
   if(!bOk)
   {
     // On error display a message
-    request.Show(pApp->ErrorMsg(), "Ok");
+    request.Show(app.ErrorMsg(), "Ok");
   }
-
-  // Destroy app
-  delete pApp;
 
   return 0;
 }
