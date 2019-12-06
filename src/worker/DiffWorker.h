@@ -3,7 +3,7 @@
 
 #include <exec/ports.h>
 
-#include "BackgroundWorker.h"
+#include "WorkerBase.h"
 #include "DiffDocument.h"
 #include "DiffEngine.h"
 #include "DiffFileAmiga.h"
@@ -22,7 +22,7 @@
  * @author Uwe Rosner
  * @date 26/10/2018
  */
-class DiffWorker : public BackgroundWorker
+class DiffWorker : public WorkerBase
 {
 public:
   DiffWorker(SimpleString& leftFilePath,
@@ -87,7 +87,7 @@ private:
   void disposeDocuments();
 
   /**
-   * Implemented abstract method from BackgroundWorker.
+   * Implemented abstract method from WorkerBase.
    *
    * Here the diff is calculated, the display window opened etc.
    */

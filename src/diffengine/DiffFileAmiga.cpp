@@ -31,7 +31,7 @@ void DiffFileAmiga::Clear()
   // deleted outside with just one call. On the Amiga this is way
   // faster than e.g. calling 5000 single delete [] in random order.
 
-  m_pDiffLines = NULL;
+  m_pDiffLinesArray = NULL;
 }
 
 bool DiffFileAmiga::PreProcess(const char* pFileName)
@@ -43,7 +43,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     return false;
   }
 
-  if(m_pDiffLines != NULL)
+  if(m_pDiffLinesArray != NULL)
   {
     // Already initialized
     return true;
@@ -72,8 +72,8 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
 
   // Create an array of DiffLine-pointers to hold all needed lines
   size_t arraySize = sizeof(DiffLine*) * m_NumLines;
-  m_pDiffLines = (DiffLine**) AllocPooled(m_pPoolHeader, arraySize);
-  if(m_pDiffLines == NULL)
+  m_pDiffLinesArray = (DiffLine**) AllocPooled(m_pPoolHeader, arraySize);
+  if(m_pDiffLinesArray == NULL)
   {
     m_pError = m_pErrMsgLowMem;
     m_File.Close();
@@ -113,7 +113,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     new (pDiffLine) DiffLine(pLine);
 
     // Append DiffLine to list
-    m_pDiffLines[i++] = pDiffLine;
+    m_pDiffLinesArray[i++] = pDiffLine;
 
     //
     // Progress reporting
@@ -167,12 +167,12 @@ bool DiffFileAmiga::AddString(const char* p_String,
     return false;
   }
 
-  if(m_pDiffLines == NULL)
+  if(m_pDiffLinesArray == NULL)
   {
     // Create an array of DiffLine-pointers to hold all needed lines
     size_t arraySize = sizeof(DiffLine*) * m_NumLines;
-    m_pDiffLines = (DiffLine**) AllocPooled(m_pPoolHeader, arraySize);
-    if(m_pDiffLines == NULL)
+    m_pDiffLinesArray = (DiffLine**) AllocPooled(m_pPoolHeader, arraySize);
+    if(m_pDiffLinesArray == NULL)
     {
       m_pError = m_pErrMsgLowMem;
       m_File.Close();
@@ -196,7 +196,7 @@ bool DiffFileAmiga::AddString(const char* p_String,
   // automatically wouldn't be appropriate.
   new (pDiffLine) DiffLine(p_String, p_LineState);
 
-  m_pDiffLines[m_NextAddedLineIdx++] = pDiffLine;
+  m_pDiffLinesArray[m_NextAddedLineIdx++] = pDiffLine;
 
   return true;
 }

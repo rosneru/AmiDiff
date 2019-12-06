@@ -11,7 +11,7 @@
 #include <intuition/icclass.h>
 #include <libraries/gadtools.h>
 
-#include "WorkerProgressMsg.h"
+#include "ProgressMessage.h"
 #include "ProgressWindow.h"
 
 
@@ -136,7 +136,7 @@ bool ProgressWindow::HandleIdcmp(ULONG msgClass,
 }
 
 
-void ProgressWindow::HandleProgress(struct WorkerProgressMsg* pProgrMsg)
+void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
 {
   if(pProgrMsg == NULL)
   {

@@ -11,7 +11,7 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
                        struct MsgPort* pProgressPort,
                        bool& bCancelRequested,
                        bool& bExitAllowed)
-  : BackgroundWorker(pProgressPort),
+  : WorkerBase(pProgressPort),
     m_LeftSrcFilePath(leftFilePath),
     m_RightSrcFilePath(rightFilePath),
     m_DiffWindow(diffWindow),
@@ -38,7 +38,7 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
   // Registering *this* as receiver for progress messages for some
   // objects.
   //
-  // NOTE *this* is a BackgroundWorker who forwards these messages to
+  // NOTE *this* is a WorkerBase who forwards these messages to
   //      the intuition event loop which eventually displays the
   //      progress in a window.
   //
@@ -293,5 +293,5 @@ void DiffWorker::notifyProgressChanged(int progress)
     progress = progress / 3 + 1;
   }
 
-  BackgroundWorker::notifyProgressChanged(m_ProgressOffset + progress);
+  WorkerBase::notifyProgressChanged(m_ProgressOffset + progress);
 }

@@ -5,8 +5,6 @@ C/C++ Environment
 0
 "amigautils"
 0
-"application"
-0
 "commands"
 0
 "diffengine"
@@ -17,7 +15,7 @@ C/C++ Environment
 0
 "oscottlibs"
 0
-"thread"
+"worker"
 0
 Includepath (End)
 0 "" 80
@@ -100,6 +98,14 @@ Section
 0 1 1 0
 4
 File
+1 "ADiffViewOptions.cpp"
+"ADiffViewOptions.cpp"
+"ADiffViewOptions.h"
+Storm Shell Project (Dependencies)
+"objects_debug/ADiffViewOptions.o" "objects_debug/ADiffViewOptions.debug"
+""
+1 1
+File
 1 "amigautils/AmigaFile.cpp"
 "amigautils/AmigaFile.cpp"
 "amigautils/AmigaFile.h"
@@ -132,39 +138,22 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "application/Application.cpp"
-"application/Application.cpp"
-"application/Application.h"
+1 "Application.cpp"
+"Application.cpp"
+"Application.h"
+"ADiffViewOptions.h"
 "gui/AppScreen.h"
 "gui/AmigaDiffPens.h"
-"thread/ProgressReporter.h"
-"thread/WorkerStartupMsg.h"
-"model/Document.h"
-"gui/ScrollbarWindow.h"
-"diffengine/Pair.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
+"model/Document.h"
+"gui/ScrollbarWindow.h"
+"worker/WorkerBase.h"
+"worker/ProgressReporter.h"
+"worker/WorkerStartupMsg.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
-""
-1 1
-File
-1 "application/DiffWorker.cpp"
-"application/DiffWorker.cpp"
-"application/DiffWorker.h"
-"thread/WorkerStartupMsg.h"
-"model/Document.h"
-"gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
-"gui/ScrollbarWindow.h"
-"gui/WindowBase.h"
-"gui/ApplicationMenu.h"
-"thread/ProgressReporter.h"
-"diffengine/Pair.h"
-"diffengine/DiffFileBase.h"
-"diffengine/DiffLine.h"
-Storm Shell Project (Dependencies)
-"objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
 ""
 1 1
 File
@@ -181,17 +170,18 @@ File
 1 "commands/CmdDiff.cpp"
 "commands/CmdDiff.cpp"
 "commands/CmdDiff.h"
-"thread/ProgressReporter.h"
-"thread/WorkerStartupMsg.h"
+"worker/WorkerBase.h"
+"worker/ProgressReporter.h"
+"worker/WorkerStartupMsg.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
 "model/Document.h"
+"diffengine/Pair.h"
 "gui/AppScreen.h"
 "gui/AmigaDiffPens.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
-"diffengine/Pair.h"
-"diffengine/DiffFileBase.h"
-"diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
 ""
@@ -365,15 +355,18 @@ File
 1 "main.cpp"
 "main.cpp"
 "diffengine/DiffLine.h"
-"diffengine/Pair.h"
 "gui/AppScreen.h"
 "gui/AmigaDiffPens.h"
 "commands/Command.h"
-"thread/ProgressReporter.h"
-"thread/WorkerStartupMsg.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
 "diffengine/DiffFileBase.h"
+"Application.h"
+"ADiffViewOptions.h"
+"worker/WorkerBase.h"
+"worker/ProgressReporter.h"
+"worker/WorkerStartupMsg.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -406,20 +399,47 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "thread/BackgroundWorker.cpp"
-"thread/BackgroundWorker.cpp"
-"thread/BackgroundWorker.h"
-"thread/ProgressReporter.h"
-"thread/WorkerStartupMsg.h"
-"thread/WorkerProgressMsg.h"
+1 "worker/DiffWorker.cpp"
+"worker/DiffWorker.cpp"
+"worker/DiffWorker.h"
+"worker/WorkerBase.h"
+"worker/ProgressReporter.h"
+"worker/WorkerStartupMsg.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
+"model/Document.h"
+"diffengine/Pair.h"
+"gui/AppScreen.h"
+"gui/AmigaDiffPens.h"
+"gui/ScrollbarWindow.h"
+"gui/WindowBase.h"
+"gui/ApplicationMenu.h"
 Storm Shell Project (Dependencies)
-"objects_debug/BackgroundWorker.o" "objects_debug/BackgroundWorker.debug"
+"objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
+""
+1 1
+File
+1 "worker/WorkerBase.cpp"
+"worker/WorkerBase.cpp"
+"worker/WorkerBase.h"
+"worker/ProgressReporter.h"
+"worker/WorkerStartupMsg.h"
+"worker/ProgressMessage.h"
+Storm Shell Project (Dependencies)
+"objects_debug/WorkerBase.o" "objects_debug/WorkerBase.debug"
 ""
 1 1
 Section
 2 1 95
 0 1 1 0
 2
+File
+2 "ADiffViewOptions.h"
+"ADiffViewOptions.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
 File
 2 "amigautils/AmigaFile.h"
 "amigautils/AmigaFile.h"
@@ -449,15 +469,8 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "application/Application.h"
-"application/Application.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "application/DiffWorker.h"
-"application/DiffWorker.h"
+2 "Application.h"
+"Application.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -616,29 +629,36 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "thread/BackgroundWorker.h"
-"thread/BackgroundWorker.h"
+2 "worker/DiffWorker.h"
+"worker/DiffWorker.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
-2 "thread/ProgressReporter.h"
-"thread/ProgressReporter.h"
+2 "worker/ProgressMessage.h"
+"worker/ProgressMessage.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
-2 "thread/WorkerProgressMsg.h"
-"thread/WorkerProgressMsg.h"
+2 "worker/ProgressReporter.h"
+"worker/ProgressReporter.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
-2 "thread/WorkerStartupMsg.h"
-"thread/WorkerStartupMsg.h"
+2 "worker/WorkerBase.h"
+"worker/WorkerBase.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "worker/WorkerStartupMsg.h"
+"worker/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

@@ -3,11 +3,11 @@
 #include <clib/exec_protos.h>
 #include <clib/dos_protos.h>
 
-#include "BackgroundWorker.h"
-#include "WorkerProgressMsg.h"
+#include "WorkerBase.h"
+#include "ProgressMessage.h"
 
 
-BackgroundWorker::BackgroundWorker(struct MsgPort* p_pProgressPort)
+WorkerBase::WorkerBase(struct MsgPort* p_pProgressPort)
   : m_pStartupMsg(NULL),
     m_pProgressPort(p_pProgressPort),
     m_pReplyPort(NULL),
@@ -17,12 +17,12 @@ BackgroundWorker::BackgroundWorker(struct MsgPort* p_pProgressPort)
 {
 }
 
-BackgroundWorker::~BackgroundWorker()
+WorkerBase::~WorkerBase()
 {
   workDone();
 }
 
-bool BackgroundWorker::Run()
+bool WorkerBase::Run()
 {
   if(m_pBackgrProcess != NULL)
   {
@@ -32,7 +32,7 @@ bool BackgroundWorker::Run()
 
   // Create the background process
   m_pBackgrProcess = CreateNewProcTags(
-    NP_Name, "BackgroundWorker",
+    NP_Name, "WorkerBase",
     NP_Entry, &startup,
     TAG_END);
 
@@ -56,7 +56,7 @@ bool BackgroundWorker::Run()
 }
 
 
-void BackgroundWorker::startup()
+void WorkerBase::startup()
 {
   struct Process* pProcess = (struct Process *)FindTask(NULL);
 
@@ -70,7 +70,7 @@ void BackgroundWorker::startup()
     return;
   }
 
-  class BackgroundWorker* that = pStartupMsg->that;
+  class WorkerBase* that = pStartupMsg->that;
 
   // Create the reply port for this process. It is used to receive
   // answers from main for the sent progress messages.
@@ -87,7 +87,7 @@ void BackgroundWorker::startup()
   //that->m_pBackgrProcess = NULL;
 }
 
-void BackgroundWorker::workDone()
+void WorkerBase::workDone()
 {
   if(m_pStartupMsg != NULL)
   {
@@ -99,13 +99,13 @@ void BackgroundWorker::workDone()
   m_pBackgrProcess = NULL;
 }
 
-void BackgroundWorker::setProgressDescription(const char* p_pProgressDescription)
+void WorkerBase::setProgressDescription(const char* p_pProgressDescription)
 {
   m_pProgressDescription = p_pProgressDescription;
 }
 
 
-void BackgroundWorker::notifyProgressChanged(int p_Progress)
+void WorkerBase::notifyProgressChanged(int p_Progress)
 {
   if((m_pProgressPort == NULL) || (m_pReplyPort == NULL))
   {
@@ -113,7 +113,7 @@ void BackgroundWorker::notifyProgressChanged(int p_Progress)
   }
 
   // Creating and initializing the progress message
-  struct WorkerProgressMsg progressMessage;
+  struct ProgressMessage progressMessage;
   progressMessage.mn_ReplyPort = m_pReplyPort;
   progressMessage.progress = p_Progress;
   progressMessage.pDescription = m_pProgressDescription;

@@ -3,11 +3,11 @@
 
 #include <exec/ports.h>
 
-class BackgroundWorker;
+class WorkerBase;
 
 struct WorkerStartupMsg : public Message 
 {
-  class BackgroundWorker* that;
+  class WorkerBase* that;
 };
 
 #endif

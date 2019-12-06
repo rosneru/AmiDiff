@@ -55,7 +55,7 @@ public:
    * Prints the current pDescription text of given pProgrMsg and
    * draws a progress bar representing the actual percentual value.
    */
-  void HandleProgress(struct WorkerProgressMsg* pProgrMsg);
+  void HandleProgress(struct ProgressMessage* pProgrMsg);
 
 
 private:

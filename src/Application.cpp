@@ -7,7 +7,7 @@
 
 #include "Command.h"
 #include "MessageBox.h"
-#include "WorkerProgressMsg.h"
+#include "ProgressMessage.h"
 
 #include "Application.h"
 
@@ -169,8 +169,8 @@ void Application::intuiEventLoop()
 
     if(received & sigProgress)
     {
-      struct WorkerProgressMsg* pProgressMsg = NULL;
-      while(pProgressMsg = (struct WorkerProgressMsg *)
+      struct ProgressMessage* pProgressMsg = NULL;
+      while(pProgressMsg = (struct ProgressMessage *)
               GetMsg(m_pMsgPortProgress))
       {
         if(m_ProgressWindow.IsOpen())

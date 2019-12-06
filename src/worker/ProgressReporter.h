@@ -4,8 +4,8 @@
 
 /**
  * This is an abstract class / interface to allow an object to report
- * its progress. It should be used together with BackgroundWorker when
- * performing time-consuming operations.
+ * its progress. It should be used together with a background worker 
+ * when performing time-consuming operations.
  *
  * @author Uwe Rosner
  * @date 26/01/2019

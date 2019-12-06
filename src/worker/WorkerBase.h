@@ -1,5 +1,5 @@
-#ifndef BACKGROUND_WORKER
-#define BACKGROUND_WORKER
+#ifndef WORKER_BASE_H
+#define WORKER_BASE_H
 
 #include <dos/dosextens.h>
 #include <exec/ports.h>
@@ -27,23 +27,23 @@
  * 3. It can send progress messages using the method sendProgress(int)
  * where progress should be a value between 0..100
  *
- * The BackgroundWorker itself inherits from the abstract class
+ * The WorkerBase itself inherits from the abstract class 
  * ProgressReporter and implements its notifyProgressChanged() method.
  * So a class with a time consuming operation can hold a pointer to
- * the BackgroundWorker (e.g. define a SetProgressReporter() method) and
+ * the WorkerBase (e.g. define a SetProgressReporter() method) and
  * then use the notifyProgressChanged() method of the ProgressReporter
- * to trigger the BackgroundWorker to send the WorkerProgresMsg's to
+ * to trigger the WorkerBase to send the WorkerProgresMsg's to
  * the progress message port.
  *
  * @author Uwe Rosner
  * @date 24/01/2019
  */
-class BackgroundWorker : public ProgressReporter
+class WorkerBase : public ProgressReporter
 {
 public:
 
-  BackgroundWorker(struct MsgPort* p_pProgressPort);
-  virtual ~BackgroundWorker();
+  WorkerBase(struct MsgPort* p_pProgressPort);
+  virtual ~WorkerBase();
 
   /**
    * Creates and starts the background process.
@@ -62,7 +62,7 @@ protected:
 
   /**
    * Has to be called by deriving classes at the end or exit of their
-   * doWork() method to allow the BackgroundWorker to clean up etc.
+   * doWork() method to allow the WorkerBase to clean up etc.
    */
   void workDone();
 
