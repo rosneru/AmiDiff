@@ -41,6 +41,7 @@
 #include <intuition/intuitionbase.h>
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
+#include <workbench/startup.h>
 
 #include "Application.h"
 #include "MessageBox.h"
@@ -51,6 +52,10 @@
 
 extern struct IntuitionBase* IntuitionBase;
 
+
+/**
+ * CLI entry point
+ */
 int main(int argc, char **argv)
 {
   MessageBox request;
@@ -101,17 +106,12 @@ int main(int argc, char **argv)
   return 0;
 }
 
+
+/**
+ * Workbench entry point.
+ */
 void wbmain(struct WBStartup* wb)
 {
+  // Call the CLI entry point with argc=0
   main(0, (char **) wb);
-}
-
-void exctractArgs(int argc, 
-                  char **argv,
-                  SimpleString& pubScreenName,
-                  bool& bDontAsk,
-                  SimpleString& leftFilePath,
-                  SimpleString& rightFilePath)
-{
-
 }
