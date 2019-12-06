@@ -11,14 +11,12 @@
 
 #include "Application.h"
 
-Application::Application(ADiffViewOptions& options,
-                         struct MsgPort* pMsgPortIDCMP,
-                         struct MsgPort* pMsgPortProgress)
+Application::Application(ADiffViewOptions& options)
   : m_Options(options),
     m_LeftFilePath(options.LeftFile()),   // ceate copy in member
     m_RightFilePath(options.RightFile()), // ceate copy in member
-    m_pMsgPortIDCMP(pMsgPortIDCMP),
-    m_pMsgPortProgress(pMsgPortProgress),
+    m_pMsgPortIDCMP(NULL),
+    m_pMsgPortProgress(NULL),
     m_NumWindowsOpen(0),
     m_bCancelRequested(false),
     m_bExitRequested(false),
@@ -57,12 +55,42 @@ Application::Application(ADiffViewOptions& options,
 
 Application::~Application()
 {
+  if(m_pMsgPortProgress != NULL)
+  {
+    DeleteMsgPort(m_pMsgPortProgress);
+    m_pMsgPortProgress = NULL;
+  }
 
+  if(m_pMsgPortIDCMP != NULL)
+  {
+    DeleteMsgPort(m_pMsgPortIDCMP);
+    m_pMsgPortIDCMP = NULL;
+  }
 }
 
 
 bool Application::Run()
 {
+  //
+  // Create the needed message ports
+  //
+
+  // Create a message port for shared use with all windows
+  m_pMsgPortIDCMP = CreateMsgPort();
+  if(m_pMsgPortIDCMP == NULL)
+  {
+    m_ErrorMsg = "Error: Can't create idcmp message port.";
+    return false;
+  }
+
+  m_pMsgPortProgress = CreateMsgPort();
+  if(m_pMsgPortProgress == NULL)
+  {
+    m_ErrorMsg = "Error: Can't create progress message port.";
+    return false;
+  }
+
+
   //
   // Open the screen
   //
@@ -246,7 +274,9 @@ void Application::intuiEventLoop()
 
     if(m_NumWindowsOpen < 1)
     {
-      m_CmdQuit.Execute();
+      m_CmdQuit.Execute(); // Only sets m_bExitRequested to true.
+                           // But can also be executed from menu
+                           // or Cancel button of FilesWindow.
     }
   }
   while(!m_bExitRequested);

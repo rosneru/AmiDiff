@@ -14,12 +14,12 @@
 #include "FilesWindow.h"
 
 FilesWindow::FilesWindow(AppScreen& appScreen,
-                         struct MsgPort* pMsgPort,
+                         struct MsgPort*& pIdcmpMsgPort,
                          int& numWindowsOpen,
                          SimpleString& leftFilePath,
                          SimpleString& rightFilePath,
                          const Command& cmdDiff)
-  : WindowBase(appScreen, pMsgPort, numWindowsOpen),
+  : WindowBase(appScreen, pIdcmpMsgPort, numWindowsOpen),
     m_AslRequest(m_pWindow),
     m_bFileRequestOpen(false),
     m_LeftFilePath(leftFilePath),
@@ -67,9 +67,9 @@ void FilesWindow::Refresh()
 }
 
 bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen,
-                      InitialPosition initialPosition)
+                       InitialPosition initialPos)
 {
-  if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPosition))
+  if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPos))
   {
     return false;
   }

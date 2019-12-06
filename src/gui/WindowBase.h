@@ -51,7 +51,7 @@ public:
    * When ok: true, false if opening fails
    */
   virtual bool Open(const APTR pMenuItemDisableAtOpen,
-                    InitialPosition initialPosition = IP_Center) = 0;
+                    InitialPosition initialPos = IP_Center) = 0;
 
   /**
    * Closes the window.
@@ -189,7 +189,7 @@ public:
 
 protected:
   AppScreen& m_AppScreen;
-  struct MsgPort* m_pMsgPort;
+  struct MsgPort*& m_pIdcmpMsgPort;
   struct Window* m_pWindow;
   bool m_bBorderless;
   bool m_bSmartRefresh;
@@ -208,7 +208,7 @@ protected:
    * @param p_pAppScreen
    * Screen on which the window will occur at opening time
    *
-   * @param pMsgPort
+   * @param pIdcmpMsgPort
    * Message port which is used for this window. Can be shared
    * with other windows.
    *
@@ -217,7 +217,8 @@ protected:
    * successful opening and decreased at each closing of a window.
    *
    */
-  WindowBase(AppScreen& appScreen, struct MsgPort* pMsgPort,
+  WindowBase(AppScreen& appScreen, 
+             struct MsgPort*& pIdcmpMsgPort,
              int& numOpenWindows);
 
 

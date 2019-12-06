@@ -68,27 +68,12 @@ int main(int argc, char **argv)
     return 20;
   }
 
+  // Parse the command line or Workbench start arguments
   ADiffViewOptions options(argc, argv);
-
-  // Create a message port for shared use with all windows
-  struct MsgPort* pMsgPortIDCMP = CreateMsgPort();
-  if(pMsgPortIDCMP == NULL)
-  {
-    request.Show("Error: Can't create idcmp message port.", "Ok");
-    return 30;
-  }
-
-  struct MsgPort* pMsgPortProgress = CreateMsgPort();
-  if(pMsgPortProgress == NULL)
-  {
-    request.Show("Error: Can't create progress message port.", "Ok");
-    DeleteMsgPort(pMsgPortIDCMP);
-    return 30;
-  }
 
   // Create the application dynamically, so we can destroy it later
   // before the message ports are destroyed.
-  Application* pApp = new Application(options, pMsgPortIDCMP, pMsgPortProgress);
+  Application* pApp = new Application(options);
   bool bOk = pApp->Run();
   if(!bOk)
   {
@@ -98,10 +83,6 @@ int main(int argc, char **argv)
 
   // Destroy app
   delete pApp;
-
-  // Destroy message ports
-  DeleteMsgPort(pMsgPortProgress);
-  DeleteMsgPort(pMsgPortIDCMP);
 
   return 0;
 }

@@ -12,9 +12,9 @@
 #include "ScrollbarWindow.h"
 
 ScrollbarWindow::ScrollbarWindow(AppScreen& appScreen,
-                                 struct MsgPort* pMsgPort,
+                                 struct MsgPort*& pIdcmpMsgPort,
                                  int& numOpenWindows)
-  : WindowBase(appScreen, pMsgPort, numOpenWindows),
+  : WindowBase(appScreen, pIdcmpMsgPort, numOpenWindows),
     m_SizeImageWidth(18),
     m_SizeImageHeight(10),
     m_InnerWindowRight(0),
@@ -101,9 +101,9 @@ ScrollbarWindow::~ScrollbarWindow()
 
 
 bool ScrollbarWindow::Open(const APTR pMenuItemDisableAtOpen,
-                           InitialPosition initialPosition)
+                           InitialPosition initialPos)
 {
-  if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPosition))
+  if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPos))
   {
     return false;
   }
@@ -479,10 +479,10 @@ void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId gadgetId,
 {
   Forbid();
 
-  struct MsgPort* pMsgPort = m_pWindow->UserPort;
+  struct MsgPort* pIdcmpMsgPort = m_pWindow->UserPort;
 
   struct IntuiMessage* pMessage;
-  pMessage = (struct IntuiMessage*) pMsgPort->mp_MsgList.lh_Head;
+  pMessage = (struct IntuiMessage*) pIdcmpMsgPort->mp_MsgList.lh_Head;
 
   struct Node* pSuccessor;
 

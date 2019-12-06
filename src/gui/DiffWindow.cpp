@@ -18,9 +18,9 @@
 extern struct GfxBase* GfxBase;
 
 DiffWindow::DiffWindow(AppScreen& appScreen,
-                       struct MsgPort* pMsgPort,
+                       struct MsgPort*& pIdcmpMsgPort,
                        int& numOpenWindows)
-  : ScrollbarWindow(appScreen, pMsgPort, numOpenWindows),
+  : ScrollbarWindow(appScreen, pIdcmpMsgPort, numOpenWindows),
     m_pLeftDocument(NULL),
     m_pRightDocument(NULL),
     m_pLastParentGadget(NULL),
@@ -118,7 +118,7 @@ void DiffWindow::Resized()
 }
 
 bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
-                      InitialPosition initialPosition)
+                      InitialPosition initialPos)
 {
   //
   // Calculate some initial values. It's possible that they are needed
@@ -137,7 +137,7 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
   //
   // Open the window
   //
-  if(!ScrollbarWindow::Open(pMenuItemDisableAtOpen, initialPosition))
+  if(!ScrollbarWindow::Open(pMenuItemDisableAtOpen, initialPos))
   {
     return false;
   }

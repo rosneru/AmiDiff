@@ -16,10 +16,10 @@
 
 
 ProgressWindow::ProgressWindow(AppScreen& appScreen,
-                               struct MsgPort* pMsgPort,
+                               struct MsgPort*& pIdcmpMsgPort,
                                int& numOpenWindows,
                                bool& bCancelRequested)
-  : WindowBase(appScreen, pMsgPort, numOpenWindows),
+  : WindowBase(appScreen, pIdcmpMsgPort, numOpenWindows),
     m_bCancelRequested(bCancelRequested),
     m_pGadtoolsContext(NULL),
     m_pLabelDescription(NULL),
@@ -58,9 +58,9 @@ void ProgressWindow::Refresh()
 }
 
 bool ProgressWindow::Open(const APTR pMenuItemDisableAtOpen,
-                          InitialPosition initialPosition)
+                          InitialPosition initialPos)
 {
-  if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPosition))
+  if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPos))
   {
     return false;
   }

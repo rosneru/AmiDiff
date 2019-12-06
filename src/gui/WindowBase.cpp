@@ -15,10 +15,10 @@
 
 
 WindowBase::WindowBase(AppScreen& appScreen,
-                       struct MsgPort* pMsgPort,
+                       struct MsgPort*& pIdcmpMsgPort,
                        int& numOpenWindows)
   : m_AppScreen(appScreen),
-    m_pMsgPort(pMsgPort),
+    m_pIdcmpMsgPort(pIdcmpMsgPort),
     m_NumOpenWindows(numOpenWindows),
     m_pWindow(NULL),
     m_bBorderless(false),
@@ -47,10 +47,10 @@ WindowBase::~WindowBase()
 
 
 bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
-                      InitialPosition initialPosition)
+                      InitialPosition initialPos)
 {
   m_pMenuItemDisableAtOpen = pMenuItemDisableAtOpen;
-  m_InitialPosition = initialPosition;
+  m_InitialPosition = initialPos;
 
   //
   // Initial validations
@@ -164,7 +164,7 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
 
   // The window uses this message port which can be the same as used by
   // other windows
-  m_pWindow->UserPort = m_pMsgPort;
+  m_pWindow->UserPort = m_pIdcmpMsgPort;
 
   ModifyIDCMP(m_pWindow, m_WindowIdcmp);
 
@@ -484,11 +484,11 @@ void WindowBase::closeWindowSafely()
 
 void WindowBase::stripIntuiMessages()
 {
-  struct MsgPort* pMsgPort = m_pWindow->UserPort;
+  struct MsgPort* pIdcmpMsgPort = m_pWindow->UserPort;
   struct Node* pSuccessor;
   struct IntuiMessage* pMessage;
 
-  pMessage = (struct IntuiMessage*) pMsgPort->mp_MsgList.lh_Head;
+  pMessage = (struct IntuiMessage*) pIdcmpMsgPort->mp_MsgList.lh_Head;
 
   while(pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ)
   {

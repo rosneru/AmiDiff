@@ -31,9 +31,7 @@ public:
    * windows messages. If an non-empty string for p_PubScreenName is
    * provided, the
    */
-  Application(ADiffViewOptions& options,
-              struct MsgPort* pMsgPortIDCMP,
-              struct MsgPort* pMsgPortProgress);
+  Application(ADiffViewOptions& options);
 
   ~Application();
 

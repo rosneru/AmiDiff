@@ -20,7 +20,7 @@ class DiffWindow : public ScrollbarWindow
 {
 public:
   DiffWindow(AppScreen& appScreen,
-             struct MsgPort* pMsgPort,
+             struct MsgPort*& pIdcmpMsgPort,
              int& numOpenWindows);
 
   virtual ~DiffWindow();
@@ -42,7 +42,7 @@ public:
    * false if opening fails
    */
   virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL,
-                    InitialPosition initialPosition = WindowBase::IP_Center);
+                    InitialPosition initialPos = WindowBase::IP_Center);
 
 
   /**

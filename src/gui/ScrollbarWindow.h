@@ -18,7 +18,8 @@
 class ScrollbarWindow : public WindowBase
 {
 public:
-  ScrollbarWindow(AppScreen& appScreen, struct MsgPort* pMsgPort,
+  ScrollbarWindow(AppScreen& appScreen, 
+                  struct MsgPort*& pIdcmpMsgPort,
                   int& numOpenWindows);
 
   virtual ~ScrollbarWindow();
@@ -31,7 +32,7 @@ public:
    * false if opening fails
    */
   virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL,
-                    InitialPosition initialPosition = WindowBase::IP_Center);
+                    InitialPosition initialPos = WindowBase::IP_Center);
 
   /**
    * Handles given IDCMP event.
