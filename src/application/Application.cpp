@@ -11,28 +11,47 @@
 
 #include "Application.h"
 
-Application::Application(struct MsgPort* p_pMsgPortIDCMP,
-                         struct MsgPort* p_pMsgPortProgress)
-  : m_pMsgPortIDCMP(p_pMsgPortIDCMP),
-    m_pMsgPortProgress(p_pMsgPortProgress),
+Application::Application(ADiffViewOptions& options,
+                         struct MsgPort* pMsgPortIDCMP,
+                         struct MsgPort* pMsgPortProgress)
+  : m_Options(options),
+    m_LeftFilePath(options.LeftFile()),   // ceate copy in member
+    m_RightFilePath(options.RightFile()), // ceate copy in member
+    m_pMsgPortIDCMP(pMsgPortIDCMP),
+    m_pMsgPortProgress(pMsgPortProgress),
     m_NumWindowsOpen(0),
     m_bCancelRequested(false),
     m_bExitRequested(false),
     m_bExitAllowed(true),
     m_Screen(),
     m_Menu(m_Screen),
-    m_DiffWindow(m_Screen, m_pMsgPortIDCMP, m_NumWindowsOpen),
-    m_FilesWindow(m_Screen, m_pMsgPortIDCMP, m_NumWindowsOpen,
-                  m_LeftFilePath, m_RightFilePath, m_CmdDiff),
-    m_ProgressWindow(m_Screen, m_pMsgPortIDCMP, m_NumWindowsOpen,
+    m_DiffWindow(m_Screen, 
+                 m_pMsgPortIDCMP, 
+                 m_NumWindowsOpen),
+    m_FilesWindow(m_Screen, 
+                  m_pMsgPortIDCMP, 
+                  m_NumWindowsOpen,
+                  m_LeftFilePath, 
+                  m_RightFilePath, 
+                  m_CmdDiff),
+    m_ProgressWindow(m_Screen, 
+                     m_pMsgPortIDCMP, 
+                     m_NumWindowsOpen,
                      m_bCancelRequested),
-    m_DiffWorker(m_LeftFilePath, m_RightFilePath, m_DiffWindow,
-                 m_FilesWindow, m_ProgressWindow, p_pMsgPortProgress,
-                 m_bCancelRequested, m_bExitAllowed),
+    m_DiffWorker(m_LeftFilePath, 
+                 m_RightFilePath, 
+                 m_DiffWindow,
+                 m_FilesWindow, 
+                 m_ProgressWindow, 
+                 m_pMsgPortProgress,
+                 m_bCancelRequested, 
+                 m_bExitAllowed),
     m_CmdDiff(m_DiffWorker),
-    m_CmdQuit(m_bExitAllowed, m_bExitRequested),
+    m_CmdQuit(m_bExitAllowed, 
+              m_bExitRequested),
     m_CmdOpen(m_FilesWindow),
-    m_CmdAbout(m_Screen, m_Menu)
+    m_CmdAbout(m_Screen, 
+               m_Menu)
 {
 }
 
@@ -41,33 +60,18 @@ Application::~Application()
 
 }
 
-void Application::SetLeftFilePath(const SimpleString& p_LeftFilePath)
-{
-  m_LeftFilePath = p_LeftFilePath;
-}
 
-void Application::SetRightFilePath(const SimpleString& p_RightFilePath)
+bool Application::Run()
 {
-  m_RightFilePath = p_RightFilePath;
-}
-
-void Application::SetPubScreenName(const SimpleString& p_PubScreenName)
-{
-  m_PubScreenName = p_PubScreenName;
-}
-
-bool Application::Run(bool p_bDoNotAsk)
-{
-  ::MessageBox request;
-
   //
-  // Opening the screen
+  // Open the screen
   //
   m_Screen.SetTitle("ADiffView 1.0");
 
-  if(m_PubScreenName.Length() > 0)
+  if(m_Options.PubScreenName().Length() > 0)
   {
-    m_Screen.Open(AppScreen::SME_UseNamedPubScreen, m_PubScreenName);
+    m_Screen.Open(AppScreen::SME_UseNamedPubScreen, 
+                  m_Options.PubScreenName());
   }
   else
   {
@@ -77,7 +81,7 @@ bool Application::Run(bool p_bDoNotAsk)
   if (!m_Screen.IsOpen())
   {
     // Opening the screen failed
-    request.Show("Error: Can't open screen.", "Ok");
+    m_ErrorMsg = "Error: Can't open screen.";
     return false;
   }
 
@@ -102,7 +106,7 @@ bool Application::Run(bool p_bDoNotAsk)
   //
   if(m_Menu.Create(menuDefinition) == false)
   {
-    request.Show("Error: Can't create the menu.", "Ok");
+    m_ErrorMsg = "Error: Can't create the menu.";
     return false;
   }
 
@@ -120,10 +124,10 @@ bool Application::Run(bool p_bDoNotAsk)
 
   if((m_LeftFilePath.Length() > 0) &&
      (m_RightFilePath.Length() > 0) &&
-     p_bDoNotAsk == true)
+     (m_Options.DontAsk() == true))
   {
     //
-    // The DONOTASK argument has been set and left and right file are
+    // The DONTASK argument has been set and left and right file are
     // also given: Start the diff immediately
     //
     m_CmdDiff.Execute();
@@ -145,6 +149,11 @@ bool Application::Run(bool p_bDoNotAsk)
 
   return true;
 
+}
+
+SimpleString& Application::ErrorMsg()
+{
+  return m_ErrorMsg;
 }
 
 void Application::intuiEventLoop()

@@ -10,6 +10,7 @@
 
 #include <exec/ports.h>
 
+#include "ADiffViewOptions.h"
 #include "ApplicationMenu.h"
 #include "AppScreen.h"
 #include "CmdAbout.h"
@@ -30,14 +31,12 @@ public:
    * windows messages. If an non-empty string for p_PubScreenName is
    * provided, the
    */
-  Application(struct MsgPort* p_pMsgPortIDCMP,
-              struct MsgPort* p_pMsgPortProgress);
+  Application(ADiffViewOptions& options,
+              struct MsgPort* pMsgPortIDCMP,
+              struct MsgPort* pMsgPortProgress);
 
   ~Application();
 
-  void SetLeftFilePath(const SimpleString& p_LeftFilePath);
-  void SetRightFilePath(const SimpleString& p_RightFilePath);
-  void SetPubScreenName(const SimpleString& p_PubScreenName);
 
   /**
    * Starts the application.
@@ -47,25 +46,36 @@ public:
    * button in OpenFilesWindow. This only works if both files,
    * left and right are passed as argument.
    */
-  bool Run(bool p_bDoNotAsk);
+  bool Run();
+
+  SimpleString& ErrorMsg();
 
 private:
+  ADiffViewOptions& m_Options;
+  SimpleString m_LeftFilePath;
+  SimpleString m_RightFilePath;
+
   struct MsgPort* m_pMsgPortIDCMP;
   struct MsgPort* m_pMsgPortProgress;
-  SimpleString m_PubScreenName;
+
+  SimpleString m_ErrorMsg;
+
   int m_NumWindowsOpen;
   bool m_bCancelRequested;
   bool m_bExitRequested;
   bool m_bExitAllowed;
 
   /**
-   * NOTE The order of the following items is IMPORTANT. Because the
-   *      destructor calls will be in reverse order.
+   * IMPORTANT NOTE 
+   * 
+   * The order of the following items is IMPORTANT - Because the
+   * destructor calls will be in reverse order.
    *
-   *      By Starting with m_Screen followed by m_Menu it is ensured
-   *      that the next-to-last destructor call is the m_Menu
-   *      destructor followed by the destructor call of m_Screen which
-   *      should be the final destroyed object.
+   * By Starting with m_Screen followed by m_Menu it is ensured that
+   * the next-to-last destructor call is the m_Menu destructor with
+   * the destructor call of m_Screen followed - which should be the 
+   * final destroyed object.
+   * 
    */
 
   AppScreen m_Screen;
@@ -78,8 +88,6 @@ private:
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpen;
   CmdAbout m_CmdAbout;
-  SimpleString m_LeftFilePath;
-  SimpleString m_RightFilePath;
 
   /**
    * Handling messages from Intuition
