@@ -30,7 +30,7 @@ public:
              DiffWindow& diffWindow,
              FilesWindow& filesWindow,
              ProgressWindow& progressWindow,
-             struct MsgPort* pProgressPort,
+             struct MsgPort*& pProgressPort,
              bool& bCancelRequested,
              bool& bExitAllowed);
 

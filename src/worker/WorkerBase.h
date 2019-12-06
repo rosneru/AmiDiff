@@ -42,7 +42,7 @@ class WorkerBase : public ProgressReporter
 {
 public:
 
-  WorkerBase(struct MsgPort* p_pProgressPort);
+  WorkerBase(struct MsgPort*& pProgressPort);
   virtual ~WorkerBase();
 
   /**
@@ -52,11 +52,11 @@ public:
 
 protected:
   WorkerStartupMsg* m_pStartupMsg;
-  struct MsgPort* m_pProgressPort;
+  struct MsgPort*& m_pProgressPort;
   struct MsgPort* m_pReplyPort;
 
   SimpleString m_LastError;
-  void setProgressDescription(const char* p_pProgressDescription);
+  void setProgressDescription(const char* pProgressDescription);
 
   virtual void doWork() = 0;
 

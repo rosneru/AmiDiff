@@ -7,9 +7,9 @@
 #include "ProgressMessage.h"
 
 
-WorkerBase::WorkerBase(struct MsgPort* p_pProgressPort)
+WorkerBase::WorkerBase(struct MsgPort*& pProgressPort)
   : m_pStartupMsg(NULL),
-    m_pProgressPort(p_pProgressPort),
+    m_pProgressPort(pProgressPort),
     m_pReplyPort(NULL),
     m_pProgressDescription(NULL),
     m_pBackgrProcess(NULL),
@@ -83,8 +83,6 @@ void WorkerBase::startup()
   that->doWork();
 
   DeleteMsgPort(that->m_pReplyPort);
-  // TODO Maybe activate this
-  //that->m_pBackgrProcess = NULL;
 }
 
 void WorkerBase::workDone()
@@ -99,9 +97,9 @@ void WorkerBase::workDone()
   m_pBackgrProcess = NULL;
 }
 
-void WorkerBase::setProgressDescription(const char* p_pProgressDescription)
+void WorkerBase::setProgressDescription(const char* pProgressDescription)
 {
-  m_pProgressDescription = p_pProgressDescription;
+  m_pProgressDescription = pProgressDescription;
 }
 
 
