@@ -15,10 +15,10 @@ DiffLine::DiffLine(const char* pText)
   }
 }
 
-DiffLine::DiffLine(const char* pText, LineState p_LineState)
+DiffLine::DiffLine(const char* pText, LineState state)
   : m_Text(pText),
     m_Length(strlen(pText)),
-    m_State(p_LineState),
+    m_State(state),
     m_Token(0),
     m_bLinkedText(true)
 {

@@ -170,9 +170,9 @@ long DiffEngine::NumDeleted() const
 }
 
 
-void DiffEngine::SetProgressReporter(ProgressReporter* p_pProgressReporter)
+void DiffEngine::SetProgressReporter(ProgressReporter* pProgressReporter)
 {
-  m_pProgressReporter = p_pProgressReporter;
+  m_pProgressReporter = pProgressReporter;
 }
 
 
@@ -247,7 +247,7 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
   long upK = upperA - upperB;
 
   long delta = (upperA - lowerA) - (upperB - lowerB);
-  bool oddDelta = (delta & 1) != 0;
+  bool bOddDelta = (delta & 1) != 0;
 
   // The vectors in Myers' publication accept negative indexes.
   // The vectors implemented here are 0-based and are accessed using
@@ -298,7 +298,7 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
       m_pDownVector[downOffset + k] = x;
 
       // overlap ?
-      if (oddDelta && (upK - D < k) && (k < upK + D))
+      if (bOddDelta && (upK - D < k) && (k < upK + D))
       {
         if (m_pUpVector[upOffset + k] <= m_pDownVector[downOffset + k])
         {
@@ -343,7 +343,7 @@ Pair DiffEngine::shortestMiddleSnake(long lowerA,
       m_pUpVector[upOffset + k] = x;
 
       // overlap ?
-      if (!oddDelta && (downK - D <= k) && (k <= downK + D))
+      if (!bOddDelta && (downK - D <= k) && (k <= downK + D))
       {
         if (m_pUpVector[upOffset + k] <= m_pDownVector[downOffset + k])
         {

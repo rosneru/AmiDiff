@@ -27,7 +27,7 @@ void DiffFileLinux::Clear()
 
   for(int i = 0; i < m_NumLines; i++)
   {
-    DiffLine* pItem = m_pDiffLines[i];
+    DiffLine* pItem = m_pDiffLinesArray[i];
     if(pItem != NULL)
     {
       if(!pItem->TextIsLinked() && (pItem->Text() != NULL))
@@ -40,14 +40,14 @@ void DiffFileLinux::Clear()
     }
   }
 
-  delete[] m_pDiffLines;
-  m_pDiffLines = NULL;
+  delete[] m_pDiffLinesArray;
+  m_pDiffLinesArray = NULL;
 }
 
 
 bool DiffFileLinux::PreProcess(const char* pFileName)
 {
-  if(m_pDiffLines != NULL)
+  if(m_pDiffLinesArray != NULL)
   {
     // ALready initialized
     return true;
@@ -78,7 +78,7 @@ bool DiffFileLinux::PreProcess(const char* pFileName)
     return false;
   }
 
-  m_pDiffLines = new DiffLine*[m_NumLines];
+  m_pDiffLinesArray = new DiffLine*[m_NumLines];
 
   try
   {
@@ -105,7 +105,7 @@ bool DiffFileLinux::PreProcess(const char* pFileName)
     }
 
     // Append DiffLine to list
-    m_pDiffLines[i++] = pDiffLine;
+    m_pDiffLinesArray[i++] = pDiffLine;
   }
 
   inputFileStream.close();
@@ -122,9 +122,9 @@ bool DiffFileLinux::AddString(const char* p_String,
     return false;
   }
 
-  if(m_pDiffLines == NULL)
+  if(m_pDiffLinesArray == NULL)
   {
-    m_pDiffLines = new DiffLine*[m_NumLines];
+    m_pDiffLinesArray = new DiffLine*[m_NumLines];
   }
 
   DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
@@ -133,5 +133,5 @@ bool DiffFileLinux::AddString(const char* p_String,
     return false;
   }
 
-  m_pDiffLines[m_NextAddedLineIdx++] = pDiffLine;
+  m_pDiffLinesArray[m_NextAddedLineIdx++] = pDiffLine;
 }

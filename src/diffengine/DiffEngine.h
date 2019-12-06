@@ -73,7 +73,7 @@ public:
   /**
    * Setting the progress reporter
    */
-  void SetProgressReporter(ProgressReporter* p_pProgressReporter);
+  void SetProgressReporter(ProgressReporter* pProgressReporter);
 
 private:
   DiffFileBase& m_A;

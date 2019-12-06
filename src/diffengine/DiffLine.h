@@ -23,7 +23,7 @@ public:
   };
 
   DiffLine(const char* pText);
-  DiffLine(const char* pText, LineState p_LineState);
+  DiffLine(const char* pText, LineState state);
   ~DiffLine();
 
   /**

@@ -1,10 +1,10 @@
 #include "DiffFileBase.h"
 
-DiffFileBase::DiffFileBase(bool& p_bCancelRequested)
-  : m_bCancelRequested(p_bCancelRequested),
+DiffFileBase::DiffFileBase(bool& bCancelRequested)
+  : m_bCancelRequested(bCancelRequested),
     m_pProgressReporter(NULL),
     m_NumLines(0),
-    m_pDiffLines(NULL),
+    m_pDiffLinesArray(NULL),
     m_NextAddedLineIdx(0)
 {
 
@@ -27,80 +27,54 @@ void DiffFileBase::DecrementNumLines()
   m_NumLines--;
 }
 
-void DiffFileBase::NumChanges(int& p_Added,
-                                   int& p_Changed,
-                                   int& p_Deleted) const
+
+DiffLine* DiffFileBase::GetLine(size_t idx) const
 {
-  p_Added = p_Changed = p_Deleted = 0;
-  if(NumLines() == 0)
-  {
-    return;
-  }
-
-  for(int i = 0; i < NumLines(); i++)
-  {
-
-    DiffLine::LineState lineState = GetLineState(i);
-    switch(lineState)
-    {
-      case DiffLine::Added: p_Added++; break;
-      case DiffLine::Changed: p_Changed++; break;
-      case DiffLine::Deleted: p_Deleted++; break;
-
-      case DiffLine::Normal:
-      case DiffLine::Undefined:
-       break;
-    }
-  }
-}
-
-DiffLine* DiffFileBase::GetLine(size_t p_Index) const
-{
-  if(p_Index >= m_NumLines)
+  if(idx >= m_NumLines)
   {
     return NULL;
   }
 
-  return m_pDiffLines[p_Index];
+  return m_pDiffLinesArray[idx];
 }
 
 
 static const char* pEmptyText = "";
 
-const char* DiffFileBase::GetLineText(size_t p_Index) const
+const char* DiffFileBase::GetLineText(size_t idx) const
 {
-  if(p_Index >= m_NumLines)
+  if(idx >= m_NumLines)
   {
     return pEmptyText;
   }
 
-  return GetLine(p_Index)->Text();
+  return GetLine(idx)->Text();
 }
 
-unsigned long DiffFileBase::GetLineToken(size_t p_Index) const
+unsigned long DiffFileBase::GetLineToken(size_t idx) const
 {
-  DiffLine* pLine = GetLine(p_Index);
+  DiffLine* pLine = GetLine(idx);
   if(pLine == NULL)
   {
     return 0;
   }
 
-  return GetLine(p_Index)->Token();
+  return GetLine(idx)->Token();
 }
 
-DiffLine::LineState DiffFileBase::GetLineState(size_t p_Index) const
+DiffLine::LineState DiffFileBase::GetLineState(size_t idx) const
 {
-  if(p_Index >= m_NumLines)
+  if(idx >= m_NumLines)
   {
     return DiffLine::Undefined;
   }
 
-  return GetLine(p_Index)->State();
+  return GetLine(idx)->State();
 }
 
-void DiffFileBase::SetLineState(size_t p_Index, DiffLine::LineState state)
+void DiffFileBase::SetLineState(size_t idx, DiffLine::LineState state)
 {
-  DiffLine* pDiffLine = GetLine(p_Index);
+  DiffLine* pDiffLine = GetLine(idx);
   if(pDiffLine == NULL)
   {
     // TODO Maybe change method to type bool and return false
@@ -116,7 +90,7 @@ void DiffFileBase::AddBlankLine()
   AddString(pEmptyLine, DiffLine::Normal);
 }
 
-void DiffFileBase::SetProgressReporter(ProgressReporter* p_pProgressReporter)
+void DiffFileBase::SetProgressReporter(ProgressReporter* pProgressReporter)
 {
-  m_pProgressReporter = p_pProgressReporter;
+  m_pProgressReporter = pProgressReporter;
 }

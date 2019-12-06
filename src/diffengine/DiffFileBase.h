@@ -8,7 +8,7 @@
 
 
 /**
- * Class for storing a file line by line with diff information.
+ * Base class for storing a file line by line with diff information.
  *
  * @author Uwe Rosner
  * @date 28/09/2018
@@ -17,12 +17,12 @@ class DiffFileBase
 {
   // Constructor
 public:
-  DiffFileBase(bool& p_bCancelRequested);
+  DiffFileBase(bool& bCancelRequested);
 
   long NumLines() const;
 
   /**
-   * IMPORTANT: This is and only has to be used before the first
+   * IMPORTANT: This is and only should be used before the first
    * AddString() call when filling the difference represenation file.
    *
    * A better solution has to be found in future to avoid this
@@ -31,17 +31,18 @@ public:
   void SetNumLines(long numLines);
 
   /**
-   * Decrements the internal m_NumLines counter by -1
+   * Decrements the internal m_NumLines counter by 1.
+   *
+   * IMPORTANT: This is and only should be used from DiffEngine when
+   * turning added / deleted linesinto changed lines.
    */
   void DecrementNumLines();
 
-  void NumChanges(int& p_Added, int& p_Changed, int& p_Deleted) const;
-
-  DiffLine* GetLine(size_t p_Index) const;
-  const char* GetLineText(size_t p_Index) const;
-  unsigned long GetLineToken(size_t p_Index) const;
-  DiffLine::LineState GetLineState(size_t p_Index) const;
-  void SetLineState(size_t p_Index, DiffLine::LineState state);
+  DiffLine* GetLine(size_t idx) const;
+  const char* GetLineText(size_t idx) const;
+  unsigned long GetLineToken(size_t idx) const;
+  DiffLine::LineState GetLineState(size_t idx) const;
+  void SetLineState(size_t idx, DiffLine::LineState state);
 
   virtual bool AddString(const char*, DiffLine::LineState) = 0;
   void AddBlankLine();
@@ -49,14 +50,14 @@ public:
   /**
    * Setting the progress reporter
    */
-  void SetProgressReporter(ProgressReporter* p_pProgressReporter);
+  void SetProgressReporter(ProgressReporter* pProgressReporter);
 
 protected:
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;
 
   unsigned long m_NumLines;
-  DiffLine** m_pDiffLines;
+  DiffLine** m_pDiffLinesArray;
 
   /**
    * The index which will be used on m_pDiffLines[] at the next
