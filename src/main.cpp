@@ -49,34 +49,6 @@
 #include "ADiffViewOptions.h"
 
 
-/**
- * Extracts the parameters which could be provided optionally on
- * program start via Workbench or CLI.
- *
- * @param argc The argc variable from main()
- * @param argv The argv array from main.
- *
- * @pubScreenName The name of the pubscreen to open the window on.
- * Only set if the CLI argument or Workbench tooltype PUBSCREEN is set.
- *
- * @bDontAsk A boolean switch which indicates if the diff starts
- * directly after program start without opening the OpenFilesWindow.
- * Only set to true if the CLI argument or Workbench tooltype DONOTASK
- * is set.
- *
- * @leftFilePath The file name of the left file if one was passed
- * from Workbench or CLI.
- *
- * @rightFilePath The file name of the right file if one was passed
- * from Workbench or CLI.
- */
-void exctractArgs(int argc, char **argv,
-                  SimpleString& pubScreenName,
-                  bool& bDontAsk,
-                  SimpleString& leftFilePath,
-                  SimpleString& rightFilePath);
-
-
 extern struct IntuitionBase* IntuitionBase;
 
 int main(int argc, char **argv)
