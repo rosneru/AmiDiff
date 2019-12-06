@@ -22,8 +22,22 @@ public:
     Undefined
   };
 
+  /**
+   * Creates a new DiffLine with the given text.
+   *
+   * IMPORTANT: Sets the IsLinked flag to false so that this DiffLine
+   * is considered as 'owner' of the given text.
+   */
   DiffLine(const char* pText);
+
+  /**
+   * Creates a new DiffLine with given text and state.
+   *
+   * IMPORTANT: Sets the IsLinked flag to true so that another DiffLine
+   * is considered as 'owner' of the given text.
+   */
   DiffLine(const char* pText, LineState state);
+
   ~DiffLine();
 
   /**
@@ -32,8 +46,8 @@ public:
   const char* Text() const;
 
   /**
-   * Sets the text pointer to NULL. Can be done as remark that text
-   * already has been deleted.
+   * Returns true if this line's text is only a flat copy of another
+   * diff line's text.
    */
   bool TextIsLinked() const;
 
