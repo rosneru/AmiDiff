@@ -3,6 +3,8 @@ Settings (Start)
 C/C++ Environment
 "StormC:include"
 0
+"application"
+0
 "amigautils"
 0
 "commands"
@@ -98,14 +100,6 @@ Section
 0 1 1 0
 4
 File
-1 "ADiffViewOptions.cpp"
-"ADiffViewOptions.cpp"
-"ADiffViewOptions.h"
-Storm Shell Project (Dependencies)
-"objects_debug/ADiffViewOptions.o" "objects_debug/ADiffViewOptions.debug"
-""
-1 1
-File
 1 "amigautils/AmigaFile.cpp"
 "amigautils/AmigaFile.cpp"
 "amigautils/AmigaFile.h"
@@ -138,22 +132,50 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "Application.cpp"
-"Application.cpp"
-"Application.h"
-"ADiffViewOptions.h"
+1 "application/ADiffViewOptions.cpp"
+"application/ADiffViewOptions.cpp"
+"application/ADiffViewOptions.h"
+Storm Shell Project (Dependencies)
+"objects_debug/ADiffViewOptions.o" "objects_debug/ADiffViewOptions.debug"
+""
+1 1
+File
+1 "application/Application.cpp"
+"application/Application.cpp"
+"application/Application.h"
+"application/ADiffViewOptions.h"
 "gui/AppScreen.h"
 "gui/AmigaDiffPens.h"
-"diffengine/DiffFileBase.h"
-"diffengine/DiffLine.h"
-"model/Document.h"
-"gui/ScrollbarWindow.h"
 "worker/WorkerBase.h"
 "worker/ProgressReporter.h"
 "worker/WorkerStartupMsg.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
+"model/Document.h"
 "diffengine/Pair.h"
+"gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
+""
+1 1
+File
+1 "application/main.cpp"
+"application/main.cpp"
+"application/Application.h"
+"application/ADiffViewOptions.h"
+"gui/AppScreen.h"
+"gui/AmigaDiffPens.h"
+"commands/Command.h"
+"worker/WorkerBase.h"
+"worker/ProgressReporter.h"
+"worker/WorkerStartupMsg.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
+"model/Document.h"
+"diffengine/Pair.h"
+"gui/ScrollbarWindow.h"
+Storm Shell Project (Dependencies)
+"objects_debug/main.o" "objects_debug/main.debug"
 ""
 1 1
 File
@@ -352,26 +374,6 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "main.cpp"
-"main.cpp"
-"diffengine/DiffLine.h"
-"gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
-"commands/Command.h"
-"model/Document.h"
-"gui/ScrollbarWindow.h"
-"diffengine/DiffFileBase.h"
-"Application.h"
-"ADiffViewOptions.h"
-"worker/WorkerBase.h"
-"worker/ProgressReporter.h"
-"worker/WorkerStartupMsg.h"
-"diffengine/Pair.h"
-Storm Shell Project (Dependencies)
-"objects_debug/main.o" "objects_debug/main.debug"
-""
-1 1
-File
 1 "model/DiffDocument.cpp"
 "model/DiffDocument.cpp"
 "model/DiffDocument.h"
@@ -434,13 +436,6 @@ Section
 0 1 1 0
 2
 File
-2 "ADiffViewOptions.h"
-"ADiffViewOptions.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
 2 "amigautils/AmigaFile.h"
 "amigautils/AmigaFile.h"
 Storm Shell Project (Dependencies)
@@ -469,8 +464,15 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "Application.h"
-"Application.h"
+2 "application/ADiffViewOptions.h"
+"application/ADiffViewOptions.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "application/Application.h"
+"application/Application.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
