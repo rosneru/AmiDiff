@@ -88,8 +88,8 @@ void StopWatch::initTimerDevice()
   }
 
   // Opening the timer.device
-  BYTE res = OpenDevice(TIMERNAME, 
-                        UNIT_ECLOCK, 
+  BYTE res = OpenDevice(TIMERNAME,
+                        UNIT_ECLOCK,
                         (struct IORequest*) m_pTimeRequest,
                         TR_GETSYSTIME);
   if(res != NULL)
@@ -98,7 +98,7 @@ void StopWatch::initTimerDevice()
     return;
   }
 
-  //m_pTimeRequest->tr_node.io_Message.mn_Node.ln_Type = NT_REPLYMSG;
+  m_pTimeRequest->tr_node.io_Message.mn_Node.ln_Type = NT_REPLYMSG;
 
   // Setting the timer base
   TimerBase = (struct Library*)m_pTimeRequest->tr_node.io_Device;
@@ -110,7 +110,7 @@ void StopWatch::freeTimerDevice()
 {
   if(TimerBase != NULL)
   {
-    CloseDevice((struct IORequest*)m_pTimeRequest); 
+    CloseDevice((struct IORequest*)m_pTimeRequest);
     TimerBase = NULL;
   }
 

@@ -72,14 +72,15 @@ int main(int argc, char **argv)
   ADiffViewOptions options(argc, argv);
 
   // Create and run the application
-  Application app(options);
-  bool bOk = app.Run();
+  Application* app = new Application(options);
+  bool bOk = app->Run();
   if(!bOk)
   {
     // On error display a message
-    request.Show(app.ErrorMsg(), "Ok");
+    request.Show(app->ErrorMsg(), "Ok");
   }
 
+  delete app;
   return 0;
 }
 
