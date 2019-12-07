@@ -23,32 +23,32 @@ Application::Application(ADiffViewOptions& options)
     m_bExitAllowed(true),
     m_Screen(),
     m_Menu(m_Screen),
-    m_DiffWindow(m_Screen, 
-                 m_pMsgPortIDCMP, 
+    m_DiffWindow(m_Screen,
+                 m_pMsgPortIDCMP,
                  m_NumWindowsOpen),
-    m_FilesWindow(m_Screen, 
-                  m_pMsgPortIDCMP, 
+    m_FilesWindow(m_Screen,
+                  m_pMsgPortIDCMP,
                   m_NumWindowsOpen,
-                  m_LeftFilePath, 
-                  m_RightFilePath, 
+                  m_LeftFilePath,
+                  m_RightFilePath,
                   m_CmdDiff),
-    m_ProgressWindow(m_Screen, 
-                     m_pMsgPortIDCMP, 
+    m_ProgressWindow(m_Screen,
+                     m_pMsgPortIDCMP,
                      m_NumWindowsOpen,
                      m_bCancelRequested),
-    m_DiffWorker(m_LeftFilePath, 
-                 m_RightFilePath, 
+    m_DiffWorker(m_LeftFilePath,
+                 m_RightFilePath,
                  m_DiffWindow,
-                 m_FilesWindow, 
-                 m_ProgressWindow, 
+                 m_FilesWindow,
+                 m_ProgressWindow,
                  m_pMsgPortProgress,
-                 m_bCancelRequested, 
+                 m_bCancelRequested,
                  m_bExitAllowed),
     m_CmdDiff(m_DiffWorker),
-    m_CmdQuit(m_bExitAllowed, 
+    m_CmdQuit(m_bExitAllowed,
               m_bExitRequested),
     m_CmdOpen(m_FilesWindow),
-    m_CmdAbout(m_Screen, 
+    m_CmdAbout(m_Screen,
                m_Menu)
 {
 }
@@ -72,10 +72,10 @@ Application::~Application()
 bool Application::Run()
 {
   //
-  // Create the needed message ports
+  // Message port initialization
   //
 
-  // Create a message port for shared use with all windows
+  // Create a message port for all windows' IDCMP messages
   m_pMsgPortIDCMP = CreateMsgPort();
   if(m_pMsgPortIDCMP == NULL)
   {
@@ -83,6 +83,7 @@ bool Application::Run()
     return false;
   }
 
+  // Create a message port for progress notification
   m_pMsgPortProgress = CreateMsgPort();
   if(m_pMsgPortProgress == NULL)
   {
@@ -98,7 +99,7 @@ bool Application::Run()
 
   if(m_Options.PubScreenName().Length() > 0)
   {
-    m_Screen.Open(AppScreen::SME_UseNamedPubScreen, 
+    m_Screen.Open(AppScreen::SME_UseNamedPubScreen,
                   m_Options.PubScreenName());
   }
   else
@@ -121,7 +122,7 @@ bool Application::Run()
   //
   struct NewMenu menuDefinition[] =
   {
-    { NM_TITLE,   "Project",      0 , 0, 0, 0 },
+    {  NM_TITLE,  "Project",      0 , 0, 0, 0 },
     {  NM_ITEM,   "Open...",     "O", 0, 0, &m_CmdOpen },
     {  NM_ITEM,   "About...",     0 , 0, 0, &m_CmdAbout },
     {  NM_ITEM,   NM_BARLABEL,    0 , 0, 0, 0 },

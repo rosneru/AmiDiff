@@ -34,32 +34,32 @@ void StopWatch::Start()
 }
 
 
-double StopWatch::Pick(bool bKeepStartPoint)
+long StopWatch::Pick(bool bKeepStartPoint)
 {
   if(!m_bInitialized)
   {
-    return -1.0;
+    return -1;
   }
 
   if(m_ClocksPerSecond == 0)
   {
-    return -1.0;
+    return -1;
   }
 
   // Reading the eclock value again
   ReadEClock(&m_StopClock);
 
-  // Calculating elapsed time in seconds
-  double seconds = m_StopClock.ev_lo - m_StartClock.ev_lo;
-  seconds /= (double)m_ClocksPerSecond;
+  // Calculating elapsed time in milliseconds
+  ULONG millisecs = m_StopClock.ev_lo - m_StartClock.ev_lo;
+  millisecs *= 1000;
+  millisecs /= m_ClocksPerSecond;
 
   if(bKeepStartPoint == false)
   {
     ReadEClock(&m_StartClock);
   }
 
-  // Returning the elapsed time in milliseconds
-  return seconds * 1000.0;
+  return millisecs;
 }
 
 

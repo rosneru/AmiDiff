@@ -36,7 +36,7 @@ bool DiffEngine::Diff()
   const long NUM_NOTIFICATIONS = 18;
   long numPositions = m_A.NumLines();
   m_NotifyIncrement = numPositions / NUM_NOTIFICATIONS;
-  m_PercentIncrement = (long)90.0 / NUM_NOTIFICATIONS;
+  m_PercentIncrement = 90 / NUM_NOTIFICATIONS;
   m_NextNotifyPosition = m_NotifyIncrement;
   m_Percent = 0;
   reportProgress(0);

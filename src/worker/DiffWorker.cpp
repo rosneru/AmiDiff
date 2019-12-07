@@ -39,7 +39,7 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
   // objects.
   //
   // NOTE *this* is a WorkerBase who itself is a ProgressReporter.
-  //      That one finally forwards these messages to the intuition 
+  //      That one finally forwards these messages to the intuition
   //      event loop where they are eventually processed in a window.
   //
   m_LeftSrcFile.SetProgressReporter(this);
@@ -171,7 +171,7 @@ bool DiffWorker::Diff()
   //
   setProgressDescription("Comparing the files..");
   bool diffOk = m_DiffEngine.Diff();
-  long totalTime = static_cast<long>(m_StopWatch.Pick());
+  long totalTime = m_StopWatch.Pick();
 
   // If there was an error return to FilesWindow
   if(!diffOk)

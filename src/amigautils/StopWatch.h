@@ -41,7 +41,7 @@ public:
    * @returns
    * Elapsed time in milliseconds or -1.0 if an error occurred
    */
-  double Pick(bool bKeepStartPoint = false);
+  long Pick(bool bKeepStartPoint = false);
 
 private:
   ULONG m_ClocksPerSecond;
