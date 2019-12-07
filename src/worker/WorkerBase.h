@@ -70,7 +70,7 @@ protected:
    * Sending a message about progres to the port given in the
    * constructor.
    */
-  virtual void notifyProgressChanged(int p_Progress);
+  virtual void notifyProgressChanged(int progress);
 
 
 private:

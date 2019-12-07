@@ -49,6 +49,8 @@ private:
   bool m_bInitialized;
   struct EClockVal m_StartClock;
   struct EClockVal m_StopClock;
+
+  void initialize();
 };
 
 #endif

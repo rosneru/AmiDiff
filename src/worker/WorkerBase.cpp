@@ -6,7 +6,6 @@
 #include "WorkerBase.h"
 #include "ProgressMessage.h"
 
-
 WorkerBase::WorkerBase(struct MsgPort*& pProgressPort)
   : m_pStartupMsg(NULL),
     m_pProgressPort(pProgressPort),
@@ -17,34 +16,35 @@ WorkerBase::WorkerBase(struct MsgPort*& pProgressPort)
 {
 }
 
+
 WorkerBase::~WorkerBase()
 {
   workDone();
 }
 
+
 bool WorkerBase::Run()
 {
-  if(m_pBackgrProcess != NULL)
+  if (m_pBackgrProcess != NULL)
   {
     // Do not start the process if it's already running
     return false;
   }
 
   // Create the background process
-  m_pBackgrProcess = CreateNewProcTags(
-    NP_Name, "WorkerBase",
-    NP_Entry, &startup,
-    TAG_END);
+  m_pBackgrProcess = CreateNewProcTags(NP_Name, "WorkerBase",
+                                       NP_Entry, &startup,
+                                       TAG_END);
 
-  if(m_pBackgrProcess == NULL)
+  if (m_pBackgrProcess == NULL)
   {
     return false;
   }
 
-  m_pStartupMsg = (struct WorkerStartupMsg*) AllocVec(
-    sizeof(struct WorkerStartupMsg), MEMF_CLEAR|MEMF_PUBLIC);
+  m_pStartupMsg = (struct WorkerStartupMsg *)
+    AllocVec(sizeof(struct WorkerStartupMsg), MEMF_CLEAR|MEMF_PUBLIC);
 
-  if(m_pStartupMsg == NULL)
+  if (m_pStartupMsg == NULL)
   {
     return false;
   }
@@ -58,19 +58,19 @@ bool WorkerBase::Run()
 
 void WorkerBase::startup()
 {
-  struct Process* pProcess = (struct Process *)FindTask(NULL);
+  struct Process *pProcess = (struct Process *)FindTask(NULL);
 
   WaitPort(&pProcess->pr_MsgPort);
 
-  struct WorkerStartupMsg* pStartupMsg = (struct WorkerStartupMsg*)
-    GetMsg(&pProcess->pr_MsgPort);
+  struct WorkerStartupMsg *pStartupMsg = (struct WorkerStartupMsg *)
+      GetMsg(&pProcess->pr_MsgPort);
 
-  if((pStartupMsg == NULL) || (pStartupMsg->that == NULL))
+  if ((pStartupMsg == NULL) || (pStartupMsg->that == NULL))
   {
     return;
   }
 
-  class WorkerBase* that = pStartupMsg->that;
+  class WorkerBase *that = pStartupMsg->that;
 
   // Create the reply port for this process. It is used to receive
   // answers from main for the sent progress messages.
@@ -85,9 +85,10 @@ void WorkerBase::startup()
   DeleteMsgPort(that->m_pReplyPort);
 }
 
+
 void WorkerBase::workDone()
 {
-  if(m_pStartupMsg != NULL)
+  if (m_pStartupMsg != NULL)
   {
     FreeVec(m_pStartupMsg);
     m_pStartupMsg = NULL;
@@ -97,15 +98,16 @@ void WorkerBase::workDone()
   m_pBackgrProcess = NULL;
 }
 
-void WorkerBase::setProgressDescription(const char* pProgressDescription)
+
+void WorkerBase::setProgressDescription(const char *pProgressDescription)
 {
   m_pProgressDescription = pProgressDescription;
 }
 
 
-void WorkerBase::notifyProgressChanged(int p_Progress)
+void WorkerBase::notifyProgressChanged(int progress)
 {
-  if((m_pProgressPort == NULL) || (m_pReplyPort == NULL))
+  if ((m_pProgressPort == NULL) || (m_pReplyPort == NULL))
   {
     return;
   }
@@ -113,7 +115,7 @@ void WorkerBase::notifyProgressChanged(int p_Progress)
   // Creating and initializing the progress message
   struct ProgressMessage progressMessage;
   progressMessage.mn_ReplyPort = m_pReplyPort;
-  progressMessage.progress = p_Progress;
+  progressMessage.progress = progress;
   progressMessage.pDescription = m_pProgressDescription;
 
   // Sending the progress message, waiting for the answer and taking the
