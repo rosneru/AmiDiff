@@ -2,12 +2,12 @@
 #include "StopWatch.h"
 
 // Base address of timer device; has to be global
-struct Device* TimerBase = NULL;
+struct Library* TimerBase = NULL;
 
 StopWatch::StopWatch()
   : m_ClocksPerSecond(0),
     m_pMsgPort(NULL),
-    m_pIORequest(NULL),
+    m_pTimeRequest(NULL),
     m_bInitialized(false)
 {
 
@@ -15,26 +15,14 @@ StopWatch::StopWatch()
 
 StopWatch::~StopWatch()
 {
-  if((TimerBase != NULL) && (m_pIORequest != NULL))
-  {
-    CloseDevice(m_pIORequest);
-    TimerBase = NULL;
-
-    DeleteIORequest(m_pIORequest);
-    m_pIORequest = NULL;
-  }
-
-  if(m_pMsgPort != NULL)
-  {
-    DeleteMsgPort(m_pMsgPort);
-  }
+  freeTimerDevice();
 }
 
 void StopWatch::Start()
 {
   if(!m_bInitialized)
   {
-    initialize();
+    initTimerDevice();
     if(!m_bInitialized)
     {
       return;
@@ -75,7 +63,7 @@ double StopWatch::Pick(bool bKeepStartPoint)
 }
 
 
-void StopWatch::initialize()
+void StopWatch::initTimerDevice()
 {
   if(m_bInitialized)
   {
@@ -90,31 +78,53 @@ void StopWatch::initialize()
   }
 
   // Create an IORequest
-  m_pIORequest = (struct IORequest*)CreateIORequest(
-    m_pMsgPort, sizeof(struct timerequest));
-  if(m_pIORequest == NULL)
-  {
-    DeleteMsgPort(m_pMsgPort);
-    m_pMsgPort = NULL;
+  m_pTimeRequest = (struct timerequest*)
+    CreateIORequest(m_pMsgPort, sizeof(struct timerequest));
 
+  if(m_pTimeRequest == NULL)
+  {
+    freeTimerDevice();
     return;
   }
 
   // Opening the timer.device
-  BYTE res = OpenDevice(TIMERNAME, UNIT_ECLOCK, m_pIORequest , TR_GETSYSTIME);
+  BYTE res = OpenDevice(TIMERNAME, 
+                        UNIT_ECLOCK, 
+                        (struct IORequest*) m_pTimeRequest,
+                        TR_GETSYSTIME);
   if(res != NULL)
   {
-    DeleteIORequest(m_pIORequest);
-    m_pIORequest = NULL;
-
-    DeleteMsgPort(m_pMsgPort);
-    m_pMsgPort = NULL;
-
+    freeTimerDevice();
     return;
   }
 
+  //m_pTimeRequest->tr_node.io_Message.mn_Node.ln_Type = NT_REPLYMSG;
+
   // Setting the timer base
-  TimerBase = m_pIORequest->io_Device;
+  TimerBase = (struct Library*)m_pTimeRequest->tr_node.io_Device;
 
   m_bInitialized = true;
+}
+
+void StopWatch::freeTimerDevice()
+{
+  if(TimerBase != NULL)
+  {
+    CloseDevice((struct IORequest*)m_pTimeRequest); 
+    TimerBase = NULL;
+  }
+
+  if(m_pTimeRequest != NULL)
+  {
+    DeleteIORequest(m_pTimeRequest);
+    m_pTimeRequest = NULL;
+  }
+
+  if(m_pMsgPort != NULL)
+  {
+    DeleteMsgPort(m_pMsgPort);
+    m_pMsgPort = 0;
+  }
+
+  m_bInitialized = false;
 }

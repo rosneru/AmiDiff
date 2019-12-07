@@ -3,6 +3,7 @@
 
 #include <clib/timer_protos.h>
 #include <clib/exec_protos.h>
+#include <devices/timer.h>
 #include <exec/ports.h>
 #include <exec/io.h>
 /**
@@ -45,12 +46,13 @@ public:
 private:
   ULONG m_ClocksPerSecond;
   struct MsgPort* m_pMsgPort;
-  struct IORequest* m_pIORequest;
+  struct timerequest* m_pTimeRequest;
   bool m_bInitialized;
   struct EClockVal m_StartClock;
   struct EClockVal m_StopClock;
 
-  void initialize();
+  void initTimerDevice();
+  void freeTimerDevice();
 };
 
 #endif
