@@ -52,7 +52,7 @@ Defines (End)
 3 0 0 0 1 1 0
 0 2 1 0 0
 0 0 0 0 1 1 0
-6 0 0 0
+0 0 0 0
 0 ""
 1 0 0 0
 1 0 0 1 0 1 0 1 0 1
@@ -78,7 +78,7 @@ Linker
 Run
 30 "" "" "" 0
 ""
-/testfiles/testcase_23_RealLifeApp-left.cs /testfiles/testcase_23_RealLifeApp-right.cs
+PUBSCREEN=StormScreen /testfiles/testcase_23_RealLifeApp-left.cs /testfiles/testcase_23_RealLifeApp-right.cs
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 0 0
 0 0 0 "" ""
@@ -284,12 +284,9 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "gui/AmigaDiffPens.cpp"
-"gui/AmigaDiffPens.cpp"
-"gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
+1 "gui/ADiffViewPens.cpp"
 Storm Shell Project (Dependencies)
-"objects_debug/AmigaDiffPens.o" "objects_debug/AmigaDiffPens.debug"
+"objects_debug/ADiffViewPens.o" "objects_debug/ADiffViewPens.debug"
 ""
 1 1
 File
@@ -560,8 +557,7 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "gui/AmigaDiffPens.h"
-"gui/AmigaDiffPens.h"
+2 "gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -679,7 +675,6 @@ Section
 7
 File
 10 "ADiffView"
-"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

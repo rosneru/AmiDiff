@@ -114,7 +114,7 @@ bool Application::Run()
   }
   else
   {
-    m_Screen.Open(AppScreen::SME_CloneWorkbenchMin8Col);
+    m_Screen.Open(AppScreen::SME_CloneWorkbench8Col);
   }
 
   if (!m_Screen.IsOpen())

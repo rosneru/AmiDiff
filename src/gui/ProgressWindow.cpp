@@ -236,7 +236,7 @@ void ProgressWindow::initialize()
 
   // Declare the basic gadget structure and fill with basic values
   struct NewGadget newGadget;
-  newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
+  newGadget.ng_TextAttr   = m_AppScreen.IntuiTextAttr();
   newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
 
   // Creating the string gadget to display the progress description

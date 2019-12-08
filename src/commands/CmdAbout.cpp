@@ -7,7 +7,7 @@ CmdAbout::CmdAbout(AppScreen& p_Screen,
   : m_Screen(p_Screen),
     m_Menu(p_Menu)
 {
-  m_AboutMsg = pVersTag + 7;  // Skip the firts 7 chars of pVersTag
+  m_AboutMsg = pVersTag + 7;  // Skip the first 7 chars of pVersTag
                               // which is only "\0$VER: "
   m_AboutMsg += "\n\n";
   m_AboutMsg += "Copyright(c) 2019 Uwe Rosner (u.rosner@ymail.com)";

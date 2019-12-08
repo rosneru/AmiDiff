@@ -459,7 +459,7 @@ void DiffWindow::createGadgets()
   WORD m_FontHeight = m_AppScreen.FontHeight();
 
   struct NewGadget newGadget;
-  newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
+  newGadget.ng_TextAttr   = m_AppScreen.IntuiTextAttr();
   newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = m_TextArea1Left;
   newGadget.ng_TopEdge    = m_TextAreasTop - m_FontHeight - 4;

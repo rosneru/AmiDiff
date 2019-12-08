@@ -1,9 +1,9 @@
-#ifndef AMIGA_DIFF_PENS_H
-#define AMIGA_DIFF_PENS_H
+#ifndef A_DIFF_VIEW_PENS_H
+#define A_DIFF_VIEW_PENS_H
 
+#include <graphics/view.h>
 #include <intuition/screens.h>
 
-class AppScreen;
 
 /**
  * Class for the pens used by AmigaDiff
@@ -11,11 +11,12 @@ class AppScreen;
  * @author Uwe Rosner
  * @date 18/11/2018
  */
-class AmigaDiffPens
+class ADiffViewPens
 {
 public:
-  AmigaDiffPens();
-  ~AmigaDiffPens();
+  ADiffViewPens(struct Screen*& pScreen,
+                struct DrawInfo*& pDrawInfo);
+  ~ADiffViewPens();
 
   /**
    * Creates the colors needed by AmigaDiff.
@@ -23,12 +24,13 @@ public:
    * Starting with color number p_FirstFreeColorNum the needed 4 colors
    * will be assigned to color registers.
    */
-  bool Init(AppScreen* p_pAppScreen);
+  bool Create();
 
   /**
    * Freeing pens, allocated colormaps etc
    */
   void Dispose();
+
 
   LONG Background() const;
   LONG Text() const;
@@ -38,16 +40,20 @@ public:
   LONG Red() const;
   LONG Yellow() const;
   LONG Green() const;
-  LONG Grey() const;
+  LONG Gray() const;
 
 private:
-  AppScreen* m_pAppScreen;
-  bool m_bInitialized;
-  bool m_bObtainedPens;
+  struct Screen*& m_pScreen;
+  struct DrawInfo*& m_pDrawInfo;
+
+  struct ColorMap* m_pColorMap;
+
   LONG m_RedPen;
   LONG m_YellowPen;
   LONG m_GreenPen;
-  LONG m_GreyPen;
+  LONG m_GrayPen;
+
 };
 
 #endif
+

@@ -5,7 +5,7 @@
 #include <intuition/intuition.h>
 #include <intuition/screens.h>
 
-#include "AmigaDiffPens.h"
+#include "ADiffViewPens.h"
 #include "SimpleString.h"
 
 /**
@@ -24,10 +24,9 @@ public:
    */
   enum ScreenModeEasy
   {
-    SME_UseWorkbench,           ///> Uses to Worbkbench public screen
-    SME_CloneWorkbench,         ///> Clones the Workbench screen
-    SME_CloneWorkbenchMin8Col,  ///> Creates a Workbench screen clone with at 8 colors
-    SME_UseNamedPubScreen       ///> Use a pub screen which name is to be given in constructor
+    SME_UseWorkbench,       ///> Use the Worbkbench public screen
+    SME_CloneWorkbench8Col, ///> Creates a Workbench screen clone with 8 colors
+    SME_UseNamedPubScreen   ///> Use a pub screen with name as set in constructor
   };
 
   AppScreen();
@@ -39,7 +38,7 @@ public:
    * @returns
    * false if oping fails
    */
-  bool Open(ScreenModeEasy screenModeEasy = SME_CloneWorkbenchMin8Col,
+  bool Open(ScreenModeEasy screenModeEasy = SME_CloneWorkbench8Col,
             SimpleString pubScreenName = "");
 
   /**
@@ -50,7 +49,7 @@ public:
   bool IsOpen() const;
 
   const char* Title() const;
-  
+
   /**
    * NOTE Setting the title does not work when screen is already open
    */
@@ -67,16 +66,16 @@ public:
   struct Screen* IntuiScreen();
 
   /**
-   * Returns the pointer to the active window. If no active window is 
+   * Returns the pointer to the active window. If no active window is
    * found NULL is returned.
-   * 
+   *
    * NOTE: I) The active window is not guaranteed to be on this screen.
-   * 
-   *       II) Be aware that the active window can already be another 
-   *       one directly after this call as the user or the application 
+   *
+   *       II) Be aware that the active window can already be another
+   *       one directly after this call as the user or the application
    *       can change it.
-   * 
-   *       III.) The active window can already have been closed when 
+   *
+   *       III.) The active window can already have been closed when
    *       you use this window pointer. Be prepared!
    */
   struct Window* ActiveWindow() const;
@@ -90,7 +89,7 @@ public:
   /**
    * Returns the TextAttr of the screen
    */
-  struct TextAttr* GfxTextAttr();
+  struct TextAttr* IntuiTextAttr();
 
   /**
    * Returns the VisualInfo needed for GadTools menus and Gadgets
@@ -100,25 +99,21 @@ public:
   /**
    * Returns the pens to be used for drawing
    */
-  const AmigaDiffPens& Pens() const;
-
-  ScreenModeEasy ScreenMode() const;
-
+  const ADiffViewPens& Pens() const;
 
 
 private:
   struct Screen* m_pScreen;
   struct DrawInfo* m_pDrawInfo;
   struct TextFont* m_pTextFont;
-  SimpleString m_FontName;
+
+  ADiffViewPens m_Pens;
+
   APTR* m_pVisualInfo;
   SimpleString m_Title;
 
   ScreenModeEasy m_ScreenModeEasy;
   SimpleString m_PubScreenName;
-
-  struct TextAttr m_TextAttr;
-  AmigaDiffPens m_Pens;
 };
 
 

@@ -279,7 +279,7 @@ void FilesWindow::initialize()
   struct NewGadget newGadget;
 
   // Row 1  contains  a label
-  newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
+  newGadget.ng_TextAttr   = m_AppScreen.IntuiTextAttr();
   newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    = top;

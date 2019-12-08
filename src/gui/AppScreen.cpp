@@ -8,10 +8,9 @@
 extern struct IntuitionBase* IntuitionBase;
 
 AppScreen::AppScreen()
-  : m_pScreen(NULL),
+  : m_Pens(m_pScreen, m_pDrawInfo),
+    m_pScreen(NULL),
     m_pDrawInfo(NULL),
-    m_pTextFont(NULL),
-    m_FontName(""),
     m_pVisualInfo(NULL),
     m_Title("AppScreen"),
     m_PubScreenName("Workbench")
@@ -26,10 +25,6 @@ AppScreen::~AppScreen()
 bool AppScreen::Open(ScreenModeEasy screenModeEasy,
                      SimpleString pubScreenName)
 {
-  //
-  // Initial validations
-  //
-
   if(m_pScreen != NULL)
   {
     // Not opening the screen if it is already open
@@ -49,48 +44,7 @@ bool AppScreen::Open(ScreenModeEasy screenModeEasy,
   if((m_ScreenModeEasy == SME_UseNamedPubScreen)
    &&(m_PubScreenName.Length() == 0))
   {
-    m_ScreenModeEasy = SME_CloneWorkbenchMin8Col;
-  }
-
-  //
-  // Locking the given public screen (or workbench) and get some
-  // needed data from it
-  //
-  struct Screen* pPubScreen = LockPubScreen(m_PubScreenName.C_str());
-  if(pPubScreen == NULL)
-  {
-    return false;
-  }
-
-  struct DrawInfo* pPubScreenDrawInfo = GetScreenDrawInfo(pPubScreen);
-  if(pPubScreenDrawInfo == NULL)
-  {
-    UnlockPubScreen(NULL, pPubScreen);
-    return false;
-  }
-
-  LONG publicScreenModeId = GetVPModeID(&pPubScreen->ViewPort);
-  if(publicScreenModeId == INVALID_ID)
-  {
-    FreeScreenDrawInfo(pPubScreen, pPubScreenDrawInfo);
-    UnlockPubScreen(NULL, pPubScreen);
-    return false;
-  }
-
-  // Get font font name and other properties from the public screens
-  // DrawInfo and store it here
-  m_FontName = pPubScreenDrawInfo->dri_Font->tf_Message.mn_Node.ln_Name;
-  m_TextAttr.ta_Name = const_cast<STRPTR>(m_FontName.C_str());
-  m_TextAttr.ta_YSize = pPubScreenDrawInfo->dri_Font->tf_YSize;
-  m_TextAttr.ta_Style = pPubScreenDrawInfo->dri_Font->tf_Style;
-  m_TextAttr.ta_Flags = pPubScreenDrawInfo->dri_Font->tf_Flags;
-
-  m_pTextFont = OpenFont(&m_TextAttr);
-  if(m_pTextFont == NULL)
-  {
-    FreeScreenDrawInfo(pPubScreen, pPubScreenDrawInfo);
-    UnlockPubScreen(NULL, pPubScreen);
-    return false;
+    m_ScreenModeEasy = SME_CloneWorkbench8Col;
   }
 
   if((m_ScreenModeEasy == AppScreen::SME_UseWorkbench) ||
@@ -99,62 +53,39 @@ bool AppScreen::Open(ScreenModeEasy screenModeEasy,
     //
     // Using the Workbench or an other public screen
     //
-    m_pScreen = pPubScreen;
-    m_pDrawInfo = pPubScreenDrawInfo;
+    m_pScreen = LockPubScreen(m_PubScreenName.C_str());
   }
   else
   {
     //
-    // Creating a copy of the Workbench screen
+    // Opening a nearly-copy of the Workbench screen
     //
-
-    // Ensure that screen has at least 8 colors
-    int screenDepth = pPubScreenDrawInfo->dri_Depth;
-
-    if(m_ScreenModeEasy == AppScreen::SME_CloneWorkbenchMin8Col)
-    {
-      if(screenDepth < 3)
-      {
-        // Ensuring 3 bitplanes
-        screenDepth = 3;
-      }
-    }
-
-    //
-    // Opening the screen
+    // It is only *nearly* a copy because it'll have 8 colors instead
+    // of how many the Workbench screen might have.
     //
     m_pScreen = OpenScreenTags(NULL,
-      SA_Width, pPubScreen->Width,
-      SA_Height, pPubScreen->Height,
-      SA_Depth, screenDepth,
-      SA_Overscan, OSCAN_TEXT,
-      SA_AutoScroll, TRUE,
-      SA_Pens, (ULONG)pPubScreenDrawInfo->dri_Pens,
-      SA_Font, (ULONG) &m_TextAttr,
-      SA_SharePens, TRUE,
-      SA_DisplayID, publicScreenModeId,
-      SA_Title, m_Title.C_str(),
-      TAG_DONE);
+                               SA_LikeWorkbench, TRUE,
+                               SA_Type, CUSTOMSCREEN,
+                               SA_Depth, 3,
+                               SA_SharePens,TRUE,
+                               SA_Title, m_Title.C_str(),
+                               TAG_DONE);
+  }
 
-    // We don't need them anymore
-    FreeScreenDrawInfo(pPubScreen, pPubScreenDrawInfo);
-    UnlockPubScreen(NULL, pPubScreen);
+  if(m_pScreen == NULL)
+  {
+    return false;
+  }
 
-    if(m_pScreen == NULL)
-    {
-      return false;
-    }
-
-    m_pDrawInfo = GetScreenDrawInfo(m_pScreen);
-    if(m_pDrawInfo == NULL)
-    {
-      Close();
-      return false;
-    }
+  m_pDrawInfo = GetScreenDrawInfo(m_pScreen);
+  if(m_pDrawInfo == NULL)
+  {
+    Close();
+    return false;
   }
 
   // Trying to initialize our four needed color pens
-  if(m_Pens.Init(this) == false)
+  if(m_Pens.Create() == false)
   {
     return false;
   }
@@ -181,12 +112,6 @@ void AppScreen::Close()
   // Freeing the allocated pens before closing the screen as the intui
   // screen is needed there
   m_Pens.Dispose();
-
-  if(m_pTextFont != NULL)
-  {
-    CloseFont(m_pTextFont);
-    m_pTextFont = NULL;
-  }
 
   if(m_pDrawInfo != NULL && m_pScreen != NULL)
   {
@@ -277,9 +202,14 @@ struct DrawInfo* AppScreen::IntuiDrawInfo()
   return m_pDrawInfo;
 }
 
-struct TextAttr* AppScreen::GfxTextAttr()
+struct TextAttr* AppScreen::IntuiTextAttr()
 {
-  return &m_TextAttr;
+  if(m_pScreen == NULL)
+  {
+    return 0;
+  }
+
+  return m_pScreen->Font;
 }
 
 APTR* AppScreen::GadtoolsVisualInfo()
@@ -287,12 +217,8 @@ APTR* AppScreen::GadtoolsVisualInfo()
   return m_pVisualInfo;
 }
 
-const AmigaDiffPens& AppScreen::Pens() const
+const ADiffViewPens& AppScreen::Pens() const
 {
   return m_Pens;
 }
 
-AppScreen::ScreenModeEasy AppScreen::ScreenMode() const
-{
-  return m_ScreenModeEasy;
-}
