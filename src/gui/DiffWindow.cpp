@@ -456,13 +456,13 @@ void DiffWindow::createGadgets()
     }
   }
 
-  WORD m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+  WORD m_FontHeight = m_AppScreen.FontHeight();
 
   struct NewGadget newGadget;
   newGadget.ng_TextAttr   = m_AppScreen.GfxTextAttr();
   newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = m_TextArea1Left;
-  newGadget.ng_TopEdge    = m_TextAreasTop - m_AppScreen.FontHeight() - 4;
+  newGadget.ng_TopEdge    = m_TextAreasTop - m_FontHeight - 4;
   newGadget.ng_Height     = m_FontHeight + 2;
   newGadget.ng_Flags      = PLACETEXT_RIGHT | NG_HIGHLABEL;
   newGadget.ng_GadgetText = NULL;

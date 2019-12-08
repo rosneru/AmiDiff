@@ -39,8 +39,8 @@ public:
    * @returns
    * false if oping fails
    */
-  bool Open(ScreenModeEasy p_ScreenModeEasy = SME_CloneWorkbenchMin8Col,
-    SimpleString p_PubScreenName = "");
+  bool Open(ScreenModeEasy screenModeEasy = SME_CloneWorkbenchMin8Col,
+            SimpleString pubScreenName = "");
 
   /**
    * Closes the screen
@@ -54,9 +54,9 @@ public:
   /**
    * NOTE Setting the title does not work when screen is already open
    */
-  void SetTitle(SimpleString p_NewTitle);
+  void SetTitle(SimpleString title);
 
-  WORD FontHeight() const;
+  UWORD FontHeight() const;
 
   WORD BarHeight() const;
 

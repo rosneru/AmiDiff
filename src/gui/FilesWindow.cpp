@@ -242,7 +242,7 @@ void FilesWindow::initialize()
   // Calculate some basic values
   //
   m_WinWidth = (WORD)m_AppScreen.IntuiScreen()->Width / 2;
-  m_FontHeight = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+  m_FontHeight = m_AppScreen.FontHeight();
   WORD barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
 
   WORD hSpace = 10;
