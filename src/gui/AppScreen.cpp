@@ -38,15 +38,15 @@ bool AppScreen::Open(ScreenModeEasy screenModeEasy,
 
   m_ScreenModeEasy = screenModeEasy;
 
-  // Only overwrite default public screen "Workbench" when given name 
+  // Only overwrite default public screen "Workbench" when given name
   // is not empty
-  if(pubScreenName.Length > 0)
+  if(pubScreenName.Length() > 0)
   {
     m_PubScreenName = pubScreenName;
   }
 
   // Fallback if no public screen name provided
-  if((m_ScreenModeEasy == SME_UseNamedPubScreen) 
+  if((m_ScreenModeEasy == SME_UseNamedPubScreen)
    &&(m_PubScreenName.Length() == 0))
   {
     m_ScreenModeEasy = SME_CloneWorkbenchMin8Col;
@@ -97,10 +97,10 @@ bool AppScreen::Open(ScreenModeEasy screenModeEasy,
      (m_ScreenModeEasy == AppScreen::SME_UseNamedPubScreen))
   {
     //
-    // Using the Workbench or an other  public screen
+    // Using the Workbench or an other public screen
     //
-
     m_pScreen = pPubScreen;
+    m_pDrawInfo = pPubScreenDrawInfo;
   }
   else
   {
@@ -262,7 +262,7 @@ struct Window* AppScreen::ActiveWindow() const
 {
   // Locking the intuition base
   ULONG intuitionLock = LockIBase(0L);
-  
+
   // Getting the active window
   struct Window* pActiveWin = IntuitionBase->ActiveWindow;
 
