@@ -49,7 +49,6 @@
 
 #include "ADiffViewOptions.h"
 
-
 extern struct IntuitionBase* IntuitionBase;
 
 

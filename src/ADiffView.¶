@@ -52,7 +52,7 @@ Defines (End)
 3 0 0 0 1 1 0
 0 2 1 0 0
 0 0 0 0 1 1 0
-0 0 0 0
+6 0 0 0
 0 ""
 1 0 0 0
 1 0 0 1 0 1 0 1 0 1
@@ -154,6 +154,7 @@ File
 "model/Document.h"
 "diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
+"application/ADiffView_rev.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -466,6 +467,13 @@ Storm Shell Project (Dependencies)
 File
 2 "application/ADiffViewOptions.h"
 "application/ADiffViewOptions.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "application/ADiffView_rev.h"
+"application/ADiffView_rev.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

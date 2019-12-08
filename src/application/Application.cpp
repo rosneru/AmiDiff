@@ -5,6 +5,7 @@
 #include <clib/gadtools_protos.h>
 #include <clib/intuition_protos.h>
 
+#include "ADiffView_rev.h"
 #include "Command.h"
 #include "MessageBox.h"
 #include "ProgressMessage.h"
@@ -49,8 +50,16 @@ Application::Application(ADiffViewOptions& options)
               m_bExitRequested),
     m_CmdOpen(m_FilesWindow),
     m_CmdAbout(m_Screen,
-               m_Menu)
+               m_Menu,
+               VERSTAG)
 {
+  //
+  // Note: VERSTAG above has been created with bumprev and is defined
+  // in included file ADiffView_rev.h. It contains a the program name
+  // and version. Referencing it also means that the c:version command will
+  // work for ADiffView.
+  //
+
 }
 
 Application::~Application()
@@ -95,7 +104,8 @@ bool Application::Run()
   //
   // Open the screen
   //
-  m_Screen.SetTitle("ADiffView 1.0");
+  m_Screen.SetTitle(VERS);  // VERS created with bumprev,
+                            // see ADiffView_rev.h
 
   if(m_Options.PubScreenName().Length() > 0)
   {

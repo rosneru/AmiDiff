@@ -64,16 +64,16 @@ private:
   bool m_bExitAllowed;
 
   /**
-   * IMPORTANT NOTE 
-   * 
+   * IMPORTANT NOTE
+   *
    * The order of the following items is IMPORTANT - Because the
    * destructor calls will be in reverse order.
    *
    * By Starting with m_Screen followed by m_Menu it is ensured that
    * the next-to-last destructor call is the m_Menu destructor with
-   * the destructor call of m_Screen followed - which should be the 
+   * the destructor call of m_Screen followed - which should be the
    * final destroyed object.
-   * 
+   *
    */
 
   AppScreen m_Screen;

@@ -1,14 +1,17 @@
 #include "MessageBox.h"
 #include "CmdAbout.h"
 
-CmdAbout::CmdAbout(AppScreen& p_Screen, ApplicationMenu& p_Menu)
+CmdAbout::CmdAbout(AppScreen& p_Screen,
+                   ApplicationMenu& p_Menu,
+                   const char* pVersTag)
   : m_Screen(p_Screen),
     m_Menu(p_Menu)
 {
-  m_AboutMsg  = "ADiffView 1.0.1 (13.03.2019)\n";
-  m_AboutMsg += "\n";
-  m_AboutMsg += "Author: Uwe Rosner (u.rosner@ymail.com)\n";
-  m_AboutMsg += "\n";
+  m_AboutMsg = pVersTag + 7;  // Skip the firts 7 chars of pVersTag
+                              // which is only "\0$VER: "
+  m_AboutMsg += "\n\n";
+  m_AboutMsg += "Copyright(c) 2019 Uwe Rosner (u.rosner@ymail.com)";
+  m_AboutMsg += "\n\n";
   m_AboutMsg += "This release of ADiffView may be freely distributed.\n";
   m_AboutMsg += "It may not be comercially distributed without the\n";
   m_AboutMsg += "explicit permission of the author.\n";

@@ -1,0 +1,18 @@
+VERSION		EQU	1
+REVISION	EQU	1
+
+DATE	MACRO
+		dc.b '8.12.2019'
+		ENDM
+
+VERS	MACRO
+		dc.b 'ADiffView 1.1'
+		ENDM
+
+VSTRING	MACRO
+		dc.b 'ADiffView 1.1 (8.12.2019)',13,10,0
+		ENDM
+
+VERSTAG	MACRO
+		dc.b 0,'$VER: ADiffView 1.1 (8.12.2019)',0
+		ENDM
