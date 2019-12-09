@@ -132,11 +132,9 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "application/ADiffViewArguments.cpp"
-"application/ADiffViewArguments.cpp"
-"application/ADiffViewArguments.h"
+1 "application/ADiffViewArgs.cpp"
 Storm Shell Project (Dependencies)
-"objects_debug/ADiffViewArguments.o" "objects_debug/ADiffViewArguments.debug"
+"objects_debug/ADiffViewArgs.o" "objects_debug/ADiffViewArgs.debug"
 ""
 1 1
 File
@@ -474,8 +472,7 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "application/ADiffViewArguments.h"
-"application/ADiffViewArguments.h"
+2 "application/ADiffViewArgs.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -695,7 +692,6 @@ Section
 7
 File
 10 "ADiffView"
-"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""
