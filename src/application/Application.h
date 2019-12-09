@@ -11,6 +11,7 @@
 #include <exec/ports.h>
 
 #include "ADiffViewArguments.h"
+#include "ADiffViewSettings.h"
 #include "ApplicationMenu.h"
 #include "AppScreen.h"
 #include "CmdAbout.h"
@@ -52,6 +53,8 @@ private:
   ADiffViewArguments& m_Arguments;
   SimpleString m_LeftFilePath;
   SimpleString m_RightFilePath;
+  
+  ADiffViewSettings m_Settings;
 
   struct MsgPort* m_pMsgPortIDCMP;
   struct MsgPort* m_pMsgPortProgress;

@@ -7,8 +7,9 @@
 
 extern struct IntuitionBase* IntuitionBase;
 
-AppScreen::AppScreen()
+AppScreen::AppScreen(ADiffViewSettings& settings)
   : m_Pens(m_pScreen, m_pDrawInfo),
+    m_Settings(settings),
     m_pScreen(NULL),
     m_pDrawInfo(NULL),
     m_pVisualInfo(NULL),
@@ -69,6 +70,7 @@ bool AppScreen::Open(ScreenModeEasy screenModeEasy,
                                SA_Depth, 3,
                                SA_SharePens,TRUE,
                                SA_Title, m_Title.C_str(),
+                               SA_Colors32, m_Settings.GetColorArray(),
                                TAG_DONE);
   }
 

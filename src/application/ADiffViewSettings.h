@@ -1,6 +1,8 @@
 #ifndef ADIFFVIEW_SETTINGS_H
 #define ADIFFVIEW_SETTINGS_H
 
+#include <exec/types.h>
+
 #include "SimpleString.h"
 
 /**
@@ -9,39 +11,48 @@
  * @author Uwe Rosner
  * @date 09/12/2019
  */
-class ADiffViewOptions
+class ADiffViewSettings
 {
 public:
 
   /**
-   * Creates the options object. On creation it extracts the arguments
-   * which on program start optionally can be provided via Workbench 
-   * or CLI.
-   *
-   * @param argc The argc variable from main()
-   * @param argv The argv array from main.
-   *
+   * Creates the settings object.
+   * NOTE: The settings have to be loaded before first use.
    */
-  ADiffViewOptions(int argc, char **argv);
+  ADiffViewSettings();
 
-  virtual ~ADiffViewOptions();
+  virtual ~ADiffViewSettings();
 
-  SimpleString& PubScreenName();
-  SimpleString& LeftFile();
-  SimpleString& RightFile();
-  bool DontAsk();
+  bool Load();
+
+  /**
+   * Return the ColorArray as Amiga-LoadRGB32-compliant array
+   */
+  ULONG* GetColorArray();
 
 private:
-  int m_ArgC;
-  char** m_pArgV;
+  // It's useful to store the colors at a central place
+  // This struct is a workaround for C++98 not allowing array 
+  // initialization in th initializer list.
+  //
+  // It is defined to a size of 11 because:
+  //   1..Header, 
+  //   3x3=9..the 3 colors, 
+  //   1..Termination
+  //
+  struct ColorArray
+  { 
+    ULONG elem[11];
+  };
 
-  SimpleString m_PubScreenName;
-  SimpleString m_LeftFilePath;
-  SimpleString m_RightFilePath;
-  bool m_bDontAsk;
-  
-  void readWorkbenchArgs();
-  void readCommandLineArgs();
+  // Declaring a static variable to hold the ColorArray data.
+  // See top of the implementation file, there it is defined
+  // and initialized
+  static ColorArray m_sColors;
+
+  // Declaring a member variable for the Color array. In the
+  // constructor it is initialized with the static array data.
+  ColorArray m_ColorArray;
 };
 
 #endif // ADIFFVIEW_SETTINGS_H

@@ -6,6 +6,7 @@
 #include <intuition/screens.h>
 
 #include "ADiffViewPens.h"
+#include "ADiffViewSettings.h"
 #include "SimpleString.h"
 
 /**
@@ -29,7 +30,7 @@ public:
     SME_UseNamedPubScreen   ///> Use a pub screen with name as set in constructor
   };
 
-  AppScreen();
+  AppScreen(ADiffViewSettings& settings);
   ~AppScreen();
 
   /**
@@ -108,6 +109,7 @@ private:
   struct TextFont* m_pTextFont;
 
   ADiffViewPens m_Pens;
+  ADiffViewSettings& m_Settings;
 
   APTR* m_pVisualInfo;
   SimpleString m_Title;

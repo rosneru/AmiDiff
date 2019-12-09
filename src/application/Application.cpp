@@ -22,7 +22,7 @@ Application::Application(ADiffViewArguments& arguments)
     m_bCancelRequested(false),
     m_bExitRequested(false),
     m_bExitAllowed(true),
-    m_Screen(),
+    m_Screen(m_Settings),
     m_Menu(m_Screen),
     m_DiffWindow(m_Screen,
                  m_pMsgPortIDCMP,
@@ -100,6 +100,10 @@ bool Application::Run()
     return false;
   }
 
+  //
+  // Load the settings
+  //
+  m_Settings.Load();
 
   //
   // Open the screen
