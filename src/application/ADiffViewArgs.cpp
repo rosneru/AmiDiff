@@ -8,10 +8,10 @@
 #include <workbench/workbench.h>
 
 
-#include "ADiffViewArguments.h"
+#include "ADiffViewArgs.h"
 
 
-ADiffViewArguments::ADiffViewArguments(int argc, char **argv)
+ADiffViewArgs::ADiffViewArgs(int argc, char **argv)
   : m_ArgC(argc),
     m_pArgV(argv)
 {
@@ -33,37 +33,37 @@ ADiffViewArguments::ADiffViewArguments(int argc, char **argv)
 }
 
 
-ADiffViewArguments::~ADiffViewArguments()
+ADiffViewArgs::~ADiffViewArgs()
 {
 
 }
 
 
-SimpleString& ADiffViewArguments::PubScreenName()
+SimpleString& ADiffViewArgs::PubScreenName()
 {
   return m_PubScreenName;
 }
 
 
-SimpleString& ADiffViewArguments::LeftFile()
+SimpleString& ADiffViewArgs::LeftFile()
 {
   return m_LeftFilePath;
 }
 
 
-SimpleString& ADiffViewArguments::RightFile()
+SimpleString& ADiffViewArgs::RightFile()
 {
   return m_RightFilePath;
 }
 
 
-bool ADiffViewArguments::DontAsk()
+bool ADiffViewArgs::DontAsk()
 {
   return m_bDontAsk;
 }
 
 
-void ADiffViewArguments::readWorkbenchArgs()
+void ADiffViewArgs::readWorkbenchArgs()
 {
   int bufLen = 2048;  // TODO How to get rid of this fixed maximum?
   STRPTR pBuf = (STRPTR) AllocVec(bufLen, MEMF_ANY);
@@ -156,7 +156,7 @@ void ADiffViewArguments::readWorkbenchArgs()
   FreeVec(pBuf);
 }
 
-void ADiffViewArguments::readCommandLineArgs()
+void ADiffViewArgs::readCommandLineArgs()
 {
     // Reading the command line arguments
     SimpleString argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S";

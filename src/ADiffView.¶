@@ -78,7 +78,7 @@ Linker
 Run
 30 "" "" "" 0
 ""
-PUBSCREEN=StormScreen /testfiles/testcase_23_RealLifeApp-left.cs /testfiles/testcase_23_RealLifeApp-right.cs
+/testfiles/testcase_23_RealLifeApp-left.cs /testfiles/testcase_23_RealLifeApp-right.cs
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 0 0
 0 0 0 "" ""
@@ -132,20 +132,26 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "application/ADiffViewOptions.cpp"
-"application/ADiffViewOptions.cpp"
-"application/ADiffViewOptions.h"
+1 "application/ADiffViewArguments.cpp"
+"application/ADiffViewArguments.cpp"
+"application/ADiffViewArguments.h"
 Storm Shell Project (Dependencies)
-"objects_debug/ADiffViewOptions.o" "objects_debug/ADiffViewOptions.debug"
+"objects_debug/ADiffViewArguments.o" "objects_debug/ADiffViewArguments.debug"
+""
+1 1
+File
+1 "application/ADiffViewSettings.cpp"
+"application/ADiffViewSettings.cpp"
+"application/ADiffViewSettings.h"
+Storm Shell Project (Dependencies)
+"objects_debug/ADiffViewSettings.o" "objects_debug/ADiffViewSettings.debug"
 ""
 1 1
 File
 1 "application/Application.cpp"
 "application/Application.cpp"
 "application/Application.h"
-"application/ADiffViewOptions.h"
 "gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
 "worker/WorkerBase.h"
 "worker/ProgressReporter.h"
 "worker/WorkerStartupMsg.h"
@@ -155,6 +161,9 @@ File
 "diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
 "application/ADiffView_rev.h"
+"gui/ADiffViewPens.h"
+"application/ADiffViewArguments.h"
+"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -163,9 +172,7 @@ File
 1 "application/main.cpp"
 "application/main.cpp"
 "application/Application.h"
-"application/ADiffViewOptions.h"
 "gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
 "commands/Command.h"
 "worker/WorkerBase.h"
 "worker/ProgressReporter.h"
@@ -175,6 +182,9 @@ File
 "model/Document.h"
 "diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
+"gui/ADiffViewPens.h"
+"application/ADiffViewArguments.h"
+"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -183,8 +193,8 @@ File
 1 "commands/CmdAbout.cpp"
 "commands/CmdAbout.cpp"
 "commands/CmdAbout.h"
-"gui/AmigaDiffPens.h"
 "commands/Command.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdAbout.o" "objects_debug/CmdAbout.debug"
 ""
@@ -201,10 +211,10 @@ File
 "model/Document.h"
 "diffengine/Pair.h"
 "gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
 ""
@@ -215,7 +225,7 @@ File
 "gui/AppScreen.h"
 "commands/CmdOpenWindow.cpp"
 "commands/CmdOpenWindow.h"
-"gui/AmigaDiffPens.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdOpenWindow.o" "objects_debug/CmdOpenWindow.debug"
 ""
@@ -285,6 +295,8 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "gui/ADiffViewPens.cpp"
+"gui/ADiffViewPens.cpp"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ADiffViewPens.o" "objects_debug/ADiffViewPens.debug"
 ""
@@ -294,7 +306,7 @@ File
 "gui/ApplicationMenu.cpp"
 "gui/ApplicationMenu.h"
 "gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ApplicationMenu.o" "objects_debug/ApplicationMenu.debug"
 ""
@@ -303,7 +315,7 @@ File
 1 "gui/AppScreen.cpp"
 "gui/AppScreen.cpp"
 "gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AppScreen.o" "objects_debug/AppScreen.debug"
 ""
@@ -314,12 +326,12 @@ File
 "gui/DiffWindow.h"
 "gui/AppScreen.h"
 "gui/WindowBase.h"
-"gui/AmigaDiffPens.h"
 "diffengine/DiffLine.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
 "gui/ApplicationMenu.h"
 "diffengine/DiffFileBase.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
 ""
@@ -329,9 +341,9 @@ File
 "gui/FilesWindow.cpp"
 "gui/FilesWindow.h"
 "gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/FilesWindow.o" "objects_debug/FilesWindow.debug"
 ""
@@ -341,9 +353,9 @@ File
 "gui/ProgressWindow.cpp"
 "gui/ProgressWindow.h"
 "gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ProgressWindow.o" "objects_debug/ProgressWindow.debug"
 ""
@@ -353,9 +365,9 @@ File
 "gui/ScrollbarWindow.cpp"
 "gui/ScrollbarWindow.h"
 "gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ScrollbarWindow.o" "objects_debug/ScrollbarWindow.debug"
 ""
@@ -365,8 +377,8 @@ File
 "gui/AppScreen.h"
 "gui/WindowBase.cpp"
 "gui/WindowBase.h"
-"gui/AmigaDiffPens.h"
 "gui/ApplicationMenu.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/WindowBase.o" "objects_debug/WindowBase.debug"
 ""
@@ -410,10 +422,10 @@ File
 "model/Document.h"
 "diffengine/Pair.h"
 "gui/AppScreen.h"
-"gui/AmigaDiffPens.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "gui/ApplicationMenu.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
 ""
@@ -462,8 +474,15 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "application/ADiffViewOptions.h"
-"application/ADiffViewOptions.h"
+2 "application/ADiffViewArguments.h"
+"application/ADiffViewArguments.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "application/ADiffViewSettings.h"
+"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -558,6 +577,7 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "gui/ADiffViewPens.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -675,6 +695,7 @@ Section
 7
 File
 10 "ADiffView"
+"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

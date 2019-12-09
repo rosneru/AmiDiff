@@ -40,7 +40,7 @@ ADiffViewSettings::~ADiffViewSettings()
 
 bool ADiffViewSettings::Load()
 {
-
+  return true;
 }
 
 ULONG* ADiffViewSettings::GetColorArray()
