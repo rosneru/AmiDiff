@@ -12,10 +12,10 @@
 
 #include "Application.h"
 
-Application::Application(ADiffViewOptions& options)
-  : m_Options(options),
-    m_LeftFilePath(options.LeftFile()),   // ceate copy in member
-    m_RightFilePath(options.RightFile()), // ceate copy in member
+Application::Application(ADiffViewArguments& arguments)
+  : m_Arguments(arguments),
+    m_LeftFilePath(arguments.LeftFile()),   // copy to member variable
+    m_RightFilePath(arguments.RightFile()), // copy to member variable
     m_pMsgPortIDCMP(NULL),
     m_pMsgPortProgress(NULL),
     m_NumWindowsOpen(0),
@@ -107,10 +107,10 @@ bool Application::Run()
   m_Screen.SetTitle(VERS);  // VERS created with bumprev,
                             // see ADiffView_rev.h
 
-  if(m_Options.PubScreenName().Length() > 0)
+  if(m_Arguments.PubScreenName().Length() > 0)
   {
     m_Screen.Open(AppScreen::SME_UseNamedPubScreen,
-                  m_Options.PubScreenName());
+                  m_Arguments.PubScreenName());
   }
   else
   {
@@ -163,7 +163,7 @@ bool Application::Run()
 
   if((m_LeftFilePath.Length() > 0) &&
      (m_RightFilePath.Length() > 0) &&
-     (m_Options.DontAsk() == true))
+     (m_Arguments.DontAsk() == true))
   {
     //
     // The DONTASK argument has been set and left and right file are

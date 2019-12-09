@@ -47,7 +47,7 @@
 #include "MessageBox.h"
 #include "SimpleString.h"
 
-#include "ADiffViewOptions.h"
+#include "ADiffViewArguments.h"
 
 extern struct IntuitionBase* IntuitionBase;
 
@@ -68,10 +68,10 @@ int main(int argc, char **argv)
   }
 
   // Parse the command line or Workbench start arguments
-  ADiffViewOptions options(argc, argv);
+  ADiffViewArguments arguments(argc, argv);
 
   // Create and run the application
-  Application* app = new Application(options);
+  Application* app = new Application(arguments);
   bool bOk = app->Run();
   if(!bOk)
   {

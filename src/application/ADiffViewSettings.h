@@ -1,14 +1,13 @@
-#ifndef ADIFFVIEW_OPTIONS_H
-#define ADIFFVIEW_OPTIONS_H
+#ifndef ADIFFVIEW_SETTINGS_H
+#define ADIFFVIEW_SETTINGS_H
 
 #include "SimpleString.h"
 
 /**
- * Class to extract and store the options / command line / workbench 
- * arguments of ADiffView.
+ * Class to store the settings of ADiffView.
  *
  * @author Uwe Rosner
- * @date 06/12/2019
+ * @date 09/12/2019
  */
 class ADiffViewOptions
 {
@@ -45,4 +44,4 @@ private:
   void readCommandLineArgs();
 };
 
-#endif // ADIFFVIEW_OPTIONS_H
+#endif // ADIFFVIEW_SETTINGS_H

@@ -10,7 +10,7 @@
 
 #include <exec/ports.h>
 
-#include "ADiffViewOptions.h"
+#include "ADiffViewArguments.h"
 #include "ApplicationMenu.h"
 #include "AppScreen.h"
 #include "CmdAbout.h"
@@ -31,7 +31,7 @@ public:
    * windows messages. If an non-empty string for p_PubScreenName is
    * provided, the
    */
-  Application(ADiffViewOptions& options);
+  Application(ADiffViewArguments& options);
 
   ~Application();
 
@@ -49,7 +49,7 @@ public:
   SimpleString& ErrorMsg();
 
 private:
-  ADiffViewOptions& m_Options;
+  ADiffViewArguments& m_Arguments;
   SimpleString m_LeftFilePath;
   SimpleString m_RightFilePath;
 
