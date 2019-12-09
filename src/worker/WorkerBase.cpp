@@ -19,16 +19,20 @@ WorkerBase::WorkerBase(struct MsgPort*& pProgressPort)
 
 WorkerBase::~WorkerBase()
 {
-  workDone();
+  if (m_pStartupMsg != NULL)
+  {
+    FreeVec(m_pStartupMsg);
+    m_pStartupMsg = NULL;
+  }
 }
 
 
 bool WorkerBase::Run()
 {
-  if (m_pBackgrProcess != NULL)
+  if (m_pStartupMsg != NULL)
   {
-    // Do not start the process if it's already running
-    return false;
+    FreeVec(m_pStartupMsg);
+    m_pStartupMsg = NULL;
   }
 
   // Create the background process
@@ -38,6 +42,7 @@ bool WorkerBase::Run()
 
   if (m_pBackgrProcess == NULL)
   {
+    // Failed to create process
     return false;
   }
 
@@ -46,6 +51,7 @@ bool WorkerBase::Run()
 
   if (m_pStartupMsg == NULL)
   {
+    // Failed to alloc memory for process startup msg
     return false;
   }
 
@@ -59,43 +65,48 @@ bool WorkerBase::Run()
 void WorkerBase::startup()
 {
   struct Process *pProcess = (struct Process *)FindTask(NULL);
+  if(pProcess == NULL)
+  {
+    // Error in process startup: Can't findo own task
+    return;
+  }
 
+  // Wait for start signal
   WaitPort(&pProcess->pr_MsgPort);
 
   struct WorkerStartupMsg *pStartupMsg = (struct WorkerStartupMsg *)
       GetMsg(&pProcess->pr_MsgPort);
 
-  if ((pStartupMsg == NULL) || (pStartupMsg->that == NULL))
+  if (pStartupMsg == NULL)
   {
+    // Error in process startup: Empty start msg
     return;
   }
 
-  class WorkerBase *that = pStartupMsg->that;
+  if(pStartupMsg->that == NULL)
+  {
+    // Error in process startup: Empty worker pointer in start msg
+    return;
+  }
+
+  // TODO Remove..
+  //class WorkerBase *that = pStartupMsg->that;
 
   // Create the reply port for this process. It is used to receive
   // answers from main for the sent progress messages.
   pStartupMsg->that->m_pReplyPort = CreateMsgPort();
-  if (that->m_pReplyPort == NULL)
+  if (pStartupMsg->that->m_pReplyPort == NULL)
   {
+    // Error in process startup: Can't create message port
     return;
   }
 
-  that->doWork();
+  pStartupMsg->that->doWork();
 
-  DeleteMsgPort(that->m_pReplyPort);
-}
+  DeleteMsgPort(pStartupMsg->that->m_pReplyPort);
+  pStartupMsg->that->m_pReplyPort = NULL;
 
 
-void WorkerBase::workDone()
-{
-  if (m_pStartupMsg != NULL)
-  {
-    FreeVec(m_pStartupMsg);
-    m_pStartupMsg = NULL;
-  }
-
-  // TODO Is this enough?
-  m_pBackgrProcess = NULL;
 }
 
 

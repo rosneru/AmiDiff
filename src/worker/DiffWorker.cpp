@@ -83,7 +83,6 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
-    workDone();
     m_bExitAllowed = true;
     return false;
   }
@@ -101,7 +100,6 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
-    workDone();
     m_bExitAllowed = true;
     return false;
   }
@@ -115,7 +113,6 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
-    workDone();
     m_bExitAllowed = true;
     return false;
   }
@@ -139,7 +136,6 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
-    workDone();
     m_bExitAllowed = true;
     return false;
   }
@@ -161,7 +157,6 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
-    workDone();
     m_bExitAllowed = true;
     return false;
   }
@@ -185,7 +180,6 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
-    workDone();
     m_bExitAllowed = true;
     return false;
   }
@@ -206,7 +200,6 @@ bool DiffWorker::Diff()
     m_FilesWindow.Open(pDisabledMenuItem);
     m_ProgressWindow.Close();
 
-    workDone();
     m_bExitAllowed = true;
     return false;
   }
@@ -227,7 +220,6 @@ bool DiffWorker::Diff()
   m_DiffWindow.SetContent(m_pDiffDocumentLeft, m_pDiffDocumentRight);
   m_DiffWindow.SetStatusBar(totalTime, numAdd, numChn, numDel);
 
-  workDone();
   m_bExitAllowed = true;
   return true;
 }
