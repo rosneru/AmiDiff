@@ -133,6 +133,7 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "application/ADiffViewArgs.cpp"
+"application/ADiffViewArgs.cpp"
 Storm Shell Project (Dependencies)
 "objects_debug/ADiffViewArgs.o" "objects_debug/ADiffViewArgs.debug"
 ""
@@ -160,8 +161,8 @@ File
 "gui/ScrollbarWindow.h"
 "application/ADiffView_rev.h"
 "gui/ADiffViewPens.h"
-"application/ADiffViewArguments.h"
 "application/ADiffViewSettings.h"
+"application/ADiffViewArgs.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -181,8 +182,8 @@ File
 "diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
 "gui/ADiffViewPens.h"
-"application/ADiffViewArguments.h"
 "application/ADiffViewSettings.h"
+"application/ADiffViewArgs.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -473,6 +474,7 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "application/ADiffViewArgs.h"
+"application/ADiffViewArgs.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -692,6 +694,7 @@ Section
 7
 File
 10 "ADiffView"
+"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

@@ -46,7 +46,7 @@ bool WorkerBase::Run()
     return false;
   }
 
-  m_pStartupMsg = (struct WorkerStartupMsg *)
+  m_pStartupMsg = (struct WorkerStartupMsg*)
     AllocVec(sizeof(struct WorkerStartupMsg), MEMF_CLEAR|MEMF_PUBLIC);
 
   if (m_pStartupMsg == NULL)
@@ -64,18 +64,18 @@ bool WorkerBase::Run()
 
 void WorkerBase::startup()
 {
-  struct Process *pProcess = (struct Process *)FindTask(NULL);
+  struct Process* pProcess = (struct Process*) FindTask(NULL);
   if(pProcess == NULL)
   {
-    // Error in process startup: Can't findo own task
+    // Error in process startup: Can't find own task
     return;
   }
 
   // Wait for start signal
   WaitPort(&pProcess->pr_MsgPort);
 
-  struct WorkerStartupMsg *pStartupMsg = (struct WorkerStartupMsg *)
-      GetMsg(&pProcess->pr_MsgPort);
+  struct WorkerStartupMsg* pStartupMsg = (struct WorkerStartupMsg*)
+    GetMsg(&pProcess->pr_MsgPort);
 
   if (pStartupMsg == NULL)
   {
@@ -130,7 +130,7 @@ void WorkerBase::notifyProgressChanged(int progress)
   progressMessage.pDescription = m_pProgressDescription;
 
   // Sending the progress message, waiting for the answer and taking the
-  // answer from the queue
+  // answer off the queue
   PutMsg(m_pProgressPort, &progressMessage);
   WaitPort(m_pReplyPort);
   GetMsg(m_pReplyPort);
