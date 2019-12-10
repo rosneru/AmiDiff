@@ -1,6 +1,6 @@
 # README #
 
-Development of a graphical file compare / diff viewer for AmigaOS3.0+.
+A graphical file compare / diff viewer for AmigaOS3.0+.
 
 After cloning the needed submodules should be initialized:
 
@@ -10,8 +10,8 @@ After cloning the needed submodules should be initialized:
 
 ## Development environment ##
 
-* Amiga with OS3.9
-* NDK for AmigaOS 3.9
+* Amiga with OS 3.1.4
+* NDK for AmigaOS 3.1
 * StormC 4
 
 The project file src/ADiffView.¶ can be loaded with StormC4. 
