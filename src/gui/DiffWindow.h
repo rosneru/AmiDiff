@@ -176,32 +176,36 @@ private:
   struct Gadget* m_pGadTxtLeftFile;
   struct Gadget* m_pGadTxtRightFile;
 
-  unsigned short m_TextFontWidth_pix;  ///> Width of the rastport text font
-  unsigned short m_TextFontHeight_pix; ///> Height of the rastport text font
+  ULONG m_TextFontWidth_pix;  ///> Width of the rastport text font
+  ULONG m_TextFontHeight_pix; ///> Height of the rastport text font
 
-  unsigned short m_X;   ///> Index of leftmost char in displayed lines.
-                        ///> Is > 0 when text is horizontally scrolled.
+  ULONG m_X;        ///> Index of leftmost char in displayed lines
+                    ///> Is > 0 when text is horizontally scrolled
 
-  unsigned long m_Y;    ///> Index of topmost displayed line in document.
-                        ///> Is > 0 when text is vertically scrolled.
+  ULONG m_Y;        ///> Index of topmost displayed line in document
+                    ///> Is > 0 when text is vertically scrolled
 
-  unsigned short m_MaxTextAreaChars;  ///> Max fitting chars in each text area.
-                                      ///> Depending on font and text area size.
+  ULONG m_MaxTextAreaChars;   ///> Max fitting chars in each text area
+                              ///> Depending on font and text area size
 
-  unsigned long m_MaxTextAreaLines; ///> Max fitting lines in each text area.
-                                    ///> Depending on font and window size.
+  ULONG m_MaxTextAreaLines;   ///> Max fitting lines in each text area
+                              ///> Depending on font and window size
 
-  unsigned short m_MaxLineLength;   ///> Longest line length (in chars) either
-                                    ///> in left or in right file
+  ULONG m_MaxLineLength;      ///> Longest line length (in chars)
+                              ///> either in left or in right file
 
-  unsigned short m_IndentX;  ///> X-distance of the text areas to window borders
-  unsigned short m_IndentY;  ///> Y-distance of the text areas to window borders
+  ULONG m_NumLines;           ///> Number of lines (as it's a diff view
+                              ///> this should be equal for both files)
 
-  unsigned short m_TextArea1Left;   ///> X-position of the 1st text area
-  unsigned short m_TextArea2Left;   ///> X-position of the 2nd text area
-  unsigned short m_TextAreasTop;    ///> Y-position of the text areas
-  unsigned short m_TextAreasWidth;  ///> Width of each text area
-  unsigned short m_TextAreasHeight; ///> Height of the text areas (equally heigh)
+
+  ULONG m_IndentX;  ///> X-distance of the text areas to window borders
+  ULONG m_IndentY;  ///> Y-distance of the text areas to window borders
+
+  ULONG m_TextArea1Left;      ///> X-position of the 1st text area
+  ULONG m_TextArea2Left;      ///> X-position of the 2nd text area
+  ULONG m_TextAreasTop;       ///> Y-position of the text areas
+  ULONG m_TextAreasWidth;     ///> Width of each text area
+  ULONG m_TextAreasHeight;    ///> Height of each of the text areas
 
   SimpleString m_ChangedText;
   SimpleString m_AddedText;

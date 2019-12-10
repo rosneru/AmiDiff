@@ -34,6 +34,7 @@ DiffWindow::DiffWindow(AppScreen& appScreen,
     m_MaxTextAreaChars(0),
     m_MaxTextAreaLines(0),
     m_MaxLineLength(0),
+    m_NumLines(0),
     m_IndentX(5),
     m_IndentY(0),
     m_TextArea1Left(0),
@@ -193,15 +194,7 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   // Ensure that the gadgets are re-drawn
   RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
 
-  // Display the first [1; m_MaxTextAreaLines] lines
-  paintDocument();
-
-  // Paint the window decoration
-  paintWindowDecoration();
-
-  // Paint the status bar
-  paintStatusBar();
-
+  // Calculate the length of the longest line
   size_t maxCharsLeft = pLeftDocument->MaxLineLength();
   size_t maxCharsRight = pRightDocument->MaxLineLength();
   m_MaxLineLength = 0;
@@ -214,11 +207,23 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
     m_MaxLineLength = maxCharsRight;
   }
 
+  // Get the number of lines (will/should be equal for left and right)
+  m_NumLines = m_pLeftDocument->NumLines();
+
+  // Display the first [1; m_MaxTextAreaLines] lines
+  paintDocument();
+
+  // Paint the window decoration
+  paintWindowDecoration();
+
+  // Paint the status bar
+  paintStatusBar();
+
   setXScrollPotSize(m_MaxTextAreaChars, m_MaxLineLength);
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  setYScrollPotSize(m_MaxTextAreaLines, m_pLeftDocument->NumLines());
+  setYScrollPotSize(m_MaxTextAreaLines, m_NumLines);
 
   return true;
 }
@@ -602,7 +607,8 @@ void DiffWindow::calcSizes()
   setXScrollPotSize(m_MaxTextAreaChars, m_MaxLineLength);
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_MaxTextAreaLines, m_pLeftDocument->NumLines());
+  setYScrollPotSize(m_MaxTextAreaLines, m_NumLines);
+
 }
 
 
@@ -629,23 +635,27 @@ void DiffWindow::resizeGadgets()
   createGadgets();
 
   AddGList(m_pWindow, m_pGadtoolsContext, (UWORD)~0, -1, NULL);
-
-  // Display the document file names in the gadgets
-  GT_SetGadgetAttrs(m_pGadTxtLeftFile,
-                    m_pWindow,
-                    NULL,
-                    GTTX_Text, m_pLeftDocument->FileName(),
-                    TAG_END);
-
-  GT_SetGadgetAttrs(m_pGadTxtRightFile,
-                    m_pWindow,
-                    NULL,
-                    GTTX_Text, m_pRightDocument->FileName(),
-                    TAG_END);
-
   RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
-
   FreeGadgets(pOldContext);
+
+  if(m_pLeftDocument != NULL)
+  {
+    // Display the document file names in the gadgets
+    GT_SetGadgetAttrs(m_pGadTxtLeftFile,
+                      m_pWindow,
+                      NULL,
+                      GTTX_Text, m_pLeftDocument->FileName(),
+                      TAG_END);
+  }
+
+  if(m_pRightDocument != NULL)
+  {
+    GT_SetGadgetAttrs(m_pGadTxtRightFile,
+                      m_pWindow,
+                      NULL,
+                      GTTX_Text, m_pRightDocument->FileName(),
+                      TAG_END);
+  }
 }
 
 
@@ -667,7 +677,7 @@ void DiffWindow::paintDocument(bool fromStart)
 
   for(size_t i = m_Y; (i - m_Y) < m_MaxTextAreaLines; i++)
   {
-    if(i >= m_pLeftDocument->NumLines())
+    if(i >= m_NumLines)
     {
       break;
     }
@@ -817,6 +827,11 @@ void DiffWindow::paintWindowDecoration()
 
 void DiffWindow::paintStatusBar()
 {
+  if(!IsOpen())
+  {
+    return;
+  }
+
   struct IntuiText intuiText;
   intuiText.FrontPen  = m_AppScreen.Pens().Text();
   intuiText.BackPen   = m_AppScreen.Pens().Background();
@@ -1075,23 +1090,23 @@ size_t DiffWindow::scrollUp(int numLines)
     return 0;
   }
 
-  if(m_pLeftDocument->NumLines() < m_MaxTextAreaLines)
+  if(m_NumLines < m_MaxTextAreaLines)
   {
     // Do not move the scroll area upward if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_Y + m_MaxTextAreaLines) == m_pLeftDocument->NumLines())
+  if((m_Y + m_MaxTextAreaLines) == m_NumLines)
   {
     // Do not move the scroll area upward if text already at bottom
     return 0;
   }
 
-  if((m_Y + m_MaxTextAreaLines + numLines) > m_pLeftDocument->NumLines())
+  if((m_Y + m_MaxTextAreaLines + numLines) > m_NumLines)
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    numLines = m_pLeftDocument->NumLines() - (m_Y + m_MaxTextAreaLines);
+    numLines = m_NumLines - (m_Y + m_MaxTextAreaLines);
   }
 
   // Set foreground color for document painting
