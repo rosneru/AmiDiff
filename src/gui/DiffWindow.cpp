@@ -420,9 +420,9 @@ void DiffWindow::initialize()
            WFLG_GIMMEZEROZERO);   // Different layers for border and content
 
   // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
-           IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
-           IDCMP_NEWSIZE);        // Inform us about resizing
+  setIDCMP(IDCMP_MENUPICK |       // Inform about menu selection
+           IDCMP_CLOSEWINDOW |    // Inform about click on close gadget
+           IDCMP_NEWSIZE);        // Inform about resizing
 
   m_bInitialized = true;
 }
@@ -483,11 +483,11 @@ void DiffWindow::createGadgets()
   }
 
   m_pGadTxtLeftFile = CreateGadget(TEXT_KIND,
-                                    pFakeGad,
-                                    &newGadget,
-                                    GTTX_Border, TRUE,
-                                    GTTX_Text, pFileName,
-                                    TAG_END);
+                                   pFakeGad,
+                                   &newGadget,
+                                   GTTX_Border, TRUE,
+                                   GTTX_Text, pFileName,
+                                   TAG_END);
 
   if(m_TextArea2Left > 0)
   {

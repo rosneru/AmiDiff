@@ -27,26 +27,10 @@
 class Application
 {
 public:
-  /**
-   * Creates the application using the given message port for the
-   * windows messages. If an non-empty string for p_PubScreenName is
-   * provided, the
-   */
   Application(ADiffViewArgs& args);
-
   ~Application();
 
-
-  /**
-   * Starts the application.
-   *
-   * When p_bDoNotAsk is set to true, the diff will be performed
-   * immediately without waiting for the user to click the "Diff"
-   * button in OpenFilesWindow. This only works if both files,
-   * left and right are passed as argument.
-   */
   bool Run();
-
   SimpleString& ErrorMsg();
 
 private:

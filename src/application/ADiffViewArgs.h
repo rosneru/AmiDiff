@@ -30,9 +30,29 @@ public:
 
   virtual ~ADiffViewArgs();
 
+  /**
+   * Name of the public screen to run ADiffView on
+   * If empty a own screen will be opened (Workbench clone, 8 colors)
+   */
   SimpleString& PubScreenName();
+
+  /**
+   * Path to left file
+   */
   SimpleString& LeftFile();
+
+  /**
+   * Path to right file
+   */
   SimpleString& RightFile();
+
+  /**
+   * If true, the diff will be performed immediately without waiting 
+   * for the user to click the "Diff" button in OpenFilesWindow. 
+   * 
+   * This only works when both files, left and right are also passed 
+   * as arguments.
+   */
   bool DontAsk();
 
 private:
