@@ -25,7 +25,7 @@ void DiffFileLinux::Clear()
     return;
   }
 
-  for(int i = 0; i < m_NumLines; i++)
+  for(size_t i = 0; i < m_NumLines; i++)
   {
     DiffLine* pItem = m_pDiffLinesArray[i];
     if(pItem != NULL)
@@ -134,4 +134,5 @@ bool DiffFileLinux::AddString(const char* p_String,
   }
 
   m_pDiffLinesArray[m_NextAddedLineIdx++] = pDiffLine;
+  return true;
 }

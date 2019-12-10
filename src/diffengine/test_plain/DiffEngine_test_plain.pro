@@ -6,7 +6,7 @@ CONFIG -= qt
 QMAKE_CXXFLAGS += -std=c++11 -Wall -Wconversion -Wextra -pedantic #-Weffc++
 
 INCLUDEPATH +=  ../ \
-                ../../thread \
+                ../../worker \
                 ../../oscottlibs
 
 SOURCES += \
