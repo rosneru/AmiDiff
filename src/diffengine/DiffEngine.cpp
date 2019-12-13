@@ -16,6 +16,7 @@ DiffEngine::DiffEngine(DiffFileBase& a,
     m_NumChanged(0),
     m_bCancelRequested(bCancelRequested),
     m_pProgressReporter(NULL),
+    m_pDiffStartPositions(NULL),
     m_Max(0),
     m_pDownVector(NULL),
     m_pUpVector(NULL)
@@ -25,7 +26,11 @@ DiffEngine::DiffEngine(DiffFileBase& a,
 
 DiffEngine::~DiffEngine()
 {
-
+  if(m_pDiffStartPositions != NULL)
+  {
+    delete[] m_pDiffStartPositions;
+    m_pDiffStartPositions = NULL;
+  }
 }
 
 bool DiffEngine::Diff()
@@ -145,10 +150,42 @@ bool DiffEngine::Diff()
     }
   }
 
+  size_t numChanges = m_NumDeletedA + m_NumInsertedB + m_NumChanged;
+
+  if(m_pDiffStartPositions != NULL)
+  {
+    delete[] m_pDiffStartPositions;
+  }
+
+  m_pDiffStartPositions = new int[numChanges];
+  size_t iDiffStartPos = 0;
+  for(size_t i = 0; i < m_ADiff.NumLines(); i++)
+  {
+    if((m_A.GetLineState(i) == DiffLine::Changed) ||
+       (m_B.GetLineState(i) == DiffLine::Changed) ||
+       (m_A.GetLineState(i) == DiffLine::Deleted) ||
+       (m_B.GetLineState(i) == DiffLine::Added))
+    {
+      // Add the current line idx as a start of a difference
+      m_pDiffStartPositions[iDiffStartPos++] = i;
+    }
+
+    if(iDiffStartPos >= numChanges)
+    {
+      // Don't exceed the array size
+      break;
+    }
+  }
+
   // Progress reporting
   reportProgress(100);
 
   return true;
+}
+
+long DiffEngine::NumDifferences() const
+{
+  return m_NumChanged + m_NumDeletedA + m_NumInsertedB;
 }
 
 
@@ -167,6 +204,11 @@ long DiffEngine::NumChanged() const
 long DiffEngine::NumDeleted() const
 {
   return m_NumDeletedA;
+}
+
+int*DiffEngine::DiffStartPositions()
+{
+  return m_pDiffStartPositions;
 }
 
 

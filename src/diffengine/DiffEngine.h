@@ -10,9 +10,10 @@
 /**
  * Class for generating and representing the difference of two files.
  *
- * This is an implementation of the Myers diff algorithm. I ported it
- * from a c# solution I found in the web. Here the attached license of
- * the source:
+ * This is an implementation of the Myers diff algorithm. Part of it is
+ * ported from a c# solution I found in the web.
+ *
+ * The attached license of the source:
  *
  *      Copyright (c) 2005-2012 by Matthias Hertel, http://www.mathertel.de/
  *      All rights reserved.
@@ -65,9 +66,20 @@ public:
 
   bool Diff();
 
+  long NumDifferences() const;
+
   long NumAdded() const;
   long NumChanged() const;
   long NumDeleted() const;
+
+  /**
+   * Returns an int-Array of length NumDifferences() which contains
+   * the line idx of each difference.
+   *
+   * NOTE: Do not use the arry after the DiffEngine is deleted, because
+   *       its memory is freed and invalid by then.
+   */
+  int* DiffStartPositions();
 
 
   /**
@@ -81,12 +93,14 @@ private:
   DiffFileBase& m_ADiff;
   DiffFileBase& m_BDiff;
 
+  bool& m_bCancelRequested;
+  ProgressReporter* m_pProgressReporter;
+
   long m_NumInsertedB;
   long m_NumDeletedA;
   long m_NumChanged;
 
-  bool& m_bCancelRequested;
-  ProgressReporter* m_pProgressReporter;
+  int* m_pDiffStartPositions;
 
   long m_Max;
   long* m_pDownVector;
@@ -106,7 +120,10 @@ private:
    * these arrays the lower and upper bounds are passed while the
    * sequences stay constant.
    */
-  void longestCommonSubsequence(long lowerA, long upperA, long lowerB, long upperB);
+  void longestCommonSubsequence(long lowerA,
+                                long upperA,
+                                long lowerB,
+                                long upperB);
 
 
   /**
