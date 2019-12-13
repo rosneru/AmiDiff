@@ -18,8 +18,8 @@ ADiffViewSettings::ColorArray ADiffViewSettings::m_sColors =
 {
   0x00030004, // 0x0003 - Load 3 colors, starting from 0x004
   0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9, // red
-  0xfcfcfcfc, 0xffffffff, 0xbbbbbbbb, // yellow
   0xc1c1c1c1, 0xfefefefe, 0xbdbdbdbd, // green
+  0xfcfcfcfc, 0xffffffff, 0xbbbbbbbb, // yellow
   0x00000000  // Termination
 };
 
@@ -46,4 +46,22 @@ bool ADiffViewSettings::Load()
 ULONG* ADiffViewSettings::GetColorArray()
 {
   return m_ColorArray.elem;
+}
+
+
+ULONG* ADiffViewSettings::GetColorRedArray()
+{
+  return m_ColorArray.elem + 1;
+}
+
+
+ULONG* ADiffViewSettings::GetColorGreenArray()
+{
+  return m_ColorArray.elem + 4;
+}
+
+
+ULONG* ADiffViewSettings::GetColorYellowArray()
+{
+  return m_ColorArray.elem + 7;
 }

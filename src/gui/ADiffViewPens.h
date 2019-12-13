@@ -4,6 +4,7 @@
 #include <graphics/view.h>
 #include <intuition/screens.h>
 
+#include "ADiffViewSettings.h"
 
 /**
  * Class for the pens used by AmigaDiff
@@ -15,7 +16,9 @@ class ADiffViewPens
 {
 public:
   ADiffViewPens(struct Screen*& pScreen,
-                struct DrawInfo*& pDrawInfo);
+                struct DrawInfo*& pDrawInfo,
+                ADiffViewSettings& settings);
+
   ~ADiffViewPens();
 
   /**
@@ -40,18 +43,16 @@ public:
   LONG Red() const;
   LONG Yellow() const;
   LONG Green() const;
-  LONG Gray() const;
+
 
 private:
   struct Screen*& m_pScreen;
   struct DrawInfo*& m_pDrawInfo;
-
-  struct ColorMap* m_pColorMap;
+  ADiffViewSettings& m_Settings;
 
   LONG m_RedPen;
   LONG m_YellowPen;
   LONG m_GreenPen;
-  LONG m_GrayPen;
 
 };
 

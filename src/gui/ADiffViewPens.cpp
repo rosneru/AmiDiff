@@ -4,13 +4,14 @@
 
 
 ADiffViewPens::ADiffViewPens(struct Screen*& pScreen,
-                             struct DrawInfo*& pDrawInfo)
+                             struct DrawInfo*& pDrawInfo,
+                             ADiffViewSettings& settings)
   : m_pScreen(pScreen),
     m_pDrawInfo(pDrawInfo),
+    m_Settings(settings),
     m_RedPen(-1),
     m_YellowPen(-1),
-    m_GreenPen(-1),
-    m_GrayPen(-1)
+    m_GreenPen(-1)
 {
 
 }
@@ -27,39 +28,38 @@ bool ADiffViewPens::Create()
     return false;
   }
 
-  m_pColorMap = m_pScreen->ViewPort.ColorMap;
-  if(m_pColorMap == NULL)
+  if(m_pScreen->ViewPort.ColorMap == NULL)
   {
     return false;
   }
 
+  ULONG* pColRed = m_Settings.GetColorRedArray();
+  ULONG* pColGreen = m_Settings.GetColorGreenArray();
+  ULONG* pColYellow = m_Settings.GetColorYellowArray();
+
   // Find the best pens for the neded colors
-  m_RedPen = ObtainBestPen(m_pColorMap,
-    0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9,
+  m_RedPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
+    pColRed[0], pColRed[1], pColRed[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
     TAG_END);
 
-  m_YellowPen = ObtainBestPen(m_pColorMap,
-    0xfcfcfcfc, 0xffffffff, 0xbbbbbbbb,
+  m_GreenPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
+    pColGreen[0], pColGreen[1], pColGreen[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
     TAG_END);
 
-  m_GreenPen = ObtainBestPen(m_pColorMap,
-    0xc1c1c1c1, 0xfefefefe, 0xbdbdbdbd,
+  m_YellowPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
+    pColYellow[0], pColYellow[1], pColYellow[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
     TAG_END);
 
-  m_GrayPen = ObtainBestPen(m_pColorMap,
-    0x28282828, 0x28282828, 0x28282828,
-    OBP_FailIfBad, FALSE,
-    OBP_Precision, PRECISION_EXACT,
-    TAG_END);
 
   return true;
 }
+
 
 void ADiffViewPens::Dispose()
 {
@@ -68,16 +68,16 @@ void ADiffViewPens::Dispose()
     return;
   }
 
-  if(m_pColorMap == NULL)
+  if(m_pScreen->ViewPort.ColorMap == NULL)
   {
     return;
   }
 
-  ReleasePen(m_pColorMap, m_RedPen);
-  ReleasePen(m_pColorMap, m_YellowPen);
-  ReleasePen(m_pColorMap, m_GreenPen);
-  ReleasePen(m_pColorMap, m_GrayPen);
+  ReleasePen(m_pScreen->ViewPort.ColorMap, m_RedPen);
+  ReleasePen(m_pScreen->ViewPort.ColorMap, m_YellowPen);
+  ReleasePen(m_pScreen->ViewPort.ColorMap, m_GreenPen);
 }
+
 
 LONG ADiffViewPens::Background() const
 {
@@ -152,15 +152,5 @@ LONG ADiffViewPens::Green() const
   }
 
   return m_GreenPen;
-}
-
-LONG ADiffViewPens::Gray() const
-{
-  if(m_GrayPen < 0)
-  {
-    return 0;
-  }
-
-  return m_GrayPen;
 }
 

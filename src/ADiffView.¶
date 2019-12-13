@@ -134,6 +134,7 @@ Storm Shell Project (Dependencies)
 File
 1 "application/ADiffViewArgs.cpp"
 "application/ADiffViewArgs.cpp"
+"application/ADiffViewArgs.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ADiffViewArgs.o" "objects_debug/ADiffViewArgs.debug"
 ""

@@ -8,7 +8,7 @@
 extern struct IntuitionBase* IntuitionBase;
 
 AppScreen::AppScreen(ADiffViewSettings& settings)
-  : m_Pens(m_pScreen, m_pDrawInfo),
+  : m_Pens(m_pScreen, m_pDrawInfo, settings),
     m_Settings(settings),
     m_pScreen(NULL),
     m_pDrawInfo(NULL),

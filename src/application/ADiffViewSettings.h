@@ -30,6 +30,27 @@ public:
    */
   ULONG* GetColorArray();
 
+  /**
+   * Retun the start of the array for color red.
+   * 
+   * Use it with the indexes [0], [1], [2] for single rgb components.
+   */
+  ULONG* GetColorRedArray();
+
+  /**
+   * Retun the start of the array for color green.
+   * 
+   * Use it with the indexes [0], [1], [2] for single rgb components.
+   */
+  ULONG* GetColorGreenArray();
+
+  /**
+   * Retun the start of the array for color yellow.
+   * 
+   * Use it with the indexes [0], [1], [2] for single rgb components.
+   */
+  ULONG* GetColorYellowArray();
+
 private:
   // It's useful to store the colors at a central place
   // This struct is a workaround for C++98 not allowing array 
