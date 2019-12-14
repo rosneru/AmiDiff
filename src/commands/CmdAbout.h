@@ -16,8 +16,8 @@
 class CmdAbout : public Command
 {
 public:
-  CmdAbout(AppScreen& p_Screen,
-           ApplicationMenu& p_Menu,
+  CmdAbout(AppScreen& screen,
+           ApplicationMenu& menu,
            const char* pVersTag);
 
   virtual ~CmdAbout();

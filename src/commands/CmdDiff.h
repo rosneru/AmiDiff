@@ -16,7 +16,7 @@
 class CmdDiff : public Command
 {
 public:
-  CmdDiff(DiffWorker& p_DiffWorker);
+  CmdDiff(DiffWorker& diffWorker);
   virtual ~CmdDiff();
   virtual void Execute() const;
 

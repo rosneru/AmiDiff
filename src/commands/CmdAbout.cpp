@@ -1,11 +1,11 @@
 #include "MessageBox.h"
 #include "CmdAbout.h"
 
-CmdAbout::CmdAbout(AppScreen& p_Screen,
-                   ApplicationMenu& p_Menu,
+CmdAbout::CmdAbout(AppScreen& screen,
+                   ApplicationMenu& menu,
                    const char* pVersTag)
-  : m_Screen(p_Screen),
-    m_Menu(p_Menu)
+  : m_Screen(screen),
+    m_Menu(menu)
 {
   m_AboutMsg = pVersTag + 7;  // Skip the first 7 chars of pVersTag
                               // which is only "\0$VER: "

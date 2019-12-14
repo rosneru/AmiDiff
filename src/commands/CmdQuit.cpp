@@ -1,9 +1,9 @@
 #include "CmdQuit.h"
 
 
-CmdQuit::CmdQuit(bool& p_bExitAllowed, bool& p_bExitRequested)
-  : m_bExitAllowed(p_bExitAllowed),
-    m_bExitRequested(p_bExitRequested)
+CmdQuit::CmdQuit(bool& exitAllowed, bool& exitRequested)
+  : m_bExitAllowed(exitAllowed),
+    m_bExitRequested(exitRequested)
 {
 }
 

@@ -1,7 +1,7 @@
 #include "CmdDiff.h"
 
-CmdDiff::CmdDiff(DiffWorker& p_DiffWorker)
-  : m_DiffWorker(p_DiffWorker)
+CmdDiff::CmdDiff(DiffWorker& diffWorker)
+  : m_DiffWorker(diffWorker)
 {
 
 }
