@@ -27,6 +27,8 @@ DiffWindow::DiffWindow(AppScreen& appScreen,
     m_pGadtoolsContext(NULL),
     m_pGadTxtLeftFile(NULL),
     m_pGadTxtRightFile(NULL),
+    m_pDiffStartIdxs(NULL),
+    m_NumDifferences(0),
     m_TextFontWidth_pix(0),
     m_TextFontHeight_pix(0),
     m_X(0),
@@ -157,7 +159,9 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
 }
 
 bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
-                            DiffDocument* pRightDocument)
+                            DiffDocument* pRightDocument,
+                            long* pDiffStartIdxs,
+                            long numDifferences)
 {
   if((pLeftDocument == NULL) || (pRightDocument == NULL))
   {
@@ -166,6 +170,9 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
 
   m_pLeftDocument = pLeftDocument;
   m_pRightDocument = pRightDocument;
+  m_pDiffStartIdxs = pDiffStartIdxs;
+  m_NumDifferences = numDifferences;
+
   m_X = 0;
   m_Y = 0;
 

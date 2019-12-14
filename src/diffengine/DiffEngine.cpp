@@ -16,7 +16,7 @@ DiffEngine::DiffEngine(DiffFileBase& a,
     m_NumChanged(0),
     m_bCancelRequested(bCancelRequested),
     m_pProgressReporter(NULL),
-    m_pDiffStartPositions(NULL),
+    m_pDiffStartIdxs(NULL),
     m_Max(0),
     m_pDownVector(NULL),
     m_pUpVector(NULL)
@@ -26,10 +26,10 @@ DiffEngine::DiffEngine(DiffFileBase& a,
 
 DiffEngine::~DiffEngine()
 {
-  if(m_pDiffStartPositions != NULL)
+  if(m_pDiffStartIdxs != NULL)
   {
-    delete[] m_pDiffStartPositions;
-    m_pDiffStartPositions = NULL;
+    delete[] m_pDiffStartIdxs;
+    m_pDiffStartIdxs = NULL;
   }
 }
 
@@ -161,14 +161,13 @@ bool DiffEngine::Diff()
   //
   // Create a list of all differences' start indexes
   //
-  if(m_pDiffStartPositions != NULL)
+  if(m_pDiffStartIdxs != NULL)
   {
     // List already exists, delete it first
-    delete[] m_pDiffStartPositions;
+    delete[] m_pDiffStartIdxs;
   }
 
-  size_t numChanges = m_NumDeletedA + m_NumInsertedB + m_NumChanged;
-  m_pDiffStartPositions = new int[numChanges];
+  m_pDiffStartIdxs = new long[NumDifferences()];
 
   size_t iStartPosList = 0;
   for(size_t iDiffFile = 0; iDiffFile < m_ADiff.NumLines(); iDiffFile++)
@@ -179,10 +178,10 @@ bool DiffEngine::Diff()
        (m_B.GetLineState(iDiffFile) == DiffLine::Added))
     {
       // Add the current line idx as a start of a difference
-      m_pDiffStartPositions[iStartPosList++] = iDiffFile;
+      m_pDiffStartIdxs[iStartPosList++] = iDiffFile;
     }
 
-    if(iStartPosList >= numChanges)
+    if(iStartPosList >= NumDifferences())
     {
       // Don't exceed the array size
       break;
@@ -218,9 +217,10 @@ long DiffEngine::NumDeleted() const
   return m_NumDeletedA;
 }
 
-int*DiffEngine::DiffStartPositions()
+
+long* DiffEngine::DiffStartIdxs()
 {
-  return m_pDiffStartPositions;
+  return m_pDiffStartIdxs;
 }
 
 

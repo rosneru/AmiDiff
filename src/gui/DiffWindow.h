@@ -46,16 +46,30 @@ public:
 
 
   /**
-   * Open a text file
+   * Set the main content for the DiffWindow.
    *
-   * Extended method from base class Document
+   * @param pLeftDocument
+   * The DiffDocument to be displayed on the left side. Should be
+   * created with the resulting left DiffFile after DiffEngine.Diff()
+   * has run successfully.
    *
-   * @param p_FileName
-   * Full file name with path for to be opened file. If empty a ASL
-   * request will be opened asking the user for the file name.
+   * @param pRightDocument
+   * The DiffDocument to be displayed on the right side. Should be
+   * created with the resulting right DiffFile after DiffEngine.Diff()
+   * has run successfully.
+   *
+   * @param pDiffStartIdxs
+   * An array, containing the y-start-idx of each diff
+   *
+   * @param numDifferences
+   * The number of differences. Summarized the changed, added and
+   * inserted lines. This is also the number of items of the array
+   * pDiffStartIdxs.
    */
   bool SetContent(DiffDocument* pLeftDocument,
-                  DiffDocument* pRightDocument);
+                  DiffDocument* pRightDocument,
+                  long* pDiffStartIdxs,
+                  long numDifferences);
 
   /**
    * Setting the data to be shown on the status bar.
@@ -175,6 +189,9 @@ private:
   struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pGadTxtLeftFile;
   struct Gadget* m_pGadTxtRightFile;
+
+  long* m_pDiffStartIdxs; ///> An array, containing the y-start-idx of each diff
+  long m_NumDifferences;  ///> Number of differences
 
   ULONG m_TextFontWidth_pix;  ///> Width of the rastport text font
   ULONG m_TextFontHeight_pix; ///> Height of the rastport text font

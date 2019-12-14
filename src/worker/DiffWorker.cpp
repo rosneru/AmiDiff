@@ -187,12 +187,13 @@ bool DiffWorker::Diff()
   //
   // Collecting the number of changes
   //
-  int numAdd = m_DiffEngine.NumAdded();
-  int numChn = m_DiffEngine.NumChanged();
-  int numDel = m_DiffEngine.NumDeleted();
+  long numAdd = m_DiffEngine.NumAdded();
+  long numChn = m_DiffEngine.NumChanged();
+  long numDel = m_DiffEngine.NumDeleted();
+  long numDifferences = m_DiffEngine.NumDifferences();
 
   // If there are no changes return to FilesWindow
-  if((numAdd + numChn + numDel) == 0)
+  if(numDifferences == 0)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "No differences found: the files are equal.", "Ok");
@@ -218,7 +219,10 @@ bool DiffWorker::Diff()
   m_ProgressWindow.Close();
 
   m_DiffWindow.SetStatusBar(totalTime, numAdd, numChn, numDel);
-  m_DiffWindow.SetContent(m_pDiffDocumentLeft, m_pDiffDocumentRight);
+  m_DiffWindow.SetContent(m_pDiffDocumentLeft,
+                          m_pDiffDocumentRight,
+                          m_DiffEngine.DiffStartIdxs(),
+                          numDifferences);
 
   m_bExitAllowed = true;
   return true;

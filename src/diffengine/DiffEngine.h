@@ -79,7 +79,7 @@ public:
    * NOTE: Do not use the arry after the DiffEngine is deleted, because
    *       its memory is freed and invalid by then.
    */
-  int* DiffStartPositions();
+  long* DiffStartIdxs();
 
 
   /**
@@ -100,7 +100,7 @@ private:
   long m_NumDeletedA;
   long m_NumChanged;
 
-  int* m_pDiffStartPositions;
+  long* m_pDiffStartIdxs;
 
   long m_Max;
   long* m_pDownVector;
