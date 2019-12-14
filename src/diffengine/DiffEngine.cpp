@@ -150,27 +150,32 @@ bool DiffEngine::Diff()
     }
   }
 
-  size_t numChanges = m_NumDeletedA + m_NumInsertedB + m_NumChanged;
 
+  //
+  // Create a list of all differences' start indexes
+  //
   if(m_pDiffStartPositions != NULL)
   {
+    // List already exists, delete it first
     delete[] m_pDiffStartPositions;
   }
 
+  size_t numChanges = m_NumDeletedA + m_NumInsertedB + m_NumChanged;
   m_pDiffStartPositions = new int[numChanges];
-  size_t iDiffStartPos = 0;
-  for(size_t i = 0; i < m_ADiff.NumLines(); i++)
+
+  size_t iStartPosList = 0;
+  for(size_t iDiffFile = 0; iDiffFile < m_ADiff.NumLines(); iDiffFile++)
   {
-    if((m_A.GetLineState(i) == DiffLine::Changed) ||
-       (m_B.GetLineState(i) == DiffLine::Changed) ||
-       (m_A.GetLineState(i) == DiffLine::Deleted) ||
-       (m_B.GetLineState(i) == DiffLine::Added))
+    if((m_A.GetLineState(iDiffFile) == DiffLine::Changed) ||
+       (m_B.GetLineState(iDiffFile) == DiffLine::Changed) ||
+       (m_A.GetLineState(iDiffFile) == DiffLine::Deleted) ||
+       (m_B.GetLineState(iDiffFile) == DiffLine::Added))
     {
       // Add the current line idx as a start of a difference
-      m_pDiffStartPositions[iDiffStartPos++] = i;
+      m_pDiffStartPositions[iStartPosList++] = iDiffFile;
     }
 
-    if(iDiffStartPos >= numChanges)
+    if(iStartPosList >= numChanges)
     {
       // Don't exceed the array size
       break;
