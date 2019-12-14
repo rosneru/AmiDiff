@@ -17,6 +17,8 @@
 #include "CmdAbout.h"
 #include "CmdOpenWindow.h"
 #include "CmdDiff.h"
+#include "CmdNavNextDiff.h"
+#include "CmdNavPrevDiff.h"
 #include "CmdQuit.h"
 #include "DiffWorker.h"
 #include "FilesWindow.h"
@@ -65,11 +67,14 @@ private:
 
   AppScreen m_Screen;
   ApplicationMenu m_Menu;
+  ApplicationMenu m_MenuDiffWindow;
   DiffWindow m_DiffWindow;
   FilesWindow m_FilesWindow;
   ProgressWindow m_ProgressWindow;
   DiffWorker m_DiffWorker;
   CmdDiff m_CmdDiff;
+  CmdNavNextDiff m_CmdNavNextDiff;
+  CmdNavPrevDiff m_CmdNavPrevDiff;
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpen;
   CmdAbout m_CmdAbout;

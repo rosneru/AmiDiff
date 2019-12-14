@@ -24,6 +24,7 @@ Application::Application(ADiffViewArgs& args)
     m_bExitAllowed(true),
     m_Screen(m_Settings),
     m_Menu(m_Screen),
+    m_MenuDiffWindow(m_Screen),
     m_DiffWindow(m_Screen,
                  m_pMsgPortIDCMP,
                  m_NumWindowsOpen),
@@ -46,6 +47,8 @@ Application::Application(ADiffViewArgs& args)
                  m_bCancelRequested,
                  m_bExitAllowed),
     m_CmdDiff(m_DiffWorker),
+    m_CmdNavNextDiff(m_DiffWindow),
+    m_CmdNavPrevDiff(m_DiffWindow),
     m_CmdQuit(m_bExitAllowed,
               m_bExitRequested),
     m_CmdOpen(m_FilesWindow),
@@ -101,7 +104,12 @@ bool Application::Run()
   }
 
   //
-  // Load the settings
+  // Load the settings.
+  //
+  // Note: As they can contain e.g. colors for screen / windows etc.
+  //       this is done as early as possible and before opening any
+  //       of the above mentioned.
+  //
   //
   m_Settings.Load();
 
@@ -129,23 +137,37 @@ bool Application::Run()
   }
 
   //
-  // Filling the GadTools menu struct, supplying pointers to the
-  // commands as nm_UserData. So no complicated evalution needed to
-  // detect which menu item was clicked. Only the Execute() method
-  // of the (then anonymous) command has to be called.
+  // Fill the GadTools menu structs, supplying pointers to the commands
+  // as nm_UserData. So no complicated evalution needed to detect which
+  // menu item was clicked. Only the Execute() method of the (then
+  // anonymous) command has to be called.
   //
   struct NewMenu menuDefinition[] =
   {
-    {  NM_TITLE,  "Project",      0 , 0, 0, 0 },
-    {  NM_ITEM,   "Open...",     "O", 0, 0, &m_CmdOpen },
-    {  NM_ITEM,   "About...",     0 , 0, 0, &m_CmdAbout },
-    {  NM_ITEM,   NM_BARLABEL,    0 , 0, 0, 0 },
-    {  NM_ITEM,   "Quit",        "Q", 0, 0, &m_CmdQuit },
-    {  NM_END,    NULL,           0 , 0, 0, 0 },
+    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
+    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpen },
+    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
+    {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
+    {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
+    { NM_END,     NULL,                     0 , 0, 0, 0 },
   };
 
+  struct NewMenu menuDefinitionDiffWindow[] =
+  {
+    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
+    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpen },
+    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
+    {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
+    {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
+    { NM_TITLE,   "Navigate",               0 , 0, 0, 0 },
+    {   NM_ITEM,    "Previous difference", "P", 0, 0, &m_CmdNavPrevDiff },
+    {   NM_ITEM,    "Next difference",     "N", 0, 0, &m_CmdNavNextDiff },
+    { NM_END,     NULL,                     0 , 0, 0, 0 },
+  };
+
+
   //
-  // Creating the menu
+  // Create the menus
   //
   if(m_Menu.Create(menuDefinition) == false)
   {
@@ -153,10 +175,17 @@ bool Application::Run()
     return false;
   }
 
+  if(m_MenuDiffWindow.Create(menuDefinitionDiffWindow) == false)
+  {
+    m_ErrorMsg = "Error: Can't create the menu for DiffWindow.";
+    return false;
+  }
+
+
   //
   // Installing menu to all windows
   //
-  m_DiffWindow.SetMenu(&m_Menu);
+  m_DiffWindow.SetMenu(&m_MenuDiffWindow);
   m_FilesWindow.SetMenu(&m_Menu);
 
   //

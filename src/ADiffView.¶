@@ -220,6 +220,18 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "commands/CmdNavNextDiff.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/CmdNavNextDiff.o" "objects_debug/CmdNavNextDiff.debug"
+""
+1 1
+File
+1 "commands/CmdNavPrevDiff.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/CmdNavPrevDiff.o" "objects_debug/CmdNavPrevDiff.debug"
+""
+1 1
+File
 1 "commands/CmdOpenWindow.cpp"
 "commands/Command.h"
 "gui/AppScreen.h"
@@ -513,6 +525,18 @@ File
 2 "commands/CmdDiff.h"
 "commands/CmdPerformDiff.h"
 "commands/CmdDiff.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "commands/CmdNavNextDiff.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "commands/CmdNavPrevDiff.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
