@@ -70,6 +70,13 @@ bool DiffEngine::Diff()
   delete[] m_pDownVector;
   m_pDownVector = NULL;
 
+  if(m_bCancelRequested)
+  {
+    // Don't continue as cancel was requested
+    return false;
+  }
+
+
   // Progress reporting
   reportProgress(90);
 
@@ -234,6 +241,12 @@ void DiffEngine::longestCommonSubsequence(long lowerA,
   if((m_NotifyIncrement > 0)
    &&(lowerA > m_NextNotifyPosition))
   {
+    if(m_bCancelRequested)
+    {
+      // Don't continue as cancel was requested
+      return;
+    }
+
     m_Percent += m_PercentIncrement;
     m_NextNotifyPosition += m_NotifyIncrement;
     reportProgress(m_Percent);
@@ -275,7 +288,20 @@ void DiffEngine::longestCommonSubsequence(long lowerA,
   {
     Pair smsrd = shortestMiddleSnake(lowerA, upperA, lowerB, upperB);
     longestCommonSubsequence(lowerA, smsrd.Left(), lowerB, smsrd.Top());
+
+    if(m_bCancelRequested)
+    {
+      // Don't continue as cancel was requested
+      return;
+    }
+
     longestCommonSubsequence(smsrd.Left(), upperA, smsrd.Top(), upperB);
+
+    if(m_bCancelRequested)
+    {
+      // Don't continue as cancel was requested
+      return;
+    }
   }
 }
 
