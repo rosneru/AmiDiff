@@ -81,10 +81,10 @@ bool DiffEngine::Diff()
   reportProgress(90);
 
   //
-  // Optimizing the diffed src files for better diff-readability
+  // Optimizing the diffed files for better diff-readability
   //
-  optimize(m_A);
-  optimize(m_B);
+  optimize(m_ADiff);
+  optimize(m_BDiff);
 
   // Progress reporting
   reportProgress(95);
