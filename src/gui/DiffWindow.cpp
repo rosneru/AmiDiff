@@ -626,9 +626,9 @@ void DiffWindow::resizeGadgets()
   // Clear the area on which the new gadgets will be drawn
   SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
   RectFill(m_pWindow->RPort,
-           m_TextArea1Left,
-           m_TextAreasTop - m_AppScreen.FontHeight() - 4,
-           m_TextAreasWidth + m_TextAreasWidth + 4,
+           0,
+           0,
+           m_InnerWindowRight,
            m_TextAreasTop - 3);
 
   // Create the gadgets anew (with the new positions and size)
@@ -832,15 +832,24 @@ void DiffWindow::paintStatusBar()
     return;
   }
 
+  int top = m_TextAreasTop + m_TextAreasHeight + 2;
+  int left = m_TextArea1Left + 2;
+
+  // Clear the status bar area
+  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+  RectFill(m_pWindow->RPort,
+           0,
+           top,
+           m_InnerWindowRight,
+           m_InnerWindowBottom);
+
+
   struct IntuiText intuiText;
   intuiText.FrontPen  = m_AppScreen.Pens().Text();
   intuiText.BackPen   = m_AppScreen.Pens().Background();
   intuiText.DrawMode  = JAM2;
   intuiText.ITextFont = &m_TextAttr;
   intuiText.NextText  = NULL;
-
-  int top = m_TextAreasTop + m_TextAreasHeight + 2;
-  int left = m_TextArea1Left + 2;
 
   intuiText.TopEdge   = top;
   intuiText.LeftEdge  = left;

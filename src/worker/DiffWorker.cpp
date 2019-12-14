@@ -217,8 +217,8 @@ bool DiffWorker::Diff()
   m_DiffWindow.Open(NULL, WindowBase::IP_Fill);
   m_ProgressWindow.Close();
 
-  m_DiffWindow.SetContent(m_pDiffDocumentLeft, m_pDiffDocumentRight);
   m_DiffWindow.SetStatusBar(totalTime, numAdd, numChn, numDel);
+  m_DiffWindow.SetContent(m_pDiffDocumentLeft, m_pDiffDocumentRight);
 
   m_bExitAllowed = true;
   return true;
