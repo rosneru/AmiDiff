@@ -18,6 +18,7 @@ StopWatch::~StopWatch()
   freeTimerDevice();
 }
 
+
 void StopWatch::Start()
 {
   if(!m_bInitialized)
@@ -50,8 +51,10 @@ long StopWatch::Pick(bool bKeepStartPoint)
   ReadEClock(&m_StopClock);
 
   // Calculating elapsed time in milliseconds
-  ULONG millisecs = m_StopClock.ev_lo - m_StartClock.ev_lo;
+  long long millisecs = m_StopClock.ev_lo - m_StartClock.ev_lo;
+
   millisecs *= 1000;
+
   millisecs /= m_ClocksPerSecond;
 
   if(bKeepStartPoint == false)
@@ -59,7 +62,7 @@ long StopWatch::Pick(bool bKeepStartPoint)
     ReadEClock(&m_StartClock);
   }
 
-  return millisecs;
+  return static_cast<LONG>(millisecs);
 }
 
 
@@ -128,3 +131,4 @@ void StopWatch::freeTimerDevice()
 
   m_bInitialized = false;
 }
+
