@@ -78,7 +78,7 @@ Linker
 Run
 30 "" "" "" 0
 ""
-/testfiles/testcase_23_RealLifeApp-left.cs /testfiles/testcase_23_RealLifeApp-right.cs
+/testfiles/testcase_24_1500_numbers_left.txt /testfiles/testcase_24_1500_numbers_right.txt
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 0 0
 0 0 0 "" ""
@@ -337,6 +337,7 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "gui/AppMenu.cpp"
+"gui/AppMenu.cpp"
 Storm Shell Project (Dependencies)
 "objects_debug/AppMenu.o" "objects_debug/AppMenu.debug"
 ""
@@ -359,9 +360,9 @@ File
 "diffengine/DiffLine.h"
 "model/Document.h"
 "gui/ScrollbarWindow.h"
-"gui/ApplicationMenu.h"
 "diffengine/DiffFileBase.h"
 "gui/ADiffViewPens.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
 ""
@@ -628,6 +629,7 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "gui/AppMenu.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

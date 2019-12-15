@@ -430,6 +430,8 @@ void DiffWindow::NavigateToNextDiff()
     }
   }
 
+  printf("nextDiffLineIdx = %d\n", nextDiffLineIdx);
+
   if(nextDiffLineIdx < 0)
   {
     // No next diff found
