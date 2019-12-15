@@ -382,6 +382,44 @@ bool ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
   return false;
 }
 
+
+void ScrollbarWindow::SetXScrollLeft(int left)
+{
+  if(m_pXPropGadget == NULL)
+  {
+    return;
+  }
+
+  if(left < 0)
+  {
+    return;
+  }
+
+  SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
+                 PGA_Top, left,
+                 TAG_DONE);
+}
+
+
+void ScrollbarWindow::SetYScrollTop(int top)
+{
+  if(m_pYPropGadget == NULL)
+  {
+    return;
+  }
+
+  if(top < 0)
+  {
+    return;
+  }
+
+  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
+                 PGA_Top, top,
+                 TAG_DONE);
+}
+
+
+
 void ScrollbarWindow::calcSizes()
 {
   // (Re-)calculate some values that may have be changed by re-sizing
@@ -441,40 +479,6 @@ void ScrollbarWindow::setYScrollPotSize(int maxVisibleLines,
 
 }
 
-void ScrollbarWindow::setXScrollLeft(int left)
-{
-  if(m_pYPropGadget == NULL)
-  {
-    return;
-  }
-
-  if(left < 0)
-  {
-    return;
-  }
-
-  SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
-    PGA_Top, left,
-    TAG_DONE);
-}
-
-
-void ScrollbarWindow::setYScrollTop(int top)
-{
-  if(m_pYPropGadget == NULL)
-  {
-    return;
-  }
-
-  if(top < 0)
-  {
-    return;
-  }
-
-  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
-    PGA_Top, top,
-    TAG_DONE);
-}
 
 void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId gadgetId,
                                                    size_t& lastVal)
@@ -514,3 +518,4 @@ void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId gadgetId,
   // Enable multi tasking
   Permit();
 }
+

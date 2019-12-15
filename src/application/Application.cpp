@@ -91,7 +91,7 @@ bool Application::Run()
   m_pMsgPortIDCMP = CreateMsgPort();
   if(m_pMsgPortIDCMP == NULL)
   {
-    m_ErrorMsg = "Error: Can't create idcmp message port.";
+    m_ErrorMsg = "Failed to create the windows message port.";
     return false;
   }
 
@@ -99,7 +99,7 @@ bool Application::Run()
   m_pMsgPortProgress = CreateMsgPort();
   if(m_pMsgPortProgress == NULL)
   {
-    m_ErrorMsg = "Error: Can't create progress message port.";
+    m_ErrorMsg = "failed to create the progress message port.";
     return false;
   }
 
@@ -114,33 +114,34 @@ bool Application::Run()
   m_Settings.Load();
 
   //
-  // Open the screen
+  // Prepare the screen
   //
   m_Screen.SetTitle(VERS);  // VERS created with bumprev,
                             // see ADiffView_rev.h
 
   if(m_Args.PubScreenName().Length() > 0)
   {
+    // Use a given public screen
     m_Screen.Open(AppScreen::SME_UseNamedPubScreen,
                   m_Args.PubScreenName());
   }
   else
   {
+    // Open a Workbench clone screen with 8 colors
     m_Screen.Open(AppScreen::SME_CloneWorkbench8Col);
   }
 
   if (!m_Screen.IsOpen())
   {
-    // Opening the screen failed
-    m_ErrorMsg = "Error: Can't open screen.";
+    m_ErrorMsg = "Failed to open the screen.";
     return false;
   }
 
   //
   // Fill the GadTools menu structs, supplying pointers to the commands
-  // as nm_UserData. So no complicated evalution needed to detect which
-  // menu item was clicked. Only the Execute() method of the (then
-  // anonymous) command has to be called.
+  // as user data. So in event loop no complicated evalution is needed
+  // to detect which menu item was selected. It will be a command, and
+  // only its Execute() method must be called.
   //
   struct NewMenu menuDefinition[] =
   {
@@ -171,28 +172,23 @@ bool Application::Run()
   //
   if(m_Menu.Create(menuDefinition) == false)
   {
-    m_ErrorMsg = "Error: Can't create the menu.";
+    m_ErrorMsg = "Failed to create the main menu.";
     return false;
   }
 
   if(m_MenuDiffWindow.Create(menuDefinitionDiffWindow) == false)
   {
-    m_ErrorMsg = "Error: Can't create the menu for DiffWindow.";
+    m_ErrorMsg = "Failed to create the menu for the diff window.";
     return false;
   }
 
 
   //
-  // Installing menu to all windows
+  // Prepare the windows
   //
-  m_DiffWindow.SetMenu(&m_MenuDiffWindow);
   m_FilesWindow.SetMenu(&m_Menu);
-
-  //
-  // Prepare the DiffWindow
-  //
+  m_DiffWindow.SetMenu(&m_MenuDiffWindow);
   m_DiffWindow.SetSmartRefresh(true);
-
 
   if((m_LeftFilePath.Length() > 0) &&
      (m_RightFilePath.Length() > 0) &&
@@ -215,7 +211,7 @@ bool Application::Run()
   }
 
   //
-  // The Amiga Intuition event loop
+  // The main event loop
   //
   intuiEventLoop();
 

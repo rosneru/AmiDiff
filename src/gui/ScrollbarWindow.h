@@ -45,6 +45,18 @@ public:
                            APTR pItemAddress);
 
   /**
+   * Setting a new top position to the x-scrollbar pot.
+   */
+  void SetXScrollLeft(int left);
+
+
+  /**
+   * Setting a new top position to the y-scrollbar pot.
+   */
+  void SetYScrollTop(int top);
+
+
+  /**
    * This handles the x-changes triggered by the horizontal scrollbar
    * of the window. It is called from the handleIDCMP method of this
    * class.
@@ -80,7 +92,7 @@ public:
    * If the call is triggered by other sources: false
    */
   virtual void XIncrease(size_t numChars,
-    bool bTriggeredByScrollPot = false) = 0;
+                         bool bTriggeredByScrollPot = false) = 0;
 
   /**
    * This handles the decrease by 1 of the x-position triggered by the
@@ -98,7 +110,7 @@ public:
    * If the call is triggered by other sources: false
    */
   virtual void XDecrease(size_t numChars,
-    bool bTriggeredByScrollPot = false) = 0;
+                         bool bTriggeredByScrollPot = false) = 0;
 
   /**
    * This handles the increase by 1 of the y-position triggered by the
@@ -116,7 +128,7 @@ public:
    * If the call is triggered by other sources: false
    */
   virtual void YIncrease(size_t numChars,
-    bool bTriggeredByScrollPot = false) = 0;
+                         bool bTriggeredByScrollPot = false) = 0;
 
   /**
    * This handles the decrease by 1 of the y-position triggered by the
@@ -134,8 +146,7 @@ public:
    * If the call is triggered by other sources: false
    */
   virtual void YDecrease(size_t numChars,
-    bool bTriggeredByScrollPot = false) = 0;
-
+                         bool bTriggeredByScrollPot = false) = 0;
 
 protected:
   long m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
@@ -175,16 +186,6 @@ protected:
    * Number of total visible lines / points / etc in document.
    */
   void setYScrollPotSize(int maxVisibleLines, int totalLines);
-
-  /**
-   * Setting a new top position to the x-scrollbar pot.
-   */
-  void setXScrollLeft(int left);
-
-  /**
-   * Setting a new top position to the y-scrollbar pot.
-   */
-  void setYScrollTop(int top);
 
 private:
   /**

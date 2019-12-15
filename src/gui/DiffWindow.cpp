@@ -371,7 +371,7 @@ void DiffWindow::XIncrease(size_t numChars,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollLeft(m_X);
+    SetXScrollLeft(m_X);
   }
 }
 
@@ -385,7 +385,7 @@ void DiffWindow::XDecrease(size_t numChars,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollLeft(m_X);
+    SetXScrollLeft(m_X);
   }
 }
 
@@ -399,7 +399,7 @@ void DiffWindow::YIncrease(size_t numLines,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setYScrollTop(m_Y);
+    SetYScrollTop(m_Y);
   }
 }
 
@@ -413,19 +413,41 @@ void DiffWindow::YDecrease(size_t numLines,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setYScrollTop(m_Y);
+    SetYScrollTop(m_Y);
   }
 }
 
+
 void DiffWindow::NavigateToNextDiff()
 {
-  YChangedHandler(m_Y + 1);
+  int nextDiffLineIdx = -1;
+  for(int i = 0; i < m_NumDifferences; i++)
+  {
+    if(m_pDiffStartIdxs[i] > m_Y)
+    {
+      nextDiffLineIdx = m_pDiffStartIdxs[i];
+      break;
+    }
+  }
+
+  if(nextDiffLineIdx < 0)
+  {
+    // No next diff found
+    return;
+  }
+
+  // Scroll y to next diff
+  YChangedHandler(nextDiffLineIdx);
+
+  // Set scrollbar to new y position
+  SetYScrollTop(m_Y);
 }
 
 
 void DiffWindow::NavigateToPrevDiff()
 {
   YChangedHandler(m_Y - 1);
+  SetYScrollTop(m_Y);
 }
 
 
