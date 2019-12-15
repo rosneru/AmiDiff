@@ -35,11 +35,11 @@ public:
    * If file is already open it must be closed before opening a
    * different file for this object. Otherwise open will return false.
    *
-   * @param p_FileName
+   * @param pFileName
    * Name of the file to open.
 
    *
-   * @param p_AcsessMode
+   * @param accessMode
    * AccessMode of file to open; @see AccessMode
    *
    * @returns
@@ -93,8 +93,8 @@ public:
    *
    * @see SimpleString
    *
-   * @param p_List
-   * List to store the lines
+   * @param array
+   * Array to store the lines
    */
   bool ReadLines(Array<SimpleString*>& array);
 

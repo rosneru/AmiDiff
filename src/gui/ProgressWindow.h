@@ -29,7 +29,7 @@ public:
   /**
    * Opening the window.
    *
-   * @param p_pUserDataMenuItemToDisable
+   * @param pMenuItemDisableAtOpen
    * A pointer to an user data field of a menu item which is associated
    * with this window. If the menu item is found by the given user data
    * it will be disabled at window opening time and enabled when the

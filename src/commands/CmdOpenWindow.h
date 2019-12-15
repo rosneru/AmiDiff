@@ -1,7 +1,7 @@
 #ifndef CMD_OPEN_WINDOW_H
 #define CMD_OPEN_WINDOW_H
 
-#include "ApplicationMenu.h"
+#include "AppMenu.h"
 #include "Command.h"
 #include "WindowBase.h"
 
@@ -17,7 +17,7 @@
 class CmdOpenWindow : public Command
 {
 public:
-  CmdOpenWindow(WindowBase& p_Window);
+  CmdOpenWindow(WindowBase& window);
   virtual ~CmdOpenWindow();
   virtual void Execute() const;
 

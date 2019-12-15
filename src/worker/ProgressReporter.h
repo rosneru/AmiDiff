@@ -13,7 +13,7 @@
 class ProgressReporter
 {
 public:
-  virtual void notifyProgressChanged(int p_Progress) = 0;
+  virtual void notifyProgressChanged(int progress) = 0;
 };
 
 #endif

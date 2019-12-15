@@ -233,9 +233,9 @@ const char* WindowBase::Title() const
 }
 
 
-void WindowBase::SetTitle(SimpleString p_NewTitle)
+void WindowBase::SetTitle(SimpleString newTitle)
 {
-  m_Title = p_NewTitle;
+  m_Title = newTitle;
 
   if(!IsOpen())
   {
@@ -267,74 +267,76 @@ void WindowBase::SetInitialDimension(ULONG left,
 }
 
 
-void WindowBase::SetFixed(bool p_bFixWindow)
+void WindowBase::SetFixed(bool bFixWindow)
 {
   if(IsOpen())
   {
     return;
   }
 
-  m_bIsFixed = p_bFixWindow;
+  m_bIsFixed = bFixWindow;
 }
 
 
-void WindowBase::SetBorderless(bool p_bBorderless)
+void WindowBase::SetBorderless(bool bBorderless)
 {
   if(IsOpen())
   {
     return;
   }
 
-  m_bBorderless = p_bBorderless;
+  m_bBorderless = bBorderless;
 }
 
 
-void WindowBase::SetSmartRefresh(bool p_bSmartRefresh)
+void WindowBase::SetSmartRefresh(bool bSmartRefresh)
 {
   if(IsOpen())
   {
     return;
   }
 
-  m_bSmartRefresh = p_bSmartRefresh;
+  m_bSmartRefresh = bSmartRefresh;
 }
 
 
-void WindowBase::Move(long p_DX, long p_DY)
+void WindowBase::Move(long dX, long dY)
 {
   if(!IsOpen())
   {
     return;
   }
 
-  MoveWindow(m_pWindow, p_DX, p_DY);
+  MoveWindow(m_pWindow, dX, dY);
   m_WinLeft = m_pWindow->LeftEdge;
   m_WinTop = m_pWindow->TopEdge;
 }
 
 
-void WindowBase::Size(long p_DX, long p_DY)
+void WindowBase::Size(long dX, long dY)
 {
   if(!IsOpen())
   {
     return;
   }
 
-  SizeWindow(m_pWindow, p_DX, p_DY);
+  SizeWindow(m_pWindow, dX, dY);
   m_WinWidth = m_pWindow->Width;
   m_WinHeight = m_pWindow->Height;
 }
 
 
-void WindowBase::ChangeWindowBox(long p_Left, long p_Top,
-  long width, long height)
+void WindowBase::ChangeWindowBox(long left, 
+                                 long top, 
+                                 long width, 
+                                 long height)
 {
   if(!IsOpen())
   {
     return;
   }
 
-  ChangeWindowBox(p_Left, p_Top, width, height);
+  ChangeWindowBox(left, top, width, height);
   m_WinLeft = m_pWindow->LeftEdge;
   m_WinTop = m_pWindow->TopEdge;
   m_WinWidth = m_pWindow->Width;
@@ -354,9 +356,9 @@ AppScreen& WindowBase::WindowScreen()
 }
 
 
-void WindowBase::SetMenu(ApplicationMenu* p_pMenu)
+void WindowBase::SetMenu(AppMenu* pMenu)
 {
-  if(p_pMenu == NULL)
+  if(pMenu == NULL)
   {
     // Given menu is NULL: do nothing
     return;
@@ -368,7 +370,7 @@ void WindowBase::SetMenu(ApplicationMenu* p_pMenu)
     return;
   }
 
-  m_pMenu = p_pMenu;
+  m_pMenu = pMenu;
 
 
   if(!IsOpen())
@@ -435,7 +437,9 @@ struct Gadget* WindowBase::getLastGadget()
 }
 
 
-struct Image* WindowBase::createImageObj(ULONG sysImageId, ULONG& width, ULONG& height)
+struct Image* WindowBase::createImageObj(ULONG sysImageId, 
+                                         ULONG& width, 
+                                         ULONG& height)
 {
   struct Image* pImage = (struct Image*) NewObject(
       NULL, SYSICLASS,
@@ -503,4 +507,3 @@ void WindowBase::stripIntuiMessages()
     pMessage = (struct IntuiMessage*) pSuccessor;
   }
 }
-

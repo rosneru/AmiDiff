@@ -1,7 +1,7 @@
 #include "CmdOpenWindow.h"
 
-CmdOpenWindow::CmdOpenWindow(WindowBase& p_Window)
-  : m_Window(p_Window)
+CmdOpenWindow::CmdOpenWindow(WindowBase& window)
+  : m_Window(window)
 {
 
 }

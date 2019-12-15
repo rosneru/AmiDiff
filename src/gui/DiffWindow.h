@@ -276,8 +276,8 @@ private:
   void paintDocument(bool bFromStart = true);
 
   /**
-   * Prints the given line (p_pLeftLine and p_pRightLine) at given
-   * y-position p_TopEdge.
+   * Prints the given line (pLeftLine and pRightLine) at given
+   * y-position topEdge.
    */
   void paintLine(const DiffLine* pLeftLine,
                  const DiffLine* pRightLine,

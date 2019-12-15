@@ -21,7 +21,7 @@ public:
             const SimpleString& message,
             const SimpleString& buttonText);
 
-  void Show(struct Window* p_pWindow,
+  void Show(struct Window* pWindow,
             const SimpleString& message,
             const SimpleString& buttonText);
 

@@ -22,15 +22,13 @@ public:
   ~ADiffViewPens();
 
   /**
-   * Creates the colors needed by AmigaDiff.
+   * Create the color pens needed by AmigaDiff.
    *
-   * Starting with color number p_FirstFreeColorNum the needed 4 colors
-   * will be assigned to color registers.
    */
   bool Create();
 
   /**
-   * Freeing pens, allocated colormaps etc
+   * Free allocated pens
    */
   void Dispose();
 

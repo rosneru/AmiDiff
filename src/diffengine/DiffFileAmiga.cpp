@@ -1,13 +1,14 @@
+#include <new.h> // Needed for 'replacement new', see below.
+
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
 
-#include <new.h>
 
 #include "DiffFileAmiga.h"
 
 DiffFileAmiga::DiffFileAmiga(APTR& pPoolHeader,
-                             bool& p_bCancelRequested)
-  : DiffFileBase(p_bCancelRequested),
+                             bool& bCancelRequested)
+  : DiffFileBase(bCancelRequested),
     m_pPoolHeader(pPoolHeader),
     m_pErrMsgLowMem("Not enough memory."),
     m_pErrMsgMemPool("Memory pool not initialized."),
@@ -158,8 +159,8 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
 }
 
 
-bool DiffFileAmiga::AddString(const char* p_String,
-                              DiffLine::LineState p_LineState)
+bool DiffFileAmiga::AddString(const char* string,
+                              DiffLine::LineState lineState)
 {
   if(m_NumLines < 1)
   {
@@ -194,7 +195,7 @@ bool DiffFileAmiga::AddString(const char* p_String,
   // constructor. This has to be done here because a memory pool is
   // used and the normal operator 'new' which reserves memory
   // automatically wouldn't be appropriate.
-  new (pDiffLine) DiffLine(p_String, p_LineState);
+  new (pDiffLine) DiffLine(string, lineState);
 
   m_pDiffLinesArray[m_NextAddedLineIdx++] = pDiffLine;
 

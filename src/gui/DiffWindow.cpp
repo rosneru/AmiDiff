@@ -242,7 +242,7 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
 
 void DiffWindow::SetStatusBar(long diffTime,
                               int numAdded,
-                              int p_NumChanged,
+                              int numChanged,
                               int numDeleted)
 {
   m_StatusBarText = "Diff performed in ";
@@ -252,7 +252,7 @@ void DiffWindow::SetStatusBar(long diffTime,
 
   SimpleString emptyStr = "";
   m_AddedText = emptyStr + numAdded + " Added ";
-  m_ChangedText = emptyStr + p_NumChanged + " Changed ";
+  m_ChangedText = emptyStr + numChanged + " Changed ";
   m_DeletedText = emptyStr + numDeleted + " Deleted ";
 
   paintStatusBar();
@@ -774,7 +774,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     numCharsToPrint = m_MaxTextAreaChars;
   }
 
-  // When p_StartChar is set: limit the number of printed chars to not
+  // When startIndex is set: limit the number of printed chars to not
   // exceed the line length
   if((startIndex > -1) &&
      (numCharsToPrint + startIndex > pLeftLine->Length()))
@@ -817,7 +817,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     numCharsToPrint = m_MaxTextAreaChars;
   }
 
-  // When p_StartChar is set: limit the number of printed chars to not
+  // When startIndex is set: limit the number of printed chars to not
   // exceed the line length
   if((startIndex > -1) &&
      (numCharsToPrint + startIndex > pRightLine->Length()))

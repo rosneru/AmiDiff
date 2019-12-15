@@ -1,5 +1,5 @@
-#ifndef APPLICATION_MENU_H
-#define APPLICATION_MENU_H
+#ifndef APP_MENU_H
+#define APP_MENU_H
 
 #include <intuition/intuition.h>
 #include <intuition/screens.h>
@@ -13,16 +13,16 @@
  * @author Uwe Rosner
  * @date 23/09/2018
  */
-class ApplicationMenu
+class AppMenu
 {
 public:
-  ApplicationMenu(AppScreen& p_Screen);
-  ~ApplicationMenu();
+  AppMenu(AppScreen& screen);
+  ~AppMenu();
 
   /**
    * Creating and outlaying the menu
    */
-  bool Create(struct NewMenu* p_pMenuDefinition);
+  bool Create(struct NewMenu* pMenuDefinition);
 
   /**
    * Freeing the menu and all obtained resources
@@ -32,20 +32,20 @@ public:
   /**
    * Wire the menu strip to a window. Can be done for multiple windows.
    */
-  bool AttachToWindow(struct Window* p_pWindow);
+  bool AttachToWindow(struct Window* pWindow);
 
   /**
    * Update a previosly set attached menu. Call this if an checkbox has
    * changed or if a item has been enabled or disabled.
    *
    */
-  bool UpdateInWindow(struct Window* p_pWindow);
+  bool UpdateInWindow(struct Window* pWindow);
 
   /**
    *  Remove menu from window. Call this at least before closing the
    *  window.
    */
-  void DetachFromWindow(struct Window* p_pWindow);
+  void DetachFromWindow(struct Window* pWindow);
 
   /**
    * Gets the intuition menu structure or NULL if menu is not open
@@ -59,29 +59,29 @@ public:
    *
    * NOTE At the moment subitems are skipped and won't be disabled.
    *
-   * @param p_pWindow
+   * @param pWindow
    * Pointer to an intuition window the menu is associated with
    *
-   * @parem p_pUserDataMenuItemToDisable
+   * @parem pUserDataMenuItemToDisable
    * Pointer by which value the userdata field of the menu items are
    * browsed
    *
    */
-  void DisableMenuItem(struct Window* p_pWindow,
-    APTR p_pUserDataMenuItemToDisable);
+  void DisableMenuItem(struct Window* pWindow,
+                       APTR pUserDataMenuItemToDisable);
 
 
   /**
    * Enables a previously disabled menu item.
    *
-   * @param p_pWindow
+   * @param pWindow
    * Pointer to an intuition window the menu is associated with
    *
-   * @parem p_pMenuItemToEnable
+   * @parem pMenuItemToEnable
    * Pointer to the userdata field of the menu item to enable
    */
-  void EnableMenuItem(struct Window* p_pWindow,
-    APTR p_pUserDataMenuItemToEnable);
+  void EnableMenuItem(struct Window* pWindow,
+                      APTR pUserDataMenuItemToEnable);
 
 private:
   AppScreen& m_Screen;
@@ -96,8 +96,8 @@ private:
    *
    * NOTE At the moment subitems are skipped
    */
-  struct MenuItem* findItemByUserData(APTR p_pUserDataToFind,
-    WORD& p_FoundMenuNumber);
+  struct MenuItem* findItemByUserData(APTR pUserDataToFind,
+                                      WORD& foundMenuNumber);
 };
 
 #endif

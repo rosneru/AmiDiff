@@ -2,7 +2,7 @@
 #include "CmdAbout.h"
 
 CmdAbout::CmdAbout(AppScreen& screen,
-                   ApplicationMenu& menu,
+                   AppMenu& menu,
                    const char* pVersTag)
   : m_Screen(screen),
     m_Menu(menu)

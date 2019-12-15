@@ -12,7 +12,7 @@
 
 #include "ADiffViewArgs.h"
 #include "ADiffViewSettings.h"
-#include "ApplicationMenu.h"
+#include "AppMenu.h"
 #include "AppScreen.h"
 #include "CmdAbout.h"
 #include "CmdOpenWindow.h"
@@ -66,8 +66,8 @@ private:
    */
 
   AppScreen m_Screen;
-  ApplicationMenu m_Menu;
-  ApplicationMenu m_MenuDiffWindow;
+  AppMenu m_Menu;
+  AppMenu m_MenuDiffWindow;
   DiffWindow m_DiffWindow;
   FilesWindow m_FilesWindow;
   ProgressWindow m_ProgressWindow;

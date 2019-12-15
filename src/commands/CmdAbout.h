@@ -1,8 +1,8 @@
 #ifndef CMD_ABOUT_H
 #define CMD_ABOUT_H
 
+#include "AppMenu.h"
 #include "AppScreen.h"
-#include "ApplicationMenu.h"
 #include "Command.h"
 #include "SimpleString.h"
 
@@ -17,7 +17,7 @@ class CmdAbout : public Command
 {
 public:
   CmdAbout(AppScreen& screen,
-           ApplicationMenu& menu,
+           AppMenu& menu,
            const char* pVersTag);
 
   virtual ~CmdAbout();
@@ -27,7 +27,7 @@ public:
 
 private:
   AppScreen& m_Screen;
-  ApplicationMenu& m_Menu;
+  AppMenu& m_Menu;
 };
 
 #endif // CMD_ABOUT_H

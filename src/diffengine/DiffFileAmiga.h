@@ -17,15 +17,15 @@
 class DiffFileAmiga : public DiffFileBase
 {
 public:
-  DiffFileAmiga(APTR& pPoolHeader, bool& p_bCancelRequested);
+  DiffFileAmiga(APTR& pPoolHeader, bool& bCancelRequested);
   ~DiffFileAmiga();
 
   void Clear();
 
   bool PreProcess(const char* pFileName);
 
-  bool AddString(const char* p_String,
-                 DiffLine::LineState p_LineState);
+  bool AddString(const char* string,
+                 DiffLine::LineState lineState);
 
   const char* Error();
 

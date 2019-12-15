@@ -3,7 +3,7 @@
 
 #include <exec/ports.h>
 #include <intuition/screens.h>
-#include "ApplicationMenu.h"
+#include "AppMenu.h"
 #include "AppScreen.h"
 #include "SimpleString.h"
 
@@ -41,7 +41,7 @@ public:
    * If there's given a non-NULL pointer to a menu items user data,
    * this menu item will be disabled at window opening.
    *
-   * @param p_pUserDataMenuItemToDisable
+   * @param pUserDataMenuItemToDisable
    * A pointer to an user data field of a menu item which is associated
    * with this window. If the menu item is found by the given user data
    * it will be disabled at window opening time and enabled when the
@@ -84,7 +84,7 @@ public:
   bool IsOpen() const;
 
   const char* Title() const;
-  void SetTitle(SimpleString p_NewTitle);
+  void SetTitle(SimpleString newTitle);
 
 
   /**
@@ -115,61 +115,61 @@ public:
    * Sets if the window appears fixed or if it is draggable with the
    * mouse. Only is applied when called before opening the window.
    *
-   * @param p_bFixWindow
+   * @param bFixWindow
    * When true the window will not be moveable/draggable after opening.
    */
-  void SetFixed(bool p_bFixWindow);
+  void SetFixed(bool bFixWindow);
 
 
   /**
    * Sets if the window is without border. Only is applied when
    * called before opening the window.
    *
-   * @param p_bFixWindow
+   * @param bFixWindow
    * When true the window will have no border.
    */
-  void SetBorderless(bool p_bBorderless);
+  void SetBorderless(bool bBorderless);
 
   /**
    * Sets if the window is a smart refresh window. Only is applied when
    * called before opening the window.
    *
-   * @param p_bFixWindow
+   * @param bFixWindow
    * When true the window will be a smart refresh window after opening.
    * When false it will be simple refresh.
    */
-  void SetSmartRefresh(bool p_bSmartRefresh);
+  void SetSmartRefresh(bool bSmartRefresh);
 
 
   /**
    * Moves an opened window to new position
    *
-   * @param p_DX
+   * @param dX
    * Delta of window position on x-axis. Can be pos. or neg.
    *
-   * @param p_DY
+   * @param dY
    * Delta of window position on y-axis. Can be pos. or neg.
    */
-  void Move(long p_DX, long p_DY);
+  void Move(long dX, long dY);
 
 
   /**
    * Resizes an opened window.
    *
-   * @param p_DX
+   * @param dX
    * Delta of window size on x-axis. Can be pos. or neg.
    *
-   * @param p_DY
+   * @param dY
    * Delta of window size on y-axis. Can be pos. or neg.
    */
-  void Size(long p_DX, long p_DY);
+  void Size(long dX, long dY);
 
 
   /**
    * Resizes an opened window and moves it to a new position.
    * Coordinates are absolute and no deltas.
    */
-  void ChangeWindowBox(long p_Left, long p_Top, long width, long height);
+  void ChangeWindowBox(long left, long top, long width, long height);
 
 
   /**
@@ -185,7 +185,7 @@ public:
    */
   AppScreen& WindowScreen();
 
-  void SetMenu(ApplicationMenu* p_pMenu);
+  void SetMenu(AppMenu* pMenu);
 
 protected:
   AppScreen& m_AppScreen;
@@ -198,14 +198,14 @@ protected:
   ULONG m_WinWidth;
   ULONG m_WinHeight;
   bool m_bInitialized;
-  ApplicationMenu* m_pMenu;
+  AppMenu* m_pMenu;
   SimpleString m_Title;
 
 
   /**
    * Creates a new window object
    *
-   * @param p_pAppScreen
+   * @param pAppScreen
    * Screen on which the window will occur at opening time
    *
    * @param pIdcmpMsgPort

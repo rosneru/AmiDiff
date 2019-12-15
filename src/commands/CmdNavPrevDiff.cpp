@@ -14,9 +14,10 @@ CmdNavPrevDiff::~CmdNavPrevDiff()
 
 void CmdNavPrevDiff::Execute() const
 {
-    MessageBox request;
-    request.Show("This program needs at least OS 3.0 / v39 to run.",
-                 "Ok");
+  MessageBox request;
+  request.Show("This program needs at least OS 3.0 / v39 to run.",
+               "Ok");
 
   m_DiffWindow.NavigateToPrevDiff();
 }
+
