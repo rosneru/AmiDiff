@@ -279,18 +279,18 @@ void Application::intuiEventLoop()
           UWORD menuNumber = msgCode;
           struct MenuItem* pSelectedItem = NULL;
           
-          // Create an array of all menus we want to look for the item in
-          AppMenu[] menus =
-          {
-            m_Menu,
-            m_MenuDiffWindow,
-          };
+          // Create an array of all menus to be searched for the item
+          AppMenu* pMenus[] = {&m_Menu, &m_MenuDiffWindow};
           
           // Iterate all those menus, trying to find the item
-          for(int i = 0; i < (sizeof menus / sizeof menus[0]); i++)
+          for(int i = 0; i < (sizeof pMenus / sizeof pMenus[0]); i++)
           {
-            AppMenu
-            pSelectedItem = ItemAddress(m_Menu.IntuiMenu(), menuNumber);
+            pSelectedItem = ItemAddress(pMenus[i]->IntuiMenu(), menuNumber);
+            if(pSelectedItem != NULL)
+            {
+              // Item found
+              break;
+            }
           }
 
           if(pSelectedItem != NULL)
