@@ -161,7 +161,7 @@ bool Application::Run()
     {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
     { NM_TITLE,   "Navigate",               0 , 0, 0, 0 },
     {   NM_ITEM,    "Previous difference", "P", 0, 0, &m_CmdNavPrevDiff },
-    {   NM_ITEM,    "Next difference",     "N", 0, 0, &m_CmdAbout },
+    {   NM_ITEM,    "Next difference",     "N", 0, 0, &m_CmdNavNextDiff },
     { NM_END,     NULL,                     0 , 0, 0, 0 },
   };
 
@@ -278,10 +278,10 @@ void Application::intuiEventLoop()
           //
           UWORD menuNumber = msgCode;
           struct MenuItem* pSelectedItem = NULL;
-          
+
           // Create an array of all menus to be searched for the item
           AppMenu* pMenus[] = {&m_Menu, &m_MenuDiffWindow};
-          
+
           // Iterate all those menus, trying to find the item
           for(int i = 0; i < (sizeof pMenus / sizeof pMenus[0]); i++)
           {

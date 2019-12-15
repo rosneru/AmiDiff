@@ -1,16 +1,10 @@
 #include <string.h>
 
-#include <clib/asl_protos.h>
-#include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
-#include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <intuition/intuition.h>
-#include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
-#include <intuition/icclass.h>
-#include <libraries/asl.h>
-#include <libraries/dos.h>
+
 #include "WindowBase.h"
 
 
@@ -326,9 +320,9 @@ void WindowBase::Size(long dX, long dY)
 }
 
 
-void WindowBase::ChangeWindowBox(long left, 
-                                 long top, 
-                                 long width, 
+void WindowBase::ChangeWindowBox(long left,
+                                 long top,
+                                 long width,
                                  long height)
 {
   if(!IsOpen())
@@ -437,8 +431,8 @@ struct Gadget* WindowBase::getLastGadget()
 }
 
 
-struct Image* WindowBase::createImageObj(ULONG sysImageId, 
-                                         ULONG& width, 
+struct Image* WindowBase::createImageObj(ULONG sysImageId,
+                                         ULONG& width,
                                          ULONG& height)
 {
   struct Image* pImage = (struct Image*) NewObject(

@@ -419,14 +419,12 @@ void DiffWindow::YDecrease(size_t numLines,
 
 void DiffWindow::NavigateToNextDiff()
 {
-  printf("Next\n");
   YChangedHandler(m_Y + 1);
 }
 
 
 void DiffWindow::NavigateToPrevDiff()
 {
-  printf("Prev\n");
   YChangedHandler(m_Y - 1);
 }
 
