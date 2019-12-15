@@ -62,8 +62,8 @@ Application::Application(ADiffViewArgs& args)
   // and version. Referencing it also means that the c:version command will
   // work for ADiffView.
   //
-
 }
+
 
 Application::~Application()
 {
@@ -223,10 +223,12 @@ bool Application::Run()
 
 }
 
+
 SimpleString& Application::ErrorMsg()
 {
   return m_ErrorMsg;
 }
+
 
 void Application::intuiEventLoop()
 {
@@ -275,8 +277,21 @@ void Application::intuiEventLoop()
           // Menu-pick messages are handled here
           //
           UWORD menuNumber = msgCode;
-          struct MenuItem* pSelectedItem = ItemAddress(
-            m_Menu.IntuiMenu(), menuNumber);
+          struct MenuItem* pSelectedItem = NULL;
+          
+          // Create an array of all menus we want to look for the item in
+          AppMenu[] menus =
+          {
+            m_Menu,
+            m_MenuDiffWindow,
+          };
+          
+          // Iterate all those menus, trying to find the item
+          for(int i = 0; i < (sizeof menus / sizeof menus[0]); i++)
+          {
+            AppMenu
+            pSelectedItem = ItemAddress(m_Menu.IntuiMenu(), menuNumber);
+          }
 
           if(pSelectedItem != NULL)
           {
