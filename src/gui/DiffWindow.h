@@ -181,6 +181,9 @@ public:
    */
   void YDecrease(size_t numLines, bool bTriggeredByScrollPot);
 
+  void NavigateToNextDiff();
+  void NavigateToPrevDiff();
+
 private:
   DiffDocument* m_pLeftDocument;
   DiffDocument* m_pRightDocument;
@@ -270,7 +273,7 @@ private:
    *   displayed from start.
    * When false: Printing starts at current position m_Y.
    */
-  void paintDocument(bool fromStart = true);
+  void paintDocument(bool bFromStart = true);
 
   /**
    * Prints the given line (p_pLeftLine and p_pRightLine) at given

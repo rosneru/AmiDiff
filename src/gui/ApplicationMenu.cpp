@@ -24,7 +24,7 @@ bool ApplicationMenu::Create(struct NewMenu* p_pMenuDefinition)
     return false;
   }
 
-  // Menu building step 1: Create the menu
+  // Create the menu
   m_pMenu = CreateMenus(p_pMenuDefinition, TAG_END);
   if(m_pMenu == NULL)
   {

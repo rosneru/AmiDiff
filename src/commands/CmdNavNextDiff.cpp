@@ -13,6 +13,5 @@ CmdNavNextDiff::~CmdNavNextDiff()
 
 void CmdNavNextDiff::Execute() const
 {
-  // TODO
-  // Call the DiffWindow method for navigate to previous
+  m_DiffWindow.NavigateToNextDiff();
 }

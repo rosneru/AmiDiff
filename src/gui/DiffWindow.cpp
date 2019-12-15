@@ -17,6 +17,7 @@
 
 extern struct GfxBase* GfxBase;
 
+
 DiffWindow::DiffWindow(AppScreen& appScreen,
                        struct MsgPort*& pIdcmpMsgPort,
                        int& numOpenWindows)
@@ -59,6 +60,7 @@ DiffWindow::DiffWindow(AppScreen& appScreen,
   m_TextFontWidth_pix = defaultTextFont->tf_XSize;
   m_TextFontHeight_pix = defaultTextFont->tf_YSize;
 }
+
 
 DiffWindow::~DiffWindow()
 {
@@ -120,6 +122,7 @@ void DiffWindow::Resized()
 
 }
 
+
 bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
                       InitialPosition initialPos)
 {
@@ -157,6 +160,7 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
 
   return true;
 }
+
 
 bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
                             DiffDocument* pRightDocument,
@@ -235,16 +239,16 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   return true;
 }
 
-void DiffWindow::SetStatusBar(long diffTime, int numAdded,
-                              int p_NumChanged, int numDeleted)
-{
-  long totalChanges = numAdded + p_NumChanged + numDeleted;
 
+void DiffWindow::SetStatusBar(long diffTime,
+                              int numAdded,
+                              int p_NumChanged,
+                              int numDeleted)
+{
   m_StatusBarText = "Diff performed in ";
   m_StatusBarText += diffTime;
   m_StatusBarText += " ms. Total changes: ";
-  m_StatusBarText += totalChanges;
-
+  m_StatusBarText += m_NumDifferences;
 
   SimpleString emptyStr = "";
   m_AddedText = emptyStr + numAdded + " Added ";
@@ -253,6 +257,7 @@ void DiffWindow::SetStatusBar(long diffTime, int numAdded,
 
   paintStatusBar();
 }
+
 
 void DiffWindow::XChangedHandler(size_t newX)
 {
@@ -305,6 +310,7 @@ void DiffWindow::XChangedHandler(size_t newX)
 
 }
 
+
 void DiffWindow::YChangedHandler(size_t newY)
 {
   int delta = newY - m_Y;
@@ -355,8 +361,9 @@ void DiffWindow::YChangedHandler(size_t newY)
   paintDocument(false);
 }
 
+
 void DiffWindow::XIncrease(size_t numChars,
-  bool bTriggeredByScrollPot)
+                           bool bTriggeredByScrollPot)
 {
   m_X += scrollLeft(numChars);
 
@@ -368,8 +375,9 @@ void DiffWindow::XIncrease(size_t numChars,
   }
 }
 
+
 void DiffWindow::XDecrease(size_t numChars,
-  bool bTriggeredByScrollPot)
+                           bool bTriggeredByScrollPot)
 {
   m_X -= scrollRight(numChars);
 
@@ -381,8 +389,9 @@ void DiffWindow::XDecrease(size_t numChars,
   }
 }
 
+
 void DiffWindow::YIncrease(size_t numLines,
-  bool bTriggeredByScrollPot)
+                           bool bTriggeredByScrollPot)
 {
   m_Y += scrollUp(numLines);
 
@@ -394,8 +403,9 @@ void DiffWindow::YIncrease(size_t numLines,
   }
 }
 
+
 void DiffWindow::YDecrease(size_t numLines,
-  bool bTriggeredByScrollPot)
+                           bool bTriggeredByScrollPot)
 {
   m_Y -= scrollDown(numLines);
 
@@ -406,6 +416,20 @@ void DiffWindow::YDecrease(size_t numLines,
     setYScrollTop(m_Y);
   }
 }
+
+void DiffWindow::NavigateToNextDiff()
+{
+  printf("Next\n");
+  YChangedHandler(m_Y + 1);
+}
+
+
+void DiffWindow::NavigateToPrevDiff()
+{
+  printf("Prev\n");
+  YChangedHandler(m_Y - 1);
+}
+
 
 void DiffWindow::initialize()
 {
@@ -587,6 +611,7 @@ void DiffWindow::handleVanillaKey(UWORD code)
   // TODO
 }
 
+
 void DiffWindow::calcSizes()
 {
   // (Re-)calculate some values that may have be changed by re-sizing
@@ -666,14 +691,14 @@ void DiffWindow::resizeGadgets()
 }
 
 
-void DiffWindow::paintDocument(bool fromStart)
+void DiffWindow::paintDocument(bool bFromStart)
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {
     return;
   }
 
-  if(fromStart == true)
+  if(bFromStart == true)
   {
     m_X = 0;
     m_Y = 0;
@@ -700,6 +725,7 @@ void DiffWindow::paintDocument(bool fromStart)
     paintLine(pLeftLine, pRightLine, (i - m_Y) * m_TextFontHeight_pix);
   }
 }
+
 
 void DiffWindow::paintLine(const DiffLine* pLeftLine,
                            const DiffLine* pRightLine,
@@ -809,6 +835,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   }
 }
 
+
 void DiffWindow::paintWindowDecoration()
 {
   // Create borders for the two text areas
@@ -882,6 +909,7 @@ void DiffWindow::paintStatusBar()
   intuiText.IText = (UBYTE*) m_DeletedText.C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
+
 
 LONG DiffWindow::colorNameToPen(DiffDocument::ColorName colorName)
 {
@@ -969,6 +997,7 @@ size_t DiffWindow::scrollRight(int numChars)
   return numChars;
 }
 
+
 size_t DiffWindow::scrollLeft(int numChars)
 {
   if(numChars < 1)
@@ -1041,6 +1070,7 @@ size_t DiffWindow::scrollLeft(int numChars)
   return numChars;
 }
 
+
 size_t DiffWindow::scrollDown(int numLines)
 {
   if(numLines < 1)
@@ -1097,6 +1127,7 @@ size_t DiffWindow::scrollDown(int numLines)
 
   return numLines;
 }
+
 
 size_t DiffWindow::scrollUp(int numLines)
 {
@@ -1164,3 +1195,4 @@ size_t DiffWindow::scrollUp(int numLines)
 
   return numLines;
 }
+

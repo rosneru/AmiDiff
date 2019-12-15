@@ -221,12 +221,34 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "commands/CmdNavNextDiff.cpp"
+"commands/CmdNavNextDiff.cpp"
+"commands/CmdNavNextDiff.h"
+"gui/AppScreen.h"
+"gui/ADiffViewPens.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
+"model/Document.h"
+"gui/ScrollbarWindow.h"
+"gui/WindowBase.h"
+"gui/ApplicationMenu.h"
+"commands/Command.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdNavNextDiff.o" "objects_debug/CmdNavNextDiff.debug"
 ""
 1 1
 File
 1 "commands/CmdNavPrevDiff.cpp"
+"commands/CmdNavPrevDiff.cpp"
+"commands/CmdNavPrevDiff.h"
+"gui/AppScreen.h"
+"gui/ADiffViewPens.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
+"model/Document.h"
+"gui/ScrollbarWindow.h"
+"gui/WindowBase.h"
+"gui/ApplicationMenu.h"
+"commands/Command.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdNavPrevDiff.o" "objects_debug/CmdNavPrevDiff.debug"
 ""
@@ -531,12 +553,14 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "commands/CmdNavNextDiff.h"
+"commands/CmdNavNextDiff.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
 2 "commands/CmdNavPrevDiff.h"
+"commands/CmdNavPrevDiff.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

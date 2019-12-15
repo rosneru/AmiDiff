@@ -161,7 +161,7 @@ bool Application::Run()
     {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
     { NM_TITLE,   "Navigate",               0 , 0, 0, 0 },
     {   NM_ITEM,    "Previous difference", "P", 0, 0, &m_CmdNavPrevDiff },
-    {   NM_ITEM,    "Next difference",     "N", 0, 0, &m_CmdNavNextDiff },
+    {   NM_ITEM,    "Next difference",     "N", 0, 0, &m_CmdAbout },
     { NM_END,     NULL,                     0 , 0, 0, 0 },
   };
 
