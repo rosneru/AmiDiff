@@ -3,6 +3,7 @@
 
 #include <exec/ports.h>
 #include <intuition/screens.h>
+#include <workbench/workbench.h>
 #include "AppMenu.h"
 #include "AppScreen.h"
 #include "SimpleString.h"
@@ -83,15 +84,24 @@ public:
    */
   bool IsOpen() const;
 
+  /**
+   * Returns the window title
+   */
   const char* Title() const;
+
+  /**
+   * Sets the window title
+   * NOTE: Works only before opening the window
+   */
   void SetTitle(SimpleString newTitle);
 
 
   /**
    * Sets the initial position and size of the window. Only applied
    * when called before opening the window.
-   *
-   * NOTE: Sets The initial position to IP_Explicit.
+   * 
+   * NOTE #1: Works only before opening the window
+   * NOTE #2: This also sets The initial position to IP_Explicit
    *
    * @param left
    * Left edge of the Window.
@@ -123,7 +133,7 @@ public:
 
   /**
    * Sets if the window is without border. Only is applied when
-   * called before opening the window.
+   * called before opening the window
    *
    * @param bFixWindow
    * When true the window will have no border.
@@ -131,14 +141,24 @@ public:
   void SetBorderless(bool bBorderless);
 
   /**
-   * Sets if the window is a smart refresh window. Only is applied when
-   * called before opening the window.
-   *
+   * Sets if the window is a smart refresh window
+
+   * 
    * @param bFixWindow
    * When true the window will be a smart refresh window after opening.
    * When false it will be simple refresh.
    */
   void SetSmartRefresh(bool bSmartRefresh);
+
+
+  /**
+   * The window is prepared to be a Workbench AppWindow using given 
+   * port and id.
+   * 
+   * NOTE: Works only before opening the window
+   */
+  void EnableAppWindow(struct MsgPort* pAppWindowPort, 
+                       ULONG appWindowId);
 
 
   /**
@@ -185,6 +205,15 @@ public:
    */
   AppScreen& WindowScreen();
 
+  /**
+   * Set the menu strip for the window.
+   * 
+   * If the window open, the old menu strip will be replaced by the 
+   * given one immediately.
+   * 
+   * If the window isn't open the given menu strip will be there after
+   * opening.
+   */
   void SetMenu(AppMenu* pMenu);
 
 protected:
@@ -314,6 +343,11 @@ private:
   ULONG m_WindowFlags;
   ULONG m_WindowIdcmp;
   struct Gadget* m_pFirstGadget;
+
+  struct MsgPort* m_pAppWindowPort;
+  struct AppWindow* m_pAppWindow;
+  ULONG m_AppWindowId;
+
   APTR m_pMenuItemDisableAtOpen;
 
   /**

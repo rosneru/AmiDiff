@@ -2,6 +2,7 @@
 
 #include <clib/exec_protos.h>
 #include <clib/intuition_protos.h>
+#include <clib/wb_protos.h>
 #include <intuition/intuition.h>
 #include <intuition/imageclass.h>
 
@@ -22,6 +23,9 @@ WindowBase::WindowBase(AppScreen& appScreen,
     m_WinWidth(0),
     m_WinHeight(0),
     m_pFirstGadget(NULL),
+    m_pAppWindowPort(NULL),
+    m_pAppWindow(NULL),
+    m_AppWindowId(0),
     m_pMenu(NULL),
     m_bInitialized(false),
     m_bIsFixed(false),
@@ -131,24 +135,23 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
   // Open the window
   //
   m_pWindow = OpenWindowTags(NULL,
-    smartOrSimpleRefresh, TRUE,
-    WA_Left, m_WinLeft,
-    WA_Top, m_WinTop,
-    WA_Width, m_WinWidth,
-    WA_Height, m_WinHeight,
-    WA_Title, (ULONG) m_Title.C_str(),
-    WA_Activate, TRUE,
-    WA_PubScreen, (UBYTE*) m_AppScreen.IntuiScreen(),
-//    WA_CustomScreen, (UBYTE*) m_AppScreen.IntuiScreen(),
-    WA_Flags, m_WindowFlags,
-    WA_MinWidth, 120,
-    WA_MinHeight, 90,
-    WA_MaxWidth, -1,
-    WA_MaxHeight, -1,
-    WA_NewLookMenus, TRUE,          // Ignored before v39
-    WA_Borderless, m_bBorderless,
-    WA_Gadgets, m_pFirstGadget,
-    TAG_DONE);
+                             smartOrSimpleRefresh, TRUE,
+                             WA_Left, m_WinLeft,
+                             WA_Top, m_WinTop,
+                             WA_Width, m_WinWidth,
+                             WA_Height, m_WinHeight,
+                             WA_Title, (ULONG) m_Title.C_str(),
+                             WA_Activate, TRUE,
+                             WA_PubScreen, (UBYTE*) m_AppScreen.IntuiScreen(),
+                             WA_Flags, m_WindowFlags,
+                             WA_MinWidth, 120,
+                             WA_MinHeight, 90,
+                             WA_MaxWidth, -1,
+                             WA_MaxHeight, -1,
+                             WA_NewLookMenus, TRUE,
+                             WA_Borderless, m_bBorderless,
+                             WA_Gadgets, m_pFirstGadget,
+                             TAG_DONE);
 
   if(!IsOpen())
   {
@@ -161,6 +164,15 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
   m_pWindow->UserPort = m_pIdcmpMsgPort;
 
   ModifyIDCMP(m_pWindow, m_WindowIdcmp);
+
+  // Create an AppWindow if requested
+  if(m_pAppWindowPort != NULL)
+  {
+    m_pAppWindow = AddAppWindow(m_AppWindowId, 
+                                NULL, 
+                                m_pWindow, 
+                                m_pAppWindowPort, NULL);
+  }
 
   m_NumOpenWindows++;
 
@@ -202,6 +214,12 @@ void WindowBase::Close()
   if(m_pMenu != NULL)
   {
     m_pMenu->DetachFromWindow(m_pWindow);
+  }
+
+  if(m_pAppWindow = NULL)
+  {
+    RemoveAppWindow(m_pAppWindow);
+    m_pAppWindow = NULL;
   }
 
   closeWindowSafely();
@@ -291,6 +309,19 @@ void WindowBase::SetSmartRefresh(bool bSmartRefresh)
   }
 
   m_bSmartRefresh = bSmartRefresh;
+}
+
+
+void WindowBase::EnableAppWindow(struct MsgPort* pAppWindowPort,
+                                 ULONG appWindowId)
+{
+  if(IsOpen())
+  {
+    return;
+  }
+
+  m_pAppWindowPort = pAppWindowPort;
+  m_AppWindowId = appWindowId;
 }
 
 
