@@ -4,6 +4,7 @@
 #include <clib/exec_protos.h>
 #include <clib/gadtools_protos.h>
 #include <clib/intuition_protos.h>
+#include <workbench/workbench.h>
 
 #include "ADiffView_rev.h"
 #include "Command.h"
@@ -18,6 +19,7 @@ Application::Application(ADiffViewArgs& args)
     m_RightFilePath(args.RightFile()), // copy to member variable
     m_pMsgPortIDCMP(NULL),
     m_pMsgPortProgress(NULL),
+    m_pMsgPortAppWindow(NULL),
     m_NumWindowsOpen(0),
     m_bCancelRequested(false),
     m_bExitRequested(false),
@@ -78,6 +80,12 @@ Application::~Application()
     DeleteMsgPort(m_pMsgPortIDCMP);
     m_pMsgPortIDCMP = NULL;
   }
+
+    if(m_pMsgPortAppWindow!= NULL)
+  {
+    DeleteMsgPort(m_pMsgPortAppWindow);
+    m_pMsgPortAppWindow = NULL;
+  }
 }
 
 
@@ -119,11 +127,18 @@ bool Application::Run()
   m_Screen.SetTitle(VERS);  // VERS created with bumprev,
                             // see ADiffView_rev.h
 
+  bool bFilesWindowIsAppWindow = false;
   if(m_Args.PubScreenName().Length() > 0)
   {
     // Use a given public screen
     m_Screen.Open(AScreen::SME_UseNamedPubScreen,
                   m_Args.PubScreenName());
+    
+    // If running on Workbench screen, set FilesWindow as an AppWindow
+    if(m_Args.PubScreenName() == "Workbench")
+    {
+      bFilesWindowIsAppWindow = true;
+    }
   }
   else
   {
@@ -186,6 +201,16 @@ bool Application::Run()
   //
   // Prepare the windows
   //
+  if(bFilesWindowIsAppWindow)
+  {
+    // Create a message port for the AppWindow
+    // No NULL check needed. In this case it simply won't work.
+    m_pMsgPortAppWindow = CreateMsgPort();
+    
+    // FilesWindow should be an AppWindow
+    m_FilesWindow.EnableAppWindow(m_pMsgPortIDCMP, 1); // TODO Avoid numeric constant
+  }
+
   m_FilesWindow.SetMenu(&m_Menu);
   m_DiffWindow.SetMenu(&m_MenuDiffWindow);
   m_DiffWindow.SetSmartRefresh(true);
@@ -230,17 +255,33 @@ void Application::intuiEventLoop()
 {
   ULONG sigIDCMP = (1ul << m_pMsgPortIDCMP->mp_SigBit);
   ULONG sigProgress = (1ul << m_pMsgPortProgress->mp_SigBit);
+  ULONG sigAppWin = (1ul << m_pMsgPortAppWindow->mp_SigBit);
 
-  ULONG signals = sigIDCMP | sigProgress;
+  ULONG signals = sigIDCMP | sigProgress | sigAppWin;
 
   do
   {
     const ULONG received = Wait(signals);
 
+    if(received & sigAppWin)
+    {
+      struct AppMessage* pAppMsg = NULL;
+      while(pAppMsg = (struct AppMessage*) GetMsg(m_pMsgPortAppWindow))
+      {
+        if(m_FilesWindow.IsOpen())
+        {
+          m_FilesWindow.HandleAppMessage(pAppMsg);
+        }
+
+        // All messages must be replied
+        ReplyMsg((struct Message*)pAppMsg);
+      }
+    }
+
     if(received & sigProgress)
     {
       struct ProgressMessage* pProgressMsg = NULL;
-      while(pProgressMsg = (struct ProgressMessage *)
+      while(pProgressMsg = (struct ProgressMessage*)
               GetMsg(m_pMsgPortProgress))
       {
         if(m_ProgressWindow.IsOpen())
@@ -248,7 +289,7 @@ void Application::intuiEventLoop()
           m_ProgressWindow.HandleProgress(pProgressMsg);
         }
 
-        // When we're through with a message, reply
+        // All messages must be replied
         ReplyMsg(pProgressMsg);
       }
     }

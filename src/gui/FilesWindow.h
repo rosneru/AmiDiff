@@ -3,6 +3,7 @@
 
 #include <exec/ports.h>
 #include <intuition/screens.h>
+#include <workbench/workbench.h>
 
 #include "AslFileRequest.h"
 #include "AScreen.h"
@@ -54,6 +55,14 @@ public:
    * If this event was handled: true; if it was not handled: false..
    */
   bool HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddress);
+
+  /**
+   * Handles the given progress event.
+   *
+   * Prints the current pDescription text of given pProgrMsg and
+   * draws a progress bar representing the actual percentual value.
+   */
+  void HandleAppMessage(struct AppMessage* pAppMsg);
 
 private:
   AslFileRequest m_AslRequest;

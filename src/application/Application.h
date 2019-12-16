@@ -44,6 +44,7 @@ private:
 
   struct MsgPort* m_pMsgPortIDCMP;
   struct MsgPort* m_pMsgPortProgress;
+  struct MsgPort* m_pMsgPortAppWindow;
 
   SimpleString m_ErrorMsg;
 

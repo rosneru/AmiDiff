@@ -11,6 +11,8 @@
 #include <intuition/icclass.h>
 #include <libraries/gadtools.h>
 
+#include "MessageBox.h"
+
 #include "FilesWindow.h"
 
 FilesWindow::FilesWindow(AScreen& appScreen,
@@ -132,6 +134,23 @@ bool FilesWindow::HandleIdcmp(ULONG msgClass,
   }
 
   return false;
+}
+
+
+void FilesWindow::HandleAppMessage(struct AppMessage* pAppMsg)
+{
+  if(!IsOpen())
+  {
+    return;
+  }
+
+  SimpleString message = "Received the file: ";
+
+  MessageBox requester;
+  requester.Show(m_pWindow,
+                 "File received",
+                 message.C_str(),
+                 "Ok");
 }
 
 
