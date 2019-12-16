@@ -133,7 +133,7 @@ bool Application::Run()
     // Use a given public screen
     m_Screen.Open(AScreen::SME_UseNamedPubScreen,
                   m_Args.PubScreenName());
-    
+
     // If running on Workbench screen, set FilesWindow as an AppWindow
     if(m_Args.PubScreenName() == "Workbench")
     {
@@ -206,9 +206,9 @@ bool Application::Run()
     // Create a message port for the AppWindow
     // No NULL check needed. In this case it simply won't work.
     m_pMsgPortAppWindow = CreateMsgPort();
-    
+
     // FilesWindow should be an AppWindow
-    m_FilesWindow.EnableAppWindow(m_pMsgPortIDCMP, 1); // TODO Avoid numeric constant
+    m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
   }
 
   m_FilesWindow.SetMenu(&m_Menu);
@@ -255,7 +255,12 @@ void Application::intuiEventLoop()
 {
   ULONG sigIDCMP = (1ul << m_pMsgPortIDCMP->mp_SigBit);
   ULONG sigProgress = (1ul << m_pMsgPortProgress->mp_SigBit);
-  ULONG sigAppWin = (1ul << m_pMsgPortAppWindow->mp_SigBit);
+
+  ULONG sigAppWin = 0;
+  if(m_pMsgPortAppWindow != NULL)
+  {
+    sigAppWin = (1ul << m_pMsgPortAppWindow->mp_SigBit);
+  }
 
   ULONG signals = sigIDCMP | sigProgress | sigAppWin;
 

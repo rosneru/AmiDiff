@@ -78,7 +78,7 @@ Linker
 Run
 30 "" "" "" 0
 ""
-/testfiles/testcase_24_1500_numbers_left.txt /testfiles/testcase_24_1500_numbers_right.txt
+/testfiles/testcase_24_1500_numbers_left.txt /testfiles/testcase_24_1500_numbers_right.txt PUBSCREEN=Workbench
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 0 0
 0 0 0 "" ""
@@ -213,8 +213,8 @@ File
 "gui/AppScreen.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
-"gui/ApplicationMenu.h"
 "gui/ADiffViewPens.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
 ""
@@ -230,8 +230,8 @@ File
 "model/Document.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
-"gui/ApplicationMenu.h"
 "commands/Command.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdNavNextDiff.o" "objects_debug/CmdNavNextDiff.debug"
 ""
@@ -247,8 +247,8 @@ File
 "model/Document.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
-"gui/ApplicationMenu.h"
 "commands/Command.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdNavPrevDiff.o" "objects_debug/CmdNavPrevDiff.debug"
 ""
@@ -336,19 +336,15 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "gui/AppMenu.cpp"
-"gui/AppMenu.cpp"
+1 "gui/AMenu.cpp"
 Storm Shell Project (Dependencies)
-"objects_debug/AppMenu.o" "objects_debug/AppMenu.debug"
+"objects_debug/AMenu.o" "objects_debug/AMenu.debug"
 ""
 1 1
 File
-1 "gui/AppScreen.cpp"
-"gui/AppScreen.cpp"
-"gui/AppScreen.h"
-"gui/ADiffViewPens.h"
+1 "gui/AScreen.cpp"
 Storm Shell Project (Dependencies)
-"objects_debug/AppScreen.o" "objects_debug/AppScreen.debug"
+"objects_debug/AScreen.o" "objects_debug/AScreen.debug"
 ""
 1 1
 File
@@ -373,8 +369,8 @@ File
 "gui/FilesWindow.h"
 "gui/AppScreen.h"
 "gui/WindowBase.h"
-"gui/ApplicationMenu.h"
 "gui/ADiffViewPens.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/FilesWindow.o" "objects_debug/FilesWindow.debug"
 ""
@@ -385,8 +381,8 @@ File
 "gui/ProgressWindow.h"
 "gui/AppScreen.h"
 "gui/WindowBase.h"
-"gui/ApplicationMenu.h"
 "gui/ADiffViewPens.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ProgressWindow.o" "objects_debug/ProgressWindow.debug"
 ""
@@ -397,8 +393,8 @@ File
 "gui/ScrollbarWindow.h"
 "gui/AppScreen.h"
 "gui/WindowBase.h"
-"gui/ApplicationMenu.h"
 "gui/ADiffViewPens.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ScrollbarWindow.o" "objects_debug/ScrollbarWindow.debug"
 ""
@@ -408,8 +404,8 @@ File
 "gui/AppScreen.h"
 "gui/WindowBase.cpp"
 "gui/WindowBase.h"
-"gui/ApplicationMenu.h"
 "gui/ADiffViewPens.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/WindowBase.o" "objects_debug/WindowBase.debug"
 ""
@@ -455,8 +451,8 @@ File
 "gui/AppScreen.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
-"gui/ApplicationMenu.h"
 "gui/ADiffViewPens.h"
+"gui/AppMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
 ""
@@ -628,15 +624,13 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "gui/AppMenu.h"
-"gui/AppMenu.h"
+2 "gui/AMenu.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
-2 "gui/AppScreen.h"
-"gui/AppScreen.h"
+2 "gui/AScreen.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

@@ -168,10 +168,11 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
   // Create an AppWindow if requested
   if(m_pAppWindowPort != NULL)
   {
-    m_pAppWindow = AddAppWindow(m_AppWindowId, 
-                                NULL, 
-                                m_pWindow, 
-                                m_pAppWindowPort, NULL);
+    m_pAppWindow = AddAppWindow(m_AppWindowId,
+                                0,
+                                m_pWindow,
+                                m_pAppWindowPort,
+                                NULL);
   }
 
   m_NumOpenWindows++;
