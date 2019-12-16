@@ -45,18 +45,6 @@ public:
                            APTR pItemAddress);
 
   /**
-   * Setting a new top position to the x-scrollbar pot.
-   */
-  void SetXScrollLeft(int left);
-
-
-  /**
-   * Setting a new top position to the y-scrollbar pot.
-   */
-  void SetYScrollTop(int top);
-
-
-  /**
    * This handles the x-changes triggered by the horizontal scrollbar
    * of the window. It is called from the handleIDCMP method of this
    * class.
@@ -162,6 +150,17 @@ protected:
    * opening and after resizing.
    */
   virtual void calcSizes();
+
+  /**
+   * Setting a new top position to the x-scrollbar pot.
+   */
+  void setXScrollLeft(int left);
+
+
+  /**
+   * Setting a new top position to the y-scrollbar pot.
+   */
+  void setYScrollTop(int top);
 
   /**
    * Setting the pot size of the x-scrollbar.

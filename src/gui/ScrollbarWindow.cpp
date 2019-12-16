@@ -383,7 +383,20 @@ bool ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
 }
 
 
-void ScrollbarWindow::SetXScrollLeft(int left)
+void ScrollbarWindow::calcSizes()
+{
+  // (Re-)calculate some values that may have be changed by re-sizing
+  m_InnerWindowRight = m_pWindow->Width
+    - m_AppScreen.IntuiScreen()->WBorLeft
+    - m_SizeImageWidth;
+
+  m_InnerWindowBottom = m_pWindow->Height
+    - m_AppScreen.BarHeight()
+    - m_SizeImageHeight;
+}
+
+
+void ScrollbarWindow::setXScrollLeft(int left)
 {
   if(m_pXPropGadget == NULL)
   {
@@ -401,7 +414,7 @@ void ScrollbarWindow::SetXScrollLeft(int left)
 }
 
 
-void ScrollbarWindow::SetYScrollTop(int top)
+void ScrollbarWindow::setYScrollTop(int top)
 {
   if(m_pYPropGadget == NULL)
   {
@@ -416,20 +429,6 @@ void ScrollbarWindow::SetYScrollTop(int top)
   SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
                  PGA_Top, top,
                  TAG_DONE);
-}
-
-
-
-void ScrollbarWindow::calcSizes()
-{
-  // (Re-)calculate some values that may have be changed by re-sizing
-  m_InnerWindowRight = m_pWindow->Width
-    - m_AppScreen.IntuiScreen()->WBorLeft
-    - m_SizeImageWidth;
-
-  m_InnerWindowBottom = m_pWindow->Height
-    - m_AppScreen.BarHeight()
-    - m_SizeImageHeight;
 }
 
 
