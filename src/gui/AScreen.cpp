@@ -3,27 +3,27 @@
 #include <clib/intuition_protos.h>
 #include <graphics/text.h>
 #include <intuition/intuitionbase.h>
-#include "AppScreen.h"
+#include "AScreen.h"
 
 extern struct IntuitionBase* IntuitionBase;
 
-AppScreen::AppScreen(ADiffViewSettings& settings)
+AScreen::AScreen(ADiffViewSettings& settings)
   : m_Pens(m_pScreen, m_pDrawInfo, settings),
     m_Settings(settings),
     m_pScreen(NULL),
     m_pDrawInfo(NULL),
     m_pVisualInfo(NULL),
-    m_Title("AppScreen"),
+    m_Title("AScreen"),
     m_PubScreenName("Workbench")
 {
 }
 
-AppScreen::~AppScreen()
+AScreen::~AScreen()
 {
   Close();
 }
 
-bool AppScreen::Open(ScreenModeEasy screenModeEasy,
+bool AScreen::Open(ScreenModeEasy screenModeEasy,
                      SimpleString pubScreenName)
 {
   if(m_pScreen != NULL)
@@ -48,8 +48,8 @@ bool AppScreen::Open(ScreenModeEasy screenModeEasy,
     m_ScreenModeEasy = SME_CloneWorkbench8Col;
   }
 
-  if((m_ScreenModeEasy == AppScreen::SME_UseWorkbench) ||
-     (m_ScreenModeEasy == AppScreen::SME_UseNamedPubScreen))
+  if((m_ScreenModeEasy == AScreen::SME_UseWorkbench) ||
+     (m_ScreenModeEasy == AScreen::SME_UseNamedPubScreen))
   {
     //
     // Using the Workbench or an other public screen
@@ -103,7 +103,7 @@ bool AppScreen::Open(ScreenModeEasy screenModeEasy,
   return true;
 }
 
-void AppScreen::Close()
+void AScreen::Close()
 {
   if(m_pVisualInfo != NULL)
   {
@@ -123,8 +123,8 @@ void AppScreen::Close()
 
   if(m_pScreen != NULL)
   {
-    if((m_ScreenModeEasy == AppScreen::SME_UseWorkbench) ||
-       (m_ScreenModeEasy == AppScreen::SME_UseNamedPubScreen))
+    if((m_ScreenModeEasy == AScreen::SME_UseWorkbench) ||
+       (m_ScreenModeEasy == AScreen::SME_UseNamedPubScreen))
     {
       // We had used a public screen or the Workbench
       UnlockPubScreen(NULL, m_pScreen);
@@ -139,17 +139,17 @@ void AppScreen::Close()
   }
 }
 
-bool AppScreen::IsOpen() const
+bool AScreen::IsOpen() const
 {
   return (m_pScreen != NULL);
 }
 
-const char* AppScreen::Title() const
+const char* AScreen::Title() const
 {
   return m_Title.C_str();
 }
 
-void AppScreen::SetTitle(SimpleString title)
+void AScreen::SetTitle(SimpleString title)
 {
   if(IsOpen())
   {
@@ -160,7 +160,7 @@ void AppScreen::SetTitle(SimpleString title)
   m_Title = title;
 }
 
-UWORD AppScreen::FontHeight() const
+UWORD AScreen::FontHeight() const
 {
   if(m_pDrawInfo == NULL)
   {
@@ -170,7 +170,7 @@ UWORD AppScreen::FontHeight() const
   return m_pDrawInfo->dri_Font->tf_YSize;
 }
 
-WORD AppScreen::BarHeight() const
+WORD AScreen::BarHeight() const
 {
   if(m_pScreen == NULL)
   {
@@ -180,12 +180,12 @@ WORD AppScreen::BarHeight() const
 	return m_pScreen->WBorTop + FontHeight() + 2;
 }
 
-struct Screen* AppScreen::IntuiScreen()
+struct Screen* AScreen::IntuiScreen()
 {
   return m_pScreen;
 }
 
-struct Window* AppScreen::ActiveWindow() const
+struct Window* AScreen::ActiveWindow() const
 {
   // Locking the intuition base
   ULONG intuitionLock = LockIBase(0L);
@@ -199,12 +199,12 @@ struct Window* AppScreen::ActiveWindow() const
   return pActiveWin;
 }
 
-struct DrawInfo* AppScreen::IntuiDrawInfo()
+struct DrawInfo* AScreen::IntuiDrawInfo()
 {
   return m_pDrawInfo;
 }
 
-struct TextAttr* AppScreen::IntuiTextAttr()
+struct TextAttr* AScreen::IntuiTextAttr()
 {
   if(m_pScreen == NULL)
   {
@@ -214,12 +214,12 @@ struct TextAttr* AppScreen::IntuiTextAttr()
   return m_pScreen->Font;
 }
 
-APTR* AppScreen::GadtoolsVisualInfo()
+APTR* AScreen::GadtoolsVisualInfo()
 {
   return m_pVisualInfo;
 }
 
-const ADiffViewPens& AppScreen::Pens() const
+const ADiffViewPens& AScreen::Pens() const
 {
   return m_Pens;
 }

@@ -1,10 +1,10 @@
 #include <clib/gadtools_protos.h>
 #include <clib/intuition_protos.h>
 
-#include "AppMenu.h"
+#include "AMenu.h"
 
 
-AppMenu::AppMenu(AppScreen& screen)
+AMenu::AMenu(AScreen& screen)
   : m_Screen(screen),
     m_pMenu(NULL)
 {
@@ -12,13 +12,13 @@ AppMenu::AppMenu(AppScreen& screen)
 }
 
 
-AppMenu::~AppMenu()
+AMenu::~AMenu()
 {
   Dispose();
 }
 
 
-bool AppMenu::Create(struct NewMenu* pMenuDefinition)
+bool AMenu::Create(struct NewMenu* pMenuDefinition)
 {
   if(m_Screen.GadtoolsVisualInfo() == NULL)
   {
@@ -48,7 +48,7 @@ bool AppMenu::Create(struct NewMenu* pMenuDefinition)
 }
 
 
-void AppMenu::Dispose()
+void AMenu::Dispose()
 {
   if(m_pMenu != NULL)
   {
@@ -58,7 +58,7 @@ void AppMenu::Dispose()
 }
 
 
-bool AppMenu::AttachToWindow(struct Window* pWindow)
+bool AMenu::AttachToWindow(struct Window* pWindow)
 {
   if(SetMenuStrip(pWindow, m_pMenu) == FALSE)
   {
@@ -70,7 +70,7 @@ bool AppMenu::AttachToWindow(struct Window* pWindow)
 }
 
 
-bool AppMenu::UpdateInWindow(struct Window* pWindow)
+bool AMenu::UpdateInWindow(struct Window* pWindow)
 {
   if(ResetMenuStrip(pWindow, m_pMenu) == FALSE)
   {
@@ -82,18 +82,18 @@ bool AppMenu::UpdateInWindow(struct Window* pWindow)
 }
 
 
-void AppMenu::DetachFromWindow(struct Window* pWindow)
+void AMenu::DetachFromWindow(struct Window* pWindow)
 {
   ClearMenuStrip(pWindow);
 }
 
-struct Menu* AppMenu::IntuiMenu()
+struct Menu* AMenu::IntuiMenu()
 {
   return m_pMenu;
 }
 
 
-void AppMenu::DisableMenuItem(struct Window* pWindow,
+void AMenu::DisableMenuItem(struct Window* pWindow,
   APTR pUserDataMenuItemToDisable)
 {
   if(pUserDataMenuItemToDisable == NULL)
@@ -112,7 +112,7 @@ void AppMenu::DisableMenuItem(struct Window* pWindow,
 }
 
 
-void AppMenu::EnableMenuItem(struct Window* pWindow,
+void AMenu::EnableMenuItem(struct Window* pWindow,
   APTR pUserDataMenuItemToEnable)
 {
   if(pUserDataMenuItemToEnable == NULL)
@@ -131,7 +131,7 @@ void AppMenu::EnableMenuItem(struct Window* pWindow,
 }
 
 
-struct MenuItem* AppMenu::findItemByUserData(APTR pUserDataToFind, 
+struct MenuItem* AMenu::findItemByUserData(APTR pUserDataToFind, 
                                              WORD& foundMenuNumber)
 {
   if(m_pMenu == NULL)

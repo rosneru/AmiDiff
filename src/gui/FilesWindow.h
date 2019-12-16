@@ -5,7 +5,7 @@
 #include <intuition/screens.h>
 
 #include "AslFileRequest.h"
-#include "AppScreen.h"
+#include "AScreen.h"
 #include "Command.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
@@ -21,7 +21,7 @@
 class FilesWindow : public WindowBase
 {
 public:
-  FilesWindow(AppScreen& appScreen,
+  FilesWindow(AScreen& appScreen,
               struct MsgPort*& pIdcmpMsgPort,
               int& numWindowsOpen,
               SimpleString& leftFilePath,

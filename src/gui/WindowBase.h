@@ -4,8 +4,8 @@
 #include <exec/ports.h>
 #include <intuition/screens.h>
 #include <workbench/workbench.h>
-#include "AppMenu.h"
-#include "AppScreen.h"
+#include "AMenu.h"
+#include "AScreen.h"
 #include "SimpleString.h"
 
 /**
@@ -203,7 +203,7 @@ public:
    * Returns the app screen object on which the window is opened or
    * NULL if window is not open.
    */
-  AppScreen& WindowScreen();
+  AScreen& WindowScreen();
 
   /**
    * Set the menu strip for the window.
@@ -214,10 +214,10 @@ public:
    * If the window isn't open the given menu strip will be there after
    * opening.
    */
-  void SetMenu(AppMenu* pMenu);
+  void SetMenu(AMenu* pMenu);
 
 protected:
-  AppScreen& m_AppScreen;
+  AScreen& m_AScreen;
   struct MsgPort*& m_pIdcmpMsgPort;
   struct Window* m_pWindow;
   bool m_bBorderless;
@@ -227,14 +227,14 @@ protected:
   ULONG m_WinWidth;
   ULONG m_WinHeight;
   bool m_bInitialized;
-  AppMenu* m_pMenu;
+  AMenu* m_pMenu;
   SimpleString m_Title;
 
 
   /**
    * Creates a new window object
    *
-   * @param pAppScreen
+   * @param pAScreen
    * Screen on which the window will occur at opening time
    *
    * @param pIdcmpMsgPort
@@ -246,7 +246,7 @@ protected:
    * successful opening and decreased at each closing of a window.
    *
    */
-  WindowBase(AppScreen& appScreen, 
+  WindowBase(AScreen& appScreen, 
              struct MsgPort*& pIdcmpMsgPort,
              int& numOpenWindows);
 

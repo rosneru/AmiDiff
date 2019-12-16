@@ -11,7 +11,7 @@
 #include <intuition/icclass.h>
 #include "ScrollbarWindow.h"
 
-ScrollbarWindow::ScrollbarWindow(AppScreen& appScreen,
+ScrollbarWindow::ScrollbarWindow(AScreen& appScreen,
                                  struct MsgPort*& pIdcmpMsgPort,
                                  int& numOpenWindows)
   : WindowBase(appScreen, pIdcmpMsgPort, numOpenWindows),
@@ -143,7 +143,7 @@ void ScrollbarWindow::initialize()
                         GA_RelBottom, -m_SizeImageHeight-imageHeight+1,
                         GA_Width, imageWidth,
                         GA_Height, imageHeight,
-                        GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
+                        GA_DrawInfo, m_AScreen.IntuiDrawInfo(),
                         GA_GZZGadget, TRUE,
                         GA_RightBorder, TRUE,
                         GA_Image, m_pDownArrowImage,
@@ -162,7 +162,7 @@ void ScrollbarWindow::initialize()
               GA_RelBottom, -m_SizeImageHeight-imageHeight-imageHeight+1,
               GA_Width, imageWidth,
               GA_Height, imageHeight,
-              GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
+              GA_DrawInfo, m_AScreen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
               GA_Image, m_pUpArrowImage,
@@ -175,10 +175,10 @@ void ScrollbarWindow::initialize()
               GA_Previous, m_pUpArrowButton,
               GA_ID, GID_PropY,
               GA_RelRight, -m_SizeImageWidth+4,
-              GA_Top, m_AppScreen.BarHeight(),
+              GA_Top, m_AScreen.BarHeight(),
               GA_Width, m_SizeImageWidth-6,
-              GA_RelHeight, -m_SizeImageHeight-imageHeight-imageHeight-m_AppScreen.BarHeight()-1,
-              GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
+              GA_RelHeight, -m_SizeImageHeight-imageHeight-imageHeight-m_AScreen.BarHeight()-1,
+              GA_DrawInfo, m_AScreen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
               PGA_Freedom, FREEVERT,
@@ -204,7 +204,7 @@ void ScrollbarWindow::initialize()
               GA_RelBottom, -imageHeight+1,
               GA_Width, imageWidth,
               GA_Height, imageHeight,
-              GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
+              GA_DrawInfo, m_AScreen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
               GA_Image, m_pRightArrowImage,
@@ -223,7 +223,7 @@ void ScrollbarWindow::initialize()
               GA_RelBottom, -imageHeight+1,
               GA_Width, imageWidth,
               GA_Height, imageHeight,
-              GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
+              GA_DrawInfo, m_AScreen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
               GA_Image, m_pLeftArrowImage,
@@ -235,11 +235,11 @@ void ScrollbarWindow::initialize()
     NewObject(NULL, PROPGCLASS,
               GA_Previous, m_pLeftArrowButton,
               GA_ID, GID_PropX,
-              GA_Left, m_AppScreen.IntuiScreen()->WBorLeft,
+              GA_Left, m_AScreen.IntuiScreen()->WBorLeft,
               GA_RelBottom, -m_SizeImageHeight+3,
-              GA_RelWidth, -m_SizeImageWidth-imageWidth-imageWidth-m_AppScreen.IntuiScreen()->WBorLeft-1,
+              GA_RelWidth, -m_SizeImageWidth-imageWidth-imageWidth-m_AScreen.IntuiScreen()->WBorLeft-1,
               GA_Height, m_SizeImageHeight-4,
-              GA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
+              GA_DrawInfo, m_AScreen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
               PGA_Freedom, FREEHORIZ,
@@ -387,11 +387,11 @@ void ScrollbarWindow::calcSizes()
 {
   // (Re-)calculate some values that may have be changed by re-sizing
   m_InnerWindowRight = m_pWindow->Width
-    - m_AppScreen.IntuiScreen()->WBorLeft
+    - m_AScreen.IntuiScreen()->WBorLeft
     - m_SizeImageWidth;
 
   m_InnerWindowBottom = m_pWindow->Height
-    - m_AppScreen.BarHeight()
+    - m_AScreen.BarHeight()
     - m_SizeImageHeight;
 }
 

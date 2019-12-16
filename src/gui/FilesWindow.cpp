@@ -13,7 +13,7 @@
 
 #include "FilesWindow.h"
 
-FilesWindow::FilesWindow(AppScreen& appScreen,
+FilesWindow::FilesWindow(AScreen& appScreen,
                          struct MsgPort*& pIdcmpMsgPort,
                          int& numWindowsOpen,
                          SimpleString& leftFilePath,
@@ -241,9 +241,9 @@ void FilesWindow::initialize()
   //
   // Calculate some basic values
   //
-  m_WinWidth = (WORD)m_AppScreen.IntuiScreen()->Width / 2;
-  m_FontHeight = m_AppScreen.FontHeight();
-  WORD barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
+  m_WinWidth = (WORD)m_AScreen.IntuiScreen()->Width / 2;
+  m_FontHeight = m_AScreen.FontHeight();
+  WORD barHeight = m_AScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
 
   WORD hSpace = 10;
   WORD vSpace = 10;
@@ -255,7 +255,7 @@ void FilesWindow::initialize()
   WORD btnsWidth = 60;
   WORD btnsHeight = m_FontHeight + 6;
 
-  WORD btnSelectWidth = TextLength(&m_AppScreen.IntuiScreen()->RastPort, "...", 3) + 8;
+  WORD btnSelectWidth = TextLength(&m_AScreen.IntuiScreen()->RastPort, "...", 3) + 8;
   WORD btnSelectLeft = right - btnSelectWidth;
 
   WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
@@ -279,8 +279,8 @@ void FilesWindow::initialize()
   struct NewGadget newGadget;
 
   // Row 1  contains  a label
-  newGadget.ng_TextAttr   = m_AppScreen.IntuiTextAttr();
-  newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
+  newGadget.ng_TextAttr   = m_AScreen.IntuiTextAttr();
+  newGadget.ng_VisualInfo = m_AScreen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadWidth;

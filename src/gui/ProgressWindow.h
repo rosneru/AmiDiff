@@ -4,7 +4,7 @@
 #include <exec/ports.h>
 #include <intuition/screens.h>
 
-#include "AppScreen.h"
+#include "AScreen.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
 
@@ -17,7 +17,7 @@
 class ProgressWindow : public WindowBase
 {
 public:
-  ProgressWindow(AppScreen& appScreen, 
+  ProgressWindow(AScreen& appScreen, 
                  struct MsgPort*& pIdcmpMsgPort,
                  int& numOpenWindows, 
                  bool& bCancelRequested);

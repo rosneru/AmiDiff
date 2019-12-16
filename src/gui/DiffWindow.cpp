@@ -18,7 +18,7 @@
 extern struct GfxBase* GfxBase;
 
 
-DiffWindow::DiffWindow(AppScreen& appScreen,
+DiffWindow::DiffWindow(AScreen& appScreen,
                        struct MsgPort*& pIdcmpMsgPort,
                        int& numOpenWindows)
   : ScrollbarWindow(appScreen, pIdcmpMsgPort, numOpenWindows),
@@ -99,7 +99,7 @@ void DiffWindow::Resized()
   calcSizes();
 
   // Clear the window completely
-  SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
+  SetRast(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Resize gadgets to fit into new window size
   resizeGadgets();
@@ -131,14 +131,14 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
   // in the initialize() method which is called from WindowBase::Open()
   // shortly before opening, so the Open() call is done afterwards.
   //
-  m_IndentY = 2 * m_AppScreen.FontHeight();
+  m_IndentY = 2 * m_AScreen.FontHeight();
   m_TextArea1Left = m_IndentX;
   m_TextAreasTop = m_IndentY;
 
-  m_TextAttr.ta_Name = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
-  m_TextAttr.ta_YSize = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
-  m_TextAttr.ta_Style = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Style;
-  m_TextAttr.ta_Flags = m_AppScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
+  m_TextAttr.ta_Name = m_AScreen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
+  m_TextAttr.ta_YSize = m_AScreen.IntuiDrawInfo()->dri_Font->tf_YSize;
+  m_TextAttr.ta_Style = m_AScreen.IntuiDrawInfo()->dri_Font->tf_Style;
+  m_TextAttr.ta_Flags = m_AScreen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
   //
   // Open the window
@@ -186,7 +186,7 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   }
 
   // Clear the window completely
-  SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
+  SetRast(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Display the document file names in the gadgets
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
@@ -514,11 +514,11 @@ void DiffWindow::createGadgets()
     }
   }
 
-  WORD m_FontHeight = m_AppScreen.FontHeight();
+  WORD m_FontHeight = m_AScreen.FontHeight();
 
   struct NewGadget newGadget;
-  newGadget.ng_TextAttr   = m_AppScreen.IntuiTextAttr();
-  newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
+  newGadget.ng_TextAttr   = m_AScreen.IntuiTextAttr();
+  newGadget.ng_VisualInfo = m_AScreen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = m_TextArea1Left;
   newGadget.ng_TopEdge    = m_TextAreasTop - m_FontHeight - 4;
   newGadget.ng_Height     = m_FontHeight + 2;
@@ -678,7 +678,7 @@ void DiffWindow::resizeGadgets()
   RemoveGList(m_pWindow, m_pGadtoolsContext, -1);
 
   // Clear the area on which the new gadgets will be drawn
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Background());
   RectFill(m_pWindow->RPort,
            0,
            0,
@@ -727,7 +727,7 @@ void DiffWindow::paintDocument(bool bFromStart)
   }
 
   // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
 
   for(size_t i = m_Y; (i - m_Y) < m_MaxTextAreaLines; i++)
   {
@@ -866,7 +866,7 @@ void DiffWindow::paintWindowDecoration()
                m_TextAreasTop,
                m_TextAreasWidth,
                m_TextAreasHeight,
-               GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
+               GT_VisualInfo, m_AScreen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
@@ -875,7 +875,7 @@ void DiffWindow::paintWindowDecoration()
                m_TextAreasTop,
                m_TextAreasWidth,
                m_TextAreasHeight,
-               GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
+               GT_VisualInfo, m_AScreen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 }
@@ -892,7 +892,7 @@ void DiffWindow::paintStatusBar()
   int left = m_TextArea1Left + 2;
 
   // Clear the status bar area
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Background());
   RectFill(m_pWindow->RPort,
            0,
            top,
@@ -901,8 +901,8 @@ void DiffWindow::paintStatusBar()
 
 
   struct IntuiText intuiText;
-  intuiText.FrontPen  = m_AppScreen.Pens().Text();
-  intuiText.BackPen   = m_AppScreen.Pens().Background();
+  intuiText.FrontPen  = m_AScreen.Pens().Text();
+  intuiText.BackPen   = m_AScreen.Pens().Background();
   intuiText.DrawMode  = JAM2;
   intuiText.ITextFont = &m_TextAttr;
   intuiText.NextText  = NULL;
@@ -915,19 +915,19 @@ void DiffWindow::paintStatusBar()
 
   left += IntuiTextLength(&intuiText);
   intuiText.LeftEdge = left;
-  intuiText.BackPen = m_AppScreen.Pens().Green();
+  intuiText.BackPen = m_AScreen.Pens().Green();
   intuiText.IText = (UBYTE*) m_AddedText.C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
-  intuiText.BackPen = m_AppScreen.Pens().Yellow();
+  intuiText.BackPen = m_AScreen.Pens().Yellow();
   intuiText.IText = (UBYTE*) m_ChangedText.C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
-  intuiText.BackPen = m_AppScreen.Pens().Red();
+  intuiText.BackPen = m_AScreen.Pens().Red();
   intuiText.IText = (UBYTE*) m_DeletedText.C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
@@ -937,19 +937,19 @@ LONG DiffWindow::colorNameToPen(DiffDocument::ColorName colorName)
 {
   if(colorName == DiffDocument::CN_Green)
   {
-    return m_AppScreen.Pens().Green();
+    return m_AScreen.Pens().Green();
   }
   else if(colorName== DiffDocument::CN_Yellow)
   {
-    return m_AppScreen.Pens().Yellow();
+    return m_AScreen.Pens().Yellow();
   }
   else if(colorName == DiffDocument::CN_Red)
   {
-    return m_AppScreen.Pens().Red();
+    return m_AScreen.Pens().Red();
   }
   else
   {
-    return m_AppScreen.Pens().Background();
+    return m_AScreen.Pens().Background();
   }
 }
 
@@ -981,10 +981,10 @@ size_t DiffWindow::scrollRight(int numChars)
 
 
   // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
 
   // Set background color before scrolling
-  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+  SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area right by n * the height of one text line
   ScrollRaster(m_pWindow->RPort,
@@ -1054,10 +1054,10 @@ size_t DiffWindow::scrollLeft(int numChars)
   }
 
   // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
 
   // Set background color before scrolling
-  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+  SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area left by n * the width of one char
   ScrollRaster(m_pWindow->RPort,
@@ -1114,10 +1114,10 @@ size_t DiffWindow::scrollDown(int numLines)
   }
 
   // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
 
   // Set background color before scrolling
-  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+  SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area downward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,
@@ -1179,10 +1179,10 @@ size_t DiffWindow::scrollUp(int numLines)
   }
 
   // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Text());
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
 
   // Set background color before scrolling
-  SetBPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+  SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area upward by n * the height of one text line
   ScrollRaster(m_pWindow->RPort, 0,

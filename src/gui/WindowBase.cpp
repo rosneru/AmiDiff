@@ -9,10 +9,10 @@
 #include "WindowBase.h"
 
 
-WindowBase::WindowBase(AppScreen& appScreen,
+WindowBase::WindowBase(AScreen& appScreen,
                        struct MsgPort*& pIdcmpMsgPort,
                        int& numOpenWindows)
-  : m_AppScreen(appScreen),
+  : m_AScreen(appScreen),
     m_pIdcmpMsgPort(pIdcmpMsgPort),
     m_NumOpenWindows(numOpenWindows),
     m_pWindow(NULL),
@@ -69,9 +69,9 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
   //
   // Calculating window size etc in dependency of screen dimensions
   //
-  int screenWidth = m_AppScreen.IntuiScreen()->Width;
-  int screenHeight = m_AppScreen.IntuiScreen()->Height;
-  int screenBarHeight = m_AppScreen.IntuiScreen()->BarHeight;
+  int screenWidth = m_AScreen.IntuiScreen()->Width;
+  int screenHeight = m_AScreen.IntuiScreen()->Height;
+  int screenBarHeight = m_AScreen.IntuiScreen()->BarHeight;
 
   switch(m_InitialPosition)
   {
@@ -142,7 +142,7 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
                              WA_Height, m_WinHeight,
                              WA_Title, (ULONG) m_Title.C_str(),
                              WA_Activate, TRUE,
-                             WA_PubScreen, (UBYTE*) m_AppScreen.IntuiScreen(),
+                             WA_PubScreen, (UBYTE*) m_AScreen.IntuiScreen(),
                              WA_Flags, m_WindowFlags,
                              WA_MinWidth, 120,
                              WA_MinHeight, 90,
@@ -375,13 +375,13 @@ struct Window* WindowBase::IntuiWindow()
 }
 
 
-AppScreen& WindowBase::WindowScreen()
+AScreen& WindowBase::WindowScreen()
 {
-  return m_AppScreen;
+  return m_AScreen;
 }
 
 
-void WindowBase::SetMenu(AppMenu* pMenu)
+void WindowBase::SetMenu(AMenu* pMenu)
 {
   if(pMenu == NULL)
   {
@@ -470,7 +470,7 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId,
       NULL, SYSICLASS,
       SYSIA_Which, sysImageId,
       SYSIA_Size, SYSISIZE_MEDRES,
-      SYSIA_DrawInfo, m_AppScreen.IntuiDrawInfo(),
+      SYSIA_DrawInfo, m_AScreen.IntuiDrawInfo(),
       TAG_END);
 
   if(pImage != NULL)

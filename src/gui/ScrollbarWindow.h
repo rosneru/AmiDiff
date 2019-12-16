@@ -4,7 +4,7 @@
 #include <exec/ports.h>
 #include <intuition/screens.h>
 
-#include "AppScreen.h"
+#include "AScreen.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
 
@@ -18,7 +18,7 @@
 class ScrollbarWindow : public WindowBase
 {
 public:
-  ScrollbarWindow(AppScreen& appScreen, 
+  ScrollbarWindow(AScreen& appScreen, 
                   struct MsgPort*& pIdcmpMsgPort,
                   int& numOpenWindows);
 

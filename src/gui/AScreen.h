@@ -16,7 +16,7 @@
  * @author Uwe Rosner
  * @date 23/09/2018
  */
-class AppScreen
+class AScreen
 {
 public:
   /**
@@ -30,8 +30,8 @@ public:
     SME_UseNamedPubScreen   ///> Use a pub screen with name as set in constructor
   };
 
-  AppScreen(ADiffViewSettings& settings);
-  ~AppScreen();
+  AScreen(ADiffViewSettings& settings);
+  ~AScreen();
 
   /**
    * Opens a Workbench clone screen

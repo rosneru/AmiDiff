@@ -122,13 +122,13 @@ bool Application::Run()
   if(m_Args.PubScreenName().Length() > 0)
   {
     // Use a given public screen
-    m_Screen.Open(AppScreen::SME_UseNamedPubScreen,
+    m_Screen.Open(AScreen::SME_UseNamedPubScreen,
                   m_Args.PubScreenName());
   }
   else
   {
     // Open a Workbench clone screen with 8 colors
-    m_Screen.Open(AppScreen::SME_CloneWorkbench8Col);
+    m_Screen.Open(AScreen::SME_CloneWorkbench8Col);
   }
 
   if (!m_Screen.IsOpen())
@@ -276,7 +276,7 @@ void Application::intuiEventLoop()
           struct MenuItem* pSelectedItem = NULL;
 
           // Create an array of all menus to be searched for the item
-          AppMenu* pMenus[] = {&m_Menu, &m_MenuDiffWindow};
+          AMenu* pMenus[] = {&m_Menu, &m_MenuDiffWindow};
 
           // Iterate all those menus, trying to find the item
           for(int i = 0; i < (sizeof pMenus / sizeof pMenus[0]); i++)

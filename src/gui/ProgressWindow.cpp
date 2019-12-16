@@ -15,7 +15,7 @@
 #include "ProgressWindow.h"
 
 
-ProgressWindow::ProgressWindow(AppScreen& appScreen,
+ProgressWindow::ProgressWindow(AScreen& appScreen,
                                struct MsgPort*& pIdcmpMsgPort,
                                int& numOpenWindows,
                                bool& bCancelRequested)
@@ -69,7 +69,7 @@ bool ProgressWindow::Open(const APTR pMenuItemDisableAtOpen,
   DrawBevelBox(m_pWindow->RPort,
     m_ProgressBarLeft, m_ProgressBarTop,
     m_ProgressBarWidth, m_ProgressBarHeight,
-    GT_VisualInfo, m_AppScreen.GadtoolsVisualInfo(),
+    GT_VisualInfo, m_AScreen.GadtoolsVisualInfo(),
     GTBB_Recessed, TRUE,
     TAG_DONE);
 
@@ -81,8 +81,8 @@ bool ProgressWindow::Open(const APTR pMenuItemDisableAtOpen,
     TAG_END);
 
   // Initialize the intui text structure for progress value display
-  m_ProgressValueIText.FrontPen  = m_AppScreen.Pens().HighlightedText();
-  m_ProgressValueIText.BackPen   = m_AppScreen.Pens().Background();
+  m_ProgressValueIText.FrontPen  = m_AScreen.Pens().HighlightedText();
+  m_ProgressValueIText.BackPen   = m_AScreen.Pens().Background();
   m_ProgressValueIText.DrawMode  = JAM1;
   m_ProgressValueIText.NextText  = NULL;
   m_ProgressValueIText.LeftEdge  = m_ProgressBarLeft + 3;
@@ -157,7 +157,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   }
 
   // Set color to <blue> for painting the progress bar
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Fill());
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Fill());
 
   // Fill the progress bar area
   RectFill(m_pWindow->RPort,
@@ -168,7 +168,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
 
   // Set color to <background> for painting the grey background of the
   // yet uncovered area of the progress bar
-  SetAPen(m_pWindow->RPort, m_AppScreen.Pens().Background());
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Fill the yet uncovered progress bar area with the background
   // color. This is necessary to clear the formerly printed text.
@@ -206,9 +206,9 @@ void ProgressWindow::initialize()
   //
   // Calculate some basic values
   //
-  m_WinWidth = (WORD)m_AppScreen.IntuiScreen()->Width / 2;
-  m_FontHeight = m_AppScreen.FontHeight();
-  WORD barHeight = m_AppScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
+  m_WinWidth = (WORD)m_AScreen.IntuiScreen()->Width / 2;
+  m_FontHeight = m_AScreen.FontHeight();
+  WORD barHeight = m_AScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
 
   WORD hSpace = 10;
   WORD vSpace = 10;
@@ -236,8 +236,8 @@ void ProgressWindow::initialize()
 
   // Declare the basic gadget structure and fill with basic values
   struct NewGadget newGadget;
-  newGadget.ng_TextAttr   = m_AppScreen.IntuiTextAttr();
-  newGadget.ng_VisualInfo = m_AppScreen.GadtoolsVisualInfo();
+  newGadget.ng_TextAttr   = m_AScreen.IntuiTextAttr();
+  newGadget.ng_VisualInfo = m_AScreen.GadtoolsVisualInfo();
 
   // Creating the string gadget to display the progress description
   newGadget.ng_LeftEdge   = left;
