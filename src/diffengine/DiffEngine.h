@@ -81,7 +81,7 @@ public:
   void SetProgressReporter(ProgressReporter* pProgressReporter);
 
 protected:
-  virtual void addDiffIdxIndexToList(size_t diffIdx);
+  virtual void addDiffIdxToList(size_t diffIdx);
 
 private:
   DiffFileBase& m_A;

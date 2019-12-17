@@ -113,13 +113,13 @@ bool DiffFileLinux::PreProcess(const char* pFileName)
   return NumLines() > 0;
 }
 
-bool DiffFileLinux::AddString(const char* p_String,
+long DiffFileLinux::AddString(const char* p_String,
                               DiffLine::LineState p_LineState)
 {
   if(m_NumLines < 1)
   {
     // Not initialized
-    return false;
+    return -1;
   }
 
   if(m_pDiffLinesArray == NULL)
@@ -130,9 +130,9 @@ bool DiffFileLinux::AddString(const char* p_String,
   DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
   if(pDiffLine == NULL)
   {
-    return false;
+    return -1;
   }
 
   m_pDiffLinesArray[m_NextAddedLineIdx++] = pDiffLine;
-  return true;
+  return m_NextAddedLineIdx - 1;
 }

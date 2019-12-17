@@ -44,7 +44,14 @@ public:
   DiffLine::LineState GetLineState(size_t idx) const;
   void SetLineState(size_t idx, DiffLine::LineState state);
 
-  virtual bool AddString(const char*, DiffLine::LineState) = 0;
+  /**
+   * Adds a DiffLine to file using given string and line state.
+   * 
+   * Returns the index where the line was inserted or -1 on error.
+   */
+  virtual long AddString(const char* string, 
+                         DiffLine::LineState lineState) = 0;
+
   void AddBlankLine();
 
   /**

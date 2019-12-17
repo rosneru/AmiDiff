@@ -129,7 +129,7 @@ void DiffEngine::SetProgressReporter(ProgressReporter* pProgressReporter)
   m_pProgressReporter = pProgressReporter;
 }
 
-void DiffEngine::addDiffIdxIndexToList(size_t diffIdx)
+void DiffEngine::addDiffIdxToList(size_t diffIdx)
 {
   if(m_pDiffStartIdxsList == NULL)
   {
@@ -174,7 +174,7 @@ void DiffEngine::createDiffFiles()
       && (m_A.GetLineState(lineA) != DiffLine::Normal)
       && (m_B.GetLineState(lineB) != DiffLine::Normal))
     {
-      m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Changed);
+      long idx = m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Changed);
       m_BDiff.AddString(m_B.GetLine(lineB++)->Text(), DiffLine::Changed);
 
       m_NumChanged++;
@@ -188,7 +188,7 @@ void DiffEngine::createDiffFiles()
       if(!bAddedToList)
       {
         bAddedToList = true;
-        addDiffIdxIndexToList(m_ADiff.NumLines() - 1);
+        addDiffIdxToList(idx); // -2 ... has been decremented above
       }
     }
 
@@ -196,14 +196,14 @@ void DiffEngine::createDiffFiles()
     while((lineA < m_A.NumLines())
        && (lineB >= m_B.NumLines() || (m_A.GetLineState(lineA) != DiffLine::Normal)))
     {
-      m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Deleted);
+      long idx = m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Deleted);
       m_BDiff.AddBlankLine();
 
       // Add start of this block of DELETED lines to differences list
       if(!bAddedToList)
       {
         bAddedToList = true;
-        addDiffIdxIndexToList(m_ADiff.NumLines() - 1);
+        addDiffIdxToList(idx);
       }
     }
 
@@ -212,13 +212,13 @@ void DiffEngine::createDiffFiles()
       && (lineA >= m_A.NumLines() || (m_B.GetLineState(lineB) != DiffLine::Normal)))
     {
       m_ADiff.AddBlankLine();
-      m_BDiff.AddString(m_B.GetLine(lineB++)->Text(), DiffLine::Added);
+      long idx = m_BDiff.AddString(m_B.GetLine(lineB++)->Text(), DiffLine::Added);
 
       // Add start of this block of ADDED lines to differences list
       if(!bAddedToList)
       {
         bAddedToList = true;
-        addDiffIdxIndexToList(m_ADiff.NumLines() - 1);
+        addDiffIdxToList(idx);
       }
     }
 

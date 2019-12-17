@@ -24,7 +24,12 @@ public:
 
   bool PreProcess(const char* pFileName);
 
-  bool AddString(const char* string,
+  /**
+   * Adds a DiffLine to file using given string and line state.
+   * 
+   * Returns the index where the line was inserted or -1 on error.
+   */
+  long AddString(const char* string,
                  DiffLine::LineState lineState);
 
   const char* Error();

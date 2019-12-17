@@ -159,13 +159,13 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
 }
 
 
-bool DiffFileAmiga::AddString(const char* string,
+long DiffFileAmiga::AddString(const char* string,
                               DiffLine::LineState lineState)
 {
   if(m_NumLines < 1)
   {
     // Not initialized
-    return false;
+    return -1;
   }
 
   if(m_pDiffLinesArray == NULL)
@@ -177,7 +177,7 @@ bool DiffFileAmiga::AddString(const char* string,
     {
       m_pError = m_pErrMsgLowMem;
       m_File.Close();
-      return false;
+      return -1;
     }
   }
 
@@ -187,7 +187,7 @@ bool DiffFileAmiga::AddString(const char* string,
   if(pDiffLine == NULL)
   {
     m_pError = m_pErrMsgLowMem;
-    return false;
+    return -1;
   }
 
   // The next line is called 'replacement new'. It creates an object
@@ -199,7 +199,7 @@ bool DiffFileAmiga::AddString(const char* string,
 
   m_pDiffLinesArray[m_NextAddedLineIdx++] = pDiffLine;
 
-  return true;
+  return m_NextAddedLineIdx - 1;
 }
 
 const char* DiffFileAmiga::Error()
