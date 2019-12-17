@@ -31,7 +31,9 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
                  m_RightSrcFile,
                  m_LeftDiffFile,
                  m_RightDiffFile,
-                 m_bCancelRequested)
+                 m_pPoolHeader,
+                 m_bCancelRequested,
+                 &m_DiffStartIdxsList)
 {
 
   //
@@ -247,8 +249,17 @@ void DiffWorker::disposeDocuments()
   m_LeftDiffFile.Clear();
   m_RightDiffFile.Clear();
 
+  //
+  // Clear the list
+  // (Delete just all list nodes, not the item itself. That is done by
+  // freeing the whole memory pool; see below)
+  //
+  while(m_DiffStartIdxsList.RemoveItem());
+
+  //
   // Deleting the memory pool as a whole gives an extreme
   // performence boost at exit or when starting another compare.
+  //
   DeletePool(m_pPoolHeader);
   m_pPoolHeader = NULL;
 }

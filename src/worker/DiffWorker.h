@@ -5,10 +5,11 @@
 
 #include "WorkerBase.h"
 #include "DiffDocument.h"
-#include "DiffEngine.h"
+#include "DiffEngineAmiga.h"
 #include "DiffFileAmiga.h"
 #include "DiffWindow.h"
 #include "FilesWindow.h"
+#include "LinkedList.h"
 #include "ProgressWindow.h"
 #include "SimpleString.h"
 #include "StopWatch.h"
@@ -72,6 +73,8 @@ private:
 
   APTR m_pPoolHeader;
 
+  LinkedList m_DiffStartIdxsList;
+
   DiffDocument* m_pDiffDocumentLeft;
   DiffDocument* m_pDiffDocumentRight;
 
@@ -80,7 +83,7 @@ private:
   DiffFileAmiga m_LeftDiffFile;
   DiffFileAmiga m_RightDiffFile;
 
-  DiffEngine m_DiffEngine;
+  DiffEngineAmiga m_DiffEngine;
 
   StopWatch m_StopWatch;
 
