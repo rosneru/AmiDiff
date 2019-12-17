@@ -103,58 +103,58 @@ bool DiffEngine::Diff()
 
   while (lineA < m_A.NumLines() || lineB < m_B.NumLines())
   {
-    if( (lineA < m_A.NumLines())
+    //
+    // Handle the equal lines
+    //
+    while( (lineA < m_A.NumLines())
      && (m_A.GetLineState(lineA) == DiffLine::Normal)
      && (lineB < m_B.NumLines())
      && (m_B.GetLineState(lineB) == DiffLine::Normal))
     {
-      // equal lines
       m_ADiff.AddString(m_A.GetLine(lineA)->Text(), DiffLine::Normal);
       m_BDiff.AddString(m_B.GetLine(lineB)->Text(), DiffLine::Normal);
 
       lineA++;
       lineB++;
     }
-    else
+
+    //
+    // Handle changed, deleted, inserted lines
+    //
+    while((lineA < m_A.NumLines())
+      && (lineB < m_B.NumLines())
+      && (m_A.GetLineState(lineA) != DiffLine::Normal)
+      && (m_B.GetLineState(lineB) != DiffLine::Normal))
     {
-      //
-      // Maybe deleted and/or inserted lines
-      //
+      m_ADiff.AddString(m_A.GetLine(lineA)->Text(), DiffLine::Changed);
+      m_BDiff.AddString(m_B.GetLine(lineB)->Text(), DiffLine::Changed);
+      lineA++;
+      lineB++;
 
-      while((lineA < m_A.NumLines())
-        && (lineB < m_B.NumLines())
-        && (m_A.GetLineState(lineA) != DiffLine::Normal)
-        && (m_B.GetLineState(lineB) != DiffLine::Normal))
-      {
-        m_ADiff.AddString(m_A.GetLine(lineA)->Text(), DiffLine::Changed);
-        m_BDiff.AddString(m_B.GetLine(lineB)->Text(), DiffLine::Changed);
-        lineA++;
-        lineB++;
+      m_NumChanged++;
+      m_NumDeletedA--;
+      m_NumInsertedB--;
 
-        m_NumChanged++;
-        m_NumDeletedA--;
-        m_NumInsertedB--;
-
-        m_ADiff.DecrementNumLines();
-        m_BDiff.DecrementNumLines();
-      }
-
-      while((lineA < m_A.NumLines())
-        && (lineB >= m_B.NumLines() || (m_A.GetLineState(lineA) != DiffLine::Normal)))
-      {
-        m_ADiff.AddString(m_A.GetLine(lineA)->Text(), DiffLine::Deleted);
-        m_BDiff.AddBlankLine();
-        lineA++;
-      }
-
-      while((lineB < m_B.NumLines())
-        && (lineA >= m_A.NumLines() || (m_B.GetLineState(lineB) != DiffLine::Normal)))
-      {
-        m_ADiff.AddBlankLine();
-        m_BDiff.AddString(m_B.GetLine(lineB)->Text(), DiffLine::Added);
-        lineB++;
-      }
+      m_ADiff.DecrementNumLines();
+      m_BDiff.DecrementNumLines();
     }
+
+    while((lineA < m_A.NumLines())
+       && (lineB >= m_B.NumLines() || (m_A.GetLineState(lineA) != DiffLine::Normal)))
+    {
+      m_ADiff.AddString(m_A.GetLine(lineA)->Text(), DiffLine::Deleted);
+      m_BDiff.AddBlankLine();
+      lineA++;
+    }
+
+    while((lineB < m_B.NumLines())
+      && (lineA >= m_A.NumLines() || (m_B.GetLineState(lineB) != DiffLine::Normal)))
+    {
+      m_ADiff.AddBlankLine();
+      m_BDiff.AddString(m_B.GetLine(lineB)->Text(), DiffLine::Added);
+      lineB++;
+    }
+
   }
 
 

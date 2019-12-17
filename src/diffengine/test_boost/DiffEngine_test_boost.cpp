@@ -618,3 +618,37 @@ BOOST_AUTO_TEST_CASE( testcase_13_6000_lines )
 
   BOOST_CHECK_EQUAL(diffOk, true);
 }
+
+
+/**
+ * testcase_24_1500_numbers
+ *
+ * 11 changes in two textfiles with about 1500 lines each.
+ * Used to test the navigation between diffs.
+ */
+BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
+{
+  bool cancelRequested = false;
+  bool diffOk = false;
+
+  DiffFileLinux srcA(cancelRequested);
+  srcA.PreProcess("../../../testfiles/testcase_24_1500_numbers_left.txt");
+
+  DiffFileLinux srcB(cancelRequested);
+  srcB.PreProcess("../../../testfiles/testcase_24_1500_numbers_right.txt");
+
+  DiffFileLinux diffA(cancelRequested);
+  DiffFileLinux diffB(cancelRequested);
+
+  DiffEngine diffEngine(srcA, srcB, diffA, diffB, cancelRequested);
+  diffOk = diffEngine.Diff();
+
+  BOOST_CHECK_EQUAL(diffOk, true);
+
+  long numAdd = diffEngine.NumAdded();
+  long numChn = diffEngine.NumChanged();
+  long numDel = diffEngine.NumDeleted();
+  long numDiff = diffEngine.NumDifferences();
+
+  BOOST_CHECK_EQUAL(numDiff, 22);
+}

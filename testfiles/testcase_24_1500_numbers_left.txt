@@ -10,7 +10,6 @@ Line    8
 Line    9
 Line   10
 Line   11
-Line   12
 Line   13
 Line   14
 Line   15
@@ -1224,8 +1223,6 @@ Line 1222
 Line 1223
 Line 1224
 Line 1225
-Line 1226
-Line 1227
 Line 1228
 Line 1229
 Line 1230
