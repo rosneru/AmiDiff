@@ -30,6 +30,7 @@ DiffEngine::~DiffEngine()
 
 }
 
+
 bool DiffEngine::Diff()
 {
   //
@@ -59,7 +60,7 @@ bool DiffEngine::Diff()
   //   While calculating the lcs the deleted lines in left file m_A are
   //   marked with DiffLine::Deleted and the inserted lines in right
   //   file m_b are marked with DiffLine::Added
-  longestCommonSubsequence(0, m_A.NumLines(), 0, m_B.NumLines());
+  lcs(0, m_A.NumLines(), 0, m_B.NumLines());
 
   delete[] m_pUpVector;
   m_pUpVector = NULL;
@@ -91,84 +92,7 @@ bool DiffEngine::Diff()
   // That means inserting of empty lines in one side when in other
   // side are insertions or Deletions.
   //
-
-  long lineA = 0;
-  long lineB = 0;
-
-  m_ADiff.SetNumLines(m_A.NumLines() + m_NumInsertedB);
-  m_BDiff.SetNumLines(m_B.NumLines() + m_NumDeletedA);
-
-  while (lineA < m_A.NumLines() || lineB < m_B.NumLines())
-  {
-    //
-    // Handle the equal lines
-    //
-    while( (lineA < m_A.NumLines())
-     && (m_A.GetLineState(lineA) == DiffLine::Normal)
-     && (lineB < m_B.NumLines())
-     && (m_B.GetLineState(lineB) == DiffLine::Normal))
-    {
-      m_ADiff.AddString(m_A.GetLine(lineA)->Text(), DiffLine::Normal);
-      m_BDiff.AddString(m_B.GetLine(lineB)->Text(), DiffLine::Normal);
-
-      lineA++;
-      lineB++;
-    }
-
-    //
-    // Handle changed, deleted, inserted lines
-    //
-    while((lineA < m_A.NumLines())
-      && (lineB < m_B.NumLines())
-      && (m_A.GetLineState(lineA) != DiffLine::Normal)
-      && (m_B.GetLineState(lineB) != DiffLine::Normal))
-    {
-      m_ADiff.AddString(m_A.GetLine(lineA)->Text(), DiffLine::Changed);
-      m_BDiff.AddString(m_B.GetLine(lineB)->Text(), DiffLine::Changed);
-      lineA++;
-      lineB++;
-
-      m_NumChanged++;
-      m_NumDeletedA--;
-      m_NumInsertedB--;
-
-      m_ADiff.DecrementNumLines();
-      m_BDiff.DecrementNumLines();
-    }
-
-    while((lineA < m_A.NumLines())
-       && (lineB >= m_B.NumLines() || (m_A.GetLineState(lineA) != DiffLine::Normal)))
-    {
-      m_ADiff.AddString(m_A.GetLine(lineA)->Text(), DiffLine::Deleted);
-      m_BDiff.AddBlankLine();
-      lineA++;
-    }
-
-    while((lineB < m_B.NumLines())
-      && (lineA >= m_A.NumLines() || (m_B.GetLineState(lineB) != DiffLine::Normal)))
-    {
-      m_ADiff.AddBlankLine();
-      m_BDiff.AddString(m_B.GetLine(lineB)->Text(), DiffLine::Added);
-      lineB++;
-    }
-
-  }
-
-
-  //
-  // Create a list of all differences' start indexes
-  //
-  for(size_t iDiffFile = 0; iDiffFile < m_ADiff.NumLines(); iDiffFile++)
-  {
-    if((m_A.GetLineState(iDiffFile) == DiffLine::Changed) ||
-       (m_B.GetLineState(iDiffFile) == DiffLine::Changed) ||
-       (m_A.GetLineState(iDiffFile) == DiffLine::Deleted) ||
-       (m_B.GetLineState(iDiffFile) == DiffLine::Added))
-    {
-      // Add the current line idx as a start of a difference
-      addDiffIdxIndexToList(iDiffFile);
-    }
-  }
+  createDiffFiles();
 
   // Progress reporting
   reportProgress(100);
@@ -219,10 +143,91 @@ void DiffEngine::addDiffIdxIndexToList(size_t diffIdx)
 }
 
 
-void DiffEngine::longestCommonSubsequence(long lowerA,
-                                          long upperA,
-                                          long lowerB,
-                                          long upperB)
+void DiffEngine::createDiffFiles()
+{
+  long lineA = 0;
+  long lineB = 0;
+
+  m_ADiff.SetNumLines(m_A.NumLines() + m_NumInsertedB);
+  m_BDiff.SetNumLines(m_B.NumLines() + m_NumDeletedA);
+
+  while (lineA < m_A.NumLines() || lineB < m_B.NumLines())
+  {
+    //
+    // Handle the equal lines
+    //
+    while( (lineA < m_A.NumLines())
+     && (m_A.GetLineState(lineA) == DiffLine::Normal)
+     && (lineB < m_B.NumLines())
+     && (m_B.GetLineState(lineB) == DiffLine::Normal))
+    {
+      m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Normal);
+      m_BDiff.AddString(m_B.GetLine(lineB++)->Text(), DiffLine::Normal);
+    }
+
+    //
+    // Handle changed, deleted, inserted lines
+    //
+    bool bAddedToList = false;
+    while((lineA < m_A.NumLines())
+      && (lineB < m_B.NumLines())
+      && (m_A.GetLineState(lineA) != DiffLine::Normal)
+      && (m_B.GetLineState(lineB) != DiffLine::Normal))
+    {
+      m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Changed);
+      m_BDiff.AddString(m_B.GetLine(lineB++)->Text(), DiffLine::Changed);
+
+      m_NumChanged++;
+      m_NumDeletedA--;
+      m_NumInsertedB--;
+
+      m_ADiff.DecrementNumLines();
+      m_BDiff.DecrementNumLines();
+
+      // Add start of this block of CHANGED lines to differences list
+      if(!bAddedToList)
+      {
+        bAddedToList = true;
+        addDiffIdxIndexToList(m_ADiff.NumLines() - 1);
+      }
+    }
+
+    bAddedToList = false;
+    while((lineA < m_A.NumLines())
+       && (lineB >= m_B.NumLines() || (m_A.GetLineState(lineA) != DiffLine::Normal)))
+    {
+      m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Deleted);
+      m_BDiff.AddBlankLine();
+
+      // Add start of this block of DELETED lines to differences list
+      if(!bAddedToList)
+      {
+        bAddedToList = true;
+        addDiffIdxIndexToList(m_ADiff.NumLines() - 1);
+      }
+    }
+
+    bAddedToList = false;
+    while((lineB < m_B.NumLines())
+      && (lineA >= m_A.NumLines() || (m_B.GetLineState(lineB) != DiffLine::Normal)))
+    {
+      m_ADiff.AddBlankLine();
+      m_BDiff.AddString(m_B.GetLine(lineB++)->Text(), DiffLine::Added);
+
+      // Add start of this block of ADDED lines to differences list
+      if(!bAddedToList)
+      {
+        bAddedToList = true;
+        addDiffIdxIndexToList(m_ADiff.NumLines() - 1);
+      }
+    }
+
+  }
+}
+
+
+
+void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 {
   //
   // Notify
@@ -275,8 +280,8 @@ void DiffEngine::longestCommonSubsequence(long lowerA,
   }
   else
   {
-    Pair smsrd = shortestMiddleSnake(lowerA, upperA, lowerB, upperB);
-    longestCommonSubsequence(lowerA, smsrd.Left(), lowerB, smsrd.Top());
+    Pair smsrd = sms(lowerA, upperA, lowerB, upperB);
+    lcs(lowerA, smsrd.Left(), lowerB, smsrd.Top());
 
     if(m_bCancelRequested)
     {
@@ -284,7 +289,7 @@ void DiffEngine::longestCommonSubsequence(long lowerA,
       return;
     }
 
-    longestCommonSubsequence(smsrd.Left(), upperA, smsrd.Top(), upperB);
+    lcs(smsrd.Left(), upperA, smsrd.Top(), upperB);
 
     if(m_bCancelRequested)
     {
@@ -295,10 +300,7 @@ void DiffEngine::longestCommonSubsequence(long lowerA,
 }
 
 
-Pair DiffEngine::shortestMiddleSnake(long lowerA,
-                                     long upperA,
-                                     long lowerB,
-                                     long upperB)
+Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
 {
   Pair sms;
 

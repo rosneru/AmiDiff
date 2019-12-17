@@ -107,6 +107,20 @@ private:
   long m_NotifyIncrement;
   long m_NextNotifyPosition;
 
+
+  /**
+   * Calculate the target DiffFiles from src diff files.
+   *
+   * That means inserting of empty lines in one side when in other
+   * side are insertions or Deletions.
+   *
+   * Also, if a pDiffStartIdxsList were given in the constructor,
+   * it is filled with the start position of each difference block
+   * during this step.
+   */
+  void createDiffFiles();
+
+
   /**
    * The divide-and-conquer implementation of the longest-common-
    * subsequence (LCS) algorithm. The published algorithm passes
@@ -114,19 +128,14 @@ private:
    * these arrays the lower and upper bounds are passed while the
    * sequences stay constant.
    */
-  void longestCommonSubsequence(long lowerA,
-                                long upperA,
-                                long lowerB,
-                                long upperB);
+  void lcs(long lowerA, long upperA, long lowerB, long upperB);
 
 
   /**
    * This is the algorithm to find the Shortest Middle Snake (SMS)
    */
-  Pair shortestMiddleSnake(long lowerA,
-                           long upperA,
-                           long lowerB,
-                           long upperB);
+  Pair sms(long lowerA, long upperA, long lowerB, long upperB);
+
 
   /**
    * If a sequence of modified lines starts with a line that
@@ -138,6 +147,7 @@ private:
    * text files.
    */
   void optimize(DiffFileBase& data);
+
 
   void reportProgress(int progress);
 };
