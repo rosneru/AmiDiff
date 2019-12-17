@@ -660,4 +660,19 @@ BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
   long numDiff = diffEngine.NumDifferences();
 
   BOOST_CHECK_EQUAL(diffStartIdxsList.Size(), 22);
+
+  // Clear the list
+  size_t* pItem = static_cast<size_t*>(diffStartIdxsList.GetFirst());
+  if(pItem == NULL)
+  {
+    return;
+  }
+
+  do
+  {
+    delete[] pItem;
+
+    pItem = static_cast<size_t*>(diffStartIdxsList.GetNext());
+  }
+  while(pItem != NULL);
 }

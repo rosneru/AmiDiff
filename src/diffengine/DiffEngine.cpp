@@ -211,6 +211,11 @@ void DiffEngine::addDiffIdxIndexToList(size_t diffIdx)
   {
     return;
   }
+
+  size_t* pItem = new size_t[1];
+  pItem[0] = diffIdx;
+
+  m_pDiffStartIdxsList->InsertTail(pItem);
 }
 
 
