@@ -1,5 +1,5 @@
-#ifndef LINKED_LIST_AMIGA_H
-#define LINKED_LIST_AMIGA_H
+#ifndef DIFFENGINE_AMIGA_H
+#define DIFFENGINE_AMIGA_H
 
 #include <exec/types.h>
 
@@ -40,4 +40,4 @@ private:
   void addDiffIdxToList(size_t diffIdx);
 };
 
-#endif // LINKED_LIST_AMIGA_H
+#endif // DIFFENGINE_AMIGA_H
