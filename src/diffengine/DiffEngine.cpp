@@ -6,7 +6,8 @@ DiffEngine::DiffEngine(DiffFileBase& a,
                        DiffFileBase& b,
                        DiffFileBase& aDiff,
                        DiffFileBase& bDiff,
-                       bool& bCancelRequested)
+                       bool& bCancelRequested,
+                       LinkedList* pDiffStartIdxsList)
   : m_A(a),
     m_B(b),
     m_ADiff(aDiff),
@@ -15,8 +16,8 @@ DiffEngine::DiffEngine(DiffFileBase& a,
     m_NumDeletedA(0),
     m_NumChanged(0),
     m_bCancelRequested(bCancelRequested),
+    m_pDiffStartIdxsList(pDiffStartIdxsList),
     m_pProgressReporter(NULL),
-    m_pDiffStartIdxs(NULL),
     m_Max(0),
     m_pDownVector(NULL),
     m_pUpVector(NULL)
@@ -26,11 +27,7 @@ DiffEngine::DiffEngine(DiffFileBase& a,
 
 DiffEngine::~DiffEngine()
 {
-  if(m_pDiffStartIdxs != NULL)
-  {
-    delete[] m_pDiffStartIdxs;
-    m_pDiffStartIdxs = NULL;
-  }
+
 }
 
 bool DiffEngine::Diff()
@@ -161,15 +158,6 @@ bool DiffEngine::Diff()
   //
   // Create a list of all differences' start indexes
   //
-  if(m_pDiffStartIdxs != NULL)
-  {
-    // List already exists, delete it first
-    delete[] m_pDiffStartIdxs;
-  }
-
-  m_pDiffStartIdxs = new long[NumDifferences()];
-
-  size_t iStartPosList = 0;
   for(size_t iDiffFile = 0; iDiffFile < m_ADiff.NumLines(); iDiffFile++)
   {
     if((m_A.GetLineState(iDiffFile) == DiffLine::Changed) ||
@@ -178,13 +166,7 @@ bool DiffEngine::Diff()
        (m_B.GetLineState(iDiffFile) == DiffLine::Added))
     {
       // Add the current line idx as a start of a difference
-      m_pDiffStartIdxs[iStartPosList++] = iDiffFile;
-    }
-
-    if(iStartPosList >= NumDifferences())
-    {
-      // Don't exceed the array size
-      break;
+      addDiffIdxIndexToList(iDiffFile);
     }
   }
 
@@ -218,15 +200,17 @@ long DiffEngine::NumDeleted() const
 }
 
 
-long* DiffEngine::DiffStartIdxs()
-{
-  return m_pDiffStartIdxs;
-}
-
-
 void DiffEngine::SetProgressReporter(ProgressReporter* pProgressReporter)
 {
   m_pProgressReporter = pProgressReporter;
+}
+
+void DiffEngine::addDiffIdxIndexToList(size_t diffIdx)
+{
+  if(m_pDiffStartIdxsList == NULL)
+  {
+    return;
+  }
 }
 
 

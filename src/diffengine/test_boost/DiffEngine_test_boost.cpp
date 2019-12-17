@@ -16,6 +16,7 @@
 #include "DiffFileLinux.h"
 #include "DiffEngine.h"
 #include "DiffLine.h"
+#include "LinkedList.h"
 
 
 
@@ -640,7 +641,15 @@ BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
   DiffFileLinux diffA(cancelRequested);
   DiffFileLinux diffB(cancelRequested);
 
-  DiffEngine diffEngine(srcA, srcB, diffA, diffB, cancelRequested);
+  LinkedList diffStartIdxsList;
+
+  DiffEngine diffEngine(srcA,
+                        srcB,
+                        diffA,
+                        diffB,
+                        cancelRequested,
+                        &diffStartIdxsList);
+
   diffOk = diffEngine.Diff();
 
   BOOST_CHECK_EQUAL(diffOk, true);
@@ -650,5 +659,5 @@ BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
   long numDel = diffEngine.NumDeleted();
   long numDiff = diffEngine.NumDifferences();
 
-  BOOST_CHECK_EQUAL(numDiff, 22);
+  BOOST_CHECK_EQUAL(diffStartIdxsList.Size(), 22);
 }

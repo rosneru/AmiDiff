@@ -4,6 +4,7 @@
 #include "Pair.h"
 #include "DiffLine.h"
 #include "DiffFileBase.h"
+#include "LinkedList.h"
 
 #include "ProgressReporter.h"
 
@@ -60,7 +61,8 @@ public:
              DiffFileBase& b,
              DiffFileBase& aDiff,
              DiffFileBase& bDiff,
-             bool& bCancelRequested);
+             bool& bCancelRequested,
+             LinkedList* pDiffStartIdxsList = NULL);
 
   ~DiffEngine();
 
@@ -72,26 +74,21 @@ public:
   long NumChanged() const;
   long NumDeleted() const;
 
-  /**
-   * Returns an int-Array of length NumDifferences() which contains
-   * the line idx of each difference.
-   *
-   * NOTE: Do not use the arry after the DiffEngine is deleted, because
-   *       its memory is freed and invalid by then.
-   */
-  long* DiffStartIdxs();
-
 
   /**
    * Setting the progress reporter
    */
   void SetProgressReporter(ProgressReporter* pProgressReporter);
 
+protected:
+  virtual void addDiffIdxIndexToList(size_t diffIdx);
+
 private:
   DiffFileBase& m_A;
   DiffFileBase& m_B;
   DiffFileBase& m_ADiff;
   DiffFileBase& m_BDiff;
+  LinkedList* m_pDiffStartIdxsList;
 
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;
@@ -99,8 +96,6 @@ private:
   long m_NumInsertedB;
   long m_NumDeletedA;
   long m_NumChanged;
-
-  long* m_pDiffStartIdxs;
 
   long m_Max;
   long* m_pDownVector;
@@ -111,7 +106,6 @@ private:
   long m_PercentIncrement;
   long m_NotifyIncrement;
   long m_NextNotifyPosition;
-
 
   /**
    * The divide-and-conquer implementation of the longest-common-
