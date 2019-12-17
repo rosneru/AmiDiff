@@ -63,3 +63,8 @@ LinkedListNode* LinkedListAmiga::allocListNode(void* pItem,
 
   return pNode;
 }
+
+void LinkedListAmiga::freeListNode(LinkedListNode* pNode)
+{
+  // Should be done outside by deleting the memory pool as a whole.
+}

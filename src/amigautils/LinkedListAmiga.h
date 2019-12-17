@@ -33,6 +33,8 @@ private:
   LinkedListNode* allocListNode(void* pItem,
                                 LinkedListNode* pPrev,
                                 LinkedListNode* pNext);
+
+  void freeListNode(LinkedListNode* pNode);
 };
 
 #endif // LINKED_LIST_AMIGA_H
