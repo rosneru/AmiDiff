@@ -181,20 +181,8 @@ Storm Shell Project (Dependencies)
 File
 1 "application/main.cpp"
 "application/main.cpp"
-"application/Application.h"
-"commands/Command.h"
-"worker/WorkerBase.h"
-"worker/ProgressReporter.h"
-"worker/WorkerStartupMsg.h"
-"diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
-"model/Document.h"
 "diffengine/Pair.h"
-"gui/ScrollbarWindow.h"
-"gui/ADiffViewPens.h"
-"application/ADiffViewSettings.h"
-"application/ADiffViewArgs.h"
-"gui/AScreen.h"
 "diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
@@ -470,12 +458,17 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "oscottlibs/LinkedList.cpp"
+"oscottlibs/LinkedList.cpp"
+"oscottlibs/LinkedList.h"
+"oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/LinkedList.o" "objects_debug/LinkedList.debug"
 ""
 1 1
 File
 1 "oscottlibs/LinkedListNode.cpp"
+"oscottlibs/LinkedListNode.cpp"
+"oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/LinkedListNode.o" "objects_debug/LinkedListNode.debug"
 ""
@@ -757,6 +750,7 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "oscottlibs/LinkedList.h"
+"oscottlibs/LinkedList.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

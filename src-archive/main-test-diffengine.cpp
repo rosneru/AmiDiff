@@ -21,7 +21,8 @@
 
 #include "DiffFileBase.h"
 #include "DiffFileAmiga.h"
-#include "DiffEngine.h"
+#include "DiffEngineAmiga.h"
+#include "LinkedListAmiga.h"
 #include "DiffLine.h"
 
 
@@ -43,6 +44,8 @@ int main(int argc, char **argv)
   bool cancelRequested = false;
   bool diffOk = false;
 
+  LinkedListAmiga list(m_pPoolHeader);
+
   DiffFileAmiga srcA(m_pPoolHeader, cancelRequested);
   srcA.PreProcess("/testfiles/testcase_23_RealLifeApp-left.cs");
 
@@ -52,7 +55,14 @@ int main(int argc, char **argv)
   DiffFileAmiga targetA(m_pPoolHeader, cancelRequested);
   DiffFileAmiga targetB(m_pPoolHeader, cancelRequested);
 
-  DiffEngine diffEngine(srcA, srcB, targetA, targetB, cancelRequested);
+  DiffEngineAmiga diffEngine(srcA,
+                             srcB,
+                             targetA,
+                             targetB,
+                             m_pPoolHeader,
+                             cancelRequested,
+                             &list);
+
   diffOk = diffEngine.Diff();
 
   if(diffOk)

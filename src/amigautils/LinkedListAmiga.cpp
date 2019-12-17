@@ -25,7 +25,7 @@ LinkedListAmiga::~LinkedListAmiga()
 
 void LinkedListAmiga::Clear()
 {
-
+  while (RemoveItem() == true);
 }
 
 

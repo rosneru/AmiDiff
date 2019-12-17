@@ -22,6 +22,7 @@
  *       UnitTests with QTCreator and boost framework
  *
  * History
+ *   19.12.2019 - Release of version 1.1
  *   13.03.2019 - Release of version 1.0.1
  *   21.02.2019 - Release of version 1.0.0
  *   18.09.2018 - Project start
@@ -29,6 +30,7 @@
  * Author: Uwe Rosner
  *    https://github.com/rosneru
  */
+
 
 #define INTUI_V36_NAMES_ONLY
 

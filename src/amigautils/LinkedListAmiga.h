@@ -17,7 +17,7 @@ class LinkedListAmiga : public LinkedList
 {
 public:
   LinkedListAmiga(APTR& pPoolHeader);
-  ~LinkedListAmiga();
+  virtual ~LinkedListAmiga();
 
   void Clear();
 
@@ -29,6 +29,8 @@ private:
   const char* m_pErrMsgMemPool;
   const char* m_pErrMsgUnknown;
   const char* m_pError;
+
+  long* m_pDummy;
 
   LinkedListNode* allocListNode(void* pItem,
                                 LinkedListNode* pPrev,

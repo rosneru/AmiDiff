@@ -59,11 +59,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
 
   // Initialize some variables needed for progress reporting
   int lastProgressValue = -1;
-  m_NumLines = 0;
-  if(m_pProgressReporter != NULL)
-  {
-    m_NumLines = m_File.CountLines();
-  }
+  m_NumLines = m_File.CountLines();
 
   if(m_NumLines == 0)
   {
