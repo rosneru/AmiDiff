@@ -302,7 +302,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 
 Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
 {
-  Pair sms;
+  Pair result;
 
   // the k-line to start the forward search
   long downK = lowerA - lowerB;
@@ -366,10 +366,10 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
       {
         if (m_pUpVector[upOffset + k] <= m_pDownVector[downOffset + k])
         {
-          sms.Set(m_pDownVector[downOffset + k],
+          result.Set(m_pDownVector[downOffset + k],
                   m_pDownVector[downOffset + k] - k);
 
-          return sms;
+          return result;
         }
       }
     }
@@ -411,18 +411,18 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
       {
         if (m_pUpVector[upOffset + k] <= m_pDownVector[downOffset + k])
         {
-          sms.Set(m_pDownVector[downOffset + k],
+          result.Set(m_pDownVector[downOffset + k],
                   m_pDownVector[downOffset + k] - k);
 
-          return sms;
+          return result;
         }
       }
     }
   }
 
   // The algorithm should never come here
-  Pair smsNil;
-  return smsNil;
+  Pair resultInvalid;
+  return resultInvalid;
 }
 
 

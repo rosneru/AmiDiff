@@ -3,6 +3,7 @@
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
 
+#include "LinkedListNode.h"
 
 #include "LinkedListAmiga.h"
 
@@ -24,13 +25,7 @@ LinkedListAmiga::~LinkedListAmiga()
 
 void LinkedListAmiga::Clear()
 {
-  // The array address is cleared but nothing else is deleted or freed
-  // here, because an external memory pool is used for all heap allocs.
-  // On exit or when performing another diff that memory pool is
-  // deleted outside with just one call. On the Amiga this is way
-  // faster than e.g. calling 5000 single delete [] in random order.
 
-  m_pDiffLinesArray = NULL;
 }
 
 
@@ -53,6 +48,13 @@ LinkedListNode* LinkedListAmiga::allocListNode(void* pItem,
 
   LinkedListNode* pNode = AllocPooled(m_pPoolHeader, 
                                       sizeof(LinkedListNode));
+
+  // The next line is called 'replacement new'. It creates an object
+  // of LinkedListNode on the address pNode and calls the constructor.
+  // This has to be done here because a memory pool is used and the 
+  // normal operator 'new' which reserves memory automatically 
+  // wouldn't be appropriate.
+  new (pNode) LinkedListNode(pItem, pPrev, pNext);
 
   if(pNode == NULL)
   {

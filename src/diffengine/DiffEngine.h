@@ -81,6 +81,7 @@ public:
   void SetProgressReporter(ProgressReporter* pProgressReporter);
 
 protected:
+  LinkedList* m_pDiffStartIdxsList;
   virtual void addDiffIdxToList(size_t diffIdx);
 
 private:
@@ -88,7 +89,6 @@ private:
   DiffFileBase& m_B;
   DiffFileBase& m_ADiff;
   DiffFileBase& m_BDiff;
-  LinkedList* m_pDiffStartIdxsList;
 
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;
