@@ -12,8 +12,7 @@ DiffEngineAmiga::DiffEngineAmiga(DiffFileBase& a,
                                  DiffFileBase& bDiff,
                                  APTR& pPoolHeader,
                                  bool& bCancelRequested,
-                                 LinkedList* pDiffStartIdxsList
-                                 bool& bCancelRequested)
+                                 LinkedList* pDiffStartIdxsList)
   : DiffEngine(a, b, aDiff, bDiff, bCancelRequested, pDiffStartIdxsList),
     m_pPoolHeader(pPoolHeader),
     m_pErrMsgLowMem("Not enough memory."),
@@ -48,10 +47,10 @@ void DiffEngineAmiga::addDiffIdxToList(size_t diffIdx)
   {
     // Won't work without memory pool
     m_pError = m_pErrMsgMemPool;
-    return false;
+    return;
   }
 
-  size_t* pItem = AllocPooled(m_pPoolHeader, sizeof(size_t));
+  size_t* pItem = (size_t*) AllocPooled(m_pPoolHeader, sizeof(size_t));
   if(pItem == NULL)
   {
     m_pError = m_pErrMsgLowMem;

@@ -16,13 +16,13 @@
 class LinkedListAmiga : public LinkedList
 {
 public:
-  LinkedListAmiga(APTR& pPoolHeader, bool& bCancelRequested);
+  LinkedListAmiga(APTR& pPoolHeader);
   ~LinkedListAmiga();
 
   void Clear();
 
   const char* Error();
-  
+
 private:
   APTR& m_pPoolHeader;
   const char* m_pErrMsgLowMem;

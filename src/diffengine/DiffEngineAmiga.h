@@ -22,14 +22,14 @@ public:
                   DiffFileBase& bDiff,
                   APTR& pPoolHeader,
                   bool& bCancelRequested,
-                  LinkedList* pDiffStartIdxsList
-                  bool& bCancelRequested);
+                  LinkedList* pDiffStartIdxsList);
+
   ~DiffEngineAmiga();
 
   void Clear();
 
   const char* Error();
-  
+
 private:
   APTR& m_pPoolHeader;
   const char* m_pErrMsgLowMem;

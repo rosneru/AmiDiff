@@ -73,7 +73,7 @@ private:
 
   APTR m_pPoolHeader;
 
-  LinkedList m_DiffStartIdxsList;
+  LinkedList* m_pDiffStartIdxsList;
 
   DiffDocument* m_pDiffDocumentLeft;
   DiffDocument* m_pDiffDocumentRight;

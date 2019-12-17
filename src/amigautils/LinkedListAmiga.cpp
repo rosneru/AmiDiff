@@ -46,13 +46,13 @@ LinkedListNode* LinkedListAmiga::allocListNode(void* pItem,
     return false;
   }
 
-  LinkedListNode* pNode = AllocPooled(m_pPoolHeader, 
-                                      sizeof(LinkedListNode));
+  LinkedListNode* pNode = (LinkedListNode*)
+    AllocPooled(m_pPoolHeader, sizeof(LinkedListNode));
 
   // The next line is called 'replacement new'. It creates an object
   // of LinkedListNode on the address pNode and calls the constructor.
-  // This has to be done here because a memory pool is used and the 
-  // normal operator 'new' which reserves memory automatically 
+  // This has to be done here because a memory pool is used and the
+  // normal operator 'new' which reserves memory automatically
   // wouldn't be appropriate.
   new (pNode) LinkedListNode(pItem, pPrev, pNext);
 
