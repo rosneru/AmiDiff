@@ -7,6 +7,7 @@
 #include "AScreen.h"
 #include "DiffDocument.h"
 #include "DiffLine.h"
+#include "LinkedList.h"
 #include "SimpleString.h"
 #include "ScrollbarWindow.h"
 
@@ -68,8 +69,7 @@ public:
    */
   bool SetContent(DiffDocument* pLeftDocument,
                   DiffDocument* pRightDocument,
-                  long* pDiffStartIdxs,
-                  long numDifferences);
+                  LinkedList*);
 
   /**
    * Setting the data to be shown on the status bar.
@@ -193,8 +193,8 @@ private:
   struct Gadget* m_pGadTxtLeftFile;
   struct Gadget* m_pGadTxtRightFile;
 
-  long* m_pDiffStartIdxs; ///> An array, containing the y-start-idx of each diff
-  long m_NumDifferences;  ///> Number of differences
+  LinkedList* m_pDiffStartIdxsList; ///> A list of size_t*, which content the y-start-idx of each diff
+  long m_NumDifferences;      ///> Number of differences
 
   ULONG m_TextFontWidth_pix;  ///> Width of the rastport text font
   ULONG m_TextFontHeight_pix; ///> Height of the rastport text font

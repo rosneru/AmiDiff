@@ -28,7 +28,7 @@ DiffWindow::DiffWindow(AScreen& appScreen,
     m_pGadtoolsContext(NULL),
     m_pGadTxtLeftFile(NULL),
     m_pGadTxtRightFile(NULL),
-    m_pDiffStartIdxs(NULL),
+    m_pDiffStartIdxsList(NULL),
     m_NumDifferences(0),
     m_TextFontWidth_pix(0),
     m_TextFontHeight_pix(0),
@@ -164,8 +164,7 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
 
 bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
                             DiffDocument* pRightDocument,
-                            long* pDiffStartIdxs,
-                            long numDifferences)
+                            LinkedList* pDiffStartIdxsList)
 {
   if((pLeftDocument == NULL) || (pRightDocument == NULL))
   {
@@ -174,8 +173,17 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
 
   m_pLeftDocument = pLeftDocument;
   m_pRightDocument = pRightDocument;
-  m_pDiffStartIdxs = pDiffStartIdxs;
-  m_NumDifferences = numDifferences;
+  m_pDiffStartIdxsList = pDiffStartIdxsList;
+
+  if(pDiffStartIdxsList != NULL)
+  {
+    m_NumDifferences = pDiffStartIdxsList->Size();
+  }
+  else
+  {
+    m_NumDifferences = 0;
+  }
+  
 
   m_X = 0;
   m_Y = 0;
@@ -420,26 +428,25 @@ void DiffWindow::YDecrease(size_t numLines,
 
 void DiffWindow::NavigateToNextDiff()
 {
-  int nextDiffLineIdx = -1;
-  for(int i = 0; i < m_NumDifferences; i++)
+  if(m_pDiffStartIdxsList == NULL)
   {
-    if(m_pDiffStartIdxs[i] > m_Y)
-    {
-      nextDiffLineIdx = m_pDiffStartIdxs[i];
-      break;
-    }
+    return;
   }
 
-  printf("nextDiffLineIdx = %d\n", nextDiffLineIdx);
+  size_t* pNextItm = static_cast<size_t*>(m_pDiffStartIdxsList->GetFirst());
+  if(pNextItm == NULL)
+  {
+    return;
+  }
 
-  if(nextDiffLineIdx < 0)
+  if(*pNextItm < 0)
   {
     // No next diff found
     return;
   }
 
   // Scroll y to next diff
-  YChangedHandler(nextDiffLineIdx);
+  YChangedHandler(*pNextItm);
 
   // Set scrollbar to new y position
   setYScrollTop(m_Y);
