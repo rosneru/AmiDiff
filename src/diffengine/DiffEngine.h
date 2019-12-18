@@ -97,6 +97,8 @@ private:
   long m_NumDeletedA;
   long m_NumChanged;
 
+
+
   long m_Max;
   long* m_pDownVector;
   long* m_pUpVector;

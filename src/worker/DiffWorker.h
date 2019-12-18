@@ -9,7 +9,7 @@
 #include "DiffFileAmiga.h"
 #include "DiffWindow.h"
 #include "FilesWindow.h"
-#include "LinkedList.h"
+#include "LinkedListAmiga.h"
 #include "ProgressWindow.h"
 #include "SimpleString.h"
 #include "StopWatch.h"
@@ -73,7 +73,7 @@ private:
 
   APTR m_pPoolHeader;
 
-  LinkedList* m_pDiffStartIdxsList;
+  LinkedListAmiga m_DiffStartIdxsList;
 
   DiffDocument* m_pDiffDocumentLeft;
   DiffDocument* m_pDiffDocumentRight;

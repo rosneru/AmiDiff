@@ -23,12 +23,6 @@ LinkedListAmiga::~LinkedListAmiga()
 }
 
 
-void LinkedListAmiga::Clear()
-{
-  while (RemoveItem() == true);
-}
-
-
 const char* LinkedListAmiga::Error()
 {
   return m_pError;

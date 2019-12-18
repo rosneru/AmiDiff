@@ -19,8 +19,6 @@ public:
   LinkedListAmiga(APTR& pPoolHeader);
   virtual ~LinkedListAmiga();
 
-  void Clear();
-
   const char* Error();
 
 private:

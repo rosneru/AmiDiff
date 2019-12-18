@@ -22,7 +22,7 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
     m_bCancelRequested(bCancelRequested),
     m_bExitAllowed(bExitAllowed),
     m_pPoolHeader(NULL),
-    m_pDiffStartIdxsList(NULL),
+    m_DiffStartIdxsList(m_pPoolHeader),
     m_pDiffDocumentLeft(NULL),
     m_pDiffDocumentRight(NULL),
     m_LeftSrcFile(m_pPoolHeader, m_bCancelRequested),
@@ -35,7 +35,7 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
                  m_RightDiffFile,
                  m_pPoolHeader,
                  m_bCancelRequested,
-                 m_pDiffStartIdxsList)
+                 &m_DiffStartIdxsList)
 {
 
   //
@@ -49,20 +49,11 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
   m_LeftSrcFile.SetProgressReporter(this);
   m_RightSrcFile.SetProgressReporter(this);
   m_DiffEngine.SetProgressReporter(this);
-
-  m_pDiffStartIdxsList = new LinkedListAmiga(m_pPoolHeader);
-
 }
 
 DiffWorker::~DiffWorker()
 {
   disposeDocuments();
-
-  if(m_pDiffStartIdxsList != NULL)
-  {
-    delete m_pDiffStartIdxsList;
-    m_pDiffStartIdxsList = NULL;
-  }
 }
 
 bool DiffWorker::Diff()
@@ -259,12 +250,7 @@ void DiffWorker::disposeDocuments()
   m_LeftDiffFile.Clear();
   m_RightDiffFile.Clear();
 
-  //
-  // Clear the list
-  // (Delete just all list nodes, not the item itself. That is done by
-  // freeing the whole memory pool; see below)
-  //
-  while(m_pDiffStartIdxsList->RemoveItem());
+  m_DiffStartIdxsList.Clear();
 
   //
   // Deleting the memory pool as a whole gives an extreme
