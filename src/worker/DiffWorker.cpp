@@ -225,7 +225,7 @@ bool DiffWorker::Diff()
   m_DiffWindow.SetStatusBar(totalTime, numAdd, numChn, numDel);
   m_DiffWindow.SetContent(m_pDiffDocumentLeft,
                           m_pDiffDocumentRight,
-                          m_pDiffStartIdxsList);
+                          &m_DiffStartIdxsList);
 
   m_bExitAllowed = true;
   return true;
