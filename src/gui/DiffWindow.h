@@ -194,6 +194,7 @@ private:
   struct Gadget* m_pGadTxtRightFile;
 
   LinkedList* m_pDiffStartIdxsList; ///> A list of size_t*, which content the y-start-idx of each diff
+  bool m_bNoNavigationDone;
   long m_NumDifferences;      ///> Number of differences
 
   ULONG m_TextFontWidth_pix;  ///> Width of the rastport text font
