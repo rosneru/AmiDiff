@@ -183,7 +183,7 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   {
     m_NumDifferences = 0;
   }
-  
+
 
   m_X = 0;
   m_Y = 0;
@@ -433,10 +433,14 @@ void DiffWindow::NavigateToNextDiff()
     return;
   }
 
-  size_t* pNextItm = static_cast<size_t*>(m_pDiffStartIdxsList->GetFirst());
+  size_t* pNextItm = static_cast<size_t*>(m_pDiffStartIdxsList->GetNext());
   if(pNextItm == NULL)
   {
-    return;
+    pNextItm = static_cast<size_t*>(m_pDiffStartIdxsList->GetFirst());
+    if(pNextItm == NULL)
+    {
+      return;
+    }
   }
 
   if(*pNextItm < 0)

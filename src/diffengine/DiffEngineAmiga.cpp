@@ -57,5 +57,7 @@ void DiffEngineAmiga::addDiffIdxToList(size_t diffIdx)
     return;
   }
 
+  pItem[0] = diffIdx;
+
   m_pDiffStartIdxsList->InsertTail(pItem);
 }
