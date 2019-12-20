@@ -1,26 +1,30 @@
 @database ADiffView
+@author Uwe Rosner
+@$VER ADiffView 1.1 (22.12.2019)
 @wordwrap
 @node Main "ADiffView - Introduction"
 
-@{fg shine}ADiffView 1.0.1 released on 13.03.2019.@{fg text}
+@{fg shine}ADiffView 1.1 released on 22.12.2019.@{fg text}
 
 @{b}About@{ub}
 
-ADiffView compares two ASCII text files and displays the differences in an Intuition window.
+ADiffView allows to compare two ASCII text files and displays the differences graphically in an window.
 
 Minimum system requirement is an Amiga with 1.0 MB RAM and AmigaOS3.0.
 
-While comparing the files the difference is calculated in a background process and a progress bar is shown to give a visual response of what's going on and that the program isn't freezed yet.
-
-Note that if you compare large files with several thousend lines ADiffView takes some time at exit to free all the allocated memory. This is due to the implementation of the memory allocation and no error. Maybe this will change some day if the memory pool functions of AmigaOS3.0+ find their way into ADiffView.
 
 @{b}Origin of the diff algorithm@{ub}
 
-The diff engine itself is a port of Stephane Rodriguez source code on 
-CodeProject: https://www.codeproject.com/Articles/3666/Diff-tool
+Staring with version 1.1 a Myers Diff algorithm is used. That's the algorithm used by the *nix diff utils and git.
 
-In 2005 he released an updated version which is the one I adapted: 
-http://www.arstdesign.com/articles/difftool.html
+A part of the implemented diff engine uses code from Matthias Hertel, http://www.mathertel.de/.
+
+Namingly moving the vector allocations out of a recursive function and making the algorithm work with 0-based indices (instead of being 1-based) are very helpful optimizations of Myers original algorithm.
+
+See the file LICENSE-3RD-PARTY.txt for the license of that code.
+
+
+In obsolete version 1.0 (and following bugfix release 1.0.1) the used diff engine was a port of Stephane Rodriguez source code on CodeProject: https://www.codeproject.com/Articles/3666/Diff-tool
 
 @{"Installation" link installation}
 @{"Arguments and tool types" link argsttypes}
@@ -33,7 +37,7 @@ http://www.arstdesign.com/articles/difftool.html
 @node installation "Installation"
 
 @{b}Installation@{ub}
-Just copy the binary ADiffView together with its icon to a place of your choice. A good place is e.g. @{fg shine}SYS:Tools@{fg text}.
+Just copy the binary ADiffView together with its icon to a place of your choice, e.g. to @{fg shine}SYS:Tools@{fg text}.
 
 @{b}Using ADiffView with DOpus 5.x@{ub}
 Additionally if you use DOpus 5.x you can setup a button to run ADiffView from there:
@@ -78,6 +82,14 @@ The file comparing starts immediately after program start. The window for select
 
 @{b}Changelog@{ub}
 
+1.1 (22.12.2019)
+- Changed main algorithm. Now a Myers diff algorithm is used to produce better results.
+- File select window: When a file was selected with the file request, the request for the other file opens in the same directory.
+- File select window: Keyboard shortcuts are now working.
+- File select window: Added a feature to swap left and right file.
+- File select window: Added support for Drag'n drop. If the program runs on Workbench you can drag the files to compare into that window.
+- Diff result window: Added a feature to navigate to next / previous difference.
+- Now OS3.0+ memory pools are used. Speeds up the freeing of memory. There's a noticeable speed improvement on exit after big files have been compared.
 
 1.0.1 (13.03.2019)
 - Fixed a bug which caused a crash when comparing long files
