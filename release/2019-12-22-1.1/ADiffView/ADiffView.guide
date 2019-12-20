@@ -1,6 +1,5 @@
 @database ADiffView
 @author Uwe Rosner
-@$VER ADiffView 1.1 (22.12.2019)
 @wordwrap
 @node Main "ADiffView - Introduction"
 
@@ -8,25 +7,24 @@
 
 @{b}About@{ub}
 
-ADiffView allows to compare two ASCII text files and displays the differences graphically in an window.
+ADiffView compares two ASCII text files and displays the differences graphically in an window.
 
 Minimum system requirement is an Amiga with 1.0 MB RAM and AmigaOS3.0.
 
 
 @{b}Origin of the diff algorithm@{ub}
 
-Staring with version 1.1 a Myers Diff algorithm is used. That's the algorithm used by the *nix diff utils and git.
+Starting with version 1.1 a Myers diff algorithm is used. That's the algorithm used by the *nix diff utils and git.
 
 A part of the implemented diff engine uses code from Matthias Hertel, http://www.mathertel.de/.
 
-Namingly moving the vector allocations out of a recursive function and making the algorithm work with 0-based indices (instead of being 1-based) are very helpful optimizations of Myers original algorithm.
+In particular moving the vector allocations out of a recursive function and making the algorithm work with 0-based indices (instead of being 1-based) are very helpful optimizations of Myers original algorithm.
 
 See the file LICENSE-3RD-PARTY.txt for the license of that code.
 
-
 In obsolete version 1.0 (and following bugfix release 1.0.1) the used diff engine was a port of Stephane Rodriguez source code on CodeProject: https://www.codeproject.com/Articles/3666/Diff-tool
 
-@{"Installation" link installation}
+@{"Installation and usage" link installation}
 @{"Arguments and tool types" link argsttypes}
 @{"Changelog" link changelog}
 @{"Distribution" link distribution}
@@ -39,8 +37,16 @@ In obsolete version 1.0 (and following bugfix release 1.0.1) the used diff engin
 @{b}Installation@{ub}
 Just copy the binary ADiffView together with its icon to a place of your choice, e.g. to @{fg shine}SYS:Tools@{fg text}.
 
+@{b}Usage@{ub}
+
+When comparing big files, you'll probably notice the progress bar window. It is there to show you that ADiffView is still working and doesn't hang. However, the used diff algorithm isn't linear. So, depending on some parameters, e.g. the number of differences, it's possible that there is no progress for some seconds. Don't panic. Please wait a little longer.
+
+After the differences are calculated successfully, both files are shown next to each other in a window. The different lines are marked with a special background color according to the legend at the bottom of the window.
+
+In this window you can use the navigation menu to jump to the next or previous difference. Please note, that with these navigation functions the position doesn't jump between single difference lines. Instead it jumps between groups of difference blocks.
+
 @{b}Using ADiffView with DOpus 5.x@{ub}
-Additionally if you use DOpus 5.x you can setup a button to run ADiffView from there:
+If you use DOpus 5.x you can setup a button to run ADiffView from there:
 
 1) Edit the file DOpus/ARexx/Compare.dopus5 in away that the line at the bottom which starts with 'Address Command' looks like this:
 @{fg shine}Address Command 'SYS:Tools/ADiffView "' || First_Name || '" "' || Second_Name || '"' DONOTASK@{fg text}
