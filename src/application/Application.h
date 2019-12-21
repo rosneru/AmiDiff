@@ -59,20 +59,15 @@ private:
    * The order of the following items is IMPORTANT - Because the
    * destructor calls will be in reverse order.
    *
-   * By Starting with m_Screen followed by m_Menu it is ensured that
-   * the next-to-last destructor call is the m_Menu destructor with
-   * the destructor call of m_Screen followed - which should be the
-   * final destroyed object.
-   *
    */
 
+  DiffWorker m_DiffWorker;
   AScreen m_Screen;
   AMenu m_Menu;
   AMenu m_MenuDiffWindow;
   DiffWindow m_DiffWindow;
   FilesWindow m_FilesWindow;
   ProgressWindow m_ProgressWindow;
-  DiffWorker m_DiffWorker;
   CmdDiff m_CmdDiff;
   CmdNavNextDiff m_CmdNavNextDiff;
   CmdNavPrevDiff m_CmdNavPrevDiff;

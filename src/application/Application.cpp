@@ -24,6 +24,14 @@ Application::Application(ADiffViewArgs& args)
     m_bCancelRequested(false),
     m_bExitRequested(false),
     m_bExitAllowed(true),
+    m_DiffWorker(m_LeftFilePath,
+                 m_RightFilePath,
+                 m_DiffWindow,
+                 m_FilesWindow,
+                 m_ProgressWindow,
+                 m_pMsgPortProgress,
+                 m_bCancelRequested,
+                 m_bExitAllowed),
     m_Screen(m_Settings),
     m_Menu(m_Screen),
     m_MenuDiffWindow(m_Screen),
@@ -40,14 +48,6 @@ Application::Application(ADiffViewArgs& args)
                      m_pMsgPortIDCMP,
                      m_NumWindowsOpen,
                      m_bCancelRequested),
-    m_DiffWorker(m_LeftFilePath,
-                 m_RightFilePath,
-                 m_DiffWindow,
-                 m_FilesWindow,
-                 m_ProgressWindow,
-                 m_pMsgPortProgress,
-                 m_bCancelRequested,
-                 m_bExitAllowed),
     m_CmdDiff(m_DiffWorker),
     m_CmdNavNextDiff(m_DiffWindow),
     m_CmdNavPrevDiff(m_DiffWindow),
@@ -69,6 +69,12 @@ Application::Application(ADiffViewArgs& args)
 
 Application::~Application()
 {
+  // Ensure that all windows are closed before deleting the message
+  // ports
+  m_DiffWindow.Close();
+  m_FilesWindow.Close();
+  m_ProgressWindow.Close();
+
   if(m_pMsgPortProgress != NULL)
   {
     DeleteMsgPort(m_pMsgPortProgress);
@@ -86,6 +92,8 @@ Application::~Application()
     DeleteMsgPort(m_pMsgPortAppWindow);
     m_pMsgPortAppWindow = NULL;
   }
+
+
 }
 
 
@@ -94,6 +102,7 @@ bool Application::Run()
   //
   // Message port initialization
   //
+
 
   // Create a message port for all windows' IDCMP messages
   m_pMsgPortIDCMP = CreateMsgPort();
