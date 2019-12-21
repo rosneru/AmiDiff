@@ -38,7 +38,6 @@ In obsolete version 1.0 (and following bugfix release 1.0.1) the used diff engin
 Just copy the binary ADiffView together with its icon to a place of your choice, e.g. to @{fg shine}SYS:Tools@{fg text}.
 
 @{b}Usage@{ub}
-
 When comparing big files, you'll probably notice the progress bar window. It is there to show you that ADiffView is still working and doesn't hang. However, the used diff algorithm isn't linear. So it's possible that there is no progress for some seconds. This will especially be the case when comparing files with many differences. Don't panic. Please wait a little longer.
 
 After the differences are calculated successfully, both files are shown next to each other in a window. The different lines are marked with a special background color according to the legend at the bottom of the window. The numbers of ADDED, CHANGED and DELETED doesn't refer to lines. Instead they refer to groups of difference blocks. For example 4 Added lines are reported as '1 Added' if they are directly one after another.
