@@ -1,6 +1,6 @@
 Part of the implemented diff engine uses code from Matthias Hertel.
 
-In particular  moving the vector allocations out of a recursive 
+In particular, moving the vector allocations out of a recursive 
 function and making the algorithm work with 0-based indices 
 (instead of being 1-based) are very helpful optimizations of Myers 
 original algorithm.

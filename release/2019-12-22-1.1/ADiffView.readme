@@ -2,13 +2,27 @@ Short:        A graphical file compare / diff viewer
 Author:       Uwe Rosner
 Uploader:     u.rosner@ymail.com (Uwe Rosner)
 Type:         util/misc
-Version:      1.0.1
+Version:      1.1
 Architecture: m68k-amigaos >= 3.0
 Distribution: Aminet
 
 =======
 CHANGES
 =======
+
+1.1 (21.12.2019)
+- Now using the Myers diff algorithm for better results.
+- File select window: When a file was selected with the file request, 
+  the request for the other file opens in the same directory.
+- File select window: Keyboard shortcuts are now working.
+- File select window: Added a feature to swap left and right file.
+- File select window: Added support for Drag'n drop. If the program 
+  runs on Workbench you can drag the files to compare into that window.
+- Diff result window: Added a feature to navigate to next / previous 
+  difference.
+- Now OS3.0+ memory pools are used. Speeds up the freeing of memory. 
+  There's a noticeable speed improvement on exit after big files have 
+  been compared.
 
 1.0.1 (13.03.2019)
 - Fixed a bug which caused a crash when comparing long files
@@ -20,18 +34,25 @@ CHANGES
 1.0.0 (21.02.2019)
 - Initial version
 
+
 =====
 ABOUT
 =====
 
 ADiffView compares two ASCII text files and graphically displays the 
-differences in an Intuition window.
+differences in an window.
 
-The diff engine itself is a port of Stephane Rodriguez source code on 
-CodeProject: https://www.codeproject.com/Articles/3666/Diff-tool
+Starting with version 1.1 a Myers diff algorithm is used. That's the 
+algorithm used by the *nix diff utils and git.
 
-In 2005 he released an updated version which is the one I adapted: 
-http://www.arstdesign.com/articles/difftool.html
+A part of the implemented diff engine uses code from Matthias Hertel, 
+http://www.mathertel.de/.
+
+In particular moving the vector allocations out of a recursive function
+and making the algorithm work with 0-based indices (instead of being 
+1-based) are very helpful optimizations of Myers original algorithm.
+
+See the file LICENSE-3RD-PARTY.txt for the license of that code.
 
 
 ========
@@ -64,9 +85,6 @@ in another application
 
 - Optimizing the scrolling. Currently it works good in RTG / emulation 
 but not perfect on original hardware.
-
-- Using the memory pool functions of OS3.0 exec.library to reduce 
-memory fragmentation and for faster freeing the memory.
 
 
 ===========

@@ -3,7 +3,7 @@
 @wordwrap
 @node Main "ADiffView - Introduction"
 
-@{fg shine}ADiffView 1.1 released on 22.12.2019.@{fg text}
+@{fg shine}ADiffView 1.1 released on 21.12.2019.@{fg text}
 
 @{b}About@{ub}
 
@@ -14,7 +14,7 @@ Minimum system requirement is an Amiga with 1.0 MB RAM and AmigaOS3.0.
 
 @{b}Origin of the diff algorithm@{ub}
 
-Starting with version 1.1 a Myers diff algorithm is used. That's the algorithm used by the *nix diff utils and git.
+Starting with version 1.1 the Myers diff algorithm is used. That's the algorithm used by the *nix diff utils and git.
 
 A part of the implemented diff engine uses code from Matthias Hertel, http://www.mathertel.de/.
 
@@ -41,7 +41,7 @@ Just copy the binary ADiffView together with its icon to a place of your choice,
 
 When comparing big files, you'll probably notice the progress bar window. It is there to show you that ADiffView is still working and doesn't hang. However, the used diff algorithm isn't linear. So, depending on some parameters, e.g. the number of differences, it's possible that there is no progress for some seconds. Don't panic. Please wait a little longer.
 
-After the differences are calculated successfully, both files are shown next to each other in a window. The different lines are marked with a special background color according to the legend at the bottom of the window.
+After the differences are calculated successfully, both files are shown next to each other in a window. The different lines are marked with a special background color according to the legend at the bottom of the window. The numbers of ADDED, CHANGED and DELETED refer to lines.
 
 In this window you can use the navigation menu to jump to the next or previous difference. Please note, that with these navigation functions the position doesn't jump between single difference lines. Instead it jumps between groups of difference blocks.
 
@@ -88,8 +88,8 @@ The file comparing starts immediately after program start. The window for select
 
 @{b}Changelog@{ub}
 
-1.1 (22.12.2019)
-- Changed main algorithm. Now a Myers diff algorithm is used to produce better results.
+1.1 (21.12.2019)
+- Now using the Myers diff algorithm for better results.
 - File select window: When a file was selected with the file request, the request for the other file opens in the same directory.
 - File select window: Keyboard shortcuts are now working.
 - File select window: Added a feature to swap left and right file.
