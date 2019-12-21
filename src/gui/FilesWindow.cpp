@@ -2,18 +2,20 @@
 #include <stdio.h>
 
 #include <clib/dos_protos.h>
+#include <clib/exec_protos.h>
 #include <clib/gadtools_protos.h>
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
+#include <exec/memory.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
 #include <intuition/icclass.h>
 #include <libraries/gadtools.h>
-
-#include "MessageBox.h"
+#include <workbench/startup.h>
 
 #include "FilesWindow.h"
+
 
 FilesWindow::FilesWindow(AScreen& appScreen,
                          struct MsgPort*& pIdcmpMsgPort,
@@ -144,13 +146,46 @@ void FilesWindow::HandleAppMessage(struct AppMessage* pAppMsg)
     return;
   }
 
-  SimpleString message = "Received the file: ";
+  // Alloc temporary buf memory
+  int bufLen = 2048;  // TODO How to get rid of this fixed maximum?
+  STRPTR pBuf = (STRPTR) AllocVec(bufLen, MEMF_ANY);
+  if(pBuf == NULL)
+  {
+    return;
+  }
 
-  MessageBox requester;
-  requester.Show(m_pWindow,
-                 "File received",
-                 message.C_str(),
-                 "Ok");
+
+  struct WBArg* pWbArg = pAppMsg->am_ArgList;
+  struct Gadget* pStrGadget = NULL;
+
+  int i = 0;
+  while((pStrGadget = getFirstEmptyStringGadget()) != NULL)
+  {
+    if(i > 1)
+    {
+      // Max 2 args can be received, as there are only 2 string gadgets
+      break;
+    }
+
+    if(i >= pAppMsg->am_NumArgs)
+    {
+      // No more WbArgs
+      break;
+    }
+
+    if(NameFromLock(pWbArg[i].wa_Lock, pBuf, bufLen) != 0)
+    {
+      if(AddPart(pBuf,(STRPTR) pWbArg[i].wa_Name, bufLen))
+      {
+        setStringGadgetText(pStrGadget, pBuf);
+      }
+    }
+
+    i++;
+  }
+
+  FreeVec(pBuf);
+  enableIfPossible();
 }
 
 
@@ -715,4 +750,22 @@ STRPTR FilesWindow::getStringGadgetText(struct Gadget* pGadget)
   }
 
   return (STRPTR)pTextPointerStorage;
+}
+
+
+struct Gadget* FilesWindow::getFirstEmptyStringGadget()
+{
+  STRPTR pStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
+  if((pStrGadgetText == NULL) || (strlen(pStrGadgetText) == 0))
+  {
+    return m_pGadStrLeftFile;
+  }
+
+  pStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
+  if((pStrGadgetText == NULL) || (strlen(pStrGadgetText) == 0))
+  {
+    return m_pGadStrRightFile;
+  }
+
+  return NULL;
 }

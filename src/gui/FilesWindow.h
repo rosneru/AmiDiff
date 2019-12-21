@@ -156,6 +156,15 @@ private:
    * Returns NULL if an internal error occurs.
    */
   STRPTR getStringGadgetText(struct Gadget* pGadget);
+
+  /**
+   * Returns the first string gadget of
+   *   {m_pGadStrLeftFile, m_pGadStrRightFile}
+   * which contains currently no text.
+   *
+   * Returns NULL if both string gadgets contain text
+   */
+  struct Gadget* getFirstEmptyStringGadget();
 };
 
 
