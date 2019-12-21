@@ -176,15 +176,6 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   m_pRightDocument = pRightDocument;
   m_pDiffStartIdxsList = pDiffStartIdxsList;
 
-  if(pDiffStartIdxsList != NULL)
-  {
-    m_NumDifferences = pDiffStartIdxsList->Size();
-  }
-  else
-  {
-    m_NumDifferences = 0;
-  }
-
   m_bNoNavigationDone = true;
 
 
@@ -256,6 +247,8 @@ void DiffWindow::SetStatusBar(long diffTime,
                               int numChanged,
                               int numDeleted)
 {
+  m_NumDifferences = numAdded + numChanged + numDeleted;
+
   m_StatusBarText = "Diff performed in ";
   m_StatusBarText += diffTime;
   m_StatusBarText += " ms. Total changes: ";

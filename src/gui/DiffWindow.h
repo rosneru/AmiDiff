@@ -69,7 +69,7 @@ public:
    */
   bool SetContent(DiffDocument* pLeftDocument,
                   DiffDocument* pRightDocument,
-                  LinkedList*);
+                  LinkedList* pDiffStartIdxsList);
 
   /**
    * Setting the data to be shown on the status bar.
