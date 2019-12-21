@@ -151,6 +151,13 @@ void DiffEngine::createDiffFiles()
   m_ADiff.SetNumLines(m_A.NumLines() + m_NumInsertedB);
   m_BDiff.SetNumLines(m_B.NumLines() + m_NumDeletedA);
 
+  // Clearing these variables as from now on they should not count
+  //single lines anymore. Instead they should count difference blocks
+  // of according type. They will be set anew below.
+  m_NumInsertedB = 0;
+  m_NumDeletedA = 0;
+  m_NumChanged = 0;
+
   while (lineA < m_A.NumLines() || lineB < m_B.NumLines())
   {
     //
@@ -177,16 +184,17 @@ void DiffEngine::createDiffFiles()
       long idx = m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Changed);
       m_BDiff.AddString(m_B.GetLine(lineB++)->Text(), DiffLine::Changed);
 
-      m_NumChanged++;
-      m_NumDeletedA--;
-      m_NumInsertedB--;
-
+      // Note: By coverting a left-deleted and a right-inserted line
+      //       into a changed line, left and right files each are
+      //       getting shorter by 1 line. This is because the
+      //       empty-line on each other side isn't needed anymore.
       m_ADiff.DecrementNumLines();
       m_BDiff.DecrementNumLines();
 
       // Add start of this block of CHANGED lines to differences list
       if(!bAddedToList)
       {
+        m_NumChanged++;
         bAddedToList = true;
         addDiffIdxToList(idx); // -2 ... has been decremented above
       }
@@ -202,6 +210,7 @@ void DiffEngine::createDiffFiles()
       // Add start of this block of DELETED lines to differences list
       if(!bAddedToList)
       {
+        m_NumDeletedA++;
         bAddedToList = true;
         addDiffIdxToList(idx);
       }
@@ -217,12 +226,14 @@ void DiffEngine::createDiffFiles()
       // Add start of this block of ADDED lines to differences list
       if(!bAddedToList)
       {
+        m_NumInsertedB++;
         bAddedToList = true;
         addDiffIdxToList(idx);
       }
     }
-
   }
+
+
 }
 
 

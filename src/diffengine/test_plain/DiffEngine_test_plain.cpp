@@ -11,11 +11,11 @@ int main()
   bool diffOk = false;
 
   DiffFileLinux srcA(cancelRequested);
-  srcA.PreProcess("../../../testfiles/testcase_06_left.txt");
+  srcA.PreProcess("../../../testfiles/testcase_25_startup-sequence_left.txt");
 //  srcA.PreProcess("../../../testfiles/testcase_13_6000_left.cpp");
 
   DiffFileLinux srcB(cancelRequested);
-  srcB.PreProcess("../../../testfiles/testcase_06_right.txt");
+  srcB.PreProcess("../../../testfiles/testcase_25_startup-sequence_right.txt");
 //  srcB.PreProcess("../../../testfiles/testcase_13_6000_right.cpp");
 
   DiffFileLinux targetA(cancelRequested);

@@ -460,7 +460,7 @@ BOOST_AUTO_TEST_CASE( DiffTest_06_Mixed )
   long numDel = diffEngine.NumDeleted();
 
   long sum = numAdd + numChn + numDel;
-  BOOST_CHECK_EQUAL(sum, 6);
+  BOOST_CHECK_EQUAL(sum, 4);
 }
 
 /**
