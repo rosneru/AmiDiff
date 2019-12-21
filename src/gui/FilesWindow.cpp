@@ -154,7 +154,6 @@ void FilesWindow::HandleAppMessage(struct AppMessage* pAppMsg)
     return;
   }
 
-
   struct WBArg* pWbArg = pAppMsg->am_ArgList;
   struct Gadget* pStrGadget = NULL;
 
