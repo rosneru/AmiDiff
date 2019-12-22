@@ -139,7 +139,7 @@ bool ProgressWindow::HandleIdcmp(ULONG msgClass,
 void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
 {
   return;
-  
+
   if(pProgrMsg == NULL)
   {
     return;
@@ -191,10 +191,10 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
       TAG_END);
   }
 
-  SimpleString progrText = pProgrMsg->progress;
-  progrText += " %";
+  m_ProgressText = pProgrMsg->progress;
+  m_ProgressText += " %";
 
-  m_ProgressValueIText.IText = (UBYTE*) progrText.C_str();
+  m_ProgressValueIText.IText = (UBYTE*) m_ProgressText.C_str();
 
   int textLength = IntuiTextLength(&m_ProgressValueIText);
   int x = (m_ProgressBarWidth - textLength) / 2;

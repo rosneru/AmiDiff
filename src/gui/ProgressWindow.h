@@ -84,6 +84,8 @@ private:
   int m_ProgressBarWidth;
   int m_ProgressBarHeight;
 
+  SimpleString m_ProgressText;
+
   struct IntuiText m_ProgressValueIText;
   const char* m_pProgressDescription;
 
