@@ -219,13 +219,15 @@ bool DiffWorker::Diff()
   m_pDiffDocumentLeft->SetFileName(m_LeftSrcFilePath.C_str());
   m_pDiffDocumentRight->SetFileName(m_RightSrcFilePath.C_str());
 
-  m_DiffWindow.Open(NULL, WindowBase::IP_Fill);
-  m_ProgressWindow.Close();
-
+  // TODO find a better solution to this messed-up order
   m_DiffWindow.SetStatusBar(totalTime, numAdd, numChn, numDel);
+  m_DiffWindow.Open(NULL, WindowBase::IP_Fill);
   m_DiffWindow.SetContent(m_pDiffDocumentLeft,
                           m_pDiffDocumentRight,
                           &m_DiffStartIdxsList);
+
+  m_ProgressWindow.Close();
+
 
   m_bExitAllowed = true;
   return true;

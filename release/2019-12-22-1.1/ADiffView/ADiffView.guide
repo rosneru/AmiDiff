@@ -3,7 +3,7 @@
 @wordwrap
 @node Main "ADiffView - Introduction"
 
-@{fg shine}ADiffView 1.1 released on 21.12.2019.@{fg text}
+@{fg shine}ADiffView 1.1 released on 22.12.2019.@{fg text}
 
 @{b}About@{ub}
 
@@ -87,7 +87,7 @@ The file comparing starts immediately after program start. The window for select
 
 @{b}Changelog@{ub}
 
-1.1 (21.12.2019)
+1.1 (22.12.2019)
 - Now using the Myers diff algorithm for better results.
 - File select window: When a file was selected with the file request, the request for the other file opens in the same directory.
 - File select window: Keyboard shortcuts are now working.

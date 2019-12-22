@@ -11,7 +11,7 @@ Distribution: Aminet
 CHANGES
 =======
 
-1.1 (21.12.2019)
+1.1 (22.12.2019)
 - Now using the Myers diff algorithm for better results.
 - File select window: When a file was selected with the file request, 
   the request for the other file opens in the same directory.
