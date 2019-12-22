@@ -66,9 +66,9 @@ bool DiffWorker::Diff()
   //
   // Close FilesWindow, open ProgressWindow etc
   //
-  //m_ProgressWindow.Open();
+  m_ProgressWindow.Open();
   APTR pDisabledMenuItem = m_FilesWindow.DisabledMenuItem();
-  //m_FilesWindow.Close();
+  m_FilesWindow.Close();
   m_DiffWindow.Close();
 
   // Close documents if already existing.
