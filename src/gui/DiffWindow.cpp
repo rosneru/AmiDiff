@@ -165,7 +165,11 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
 
 bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
                             DiffDocument* pRightDocument,
-                            LinkedList* pDiffStartIdxsList)
+                            LinkedList* pDiffStartIdxsList,
+                            long diffTime,
+                            int numAdded,
+                            int numChanged,
+                            int numDeleted)
 {
   if((pLeftDocument == NULL) || (pRightDocument == NULL))
   {
@@ -176,9 +180,19 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   m_pRightDocument = pRightDocument;
   m_pDiffStartIdxsList = pDiffStartIdxsList;
 
+  m_NumDifferences = numAdded + numChanged + numDeleted;
+
+  m_StatusBarText = "Diff performed in ";
+  m_StatusBarText += diffTime;
+  m_StatusBarText += " ms. Total changes: ";
+  m_StatusBarText += m_NumDifferences;
+
+  SimpleString emptyStr = "";
+  m_AddedText = emptyStr + numAdded + " Added ";
+  m_ChangedText = emptyStr + numChanged + " Changed ";
+  m_DeletedText = emptyStr + numDeleted + " Deleted ";
+
   m_bNoNavigationDone = true;
-
-
   m_X = 0;
   m_Y = 0;
 
@@ -239,27 +253,6 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   setYScrollPotSize(m_MaxTextAreaLines, m_NumLines);
 
   return true;
-}
-
-
-void DiffWindow::SetStatusBar(long diffTime,
-                              int numAdded,
-                              int numChanged,
-                              int numDeleted)
-{
-  m_NumDifferences = numAdded + numChanged + numDeleted;
-
-  m_StatusBarText = "Diff performed in ";
-  m_StatusBarText += diffTime;
-  m_StatusBarText += " ms. Total changes: ";
-  m_StatusBarText += m_NumDifferences;
-
-  SimpleString emptyStr = "";
-  m_AddedText = emptyStr + numAdded + " Added ";
-  m_ChangedText = emptyStr + numChanged + " Changed ";
-  m_DeletedText = emptyStr + numDeleted + " Deleted ";
-
-  paintStatusBar();
 }
 
 
@@ -995,10 +988,10 @@ void DiffWindow::paintStatusBar()
   intuiText.ITextFont = &m_TextAttr;
   intuiText.NextText  = NULL;
 
+  m_StatusBarText += "   |   ";
   intuiText.TopEdge   = top;
   intuiText.LeftEdge  = left;
-  intuiText.IText = (UBYTE*)
-    SimpleString(m_StatusBarText + "   |   ").C_str();
+  intuiText.IText = (UBYTE*) m_StatusBarText.C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText);

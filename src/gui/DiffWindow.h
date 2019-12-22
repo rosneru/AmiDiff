@@ -69,30 +69,12 @@ public:
    */
   bool SetContent(DiffDocument* pLeftDocument,
                   DiffDocument* pRightDocument,
-                  LinkedList* pDiffStartIdxsList);
+                  LinkedList* pDiffStartIdxsList,
+                  long diffTime,
+                  int numAdded,
+                  int numChanged,
+                  int numDeleted);
 
-  /**
-   * Setting the data to be shown on the status bar.
-   *
-   * A reapienting of the status bar is triggered afterwards.
-   *
-   * @param diffTime
-   * How long did comparing the files take (in milli seconds)
-   *
-   * @param numAdded
-   * Number of added lines (sum of left  and right file)
-   *
-   * @param numChanged
-   * Number of changed lines (sum of left  and right file)
-   *
-   * @param numDeleted
-   * Number of deleted lines (sum of left  and right file)
-   *
-   */
-  void SetStatusBar(long diffTime,
-                    int numAdded,
-                    int numChanged,
-                    int numDeleted);
 
   /**
    * Set the number of changes to be displayed at the status bar.

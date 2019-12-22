@@ -188,16 +188,8 @@ bool DiffWorker::Diff()
     return false;
   }
 
-  //
-  // Collecting the number of changes
-  //
-  long numAdd = m_DiffEngine.NumAdded();
-  long numChn = m_DiffEngine.NumChanged();
-  long numDel = m_DiffEngine.NumDeleted();
-  long numDifferences = m_DiffEngine.NumDifferences();
-
   // If there are no changes return to FilesWindow
-  if(numDifferences == 0)
+  if(m_DiffEngine.NumDifferences() == 0)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "No differences found: the files are equal.", "Ok");
@@ -212,19 +204,20 @@ bool DiffWorker::Diff()
   //
   // Prepare diff window and set results
   //
-
   m_pDiffDocumentLeft = new DiffDocument(m_LeftDiffFile);
   m_pDiffDocumentRight = new DiffDocument(m_RightDiffFile);
 
   m_pDiffDocumentLeft->SetFileName(m_LeftSrcFilePath.C_str());
   m_pDiffDocumentRight->SetFileName(m_RightSrcFilePath.C_str());
 
-  // TODO find a better solution to this messed-up order
-  m_DiffWindow.SetStatusBar(totalTime, numAdd, numChn, numDel);
   m_DiffWindow.Open(NULL, WindowBase::IP_Fill);
   m_DiffWindow.SetContent(m_pDiffDocumentLeft,
                           m_pDiffDocumentRight,
-                          &m_DiffStartIdxsList);
+                          &m_DiffStartIdxsList,
+                          totalTime, 
+                          m_DiffEngine.NumAdded(), 
+                          m_DiffEngine.NumChanged(), 
+                          m_DiffEngine.NumDeleted());
 
   m_ProgressWindow.Close();
 
