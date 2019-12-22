@@ -138,8 +138,6 @@ bool ProgressWindow::HandleIdcmp(ULONG msgClass,
 
 void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
 {
-  return;
-
   if(pProgrMsg == NULL)
   {
     return;
