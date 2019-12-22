@@ -58,7 +58,7 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
   {
     // Not opening the window if it is already open
     // TODO Alternatively: bring window to front and return true;
-    return false;
+    return true;
   }
 
   if(!m_bInitialized)

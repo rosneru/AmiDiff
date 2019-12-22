@@ -66,9 +66,9 @@ bool DiffWorker::Diff()
   //
   // Close FilesWindow, open ProgressWindow etc
   //
-  m_ProgressWindow.Open();
+  //m_ProgressWindow.Open();
   APTR pDisabledMenuItem = m_FilesWindow.DisabledMenuItem();
-  m_FilesWindow.Close();
+  //m_FilesWindow.Close();
   m_DiffWindow.Close();
 
   // Close documents if already existing.
@@ -78,7 +78,7 @@ bool DiffWorker::Diff()
   //
   // Create the memory pool
   //
-  m_pPoolHeader = CreatePool(MEMF_CLEAR, 50000, 25000);
+  m_pPoolHeader = CreatePool(MEMF_ANY|MEMF_CLEAR, 50000, 25000);
   if(m_pPoolHeader == NULL)
   {
     request.Show(m_ProgressWindow.IntuiWindow(),
