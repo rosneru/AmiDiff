@@ -86,8 +86,8 @@ _OBJ=$(SRC_ROOT)/amigautils/AmigaFile.o \
 		$(SRC_ROOT)/gui/WindowBase.o \
 		$(SRC_ROOT)/model/DiffDocument.o \
 		$(SRC_ROOT)/model/Document.o \
-		$(SRC_ROOT)/oscottlibs/LinkedList.h \
-		$(SRC_ROOT)/oscottlibs/LinkedListNode.h \
+		$(SRC_ROOT)/oscottlibs/LinkedList.o \
+		$(SRC_ROOT)/oscottlibs/LinkedListNode.o \
 		$(SRC_ROOT)/oscottlibs/SimpleString.o \
 		$(SRC_ROOT)/worker/DiffWorker.o \
 		$(SRC_ROOT)/worker/WorkerBase.o
