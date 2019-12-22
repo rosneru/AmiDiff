@@ -86,7 +86,7 @@ bool ProgressWindow::Open(const APTR pMenuItemDisableAtOpen,
   m_ProgressValueIText.DrawMode  = JAM1;
   m_ProgressValueIText.NextText  = NULL;
   m_ProgressValueIText.LeftEdge  = m_ProgressBarLeft + 3;
-  m_ProgressValueIText.TopEdge   = m_ProgressBarTop + 3;
+  m_ProgressValueIText.TopEdge   = m_ProgressBarTop + 1;
 
   return true;
 }
@@ -196,7 +196,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   int textLength = IntuiTextLength(&m_ProgressValueIText);
   int x = (m_ProgressBarWidth - textLength) / 2;
 
-  //PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 0);
+  PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 2);
 }
 
 
