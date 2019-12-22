@@ -104,7 +104,7 @@ INCLUDE=-I$(SRC_ROOT) \
 
 # Setting up compiler, flags and tools
 CXX=/opt/amiga/bin/m68k-amigaos-c++
-CXXFLAGS=-Wall -Wno-unused-function -fomit-frame-pointer -fno-rtti -fno-exceptions -noixemul -Os
+CXXFLAGS=-Wall -Wno-unused-function -fomit-frame-pointer -fno-rtti -fno-exceptions -noixemul -Os -Dlinux
 
 STRIP=/opt/amiga/bin/m68k-amigaos-strip
 
