@@ -6,6 +6,7 @@ Version:      1.1
 Architecture: m68k-amigaos >= 3.0
 Distribution: Aminet
 
+
 =======
 CHANGES
 =======
@@ -91,11 +92,4 @@ but not perfect on original hardware.
 DEVELOPMENT
 ===========
 
-Development was done in C++ with StormC4 in gcc mode.
-
-
-=========
-THANK YOU
-=========
-Many thanks to the helpful people in the Amiga Forums which still keep 
-the spirit alive!
+Development was done on an Amiga with StormC4 in C++/gcc mode.
