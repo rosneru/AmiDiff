@@ -241,10 +241,10 @@ void ProgressWindow::initialize()
 
   // Creating the string gadget to display the progress description
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += top;
+  newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
-  newGadget.ng_GadgetText = NULL;
+//  newGadget.ng_GadgetText = NULL;
   newGadget.ng_GadgetID   = GID_Description;
   newGadget.ng_Flags      = 0;
 
