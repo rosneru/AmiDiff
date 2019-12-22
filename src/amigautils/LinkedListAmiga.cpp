@@ -41,7 +41,7 @@ LinkedListNode* LinkedListAmiga::allocListNode(void* pItem,
   {
     // Won't work without memory pool
     m_pError = m_pErrMsgMemPool;
-    return false;
+    return NULL;
   }
 
   LinkedListNode* pNode = (LinkedListNode*)

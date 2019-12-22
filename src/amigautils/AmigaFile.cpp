@@ -216,7 +216,7 @@ char* AmigaFile::ReadLine()
   if(m_pFile == NULL)
   {
     // File not opened
-    return false;
+    return NULL;
   }
 
   ULONG readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a OS v36 failure

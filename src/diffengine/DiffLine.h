@@ -1,6 +1,8 @@
 #ifndef DIFF_LINE_H
 #define DIFF_LINE_H
 
+#include <stdlib.h>
+
 /**
  * Represents a line in a Diff which contains of Text and a LineState.
  *
