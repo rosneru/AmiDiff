@@ -15,68 +15,82 @@ OBJ_DIR=obj
 
 DEPS=$(SRC_ROOT)/amigautils/AmigaFile.h \
 		$(SRC_ROOT)/amigautils/AslFileRequest.h \
+		$(SRC_ROOT)/amigautils/LinkedListAmiga.h \
 		$(SRC_ROOT)/amigautils/MessageBox.h \
 		$(SRC_ROOT)/amigautils/StopWatch.h \
+		$(SRC_ROOT)/application/ADiffView_rev.h \
+		$(SRC_ROOT)/application/ADiffViewArgs.h \
+		$(SRC_ROOT)/application/ADiffViewSettings.h \
 		$(SRC_ROOT)/application/Application.h \
-		$(SRC_ROOT)/application/DiffWorker.h \
 		$(SRC_ROOT)/commands/CmdAbout.h \
 		$(SRC_ROOT)/commands/CmdDiff.h \
+		$(SRC_ROOT)/commands/CmdNavNextDiff.h \
+		$(SRC_ROOT)/commands/CmdNavPrevDiff.h \
 		$(SRC_ROOT)/commands/CmdOpenWindow.h \
 		$(SRC_ROOT)/commands/CmdQuit.h \
 		$(SRC_ROOT)/commands/Command.h \
 		$(SRC_ROOT)/diffengine/DiffEngine.h \
-		$(SRC_ROOT)/diffengine/DiffFilePartition.h \
-		$(SRC_ROOT)/diffengine/DiffFilePartitionAmiga.h \
+		$(SRC_ROOT)/diffengine/DiffEngineAmiga.h \
+		$(SRC_ROOT)/diffengine/DiffFileAmiga.h \
+		$(SRC_ROOT)/diffengine/DiffFileBase.h \
 		$(SRC_ROOT)/diffengine/DiffLine.h \
-		$(SRC_ROOT)/gui/AmigaDiffPens.h \
-		$(SRC_ROOT)/gui/ApplicationMenu.h \
-		$(SRC_ROOT)/gui/AppScreen.h \
+		$(SRC_ROOT)/diffengine/Pair.h \
+		$(SRC_ROOT)/gui/ADiffViewPens.h \
+		$(SRC_ROOT)/gui/AMenu.h \
+		$(SRC_ROOT)/gui/AScreen.h \
 		$(SRC_ROOT)/gui/DiffWindow.h \
 		$(SRC_ROOT)/gui/FilesWindow.h \
 		$(SRC_ROOT)/gui/ProgressWindow.h \
 		$(SRC_ROOT)/gui/ScrollbarWindow.h \
-		$(SRC_ROOT)/gui/TextWindow.h \
 		$(SRC_ROOT)/gui/WindowBase.h \
 		$(SRC_ROOT)/model/DiffDocument.h \
 		$(SRC_ROOT)/model/Document.h \
-		$(SRC_ROOT)/model/TextDocument.h \
-		$(SRC_ROOT)/oscottlibs/Array.h \
+		$(SRC_ROOT)/oscottlibs/LinkedList.h \
+		$(SRC_ROOT)/oscottlibs/LinkedListNode.h \
 		$(SRC_ROOT)/oscottlibs/SimpleString.h \
-		$(SRC_ROOT)/thread/BackgroundWorker.h \
-		$(SRC_ROOT)/thread/ProgressReporter.h \
-		$(SRC_ROOT)/thread/WorkerProgressMsg.h \
-		$(SRC_ROOT)/thread/WorkerStartupMsg.h
+		$(SRC_ROOT)/worker/DiffWorker.h \
+		$(SRC_ROOT)/worker/ProgressMessage.h \
+		$(SRC_ROOT)/worker/ProgressReporter.h \
+		$(SRC_ROOT)/worker/WorkerBase.h \
+		$(SRC_ROOT)/worker/WorkerStartupMsg.h
 
-_OBJ=$(SRC_ROOT)/main.o \
-		$(SRC_ROOT)/amigautils/AmigaFile.o \
+_OBJ=$(SRC_ROOT)/amigautils/AmigaFile.o \
 		$(SRC_ROOT)/amigautils/AslFileRequest.o \
+		$(SRC_ROOT)/amigautils/LinkedListAmiga.o \
 		$(SRC_ROOT)/amigautils/MessageBox.o \
 		$(SRC_ROOT)/amigautils/StopWatch.o \
+		$(SRC_ROOT)/application/ADiffViewArgs.o \
+		$(SRC_ROOT)/application/ADiffViewSettings.o \
 		$(SRC_ROOT)/application/Application.o \
-		$(SRC_ROOT)/application/DiffWorker.o \
+		$(SRC_ROOT)/application/main.o \
 		$(SRC_ROOT)/commands/CmdAbout.o \
 		$(SRC_ROOT)/commands/CmdDiff.o \
+		$(SRC_ROOT)/commands/CmdNavNextDiff.o \
+		$(SRC_ROOT)/commands/CmdNavPrevDiff.o \
 		$(SRC_ROOT)/commands/CmdOpenWindow.o \
 		$(SRC_ROOT)/commands/CmdQuit.o \
 		$(SRC_ROOT)/commands/Command.o \
 		$(SRC_ROOT)/diffengine/DiffEngine.o \
-		$(SRC_ROOT)/diffengine/DiffFilePartition.o \
-		$(SRC_ROOT)/diffengine/DiffFilePartitionAmiga.o \
+		$(SRC_ROOT)/diffengine/DiffEngineAmiga.o \
+		$(SRC_ROOT)/diffengine/DiffFileAmiga.o \
+		$(SRC_ROOT)/diffengine/DiffFileBase.o \
 		$(SRC_ROOT)/diffengine/DiffLine.o \
-		$(SRC_ROOT)/gui/AmigaDiffPens.o \
-		$(SRC_ROOT)/gui/ApplicationMenu.o \
-		$(SRC_ROOT)/gui/AppScreen.o \
+		$(SRC_ROOT)/diffengine/Pair.o \
+		$(SRC_ROOT)/gui/ADiffViewPens.o \
+		$(SRC_ROOT)/gui/AMenu.o \
+		$(SRC_ROOT)/gui/AScreen.o \
 		$(SRC_ROOT)/gui/DiffWindow.o \
 		$(SRC_ROOT)/gui/FilesWindow.o \
 		$(SRC_ROOT)/gui/ProgressWindow.o \
 		$(SRC_ROOT)/gui/ScrollbarWindow.o \
-		$(SRC_ROOT)/gui/TextWindow.o \
 		$(SRC_ROOT)/gui/WindowBase.o \
 		$(SRC_ROOT)/model/DiffDocument.o \
 		$(SRC_ROOT)/model/Document.o \
-		$(SRC_ROOT)/model/TextDocument.o \
+		$(SRC_ROOT)/oscottlibs/LinkedList.h \
+		$(SRC_ROOT)/oscottlibs/LinkedListNode.h \
 		$(SRC_ROOT)/oscottlibs/SimpleString.o \
-		$(SRC_ROOT)/thread/BackgroundWorker.o
+		$(SRC_ROOT)/worker/DiffWorker.o \
+		$(SRC_ROOT)/worker/WorkerBase.o
  
 INCLUDE=-I$(SRC_ROOT) \
 				-I$(SRC_ROOT)/amigautils \
@@ -86,7 +100,7 @@ INCLUDE=-I$(SRC_ROOT) \
 				-I$(SRC_ROOT)/gui \
 				-I$(SRC_ROOT)/model \
 				-I$(SRC_ROOT)/oscottlibs \
-				-I$(SRC_ROOT)/thread
+				-I$(SRC_ROOT)/worker
 
 # Setting up compiler, flags and tools
 CXX=/opt/amiga/bin/m68k-amigaos-c++
