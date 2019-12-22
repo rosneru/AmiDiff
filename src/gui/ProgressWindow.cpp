@@ -152,8 +152,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   int progrWidth = 1;
   if(pProgrMsg->progress > 0)
   {
-    progrWidth = (m_ProgressBarWidth - 2) *
-      pProgrMsg->progress / 100;
+    progrWidth = (m_ProgressBarWidth - 2) * pProgrMsg->progress / 100;
   }
 
   // Set color to <blue> for painting the progress bar
@@ -197,7 +196,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   int textLength = IntuiTextLength(&m_ProgressValueIText);
   int x = (m_ProgressBarWidth - textLength) / 2;
 
-  PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 0);
+  //PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 0);
 }
 
 
