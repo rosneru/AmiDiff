@@ -251,8 +251,11 @@ void DiffWorker::disposeDocuments()
   // Deleting the memory pool as a whole gives an extreme
   // performence boost at exit or when starting another compare.
   //
-  DeletePool(m_pPoolHeader);
-  m_pPoolHeader = NULL;
+  if(m_pPoolHeader != NULL)
+  {
+    DeletePool(m_pPoolHeader);
+    m_pPoolHeader = NULL;
+  }
 }
 
 void DiffWorker::doWork()
