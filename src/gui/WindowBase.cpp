@@ -14,7 +14,6 @@ WindowBase::WindowBase(AScreen& appScreen,
                        int& numOpenWindows)
   : m_AScreen(appScreen),
     m_pIdcmpMsgPort(pIdcmpMsgPort),
-    m_NumOpenWindows(numOpenWindows),
     m_pWindow(NULL),
     m_bBorderless(false),
     m_bSmartRefresh(false),
@@ -22,16 +21,17 @@ WindowBase::WindowBase(AScreen& appScreen,
     m_WinTop(0),
     m_WinWidth(0),
     m_WinHeight(0),
-    m_pFirstGadget(NULL),
-    m_pAppWindowPort(NULL),
-    m_pAppWindow(NULL),
-    m_AppWindowId(0),
-    m_pMenu(NULL),
     m_bInitialized(false),
+    m_pMenu(NULL),
+    m_NumOpenWindows(numOpenWindows),
     m_bIsFixed(false),
     m_InitialPosition(IP_Center),
     m_WindowFlags(0),
     m_WindowIdcmp(0),
+    m_pFirstGadget(NULL),
+    m_pAppWindowPort(NULL),
+    m_pAppWindow(NULL),
+    m_AppWindowId(0),
     m_pMenuItemDisableAtOpen(NULL)
 {
 
@@ -172,7 +172,7 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
                                 0,
                                 m_pWindow,
                                 m_pAppWindowPort,
-                                NULL);
+                                TAG_DONE, NULL);
   }
 
   m_NumOpenWindows++;
@@ -217,7 +217,7 @@ void WindowBase::Close()
     m_pMenu->DetachFromWindow(m_pWindow);
   }
 
-  if(m_pAppWindow = NULL)
+  if(m_pAppWindow == NULL)
   {
     RemoveAppWindow(m_pAppWindow);
     m_pAppWindow = NULL;
@@ -520,7 +520,7 @@ void WindowBase::stripIntuiMessages()
 
   pMessage = (struct IntuiMessage*) pIdcmpMsgPort->mp_MsgList.lh_Head;
 
-  while(pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ)
+  while((pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ) != NULL)
   {
     if(pMessage->IDCMPWindow == m_pWindow)
     {

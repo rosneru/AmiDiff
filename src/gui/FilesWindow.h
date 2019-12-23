@@ -66,11 +66,12 @@ public:
 
 private:
   AslFileRequest m_AslRequest;
+  bool m_bFileRequestOpen;
+
   SimpleString& m_LeftFilePath;
   SimpleString& m_RightFilePath;
-  const Command& m_CmdDiff;
 
-  bool m_bFileRequestOpen;
+  const Command& m_CmdDiff;
 
   /**
    * IDs to help to interpret the events of this window's Gadtools

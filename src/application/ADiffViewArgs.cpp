@@ -168,7 +168,7 @@ void ADiffViewArgs::readCommandLineArgs()
       return;
     }
 
-    if(args[0] != NULL)
+    if(args[0] != 0)
     {
       // args[0] contains a array of pointers to the passed FILEs.
       STRPTR* pFiles = (STRPTR*) args[0];
@@ -186,12 +186,12 @@ void ADiffViewArgs::readCommandLineArgs()
       }
     }
 
-    if(args[1] != NULL)
+    if(args[1] != 0)
     {
       m_PubScreenName = (const char*) args[1];
     }
 
-    if(args[2] != NULL)
+    if(args[2] != 0)
     {
       m_bDontAsk = true;
     }

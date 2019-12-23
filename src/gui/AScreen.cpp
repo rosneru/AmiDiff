@@ -8,10 +8,10 @@
 extern struct IntuitionBase* IntuitionBase;
 
 AScreen::AScreen(ADiffViewSettings& settings)
-  : m_Pens(m_pScreen, m_pDrawInfo, settings),
-    m_Settings(settings),
-    m_pScreen(NULL),
+  : m_pScreen(NULL),
     m_pDrawInfo(NULL),
+    m_Pens(m_pScreen, m_pDrawInfo, settings),
+    m_Settings(settings),
     m_pVisualInfo(NULL),
     m_Title("AScreen"),
     m_PubScreenName("Workbench")

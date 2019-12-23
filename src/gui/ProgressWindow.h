@@ -87,7 +87,7 @@ private:
   SimpleString m_ProgressText;
 
   struct IntuiText m_ProgressValueIText;
-  const char* m_pProgressDescription;
+  char* m_pProgressDescription;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.

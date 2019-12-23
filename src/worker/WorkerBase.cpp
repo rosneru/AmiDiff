@@ -10,8 +10,8 @@ WorkerBase::WorkerBase(struct MsgPort*& pProgressPort)
   : m_pStartupMsg(NULL),
     m_pProgressPort(pProgressPort),
     m_pReplyPort(NULL),
-    m_pProgressDescription(NULL),
     m_pBackgrProcess(NULL),
+    m_pProgressDescription(NULL),
     m_bExitRequested(false)
 {
 }

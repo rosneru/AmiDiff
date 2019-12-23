@@ -15,10 +15,10 @@ ScrollbarWindow::ScrollbarWindow(AScreen& appScreen,
                                  struct MsgPort*& pIdcmpMsgPort,
                                  int& numOpenWindows)
   : WindowBase(appScreen, pIdcmpMsgPort, numOpenWindows),
-    m_SizeImageWidth(18),
-    m_SizeImageHeight(10),
     m_InnerWindowRight(0),
     m_InnerWindowBottom(0),
+    m_SizeImageWidth(18),
+    m_SizeImageHeight(10),
     m_pLeftArrowImage(NULL),
     m_pRightArrowImage(NULL),
     m_pUpArrowImage(NULL),
@@ -491,7 +491,7 @@ void ScrollbarWindow::extractLatestPropGadTopValue(GadgetId gadgetId,
 
   struct Node* pSuccessor;
 
-  while(pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ)
+  while((pSuccessor = pMessage->ExecMessage.mn_Node.ln_Succ) != NULL)
   {
     if(pMessage->IDCMPWindow == m_pWindow &&
         pMessage->Class == IDCMP_IDCMPUPDATE)

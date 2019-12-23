@@ -280,7 +280,8 @@ void Application::intuiEventLoop()
     if(received & sigAppWin)
     {
       struct AppMessage* pAppMsg = NULL;
-      while(pAppMsg = (struct AppMessage*) GetMsg(m_pMsgPortAppWindow))
+      while((pAppMsg = (struct AppMessage*) 
+        GetMsg(m_pMsgPortAppWindow)) != NULL)
       {
         if(m_FilesWindow.IsOpen())
         {
@@ -295,8 +296,8 @@ void Application::intuiEventLoop()
     if(received & sigProgress)
     {
       struct ProgressMessage* pProgressMsg = NULL;
-      while(pProgressMsg = (struct ProgressMessage*)
-              GetMsg(m_pMsgPortProgress))
+      while((pProgressMsg = (struct ProgressMessage*)
+        GetMsg(m_pMsgPortProgress)) != NULL)
       {
         if(m_ProgressWindow.IsOpen())
         {
@@ -311,7 +312,7 @@ void Application::intuiEventLoop()
     if(received & sigIDCMP)
     {
       struct IntuiMessage* pIdcmpMsg = NULL;
-      while (pIdcmpMsg = GT_GetIMsg(m_pMsgPortIDCMP))
+      while ((pIdcmpMsg = GT_GetIMsg(m_pMsgPortIDCMP)) != NULL)
       {
         // Get all data we need from message
         ULONG msgClass = pIdcmpMsg->Class;
@@ -334,7 +335,7 @@ void Application::intuiEventLoop()
           AMenu* pMenus[] = {&m_Menu, &m_MenuDiffWindow};
 
           // Iterate all those menus, trying to find the item
-          for(int i = 0; i < (sizeof pMenus / sizeof pMenus[0]); i++)
+          for(size_t i = 0; i < (sizeof pMenus / sizeof pMenus[0]); i++)
           {
             pSelectedItem = ItemAddress(pMenus[i]->IntuiMenu(), menuNumber);
             if(pSelectedItem != NULL)

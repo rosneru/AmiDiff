@@ -181,7 +181,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   if( pProgrMsg != NULL &&
      (pProgrMsg->pDescription != m_pProgressDescription))
   {
-    m_pProgressDescription = pProgrMsg->pDescription;
+    m_pProgressDescription = const_cast<char*>(pProgrMsg->pDescription);
 
     GT_SetGadgetAttrs(m_pLabelDescription, m_pWindow, NULL,
       GTTX_Text, m_pProgressDescription,
@@ -196,7 +196,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   int textLength = IntuiTextLength(&m_ProgressValueIText);
   int x = (m_ProgressBarWidth - textLength) / 2;
 
-  PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 2);
+  //PrintIText(m_pWindow->RPort, &m_ProgressValueIText, x, 2);
 }
 
 
