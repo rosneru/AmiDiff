@@ -231,14 +231,14 @@ void ProgressWindow::initialize()
   newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
-  newGadget.ng_Flags      = PLACETEXT_RIGHT | NG_HIGHLABEL;
+  newGadget.ng_Flags      = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
   newGadget.ng_GadgetText = NULL;
   newGadget.ng_GadgetID   = GID_TxtDescription;
 
 
   m_pGadTxtDescription = CreateGadget(TEXT_KIND,
-                                     pFakeGad, &newGadget,
-                                     TAG_END);
+                                      pFakeGad, &newGadget,
+                                      TAG_END);
 
   // Preparing the newGadget struct for the progress value gadget
   newGadget.ng_LeftEdge   = left;
@@ -266,11 +266,12 @@ void ProgressWindow::initialize()
   // Creating the Cancel button in right of the "progress gadget"
   newGadget.ng_LeftEdge   = right - buttonWidth;
   newGadget.ng_Width      = buttonWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "Cancel"; // removed _ TODO: Add again and support
+  newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
   newGadget.ng_GadgetID   = GID_BtnCancel;
 
   m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
-                                 m_pGadTxtValue, &newGadget,
+                                 m_pGadTxtValue, 
+                                 &newGadget,
                                  GT_Underscore, '_',
                                  TAG_END);
 
@@ -286,11 +287,11 @@ void ProgressWindow::initialize()
            WFLG_DEPTHGADGET);     // Add a depth gadget
 
   // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
-           IDCMP_VANILLAKEY |     // Inform us about RAW key press
-           IDCMP_RAWKEY |         // Inform us about printable key press
-           IDCMP_REFRESHWINDOW |  // Inform us when refreshing is necessary
-           BUTTONIDCMP);          // Inform us about GadTools button events
+  setIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
+           IDCMP_VANILLAKEY |     // Get msg when RAW key pressed
+           IDCMP_RAWKEY |         // Get msg when printable key pressed
+           IDCMP_REFRESHWINDOW |  // Get msg when must refreshing
+           IDCMP_GADGETUP);       // Get msg when gadgets changed
 
   SetSmartRefresh(true);
 
