@@ -13,7 +13,8 @@
 
 ADiffViewArgs::ADiffViewArgs(int argc, char **argv)
   : m_ArgC(argc),
-    m_pArgV(argv)
+    m_pArgV(argv),
+    m_bDontAsk(false)
 {
   if(argc == 0)
   {
