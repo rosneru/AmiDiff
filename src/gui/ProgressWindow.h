@@ -2,7 +2,6 @@
 #define PROGRESS_WINDOW_H
 
 #include <exec/ports.h>
-#include <intuition/screens.h>
 
 #include "AScreen.h"
 #include "SimpleString.h"
@@ -57,7 +56,7 @@ public:
    * Prints the current pDescription text of given pProgrMsg and
    * draws a progress bar representing the actual percentual value.
    */
-  void HandleProgress(struct ProgressMessage* pProgrMsg);
+  void HandleProgress(struct ProgressMessage* pProgressMsg);
 
 
 private:
@@ -67,8 +66,9 @@ private:
    */
   enum GadgetId
   {
-    GID_Description,
-    GID_ButtonCancel,
+    GID_TxtDescription,
+    GID_TxtValue,
+    GID_BtnCancel,
   };
 
   WORD m_FontHeight;  ///> Height of current text font
@@ -76,18 +76,18 @@ private:
   bool& m_bCancelRequested;
 
   struct Gadget* m_pGadtoolsContext;
-  struct Gadget* m_pLabelDescription;
-  struct Gadget* m_pButtonCancel;
+  struct Gadget* m_pGadTxtDescription;
+  struct Gadget* m_pGadTxtValue;
+  struct Gadget* m_pGadBtnCancel;
 
-  int m_ProgressBarLeft;
-  int m_ProgressBarTop;
-  int m_ProgressBarWidth;
-  int m_ProgressBarHeight;
+  ULONG m_ProgressBarLeft;
+  ULONG m_ProgressBarTop;
+  ULONG m_ProgressBarRight;
+  ULONG m_ProgressBarBottom;
 
-  SimpleString m_ProgressText;
+  SimpleString m_ProgressDescr;
+  SimpleString m_ProgressValue;
 
-  struct IntuiText m_ProgressValueIText;
-  char* m_pProgressDescription;
 
   /**
    * Initializes some window specific feature. Gadgets, etc.
