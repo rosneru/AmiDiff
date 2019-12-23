@@ -151,26 +151,16 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgressMsg)
            progrRight,
            m_ProgressBarBottom);
 
-  // // Set color to <background> for painting the grey background of the
-  // // yet uncovered area of the progress bar
-  // SetAPen(m_pWindow->RPort, m_AScreen.Pens().Background());
-
-  // // Fill the yet uncovered progress bar area with the background
-  // // color. This is necessary to clear the formerly printed text.
-  // RectFill(m_pWindow->RPort,
-  //          m_ProgressBarLeft + 2 + progrWidth,
-  //          m_ProgressBarTop + 1,
-  //          m_ProgressBarLeft + m_ProgressBarWidth - 3,
-  //          m_ProgressBarTop + m_ProgressBarHeight - 2);
-
-  if(!(m_ProgressDescr == pProgressMsg->pDescription))  // SimpleString has no !=
+  // NOTE: The following condition is a workaround because SimpleString
+  // curently has no != overload
+  if(!(m_ProgressDescr == pProgressMsg->pDescription))
   {
     // Progress description as it has changed
     m_ProgressDescr = pProgressMsg->pDescription;
 
     // Update the description gadged
-    GT_SetGadgetAttrs(m_pGadTxtDescription, 
-                      m_pWindow, 
+    GT_SetGadgetAttrs(m_pGadTxtDescription,
+                      m_pWindow,
                       NULL,
                       GTTX_Text, m_ProgressDescr.C_str(),
                       TAG_DONE);
@@ -231,7 +221,7 @@ void ProgressWindow::initialize()
   newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
-  newGadget.ng_Flags      = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
+  newGadget.ng_Flags      = 0;
   newGadget.ng_GadgetText = NULL;
   newGadget.ng_GadgetID   = GID_TxtDescription;
 
@@ -252,16 +242,17 @@ void ProgressWindow::initialize()
                                 m_pGadTxtDescription,
                                 &newGadget,
                                 GTTX_Border, TRUE,
+                                GTTX_Justification, GTJ_CENTER,
+                                GTTX_FrontPen, m_AScreen.Pens().HighlightedText(),
                                 GTTX_Text, (UBYTE*)m_ProgressValue.C_str(),
                                 TAG_END);
 
-  // But actually the "gadget" is just a BevelBox which is drawn after
-  // window opening. So just remembering the progress gadget dimensions
-  // as they are needed later
+  // Remembering the progress gadget dimensions as they are used to
+  // draw the progress bar
   m_ProgressBarLeft = newGadget.ng_LeftEdge + 1;
   m_ProgressBarTop = newGadget.ng_TopEdge + 1;
-  m_ProgressBarRight = m_ProgressBarLeft + newGadget.ng_Width - 2;
-  m_ProgressBarBottom = m_ProgressBarTop + newGadget.ng_Height - 2;
+  m_ProgressBarRight = m_ProgressBarLeft + newGadget.ng_Width - 3;
+  m_ProgressBarBottom = m_ProgressBarTop + newGadget.ng_Height - 3;
 
   // Creating the Cancel button in right of the "progress gadget"
   newGadget.ng_LeftEdge   = right - buttonWidth;
@@ -270,7 +261,7 @@ void ProgressWindow::initialize()
   newGadget.ng_GadgetID   = GID_BtnCancel;
 
   m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
-                                 m_pGadTxtValue, 
+                                 m_pGadTxtValue,
                                  &newGadget,
                                  GT_Underscore, '_',
                                  TAG_END);
