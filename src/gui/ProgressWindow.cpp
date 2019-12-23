@@ -188,6 +188,8 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
       TAG_END);
   }
 
+  return;
+
   m_ProgressText = pProgrMsg->progress;
   m_ProgressText += " %";
 
