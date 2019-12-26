@@ -275,7 +275,9 @@ void ProgressWindow::initialize()
 
   // Setting the window flags
   setFlags(WFLG_DRAGBAR |         // Add a drag gadget
-           WFLG_DEPTHGADGET);     // Add a depth gadget
+           WFLG_DEPTHGADGET |     // Add a depth gadget
+           WFLG_GIMMEZEROZERO);   // Different layers for border and content
+           
 
   // Setting the IDCMP messages we want to receive for this window
   setIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
