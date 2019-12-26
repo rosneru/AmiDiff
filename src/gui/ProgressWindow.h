@@ -67,7 +67,6 @@ private:
   enum GadgetId
   {
     GID_TxtDescription,
-    GID_TxtValue,
     GID_BtnCancel,
   };
 
@@ -77,16 +76,17 @@ private:
 
   struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pGadTxtDescription;
-  struct Gadget* m_pGadTxtValue;
   struct Gadget* m_pGadBtnCancel;
 
   ULONG m_ProgressBarLeft;
   ULONG m_ProgressBarTop;
-  ULONG m_ProgressBarRight;
-  ULONG m_ProgressBarBottom;
+  ULONG m_ProgressBarWidth;
+  ULONG m_ProgressBarHeight;
 
   SimpleString m_ProgressDescr;
   SimpleString m_ProgressValue;
+
+  struct IntuiText m_ProgressValueIText;
 
 
   /**
