@@ -214,9 +214,9 @@ bool DiffWorker::Diff()
   m_DiffWindow.SetContent(m_pDiffDocumentLeft,
                           m_pDiffDocumentRight,
                           &m_DiffStartIdxsList,
-                          totalTime, 
-                          m_DiffEngine.NumAdded(), 
-                          m_DiffEngine.NumChanged(), 
+                          totalTime,
+                          m_DiffEngine.NumAdded(),
+                          m_DiffEngine.NumChanged(),
                           m_DiffEngine.NumDeleted());
 
   m_ProgressWindow.Close();

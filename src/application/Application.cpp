@@ -280,7 +280,7 @@ void Application::intuiEventLoop()
     if(received & sigAppWin)
     {
       struct AppMessage* pAppMsg = NULL;
-      while((pAppMsg = (struct AppMessage*) 
+      while((pAppMsg = (struct AppMessage*)
         GetMsg(m_pMsgPortAppWindow)) != NULL)
       {
         if(m_FilesWindow.IsOpen())
