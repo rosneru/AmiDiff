@@ -168,8 +168,11 @@ void DiffEngine::createDiffFiles()
      && (lineB < m_B.NumLines())
      && (m_B.GetLineState(lineB) == DiffLine::Normal))
     {
-      m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Normal);
-      m_BDiff.AddString(m_B.GetLine(lineB++)->Text(), DiffLine::Normal);
+      DiffLine* pA = m_A.GetLine(lineA++);
+      DiffLine* pB = m_B.GetLine(lineB++);
+
+      m_ADiff.AddString(pA->Text(), DiffLine::Normal, pA->LineNum());
+      m_BDiff.AddString(pB->Text(), DiffLine::Normal, pB->LineNum());
     }
 
     //
@@ -181,8 +184,11 @@ void DiffEngine::createDiffFiles()
       && (m_A.GetLineState(lineA) != DiffLine::Normal)
       && (m_B.GetLineState(lineB) != DiffLine::Normal))
     {
-      long idx = m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Changed);
-      m_BDiff.AddString(m_B.GetLine(lineB++)->Text(), DiffLine::Changed);
+      DiffLine* pA = m_A.GetLine(lineA++);
+      DiffLine* pB = m_B.GetLine(lineB++);
+
+      long idx = m_ADiff.AddString(pA->Text(), DiffLine::Changed, pA->LineNum());
+      m_BDiff.AddString(pB->Text(), DiffLine::Changed, pB->LineNum());
 
       // Note: By coverting a left-deleted and a right-inserted line
       //       into a changed line, left and right files each are
@@ -204,7 +210,8 @@ void DiffEngine::createDiffFiles()
     while((lineA < m_A.NumLines())
        && (lineB >= m_B.NumLines() || (m_A.GetLineState(lineA) != DiffLine::Normal)))
     {
-      long idx = m_ADiff.AddString(m_A.GetLine(lineA++)->Text(), DiffLine::Deleted);
+      DiffLine* pA = m_A.GetLine(lineA++);
+      long idx = m_ADiff.AddString(pA->Text(), DiffLine::Deleted, pA->LineNum());
       m_BDiff.AddBlankLine();
 
       // Add start of this block of DELETED lines to differences list
@@ -220,8 +227,9 @@ void DiffEngine::createDiffFiles()
     while((lineB < m_B.NumLines())
       && (lineA >= m_A.NumLines() || (m_B.GetLineState(lineB) != DiffLine::Normal)))
     {
+      DiffLine* pB = m_B.GetLine(lineB++);
       m_ADiff.AddBlankLine();
-      long idx = m_BDiff.AddString(m_B.GetLine(lineB++)->Text(), DiffLine::Added);
+      long idx = m_BDiff.AddString(pB->Text(), DiffLine::Added, pB->LineNum());
 
       // Add start of this block of ADDED lines to differences list
       if(!bAddedToList)

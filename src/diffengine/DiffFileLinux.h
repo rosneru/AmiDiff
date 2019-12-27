@@ -19,15 +19,17 @@ public:
 
   void Clear();
 
-  bool PreProcess(const char* p_FileName);
+  bool PreProcess(const char* pFileName, 
+                  bool bCollectLineNumbers = false);
 
   /**
    * Adds a DiffLine to file using given string and line state.
    * 
    * Returns the index where the line was inserted or -1 on error.
    */
-  long AddString(const char* p_String,
-                 DiffLine::LineState p_LineState);
+  long AddString(const char* pText,
+                              DiffLine::LineState lineState,
+                              const char* pFormattedLineNumber);
 };
 
 #endif // DIFF_FILE_PARTITION_LINUX_H

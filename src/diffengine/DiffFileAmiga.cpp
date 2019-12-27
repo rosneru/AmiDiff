@@ -39,7 +39,8 @@ void DiffFileAmiga::Clear()
   m_pDiffLinesArray = NULL;
 }
 
-bool DiffFileAmiga::PreProcess(const char* pFileName)
+bool DiffFileAmiga::PreProcess(const char* pFileName, 
+                               bool bCollectLineNumbers)
 {
   if(m_pPoolHeader == NULL)
   {
@@ -81,6 +82,8 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     return false;
   }
 
+  size_t digits = numDigits(m_NumLines);
+
   char* pReadLine = NULL;
   int i = 0;
   while((pReadLine = m_File.ReadLine()) != NULL)
@@ -95,6 +98,13 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     }
 
     strcpy(pLine, pReadLine);
+
+    char* pLineNumber = NULL;
+    if(bCollectLineNumbers == true)
+    {
+      pLineNumber = new char[digits + 1];
+      sprintf(pLineNumber, "%*d", digits, (i + 1));
+    }
 
     DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
                                                   sizeof(DiffLine));
@@ -111,7 +121,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
     // constructor. This has to be done here because a memory pool is
     // used and the normal operator 'new' which reserves memory
     // automatically wouldn't be appropriate.
-    new (pDiffLine) DiffLine(pLine);
+    new (pDiffLine) DiffLine(pLine, pLineNumber);
 
     // Append DiffLine to list
     m_pDiffLinesArray[i++] = pDiffLine;
@@ -159,8 +169,9 @@ bool DiffFileAmiga::PreProcess(const char* pFileName)
 }
 
 
-long DiffFileAmiga::AddString(const char* string,
-                              DiffLine::LineState lineState)
+long DiffFileAmiga::AddString(const char* pText,
+                              DiffLine::LineState lineState, 
+                              const char* pFormattedLineNumber)
 {
   if(m_NumLines < 1)
   {
@@ -195,7 +206,7 @@ long DiffFileAmiga::AddString(const char* string,
   // constructor. This has to be done here because a memory pool is
   // used and the normal operator 'new' which reserves memory
   // automatically wouldn't be appropriate.
-  new (pDiffLine) DiffLine(string, lineState);
+  new (pDiffLine) DiffLine(pText, lineState, pFormattedLineNumber);
 
   m_pDiffLinesArray[m_NextAddedLineIdx++] = pDiffLine;
 

@@ -30,9 +30,10 @@ void DiffFileLinux::Clear()
     DiffLine* pItem = m_pDiffLinesArray[i];
     if(pItem != NULL)
     {
-      if(!pItem->TextIsLinked() && (pItem->Text() != NULL))
+      if(!pItem->IsLinked() && (pItem->Text() != NULL))
       {
         delete[] pItem->Text();
+        delete[] pItem->LineNum();
       }
 
       delete pItem;
@@ -45,7 +46,8 @@ void DiffFileLinux::Clear()
 }
 
 
-bool DiffFileLinux::PreProcess(const char* pFileName)
+bool DiffFileLinux::PreProcess(const char* pFileName, 
+                               bool bCollectLineNumbers)
 {
   if(m_pDiffLinesArray != NULL)
   {
@@ -90,6 +92,8 @@ bool DiffFileLinux::PreProcess(const char* pFileName)
     return false;
   }
 
+  size_t digits = numDigits(m_NumLines);
+
   std::string line;
   int i = 0;
   while(getline(inputFileStream, line))
@@ -98,7 +102,14 @@ bool DiffFileLinux::PreProcess(const char* pFileName)
     char* pLine = new char[size + 1];
     strcpy(pLine, line.c_str());
 
-    DiffLine* pDiffLine = new DiffLine(pLine);
+    char* pLineNumber = NULL;
+    if(bCollectLineNumbers == true)
+    {
+      pLineNumber = new char[digits + 1];
+      sprintf(pLineNumber, "%*d", digits, (i + 1));
+    }
+
+    DiffLine* pDiffLine = new DiffLine(pLine, pLineNumber);
     if(pDiffLine == NULL)
     {
       break;
@@ -113,8 +124,9 @@ bool DiffFileLinux::PreProcess(const char* pFileName)
   return NumLines() > 0;
 }
 
-long DiffFileLinux::AddString(const char* p_String,
-                              DiffLine::LineState p_LineState)
+long DiffFileLinux::AddString(const char* pText,
+                              DiffLine::LineState lineState,
+                              const char* pFormattedLineNumber)
 {
   if(m_NumLines < 1)
   {
@@ -127,7 +139,10 @@ long DiffFileLinux::AddString(const char* p_String,
     m_pDiffLinesArray = new DiffLine*[m_NumLines];
   }
 
-  DiffLine* pDiffLine = new DiffLine(p_String, p_LineState);
+  DiffLine* pDiffLine = new DiffLine(pText,
+                                     lineState,
+                                     pFormattedLineNumber);
+
   if(pDiffLine == NULL)
   {
     return -1;

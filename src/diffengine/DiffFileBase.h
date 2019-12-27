@@ -49,8 +49,9 @@ public:
    * 
    * Returns the index where the line was inserted or -1 on error.
    */
-  virtual long AddString(const char* string, 
-                         DiffLine::LineState lineState) = 0;
+  virtual long AddString(const char* pText, 
+                         DiffLine::LineState lineState,
+                         const char* pFormattedLineNumber) = 0;
 
   void AddBlankLine();
 
@@ -71,6 +72,11 @@ protected:
    * AddString() call.
    */
   long m_NextAddedLineIdx;
+
+  /**
+   * Returns the number of digits of a given positive number.
+   */
+  size_t numDigits(size_t number);
 };
 
 #endif

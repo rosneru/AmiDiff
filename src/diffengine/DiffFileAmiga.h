@@ -22,15 +22,17 @@ public:
 
   void Clear();
 
-  bool PreProcess(const char* pFileName);
+  bool PreProcess(const char* pFileName, 
+                  bool bCollectLineNumbers = false);
 
   /**
    * Adds a DiffLine to file using given string and line state.
    * 
    * Returns the index where the line was inserted or -1 on error.
    */
-  long AddString(const char* string,
-                 DiffLine::LineState lineState);
+  long AddString(const char* pText,
+                 DiffLine::LineState lineState, 
+                 const char* pFormattedLineNumber);
 
   const char* Error();
 

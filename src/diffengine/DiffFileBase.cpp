@@ -87,10 +87,21 @@ void DiffFileBase::SetLineState(size_t idx, DiffLine::LineState state)
 void DiffFileBase::AddBlankLine()
 {
   static const char* pEmptyLine = "";
-  AddString(pEmptyLine, DiffLine::Normal);
+  AddString(pEmptyLine, DiffLine::Normal, NULL);
 }
 
 void DiffFileBase::SetProgressReporter(ProgressReporter* pProgressReporter)
 {
   m_pProgressReporter = pProgressReporter;
+}
+
+size_t DiffFileBase::numDigits(size_t number)
+{
+  size_t digits = 1;
+  if ( number >= 100000000 ) { digits += 8; number /= 100000000; }
+  if ( number >= 10000     ) { digits += 4; number /= 10000; }
+  if ( number >= 100       ) { digits += 2; number /= 100; }
+  if ( number >= 10        ) { digits += 1; }
+
+  return digits;
 }

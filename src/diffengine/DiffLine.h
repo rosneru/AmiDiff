@@ -28,9 +28,9 @@ public:
    * Creates a new DiffLine with the given text.
    *
    * IMPORTANT: Sets the IsLinked flag to false so that this DiffLine
-   * is considered as 'owner' of the given text.
+   * is considered as 'owner' of the given text and line number.
    */
-  DiffLine(const char* pText);
+  DiffLine(const char* pText, const char* pFormattedLineNumber);
 
   /**
    * Creates a new DiffLine with given text and state.
@@ -38,7 +38,10 @@ public:
    * IMPORTANT: Sets the IsLinked flag to true so that another DiffLine
    * is considered as 'owner' of the given text.
    */
-  DiffLine(const char* pText, LineState state);
+  DiffLine(const char* pText,
+           LineState state,
+           const char* pFormattedLineNumber);
+
 
   ~DiffLine();
 
@@ -48,20 +51,31 @@ public:
   const char* Text() const;
 
   /**
-   * Returns true if this line's text is only a flat copy of another
-   * diff line's text.
+   * Returns true if this line's text and line number are only flat
+   * copied (pointers to) from another DiffLine
    */
-  bool TextIsLinked() const;
+  bool IsLinked() const;
 
   /**
    * Returns the text length of the diff line
    */
-  size_t Length() const;
+  size_t TextLength() const;
 
   /**
    * Returns the state of the diff line
    */
   LineState State() const;
+
+  /**
+   * Returns the LineNumber as a digit-formatted text.
+   *
+   * E.g. when highest line number is three-digits long, the returned
+   * value will be something like "  1", " 82" or "123".
+   *
+   * Returns NULL if collecting the line numbers was't enabled in the
+   * corresponding src DiffFile before PreProcess().
+   */
+  const char* LineNum() const;
 
   void SetState(LineState state);
 
@@ -72,10 +86,11 @@ public:
 
 protected:
   const char* m_Text;
-  const size_t m_Length;
+  const size_t m_TextLength;
   LineState m_State;
+  const char* m_pFormattedLineNumber;
   unsigned long m_Token;
-  bool m_bLinkedText;
+  bool m_bIsLinked;
 };
 
 #endif
