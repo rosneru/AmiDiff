@@ -240,6 +240,7 @@ void ProgressWindow::initialize()
   newGadget.ng_Width      = stringGadgetWidth;
   newGadget.ng_Height     = buttonHeight;
   newGadget.ng_GadgetID   = GID_TxtDescription;
+  newGadget.ng_GadgetText = NULL;
   newGadget.ng_Flags      = 0;
 
   m_pGadTxtDescription = CreateGadget(TEXT_KIND,
@@ -250,8 +251,8 @@ void ProgressWindow::initialize()
   newGadget.ng_LeftEdge   = left;
   newGadget.ng_TopEdge    += buttonHeight + vSpace;
 
-  // Actually the progressbar "gadget" is just a BevelBox which is 
-  // drawn after window opening. So just remembering the progress 
+  // Actually the progressbar "gadget" is just a BevelBox which is
+  // drawn after window opening. So just remembering the progress
   // gadget dimensions as they are needed later
   m_ProgressBarLeft = newGadget.ng_LeftEdge;
   m_ProgressBarTop = newGadget.ng_TopEdge;

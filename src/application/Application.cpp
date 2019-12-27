@@ -237,10 +237,10 @@ bool Application::Run()
   else
   {
     //
-    // Default: Open the OpenFilesWindow.
+    // Fallback / default: Open the FilesWindow
     //
-    // Giving the command ptr as argument, so the appropriate menu item
-    // will be disabled after opening.
+    // Passing a pointer to the command "Open files" to disable that
+    // menu item at opening.
     m_FilesWindow.Open(&m_CmdOpen);
   }
 

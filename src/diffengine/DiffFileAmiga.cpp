@@ -39,7 +39,7 @@ void DiffFileAmiga::Clear()
   m_pDiffLinesArray = NULL;
 }
 
-bool DiffFileAmiga::PreProcess(const char* pFileName, 
+bool DiffFileAmiga::PreProcess(const char* pFileName,
                                bool bCollectLineNumbers)
 {
   if(m_pPoolHeader == NULL)
@@ -82,7 +82,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName,
     return false;
   }
 
-  size_t digits = numDigits(m_NumLines);
+  int digits = numDigits(m_NumLines);
 
   char* pReadLine = NULL;
   int i = 0;
@@ -170,7 +170,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName,
 
 
 long DiffFileAmiga::AddString(const char* pText,
-                              DiffLine::LineState lineState, 
+                              DiffLine::LineState lineState,
                               const char* pFormattedLineNumber)
 {
   if(m_NumLines < 1)
