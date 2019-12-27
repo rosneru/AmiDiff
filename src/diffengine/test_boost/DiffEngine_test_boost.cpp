@@ -657,10 +657,10 @@ BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
   bool diffOk = false;
 
   DiffFileLinux srcA(cancelRequested);
-  srcA.PreProcess("../../../testfiles/testcase_24_1500_numbers_left.txt");
+  srcA.PreProcess("../../../testfiles/testcase_24_1500_numbers_left.txt", true);
 
   DiffFileLinux srcB(cancelRequested);
-  srcB.PreProcess("../../../testfiles/testcase_24_1500_numbers_right.txt");
+  srcB.PreProcess("../../../testfiles/testcase_24_1500_numbers_right.txt", true);
 
   DiffFileLinux diffA(cancelRequested);
   DiffFileLinux diffB(cancelRequested);
@@ -677,6 +677,12 @@ BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
   diffOk = diffEngine.Diff();
 
   BOOST_CHECK_EQUAL(diffOk, true);
+
+  // Checking the justification of the line numbers
+  BOOST_CHECK_EQUAL(diffA.GetLineNum(0), "   1");
+  BOOST_CHECK_EQUAL(diffB.GetLineNum(0), "   1");
+  BOOST_CHECK_EQUAL(diffA.GetLineNum(12), "");
+  BOOST_CHECK_EQUAL(diffB.GetLineNum(12), "  13");
 
   long numAdd = diffEngine.NumAdded();
   long numChn = diffEngine.NumChanged();
