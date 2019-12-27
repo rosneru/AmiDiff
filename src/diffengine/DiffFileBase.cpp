@@ -5,7 +5,8 @@ DiffFileBase::DiffFileBase(bool& bCancelRequested)
     m_pProgressReporter(NULL),
     m_NumLines(0),
     m_pDiffLinesArray(NULL),
-    m_NextAddedLineIdx(0)
+    m_NextAddedLineIdx(0),
+    m_EmptyText('\0')
 {
 
 }
@@ -39,16 +40,30 @@ DiffLine* DiffFileBase::GetLine(size_t idx) const
 }
 
 
-static const char* pEmptyText = "";
-
 const char* DiffFileBase::GetLineText(size_t idx) const
 {
   if(idx >= m_NumLines)
   {
-    return pEmptyText;
+    return &m_EmptyText;
   }
 
   return GetLine(idx)->Text();
+}
+
+const char* DiffFileBase::GetLineNum(size_t idx) const
+{
+  if(idx >= m_NumLines)
+  {
+    return &m_EmptyText;
+  }
+
+  const char* pLineNum = GetLine(idx)->LineNum();
+  if(pLineNum == NULL)
+  {
+    return &m_EmptyText;
+  }
+
+  return pLineNum;
 }
 
 unsigned long DiffFileBase::GetLineToken(size_t idx) const

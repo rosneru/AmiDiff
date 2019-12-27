@@ -39,10 +39,15 @@ public:
   void DecrementNumLines();
 
   DiffLine* GetLine(size_t idx) const;
+
   const char* GetLineText(size_t idx) const;
-  unsigned long GetLineToken(size_t idx) const;
+
+  const char* GetLineNum(size_t idx) const;
+
   DiffLine::LineState GetLineState(size_t idx) const;
   void SetLineState(size_t idx, DiffLine::LineState state);
+
+  unsigned long GetLineToken(size_t idx) const;
 
   /**
    * Adds a DiffLine to file using given string and line state.
@@ -77,6 +82,9 @@ protected:
    * Returns the number of digits of a given positive number.
    */
   size_t numDigits(size_t number);
+
+private:
+  const char m_EmptyText;
 };
 
 #endif
