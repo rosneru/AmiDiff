@@ -472,11 +472,11 @@ void FilesWindow::initialize()
            WFLG_DEPTHGADGET);     // Add a depth gadget
 
   // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Inform about menu selection
-           IDCMP_VANILLAKEY |     // Inform about key press
-           IDCMP_CLOSEWINDOW |    // Inform about click on close gadget
-           IDCMP_REFRESHWINDOW |  // Inform when refreshing is necessary
-           BUTTONIDCMP);          // Inform about Gadget events
+  setIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
+           IDCMP_VANILLAKEY |     // Get msg when RAW key pressed
+           IDCMP_CLOSEWINDOW |    // Get msg when close gadget clicked
+           IDCMP_REFRESHWINDOW |  // Get msg when must refreshing
+           IDCMP_GADGETUP);       // Get msg when gadgets changed
 
   m_bInitialized = true;
 }

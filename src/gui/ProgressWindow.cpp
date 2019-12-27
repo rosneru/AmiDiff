@@ -261,7 +261,7 @@ void ProgressWindow::initialize()
   // Creating the Cancel button in right of the "progress gadget"
   newGadget.ng_LeftEdge   = right - buttonWidth;
   newGadget.ng_Width      = buttonWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "Cancel"; // removed _ TODO: Add again and support
+  newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
   newGadget.ng_GadgetID   = GID_BtnCancel;
 
   m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
