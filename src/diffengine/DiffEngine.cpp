@@ -178,7 +178,7 @@ void DiffEngine::createDiffFiles()
     //
     // Handle changed, deleted, inserted lines
     //
-    bool bAddedToList = false;
+    bool bBlockAlreadyAdded = false;
     while((lineA < m_A.NumLines())
       && (lineB < m_B.NumLines())
       && (m_A.GetLineState(lineA) != DiffLine::Normal)
@@ -197,16 +197,16 @@ void DiffEngine::createDiffFiles()
       m_ADiff.DecrementNumLines();
       m_BDiff.DecrementNumLines();
 
-      // Add start of this block of CHANGED lines to differences list
-      if(!bAddedToList)
+      if(!bBlockAlreadyAdded)
       {
+        // Add start of this block of CHANGED lines to differences list
         m_NumChanged++;
-        bAddedToList = true;
+        bBlockAlreadyAdded = true;
         addDiffIdxToList(idx); // -2 ... has been decremented above
       }
     }
 
-    bAddedToList = false;
+    bBlockAlreadyAdded = false;
     while((lineA < m_A.NumLines())
        && (lineB >= m_B.NumLines() || (m_A.GetLineState(lineA) != DiffLine::Normal)))
     {
@@ -214,16 +214,16 @@ void DiffEngine::createDiffFiles()
       long idx = m_ADiff.AddString(pA->Text(), DiffLine::Deleted, pA->LineNum());
       m_BDiff.AddBlankLine();
 
-      // Add start of this block of DELETED lines to differences list
-      if(!bAddedToList)
+      if(!bBlockAlreadyAdded)
       {
+        // Add start of this block of DELETED lines to differences list
         m_NumDeletedA++;
-        bAddedToList = true;
+        bBlockAlreadyAdded = true;
         addDiffIdxToList(idx);
       }
     }
 
-    bAddedToList = false;
+    bBlockAlreadyAdded = false;
     while((lineB < m_B.NumLines())
       && (lineA >= m_A.NumLines() || (m_B.GetLineState(lineB) != DiffLine::Normal)))
     {
@@ -231,11 +231,11 @@ void DiffEngine::createDiffFiles()
       m_ADiff.AddBlankLine();
       long idx = m_BDiff.AddString(pB->Text(), DiffLine::Added, pB->LineNum());
 
-      // Add start of this block of ADDED lines to differences list
-      if(!bAddedToList)
+      if(!bBlockAlreadyAdded)
       {
+        // Add start of this block of ADDED lines to differences list
         m_NumInsertedB++;
-        bAddedToList = true;
+        bBlockAlreadyAdded = true;
         addDiffIdxToList(idx);
       }
     }
