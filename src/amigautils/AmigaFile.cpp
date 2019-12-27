@@ -4,7 +4,7 @@
 
 AmigaFile::AmigaFile()
   : MAX_LINE_LENGTH(1024), // TODO A better solution needed?
-    m_pFile(NULL),
+    m_FileDescriptor(0),
     m_ErrorMsg("Unknown error in class AmigaFile."),
     m_pProgressReporter(NULL)
 {
@@ -23,7 +23,7 @@ AmigaFile::~AmigaFile()
 
 bool AmigaFile::Open(const char* pFileName, AccessMode accessMode)
 {
-  if(m_pFile != NULL)
+  if(m_FileDescriptor != 0)
   {
     m_ErrorMsg = "The file \n'";
     m_ErrorMsg += pFileName;
@@ -60,8 +60,8 @@ bool AmigaFile::Open(const char* pFileName, AccessMode accessMode)
   }
 
   // Opening the file
-  m_pFile = ::Open(pFileName, amigaDosAccessMode);
-  if(m_pFile == NULL)
+  m_FileDescriptor = ::Open(pFileName, amigaDosAccessMode);
+  if(m_FileDescriptor == 0)
   {
     // Opening failed
     m_ErrorMsg = "The file \n'";
@@ -77,15 +77,15 @@ bool AmigaFile::Open(const char* pFileName, AccessMode accessMode)
 
 void AmigaFile::Close()
 {
-  ::Close(m_pFile);
-  m_pFile = NULL;
+  ::Close(m_FileDescriptor);
+  m_FileDescriptor = 0;
   m_FileName = "";
 }
 
 
 ULONG AmigaFile::CountLines()
 {
-  if(m_pFile == NULL)
+  if(m_FileDescriptor == 0)
   {
     // File not opened
     return 0;
@@ -96,16 +96,16 @@ ULONG AmigaFile::CountLines()
                                             // bug in AmigaOS v36/37
 
   // Rewind reading pointer to start of file
-  Seek(m_pFile, 0, OFFSET_BEGINNING);
+  Seek(m_FileDescriptor, 0, OFFSET_BEGINNING);
 
   // Reading all lines and increment counter
-  while(FGets(m_pFile, m_pLineBuf, readBufSize) != NULL)
+  while(FGets(m_FileDescriptor, m_pLineBuf, readBufSize) != NULL)
   {
     numLines++;
   }
 
   // Rewind reading pointer to start of file again
-  Seek(m_pFile, 0, OFFSET_BEGINNING);
+  Seek(m_FileDescriptor, 0, OFFSET_BEGINNING);
 
   return numLines;
 }
@@ -113,15 +113,15 @@ ULONG AmigaFile::CountLines()
 
 ULONG AmigaFile::GetSize()
 {
-  if(m_pFile == NULL)
+  if(m_FileDescriptor == 0)
   {
     // File not opened
     return 0;
   }
 
-  Seek(m_pFile, 0, OFFSET_BEGINING);
-  ULONG size = Seek(m_pFile, 0, OFFSET_END);
-  Seek(m_pFile, 0, OFFSET_BEGINING);
+  Seek(m_FileDescriptor, 0, OFFSET_BEGINING);
+  ULONG size = Seek(m_FileDescriptor, 0, OFFSET_END);
+  Seek(m_FileDescriptor, 0, OFFSET_BEGINING);
 
   return size;
 }
@@ -129,7 +129,7 @@ ULONG AmigaFile::GetSize()
 
 bool AmigaFile::ReadLines(Array<SimpleString*>& array)
 {
-  if(m_pFile == NULL)
+  if(m_FileDescriptor == 0)
   {
     // File not opened
     m_ErrorMsg = "Failed to perform ReadLines() because the file\n'";
@@ -148,7 +148,7 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& array)
   }
 
   // Rewind reading pointer to start of file
-  Seek(m_pFile, 0, OFFSET_BEGINNING);
+  Seek(m_FileDescriptor, 0, OFFSET_BEGINNING);
 
   // ****
   // Initially clearing the Array
@@ -193,7 +193,7 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& array)
   }
 
   // Rewind reading pointer to start of file
-  Seek(m_pFile, 0, OFFSET_BEGINNING);
+  Seek(m_FileDescriptor, 0, OFFSET_BEGINNING);
 
   return true;
 }
@@ -213,7 +213,7 @@ bool AmigaFile::ReadLine(SimpleString& line)
 
 char* AmigaFile::ReadLine()
 {
-  if(m_pFile == NULL)
+  if(m_FileDescriptor == 0)
   {
     // File not opened
     return NULL;
@@ -221,7 +221,7 @@ char* AmigaFile::ReadLine()
 
   ULONG readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a OS v36 failure
 
-  if(FGets(m_pFile, m_pLineBuf, readBufSize) == NULL)
+  if(FGets(m_FileDescriptor, m_pLineBuf, readBufSize) == NULL)
   {
     return NULL;
   }

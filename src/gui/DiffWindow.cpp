@@ -868,7 +868,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   else
   {
     // Determine how many characters would be print theoretically
-    numCharsToPrint = pLeftLine->Length() - m_X;
+    numCharsToPrint = pLeftLine->TextLength() - m_X;
   }
 
   // Limit the number of printed chars to fit into the text area
@@ -880,9 +880,9 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // When startIndex is set: limit the number of printed chars to not
   // exceed the line length
   if((startIndex > -1) &&
-     (numCharsToPrint + startIndex > pLeftLine->Length()))
+     (numCharsToPrint + startIndex > pLeftLine->TextLength()))
   {
-    numCharsToPrint = pLeftLine->Length() - startIndex;
+    numCharsToPrint = pLeftLine->TextLength() - startIndex;
   }
 
   // Print the left line if is visible regarding current x scroll
@@ -911,7 +911,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   else
   {
     // Determine how many characters would be print theoretically
-    numCharsToPrint = pRightLine->Length() - m_X;
+    numCharsToPrint = pRightLine->TextLength() - m_X;
   }
 
   // Limit the number of printed chars to fit into the text area
@@ -923,9 +923,9 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // When startIndex is set: limit the number of printed chars to not
   // exceed the line length
   if((startIndex > -1) &&
-     (numCharsToPrint + startIndex > pRightLine->Length()))
+     (numCharsToPrint + startIndex > pRightLine->TextLength()))
   {
-    numCharsToPrint = pRightLine->Length() - startIndex;
+    numCharsToPrint = pRightLine->TextLength() - startIndex;
   }
 
   // Print the right line if is visible regarding current x scroll

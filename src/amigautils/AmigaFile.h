@@ -121,7 +121,7 @@ public:
 private:
   const ULONG MAX_LINE_LENGTH;
   STRPTR m_pLineBuf;
-  BPTR m_pFile;
+  BPTR m_FileDescriptor;
   SimpleString m_FileName;
   SimpleString m_ErrorMsg;
 
