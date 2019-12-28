@@ -11,7 +11,8 @@ ADiffViewPens::ADiffViewPens(struct Screen*& pScreen,
     m_Settings(settings),
     m_RedPen(-1),
     m_YellowPen(-1),
-    m_GreenPen(-1)
+    m_GreenPen(-1),
+    m_GrayPen(-1)
 {
 
 }
@@ -36,6 +37,7 @@ bool ADiffViewPens::Create()
   ULONG* pColRed = m_Settings.GetColorRedArray();
   ULONG* pColGreen = m_Settings.GetColorGreenArray();
   ULONG* pColYellow = m_Settings.GetColorYellowArray();
+  ULONG* pColGray = m_Settings.GetColorGrayArray();
 
   // Find the best pens for the neded colors
   m_RedPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
@@ -56,6 +58,11 @@ bool ADiffViewPens::Create()
     OBP_Precision, PRECISION_EXACT,
     TAG_END);
 
+  m_GrayPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
+    pColGray[0], pColGray[1], pColGray[2],
+    OBP_FailIfBad, FALSE,
+    OBP_Precision, PRECISION_EXACT,
+    TAG_END);
 
   return true;
 }

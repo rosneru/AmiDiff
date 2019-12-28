@@ -41,6 +41,7 @@ public:
   LONG Red() const;
   LONG Yellow() const;
   LONG Green() const;
+  LONG Gray() const;
 
 
 private:
@@ -51,6 +52,7 @@ private:
   LONG m_RedPen;
   LONG m_YellowPen;
   LONG m_GreenPen;
+  LONG m_GrayPen;
 
 };
 

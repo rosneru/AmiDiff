@@ -51,6 +51,13 @@ public:
    */
   ULONG* GetColorYellowArray();
 
+  /**
+   * Retun the start of the array for color gray.
+   * 
+   * Use it with the indexes [0], [1], [2] for single rgb components.
+   */
+  ULONG* GetColorGrayArray();
+
 private:
   // It's useful to store the colors at a central place
   // This struct is a workaround for C++98 not allowing array 
@@ -63,7 +70,7 @@ private:
   //
   struct ColorArray
   { 
-    ULONG elem[11];
+    ULONG elem[14];
   };
 
   // Declaring a static variable to hold the ColorArray data.
