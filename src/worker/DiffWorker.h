@@ -38,6 +38,13 @@ public:
   virtual ~DiffWorker();
 
   /**
+   * When called before performing a diff, the line numbers for the 
+   * files are stored and displayed in the DiffWindow depending on
+   * the given value.
+   */
+  void SetLineNumbers(bool bEnabled);
+
+  /**
    * Performs the diff using LeftFilePath and RightFilePath as input
    * files. After the the diff is successfully created, the resulting
    * diff can be retrieved using LeftFileDiff and RightFileDiff in
@@ -85,7 +92,10 @@ private:
 
   DiffEngineAmiga m_DiffEngine;
 
+  bool m_bShowLineNumbers;
+  
   StopWatch m_StopWatch;
+
 
   void disposeDocuments();
 

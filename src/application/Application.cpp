@@ -130,6 +130,9 @@ bool Application::Run()
   //
   m_Settings.Load();
 
+  // Apply some settings and arguments
+  m_DiffWorker.SetLineNumbers(m_Args.ShowLineNumbers());
+
   //
   // Prepare the screen
   //

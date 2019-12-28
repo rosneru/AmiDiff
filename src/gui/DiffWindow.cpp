@@ -31,6 +31,7 @@ DiffWindow::DiffWindow(AScreen& appScreen,
     m_pDiffStartIdxsList(NULL),
     m_bNoNavigationDone(true),
     m_NumDifferences(0),
+    m_bShowLineNumbers(false),
     m_X(0),
     m_Y(0),
     m_MaxTextAreaChars(0),
@@ -74,6 +75,12 @@ DiffWindow::~DiffWindow()
 
   m_pGadTxtLeftFile = NULL;
   m_pGadTxtRightFile = NULL;
+}
+
+
+void DiffWindow::SetLineNumbers(bool bEnabled)
+{
+  m_bShowLineNumbers = bEnabled;
 }
 
 

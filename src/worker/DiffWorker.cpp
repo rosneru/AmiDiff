@@ -35,7 +35,8 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
                  m_RightDiffFile,
                  m_pPoolHeader,
                  m_bCancelRequested,
-                 &m_DiffStartIdxsList)
+                 &m_DiffStartIdxsList),
+    m_bShowLineNumbers(false)
 {
 
   //
@@ -54,6 +55,11 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
 DiffWorker::~DiffWorker()
 {
   disposeDocuments();
+}
+
+void DiffWorker::SetLineNumbers(bool bEnabled)
+{
+  m_bShowLineNumbers = bEnabled;
 }
 
 bool DiffWorker::Diff()
@@ -129,7 +135,8 @@ bool DiffWorker::Diff()
   setProgressDescription("Pre-processing left file..");
 
   // If there was an error return to FilesWindow
-  if(m_LeftSrcFile.PreProcess(m_LeftSrcFilePath.C_str()) == false)
+  if(m_LeftSrcFile.PreProcess(m_LeftSrcFilePath.C_str(), 
+                              m_bShowLineNumbers) == false)
   {
     if(!m_bCancelRequested)
     {
@@ -150,7 +157,8 @@ bool DiffWorker::Diff()
   setProgressDescription("Pre-processing right file..");
 
   // If there was an error return to FilesWindow
-  if(m_RightSrcFile.PreProcess(m_RightSrcFilePath.C_str()) == false)
+  if(m_RightSrcFile.PreProcess(m_RightSrcFilePath.C_str(),
+                               m_bShowLineNumbers) == false)
   {
     if(!m_bCancelRequested)
     {
@@ -210,6 +218,7 @@ bool DiffWorker::Diff()
   m_pDiffDocumentLeft->SetFileName(m_LeftSrcFilePath.C_str());
   m_pDiffDocumentRight->SetFileName(m_RightSrcFilePath.C_str());
 
+  m_DiffWindow.SetLineNumbers(m_bShowLineNumbers);
   m_DiffWindow.Open(NULL, WindowBase::IP_Fill);
   m_DiffWindow.SetContent(m_pDiffDocumentLeft,
                           m_pDiffDocumentRight,

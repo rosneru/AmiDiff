@@ -28,6 +28,13 @@ public:
 
 
   /**
+   * When called before opening, the line numbers of the files are 
+   * displayed depending on the given value.
+   */
+  void SetLineNumbers(bool bEnabled);
+
+
+  /**
    * Reorganizes the window including re-calculating the scrollbars.
    * If needed also re-drawing the obscured text areas.
    *
@@ -178,6 +185,8 @@ private:
   LinkedList* m_pDiffStartIdxsList; ///> A list of size_t*, which content the y-start-idx of each diff
   bool m_bNoNavigationDone;
   long m_NumDifferences;      ///> Number of differences
+
+  bool m_bShowLineNumbers;
 
   UWORD m_FontWidth_pix;    ///> Width of the rastport text font
   UWORD m_FontHeight_pix;   ///> Height of the rastport text font
