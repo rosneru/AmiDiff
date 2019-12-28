@@ -58,7 +58,7 @@ DiffWindow::DiffWindow(AScreen& appScreen,
 
   m_FontWidth_pix = defaultTextFont->tf_XSize;
   m_FontHeight_pix = defaultTextFont->tf_YSize;
-  m_FontBaseline_pix = defaultTextFont->tf_Baseline;
+  m_FontBaseline_pix = defaultTextFont->tf_Baseline + 1;
 }
 
 
@@ -854,7 +854,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
          m_TextArea1Left + 3 + indent,
-         topEdge + m_TextAreasTop + m_FontBaseline_pix);
+         topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
   // Set the left line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pLeftDocument->LineColor()));
@@ -896,7 +896,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // Move rastport cursor to start of right line
   ::Move(m_pWindow->RPort,
          m_TextArea2Left + 3  + indent,
-         topEdge + m_TextAreasTop + m_FontBaseline_pix);
+         topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
   // Set the right line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pRightDocument->LineColor()));
@@ -1070,7 +1070,7 @@ size_t DiffWindow::scrollRight(int numChars)
                  -numChars * m_FontWidth_pix, // n * width
                  0,
                  m_TextArea1Left + 3,
-                 m_TextAreasTop + 1,
+                 m_TextAreasTop + 2,
                  m_TextArea1Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
 
@@ -1078,7 +1078,7 @@ size_t DiffWindow::scrollRight(int numChars)
                  -numChars * m_FontWidth_pix,  // n * width
                  0,
                  m_TextArea2Left + 3,
-                 m_TextAreasTop + 1,
+                 m_TextAreasTop + 2,
                  m_TextArea2Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
 
@@ -1145,7 +1145,7 @@ size_t DiffWindow::scrollLeft(int numChars)
                  numChars * m_FontWidth_pix,
                  0,
                  m_TextArea1Left + 3,
-                 m_TextAreasTop + 1,
+                 m_TextAreasTop + 2,
                  m_TextArea1Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
 
@@ -1153,7 +1153,7 @@ size_t DiffWindow::scrollLeft(int numChars)
                  numChars * m_FontWidth_pix,
                  0,
                  m_TextArea2Left + 3,
-                 m_TextAreasTop + 1,
+                 m_TextAreasTop + 2,
                  m_TextArea2Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
 
@@ -1207,7 +1207,7 @@ size_t DiffWindow::scrollDown(int numLines)
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
                  m_TextArea1Left + 3,
-                 m_TextAreasTop + 1,
+                 m_TextAreasTop + 2,
                  m_TextArea1Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
 
@@ -1215,7 +1215,7 @@ size_t DiffWindow::scrollDown(int numLines)
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
                  m_TextArea2Left + 3,
-                 m_TextAreasTop + 1,
+                 m_TextAreasTop + 2,
                  m_TextArea2Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
 
@@ -1276,7 +1276,7 @@ size_t DiffWindow::scrollUp(int numLines)
                  0,
                  numLines * m_FontHeight_pix,
                  m_TextArea1Left + 3,
-                 m_TextAreasTop + 1,
+                 m_TextAreasTop + 2,
                  m_TextArea1Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
 
@@ -1284,7 +1284,7 @@ size_t DiffWindow::scrollUp(int numLines)
                  0,
                  numLines * m_FontHeight_pix,
                  m_TextArea2Left + 3,
-                 m_TextAreasTop + 1,
+                 m_TextAreasTop + 2,
                  m_TextArea2Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
 
