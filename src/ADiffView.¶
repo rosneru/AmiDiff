@@ -54,7 +54,7 @@ Defines (End)
 0 0 0 0 1 1 0
 0 0 0 0
 0 ""
-1 0 0 0
+0 0 0 0
 1 0 0 1 0 1 0 1 0 1
 1 1 0 1 0 1
 0 1 1 1 1 0 0
@@ -78,7 +78,7 @@ Linker
 Run
 30 "" "" "" 0
 ""
-Shared:DEV/Projekte_2018_2020/ADiffView/testfiles/testcase_13_6000_left.cpp Shared:DEV/Projekte_2018_2020/ADiffView/testfiles/testcase_13_6000_right.cpp
+/testfiles/testcase_23_RealLifeApp-left.cs /testfiles/testcase_23_RealLifeApp-right.cs
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 0 0
 0 0 0 "" ""
@@ -822,6 +822,7 @@ Section
 7
 File
 10 "ADiffView"
+"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

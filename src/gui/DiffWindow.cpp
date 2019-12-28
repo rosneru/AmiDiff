@@ -325,8 +325,8 @@ void DiffWindow::YChangedHandler(size_t newY)
 
   int deltaAbs = abs(delta);
 
-//  int deltaLimit = m_MaxTextAreaLines / 2;
-  int deltaLimit = 10;
+  int deltaLimit = m_MaxTextAreaLines - 2;
+  //int deltaLimit = 10;
 
   //
   // Scroll small amounts (1/2 text area height) line by line
@@ -854,8 +854,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
-    m_TextArea1Left + 3 + indent,
-    topEdge + m_TextAreasTop + m_TextFontHeight_pix);
+         m_TextArea1Left + 3 + indent,
+         topEdge + m_TextAreasTop + m_TextFontHeight_pix - 1);
 
   // Set the left line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pLeftDocument->LineColor()));
@@ -889,16 +889,15 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   if(numCharsToPrint > 0)
   {
     Text(m_pWindow->RPort,
-      pLeftLine->Text() + startIndex,
-      numCharsToPrint
+         pLeftLine->Text() + startIndex,
+         numCharsToPrint
     );
   }
 
   // Move rastport cursor to start of right line
   ::Move(m_pWindow->RPort,
-    m_TextArea2Left + 3  + indent,
-    topEdge + m_TextAreasTop + m_TextFontHeight_pix
-  );
+         m_TextArea2Left + 3  + indent,
+         topEdge + m_TextAreasTop + m_TextFontHeight_pix - 1);
 
   // Set the right line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pRightDocument->LineColor()));
@@ -932,8 +931,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   if(numCharsToPrint > 0)
   {
     Text(m_pWindow->RPort,
-      pRightLine->Text() + startIndex,
-      numCharsToPrint
+         pRightLine->Text() + startIndex,
+         numCharsToPrint
     );
   }
 }
@@ -1068,19 +1067,21 @@ size_t DiffWindow::scrollRight(int numChars)
   SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area right by n * the height of one text line
-  ScrollRaster(m_pWindow->RPort,
-    -numChars * m_TextFontWidth_pix, // n * width
-    0,
-    m_TextArea1Left + 3, m_TextAreasTop + 2,
-    m_TextArea1Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+  ScrollRasterBF(m_pWindow->RPort,
+                 -numChars * m_TextFontWidth_pix, // n * width
+                 0,
+                 m_TextArea1Left + 3,
+                 m_TextAreasTop + 1,
+                 m_TextArea1Left + m_TextAreasWidth - 3,
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
-  ScrollRaster(m_pWindow->RPort,
-    -numChars * m_TextFontWidth_pix,  // n * width
-    0,
-    m_TextArea2Left + 3, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+  ScrollRasterBF(m_pWindow->RPort,
+                 -numChars * m_TextFontWidth_pix,  // n * width
+                 0,
+                 m_TextArea2Left + 3,
+                 m_TextAreasTop + 1,
+                 m_TextArea2Left + m_TextAreasWidth - 3,
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
   // fill the gap with the previous chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
@@ -1141,19 +1142,21 @@ size_t DiffWindow::scrollLeft(int numChars)
   SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area left by n * the width of one char
-  ScrollRaster(m_pWindow->RPort,
-    numChars * m_TextFontWidth_pix,
-    0,
-    m_TextArea1Left + 3, m_TextAreasTop + 2,
-    m_TextArea1Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+  ScrollRasterBF(m_pWindow->RPort,
+                 numChars * m_TextFontWidth_pix,
+                 0,
+                 m_TextArea1Left + 3,
+                 m_TextAreasTop + 1,
+                 m_TextArea1Left + m_TextAreasWidth - 3,
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
-  ScrollRaster(m_pWindow->RPort,
-    numChars * m_TextFontWidth_pix,
-    0,
-    m_TextArea2Left + 3, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+  ScrollRasterBF(m_pWindow->RPort,
+                 numChars * m_TextFontWidth_pix,
+                 0,
+                 m_TextArea2Left + 3,
+                 m_TextAreasTop + 1,
+                 m_TextArea2Left + m_TextAreasWidth - 3,
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
   // Fill the gap with the following chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
@@ -1201,17 +1204,21 @@ size_t DiffWindow::scrollDown(int numLines)
   SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area downward by n * the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0,
-    -numLines * m_TextFontHeight_pix,  // n * height
-    m_TextArea1Left + 3, m_TextAreasTop + 2,
-    m_TextArea1Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+  ScrollRasterBF(m_pWindow->RPort,
+                 0,
+                 -numLines * m_TextFontHeight_pix,  // n * height
+                 m_TextArea1Left + 3,
+                 m_TextAreasTop + 1,
+                 m_TextArea1Left + m_TextAreasWidth - 3,
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
-  ScrollRaster(m_pWindow->RPort, 0,
-    -numLines * m_TextFontHeight_pix,  // n * height
-    m_TextArea2Left + 3, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+  ScrollRasterBF(m_pWindow->RPort,
+                 0,
+                 -numLines * m_TextFontHeight_pix,  // n * height
+                 m_TextArea2Left + 3,
+                 m_TextAreasTop + 1,
+                 m_TextArea2Left + m_TextAreasWidth - 3,
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
   // fill the gap with the previous text lines
   for(int i = 0; i < numLines; i++)
@@ -1266,17 +1273,21 @@ size_t DiffWindow::scrollUp(int numLines)
   SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area upward by n * the height of one text line
-  ScrollRaster(m_pWindow->RPort, 0,
-    numLines * m_TextFontHeight_pix,
-    m_TextArea1Left + 3, m_TextAreasTop + 2,
-    m_TextArea1Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+  ScrollRasterBF(m_pWindow->RPort,
+                 0,
+                 numLines * m_TextFontHeight_pix,
+                 m_TextArea1Left + 3,
+                 m_TextAreasTop + 1,
+                 m_TextArea1Left + m_TextAreasWidth - 3,
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
-  ScrollRaster(m_pWindow->RPort, 0,
-    numLines * m_TextFontHeight_pix,
-    m_TextArea2Left + 3, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+  ScrollRasterBF(m_pWindow->RPort,
+                 0,
+                 numLines * m_TextFontHeight_pix,
+                 m_TextArea2Left + 3,
+                 m_TextAreasTop + 1,
+                 m_TextArea2Left + m_TextAreasWidth - 3,
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
   for(int i = 0; i < numLines; i++)
   {
