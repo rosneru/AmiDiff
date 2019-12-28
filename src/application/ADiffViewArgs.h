@@ -34,17 +34,17 @@ public:
    * Name of the public screen to run ADiffView on
    * If empty a own screen will be opened (Workbench clone, 8 colors)
    */
-  SimpleString& PubScreenName();
+  const SimpleString& PubScreenName() const;
 
   /**
    * Path to left file
    */
-  SimpleString& LeftFile();
+  const SimpleString& LeftFile() const;
 
   /**
    * Path to right file
    */
-  SimpleString& RightFile();
+  const SimpleString& RightFile() const;
 
   /**
    * If true, the diff will be performed immediately without waiting 
@@ -52,8 +52,17 @@ public:
    * 
    * This only works when both files, left and right are also passed 
    * as arguments.
+   * 
+   * Defaults to false.
    */
-  bool DontAsk();
+  bool DontAsk() const;
+
+  /**
+   * If true, the line numbers will be shown in the diff result window.
+   *
+   * Defaults to true; 
+   */
+  bool ShowLineNumbers() const;
 
 private:
   int m_ArgC;
@@ -63,6 +72,7 @@ private:
   SimpleString m_LeftFilePath;
   SimpleString m_RightFilePath;
   bool m_bDontAsk;
+  bool m_bShowLineNumbers;
 
   void readWorkbenchArgs();
   void readCommandLineArgs();
