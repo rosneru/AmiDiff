@@ -179,8 +179,9 @@ private:
   bool m_bNoNavigationDone;
   long m_NumDifferences;      ///> Number of differences
 
-  ULONG m_TextFontWidth_pix;  ///> Width of the rastport text font
-  ULONG m_TextFontHeight_pix; ///> Height of the rastport text font
+  UWORD m_FontWidth_pix;    ///> Width of the rastport text font
+  UWORD m_FontHeight_pix;   ///> Height of the rastport text font
+  UWORD m_FontBaseline_pix; ///> Baseline (from top) of the rastport text font
 
   ULONG m_X;        ///> Index of leftmost char in displayed lines
                     ///> Is > 0 when text is horizontally scrolled
