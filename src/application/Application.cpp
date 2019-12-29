@@ -15,8 +15,8 @@
 
 Application::Application(ADiffViewArgs& args)
   : m_Args(args),
-    m_LeftFilePath(args.LeftFile()),   // copy to member variable
-    m_RightFilePath(args.RightFile()), // copy to member variable
+    m_LeftFilePath(args.LeftFile()),   // copy (not reference) to member
+    m_RightFilePath(args.RightFile()), // copy (not reference) to member
     m_pMsgPortIDCMP(NULL),
     m_pMsgPortProgress(NULL),
     m_pMsgPortAppWindow(NULL),
@@ -133,7 +133,7 @@ bool Application::Run()
   // Apply some settings and arguments
   m_DiffWorker.SetLineNumbers(m_Args.ShowLineNumbers());
 
-  
+
   //
   // Prepare the screen
   //

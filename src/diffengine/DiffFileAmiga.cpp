@@ -86,6 +86,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName,
 
   char* pReadLine = NULL;
   int i = 0;
+
   while((pReadLine = m_File.ReadLine()) != NULL)
   {
     char* pLine = (char*) AllocPooled(m_pPoolHeader,
@@ -103,7 +104,11 @@ bool DiffFileAmiga::PreProcess(const char* pFileName,
     if(bCollectLineNumbers == true)
     {
       pLineNumber = new char[digits + 1];
-      sprintf(pLineNumber, "%*d", digits, (i + 1));
+      pLineNumber = (char*) AllocPooled(m_pPoolHeader, digits + 1);
+      if(pLineNumber != NULL)
+      {
+        sprintf(pLineNumber, "%*d", digits, (i + 1));
+      }
     }
 
     DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,

@@ -126,7 +126,7 @@ void ADiffViewArgs::readWorkbenchArgs()
             m_bDontAsk = true;
           }
 
-          // Trying to read the value of the NOLINENUMBERS tooltype 
+          // Trying to read the value of the NOLINENUMBERS tooltype
           // fromm the application icon
           pValue = (STRPTR) FindToolType(
             pDiskObject->do_ToolTypes, "NOLINENUMBERS");
@@ -181,7 +181,7 @@ void ADiffViewArgs::readCommandLineArgs()
 {
     // Reading the command line arguments
     SimpleString argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S,NOLINENUMBERS/S";
-    LONG args[3] = {0, 0, 0};
+    LONG args[] = {0, 0, 0, 0};
 
     struct RDArgs* pReadArgs = ReadArgs(argTempl.C_str(), args, NULL);
     if(pReadArgs == NULL)
