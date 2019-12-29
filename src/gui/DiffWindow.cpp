@@ -119,7 +119,7 @@ void DiffWindow::Resized()
     // Now done in resizeGadgets()->createGadgets()
 
     // Paint the content of the two documents
-    paintDocument(false);
+    paintDocuments(false);
   }
 
   // Paint the status bar
@@ -254,11 +254,11 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
 
   calcSizes();
 
-  // Display the first [1; m_MaxTextAreaLines] lines
-  paintDocument();
-
   // Paint the window decoration
   paintWindowDecoration();
+
+  // Display the first [1; m_MaxTextAreaLines] lines of the files
+  paintDocuments();
 
   // Paint the status bar
   paintStatusBar();
@@ -320,7 +320,7 @@ void DiffWindow::XChangedHandler(size_t newX)
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
-  paintDocument(false);
+  paintDocuments(false);
 
 }
 
@@ -379,7 +379,7 @@ void DiffWindow::YChangedHandler(size_t newY)
     m_TextArea2Left + m_TextAreasWidth - 3,
     m_TextAreasTop + m_TextAreasHeight - 3);
 
-  paintDocument(false);
+  paintDocuments(false);
 }
 
 
@@ -812,7 +812,7 @@ void DiffWindow::resizeGadgets()
 }
 
 
-void DiffWindow::paintDocument(bool bFromStart)
+void DiffWindow::paintDocuments(bool bFromStart)
 {
   if(m_pLeftDocument == NULL || m_pRightDocument == NULL)
   {

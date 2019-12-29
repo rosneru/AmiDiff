@@ -267,7 +267,7 @@ private:
    *   displayed from start.
    * When false: Printing starts at current position m_Y.
    */
-  void paintDocument(bool bFromStart = true);
+  void paintDocuments(bool bFromStart = true);
 
   /**
    * Prints the given line (pLeftLine and pRightLine) at given
