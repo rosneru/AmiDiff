@@ -251,7 +251,7 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
 
     m_LineNumbersWidth_pix = m_LineNumbersWidth_chars * m_FontWidth_pix;
 
-    //m_LineNumberEmpty = SimpleString(' ', m_LineNumbersWidth_chars);
+    m_LineNumberEmpty = SimpleString(' ', m_LineNumbersWidth_chars);
   }
 
   // Get the number of lines (will/should be equal for left and right)
@@ -872,6 +872,7 @@ void DiffWindow::paintDocuments(bool bFromStart)
 void DiffWindow::paintLine(const DiffLine* pLeftLine,
                            const DiffLine* pRightLine,
                            WORD topEdge,
+                           bool bHorizontallyScrolled,
                            int startIndex,
                            int numChars)
 {
@@ -891,9 +892,12 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     indent = (m_MaxTextAreaChars - numChars) * m_FontWidth_pix;
   }
 
-  if(m_bShowLineNumbers)
+  if(!bHorizontallyScrolled && m_bShowLineNumbers)
   {
-    // Print the line numbers for left line
+    //
+    // Print the line numbers in left and right
+    //
+
     // Set the background color
     SetBPen(m_pWindow->RPort, m_AScreen.Pens().Gray());
 
@@ -904,15 +908,13 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
     // Get the text or set to empty spaces when there is none
     const char* pLineNum = pLeftLine->LineNum();
-/*
     if(pLineNum == NULL)
     {
       pLineNum = m_LineNumberEmpty.C_str();
     }
-*/
 
     // Print the text
-    Text(m_pWindow->RPort, pLineNum, 4);
+    Text(m_pWindow->RPort, pLineNum, m_LineNumbersWidth_chars);
 
     // Move rastport cursor to start of right line numbers block
     ::Move(m_pWindow->RPort,
@@ -921,14 +923,13 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
     // Get the text or set to empty spaces when there is none
     pLineNum = pRightLine->LineNum();
-/*
     if(pLineNum == NULL)
     {
       pLineNum = m_LineNumberEmpty.C_str();
     }
-*/
+
     // Print the text
-    Text(m_pWindow->RPort, pLineNum, 4);
+    Text(m_pWindow->RPort, pLineNum, m_LineNumbersWidth_chars);
 
   }
 
@@ -1173,8 +1174,13 @@ size_t DiffWindow::scrollRight(int numChars)
       break;
     }
 
-    paintLine(pLeftLine, pRightLine, (i - m_Y) * m_FontHeight_pix,
-      m_X - numChars, numChars);
+    paintLine(pLeftLine,
+              pRightLine,
+              (i - m_Y) * m_FontHeight_pix,
+              true,
+              m_X - numChars,
+              numChars);
+
   }
 
   return numChars;
@@ -1248,8 +1254,13 @@ size_t DiffWindow::scrollLeft(int numChars)
       break;
     }
 
-    paintLine(pLeftLine, pRightLine, (i - m_Y)  * m_FontHeight_pix,
-      m_X + m_MaxTextAreaChars, -numChars);
+    paintLine(pLeftLine,
+              pRightLine,
+              (i - m_Y)  * m_FontHeight_pix,
+              true,
+              m_X + m_MaxTextAreaChars,
+              -numChars);
+
   }
 
   return numChars;
@@ -1299,7 +1310,7 @@ size_t DiffWindow::scrollDown(int numLines)
                  m_TextArea2Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 2);
 
-  // fill the gap with the previous text lines
+  // Fill the gap with the previous text lines
   for(int i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y - numLines + i;
@@ -1311,7 +1322,9 @@ size_t DiffWindow::scrollDown(int numLines)
       break;
     }
 
-    paintLine(pLeftLine, pRightLine, i * m_FontHeight_pix);
+    paintLine(pLeftLine,
+              pRightLine,
+              i * m_FontHeight_pix);
   }
 
   return numLines;
@@ -1380,11 +1393,10 @@ size_t DiffWindow::scrollUp(int numLines)
     }
 
     int paintLineIndex = m_MaxTextAreaLines - numLines + i;
-    paintLine(pLeftLine, pRightLine, paintLineIndex * m_FontHeight_pix);
+    paintLine(pLeftLine,
+              pRightLine,
+              paintLineIndex * m_FontHeight_pix);
   }
-
-  // Repaint window decoration
-  //paintWindowDecoration();
 
   return numLines;
 }

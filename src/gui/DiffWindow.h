@@ -278,6 +278,7 @@ private:
   void paintLine(const DiffLine* pLeftLine,
                  const DiffLine* pRightLine,
                  WORD topEdge,
+                 bool bHorizontallyScrolled = false,
                  int startIndex = -1,
                  int numChars = 0);
 
