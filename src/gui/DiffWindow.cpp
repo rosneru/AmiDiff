@@ -193,6 +193,7 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   m_StatusBarText += diffTime;
   m_StatusBarText += " ms. Total changes: ";
   m_StatusBarText += m_NumDifferences;
+  m_StatusBarText += "   |   ";
 
   SimpleString emptyStr = "";
   m_AddedText = emptyStr + numAdded + " Added ";
@@ -1005,7 +1006,6 @@ void DiffWindow::paintStatusBar()
   intuiText.ITextFont = &m_TextAttr;
   intuiText.NextText  = NULL;
 
-  m_StatusBarText += "   |   ";
   intuiText.TopEdge   = top;
   intuiText.LeftEdge  = left;
   intuiText.IText = (UBYTE*) m_StatusBarText.C_str();
