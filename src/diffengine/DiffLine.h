@@ -57,9 +57,9 @@ public:
   bool IsLinked() const;
 
   /**
-   * Returns the text length of the diff line
+   * Returns the line length in number of chars.
    */
-  size_t TextLength() const;
+  size_t NumChars() const;
 
   /**
    * Returns the state of the diff line

@@ -32,6 +32,7 @@ DiffWindow::DiffWindow(AScreen& appScreen,
     m_bNoNavigationDone(true),
     m_NumDifferences(0),
     m_bShowLineNumbers(false),
+    m_LineNumbersWidth_pix(0),
     m_X(0),
     m_Y(0),
     m_MaxTextAreaChars(0),
@@ -238,6 +239,14 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   else
   {
     m_MaxLineLength = maxCharsRight;
+  }
+
+  if(m_bShowLineNumbers)
+  {
+    const DiffLine* pLine = pLeftDocument->GetIndexedLine(0);
+    const char* pLineNum = pLine->LineNum();
+    size_t lineNumLen_chars = strlen(pLineNum);
+    m_LineNumbersWidth_pix = lineNumLen_chars * m_FontWidth_pix + 1;
   }
 
   // Get the number of lines (will/should be equal for left and right)
@@ -860,7 +869,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
-         m_TextArea1Left + 3 + indent,
+         m_TextArea1Left + 3 + indent + m_LineNumbersWidth_pix,
          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
   // Set the left line's background color
@@ -874,7 +883,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   else
   {
     // Determine how many characters would be print theoretically
-    numCharsToPrint = pLeftLine->TextLength() - m_X;
+    numCharsToPrint = pLeftLine->NumChars() - m_X;
   }
 
   // Limit the number of printed chars to fit into the text area
@@ -886,9 +895,9 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // When startIndex is set: limit the number of printed chars to not
   // exceed the line length
   if((startIndex > -1) &&
-     (numCharsToPrint + startIndex > pLeftLine->TextLength()))
+     (numCharsToPrint + startIndex > pLeftLine->NumChars()))
   {
-    numCharsToPrint = pLeftLine->TextLength() - startIndex;
+    numCharsToPrint = pLeftLine->NumChars() - startIndex;
   }
 
   // Print the left line if is visible regarding current x scroll
@@ -902,7 +911,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
   // Move rastport cursor to start of right line
   ::Move(m_pWindow->RPort,
-         m_TextArea2Left + 3  + indent,
+         m_TextArea2Left + 3  + indent + m_LineNumbersWidth_pix,
          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
   // Set the right line's background color
@@ -916,7 +925,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   else
   {
     // Determine how many characters would be print theoretically
-    numCharsToPrint = pRightLine->TextLength() - m_X;
+    numCharsToPrint = pRightLine->NumChars() - m_X;
   }
 
   // Limit the number of printed chars to fit into the text area
@@ -928,9 +937,9 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // When startIndex is set: limit the number of printed chars to not
   // exceed the line length
   if((startIndex > -1) &&
-     (numCharsToPrint + startIndex > pRightLine->TextLength()))
+     (numCharsToPrint + startIndex > pRightLine->NumChars()))
   {
-    numCharsToPrint = pRightLine->TextLength() - startIndex;
+    numCharsToPrint = pRightLine->NumChars() - startIndex;
   }
 
   // Print the right line if is visible regarding current x scroll

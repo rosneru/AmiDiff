@@ -27,9 +27,9 @@ size_t DiffDocument::MaxLineLength()
 
   for(size_t i = 0; i < NumLines(); i++)
   {
-    if(m_DiffFile.GetLine(i)->TextLength() > m_MaxLineLength)
+    if(m_DiffFile.GetLine(i)->NumChars() > m_MaxLineLength)
     {
-      m_MaxLineLength = m_DiffFile.GetLine(i)->TextLength();
+      m_MaxLineLength = m_DiffFile.GetLine(i)->NumChars();
     }
   }
 

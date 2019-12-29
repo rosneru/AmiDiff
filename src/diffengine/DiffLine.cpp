@@ -42,7 +42,7 @@ bool DiffLine::IsLinked() const
   return m_bIsLinked;
 }
 
-size_t DiffLine::TextLength() const
+size_t DiffLine::NumChars() const
 {
   return m_TextLength;
 }
