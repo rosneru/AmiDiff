@@ -83,6 +83,7 @@ void ADiffViewPens::Dispose()
   ReleasePen(m_pScreen->ViewPort.ColorMap, m_RedPen);
   ReleasePen(m_pScreen->ViewPort.ColorMap, m_YellowPen);
   ReleasePen(m_pScreen->ViewPort.ColorMap, m_GreenPen);
+  ReleasePen(m_pScreen->ViewPort.ColorMap, m_GrayPen);
 }
 
 
@@ -151,6 +152,7 @@ LONG ADiffViewPens::Yellow() const
   return m_YellowPen;
 }
 
+
 LONG ADiffViewPens::Green() const
 {
   if(m_GreenPen < 0)
@@ -159,5 +161,16 @@ LONG ADiffViewPens::Green() const
   }
 
   return m_GreenPen;
+}
+
+
+LONG ADiffViewPens::Gray() const
+{
+  if(m_GrayPen < 0)
+  {
+    return 0;
+  }
+
+  return m_GrayPen;
 }
 

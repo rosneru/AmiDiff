@@ -32,6 +32,7 @@ DiffWindow::DiffWindow(AScreen& appScreen,
     m_bNoNavigationDone(true),
     m_NumDifferences(0),
     m_bShowLineNumbers(false),
+    m_LineNumbersWidth_chars(0),
     m_LineNumbersWidth_pix(0),
     m_X(0),
     m_Y(0),
@@ -246,8 +247,11 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
   {
     const DiffLine* pLine = pLeftDocument->GetIndexedLine(0);
     const char* pLineNum = pLine->LineNum();
-    size_t lineNumLen_chars = strlen(pLineNum);
-    m_LineNumbersWidth_pix = lineNumLen_chars * m_FontWidth_pix + 1;
+    m_LineNumbersWidth_chars = strlen(pLineNum);
+
+    m_LineNumbersWidth_pix = m_LineNumbersWidth_chars * m_FontWidth_pix;
+
+    //m_LineNumberEmpty = SimpleString(' ', m_LineNumbersWidth_chars);
   }
 
   // Get the number of lines (will/should be equal for left and right)
@@ -826,6 +830,22 @@ void DiffWindow::paintDocuments(bool bFromStart)
     m_Y = 0;
   }
 
+  // Paint the backgrouns for the line number areas
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Gray());
+
+  RectFill(m_pWindow->RPort,
+           m_TextArea1Left + 2,
+           m_TextAreasTop + 1,
+           m_TextArea1Left + 2 + m_LineNumbersWidth_pix,
+           m_TextAreasTop + m_TextAreasHeight - 2);
+
+  RectFill(m_pWindow->RPort,
+           m_TextArea2Left + 2,
+           m_TextAreasTop + 1,
+           m_TextArea2Left + 2 + m_LineNumbersWidth_pix,
+           m_TextAreasTop + m_TextAreasHeight - 2);
+
+
   // Set foreground color for document painting
   SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
 
@@ -869,6 +889,47 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     // and numChars is made positive to get used below.
     numChars = -numChars;
     indent = (m_MaxTextAreaChars - numChars) * m_FontWidth_pix;
+  }
+
+  if(m_bShowLineNumbers)
+  {
+    // Print the line numbers for left line
+    // Set the background color
+    SetBPen(m_pWindow->RPort, m_AScreen.Pens().Gray());
+
+    // Move rastport cursor to start of left line numbers block
+    ::Move(m_pWindow->RPort,
+           m_TextArea1Left + 3 + indent,
+           topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
+
+    // Get the text or set to empty spaces when there is none
+    const char* pLineNum = pLeftLine->LineNum();
+/*
+    if(pLineNum == NULL)
+    {
+      pLineNum = m_LineNumberEmpty.C_str();
+    }
+*/
+
+    // Print the text
+    Text(m_pWindow->RPort, pLineNum, 4);
+
+    // Move rastport cursor to start of right line numbers block
+    ::Move(m_pWindow->RPort,
+           m_TextArea2Left + 3 + indent,
+           topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
+
+    // Get the text or set to empty spaces when there is none
+    pLineNum = pRightLine->LineNum();
+/*
+    if(pLineNum == NULL)
+    {
+      pLineNum = m_LineNumberEmpty.C_str();
+    }
+*/
+    // Print the text
+    Text(m_pWindow->RPort, pLineNum, 4);
+
   }
 
   // Move rastport cursor to start of left line
@@ -1226,17 +1287,17 @@ size_t DiffWindow::scrollDown(int numLines)
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
                  m_TextArea1Left + 3,
-                 m_TextAreasTop + 2,
+                 m_TextAreasTop + 1,
                  m_TextArea1Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 3);
+                 m_TextAreasTop + m_TextAreasHeight - 2);
 
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
                  m_TextArea2Left + 3,
-                 m_TextAreasTop + 2,
+                 m_TextAreasTop + 1,
                  m_TextArea2Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 3);
+                 m_TextAreasTop + m_TextAreasHeight - 2);
 
   // fill the gap with the previous text lines
   for(int i = 0; i < numLines; i++)

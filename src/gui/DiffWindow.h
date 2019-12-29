@@ -28,7 +28,7 @@ public:
 
 
   /**
-   * When called before opening, the line numbers of the files are 
+   * When called before opening, the line numbers of the files are
    * displayed depending on the given value.
    */
   void SetLineNumbers(bool bEnabled);
@@ -187,7 +187,9 @@ private:
   long m_NumDifferences;      ///> Number of differences
 
   bool m_bShowLineNumbers;
+  UWORD m_LineNumbersWidth_chars;
   UWORD m_LineNumbersWidth_pix;
+  SimpleString m_LineNumberEmpty;
 
   UWORD m_FontWidth_pix;    ///> Width of the rastport text font
   UWORD m_FontHeight_pix;   ///> Height of the rastport text font
