@@ -61,7 +61,7 @@ DiffWindow::DiffWindow(AScreen& appScreen,
 
   m_FontWidth_pix = defaultTextFont->tf_XSize;
   m_FontHeight_pix = defaultTextFont->tf_YSize;
-  m_FontBaseline_pix = defaultTextFont->tf_Baseline + 1;
+  m_FontBaseline_pix = defaultTextFont->tf_Baseline;
 }
 
 
@@ -759,7 +759,7 @@ void DiffWindow::calcSizes()
   m_MaxTextAreaLines = (m_TextAreasHeight - 4) /  m_FontHeight_pix;
 
   // Limit text areas heigt to int multiples.
-  m_TextAreasHeight = m_MaxTextAreaLines * m_FontHeight_pix + 2;
+  m_TextAreasHeight = m_MaxTextAreaLines * m_FontHeight_pix + 3;
 
   // Calculate how many chars fit on each line in each text area
   m_MaxTextAreaChars = (m_TextAreasWidth - 4 - m_LineNumbersWidth_pix)
@@ -834,22 +834,6 @@ void DiffWindow::paintDocuments(bool bFromStart)
     m_Y = 0;
   }
 
-  // Paint the backgrouns for the line number areas
-  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Gray());
-
-  RectFill(m_pWindow->RPort,
-           m_TextArea1Left + 2,
-           m_TextAreasTop + 1,
-           m_TextArea1Left + 2 + m_LineNumbersWidth_pix,
-           m_TextAreasTop + m_TextAreasHeight - 2);
-
-  RectFill(m_pWindow->RPort,
-           m_TextArea2Left + 2,
-           m_TextAreasTop + 1,
-           m_TextArea2Left + 2 + m_LineNumbersWidth_pix,
-           m_TextAreasTop + m_TextAreasHeight - 2);
-
-
   // Set foreground color for document painting
   SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
 
@@ -907,8 +891,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
     // Move rastport cursor to start of left line numbers block
     ::Move(m_pWindow->RPort,
-           m_TextArea1Left + 3 + indent,
-           topEdge + m_TextAreasTop + m_FontBaseline_pix);
+           m_TextArea1Left + 2 + indent,
+           topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     const char* pLineNum = pLeftLine->LineNum();
@@ -922,8 +906,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
     // Move rastport cursor to start of right line numbers block
     ::Move(m_pWindow->RPort,
-           m_TextArea2Left + 3 + indent,
-           topEdge + m_TextAreasTop + m_FontBaseline_pix);
+           m_TextArea2Left + 2 + indent,
+           topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     pLineNum = pRightLine->LineNum();
@@ -940,7 +924,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
          m_TextArea1Left + 3 + indent + m_LineNumbersWidth_pix,
-         topEdge + m_TextAreasTop + m_FontBaseline_pix);
+         topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
   // Set the left line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pLeftDocument->LineColor()));
@@ -980,7 +964,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // Move rastport cursor to start of right line
   ::Move(m_pWindow->RPort,
          m_TextArea2Left + 3  + indent + m_LineNumbersWidth_pix,
-         topEdge + m_TextAreasTop + m_FontBaseline_pix);
+         topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
   // Set the right line's background color
   SetBPen(m_pWindow->RPort, colorNameToPen(m_pRightDocument->LineColor()));
@@ -1155,7 +1139,7 @@ size_t DiffWindow::scrollRight(int numChars)
                  -numChars * m_FontWidth_pix, // n * width
                  0,
                  m_TextArea1Left + 3 + m_LineNumbersWidth_pix,
-                 m_TextAreasTop + 2,
+                 m_TextAreasTop + 1,
                  m_TextArea1Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 2);
 
@@ -1163,7 +1147,7 @@ size_t DiffWindow::scrollRight(int numChars)
                  -numChars * m_FontWidth_pix,  // n * width
                  0,
                  m_TextArea2Left + 3 + m_LineNumbersWidth_pix,
-                 m_TextAreasTop + 2,
+                 m_TextAreasTop + 1,
                  m_TextArea2Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 2);
 
@@ -1235,17 +1219,17 @@ size_t DiffWindow::scrollLeft(int numChars)
                  numChars * m_FontWidth_pix,
                  0,
                  m_TextArea1Left + 3 + m_LineNumbersWidth_pix,
-                 m_TextAreasTop + 2,
+                 m_TextAreasTop + 1,
                  m_TextArea1Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 2);
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
                  0,
                  m_TextArea2Left + 3 + m_LineNumbersWidth_pix,
-                 m_TextAreasTop + 2,
+                 m_TextAreasTop + 1,
                  m_TextArea2Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 2);
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
   // Fill the gap with the following chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
@@ -1304,7 +1288,7 @@ size_t DiffWindow::scrollDown(int numLines)
                  m_TextArea1Left + 3,
                  m_TextAreasTop + 1,
                  m_TextArea1Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 2);
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
   ScrollRasterBF(m_pWindow->RPort,
                  0,
@@ -1312,7 +1296,7 @@ size_t DiffWindow::scrollDown(int numLines)
                  m_TextArea2Left + 3,
                  m_TextAreasTop + 1,
                  m_TextArea2Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 2);
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
   // Fill the gap with the previous text lines
   for(int i = 0; i < numLines; i++)
@@ -1373,17 +1357,17 @@ size_t DiffWindow::scrollUp(int numLines)
                  0,
                  numLines * m_FontHeight_pix,
                  m_TextArea1Left + 3,
-                 m_TextAreasTop + 2,
+                 m_TextAreasTop + 1,
                  m_TextArea1Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 2);
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  numLines * m_FontHeight_pix,
                  m_TextArea2Left + 3,
-                 m_TextAreasTop + 2,
+                 m_TextAreasTop + 1,
                  m_TextArea2Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 2);
+                 m_TextAreasTop + m_TextAreasHeight - 3);
 
   for(int i = 0; i < numLines; i++)
   {
