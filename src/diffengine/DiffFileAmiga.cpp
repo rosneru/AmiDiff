@@ -104,10 +104,10 @@ bool DiffFileAmiga::PreProcess(const char* pFileName,
     if(bCollectLineNumbers == true)
     {
       pLineNumber = new char[digits + 1];
-      pLineNumber = (char*) AllocPooled(m_pPoolHeader, digits + 1);
+      pLineNumber = (char*) AllocPooled(m_pPoolHeader, digits + 2);
       if(pLineNumber != NULL)
       {
-        sprintf(pLineNumber, "%*d", digits, (i + 1));
+        sprintf(pLineNumber, "%*d ", digits, (i + 1));
       }
     }
 
