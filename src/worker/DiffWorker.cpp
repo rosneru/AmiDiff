@@ -135,8 +135,7 @@ bool DiffWorker::Diff()
   setProgressDescription("Pre-processing left file..");
 
   // If there was an error return to FilesWindow
-  if(m_LeftSrcFile.PreProcess(m_LeftSrcFilePath.C_str(), 
-                              m_bShowLineNumbers) == false)
+  if(m_LeftSrcFile.PreProcess(m_LeftSrcFilePath.C_str()) == false)
   {
     if(!m_bCancelRequested)
     {
@@ -157,8 +156,7 @@ bool DiffWorker::Diff()
   setProgressDescription("Pre-processing right file..");
 
   // If there was an error return to FilesWindow
-  if(m_RightSrcFile.PreProcess(m_RightSrcFilePath.C_str(),
-                               m_bShowLineNumbers) == false)
+  if(m_RightSrcFile.PreProcess(m_RightSrcFilePath.C_str()) == false)
   {
     if(!m_bCancelRequested)
     {
@@ -171,6 +169,19 @@ bool DiffWorker::Diff()
 
     m_bExitAllowed = true;
     return false;
+  }
+
+  // Collect line numbers if  this is enabled
+  if(m_bShowLineNumbers)
+  {
+    size_t maxNumLines = m_LeftSrcFile.NumLines();
+    if(m_RightSrcFile.NumLines() > maxNumLines)
+    {
+      maxNumLines = m_RightSrcFile.NumLines();
+    }
+
+    m_LeftSrcFile.CollectLineNumbers(maxNumLines);
+    m_RightSrcFile.CollectLineNumbers(maxNumLines);
   }
 
   //

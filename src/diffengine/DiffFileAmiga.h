@@ -22,8 +22,9 @@ public:
 
   void Clear();
 
-  bool PreProcess(const char* pFileName, 
-                  bool bCollectLineNumbers = false);
+  bool PreProcess(const char* pFileName);
+
+  void CollectLineNumbers(size_t maxNumLines);
 
   /**
    * Adds a DiffLine to file using given string and line state.

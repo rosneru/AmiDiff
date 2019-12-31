@@ -33,7 +33,10 @@ void DiffFileLinux::Clear()
       if(!pItem->IsLinked() && (pItem->Text() != NULL))
       {
         delete[] pItem->Text();
-        delete[] pItem->LineNum();
+        if(pItem->LineNum() != NULL)
+        {
+          delete[] pItem->LineNum();
+        }
       }
 
       delete pItem;
@@ -46,8 +49,7 @@ void DiffFileLinux::Clear()
 }
 
 
-bool DiffFileLinux::PreProcess(const char* pFileName, 
-                               bool bCollectLineNumbers)
+bool DiffFileLinux::PreProcess(const char* pFileName)
 {
   if(m_pDiffLinesArray != NULL)
   {
@@ -92,8 +94,6 @@ bool DiffFileLinux::PreProcess(const char* pFileName,
     return false;
   }
 
-  size_t digits = numDigits(m_NumLines);
-
   std::string line;
   int i = 0;
   while(getline(inputFileStream, line))
@@ -102,14 +102,7 @@ bool DiffFileLinux::PreProcess(const char* pFileName,
     char* pLine = new char[size + 1];
     strcpy(pLine, line.c_str());
 
-    char* pLineNumber = NULL;
-    if(bCollectLineNumbers == true)
-    {
-      pLineNumber = new char[digits + 1];
-      sprintf(pLineNumber, "%*d", digits, (i + 1));
-    }
-
-    DiffLine* pDiffLine = new DiffLine(pLine, pLineNumber);
+    DiffLine* pDiffLine = new DiffLine(pLine);
     if(pDiffLine == NULL)
     {
       break;
@@ -123,6 +116,21 @@ bool DiffFileLinux::PreProcess(const char* pFileName,
 
   return NumLines() > 0;
 }
+
+void DiffFileLinux::CollectLineNumbers(size_t maxNumLines)
+{
+  int digits = numDigits(maxNumLines);
+
+  for(size_t i = 0; i < m_NumLines; i++)
+  {
+    char* pLineNumber = new char[digits + 1];
+    sprintf(pLineNumber, "%*d", digits, (i + 1));
+
+    DiffLine* pLine = GetLine(i);
+    pLine->SetLineNum(pLineNumber);
+  }
+}
+
 
 long DiffFileLinux::AddString(const char* pText,
                               DiffLine::LineState lineState,

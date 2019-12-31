@@ -32,8 +32,8 @@ DiffWindow::DiffWindow(AScreen& appScreen,
     m_bNoNavigationDone(true),
     m_NumDifferences(0),
     m_bShowLineNumbers(false),
-    m_LineNumbersWidth_chars(0),
-    m_LineNumbersWidth_pix(0),
+    m_LineNumsWidth_chars(0),
+    m_LineNumsWidth_pix(0),
     m_X(0),
     m_Y(0),
     m_MaxTextAreaChars(0),
@@ -248,10 +248,10 @@ bool DiffWindow::SetContent(DiffDocument* pLeftDocument,
     const DiffLine* pLine = m_pLeftDocument->GetIndexedLine(0);
     const char* pLineNum = pLine->LineNum();
 
-    m_LineNumbersWidth_chars = strlen(pLineNum);
-    m_LineNumbersWidth_pix = m_LineNumbersWidth_chars * m_FontWidth_pix;
+    m_LineNumsWidth_chars = strlen(pLineNum);
+    m_LineNumsWidth_pix = m_LineNumsWidth_chars * m_FontWidth_pix;
 
-    m_LineNumberEmpty = SimpleString(' ', m_LineNumbersWidth_chars);
+    m_LineNumberEmpty = SimpleString(' ', m_LineNumsWidth_chars);
   }
 
   // Get the number of lines (will/should be equal for left and right)
@@ -762,7 +762,7 @@ void DiffWindow::calcSizes()
   m_TextAreasHeight = m_MaxTextAreaLines * m_FontHeight_pix + 3;
 
   // Calculate how many chars fit on each line in each text area
-  m_MaxTextAreaChars = (m_TextAreasWidth - 4 - m_LineNumbersWidth_pix)
+  m_MaxTextAreaChars = (m_TextAreasWidth - 4 - m_LineNumsWidth_pix)
                      / m_FontWidth_pix;
 
   // Set x-scroll-gadget's pot size in relation of new window size
@@ -902,7 +902,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     }
 
     // Print the text
-    Text(m_pWindow->RPort, pLineNum, m_LineNumbersWidth_chars);
+    Text(m_pWindow->RPort, pLineNum, m_LineNumsWidth_chars);
 
     // Move rastport cursor to start of right line numbers block
     ::Move(m_pWindow->RPort,
@@ -917,13 +917,13 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     }
 
     // Print the text
-    Text(m_pWindow->RPort, pLineNum, m_LineNumbersWidth_chars);
+    Text(m_pWindow->RPort, pLineNum, m_LineNumsWidth_chars);
 
   }
 
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
-         m_TextArea1Left + 3 + indent + m_LineNumbersWidth_pix,
+         m_TextArea1Left + 3 + indent + m_LineNumsWidth_pix,
          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
   // Set the left line's background color
@@ -963,7 +963,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
   // Move rastport cursor to start of right line
   ::Move(m_pWindow->RPort,
-         m_TextArea2Left + 3  + indent + m_LineNumbersWidth_pix,
+         m_TextArea2Left + 3  + indent + m_LineNumsWidth_pix,
          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
   // Set the right line's background color
@@ -1138,7 +1138,7 @@ size_t DiffWindow::scrollRight(int numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  -numChars * m_FontWidth_pix, // n * width
                  0,
-                 m_TextArea1Left + 3 + m_LineNumbersWidth_pix,
+                 m_TextArea1Left + 3 + m_LineNumsWidth_pix,
                  m_TextAreasTop + 1,
                  m_TextArea1Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 2);
@@ -1146,7 +1146,7 @@ size_t DiffWindow::scrollRight(int numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  -numChars * m_FontWidth_pix,  // n * width
                  0,
-                 m_TextArea2Left + 3 + m_LineNumbersWidth_pix,
+                 m_TextArea2Left + 3 + m_LineNumsWidth_pix,
                  m_TextAreasTop + 1,
                  m_TextArea2Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 2);
@@ -1218,7 +1218,7 @@ size_t DiffWindow::scrollLeft(int numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
                  0,
-                 m_TextArea1Left + 3 + m_LineNumbersWidth_pix,
+                 m_TextArea1Left + 3 + m_LineNumsWidth_pix,
                  m_TextAreasTop + 1,
                  m_TextArea1Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
@@ -1226,7 +1226,7 @@ size_t DiffWindow::scrollLeft(int numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
                  0,
-                 m_TextArea2Left + 3 + m_LineNumbersWidth_pix,
+                 m_TextArea2Left + 3 + m_LineNumsWidth_pix,
                  m_TextAreasTop + 1,
                  m_TextArea2Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);

@@ -390,10 +390,19 @@ BOOST_AUTO_TEST_CASE( DiffTest_06_Mixed )
   bool cancelRequested = false;
 
   DiffFileLinux srcA(cancelRequested);
-  srcA.PreProcess("../../../testfiles/testcase_06_left.txt", true);
+  srcA.PreProcess("../../../testfiles/testcase_06_left.txt");
 
   DiffFileLinux srcB(cancelRequested);
-  srcB.PreProcess("../../../testfiles/testcase_06_right.txt", true);
+  srcB.PreProcess("../../../testfiles/testcase_06_right.txt");
+
+  size_t maxNumLines = srcA.NumLines();
+  if(srcB.NumLines() > maxNumLines)
+  {
+    maxNumLines = srcB.NumLines();
+  }
+
+  srcA.CollectLineNumbers(maxNumLines);
+  srcB.CollectLineNumbers(maxNumLines);
 
   DiffFileLinux diffA(cancelRequested);
   DiffFileLinux diffB(cancelRequested);
@@ -657,10 +666,19 @@ BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
   bool diffOk = false;
 
   DiffFileLinux srcA(cancelRequested);
-  srcA.PreProcess("../../../testfiles/testcase_24_1500_numbers_left.txt", true);
+  srcA.PreProcess("../../../testfiles/testcase_24_1500_numbers_left.txt");
 
   DiffFileLinux srcB(cancelRequested);
-  srcB.PreProcess("../../../testfiles/testcase_24_1500_numbers_right.txt", true);
+  srcB.PreProcess("../../../testfiles/testcase_24_1500_numbers_right.txt");
+
+  size_t maxNumLines = srcA.NumLines();
+  if(srcB.NumLines() > maxNumLines)
+  {
+    maxNumLines = srcB.NumLines();
+  }
+
+  srcA.CollectLineNumbers(maxNumLines);
+  srcB.CollectLineNumbers(maxNumLines);
 
   DiffFileLinux diffA(cancelRequested);
   DiffFileLinux diffB(cancelRequested);
@@ -770,4 +788,50 @@ BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
     pItem = static_cast<size_t*>(diffStartIdxsList.GetNext());
   }
   while(pItem != NULL);
+}
+
+/**
+ * testcase_13_6000_lines
+ *
+ * For these two big files not much is done here. Its only tested if
+ * the diff result is ok.
+ */
+BOOST_AUTO_TEST_CASE( estcase_26_999plus_numbers )
+{
+  bool cancelRequested = false;
+  bool diffOk = false;
+
+  DiffFileLinux srcA(cancelRequested);
+  srcA.PreProcess("../../../testfiles/testcase_26_999plus_numbers_left.txt");
+
+  DiffFileLinux srcB(cancelRequested);
+  srcB.PreProcess("../../../testfiles/testcase_26_999plus_numbers_right.txt");
+
+  size_t maxNumLines = srcA.NumLines();
+  if(srcB.NumLines() > maxNumLines)
+  {
+    maxNumLines = srcB.NumLines();
+  }
+
+  srcA.CollectLineNumbers(maxNumLines);
+  srcB.CollectLineNumbers(maxNumLines);
+
+  DiffFileLinux diffA(cancelRequested);
+  DiffFileLinux diffB(cancelRequested);
+
+  LinkedList diffStartIdxsList;
+
+  DiffEngine diffEngine(srcA,
+                        srcB,
+                        diffA,
+                        diffB,
+                        cancelRequested,
+                        &diffStartIdxsList);
+
+  diffOk = diffEngine.Diff();
+
+  BOOST_CHECK_EQUAL(diffA.NumLines(), diffB.NumLines());
+  BOOST_CHECK_EQUAL(strlen(diffA.GetLine(0)->LineNum()), strlen(diffB.GetLine(0)->LineNum()));
+
+
 }

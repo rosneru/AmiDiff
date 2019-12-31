@@ -1,11 +1,11 @@
 #include <string.h>
 #include "DiffLine.h"
 
-DiffLine::DiffLine(const char* pText, const char* pFormattedLineNumber)
+DiffLine::DiffLine(const char* pText)
   : m_Text(pText),
     m_TextLength(strlen(pText)),
     m_State(Normal),
-    m_pFormattedLineNumber(pFormattedLineNumber),
+    m_pFormattedLineNumber(NULL),
     m_Token(0),
     m_bIsLinked(false)
 {
@@ -55,6 +55,11 @@ DiffLine::LineState DiffLine::State() const
 const char*DiffLine::LineNum() const
 {
   return m_pFormattedLineNumber;
+}
+
+void DiffLine::SetLineNum(const char* pFormattedLineNum)
+{
+  m_pFormattedLineNumber = pFormattedLineNum;
 }
 
 void DiffLine::SetState(DiffLine::LineState state)

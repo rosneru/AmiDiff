@@ -39,8 +39,8 @@ void DiffFileAmiga::Clear()
   m_pDiffLinesArray = NULL;
 }
 
-bool DiffFileAmiga::PreProcess(const char* pFileName,
-                               bool bCollectLineNumbers)
+
+bool DiffFileAmiga::PreProcess(const char* pFileName)
 {
   if(m_pPoolHeader == NULL)
   {
@@ -82,8 +82,6 @@ bool DiffFileAmiga::PreProcess(const char* pFileName,
     return false;
   }
 
-  int digits = numDigits(m_NumLines);
-
   char* pReadLine = NULL;
   int i = 0;
 
@@ -100,17 +98,6 @@ bool DiffFileAmiga::PreProcess(const char* pFileName,
 
     strcpy(pLine, pReadLine);
 
-    char* pLineNumber = NULL;
-    if(bCollectLineNumbers == true)
-    {
-      pLineNumber = new char[digits + 1];
-      pLineNumber = (char*) AllocPooled(m_pPoolHeader, digits + 2);
-      if(pLineNumber != NULL)
-      {
-        sprintf(pLineNumber, "%*d ", digits, (i + 1));
-      }
-    }
-
     DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
                                                   sizeof(DiffLine));
 
@@ -126,7 +113,7 @@ bool DiffFileAmiga::PreProcess(const char* pFileName,
     // constructor. This has to be done here because a memory pool is
     // used and the normal operator 'new' which reserves memory
     // automatically wouldn't be appropriate.
-    new (pDiffLine) DiffLine(pLine, pLineNumber);
+    new (pDiffLine) DiffLine(pLine);
 
     // Append DiffLine to list
     m_pDiffLinesArray[i++] = pDiffLine;
@@ -171,6 +158,24 @@ bool DiffFileAmiga::PreProcess(const char* pFileName,
 
   m_File.Close();
   return true;
+}
+
+
+void DiffFileAmiga::CollectLineNumbers(size_t maxNumLines)
+{
+  int digits = numDigits(maxNumLines);
+
+  for(size_t i = 0; i < m_NumLines; i++)
+  {
+    pLineNumber = (char*) AllocPooled(m_pPoolHeader, digits + 2);
+    if(pLineNumber != NULL)
+    {
+      sprintf(pLineNumber, "%*d ", digits, (i + 1));
+
+      DiffLine* pLine = GetLine(i);
+      pLine->SetLineNum(pLineNumber);
+    }
+  }
 }
 
 

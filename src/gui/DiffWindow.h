@@ -187,8 +187,8 @@ private:
   long m_NumDifferences;      ///> Number of differences
 
   bool m_bShowLineNumbers;
-  UWORD m_LineNumbersWidth_chars;
-  UWORD m_LineNumbersWidth_pix;
+  UWORD m_LineNumsWidth_chars;
+  UWORD m_LineNumsWidth_pix;
   SimpleString m_LineNumberEmpty;
 
   UWORD m_FontWidth_pix;    ///> Width of the rastport text font

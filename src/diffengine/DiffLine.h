@@ -30,7 +30,7 @@ public:
    * IMPORTANT: Sets the IsLinked flag to false so that this DiffLine
    * is considered as 'owner' of the given text and line number.
    */
-  DiffLine(const char* pText, const char* pFormattedLineNumber);
+  DiffLine(const char* pText);
 
   /**
    * Creates a new DiffLine with given text and state.
@@ -62,12 +62,17 @@ public:
   size_t NumChars() const;
 
   /**
-   * Returns the state of the diff line
+   * Return the state of the this line
    */
   LineState State() const;
 
   /**
-   * Returns the LineNumber as a digit-formatted text.
+   * Set the state of this line.
+   */
+  void SetState(LineState state);
+
+  /**
+   * Return the LineNumber as a digit-formatted text.
    *
    * E.g. when highest line number is three-digits long, the returned
    * value will be something like "  1", " 82" or "123".
@@ -77,7 +82,11 @@ public:
    */
   const char* LineNum() const;
 
-  void SetState(LineState state);
+  /**
+   *  Set the digit-formatted number for this line.
+   */
+  void SetLineNum(const char* pLineNum);
+
 
   /**
    * Returns the token which is asociated with this line
