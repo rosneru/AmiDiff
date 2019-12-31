@@ -167,7 +167,7 @@ void DiffFileAmiga::CollectLineNumbers(size_t maxNumLines)
 
   for(size_t i = 0; i < m_NumLines; i++)
   {
-    pLineNumber = (char*) AllocPooled(m_pPoolHeader, digits + 2);
+    char* pLineNumber = (char*) AllocPooled(m_pPoolHeader, digits + 2);
     if(pLineNumber != NULL)
     {
       sprintf(pLineNumber, "%*d ", digits, (i + 1));
