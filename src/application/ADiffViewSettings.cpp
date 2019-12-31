@@ -20,7 +20,7 @@ ADiffViewSettings::ColorArray ADiffViewSettings::m_sColors =
   0xf3f3f3f3, 0xb5b5b5b5, 0xb9b9b9b9, // red
   0xc1c1c1c1, 0xfefefefe, 0xbdbdbdbd, // green
   0xfcfcfcfc, 0xffffffff, 0xbbbbbbbb, // yellow
-  0x92929292, 0x92929292, 0x92929292,
+  0x83838383, 0x83838383, 0x83838383,
   0x00000000  // Termination
 };
 
