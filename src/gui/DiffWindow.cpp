@@ -790,11 +790,11 @@ void DiffWindow::calcSizes()
 
   m_ScrollArea1XMinHScroll = m_TextArea1Left + m_LineNumsWidth_pix + 3;
   m_ScrollArea1XMinVScroll = m_TextArea1Left + 3;
-  m_ScrollArea1XMax = m_TextArea1Left + textAreasTextWidth_pix + 1;
+  m_ScrollArea1XMax = m_TextArea1Left + textAreasTextWidth_pix + 2;
 
   m_ScrollArea2XMinHScroll = m_TextArea2Left + m_LineNumsWidth_pix + 3;
   m_ScrollArea2XMinVScroll = m_TextArea2Left + 3;
-  m_ScrollArea2XMax = m_TextArea2Left + textAreasTextWidth_pix + 1;
+  m_ScrollArea2XMax = m_TextArea2Left + textAreasTextWidth_pix + 2;
 
   m_ScrollAreasYMin = m_TextAreasTop + 1;
   m_ScrollAreasYMax = m_TextAreasTop + m_TextAreasHeight - 3;
