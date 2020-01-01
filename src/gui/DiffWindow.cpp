@@ -47,6 +47,14 @@ DiffWindow::DiffWindow(AScreen& appScreen,
     m_TextAreasTop(0),
     m_TextAreasWidth(0),
     m_TextAreasHeight(0),
+    m_ScrollArea1XMinHScroll(0),
+    m_ScrollArea1XMinVScroll(0),
+    m_ScrollArea1XMax(0),
+    m_ScrollArea2XMinHScroll(0),
+    m_ScrollArea2XMinVScroll(0),
+    m_ScrollArea2XMax(0),
+    m_ScrollAreasYMin(0),
+    m_ScrollAreasYMax(0),
     m_ChangedText(" Changed "),
     m_AddedText(" Added "),
     m_DeletedText(" Deleted "),
@@ -771,6 +779,26 @@ void DiffWindow::calcSizes()
   // Set y-scroll-gadget's pot size in relation of new window size
   setYScrollPotSize(m_MaxTextAreaLines, m_NumLines);
 
+  //
+  // Define the dimensions for the scroll areas
+  // NOTE: The XMin values depend on if the scroll is done horizontally
+  //       or vertically. On vertical scroll the line numbers are 
+  //       scrolled, too. On horizontal scroll, they're not.
+  //
+  LONG textAreasTextWidth_pix = m_MaxTextAreaChars * m_FontWidth_pix;
+  textAreasTextWidth_pix += m_LineNumsWidth_pix;
+
+  m_ScrollArea1XMinHScroll = m_TextArea1Left + m_LineNumsWidth_pix + 3;
+  m_ScrollArea1XMinVScroll = m_TextArea1Left + 3;
+  m_ScrollArea1XMax = m_TextArea1Left + textAreasTextWidth_pix - 3;
+
+  m_ScrollArea2XMinHScroll = m_TextArea2Left + m_LineNumsWidth_pix + 3;
+  m_ScrollArea2XMinVScroll = m_TextArea2Left + 3;
+  m_ScrollArea2XMax = m_TextArea2Left + textAreasTextWidth_pix - 3;
+
+  m_ScrollAreasYMin = m_TextAreasTop + 1;
+  m_ScrollAreasYMax = m_TextAreasTop + m_TextAreasHeight - 3;
+
 }
 
 
@@ -1138,18 +1166,18 @@ size_t DiffWindow::scrollRight(int numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  -numChars * m_FontWidth_pix, // n * width
                  0,
-                 m_TextArea1Left + m_LineNumsWidth_pix + 3,
-                 m_TextAreasTop + 1,
-                 m_TextArea1Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 2);
+                 m_ScrollArea1XMinHScroll,
+                 m_ScrollAreasYMin,
+                 m_ScrollArea1XMax,
+                 m_ScrollAreasYMax);
 
   ScrollRasterBF(m_pWindow->RPort,
                  -numChars * m_FontWidth_pix,  // n * width
                  0,
-                 m_TextArea2Left + m_LineNumsWidth_pix + 3,
+                 m_ScrollArea2XMinHScroll,
                  m_TextAreasTop + 1,
-                 m_TextArea2Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 2);
+                 m_ScrollArea2XMax,
+                 m_ScrollAreasYMax);
 
   // fill the gap with the previous chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
@@ -1218,18 +1246,18 @@ size_t DiffWindow::scrollLeft(int numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
                  0,
-                 m_TextArea1Left + m_LineNumsWidth_pix + 3,
-                 m_TextAreasTop + 1,
-                 m_TextArea1Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 3);
+                 m_ScrollArea1XMinHScroll,
+                 m_ScrollAreasYMin,
+                 m_ScrollArea1XMax,
+                 m_ScrollAreasYMax);
 
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
                  0,
-                 m_TextArea2Left + m_LineNumsWidth_pix + 3,
-                 m_TextAreasTop + 1,
-                 m_TextArea2Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 3);
+                 m_ScrollArea2XMinHScroll,
+                 m_ScrollAreasYMin,
+                 m_ScrollArea2XMax,
+                 m_ScrollAreasYMax);
 
   // Fill the gap with the following chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
@@ -1285,18 +1313,18 @@ size_t DiffWindow::scrollDown(int numLines)
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
-                 m_TextArea1Left + 3,
-                 m_TextAreasTop + 1,
-                 m_TextArea1Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 3);
+                 m_ScrollArea1XMinVScroll,
+                 m_ScrollAreasYMin,
+                 m_ScrollArea1XMax,
+                 m_ScrollAreasYMax);
 
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
-                 m_TextArea2Left + 3,
-                 m_TextAreasTop + 1,
-                 m_TextArea2Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 3);
+                 m_ScrollArea2XMinVScroll,
+                 m_ScrollAreasYMin,
+                 m_ScrollArea2XMax,
+                 m_ScrollAreasYMax);
 
   // Fill the gap with the previous text lines
   for(int i = 0; i < numLines; i++)
@@ -1356,18 +1384,18 @@ size_t DiffWindow::scrollUp(int numLines)
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  numLines * m_FontHeight_pix,
-                 m_TextArea1Left + 3,
-                 m_TextAreasTop + 1,
-                 m_TextArea1Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 3);
+                 m_ScrollArea1XMinVScroll,
+                 m_ScrollAreasYMin,
+                 m_ScrollArea1XMax,
+                 m_ScrollAreasYMax);
 
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  numLines * m_FontHeight_pix,
-                 m_TextArea2Left + 3,
-                 m_TextAreasTop + 1,
-                 m_TextArea2Left + m_TextAreasWidth - 3,
-                 m_TextAreasTop + m_TextAreasHeight - 3);
+                 m_ScrollArea2XMinVScroll,
+                 m_ScrollAreasYMin,
+                 m_ScrollArea2XMax,
+                 m_ScrollAreasYMax);
 
   for(int i = 0; i < numLines; i++)
   {

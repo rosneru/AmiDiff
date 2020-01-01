@@ -223,6 +223,15 @@ private:
   ULONG m_TextAreasWidth;     ///> Width of each text area
   ULONG m_TextAreasHeight;    ///> Height of each of the text areas
 
+  LONG m_ScrollArea1XMinHScroll;
+  LONG m_ScrollArea1XMinVScroll;
+  LONG m_ScrollArea1XMax;
+  LONG m_ScrollArea2XMinHScroll;
+  LONG m_ScrollArea2XMinVScroll;
+  LONG m_ScrollArea2XMax;
+  LONG m_ScrollAreasYMin;
+  LONG m_ScrollAreasYMax;
+
   SimpleString m_ChangedText;
   SimpleString m_AddedText;
   SimpleString m_DeletedText;
