@@ -297,7 +297,8 @@ void ProgressWindow::initialize()
   m_ProgressValueIText.DrawMode  = JAM1;
   m_ProgressValueIText.LeftEdge  = (m_ProgressBarWidth / 2) + m_ProgressBarLeft;
 
-  m_ProgressValueIText.TopEdge   = m_ProgressBarTop + (vSpace / 2) + 1;
+  m_ProgressValueIText.TopEdge   = m_ProgressBarTop + ((m_ProgressBarHeight - m_FontHeight) / 2);
+
   m_ProgressValueIText.ITextFont = NULL;
   m_ProgressValueIText.NextText  = NULL;
 
