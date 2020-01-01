@@ -1138,7 +1138,7 @@ size_t DiffWindow::scrollRight(int numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  -numChars * m_FontWidth_pix, // n * width
                  0,
-                 m_TextArea1Left + 3 + m_LineNumsWidth_pix,
+                 m_TextArea1Left + m_LineNumsWidth_pix + 3,
                  m_TextAreasTop + 1,
                  m_TextArea1Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 2);
@@ -1146,7 +1146,7 @@ size_t DiffWindow::scrollRight(int numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  -numChars * m_FontWidth_pix,  // n * width
                  0,
-                 m_TextArea2Left + 3 + m_LineNumsWidth_pix,
+                 m_TextArea2Left + m_LineNumsWidth_pix + 3,
                  m_TextAreasTop + 1,
                  m_TextArea2Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 2);
@@ -1218,7 +1218,7 @@ size_t DiffWindow::scrollLeft(int numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
                  0,
-                 m_TextArea1Left + 3 + m_LineNumsWidth_pix,
+                 m_TextArea1Left + m_LineNumsWidth_pix + 3,
                  m_TextAreasTop + 1,
                  m_TextArea1Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
@@ -1226,7 +1226,7 @@ size_t DiffWindow::scrollLeft(int numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
                  0,
-                 m_TextArea2Left + 3 + m_LineNumsWidth_pix,
+                 m_TextArea2Left + m_LineNumsWidth_pix + 3,
                  m_TextAreasTop + 1,
                  m_TextArea2Left + m_TextAreasWidth - 3,
                  m_TextAreasTop + m_TextAreasHeight - 3);
