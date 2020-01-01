@@ -770,7 +770,7 @@ void DiffWindow::calcSizes()
   m_TextAreasHeight = m_MaxTextAreaLines * m_FontHeight_pix + 3;
 
   // Calculate how many chars fit on each line in each text area
-  m_MaxTextAreaChars = (m_TextAreasWidth - 4 - m_LineNumsWidth_pix)
+  m_MaxTextAreaChars = (m_TextAreasWidth - 7 - m_LineNumsWidth_pix)
                      / m_FontWidth_pix;
 
   // Set x-scroll-gadget's pot size in relation of new window size
@@ -787,10 +787,7 @@ void DiffWindow::calcSizes()
   //
   LONG textAreasTextWidth_pix = m_MaxTextAreaChars * m_FontWidth_pix;
   textAreasTextWidth_pix += m_LineNumsWidth_pix;
-/*
-  printf("m_TextAreasWidth = %d\n", m_TextAreasWidth);
-  printf("textAreasTextWidth_pix = %d\n", textAreasTextWidth_pix);
-*/
+
   m_ScrollArea1XMinHScroll = m_TextArea1Left + m_LineNumsWidth_pix + 3;
   m_ScrollArea1XMinVScroll = m_TextArea1Left + 3;
   m_ScrollArea1XMax = m_TextArea1Left + textAreasTextWidth_pix + 1;
@@ -922,7 +919,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
     // Move rastport cursor to start of left line numbers block
     ::Move(m_pWindow->RPort,
-           m_TextArea1Left + 2 + indent,
+           m_TextArea1Left + indent + 2,
            topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
@@ -937,7 +934,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
     // Move rastport cursor to start of right line numbers block
     ::Move(m_pWindow->RPort,
-           m_TextArea2Left + 2 + indent,
+           m_TextArea2Left + indent + 2,
            topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
@@ -954,7 +951,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
-         m_TextArea1Left + 3 + indent + m_LineNumsWidth_pix,
+         m_TextArea1Left + indent + m_LineNumsWidth_pix + 3,
          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
   // Set the left line's background color
@@ -994,7 +991,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
   // Move rastport cursor to start of right line
   ::Move(m_pWindow->RPort,
-         m_TextArea2Left + 3  + indent + m_LineNumsWidth_pix,
+         m_TextArea2Left  + indent + m_LineNumsWidth_pix + 3,
          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
   // Set the right line's background color
