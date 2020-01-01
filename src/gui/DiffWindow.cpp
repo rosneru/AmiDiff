@@ -787,14 +787,17 @@ void DiffWindow::calcSizes()
   //
   LONG textAreasTextWidth_pix = m_MaxTextAreaChars * m_FontWidth_pix;
   textAreasTextWidth_pix += m_LineNumsWidth_pix;
-
+/*
+  printf("m_TextAreasWidth = %d\n", m_TextAreasWidth);
+  printf("textAreasTextWidth_pix = %d\n", textAreasTextWidth_pix);
+*/
   m_ScrollArea1XMinHScroll = m_TextArea1Left + m_LineNumsWidth_pix + 3;
   m_ScrollArea1XMinVScroll = m_TextArea1Left + 3;
-  m_ScrollArea1XMax = m_TextArea1Left + textAreasTextWidth_pix - 3;
+  m_ScrollArea1XMax = m_TextArea1Left + textAreasTextWidth_pix + 1;
 
   m_ScrollArea2XMinHScroll = m_TextArea2Left + m_LineNumsWidth_pix + 3;
   m_ScrollArea2XMinVScroll = m_TextArea2Left + 3;
-  m_ScrollArea2XMax = m_TextArea2Left + textAreasTextWidth_pix - 3;
+  m_ScrollArea2XMax = m_TextArea2Left + textAreasTextWidth_pix + 1;
 
   m_ScrollAreasYMin = m_TextAreasTop + 1;
   m_ScrollAreasYMax = m_TextAreasTop + m_TextAreasHeight - 3;
