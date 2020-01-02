@@ -75,65 +75,11 @@ size_t DiffDocument::MaxLineNumChars()
 
 const DiffLine* DiffDocument::GetLeftLine(size_t index)
 {
-  m_LastScrollDirection = None;
-
-  const DiffLine* pDiffLine = m_LeftFile.GetLine(index);
-
-  if(pDiffLine == NULL)
-  {
-    m_LineColor = DiffDocument::CN_Default;
-    return NULL;
-  }
-
-  return evaluateLine(pDiffLine);
+  return m_LeftFile.GetLine(index);
 }
 
 
 const DiffLine* DiffDocument::GetRightLine(size_t index)
 {
-  m_LastScrollDirection = None;
-
-  const DiffLine* pDiffLine = m_RightFile.GetLine(index);
-
-  if(pDiffLine == NULL)
-  {
-    m_LineColor = DiffDocument::CN_Default;
-    return NULL;
-  }
-
-  return evaluateLine(pDiffLine);
-}
-
-
-DiffDocument::ColorName DiffDocument::LineColor() const
-{
-  return m_LineColor;
-}
-
-const DiffLine* DiffDocument::evaluateLine(const DiffLine* pDiffLine)
-{
-  switch(pDiffLine->State())
-  {
-    case DiffLine::Normal:
-      m_LineColor = DiffDocument::CN_Default;
-      break;
-
-    case DiffLine::Changed:
-      m_LineColor = DiffDocument::CN_Yellow;
-      break;
-
-    case DiffLine::Added:
-      m_LineColor = DiffDocument::CN_Green;
-      break;
-
-    case DiffLine::Deleted:
-      m_LineColor = DiffDocument::CN_Red;
-      break;
-
-    case DiffLine::Undefined:
-      m_LineColor = DiffDocument::CN_Default;
-      break;
-  }
-
-  return pDiffLine;
+  return m_RightFile.GetLine(index);
 }
