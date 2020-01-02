@@ -44,7 +44,6 @@ DEPS=$(SRC_ROOT)/amigautils/AmigaFile.h \
 		$(SRC_ROOT)/gui/ScrollbarWindow.h \
 		$(SRC_ROOT)/gui/WindowBase.h \
 		$(SRC_ROOT)/model/DiffDocument.h \
-		$(SRC_ROOT)/model/Document.h \
 		$(SRC_ROOT)/oscottlibs/LinkedList.h \
 		$(SRC_ROOT)/oscottlibs/LinkedListNode.h \
 		$(SRC_ROOT)/oscottlibs/SimpleString.h \
@@ -85,7 +84,6 @@ _OBJ=$(SRC_ROOT)/amigautils/AmigaFile.o \
 		$(SRC_ROOT)/gui/ScrollbarWindow.o \
 		$(SRC_ROOT)/gui/WindowBase.o \
 		$(SRC_ROOT)/model/DiffDocument.o \
-		$(SRC_ROOT)/model/Document.o \
 		$(SRC_ROOT)/oscottlibs/LinkedList.o \
 		$(SRC_ROOT)/oscottlibs/LinkedListNode.o \
 		$(SRC_ROOT)/oscottlibs/SimpleString.o \

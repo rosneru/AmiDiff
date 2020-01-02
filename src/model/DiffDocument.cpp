@@ -1,9 +1,15 @@
 #include "DiffDocument.h"
 
 
-DiffDocument::DiffDocument(DiffFileAmiga& p_DiffFile)
-  : m_DiffFile(p_DiffFile),
-    m_LineId(0)
+DiffDocument::DiffDocument(DiffFileAmiga& leftFile,
+                           const char* pLeftFileName,
+                           DiffFileAmiga& rightFile,
+                           const char* pRightFileName)
+  : m_LeftFile(leftFile),
+    m_pLeftFileName(pLeftFileName),
+    m_RightFile(rightFile),
+    m_pRightFileName(pRightFileName),
+    m_MaxLineLength(0)
 {
 
 }
@@ -13,36 +19,65 @@ DiffDocument::~DiffDocument()
 
 }
 
-size_t DiffDocument::NumLines() const
+const char* DiffDocument::GetLeftFileName() const
 {
-  return m_DiffFile.NumLines();
+  return m_pLeftFileName;
 }
 
-size_t DiffDocument::MaxLineLength()
+const char* DiffDocument::GetRightFileName() const
+{
+  return m_pRightFileName;
+}
+
+size_t DiffDocument::NumLines() const
+{
+  // Note: Right diff file should have the same number of lines
+  return m_LeftFile.NumLines();
+}
+
+size_t DiffDocument::MaxLineNumChars()
 {
   if(m_MaxLineLength > 0)
   {
     return m_MaxLineLength;
   }
 
-  for(size_t i = 0; i < NumLines(); i++)
+  size_t maxCharsLeft = 0;
+  for(size_t i = 0; i < m_LeftFile.NumLines(); i++)
   {
-    if(m_DiffFile.GetLine(i)->NumChars() > m_MaxLineLength)
+    if(m_LeftFile.GetLine(i)->NumChars() > m_MaxLineLength)
     {
-      m_MaxLineLength = m_DiffFile.GetLine(i)->NumChars();
+      maxCharsLeft = m_LeftFile.GetLine(i)->NumChars();
     }
+  }
+
+  size_t maxCharsRight = 0;
+  for(size_t i = 0; i < m_RightFile.NumLines(); i++)
+  {
+    if(m_RightFile.GetLine(i)->NumChars() > m_MaxLineLength)
+    {
+      maxCharsRight = m_RightFile.GetLine(i)->NumChars();
+    }
+  }
+
+  if(maxCharsLeft > maxCharsRight)
+  {
+    m_MaxLineLength = maxCharsLeft;
+  }
+  else
+  {
+    m_MaxLineLength = maxCharsRight;
   }
 
   return m_MaxLineLength;
 }
 
 
-const DiffLine* DiffDocument::GetIndexedLine(int p_LineId)
+const DiffLine* DiffDocument::GetLeftLine(size_t index)
 {
   m_LastScrollDirection = None;
 
-  m_LineId = p_LineId;
-  const DiffLine* pDiffLine = m_DiffFile.GetLine(m_LineId);
+  const DiffLine* pDiffLine = m_LeftFile.GetLine(index);
 
   if(pDiffLine == NULL)
   {
@@ -52,6 +87,23 @@ const DiffLine* DiffDocument::GetIndexedLine(int p_LineId)
 
   return evaluateLine(pDiffLine);
 }
+
+
+const DiffLine* DiffDocument::GetRightLine(size_t index)
+{
+  m_LastScrollDirection = None;
+
+  const DiffLine* pDiffLine = m_RightFile.GetLine(index);
+
+  if(pDiffLine == NULL)
+  {
+    m_LineColor = DiffDocument::CN_Default;
+    return NULL;
+  }
+
+  return evaluateLine(pDiffLine);
+}
+
 
 DiffDocument::ColorName DiffDocument::LineColor() const
 {

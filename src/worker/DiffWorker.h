@@ -82,8 +82,7 @@ private:
 
   LinkedListAmiga m_DiffStartIdxsList;
 
-  DiffDocument* m_pDiffDocumentLeft;
-  DiffDocument* m_pDiffDocumentRight;
+  DiffDocument* m_pDiffDocument;
 
   DiffFileAmiga m_LeftSrcFile;
   DiffFileAmiga m_RightSrcFile;

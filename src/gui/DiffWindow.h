@@ -74,8 +74,7 @@ public:
    * inserted lines. This is also the number of items of the array
    * pDiffStartIdxs.
    */
-  bool SetContent(DiffDocument* pLeftDocument,
-                  DiffDocument* pRightDocument,
+  bool SetContent(DiffDocument* pDiffDocument,
                   LinkedList* pDiffStartIdxsList,
                   long diffTime,
                   int numAdded,
@@ -174,8 +173,7 @@ public:
   void NavigateToPrevDiff();
 
 private:
-  DiffDocument* m_pLeftDocument;
-  DiffDocument* m_pRightDocument;
+  DiffDocument* m_pDiffDocument;
 
   struct Gadget* m_pLastParentGadget;
   struct Gadget* m_pGadtoolsContext;
@@ -206,9 +204,6 @@ private:
 
   ULONG m_MaxTextAreaLines;   ///> Max fitting lines in each text area
                               ///> Depending on font and window size
-
-  ULONG m_MaxLineLength;      ///> Longest line length (in chars)
-                              ///> either in left or in right file
 
   ULONG m_NumLines;           ///> Number of lines (as it's a diff view
                               ///> this should be equal for both files)
@@ -308,7 +303,7 @@ private:
   /**
    * Returns the appropriate pen for a given ColorName
    */
-  LONG colorNameToPen(DiffDocument::ColorName colorName);
+  LONG diffStateToPen(DiffLine::LineState state);
 
   /**
    * Scrolls the text in both text areas left by numChars chars and

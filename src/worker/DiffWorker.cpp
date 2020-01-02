@@ -23,8 +23,7 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
     m_bExitAllowed(bExitAllowed),
     m_pPoolHeader(NULL),
     m_DiffStartIdxsList(m_pPoolHeader),
-    m_pDiffDocumentLeft(NULL),
-    m_pDiffDocumentRight(NULL),
+    m_pDiffDocument(NULL),
     m_LeftSrcFile(m_pPoolHeader, m_bCancelRequested),
     m_RightSrcFile(m_pPoolHeader, m_bCancelRequested),
     m_LeftDiffFile(m_pPoolHeader, m_bCancelRequested),
@@ -223,16 +222,14 @@ bool DiffWorker::Diff()
   //
   // Prepare diff window and set results
   //
-  m_pDiffDocumentLeft = new DiffDocument(m_LeftDiffFile);
-  m_pDiffDocumentRight = new DiffDocument(m_RightDiffFile);
-
-  m_pDiffDocumentLeft->SetFileName(m_LeftSrcFilePath.C_str());
-  m_pDiffDocumentRight->SetFileName(m_RightSrcFilePath.C_str());
+  m_pDiffDocument = new DiffDocument(m_LeftDiffFile, 
+                                     m_LeftSrcFilePath.C_str(),
+                                     m_RightDiffFile,
+                                     m_RightSrcFilePath.C_str());
 
   m_DiffWindow.SetLineNumbers(m_bShowLineNumbers);
   m_DiffWindow.Open(NULL, WindowBase::IP_Fill);
-  m_DiffWindow.SetContent(m_pDiffDocumentLeft,
-                          m_pDiffDocumentRight,
+  m_DiffWindow.SetContent(m_pDiffDocument,
                           &m_DiffStartIdxsList,
                           totalTime,
                           m_DiffEngine.NumAdded(),
@@ -248,16 +245,10 @@ bool DiffWorker::Diff()
 
 void DiffWorker::disposeDocuments()
 {
-  if(m_pDiffDocumentLeft != NULL)
+  if(m_pDiffDocument != NULL)
   {
-    delete m_pDiffDocumentLeft;
-    m_pDiffDocumentLeft = NULL;
-  }
-
-  if(m_pDiffDocumentRight != NULL)
-  {
-    delete m_pDiffDocumentRight;
-    m_pDiffDocumentRight = NULL;
+    delete m_pDiffDocument;
+    m_pDiffDocument = NULL;
   }
 
   m_LeftSrcFile.Clear();
