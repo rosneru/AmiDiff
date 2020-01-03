@@ -1,32 +1,19 @@
 {
-    "version": "0.1.0",
-    "command": "make",
-    "isShellCommand": true,
+    "version": "2.0.0",
     "tasks": [
         {
-            "taskName": "Makefile",
-
-            // Make this the default build command.
-            "isBuildCommand": true,
-
-            // Show the output window only if unrecognized errors occur.
-            "showOutput": "always",
-
-            // Pass 'all' as the build target
-            "args": ["all"],
-
-            // Use the standard less compilation problem matcher.
-            "problemMatcher": {
-                "owner": "cpp",
-                "fileLocation": ["relative", "${workspaceRoot}"],
-                "pattern": {
-                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
-                    "file": 1,
-                    "line": 2,
-                    "column": 3,
-                    "severity": 4,
-                    "message": 5
-                }
+            "type": "shell",
+            "label": "Make project",
+            "command": "/usr/bin/make",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
             }
         }
     ]
