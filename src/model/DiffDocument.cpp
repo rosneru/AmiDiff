@@ -35,38 +35,27 @@ size_t DiffDocument::NumLines() const
   return m_LeftFile.NumLines();
 }
 
-size_t DiffDocument::MaxLineNumChars()
+size_t DiffDocument::MaxLineLength()
 {
   if(m_MaxLineLength > 0)
   {
     return m_MaxLineLength;
   }
 
-  size_t maxCharsLeft = 0;
   for(size_t i = 0; i < m_LeftFile.NumLines(); i++)
   {
     if(m_LeftFile.GetLine(i)->NumChars() > m_MaxLineLength)
     {
-      maxCharsLeft = m_LeftFile.GetLine(i)->NumChars();
+      m_MaxLineLength = m_LeftFile.GetLine(i)->NumChars();
     }
   }
 
-  size_t maxCharsRight = 0;
   for(size_t i = 0; i < m_RightFile.NumLines(); i++)
   {
     if(m_RightFile.GetLine(i)->NumChars() > m_MaxLineLength)
     {
-      maxCharsRight = m_RightFile.GetLine(i)->NumChars();
+      m_MaxLineLength = m_RightFile.GetLine(i)->NumChars();
     }
-  }
-
-  if(maxCharsLeft > maxCharsRight)
-  {
-    m_MaxLineLength = maxCharsLeft;
-  }
-  else
-  {
-    m_MaxLineLength = maxCharsRight;
   }
 
   return m_MaxLineLength;

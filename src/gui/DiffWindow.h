@@ -173,7 +173,8 @@ public:
   void NavigateToPrevDiff();
 
 private:
-  DiffDocument* m_pDiffDocument;
+  DiffDocument* m_pDocument;
+  char m_EmptyChar;
 
   struct Gadget* m_pLastParentGadget;
   struct Gadget* m_pGadtoolsContext;

@@ -22,7 +22,8 @@ DiffWindow::DiffWindow(AScreen& appScreen,
                        struct MsgPort*& pIdcmpMsgPort,
                        int& numOpenWindows)
   : ScrollbarWindow(appScreen, pIdcmpMsgPort, numOpenWindows),
-    m_pDiffDocument(NULL),
+    m_pDocument(NULL),
+    m_EmptyChar('\0'),
     m_pLastParentGadget(NULL),
     m_pGadtoolsContext(NULL),
     m_pGadTxtLeftFile(NULL),
@@ -119,7 +120,7 @@ void DiffWindow::Resized()
   // Resize gadgets to fit into new window size
   resizeGadgets();
 
-  if(m_pDiffDocument != NULL)
+  if(m_pDocument != NULL)
   {
     // Paint the document names
     //paintDocumentNames();
@@ -189,7 +190,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
     return false;
   }
 
-  m_pDiffDocument = pDiffDocument;
+  m_pDocument = pDiffDocument;
   m_pDiffStartIdxsList = pDiffStartIdxsList;
 
   m_NumDifferences = numAdded + numChanged + numDeleted;
@@ -221,13 +222,13 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, m_pDiffDocument->GetLeftFileName(),
+                    GTTX_Text, m_pDocument->GetLeftFileName(),
                     TAG_END);
 
   GT_SetGadgetAttrs(m_pGadTxtRightFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, m_pDiffDocument->GetRightFileName(),
+                    GTTX_Text, m_pDocument->GetRightFileName(),
                     TAG_END);
 
 
@@ -236,7 +237,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
 
   if(m_bShowLineNumbers)
   {
-    const DiffLine* pLine = m_pDiffDocument->GetLeftLine(0);
+    const DiffLine* pLine = m_pDocument->GetLeftLine(0);
     const char* pLineNum = pLine->LineNum();
 
     m_LineNumsWidth_chars = strlen(pLineNum);
@@ -246,7 +247,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
   }
 
   // Get the number of lines (will/should be equal for left and right)
-  m_NumLines = m_pDiffDocument->NumLines();
+  m_NumLines = m_pDocument->NumLines();
 
   calcSizes();
 
@@ -259,7 +260,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
   // Paint the status bar
   paintStatusBar();
 
-  setXScrollPotSize(m_MaxTextAreaChars, m_pDiffDocument->MaxLineNumChars());
+  setXScrollPotSize(m_MaxTextAreaChars, m_pDocument->MaxLineLength());
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
@@ -629,10 +630,15 @@ void DiffWindow::createGadgets()
   }
 
   const char* pFileName = NULL;
-  if(m_pDiffDocument != NULL)
+  if(m_pDocument != NULL)
   {
-    pFileName = m_pDiffDocument->GetRightFileName();
+    pFileName = m_pDocument->GetRightFileName();
   }
+  else
+  {
+    pFileName = &m_EmptyChar;
+  }
+
 
   m_pGadTxtLeftFile = CreateGadget(TEXT_KIND,
                                    pFakeGad,
@@ -651,9 +657,13 @@ void DiffWindow::createGadgets()
   }
 
   pFileName = NULL;
-  if(m_pDiffDocument != NULL)
+  if(m_pDocument != NULL)
   {
-    pFileName = m_pDiffDocument->GetRightFileName();
+    pFileName = m_pDocument->GetRightFileName();
+  }
+  else
+  {
+    pFileName = &m_EmptyChar;
   }
 
 
@@ -670,8 +680,8 @@ bool DiffWindow::HandleIdcmp(ULONG msgClass,
                              UWORD msgCode,
                              APTR pItemAddress)
 {
-  if(ScrollbarWindow::HandleIdcmp(msgClass, 
-                                  msgCode, 
+  if(ScrollbarWindow::HandleIdcmp(msgClass,
+                                  msgCode,
                                   pItemAddress) == true)
   {
     return true;
@@ -758,8 +768,11 @@ void DiffWindow::calcSizes()
   m_MaxTextAreaChars = (m_TextAreasWidth - 7 - m_LineNumsWidth_pix)
                      / m_FontWidth_pix;
 
-  // Set x-scroll-gadget's pot size in relation of new window size
-  setXScrollPotSize(m_MaxTextAreaChars, m_pDiffDocument->MaxLineNumChars());
+  if(m_pDocument != NULL)
+  {
+    // Set x-scroll-gadget's pot size in relation of new window size
+    setXScrollPotSize(m_MaxTextAreaChars, m_pDocument->MaxLineLength());
+  }
 
   // Set y-scroll-gadget's pot size in relation of new window size
   setYScrollPotSize(m_MaxTextAreaLines, m_NumLines);
@@ -767,7 +780,7 @@ void DiffWindow::calcSizes()
   //
   // Define the dimensions for the scroll areas
   // NOTE: The XMin values depend on if the scroll is done horizontally
-  //       or vertically. On vertical scroll the line numbers are 
+  //       or vertically. On vertical scroll the line numbers are
   //       scrolled, too. On horizontal scroll, they're not.
   //
   LONG textAreasTextWidth_pix = m_MaxTextAreaChars * m_FontWidth_pix;
@@ -813,22 +826,22 @@ void DiffWindow::resizeGadgets()
   RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
   FreeGadgets(pOldContext);
 
-  if(m_pDiffDocument != NULL)
+  if(m_pDocument != NULL)
   {
     // Display the document file names in the gadgets
     GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                       m_pWindow,
                       NULL,
-                      GTTX_Text, m_pDiffDocument->GetLeftFileName(),
+                      GTTX_Text, m_pDocument->GetLeftFileName(),
                       TAG_END);
   }
 
-  if(m_pDiffDocument != NULL)
+  if(m_pDocument != NULL)
   {
     GT_SetGadgetAttrs(m_pGadTxtRightFile,
                       m_pWindow,
                       NULL,
-                      GTTX_Text, m_pDiffDocument->GetRightFileName(),
+                      GTTX_Text, m_pDocument->GetRightFileName(),
                       TAG_END);
   }
 }
@@ -836,7 +849,7 @@ void DiffWindow::resizeGadgets()
 
 void DiffWindow::paintDocuments(bool bFromStart)
 {
-  if(m_pDiffDocument == NULL)
+  if(m_pDocument == NULL)
   {
     return;
   }
@@ -857,8 +870,8 @@ void DiffWindow::paintDocuments(bool bFromStart)
       break;
     }
 
-    const DiffLine* pLeftLine = m_pDiffDocument->GetLeftLine(i);
-    const DiffLine* pRightLine = m_pDiffDocument->GetRightLine(i);
+    const DiffLine* pLeftLine = m_pDocument->GetLeftLine(i);
+    const DiffLine* pRightLine = m_pDocument->GetRightLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -1167,8 +1180,8 @@ size_t DiffWindow::scrollRight(int numChars)
   // fill the gap with the previous chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
-    const DiffLine* pLeftLine = m_pDiffDocument->GetLeftLine(i);
-    const DiffLine* pRightLine = m_pDiffDocument->GetRightLine(i);
+    const DiffLine* pLeftLine = m_pDocument->GetLeftLine(i);
+    const DiffLine* pRightLine = m_pDocument->GetRightLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -1201,24 +1214,24 @@ size_t DiffWindow::scrollLeft(int numChars)
     numChars = m_MaxTextAreaChars;
   }
 
-  if(m_pDiffDocument->MaxLineNumChars() < m_MaxTextAreaChars)
+  if(m_pDocument->MaxLineLength() < m_MaxTextAreaChars)
   {
     // Do not move the scroll area left if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_X + m_MaxTextAreaChars) == m_pDiffDocument->MaxLineNumChars())
+  if((m_X + m_MaxTextAreaChars) == m_pDocument->MaxLineLength())
   {
     // Do not move the scroll area left if text already at rightmost
     // position
     return 0;
   }
 
-  if((m_X + m_MaxTextAreaChars + numChars) > m_pDiffDocument->MaxLineNumChars())
+  if((m_X + m_MaxTextAreaChars + numChars) > m_pDocument->MaxLineLength())
   {
     // Limit the scrolling to only scroll only as many chars as necessary
-    numChars = m_pDiffDocument->MaxLineNumChars() - (m_X + m_MaxTextAreaChars);
+    numChars = m_pDocument->MaxLineLength() - (m_X + m_MaxTextAreaChars);
   }
 
   // Set foreground color for document painting
@@ -1247,8 +1260,8 @@ size_t DiffWindow::scrollLeft(int numChars)
   // Fill the gap with the following chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
-    const DiffLine* pLeftLine = m_pDiffDocument->GetLeftLine(i);
-    const DiffLine* pRightLine = m_pDiffDocument->GetRightLine(i);
+    const DiffLine* pLeftLine = m_pDocument->GetLeftLine(i);
+    const DiffLine* pRightLine = m_pDocument->GetRightLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -1315,8 +1328,8 @@ size_t DiffWindow::scrollDown(int numLines)
   for(int i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y - numLines + i;
-    const DiffLine* pLeftLine = m_pDiffDocument->GetLeftLine(lineIndex);
-    const DiffLine* pRightLine = m_pDiffDocument->GetRightLine(lineIndex);
+    const DiffLine* pLeftLine = m_pDocument->GetLeftLine(lineIndex);
+    const DiffLine* pRightLine = m_pDocument->GetRightLine(lineIndex);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -1385,8 +1398,8 @@ size_t DiffWindow::scrollUp(int numLines)
   for(int i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y + m_MaxTextAreaLines + i;
-    const DiffLine* pLeftLine = m_pDiffDocument->GetLeftLine(lineIndex);
-    const DiffLine* pRightLine = m_pDiffDocument->GetRightLine(lineIndex);
+    const DiffLine* pLeftLine = m_pDocument->GetLeftLine(lineIndex);
+    const DiffLine* pRightLine = m_pDocument->GetRightLine(lineIndex);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {

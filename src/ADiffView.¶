@@ -164,7 +164,6 @@ File
 "worker/WorkerStartupMsg.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
-"model/Document.h"
 "diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
 "application/ADiffView_rev.h"
@@ -195,7 +194,6 @@ File
 "worker/ProgressReporter.h"
 "worker/WorkerStartupMsg.h"
 "diffengine/DiffFileBase.h"
-"model/Document.h"
 "gui/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
@@ -221,7 +219,6 @@ File
 "worker/WorkerStartupMsg.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
-"model/Document.h"
 "diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
@@ -241,7 +238,6 @@ File
 "gui/ADiffViewPens.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
-"model/Document.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "commands/Command.h"
@@ -259,7 +255,6 @@ File
 "gui/ADiffViewPens.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
-"model/Document.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "commands/Command.h"
@@ -391,7 +386,6 @@ File
 "gui/DiffWindow.h"
 "gui/WindowBase.h"
 "diffengine/DiffLine.h"
-"model/Document.h"
 "gui/ScrollbarWindow.h"
 "diffengine/DiffFileBase.h"
 "gui/ADiffViewPens.h"
@@ -453,19 +447,10 @@ File
 1 "model/DiffDocument.cpp"
 "model/DiffDocument.cpp"
 "model/DiffDocument.h"
-"model/Document.h"
 "diffengine/DiffLine.h"
 "diffengine/DiffFileBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffDocument.o" "objects_debug/DiffDocument.debug"
-""
-1 1
-File
-1 "model/Document.cpp"
-"model/Document.cpp"
-"model/Document.h"
-Storm Shell Project (Dependencies)
-"objects_debug/Document.o" "objects_debug/Document.debug"
 ""
 1 1
 File
@@ -502,7 +487,6 @@ File
 "worker/WorkerStartupMsg.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
-"model/Document.h"
 "diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
@@ -749,13 +733,6 @@ Storm Shell Project (Dependencies)
 File
 2 "model/DiffDocument.h"
 "model/DiffDocument.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "model/Document.h"
-"model/Document.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

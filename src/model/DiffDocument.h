@@ -19,7 +19,7 @@ public:
   const char* GetRightFileName() const;
   
   size_t NumLines() const;
-  size_t MaxLineNumChars();
+  size_t MaxLineLength();
   
   const DiffLine* GetLeftLine(size_t index);
   const DiffLine* GetRightLine(size_t index);
