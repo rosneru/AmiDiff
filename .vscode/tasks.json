@@ -5,6 +5,9 @@
             "type": "shell",
             "label": "Make project",
             "command": "/usr/bin/make",
+            "args": [
+                "debug", "-j3"
+            ],
             "options": {
                 "cwd": "${workspaceFolder}"
             },
