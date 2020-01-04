@@ -124,11 +124,13 @@ $(OBJ_DIR)/%.o: $(SRC_ROOT)/%.cpp $(DEPS)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c -o $@ $< 
 
 # Building the executable
-# Note: After the build the debug informations are removed from the 
-#       executable using strip.
 $(APPNAME): $(OBJ)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
+
+# In the release build also strip the executable
+ifneq ($(BUILD),debug)
 	$(STRIP) $@
+endif
 
 # Cleaning build directory and executable
 clean:
@@ -136,4 +138,3 @@ clean:
 
 debug:
 	make "BUILD=debug"
-
