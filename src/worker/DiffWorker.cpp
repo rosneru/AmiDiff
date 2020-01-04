@@ -227,7 +227,7 @@ bool DiffWorker::Diff()
                                      m_RightDiffFile,
                                      m_RightSrcFilePath.C_str());
 
-  m_DiffWindow.SetLineNumbers(m_bShowLineNumbers);
+  m_DiffWindow.SetLineNumbersVisible(m_bShowLineNumbers);
   m_DiffWindow.Open(NULL, WindowBase::IP_Fill);
   m_DiffWindow.SetContent(m_pDiffDocument,
                           &m_DiffStartIdxsList,

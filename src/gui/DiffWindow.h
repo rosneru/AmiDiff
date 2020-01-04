@@ -31,7 +31,7 @@ public:
    * When called before opening, the line numbers of the files are
    * displayed depending on the given value.
    */
-  void SetLineNumbers(bool bEnabled);
+  void SetLineNumbersVisible(bool bEnabled);
 
 
   /**

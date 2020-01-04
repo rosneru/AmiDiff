@@ -87,7 +87,7 @@ DiffWindow::~DiffWindow()
 }
 
 
-void DiffWindow::SetLineNumbers(bool bEnabled)
+void DiffWindow::SetLineNumbersVisible(bool bEnabled)
 {
   m_bShowLineNumbers = bEnabled;
 }
