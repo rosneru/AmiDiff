@@ -102,7 +102,15 @@ INCLUDE=-I$(SRC_ROOT) \
 
 # Setting up compiler, flags and tools
 CXX=/opt/amiga/bin/m68k-amigaos-c++
-CXXFLAGS=-Wall -Wno-unused-function -fomit-frame-pointer -fno-rtti -fno-exceptions -noixemul -Os -Dlinux
+CXXFLAGS=-Wall -Wno-unused-function -fomit-frame-pointer -fno-rtti -fno-exceptions -noixemul -Dlinux
+
+ifeq ($(BUILD),debug)
+# "Debug" build - no optimization, and debugging symbols
+CXXFLAGS += -O0 -g
+else
+# "Release" build - optimization and no debug symbols
+CXXFLAGS += -Os
+endif
 
 STRIP=/opt/amiga/bin/m68k-amigaos-strip
 
@@ -125,4 +133,7 @@ $(APPNAME): $(OBJ)
 # Cleaning build directory and executable
 clean:
 	rm -rf $(OBJ_DIR) $(APPNAME)
+
+debug:
+	make "BUILD=debug"
 
