@@ -37,6 +37,7 @@ void DiffFileAmiga::Clear()
   // faster than e.g. calling 5000 single delete [] in random order.
 
   m_pDiffLinesArray = NULL;
+  m_NumLines = 0;
 }
 
 
