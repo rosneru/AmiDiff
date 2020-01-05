@@ -145,8 +145,8 @@ void DiffEngine::addDiffIdxToList(size_t diffIdx)
 
 void DiffEngine::createDiffFiles()
 {
-  long lineA = 0;
-  long lineB = 0;
+  size_t lineA = 0;
+  size_t lineB = 0;
 
   m_ADiff.SetNumLines(m_A.NumLines() + m_NumInsertedB);
   m_BDiff.SetNumLines(m_B.NumLines() + m_NumDeletedA);
@@ -447,9 +447,9 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
 
 void DiffEngine::optimize(DiffFileBase& data)
 {
-  long dataLength = data.NumLines();
-  long startPos = 0;
-  long endPos = 0;
+  size_t dataLength = data.NumLines();
+  size_t startPos = 0;
+  size_t endPos = 0;
 
   while(startPos < data.NumLines())
   {

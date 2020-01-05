@@ -19,7 +19,7 @@ class DiffFileBase
 public:
   DiffFileBase(bool& bCancelRequested);
 
-  long NumLines() const;
+  size_t NumLines() const;
 
   /**
    * IMPORTANT: This is and only should be used before the first
@@ -28,7 +28,7 @@ public:
    * A better solution has to be found in future to avoid this
    * unnatural behavior!
    */
-  void SetNumLines(long numLines);
+  void SetNumLines(size_t numLines);
 
   /**
    * Decrements the internal m_NumLines counter by 1.
@@ -69,7 +69,7 @@ protected:
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;
 
-  unsigned long m_NumLines;
+  size_t m_NumLines;
   DiffLine** m_pDiffLinesArray;
 
   /**

@@ -12,12 +12,12 @@ DiffFileBase::DiffFileBase(bool& bCancelRequested)
 }
 
 
-long DiffFileBase::NumLines() const
+size_t DiffFileBase::NumLines() const
 {
   return m_NumLines;
 }
 
-void DiffFileBase::SetNumLines(long numLines)
+void DiffFileBase::SetNumLines(size_t numLines)
 {
   m_NumLines = numLines;
   m_NextAddedLineIdx = 0;

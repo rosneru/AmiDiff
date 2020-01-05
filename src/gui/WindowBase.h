@@ -222,10 +222,10 @@ protected:
   struct Window* m_pWindow;
   bool m_bBorderless;
   bool m_bSmartRefresh;
-  ULONG m_WinLeft;
-  ULONG m_WinTop;
-  ULONG m_WinWidth;
-  ULONG m_WinHeight;
+  LONG m_WinLeft;
+  LONG m_WinTop;
+  LONG m_WinWidth;
+  LONG m_WinHeight;
   bool m_bInitialized;
   AMenu* m_pMenu;
   SimpleString m_Title;

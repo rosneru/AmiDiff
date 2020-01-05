@@ -325,7 +325,7 @@ void DiffWindow::XChangedHandler(size_t newX)
 void DiffWindow::YChangedHandler(size_t newY)
 {
   // Prevent to scroll below the last line
-  long yLimit = m_NumLines - m_MaxTextAreaLines;
+  size_t yLimit = m_NumLines - m_MaxTextAreaLines;
   if((yLimit > 0) && (newY > yLimit))
   {
     newY = yLimit;
@@ -445,7 +445,7 @@ void DiffWindow::NavigateToNextDiff()
 
   // Calculating the yLimit (max y allowed for scrolling) enables to
   // determine if we're already on the last page
-  long yLimit = m_NumLines - m_MaxTextAreaLines;
+  size_t yLimit = m_NumLines - m_MaxTextAreaLines;
   bool bAlreadyOnLastPage = false;
   if((yLimit > 0) && (m_Y >= yLimit))
   {
@@ -495,7 +495,7 @@ void DiffWindow::NavigateToPrevDiff()
   }
 
   // Calculating the yLimit (max y pos for scrolling)
-  long yLimit = m_NumLines - m_MaxTextAreaLines;
+  size_t yLimit = m_NumLines - m_MaxTextAreaLines;
 
   size_t* pItem = NULL;
 
@@ -955,7 +955,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // Set the left line's background color
   SetBPen(m_pWindow->RPort, diffStateToPen(pLeftLine->State()));
 
-  int numCharsToPrint = 0;
+  size_t numCharsToPrint = 0;
   if(numChars > 0)
   {
     numCharsToPrint = numChars;
@@ -1128,7 +1128,7 @@ LONG DiffWindow::diffStateToPen(DiffLine::LineState state)
 }
 
 
-size_t DiffWindow::scrollRight(int numChars)
+size_t DiffWindow::scrollRight(size_t numChars)
 {
   if(numChars < 1)
   {
@@ -1201,7 +1201,7 @@ size_t DiffWindow::scrollRight(int numChars)
 }
 
 
-size_t DiffWindow::scrollLeft(int numChars)
+size_t DiffWindow::scrollLeft(size_t numChars)
 {
   if(numChars < 1)
   {
@@ -1281,7 +1281,7 @@ size_t DiffWindow::scrollLeft(int numChars)
 }
 
 
-size_t DiffWindow::scrollDown(int numLines)
+size_t DiffWindow::scrollDown(size_t numLines)
 {
   if(numLines < 1)
   {
@@ -1325,7 +1325,7 @@ size_t DiffWindow::scrollDown(int numLines)
                  m_ScrollAreasYMax);
 
   // Fill the gap with the previous text lines
-  for(int i = 0; i < numLines; i++)
+  for(size_t i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y - numLines + i;
     const DiffLine* pLeftLine = m_pDocument->GetLeftLine(lineIndex);
@@ -1345,7 +1345,7 @@ size_t DiffWindow::scrollDown(int numLines)
 }
 
 
-size_t DiffWindow::scrollUp(int numLines)
+size_t DiffWindow::scrollUp(size_t numLines)
 {
   if(numLines < 1)
   {
@@ -1395,7 +1395,7 @@ size_t DiffWindow::scrollUp(int numLines)
                  m_ScrollArea2XMax,
                  m_ScrollAreasYMax);
 
-  for(int i = 0; i < numLines; i++)
+  for(size_t i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y + m_MaxTextAreaLines + i;
     const DiffLine* pLeftLine = m_pDocument->GetLeftLine(lineIndex);

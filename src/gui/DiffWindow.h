@@ -315,7 +315,7 @@ private:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when last char of longest line is displayed.
    */
-  size_t scrollLeft(int numChars);
+  size_t scrollLeft(size_t numChars);
 
   /**
    * Scrolls the text in both text areas right by numChars chars and
@@ -326,7 +326,7 @@ private:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when first char of text reached.
    */
-  size_t scrollRight(int numChars);
+  size_t scrollRight(size_t numChars);
 
   /**
    * Scrolls the text in both text areas down by numLines lines and
@@ -337,7 +337,7 @@ private:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when start of text reached.
    */
-  size_t scrollDown(int numLines);
+  size_t scrollDown(size_t numLines);
 
   /**
    * Scrolls the text in both text areas up by numLines lines and fills
@@ -348,7 +348,7 @@ private:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when end of text reached.
    */
-  size_t scrollUp(int numLines);
+  size_t scrollUp(size_t numLines);
 };
 
 

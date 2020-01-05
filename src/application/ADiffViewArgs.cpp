@@ -84,7 +84,7 @@ void ADiffViewArgs::readWorkbenchArgs()
   struct WBArg* pWbArg = pWbStartup->sm_ArgList;
   for(int i=0; i < pWbStartup->sm_NumArgs; i++)
   {
-    if((pWbArg[i].wa_Lock != NULL))
+    if((pWbArg[i].wa_Lock != 0))  // TODO check. Was 'NULL' before.
     {
       if(i == 0)
       {
@@ -101,10 +101,13 @@ void ADiffViewArgs::readWorkbenchArgs()
 
         if(pDiskObject != NULL)
         {
+          STRPTR pValue;
+
           // Trying to read the value of the PUBSCREEN tooltype
           // from the application icon
-          STRPTR pValue = (STRPTR) FindToolType(
-            pDiskObject->do_ToolTypes, "PUBSCREEN");
+          const char *pToolTypePubScreen = "PUBSCREEN";
+          pValue = (STRPTR) FindToolType(pDiskObject->do_ToolTypes,
+                                         (STRPTR)pToolTypePubScreen);
 
           if(pValue != NULL)
           {
@@ -115,8 +118,9 @@ void ADiffViewArgs::readWorkbenchArgs()
 
           // Trying to read the value of the DONOTASK tooltype
           // from the application icon
-          pValue = (STRPTR) FindToolType(
-            pDiskObject->do_ToolTypes, "DONOTASK");
+          const char *pToolTypeDontAsk = "DONOTASK";
+          pValue = (STRPTR) FindToolType(pDiskObject->do_ToolTypes, 
+                                         (STRPTR)pToolTypeDontAsk);
 
           if(pValue != NULL)
           {
@@ -128,8 +132,9 @@ void ADiffViewArgs::readWorkbenchArgs()
 
           // Trying to read the value of the NOLINENUMBERS tooltype
           // fromm the application icon
-          pValue = (STRPTR) FindToolType(
-            pDiskObject->do_ToolTypes, "NOLINENUMBERS");
+          const char *pToolTypeNoLineNums = "NOLINENUMBERS";
+          pValue = (STRPTR) FindToolType(pDiskObject->do_ToolTypes, 
+                                         (STRPTR)pToolTypeNoLineNums);
 
           if(pValue != NULL)
           {
