@@ -142,6 +142,8 @@ void DiffWindow::Resized()
 bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
                       InitialPosition initialPos)
 {
+  m_pDocument = NULL;
+  
   //
   // Calculate some initial values. It's possible that they are needed
   // in the initialize() method which is called from WindowBase::Open()
@@ -272,7 +274,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
 
 void DiffWindow::XChangedHandler(size_t newX)
 {
-  int delta = newX - m_X;
+  long delta = newX - m_X;
   if(delta == 0)
   {
     return;
@@ -325,7 +327,7 @@ void DiffWindow::XChangedHandler(size_t newX)
 void DiffWindow::YChangedHandler(size_t newY)
 {
   // Prevent to scroll below the last line
-  size_t yLimit = m_NumLines - m_MaxTextAreaLines;
+  long yLimit = m_NumLines - m_MaxTextAreaLines;
   if((yLimit > 0) && (newY > yLimit))
   {
     newY = yLimit;
@@ -955,7 +957,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // Set the left line's background color
   SetBPen(m_pWindow->RPort, diffStateToPen(pLeftLine->State()));
 
-  size_t numCharsToPrint = 0;
+  long numCharsToPrint = 0;
   if(numChars > 0)
   {
     numCharsToPrint = numChars;
