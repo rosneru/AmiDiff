@@ -243,6 +243,7 @@ bool DiffWorker::Diff()
   return true;
 }
 
+
 void DiffWorker::disposeDocuments()
 {
   if(m_pDiffDocument != NULL)
