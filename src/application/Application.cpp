@@ -60,7 +60,7 @@ Application::Application(ADiffViewArgs& args)
 {
   //
   // Note: VERSTAG above has been created with bumprev and is defined
-  // in included file ADiffView_rev.h. It contains a the program name
+  // in included file ADiffView_rev.h. It contains the program name
   // and version. Referencing it also means that the c:version command will
   // work for ADiffView.
   //
