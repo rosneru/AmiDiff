@@ -12,7 +12,9 @@ After cloning the needed submodules should be initialized:
 
 * Amiga with OS 3.1.4
 * NDK for AmigaOS 3.1
-* StormC 4
+* StormC 4 on Amiga
+* VisualStudio Code using bebbos gcc 6.5 toolchain on Windows 10 / 
+Debian WSL
 
 The project file src/ADiffView.¶ can be loaded with StormC4. 
 
