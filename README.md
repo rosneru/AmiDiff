@@ -2,13 +2,17 @@
 
 A graphical file compare / diff viewer for AmigaOS3.0+.
 
+The diff engine uses some code from Matthias Hertel. See the file 
+LICENSE-3RD-PARTY for more information.
+
+## Development environment ##
+
 After cloning the needed submodules should be initialized:
 
     git submodule init
     git submodule update
-
-
-## Development environment ##
+    
+ADiffView is developed using this tools:
 
 * Amiga with OS 3.1.4
 * NDK for AmigaOS 3.1
