@@ -12,7 +12,7 @@ After cloning the needed submodules should be initialized:
     git submodule init
     git submodule update
     
-ADiffView is developed using this tools:
+ADiffView is developed using these tools:
 
 * Amiga with OS 3.1.4
 * NDK for AmigaOS 3.1
