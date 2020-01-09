@@ -95,7 +95,7 @@ public:
   /**
    * Returns the VisualInfo needed for GadTools menus and Gadgets
    */
-  APTR* GadtoolsVisualInfo();
+  APTR GadtoolsVisualInfo();
 
   /**
    * Returns the pens to be used for drawing
@@ -111,7 +111,7 @@ private:
   ADiffViewPens m_Pens;
   ADiffViewSettings& m_Settings;
 
-  APTR* m_pVisualInfo;
+  APTR m_pVisualInfo;
   SimpleString m_Title;
 
   ScreenModeEasy m_ScreenModeEasy;
