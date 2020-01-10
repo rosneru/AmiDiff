@@ -79,6 +79,10 @@ private:
    * Handling messages from Intuition
    */
   void intuiEventLoop();
+
+  void handleAppWindowMessages();
+  void handleProgressMessages();
+  void handleIdcmpMessages();
 };
 
 

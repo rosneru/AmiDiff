@@ -283,116 +283,133 @@ void Application::intuiEventLoop()
 
     if(received & sigAppWin)
     {
-      struct AppMessage* pAppMsg = NULL;
-      while((pAppMsg = (struct AppMessage*)
-        GetMsg(m_pMsgPortAppWindow)) != NULL)
-      {
-        if(m_FilesWindow.IsOpen())
-        {
-          m_FilesWindow.HandleAppMessage(pAppMsg);
-        }
-
-        // All messages must be replied
-        ReplyMsg((struct Message*)pAppMsg);
-      }
+      handleAppWindowMessages();
     }
 
     if(received & sigProgress)
     {
-      struct ProgressMessage* pProgressMsg = NULL;
-      while((pProgressMsg = (struct ProgressMessage*)
-        GetMsg(m_pMsgPortProgress)) != NULL)
-      {
-        if(m_ProgressWindow.IsOpen())
-        {
-          m_ProgressWindow.HandleProgress(pProgressMsg);
-        }
-
-        // All messages must be replied
-        ReplyMsg(pProgressMsg);
-      }
+      handleProgressMessages();
     }
 
     if(received & sigIDCMP)
     {
-      struct IntuiMessage* pIdcmpMsg = NULL;
-      while ((pIdcmpMsg = GT_GetIMsg(m_pMsgPortIDCMP)) != NULL)
-      {
-        // Get all data we need from message
-        ULONG msgClass = pIdcmpMsg->Class;
-        UWORD msgCode = pIdcmpMsg->Code;
-        APTR msgIAddress = pIdcmpMsg->IAddress;
-        struct Window* msgWindow = pIdcmpMsg->IDCMPWindow;
-
-        // When we're through with a message, reply
-        GT_ReplyIMsg(pIdcmpMsg);
-
-        if(msgClass == IDCMP_MENUPICK)
-        {
-          //
-          // Menu-pick messages are handled here
-          //
-          UWORD menuNumber = msgCode;
-          struct MenuItem* pSelectedItem = NULL;
-
-          // Create an array of all menus to be searched for the item
-          AMenu* pMenus[] = {&m_Menu, &m_MenuDiffWindow};
-
-          // Iterate all those menus, trying to find the item
-          for(size_t i = 0; i < (sizeof pMenus / sizeof pMenus[0]); i++)
-          {
-            pSelectedItem = ItemAddress(pMenus[i]->IntuiMenu(), menuNumber);
-            if(pSelectedItem != NULL)
-            {
-              // Item found
-              break;
-            }
-          }
-
-          if(pSelectedItem != NULL)
-          {
-            // Getting the user data from selected menu item
-            APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
-            if(pUserData != NULL)
-            {
-              // The menu user_data contains a pointer to a Command
-              Command* pSelecedCommand = static_cast<Command*>(pUserData);
-
-              // Execute this command
-              pSelecedCommand->Execute();
-            }
-          }
-        }
-        else
-        {
-          //
-          // All other messages are handled in the appropriate window
-          //
-          if(m_DiffWindow.IsOpen() &&
-             msgWindow == m_DiffWindow.IntuiWindow())
-          {
-            m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
-          }
-          else if(m_FilesWindow.IsOpen() &&
-                  msgWindow == m_FilesWindow.IntuiWindow())
-          {
-            m_FilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
-          }
-          else if(m_ProgressWindow.IsOpen() &&
-                  msgWindow == m_ProgressWindow.IntuiWindow())
-          {
-            m_ProgressWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
-          }
-        }
-      }
+      handleIdcmpMessages();
     }
 
     if(m_NumWindowsOpen < 1)
     {
+      // Exitting as there are no windows open anymore.
       m_CmdQuit.Execute(); // Only sets m_bExitRequested to true.
-                           // But can also be executed from menu
-                           // or Cancel button of FilesWindow.
     }
   }
   while(!m_bExitRequested);
+}
+
+
+void Application::handleAppWindowMessages()
+{
+  struct AppMessage* pAppMsg = NULL;
+  while((pAppMsg = (struct AppMessage*)
+    GetMsg(m_pMsgPortAppWindow)) != NULL)
+  {
+    if(m_FilesWindow.IsOpen())
+    {
+      m_FilesWindow.HandleAppMessage(pAppMsg);
+    }
+
+    // All messages must be replied
+    ReplyMsg((struct Message*)pAppMsg);
+  }
+}
+
+
+void Application::handleProgressMessages()
+{
+  struct ProgressMessage* pProgressMsg = NULL;
+  while((pProgressMsg = (struct ProgressMessage*)
+    GetMsg(m_pMsgPortProgress)) != NULL)
+  {
+    if(m_ProgressWindow.IsOpen())
+    {
+      m_ProgressWindow.HandleProgress(pProgressMsg);
+    }
+
+    // All messages must be replied
+    ReplyMsg(pProgressMsg);
+  }
+}
+
+
+void Application::handleIdcmpMessages()
+{
+  struct IntuiMessage* pIdcmpMsg = NULL;
+  while ((pIdcmpMsg = GT_GetIMsg(m_pMsgPortIDCMP)) != NULL)
+  {
+    // Get all data we need from message
+    ULONG msgClass = pIdcmpMsg->Class;
+    UWORD msgCode = pIdcmpMsg->Code;
+    APTR msgIAddress = pIdcmpMsg->IAddress;
+    struct Window* msgWindow = pIdcmpMsg->IDCMPWindow;
+
+    // When we're through with a message, reply
+    GT_ReplyIMsg(pIdcmpMsg);
+
+    if(msgClass == IDCMP_MENUPICK)
+    {
+      //
+      // Menu-pick messages are handled here
+      //
+      UWORD menuNumber = msgCode;
+      struct MenuItem* pSelectedItem = NULL;
+
+      // Create an array of all menus to be searched for the item
+      AMenu* pMenus[] = {&m_Menu, &m_MenuDiffWindow};
+
+      // Iterate all those menus, trying to find the item
+      for(size_t i = 0; i < (sizeof pMenus / sizeof pMenus[0]); i++)
+      {
+        pSelectedItem = ItemAddress(pMenus[i]->IntuiMenu(), menuNumber);
+        if(pSelectedItem != NULL)
+        {
+          // Item found
+          break;
+        }
+      }
+
+      if(pSelectedItem != NULL)
+      {
+        // Getting the user data from selected menu item
+        APTR pUserData = GTMENUITEM_USERDATA(pSelectedItem);
+        if(pUserData != NULL)
+        {
+          // The menu user_data contains a pointer to a Command
+          Command* pSelecedCommand = static_cast<Command*>(pUserData);
+
+          // Execute this command
+          pSelecedCommand->Execute();
+        }
+      }
+    }
+    else
+    {
+      //
+      // All other messages are handled in the appropriate window
+      //
+      if(m_DiffWindow.IsOpen() &&
+          msgWindow == m_DiffWindow.IntuiWindow())
+      {
+        m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+      }
+      else if(m_FilesWindow.IsOpen() &&
+              msgWindow == m_FilesWindow.IntuiWindow())
+      {
+        m_FilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+      }
+      else if(m_ProgressWindow.IsOpen() &&
+              msgWindow == m_ProgressWindow.IntuiWindow())
+      {
+        m_ProgressWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+      }
+    }
+  }
 }
