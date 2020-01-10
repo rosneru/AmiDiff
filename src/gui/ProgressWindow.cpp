@@ -84,13 +84,13 @@ bool ProgressWindow::Open(const APTR pMenuItemDisableAtOpen,
 }
 
 
-bool ProgressWindow::HandleIdcmp(ULONG msgClass,
+void ProgressWindow::HandleIdcmp(ULONG msgClass,
                                  UWORD msgCode,
                                  APTR pItemAddress)
 {
   if(!IsOpen())
   {
-    return false;
+    return;
   }
 
   switch (msgClass)
@@ -109,8 +109,6 @@ bool ProgressWindow::HandleIdcmp(ULONG msgClass,
           GA_Disabled, TRUE,
           TAG_END);
       }
-
-      return true;
       break;
     }
 
@@ -119,17 +117,19 @@ bool ProgressWindow::HandleIdcmp(ULONG msgClass,
       // This handling is REQUIRED with GadTools
       GT_BeginRefresh(IntuiWindow());
       GT_EndRefresh(IntuiWindow(), TRUE);
-      return true;
       break;
     }
   }
-
-  return false;
 }
 
 
 void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
 {
+  if(!IsOpen())
+  {
+    return;
+  }
+
   if(pProgrMsg == NULL)
   {
     return;

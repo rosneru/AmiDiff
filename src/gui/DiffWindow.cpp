@@ -678,16 +678,11 @@ void DiffWindow::createGadgets()
 }
 
 
-bool DiffWindow::HandleIdcmp(ULONG msgClass,
+void DiffWindow::HandleIdcmp(ULONG msgClass,
                              UWORD msgCode,
                              APTR pItemAddress)
 {
-  if(ScrollbarWindow::HandleIdcmp(msgClass,
-                                  msgCode,
-                                  pItemAddress) == true)
-  {
-    return true;
-  }
+  ScrollbarWindow::HandleIdcmp(msgClass, msgCode, pItemAddress);
 
   switch (msgClass)
   {
@@ -695,33 +690,27 @@ bool DiffWindow::HandleIdcmp(ULONG msgClass,
     {
       struct Gadget* pGadget = (struct Gadget*) pItemAddress;
       handleGadgetEvent(pGadget);
-      return true;
       break;
     }
 
     case IDCMP_VANILLAKEY:
     {
       handleVanillaKey(msgCode);
-      return true;
       break;
     }
 
     case IDCMP_NEWSIZE:
     {
       Resized();
-      return true;
       break;
     }
 
     case IDCMP_CLOSEWINDOW:
     {
       Close();
-      return true;
       break;
     }
   }
-
-  return false;
 }
 
 

@@ -312,10 +312,7 @@ void Application::handleAppWindowMessages()
   while((pAppMsg = (struct AppMessage*)
     GetMsg(m_pMsgPortAppWindow)) != NULL)
   {
-    if(m_FilesWindow.IsOpen())
-    {
-      m_FilesWindow.HandleAppMessage(pAppMsg);
-    }
+    m_FilesWindow.HandleAppMessage(pAppMsg);
 
     // All messages must be replied
     ReplyMsg((struct Message*)pAppMsg);
@@ -329,10 +326,7 @@ void Application::handleProgressMessages()
   while((pProgressMsg = (struct ProgressMessage*)
     GetMsg(m_pMsgPortProgress)) != NULL)
   {
-    if(m_ProgressWindow.IsOpen())
-    {
-      m_ProgressWindow.HandleProgress(pProgressMsg);
-    }
+    m_ProgressWindow.HandleProgress(pProgressMsg);
 
     // All messages must be replied
     ReplyMsg(pProgressMsg);
@@ -389,27 +383,24 @@ void Application::handleIdcmpMessages()
           pSelecedCommand->Execute();
         }
       }
+
+      return;
     }
-    else
+
+    //
+    // All other idcmp messages are handled in the appropriate window
+    //
+    if(msgWindow == m_DiffWindow.IntuiWindow())
     {
-      //
-      // All other messages are handled in the appropriate window
-      //
-      if(m_DiffWindow.IsOpen() &&
-          msgWindow == m_DiffWindow.IntuiWindow())
-      {
-        m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
-      }
-      else if(m_FilesWindow.IsOpen() &&
-              msgWindow == m_FilesWindow.IntuiWindow())
-      {
-        m_FilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
-      }
-      else if(m_ProgressWindow.IsOpen() &&
-              msgWindow == m_ProgressWindow.IntuiWindow())
-      {
-        m_ProgressWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
-      }
+      m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+    }
+    else if(msgWindow == m_FilesWindow.IntuiWindow())
+    {
+      m_FilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+    }
+    else if(msgWindow == m_ProgressWindow.IntuiWindow())
+    {
+      m_ProgressWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
     }
   }
 }

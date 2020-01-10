@@ -266,11 +266,11 @@ void ScrollbarWindow::initialize()
 
 }
 
-bool ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddress)
+void ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddress)
 {
   if(!IsOpen())
   {
-    return false;
+    return;
   }
 
   switch (msgClass)
@@ -296,7 +296,6 @@ bool ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
           // to implement this abstract method
           XChangedHandler(newX);
 
-          return true;
           break;
         }
 
@@ -317,35 +316,30 @@ bool ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
           // to implement this abstract method
           YChangedHandler(newY);
 
-          return true;
           break;
         }
 
         case ScrollbarWindow::GID_ArrowLeft:
         {
           XDecrease(2);
-          return true;
           break;
         }
 
         case ScrollbarWindow::GID_ArrowRight:
         {
           XIncrease(2);
-          return true;
           break;
         }
 
         case ScrollbarWindow::GID_ArrowUp:
         {
           YDecrease(2);
-          return true;
           break;
         }
 
         case ScrollbarWindow::GID_ArrowDown:
         {
           YIncrease(2);
-          return true;
           break;
         }
 
@@ -358,28 +352,22 @@ bool ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
       if(msgCode == CURSORLEFT)
       {
         XDecrease(2);
-        return true;
       }
       else if(msgCode == CURSORRIGHT)
       {
         XIncrease(2);
-        return true;
       }
       else if(msgCode == CURSORDOWN)
       {
         YIncrease(2);
-        return true;
       }
       else if(msgCode == CURSORUP)
       {
         YDecrease(2);
-        return true;
       }
       break;
     }
   }
-
-  return false;
 }
 
 

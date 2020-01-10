@@ -89,13 +89,13 @@ bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen,
 }
 
 
-bool FilesWindow::HandleIdcmp(ULONG msgClass,
+void FilesWindow::HandleIdcmp(ULONG msgClass,
                               UWORD msgCode,
                               APTR pItemAddress)
 {
   if(!IsOpen())
   {
-    return false;
+    return;
   }
 
   switch (msgClass)
@@ -104,7 +104,6 @@ bool FilesWindow::HandleIdcmp(ULONG msgClass,
     {
       struct Gadget* pGadget = (struct Gadget*) pItemAddress;
       handleGadgetEvent(pGadget);
-      return true;
       break;
     }
 
@@ -113,7 +112,6 @@ bool FilesWindow::HandleIdcmp(ULONG msgClass,
       // This handling is REQUIRED with GadTools
       GT_BeginRefresh(m_pWindow);
       GT_EndRefresh(m_pWindow, TRUE);
-      return true;
       break;
     }
 
@@ -123,19 +121,15 @@ bool FilesWindow::HandleIdcmp(ULONG msgClass,
       {
         Close();
       }
-      return true;
       break;
     }
 
     case IDCMP_VANILLAKEY:
     {
       handleVanillaKey(msgCode);
-      return true;
       break;
     }
   }
-
-  return false;
 }
 
 

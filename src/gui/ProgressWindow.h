@@ -46,7 +46,7 @@ public:
    * @returns
    * If this event was handled: true; if it was not handled: false.
    */
-  virtual bool HandleIdcmp(ULONG msgClass,
+  virtual void HandleIdcmp(ULONG msgClass,
                            UWORD msgCode,
                            APTR pItemAddress);
 
