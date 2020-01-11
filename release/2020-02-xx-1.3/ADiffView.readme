@@ -10,20 +10,14 @@ Distribution: Aminet
 ABOUT
 =====
 
-ADiffView compares two ASCII text files and graphically displays the 
-differences in a window.
+ADiffView compares two ASCII text files and displays the differences 
+graphically in a window.
 
 Starting with version 1.1 a Myers diff algorithm is used. That's the 
 algorithm used by the *nix diff utils and git.
 
-A part of the implemented diff engine uses code from Matthias Hertel, 
-http://www.mathertel.de/.
-
-In particular moving the vector allocations out of a recursive function
-and making the algorithm work with 0-based indices (instead of being 
-1-based) are very helpful optimizations of Myers original algorithm.
-
-See the file LICENSE-3RD-PARTY.txt for the license of that code.
+The diff engine uses some code from Matthias Hertel. See the file 
+LICENSE-3RD-PARTY for more information.
 
 
 =======
