@@ -292,7 +292,7 @@ private:
                  WORD topEdge,
                  bool bHorizontallyScrolled = false,
                  int startIndex = -1,
-                 int numChars = 0);
+                 int count = 0);
 
   /**
    * Paints the basic window content: the 2 BevelBoxes for the original
@@ -307,6 +307,15 @@ private:
    * below the two text areas
    */
   void paintStatusBar();
+
+  /**
+   * Calculates how many chars of given DiffLine must be print 
+   * considering the current scroll position m_X, the current width of
+   * the text area and the startIndex.
+   */
+  LONG calcNumPrintChars(const DiffLine* pDiffLine, 
+                         int count,
+                         int startIndex);
 
   /**
    * Returns the appropriate pen for a given ColorName

@@ -895,7 +895,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
                            WORD topEdge,
                            bool bHorizontallyScrolled,
                            int startIndex,
-                           int numChars)
+                           int count)
 {
   size_t indent = 0;
 
@@ -904,13 +904,13 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     startIndex = m_X;
   }
 
-  if(numChars < 0)
+  if(count < 0)
   {
-    // A negative numChars means that the text is to be inserted
+    // A negative count means that the text is to be inserted
     // right-adjusted. So here an indent for the text is calculated
     // and numChars is made positive to get used below.
-    numChars = -numChars;
-    indent = (m_MaxTextAreaChars - numChars) * m_FontWidth_pix;
+    count = -count;
+    indent = (m_MaxTextAreaChars - count) * m_FontWidth_pix;
   }
 
   if(!bHorizontallyScrolled && m_bShowLineNumbers)
@@ -931,7 +931,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
       pLineNum = m_LineNumberEmpty.C_str();
     }
 
-    // Print the text
+    // Print left line's original line number
     Text(&m_RPortLineNum, pLineNum, m_LineNumsWidth_chars);
 
     // Move rastport cursor to start of right line numbers block
@@ -946,9 +946,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
       pLineNum = m_LineNumberEmpty.C_str();
     }
 
-    // Print the text
+    // Print right line's original line number
     Text(&m_RPortLineNum, pLineNum, m_LineNumsWidth_chars);
-
   }
 
   // Getting the RastPort for the left line to draw in. This depends on
@@ -956,38 +955,15 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // of the line.
   RastPort* pRPort = diffStateToRastPort(pLeftLine->State());
 
-  // Move rastport cursor to start of left line
-  ::Move(pRPort,
-         m_TextArea1Left + indent + m_LineNumsWidth_pix + 3,
-         topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
-
-  long numCharsToPrint = 0;
-  if(numChars > 0)
-  {
-    numCharsToPrint = numChars;
-  }
-  else
-  {
-    // Determine how many characters would be print theoretically
-    numCharsToPrint = pLeftLine->NumChars() - m_X;
-  }
-
-  if(numCharsToPrint > m_MaxTextAreaChars)
-  {
-    // Limit the number of printed chars to fit into the text area
-    numCharsToPrint = m_MaxTextAreaChars;
-  }
-
-  if((startIndex > -1) &&
-     (numCharsToPrint + startIndex > pLeftLine->NumChars()))
-  {
-    // Limit the number of printed chars to line length
-    numCharsToPrint = pLeftLine->NumChars() - startIndex;
-  }
-
+  long numCharsToPrint = calcNumPrintChars(pLeftLine, count, startIndex);
   if(numCharsToPrint > 0)
   {
-    // Left line is visible regarding current x scroll: print it
+    // Move rastport cursor to start of left line
+    ::Move(pRPort,
+          m_TextArea1Left + indent + m_LineNumsWidth_pix + 3,
+          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
+
+    // Print left line
     Text(pRPort,
          pLeftLine->Text() + startIndex,
          numCharsToPrint);
@@ -998,38 +974,15 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   // state of the line.
   pRPort = diffStateToRastPort(pRightLine->State());
 
-  // Move rastport cursor to start of right line
-  ::Move(pRPort,
-         m_TextArea2Left  + indent + m_LineNumsWidth_pix + 3,
-         topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
-
-  numCharsToPrint = 0;
-  if(numChars > 0)
-  {
-    numCharsToPrint = numChars;
-  }
-  else
-  {
-    // Determine how many characters would be print theoretically
-    numCharsToPrint = pRightLine->NumChars() - m_X;
-  }
-
-  if(numCharsToPrint > m_MaxTextAreaChars)
-  {
-    // Limit the number of printed chars to fit into the text area
-    numCharsToPrint = m_MaxTextAreaChars;
-  }
-
-  if((startIndex > -1) &&
-     (numCharsToPrint + startIndex > pRightLine->NumChars()))
-  {
-    // Limit the number of printed chars to line length
-    numCharsToPrint = pRightLine->NumChars() - startIndex;
-  }
-
+  numCharsToPrint = calcNumPrintChars(pRightLine, count, startIndex);
   if(numCharsToPrint > 0)
   {
-    // Right line is visible regarding current x scroll: print it
+    // Move rastport cursor to start of right line
+    ::Move(pRPort,
+          m_TextArea2Left  + indent + m_LineNumsWidth_pix + 3,
+          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
+
+    // Print the right line
     Text(pRPort,
          pRightLine->Text() + startIndex,
          numCharsToPrint);
@@ -1111,6 +1064,39 @@ void DiffWindow::paintStatusBar()
   intuiText.BackPen = m_AScreen.Pens().Red();
   intuiText.IText = (UBYTE*) m_DeletedText.C_str();
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+}
+
+
+LONG DiffWindow::calcNumPrintChars(const DiffLine* pDiffLine, 
+                                     int count,
+                                     int startIndex)
+{
+  LONG numCharsToPrint = 0;
+
+  if(count > 0)
+  {
+    numCharsToPrint = count;
+  }
+  else
+  {
+    // Determine how many characters would be print theoretically
+    numCharsToPrint = pDiffLine->NumChars() - m_X;
+  }
+
+  if(numCharsToPrint > m_MaxTextAreaChars)
+  {
+    // Limit the number of printed chars to fit into the text area
+    numCharsToPrint = m_MaxTextAreaChars;
+  }
+
+  if((startIndex > -1) &&
+     (numCharsToPrint + startIndex > pDiffLine->NumChars()))
+  {
+    // Limit the number of printed chars to line length
+    numCharsToPrint = pDiffLine->NumChars() - startIndex;
+  }
+
+  return numCharsToPrint;
 }
 
 
