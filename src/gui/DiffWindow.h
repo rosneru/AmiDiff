@@ -176,6 +176,13 @@ private:
   DiffDocument* m_pDocument;
   char m_EmptyChar;
 
+  struct RastPort m_RPortAPenBackgr;
+  struct RastPort m_RPortLineNum;
+  struct RastPort m_RPortTextDefault;
+  struct RastPort m_RPortTextRedBG;
+  struct RastPort m_RPortTextGreenBG;
+  struct RastPort m_RPortTextYellowBG;
+
   struct Gadget* m_pLastParentGadget;
   struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pGadTxtLeftFile;
@@ -304,7 +311,7 @@ private:
   /**
    * Returns the appropriate pen for a given ColorName
    */
-  LONG diffStateToPen(DiffLine::LineState state);
+  RastPort* diffStateToRastPort(DiffLine::LineState state);
 
   /**
    * Scrolls the text in both text areas left by numChars chars and

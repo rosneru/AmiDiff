@@ -166,6 +166,26 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
     return false;
   }
 
+  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
+
+  m_RPortAPenBackgr = *m_pWindow->RPort;
+  SetAPen(&m_RPortAPenBackgr, m_AScreen.Pens().Background());
+
+  m_RPortLineNum = *m_pWindow->RPort;
+  SetBPen(&m_RPortLineNum, m_AScreen.Pens().Gray());
+
+  m_RPortTextDefault = *m_pWindow->RPort;
+  SetBPen(&m_RPortTextDefault, m_AScreen.Pens().Background());
+
+  m_RPortTextRedBG = *m_pWindow->RPort;
+  SetBPen(&m_RPortTextRedBG, m_AScreen.Pens().Red());
+
+  m_RPortTextGreenBG = *m_pWindow->RPort;
+  SetBPen(&m_RPortTextGreenBG, m_AScreen.Pens().Green());
+
+  m_RPortTextYellowBG = *m_pWindow->RPort;
+  SetBPen(&m_RPortTextYellowBG, m_AScreen.Pens().Yellow());
+
   // Calculate some sizes which are only calculatable with window
   // already open
   calcSizes();
@@ -803,8 +823,7 @@ void DiffWindow::resizeGadgets()
   RemoveGList(m_pWindow, m_pGadtoolsContext, -1);
 
   // Clear the area on which the new gadgets will be drawn
-  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Background());
-  RectFill(m_pWindow->RPort,
+  RectFill(&m_RPortAPenBackgr,
            0,
            0,
            m_InnerWindowRight,
@@ -850,9 +869,6 @@ void DiffWindow::paintDocuments(bool bFromStart)
     m_X = 0;
     m_Y = 0;
   }
-
-  // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
 
   for(size_t i = m_Y; (i - m_Y) < m_MaxTextAreaLines; i++)
   {
@@ -903,11 +919,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     // Print the line numbers in left and right
     //
 
-    // Set the background color
-    SetBPen(m_pWindow->RPort, m_AScreen.Pens().Gray());
-
     // Move rastport cursor to start of left line numbers block
-    ::Move(m_pWindow->RPort,
+    ::Move(&m_RPortLineNum,
            m_TextArea1Left + indent + 2,
            topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
@@ -919,10 +932,10 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     }
 
     // Print the text
-    Text(m_pWindow->RPort, pLineNum, m_LineNumsWidth_chars);
+    Text(&m_RPortLineNum, pLineNum, m_LineNumsWidth_chars);
 
     // Move rastport cursor to start of right line numbers block
-    ::Move(m_pWindow->RPort,
+    ::Move(&m_RPortLineNum,
            m_TextArea2Left + indent + 2,
            topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
 
@@ -934,17 +947,19 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     }
 
     // Print the text
-    Text(m_pWindow->RPort, pLineNum, m_LineNumsWidth_chars);
+    Text(&m_RPortLineNum, pLineNum, m_LineNumsWidth_chars);
 
   }
 
+  // Getting the RastPort for the left line to draw in. This depends on
+  // the line background color which itself depends on the diff state 
+  // of the line.
+  RastPort* pRPort = diffStateToRastPort(pLeftLine->State());
+
   // Move rastport cursor to start of left line
-  ::Move(m_pWindow->RPort,
+  ::Move(pRPort,
          m_TextArea1Left + indent + m_LineNumsWidth_pix + 3,
          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
-
-  // Set the left line's background color
-  SetBPen(m_pWindow->RPort, diffStateToPen(pLeftLine->State()));
 
   long numCharsToPrint = 0;
   if(numChars > 0)
@@ -973,18 +988,20 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   if(numCharsToPrint > 0)
   {
     // Left line is visible regarding current x scroll: print it
-    Text(m_pWindow->RPort,
+    Text(pRPort,
          pLeftLine->Text() + startIndex,
          numCharsToPrint);
   }
 
+  // Getting the RastPort for the right line to draw in. This depends 
+  // on the line background color which itself depends on the diff 
+  // state of the line.
+  pRPort = diffStateToRastPort(pRightLine->State());
+
   // Move rastport cursor to start of right line
-  ::Move(m_pWindow->RPort,
+  ::Move(pRPort,
          m_TextArea2Left  + indent + m_LineNumsWidth_pix + 3,
          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
-
-  // Set the right line's background color
-  SetBPen(m_pWindow->RPort, diffStateToPen(pRightLine->State()));
 
   numCharsToPrint = 0;
   if(numChars > 0)
@@ -1013,7 +1030,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   if(numCharsToPrint > 0)
   {
     // Right line is visible regarding current x scroll: print it
-    Text(m_pWindow->RPort,
+    Text(pRPort,
          pRightLine->Text() + startIndex,
          numCharsToPrint);
   }
@@ -1058,8 +1075,7 @@ void DiffWindow::paintStatusBar()
   int left = m_TextArea1Left + 2;
 
   // Clear the status bar area
-  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Background());
-  RectFill(m_pWindow->RPort,
+  RectFill(&m_RPortAPenBackgr,
            0,
            top,
            m_InnerWindowRight,
@@ -1098,23 +1114,23 @@ void DiffWindow::paintStatusBar()
 }
 
 
-LONG DiffWindow::diffStateToPen(DiffLine::LineState state)
+RastPort* DiffWindow::diffStateToRastPort(DiffLine::LineState state)
 {
   if(state == DiffLine::Added)
   {
-    return m_AScreen.Pens().Green();
+    return &m_RPortTextGreenBG;
   }
   else if(state== DiffLine::Changed)
   {
-    return m_AScreen.Pens().Yellow();
+    return &m_RPortTextYellowBG;
   }
   else if(state == DiffLine::Deleted)
   {
-    return m_AScreen.Pens().Red();
+    return &m_RPortTextRedBG;
   }
   else
   {
-    return m_AScreen.Pens().Background();
+    return &m_RPortTextDefault;
   }
 }
 
@@ -1145,10 +1161,7 @@ size_t DiffWindow::scrollRight(size_t numChars)
   }
 
 
-  // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
-
-  // Set background color before scrolling
+  // Set background color before scrolling TODO remove
   SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area right by n * the height of one text line
@@ -1225,10 +1238,7 @@ size_t DiffWindow::scrollLeft(size_t numChars)
     numChars = m_pDocument->MaxLineLength() - (m_X + m_MaxTextAreaChars);
   }
 
-  // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
-
-  // Set background color before scrolling
+  // Set background color before scrolling TODO remove
   SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area left by n * the width of one char
@@ -1292,10 +1302,7 @@ size_t DiffWindow::scrollDown(size_t numLines)
     numLines = m_Y;
   }
 
-  // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
-
-  // Set background color before scrolling
+  // Set background color before scrolling TODO remove
   SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area downward by n * the height of one text line
@@ -1363,10 +1370,8 @@ size_t DiffWindow::scrollUp(size_t numLines)
     numLines = m_NumLines - (m_Y + m_MaxTextAreaLines);
   }
 
-  // Set foreground color for document painting
-  SetAPen(m_pWindow->RPort, m_AScreen.Pens().Text());
 
-  // Set background color before scrolling
+  // Set background color before scrolling TODO remove
   SetBPen(m_pWindow->RPort, m_AScreen.Pens().Background());
 
   // Move each text area upward by n * the height of one text line
