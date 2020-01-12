@@ -318,7 +318,8 @@ private:
                          int startIndex);
 
   /**
-   * Returns the appropriate pen for a given ColorName
+   * Returns the appropriate rastport for a DiffLine with given
+   * state to be printed in.
    */
   RastPort* diffStateToRastPort(DiffLine::LineState state);
 

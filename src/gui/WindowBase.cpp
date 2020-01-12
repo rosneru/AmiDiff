@@ -472,7 +472,7 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId,
       SYSIA_Which, sysImageId,
       SYSIA_Size, SYSISIZE_MEDRES,
       SYSIA_DrawInfo, m_AScreen.IntuiDrawInfo(),
-      TAG_END);
+      TAG_DONE);
 
   if(pImage != NULL)
   {

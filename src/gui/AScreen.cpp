@@ -93,7 +93,7 @@ bool AScreen::Open(ScreenModeEasy screenModeEasy,
   }
 
   // Get visual info from screen
-  m_pVisualInfo = (APTR) GetVisualInfo(m_pScreen, TAG_END);
+  m_pVisualInfo = (APTR) GetVisualInfo(m_pScreen, TAG_DONE);
   if(m_pVisualInfo == NULL)
   {
     Close();

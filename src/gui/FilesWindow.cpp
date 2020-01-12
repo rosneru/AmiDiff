@@ -241,7 +241,7 @@ void FilesWindow::handleVanillaKey(UWORD code)
       long numProcessed;
       numProcessed  = GT_GetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
                                         GA_Disabled, &disabled,
-                                        TAG_END);
+                                        TAG_DONE);
 
       if((numProcessed != 1) || (disabled == 1))
       {
@@ -261,7 +261,7 @@ void FilesWindow::handleVanillaKey(UWORD code)
       long numProcessed;
       numProcessed  = GT_GetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
                                         GA_Disabled, &disabled,
-                                        TAG_END);
+                                        TAG_DONE);
 
       if((numProcessed != 1) || (disabled == 1))
       {
@@ -339,7 +339,7 @@ void FilesWindow::initialize()
                                              pFakeGad,
                                              &newGadget,
                                              GT_Underscore, '_',
-                                             TAG_END);
+                                             TAG_DONE);
 
   // Row 2 contains a string gadget and selection button for the
   // filename of the left file
@@ -357,7 +357,7 @@ void FilesWindow::initialize()
                                    pLabelGadget,
                                    &newGadget,
                                    GTST_MaxChars, 200, // TODO remove constant
-                                   TAG_END);
+                                   TAG_DONE);
 
   // Creating the Select button
   newGadget.ng_LeftEdge   = btnSelectLeft;
@@ -369,7 +369,7 @@ void FilesWindow::initialize()
   m_pGadBtnSelectLeft = CreateGadget(BUTTON_KIND,
                                      m_pGadStrLeftFile,
                                      &newGadget,
-                                     TAG_END);
+                                     TAG_DONE);
 
   // Row 3  contains a label
   newGadget.ng_LeftEdge   = left + 2;
@@ -383,7 +383,7 @@ void FilesWindow::initialize()
                               m_pGadBtnSelectLeft,
                               &newGadget,
                               GT_Underscore, '_',
-                              TAG_END);
+                              TAG_DONE);
 
   // Row 4 contains a string gadget and selection button for the
   // filename of the right file
@@ -401,7 +401,7 @@ void FilesWindow::initialize()
                                     pLabelGadget,
                                     &newGadget,
                                     GTST_MaxChars, 200, // TODO remove constant
-                                    TAG_END);
+                                    TAG_DONE);
 
   // Creating the Select button
   newGadget.ng_LeftEdge   = btnSelectLeft;
@@ -413,7 +413,7 @@ void FilesWindow::initialize()
   m_pGadBtnSelectRight = CreateGadget(BUTTON_KIND,
                                       m_pGadStrRightFile,
                                       &newGadget,
-                                      TAG_END);
+                                      TAG_DONE);
 
   // Row 5 conatins the buttons Diff, Swap and Cancel
 
@@ -428,7 +428,7 @@ void FilesWindow::initialize()
                                m_pGadBtnSelectRight,
                                &newGadget,
                                GT_Underscore, '_',
-                               TAG_END);
+                               TAG_DONE);
 
   // Creating the Swap button
   newGadget.ng_LeftEdge   = (right - left - btnsWidth) / 2;
@@ -439,7 +439,7 @@ void FilesWindow::initialize()
                                m_pGadBtnDiff,
                                &newGadget,
                                GT_Underscore, '_',
-                               TAG_END);
+                               TAG_DONE);
 
 
   // Creating the Cancel button
@@ -451,7 +451,7 @@ void FilesWindow::initialize()
                                  m_pGadBtnSwap,
                                  &newGadget,
                                  GT_Underscore, '_',
-                                 TAG_END);
+                                 TAG_DONE);
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
@@ -604,23 +604,23 @@ void FilesWindow::enableAll()
 {
   GT_SetGadgetAttrs(m_pGadStrLeftFile, m_pWindow, NULL,
                     GA_Disabled, FALSE,
-                    TAG_END);
+                    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadStrRightFile, m_pWindow, NULL,
                     GA_Disabled, FALSE,
-                    TAG_END);
+                    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadBtnSelectLeft, m_pWindow, NULL,
                     GA_Disabled, FALSE,
-                    TAG_END);
+                    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadBtnSelectRight, m_pWindow, NULL,
                     GA_Disabled, FALSE,
-                    TAG_END);
+                    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadBtnCancel, m_pWindow, NULL,
                     GA_Disabled, FALSE,
-                    TAG_END);
+                    TAG_DONE);
 
   // Enable or disable the 'Diff' and 'Swap' buttons depending on some
   // conditions
@@ -633,31 +633,31 @@ void FilesWindow::disableAll()
 {
   GT_SetGadgetAttrs(m_pGadStrLeftFile, m_pWindow, NULL,
     GA_Disabled, TRUE,
-    TAG_END);
+    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadStrRightFile, m_pWindow, NULL,
     GA_Disabled, TRUE,
-    TAG_END);
+    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadBtnSelectLeft, m_pWindow, NULL,
     GA_Disabled, TRUE,
-    TAG_END);
+    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadBtnSelectRight, m_pWindow, NULL,
     GA_Disabled, TRUE,
-    TAG_END);
+    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadBtnCancel, m_pWindow, NULL,
     GA_Disabled, TRUE,
-    TAG_END);
+    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
     GA_Disabled, TRUE,
-    TAG_END);
+    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
     GA_Disabled, TRUE,
-    TAG_END);
+    TAG_DONE);
 
   // TODO disable menu item "Quit"
 }
@@ -684,14 +684,14 @@ void FilesWindow::enableIfPossible()
     // Enable "Diff" button
     GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
                       GA_Disabled, FALSE,
-                      TAG_END);
+                      TAG_DONE);
   }
   else
   {
     // Disable "Diff" button
     GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
                       GA_Disabled, TRUE,
-                      TAG_END);
+                      TAG_DONE);
   }
 
   if((strlen(pLeftStrGadgetText)) > 0
@@ -700,14 +700,14 @@ void FilesWindow::enableIfPossible()
     // Enable "Swap" button
     GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
                       GA_Disabled, FALSE,
-                      TAG_END);
+                      TAG_DONE);
   }
   else
   {
     // Disable "Swap" button
     GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
                       GA_Disabled, TRUE,
-                      TAG_END);
+                      TAG_DONE);
   }
 }
 
@@ -721,7 +721,7 @@ void FilesWindow::setStringGadgetText(struct Gadget* pGadget,
 
   GT_SetGadgetAttrs(pGadget, m_pWindow, NULL,
                     GTST_String, pText,
-                    TAG_END);
+                    TAG_DONE);
 }
 
 STRPTR FilesWindow::getStringGadgetText(struct Gadget* pGadget)
@@ -736,7 +736,7 @@ STRPTR FilesWindow::getStringGadgetText(struct Gadget* pGadget)
 
   numProcessed  = GT_GetGadgetAttrs(pGadget, m_pWindow, NULL,
                                     GTST_String, &pTextPointerStorage,
-                                    TAG_END);
+                                    TAG_DONE);
   if(numProcessed != 1)
   {
     return NULL;

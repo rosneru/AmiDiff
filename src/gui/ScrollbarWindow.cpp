@@ -148,7 +148,7 @@ void ScrollbarWindow::initialize()
                         GA_RightBorder, TRUE,
                         GA_Image, m_pDownArrowImage,
                         ICA_TARGET, ICTARGET_IDCMP,
-                        TAG_END, NULL);
+                        TAG_DONE, NULL);
 
   // Creating the arrow up image and getting its width and height
   m_pUpArrowImage = createImageObj(UPIMAGE, imageWidth, imageHeight);
@@ -167,7 +167,7 @@ void ScrollbarWindow::initialize()
               GA_RightBorder, TRUE,
               GA_Image, m_pUpArrowImage,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_END, NULL);
+              TAG_DONE, NULL);
 
   // Creating the vertical proportional gadget / slider
 	m_pYPropGadget = (struct Gadget*) 
@@ -188,7 +188,7 @@ void ScrollbarWindow::initialize()
               PGA_Top, 0, // TODO remove??
               PGA_Visible, 100,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_END, NULL);
+              TAG_DONE, NULL);
 
   // Creating the arrow left image and getting its width and height
   m_pRightArrowImage = createImageObj(RIGHTIMAGE, 
@@ -209,7 +209,7 @@ void ScrollbarWindow::initialize()
               GA_BottomBorder, TRUE,
               GA_Image, m_pRightArrowImage,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_END, NULL);
+              TAG_DONE, NULL);
 
   // Creating the arrow left image and getting its width and height
   m_pLeftArrowImage = createImageObj(LEFTIMAGE, imageWidth, imageHeight);
@@ -228,7 +228,7 @@ void ScrollbarWindow::initialize()
               GA_BottomBorder, TRUE,
               GA_Image, m_pLeftArrowImage,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_END, NULL);
+              TAG_DONE, NULL);
 
   // Creating the horizontal proportional gadget / slider
   m_pXPropGadget = (struct Gadget*) 
@@ -249,7 +249,7 @@ void ScrollbarWindow::initialize()
               //PGA_Left, 0,  // TODO remove??
               PGA_Visible, 100,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_END, NULL);
+              TAG_DONE, NULL);
 
   // Set the default title
   SetTitle("ScrollbarWindow");

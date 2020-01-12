@@ -78,7 +78,7 @@ bool ProgressWindow::Open(const APTR pMenuItemDisableAtOpen,
   // time the window was open
   GT_SetGadgetAttrs(m_pGadBtnCancel, IntuiWindow(), NULL,
     GA_Disabled, FALSE,
-    TAG_END);
+    TAG_DONE);
 
   return true;
 }
@@ -107,7 +107,7 @@ void ProgressWindow::HandleIdcmp(ULONG msgClass,
         // Disable the Cancel button
         GT_SetGadgetAttrs(m_pGadBtnCancel, IntuiWindow(), NULL,
           GA_Disabled, TRUE,
-          TAG_END);
+          TAG_DONE);
       }
       break;
     }
@@ -245,7 +245,7 @@ void ProgressWindow::initialize()
 
   m_pGadTxtDescription = CreateGadget(TEXT_KIND,
                                       pFakeGad, &newGadget,
-                                      TAG_END);
+                                      TAG_DONE);
 
   // Preparing the newGadget struct for the progress value gadget
   newGadget.ng_LeftEdge   = left;
@@ -268,7 +268,7 @@ void ProgressWindow::initialize()
   m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
                                  m_pGadTxtDescription, &newGadget,
                                  GT_Underscore, '_',
-                                 TAG_END);
+                                 TAG_DONE);
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget

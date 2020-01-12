@@ -27,7 +27,7 @@ bool AMenu::Create(struct NewMenu* pMenuDefinition)
   }
 
   // Create the menu
-  m_pMenu = CreateMenus(pMenuDefinition, TAG_END);
+  m_pMenu = CreateMenus(pMenuDefinition, TAG_DONE);
   if(m_pMenu == NULL)
   {
     // Failed to create the menu
@@ -37,7 +37,7 @@ bool AMenu::Create(struct NewMenu* pMenuDefinition)
   // Create the layout for the menu
   if(LayoutMenus(m_pMenu, m_Screen.GadtoolsVisualInfo(),
                  GTMN_NewLookMenus, TRUE, // Ignored before v39
-                 TAG_END) == FALSE)
+                 TAG_DONE) == FALSE)
   {
     // Failed to create the layout for the menu
     Dispose();

@@ -245,13 +245,13 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
                     m_pWindow,
                     NULL,
                     GTTX_Text, m_pDocument->GetLeftFileName(),
-                    TAG_END);
+                    TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadTxtRightFile,
                     m_pWindow,
                     NULL,
                     GTTX_Text, m_pDocument->GetRightFileName(),
-                    TAG_END);
+                    TAG_DONE);
 
 
   // Ensure that the gadgets are re-drawn
@@ -667,7 +667,7 @@ void DiffWindow::createGadgets()
                                    &newGadget,
                                    GTTX_Border, TRUE,
                                    GTTX_Text, pFileName,
-                                   TAG_END);
+                                   TAG_DONE);
 
   if(m_TextArea2Left > 0)
   {
@@ -694,7 +694,7 @@ void DiffWindow::createGadgets()
                                     &newGadget,
                                     GTTX_Border, TRUE,
                                     GTTX_Text, pFileName,
-                                    TAG_END);
+                                    TAG_DONE);
 }
 
 
@@ -843,7 +843,7 @@ void DiffWindow::resizeGadgets()
                       m_pWindow,
                       NULL,
                       GTTX_Text, m_pDocument->GetLeftFileName(),
-                      TAG_END);
+                      TAG_DONE);
   }
 
   if(m_pDocument != NULL)
@@ -852,7 +852,7 @@ void DiffWindow::resizeGadgets()
                       m_pWindow,
                       NULL,
                       GTTX_Text, m_pDocument->GetRightFileName(),
-                      TAG_END);
+                      TAG_DONE);
   }
 }
 

@@ -44,25 +44,25 @@ bool ADiffViewPens::Create()
     pColRed[0], pColRed[1], pColRed[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
-    TAG_END);
+    TAG_DONE);
 
   m_GreenPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
     pColGreen[0], pColGreen[1], pColGreen[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
-    TAG_END);
+    TAG_DONE);
 
   m_YellowPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
     pColYellow[0], pColYellow[1], pColYellow[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
-    TAG_END);
+    TAG_DONE);
 
   m_GrayPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
     pColGray[0], pColGray[1], pColGray[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
-    TAG_END);
+    TAG_DONE);
 
   return true;
 }
