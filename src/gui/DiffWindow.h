@@ -35,8 +35,8 @@ public:
 
 
   /**
-   * Reorganizes the window including re-calculating the scrollbars.
-   * If needed also re-drawing the obscured text areas.
+   * Reorganizes the window including re-calculating the scrollbars. If
+   * needed also re-drawing the obscured text areas.
    *
    * This should be called from the application if the signal
    * IDCMP_NEWSIZE for this window is received.
@@ -56,23 +56,20 @@ public:
   /**
    * Set the main content for the DiffWindow.
    *
-   * @param pLeftDocument
-   * The DiffDocument to be displayed on the left side. Should be
-   * created with the resulting left DiffFile after DiffEngine.Diff()
-   * has run successfully.
+   * @param pLeftDocument The DiffDocument to be displayed on the left
+   * side. Should be created with the resulting left DiffFile after
+   * DiffEngine.Diff() has run successfully.
    *
-   * @param pRightDocument
-   * The DiffDocument to be displayed on the right side. Should be
-   * created with the resulting right DiffFile after DiffEngine.Diff()
-   * has run successfully.
+   * @param pRightDocument The DiffDocument to be displayed on the right
+   * side. Should be created with the resulting right DiffFile after
+   * DiffEngine.Diff() has run successfully.
    *
-   * @param pDiffStartIdxs
-   * An array, containing the y-start-idx of each diff
+   * @param pDiffStartIdxs An array, containing the y-start-idx of each
+   * diff
    *
-   * @param numDifferences
-   * The number of differences. Summarized the changed, added and
-   * inserted lines. This is also the number of items of the array
-   * pDiffStartIdxs.
+   * @param numDifferences The number of differences. Summarized the
+   * changed, added and inserted lines. This is also the number of items
+   * of the array pDiffStartIdxs.
    */
   bool SetContent(DiffDocument* pDiffDocument,
                   LinkedList* pDiffStartIdxsList,
@@ -83,8 +80,8 @@ public:
 
 
   /**
-   * Set the number of changes to be displayed at the status bar.
-   * A reapienting of the status bar is triggered afterwards.
+   * Set the number of changes to be displayed at the status bar. A
+   * reapienting of the status bar is triggered afterwards.
    *
    */
   void SetNumChanges(int numAdded,
@@ -104,15 +101,15 @@ public:
                            APTR pItemAddress);
 
   /**
-   * This handles the x-changes triggered by the horizontal scrollbar
-   * of the window. It is called from the handleIDCMP() method of
+   * This handles the x-changes triggered by the horizontal scrollbar of
+   * the window. It is called from the handleIDCMP() method of
    * ScrollbarWindow.
    */
   void XChangedHandler(size_t newX);
 
   /**
-   * This handles the y-changes triggered by the vertical scrollbar
-   * of the window. It is called from the handleIDCMP() method of
+   * This handles the y-changes triggered by the vertical scrollbar of
+   * the window. It is called from the handleIDCMP() method of
    * ScrollbarWindow.
    */
   void YChangedHandler(size_t newY);
@@ -121,12 +118,11 @@ public:
    * Increases the X position of the text by the given amount and
    * performs a scrolling as needed.
    *
-   * @param numChars
-   * Amount to increase the x-position by
+   * @param numChars Amount to increase the x-position by
    *
-   * @param bTriggeredByScrollPot
-   * If the call is triggered by moving the scrollbar pot: true
-   * If the call is triggered by other sources: false
+   * @param bTriggeredByScrollPot If the call is triggered by moving the
+   * scrollbar pot: true If the call is triggered by other sources:
+   * false
    */
   void XIncrease(size_t numChars, bool bTriggeredByScrollPot);
 
@@ -134,12 +130,11 @@ public:
    * Decreases the X position of the text by the given amount and
    * performs a scrolling as needed.
    *
-   * @param numChars
-   * Amount to decrease the x-position by
+   * @param numChars Amount to decrease the x-position by
    *
-   * @param bTriggeredByScrollPot
-   * If the call is triggered by moving the scrollbar pot: true
-   * If the call is triggered by other sources: false
+   * @param bTriggeredByScrollPot If the call is triggered by moving the
+   * scrollbar pot: true If the call is triggered by other sources:
+   * false
    */
   void XDecrease(size_t numChars, bool bTriggeredByScrollPot);
 
@@ -147,12 +142,11 @@ public:
    * Increases the Y position of the text by the given amount and
    * performs a scrolling as needed.
    *
-   * @param numLines
-   * Amount to increase the y-position by
+   * @param numLines Amount to increase the y-position by
    *
-   * @param bTriggeredByScrollPot
-   * If the call is triggered by moving the scrollbar pot: true
-   * If the call is triggered by other sources: false
+   * @param bTriggeredByScrollPot If the call is triggered by moving the
+   * scrollbar pot: true If the call is triggered by other sources:
+   * false
    */
   void YIncrease(size_t numLines, bool bTriggeredByScrollPot);
 
@@ -160,12 +154,11 @@ public:
    * Decreases the Y position of the text by the given amount and
    * performs a scrolling as needed.
    *
-   * @param numLines
-   * Amount to decrease the y-position by
+   * @param numLines Amount to decrease the y-position by
    *
-   * @param bTriggeredByScrollPot
-   * If the call is triggered by moving the scrollbar pot: true
-   * If the call is triggered by other sources: false
+   * @param bTriggeredByScrollPot If the call is triggered by moving the
+   * scrollbar pot: true If the call is triggered by other sources:
+   * false
    */
   void YDecrease(size_t numLines, bool bTriggeredByScrollPot);
 
@@ -265,8 +258,8 @@ private:
 
   /**
    * Resizes the gadgets. Should be called after the window size has
-   * changed. As gadget-resizing or re-positioning is not supported
-   * with Gadtools, the gadgets are re-created completely.
+   * changed. As gadget-resizing or re-positioning is not supported with
+   * Gadtools, the gadgets are re-created completely.
    */
   void resizeGadgets();
 
@@ -275,11 +268,10 @@ private:
    * The file is displayed starting from current text position m_Y as
    * first line at the very top of the text area.
    *
-   * @param fromStart
-   * When true: Before printing the documents the line and column
-   *   indices m_X and m_Y are reset to 0. So the document will be
-   *   displayed from start.
-   * When false: Printing starts at current position m_Y.
+   * @param fromStart When true: Before printing the documents the line
+   * and column indices m_X and m_Y are reset to 0. So the document will
+   * be displayed from start. When false: Printing starts at current
+   * position m_Y.
    */
   void paintDocuments(bool bFromStart = true);
 
