@@ -1,4 +1,4 @@
-#ifdef linux
+#ifdef LINUX
   #include <new>
 #else
   #include <new.h> // Needed for 'replacement new', see below.

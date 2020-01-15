@@ -102,7 +102,7 @@ INCLUDE=-I$(SRC_ROOT) \
 
 # Setting up compiler, flags and tools
 CXX=/opt/amiga/bin/m68k-amigaos-c++
-CXXFLAGS=-Wall -Wno-unused-function -fomit-frame-pointer -fno-rtti -fno-exceptions -noixemul -Dlinux
+CXXFLAGS=-Wall -Wno-unused-function -fomit-frame-pointer -fno-rtti -fno-exceptions -noixemul -D LINUX
 
 ifeq ($(BUILD),debug)
 # "Debug" build - no optimization, and debugging symbols
