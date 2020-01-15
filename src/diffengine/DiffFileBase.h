@@ -15,28 +15,13 @@
  */
 class DiffFileBase
 {
+  friend class DiffEngine;
+
   // Constructor
 public:
   DiffFileBase(bool& bCancelRequested);
 
   size_t NumLines() const;
-
-  /**
-   * IMPORTANT: This is and only should be used before the first
-   * AddString() call when filling the difference represenation file.
-   *
-   * A better solution has to be found in future to avoid this
-   * unnatural behavior!
-   */
-  void SetNumLines(size_t numLines);
-
-  /**
-   * Decrements the internal m_NumLines counter by 1.
-   *
-   * IMPORTANT: This is and only should be used from DiffEngine when
-   * changing added / deleted lines into changed lines.
-   */
-  void DecrementNumLines();
 
   DiffLine* GetLine(size_t idx) const;
 
@@ -85,6 +70,26 @@ protected:
 
 private:
   const char m_EmptyText;
+
+  /**
+   * IMPORTANT: This is only used by friend class DiffEngine. There it
+   * is called before the first AddString() call to initialize the diff
+   * file's m_NumLines value to the m_NumLines of according source file
+   * + the initial number of differences.
+   *
+   * Subsequently, when converting deleted / inserted lines to changed
+   * lines, the DiffEngine will probably reduce this initial m_NumLines
+   * value by calling @ref decrementNumLines.
+   */
+  void setNumLines(size_t numLines);
+
+  /**
+   * Decrements the internal m_NumLines counter by 1.
+   *
+   * IMPORTANT: This is only used from the DiffEngine when changing
+   * added / deleted lines into changed lines.
+   */
+  void decrementNumLines();
 };
 
 #endif

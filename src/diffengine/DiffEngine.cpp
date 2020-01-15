@@ -148,8 +148,8 @@ void DiffEngine::createDiffFiles()
   size_t lineA = 0;
   size_t lineB = 0;
 
-  m_ADiff.SetNumLines(m_A.NumLines() + m_NumInsertedB);
-  m_BDiff.SetNumLines(m_B.NumLines() + m_NumDeletedA);
+  m_ADiff.setNumLines(m_A.NumLines() + m_NumInsertedB);
+  m_BDiff.setNumLines(m_B.NumLines() + m_NumDeletedA);
 
   // Clearing these variables as from now on they should not count
   //single lines anymore. Instead they should count difference blocks
@@ -194,8 +194,8 @@ void DiffEngine::createDiffFiles()
       //       into a changed line, left and right files each are
       //       getting shorter by 1 line. This is because the
       //       empty-line on other side isn't needed anymore.
-      m_ADiff.DecrementNumLines();
-      m_BDiff.DecrementNumLines();
+      m_ADiff.decrementNumLines();
+      m_BDiff.decrementNumLines();
 
       if(!bBlockAlreadyAdded)
       {

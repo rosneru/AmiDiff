@@ -17,17 +17,6 @@ size_t DiffFileBase::NumLines() const
   return m_NumLines;
 }
 
-void DiffFileBase::SetNumLines(size_t numLines)
-{
-  m_NumLines = numLines;
-  m_NextAddedLineIdx = 0;
-}
-
-void DiffFileBase::DecrementNumLines()
-{
-  m_NumLines--;
-}
-
 
 DiffLine* DiffFileBase::GetLine(size_t idx) const
 {
@@ -50,6 +39,7 @@ const char* DiffFileBase::GetLineText(size_t idx) const
   return GetLine(idx)->Text();
 }
 
+
 const char* DiffFileBase::GetLineNum(size_t idx) const
 {
   if(idx >= m_NumLines)
@@ -66,6 +56,7 @@ const char* DiffFileBase::GetLineNum(size_t idx) const
   return pLineNum;
 }
 
+
 unsigned long DiffFileBase::GetLineToken(size_t idx) const
 {
   DiffLine* pLine = GetLine(idx);
@@ -77,6 +68,7 @@ unsigned long DiffFileBase::GetLineToken(size_t idx) const
   return GetLine(idx)->Token();
 }
 
+
 DiffLine::LineState DiffFileBase::GetLineState(size_t idx) const
 {
   if(idx >= m_NumLines)
@@ -86,6 +78,7 @@ DiffLine::LineState DiffFileBase::GetLineState(size_t idx) const
 
   return GetLine(idx)->State();
 }
+
 
 void DiffFileBase::SetLineState(size_t idx, DiffLine::LineState state)
 {
@@ -99,16 +92,19 @@ void DiffFileBase::SetLineState(size_t idx, DiffLine::LineState state)
   pDiffLine->SetState(state);
 }
 
+
 void DiffFileBase::AddBlankLine()
 {
   static const char* pEmptyLine = "";
   AddString(pEmptyLine, DiffLine::Normal, NULL);
 }
 
+
 void DiffFileBase::SetProgressReporter(ProgressReporter* pProgressReporter)
 {
   m_pProgressReporter = pProgressReporter;
 }
+
 
 size_t DiffFileBase::numDigits(size_t number)
 {
@@ -119,4 +115,17 @@ size_t DiffFileBase::numDigits(size_t number)
   if ( number >= 10        ) { digits += 1; }
 
   return digits;
+}
+
+
+void DiffFileBase::setNumLines(size_t numLines)
+{
+  m_NumLines = numLines;
+  m_NextAddedLineIdx = 0;
+}
+
+
+void DiffFileBase::decrementNumLines()
+{
+  m_NumLines--;
 }
