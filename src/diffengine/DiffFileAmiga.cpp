@@ -4,6 +4,8 @@
   #include <new.h> // Needed for 'replacement new', see below.
 #endif
 
+#include <string.h>
+
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
 

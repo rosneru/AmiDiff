@@ -34,7 +34,7 @@ public:
    * Decrements the internal m_NumLines counter by 1.
    *
    * IMPORTANT: This is and only should be used from DiffEngine when
-   * turning added / deleted linesinto changed lines.
+   * changing added / deleted lines into changed lines.
    */
   void DecrementNumLines();
 
