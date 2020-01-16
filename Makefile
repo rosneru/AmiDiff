@@ -10,8 +10,18 @@
 
 # Setting up application name and directories
 APPNAME=ADiffView
+APPNAME_DEBUG = ADiffView_debug
+
 SRC_ROOT=src
-OBJ_DIR=obj
+
+OBJ_DIR=obj_release
+OBJ_DIR_DEBUG=obj_debug
+
+# Change some values for debug build
+ifeq ($(BUILD),debug)
+OBJ_DIR=$(OBJ_DIR_DEBUG)
+APPNAME=$(APPNAME_DEBUG)
+endif
 
 DEPS=$(SRC_ROOT)/amigautils/AmigaFile.h \
 		$(SRC_ROOT)/amigautils/AslFileRequest.h \
@@ -103,16 +113,17 @@ INCLUDE=-I$(SRC_ROOT) \
 # Setting up compiler, flags and tools
 CXX=/opt/amiga/bin/m68k-amigaos-c++
 CXXFLAGS=-Wall -Wno-unused-function -fomit-frame-pointer -fno-rtti -fno-exceptions -noixemul -D LINUX
+LD=/opt/amiga/bin/m68k-amigaos-ld
+LDFLAGS=
 
 ifeq ($(BUILD),debug)
 # "Debug" build - no optimization, and debugging symbols
-CXXFLAGS += -O0 -g
+CXXFLAGS += -O0 -g -Wl,--amiga-debug-hunk -ldebug
+#LDFLAGS += -Wl,--amiga-debug-hunk -ldebug
 else
 # "Release" build - optimization and no debug symbols
-CXXFLAGS += -Os
+CXXFLAGS += -Os -s
 endif
-
-STRIP=/opt/amiga/bin/m68k-amigaos-strip
 
 # Replace prefix SRC_ROOT with OBJ_DIR for object file target
 OBJ=$(patsubst $(SRC_ROOT)/%,$(OBJ_DIR)/%,$(_OBJ))
@@ -123,18 +134,18 @@ $(OBJ_DIR)/%.o: $(SRC_ROOT)/%.cpp $(DEPS)
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -c -o $@ $< 
 
-# Building the executable
+
 $(APPNAME): $(OBJ)
 	$(CXX) $(CXXFLAGS) $(INCLUDE) -o $@ $^
 
-# In the release build also strip the executable
-ifneq ($(BUILD),debug)
-	$(STRIP) $@
-endif
-
-# Cleaning build directory and executable
-clean:
-	rm -rf $(OBJ_DIR) $(APPNAME)
 
 debug:
 	make "BUILD=debug"
+
+release:
+	make
+
+# Cleaning build directory and executable
+.PHONY: clean
+clean:
+	rm -rf $(OBJ_DIR) $(OBJ_DIR_DEBUG) $(APPNAME) $(APPNAME_DEBUG)
