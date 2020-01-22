@@ -140,10 +140,10 @@ $(APPNAME): $(OBJ)
 
 
 debug:
-	make "BUILD=debug"
+	+make "BUILD=debug"
 
 release:
-	make
+	+make
 
 # Cleaning build directory and executable
 .PHONY: clean
