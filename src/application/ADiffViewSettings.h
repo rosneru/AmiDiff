@@ -31,28 +31,28 @@ public:
   ULONG* GetColorArray();
 
   /**
-   * Retun the start of the array for color red.
+   * Return the start of the array for color red.
    * 
    * Use it with the indexes [0], [1], [2] for single rgb components.
    */
   ULONG* GetColorRedArray();
 
   /**
-   * Retun the start of the array for color green.
+   * Return the start of the array for color green.
    * 
    * Use it with the indexes [0], [1], [2] for single rgb components.
    */
   ULONG* GetColorGreenArray();
 
   /**
-   * Retun the start of the array for color yellow.
+   * Return the start of the array for color yellow.
    * 
    * Use it with the indexes [0], [1], [2] for single rgb components.
    */
   ULONG* GetColorYellowArray();
 
   /**
-   * Retun the start of the array for color gray.
+   * Return the start of the array for color gray.
    * 
    * Use it with the indexes [0], [1], [2] for single rgb components.
    */
