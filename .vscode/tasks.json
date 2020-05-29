@@ -6,14 +6,15 @@
             "label": "Make project",
             "command": "/usr/bin/make",
             "args": [
-                "debug", "-j3"
+                "-j3"
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}/build/"
             },
-            "problemMatcher": [
-                "$gcc"
-            ],
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": "autoDetect"
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true

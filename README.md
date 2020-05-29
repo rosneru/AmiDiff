@@ -1,26 +1,56 @@
-# README #
+# README
 
-A graphical file compare / diff viewer for AmigaOS3.0+.
+## About
 
-The diff engine uses some code from Matthias Hertel. See the file 
+ADiffView is a file compare tool for AmigaOS3.0+. It compares plain
+ASCII text files and displays the two compared files next to each other.
+
+It is using the linear spaced optimized Myers' Diff Algorithm. The diff
+engine also uses some code from Matthias Hertel. See the file
 LICENSE-3RD-PARTY for more information.
 
-## Development environment ##
+## Development environment
+
+ADiffView is developed using these tools:
+
+* on Amiga using NDK3.1 and StormC4 (gcc / C++ mode)
+* on Linux using using cmake, bebbos gcc 6.5 toolchain and Visual 
+Studio Code 
+
+
+## Howto build
+
+### Initialize the submodules
 
 After cloning the needed submodules should be initialized:
 
     git submodule init
     git submodule update
+
+### Build on Linux
+
+The Makefile to build this project must be created with cmake:
+
+- create a directory *build* next to the *src* directory
+- enter this directory
+
+To prepare cmake release build type from within this directory
+
+    cmake -DCMAKE_BUILD_TYPE=Release ..
+
+Or to prepare a debug build
+
+    cmake -DCMAKE_BUILD_TYPE=Debug ..
+
+After cmake is finsihed the project can be build by simply typing 
     
-ADiffView is developed using these tools:
+    make 
 
-* Amiga with OS 3.1.4
-* NDK for AmigaOS 3.1
-* StormC 4 on Amiga
-* VisualStudio Code using bebbos gcc 6.5 toolchain on Windows 10 / 
-Debian WSL
+from inside the build directory.
 
+#### VSCode integration
+
+### Build on Amiga
 The project file src/ADiffView.¶ can be loaded with StormC4. 
 
-In StormC4/gcc mode it should compile without errors and just a few 
-warnings..
+Then it should compile without errors and just a few warnings..

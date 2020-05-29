@@ -6,12 +6,20 @@
                 "/opt/amiga/m68k-amigaos/ndk-include/",
                 "/opt/amiga/m68k-amigaos/sys-include/",
                 "/opt/amiga/m68k-amigaos/include/",
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src/amigautils",
+                "${workspaceFolder}/src/application",
+                "${workspaceFolder}/src/commands",
+                "${workspaceFolder}/src/diffengine",
+                "${workspaceFolder}/src/gui",
+                "${workspaceFolder}/src/model",
+                "${workspaceFolder}/src/oscottlibs",
+                "${workspaceFolder}/src/worker"
             ],
             "defines": ["LINUX"],
             "compilerPath": "/opt/amiga/bin/m68k-amigaos-gcc",
             "cStandard": "c99",
-            "cppStandard": "c++17",
+            "cppStandard": "c++98",
             "intelliSenseMode": "clang-x64"
         }
     ],
