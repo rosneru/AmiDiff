@@ -80,17 +80,6 @@ public:
 
 
   /**
-   * Set the number of changes to be displayed at the status bar. A
-   * reapienting of the status bar is triggered afterwards.
-   *
-   */
-  void SetNumChanges(int numAdded,
-                     int numChanged,
-                     int numDeleted);
-
-
-
-  /**
    * Handles given IDCMP event.
    *
    * @returns
