@@ -244,13 +244,13 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, m_pDocument->GetLeftFileName(),
+                    GTTX_Text, m_pDocument->LeftFileName(),
                     TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadTxtRightFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, m_pDocument->GetRightFileName(),
+                    GTTX_Text, m_pDocument->RightFileName(),
                     TAG_DONE);
 
 
@@ -259,7 +259,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
 
   if(m_bShowLineNumbers)
   {
-    const DiffLine* pLine = m_pDocument->GetLeftLine(0);
+    const DiffLine* pLine = m_pDocument->LeftLine(0);
     const char* pLineNum = pLine->LineNum();
 
     m_LineNumsWidth_chars = strlen(pLineNum);
@@ -654,7 +654,7 @@ void DiffWindow::createGadgets()
   const char* pFileName = NULL;
   if(m_pDocument != NULL)
   {
-    pFileName = m_pDocument->GetRightFileName();
+    pFileName = m_pDocument->RightFileName();
   }
   else
   {
@@ -681,7 +681,7 @@ void DiffWindow::createGadgets()
   pFileName = NULL;
   if(m_pDocument != NULL)
   {
-    pFileName = m_pDocument->GetRightFileName();
+    pFileName = m_pDocument->RightFileName();
   }
   else
   {
@@ -842,7 +842,7 @@ void DiffWindow::resizeGadgets()
     GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                       m_pWindow,
                       NULL,
-                      GTTX_Text, m_pDocument->GetLeftFileName(),
+                      GTTX_Text, m_pDocument->LeftFileName(),
                       TAG_DONE);
   }
 
@@ -851,7 +851,7 @@ void DiffWindow::resizeGadgets()
     GT_SetGadgetAttrs(m_pGadTxtRightFile,
                       m_pWindow,
                       NULL,
-                      GTTX_Text, m_pDocument->GetRightFileName(),
+                      GTTX_Text, m_pDocument->RightFileName(),
                       TAG_DONE);
   }
 }
@@ -877,8 +877,8 @@ void DiffWindow::paintDocuments(bool bFromStart)
       break;
     }
 
-    const DiffLine* pLeftLine = m_pDocument->GetLeftLine(i);
-    const DiffLine* pRightLine = m_pDocument->GetRightLine(i);
+    const DiffLine* pLeftLine = m_pDocument->LeftLine(i);
+    const DiffLine* pRightLine = m_pDocument->RightLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -1170,8 +1170,8 @@ size_t DiffWindow::scrollRight(size_t numChars)
   // fill the gap with the previous chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
-    const DiffLine* pLeftLine = m_pDocument->GetLeftLine(i);
-    const DiffLine* pRightLine = m_pDocument->GetRightLine(i);
+    const DiffLine* pLeftLine = m_pDocument->LeftLine(i);
+    const DiffLine* pRightLine = m_pDocument->RightLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -1247,8 +1247,8 @@ size_t DiffWindow::scrollLeft(size_t numChars)
   // Fill the gap with the following chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
-    const DiffLine* pLeftLine = m_pDocument->GetLeftLine(i);
-    const DiffLine* pRightLine = m_pDocument->GetRightLine(i);
+    const DiffLine* pLeftLine = m_pDocument->LeftLine(i);
+    const DiffLine* pRightLine = m_pDocument->RightLine(i);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -1312,8 +1312,8 @@ size_t DiffWindow::scrollDown(size_t numLines)
   for(size_t i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y - numLines + i;
-    const DiffLine* pLeftLine = m_pDocument->GetLeftLine(lineIndex);
-    const DiffLine* pRightLine = m_pDocument->GetRightLine(lineIndex);
+    const DiffLine* pLeftLine = m_pDocument->LeftLine(lineIndex);
+    const DiffLine* pRightLine = m_pDocument->RightLine(lineIndex);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {
@@ -1380,8 +1380,8 @@ size_t DiffWindow::scrollUp(size_t numLines)
   for(size_t i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y + m_MaxTextAreaLines + i;
-    const DiffLine* pLeftLine = m_pDocument->GetLeftLine(lineIndex);
-    const DiffLine* pRightLine = m_pDocument->GetRightLine(lineIndex);
+    const DiffLine* pLeftLine = m_pDocument->LeftLine(lineIndex);
+    const DiffLine* pRightLine = m_pDocument->RightLine(lineIndex);
 
     if(pLeftLine == NULL || pRightLine == NULL)
     {

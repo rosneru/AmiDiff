@@ -19,12 +19,12 @@ DiffDocument::~DiffDocument()
 
 }
 
-const char* DiffDocument::GetLeftFileName() const
+const char* DiffDocument::LeftFileName() const
 {
   return m_pLeftFileName;
 }
 
-const char* DiffDocument::GetRightFileName() const
+const char* DiffDocument::RightFileName() const
 {
   return m_pRightFileName;
 }
@@ -62,13 +62,13 @@ size_t DiffDocument::MaxLineLength()
 }
 
 
-const DiffLine* DiffDocument::GetLeftLine(size_t index)
+const DiffLine* DiffDocument::LeftLine(size_t index) const
 {
   return m_LeftFile.GetLine(index);
 }
 
 
-const DiffLine* DiffDocument::GetRightLine(size_t index)
+const DiffLine* DiffDocument::RightLine(size_t index) const
 {
   return m_RightFile.GetLine(index);
 }

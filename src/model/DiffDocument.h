@@ -15,14 +15,14 @@ public:
 
   virtual ~DiffDocument();
 
-  const char* GetLeftFileName() const;
-  const char* GetRightFileName() const;
+  const char* LeftFileName() const;
+  const char* RightFileName() const;
   
   size_t NumLines() const;
   size_t MaxLineLength();
   
-  const DiffLine* GetLeftLine(size_t index);
-  const DiffLine* GetRightLine(size_t index);
+  const DiffLine* LeftLine(size_t index) const;
+  const DiffLine* RightLine(size_t index) const;
 
 private:
   DiffFileAmiga& m_LeftFile;

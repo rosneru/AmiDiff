@@ -32,14 +32,14 @@ public:
   void Start();
 
   /**
-   * Picks the elapsed time.
+   * Picks the elapsed time in milli seconds.
    *
-   * @param bKeepStartPoint
-   * When true stop watch is not reset when picking. That means that
-   * the former start time will be used at next pick again.
+   * @param bKeepStartPoint When true, the stop watch is not reset when
+   * picking. That means that the former start time will be used at next
+   * pick again.
    *
    * @returns
-   * Elapsed time in milliseconds or -1.0 if an error occurred
+   * Elapsed time in milliseconds or -1 if an error occurred.
    */
   long Pick(bool bKeepStartPoint = false);
 
@@ -56,4 +56,3 @@ private:
 };
 
 #endif
-
