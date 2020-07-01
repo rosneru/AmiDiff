@@ -167,7 +167,7 @@ bool Application::Run()
 
   //
   // Fill the GadTools menu structs, supplying pointers to the commands
-  // as user data. So in event loop no complicated evalution is needed
+  // as user data. So in event loop no complicated evaluation is needed
   // to detect which menu item was selected. It will be a command, and
   // only its Execute() method must be called.
   //
