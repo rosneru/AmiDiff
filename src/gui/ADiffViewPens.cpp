@@ -34,10 +34,10 @@ bool ADiffViewPens::Create()
     return false;
   }
 
-  ULONG* pColRed = m_Settings.GetColorRedArray();
-  ULONG* pColGreen = m_Settings.GetColorGreenArray();
-  ULONG* pColYellow = m_Settings.GetColorYellowArray();
-  ULONG* pColGray = m_Settings.GetColorGrayArray();
+  const ULONG* pColRed = m_Settings.GetColorRedArray();
+  const ULONG* pColGreen = m_Settings.GetColorGreenArray();
+  const ULONG* pColYellow = m_Settings.GetColorYellowArray();
+  const ULONG* pColGray = m_Settings.GetColorGrayArray();
 
   // Find the best pens for the neded colors
   m_RedPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,

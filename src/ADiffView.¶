@@ -372,12 +372,12 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "gui/AScreen.cpp"
-"gui/AScreen.cpp"
+1 "gui/ScreenBase.cpp"
+"gui/ScreenBase.cpp"
 "gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
-"objects_debug/AScreen.o" "objects_debug/AScreen.debug"
+"objects_debug/ScreenBase.o" "objects_debug/ScreenBase.debug"
 ""
 1 1
 File

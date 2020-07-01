@@ -35,28 +35,28 @@ public:
    * 
    * Use it with the indexes [0], [1], [2] for single rgb components.
    */
-  ULONG* GetColorRedArray();
+  const ULONG* GetColorRedArray() const;
 
   /**
    * Return the start of the array for color green.
    * 
    * Use it with the indexes [0], [1], [2] for single rgb components.
    */
-  ULONG* GetColorGreenArray();
+  const ULONG* GetColorGreenArray() const;
 
   /**
    * Return the start of the array for color yellow.
    * 
    * Use it with the indexes [0], [1], [2] for single rgb components.
    */
-  ULONG* GetColorYellowArray();
+  const ULONG* GetColorYellowArray() const;
 
   /**
    * Return the start of the array for color gray.
    * 
    * Use it with the indexes [0], [1], [2] for single rgb components.
    */
-  ULONG* GetColorGrayArray();
+  const ULONG* GetColorGrayArray() const;
 
 private:
   // It's useful to store the colors at a central place

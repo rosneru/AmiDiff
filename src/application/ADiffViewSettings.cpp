@@ -50,25 +50,25 @@ const ULONG* ADiffViewSettings::GetColorArray() const
 }
 
 
-ULONG* ADiffViewSettings::GetColorRedArray()
+const ULONG* ADiffViewSettings::GetColorRedArray() const
 {
   return m_ColorArray.elem + 1;
 }
 
 
-ULONG* ADiffViewSettings::GetColorGreenArray()
+const ULONG* ADiffViewSettings::GetColorGreenArray() const
 {
   return m_ColorArray.elem + 4;
 }
 
 
-ULONG* ADiffViewSettings::GetColorYellowArray()
+const ULONG* ADiffViewSettings::GetColorYellowArray() const
 {
   return m_ColorArray.elem + 7;
 }
 
 
-ULONG* ADiffViewSettings::GetColorGrayArray()
+const ULONG* ADiffViewSettings::GetColorGrayArray() const
 {
   return m_ColorArray.elem + 10;
 }

@@ -16,7 +16,7 @@
 class ProgressWindow : public WindowBase
 {
 public:
-  ProgressWindow(ScreenBase& appScreen, 
+  ProgressWindow(ScreenBase*& pScreen, 
                  struct MsgPort*& pIdcmpMsgPort,
                  int& numOpenWindows, 
                  bool& bCancelRequested);

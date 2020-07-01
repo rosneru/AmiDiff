@@ -16,7 +16,7 @@
 class AMenu
 {
 public:
-  AMenu(ScreenBase& screen);
+  AMenu(ScreenBase*& pScreen);
   ~AMenu();
 
   /**
@@ -84,7 +84,7 @@ public:
                       APTR pUserDataMenuItemToEnable);
 
 private:
-  ScreenBase& m_Screen;
+  ScreenBase*& m_pScreen;
   struct Menu* m_pMenu;
 
 

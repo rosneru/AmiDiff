@@ -32,20 +32,22 @@ Application::Application(ADiffViewArgs& args)
                  m_pMsgPortProgress,
                  m_bCancelRequested,
                  m_bExitAllowed),
-    m_ClonedWorkbenchScreen(m_Settings, 3),
+    m_ClonedWorkbenchScreen(m_Settings, VERS, 3),
     m_JoinedPublicScreen(m_Settings, args.PubScreenName()),
-    m_Menu(m_Screen),
-    m_MenuDiffWindow(m_Screen),
-    m_DiffWindow(m_Screen,
+    m_pDiffWindowScreen(NULL),
+    m_pFilesWindowScreen(NULL),
+    m_Menu(m_pDiffWindowScreen),
+    m_MenuDiffWindow(m_pFilesWindowScreen),
+    m_DiffWindow(m_pDiffWindowScreen,
                  m_pMsgPortIDCMP,
                  m_NumWindowsOpen),
-    m_FilesWindow(m_Screen,
+    m_FilesWindow(m_pFilesWindowScreen,
                   m_pMsgPortIDCMP,
                   m_NumWindowsOpen,
                   m_LeftFilePath,
                   m_RightFilePath,
                   m_CmdDiff),
-    m_ProgressWindow(m_Screen,
+    m_ProgressWindow(m_pFilesWindowScreen,
                      m_pMsgPortIDCMP,
                      m_NumWindowsOpen,
                      m_bCancelRequested),
@@ -138,15 +140,11 @@ bool Application::Run()
   //
   // Prepare the screen
   //
-  m_Screen.SetTitle(VERS);  // VERS created with bumprev,
-                            // see ADiffView_rev.h
-
   bool bFilesWindowIsAppWindow = false;
   if(m_Args.PubScreenName().Length() > 0)
   {
     // Use a given public screen
-    m_Screen.Open(ScreenBase::SME_UseNamedPubScreen,
-                  m_Args.PubScreenName().C_str());
+    m_pDiffWindowScreen = &m_JoinedPublicScreen;
 
     // If running on Workbench screen, set FilesWindow as an AppWindow
     if(m_Args.PubScreenName() == "Workbench")
@@ -156,11 +154,15 @@ bool Application::Run()
   }
   else
   {
-    // Open a Workbench clone screen with 8 colors
-    m_Screen.Open(ScreenBase::SME_CloneWorkbench8Col);
+    // Use a Workbench clone screen (with 8 colors; see constructor)
+    m_pDiffWindowScreen = &m_ClonedWorkbenchScreen;
   }
 
-  if (!m_Screen.IsOpen())
+  // TODO Fix for new arg WBOPENFILESWINDOW
+  m_pFilesWindowScreen = m_pDiffWindowScreen;
+
+  m_pDiffWindowScreen->Open();
+  if (!m_pDiffWindowScreen->IsOpen())
   {
     m_ErrorMsg = "Failed to open the screen.";
     return false;

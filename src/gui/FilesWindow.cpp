@@ -17,13 +17,13 @@
 #include "FilesWindow.h"
 
 
-FilesWindow::FilesWindow(AScreen& appScreen,
+FilesWindow::FilesWindow(ScreenBase*& pScreen,
                          struct MsgPort*& pIdcmpMsgPort,
                          int& numWindowsOpen,
                          SimpleString& leftFilePath,
                          SimpleString& rightFilePath,
                          const Command& cmdDiff)
-  : WindowBase(appScreen, pIdcmpMsgPort, numWindowsOpen),
+  : WindowBase(pScreen, pIdcmpMsgPort, numWindowsOpen),
     m_AslRequest(m_pWindow),
     m_bFileRequestOpen(false),
     m_LeftFilePath(leftFilePath),
@@ -285,12 +285,17 @@ void FilesWindow::handleVanillaKey(UWORD code)
 
 void FilesWindow::initialize()
 {
+  if(m_pScreen == NULL)
+  {
+    return;
+  }
+
   //
   // Calculate some basic values
   //
-  m_WinWidth = (WORD)m_AScreen.IntuiScreen()->Width / 2;
-  m_FontHeight = m_AScreen.FontHeight();
-  WORD barHeight = m_AScreen.IntuiScreen()->WBorTop + m_FontHeight + 2;
+  m_WinWidth = (WORD)m_pScreen->IntuiScreen()->Width / 2;
+  m_FontHeight = m_pScreen->FontHeight();
+  WORD barHeight = m_pScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
 
   WORD hSpace = 10;
   WORD vSpace = 10;
@@ -302,7 +307,7 @@ void FilesWindow::initialize()
   WORD btnsWidth = 60;
   WORD btnsHeight = m_FontHeight + 6;
 
-  WORD btnSelectWidth = TextLength(&m_AScreen.IntuiScreen()->RastPort, "...", 3) + 8;
+  WORD btnSelectWidth = TextLength(&m_pScreen->IntuiScreen()->RastPort, "...", 3) + 8;
   WORD btnSelectLeft = right - btnSelectWidth;
 
   WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
@@ -326,8 +331,8 @@ void FilesWindow::initialize()
   struct NewGadget newGadget;
 
   // Row 1  contains  a label
-  newGadget.ng_TextAttr   = m_AScreen.IntuiTextAttr();
-  newGadget.ng_VisualInfo = m_AScreen.GadtoolsVisualInfo();
+  newGadget.ng_TextAttr   = m_pScreen->IntuiTextAttr();
+  newGadget.ng_VisualInfo = m_pScreen->GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadWidth;

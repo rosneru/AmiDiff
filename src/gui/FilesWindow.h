@@ -22,7 +22,7 @@
 class FilesWindow : public WindowBase
 {
 public:
-  FilesWindow(ScreenBase& appScreen,
+  FilesWindow(ScreenBase*& pScreen,
               struct MsgPort*& pIdcmpMsgPort,
               int& numWindowsOpen,
               SimpleString& leftFilePath,

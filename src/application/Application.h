@@ -65,6 +65,8 @@ private:
   DiffWorker m_DiffWorker;
   ClonedWorkbenchScreen m_ClonedWorkbenchScreen;
   JoinedPublicScreen m_JoinedPublicScreen;
+  ScreenBase* m_pDiffWindowScreen;
+  ScreenBase* m_pFilesWindowScreen;
   AMenu m_Menu;
   AMenu m_MenuDiffWindow;
   DiffWindow m_DiffWindow;

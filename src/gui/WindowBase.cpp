@@ -9,10 +9,10 @@
 #include "WindowBase.h"
 
 
-WindowBase::WindowBase(AScreen& appScreen,
+WindowBase::WindowBase(ScreenBase*& pScreen,
                        struct MsgPort*& pIdcmpMsgPort,
                        int& numOpenWindows)
-  : m_AScreen(appScreen),
+  : m_pScreen(pScreen),
     m_pIdcmpMsgPort(pIdcmpMsgPort),
     m_pWindow(NULL),
     m_bBorderless(false),
@@ -47,6 +47,11 @@ WindowBase::~WindowBase()
 bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
                       InitialPosition initialPos)
 {
+  if(m_pScreen == NULL)
+  {
+    return false;
+  }
+
   m_pMenuItemDisableAtOpen = pMenuItemDisableAtOpen;
   m_InitialPosition = initialPos;
 
@@ -69,9 +74,9 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
   //
   // Calculating window size etc in dependency of screen dimensions
   //
-  int screenWidth = m_AScreen.IntuiScreen()->Width;
-  int screenHeight = m_AScreen.IntuiScreen()->Height;
-  int screenBarHeight = m_AScreen.IntuiScreen()->BarHeight;
+  int screenWidth = m_pScreen->IntuiScreen()->Width;
+  int screenHeight = m_pScreen->IntuiScreen()->Height;
+  int screenBarHeight = m_pScreen->IntuiScreen()->BarHeight;
 
   switch(m_InitialPosition)
   {
@@ -142,7 +147,7 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
                              WA_Height, m_WinHeight,
                              WA_Title, (ULONG) m_Title.C_str(),
                              WA_Activate, TRUE,
-                             WA_PubScreen, (UBYTE*) m_AScreen.IntuiScreen(),
+                             WA_PubScreen, (UBYTE*) m_pScreen->IntuiScreen(),
                              WA_Flags, m_WindowFlags,
                              WA_MinWidth, 120,
                              WA_MinHeight, 90,
@@ -376,12 +381,6 @@ struct Window* WindowBase::IntuiWindow()
 }
 
 
-AScreen& WindowBase::WindowScreen()
-{
-  return m_AScreen;
-}
-
-
 void WindowBase::SetMenu(AMenu* pMenu)
 {
   if(pMenu == NULL)
@@ -467,11 +466,16 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId,
                                          ULONG& width,
                                          ULONG& height)
 {
+  if(m_pScreen == NULL)
+  {
+    return NULL;
+  }
+
   struct Image* pImage = (struct Image*) NewObject(
       NULL, SYSICLASS,
       SYSIA_Which, sysImageId,
       SYSIA_Size, SYSISIZE_MEDRES,
-      SYSIA_DrawInfo, m_AScreen.IntuiDrawInfo(),
+      SYSIA_DrawInfo, m_pScreen->IntuiDrawInfo(),
       TAG_DONE);
 
   if(pImage != NULL)

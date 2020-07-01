@@ -200,12 +200,6 @@ public:
 
 
   /**
-   * Returns the app screen object on which the window is opened or
-   * NULL if window is not open.
-   */
-  ScreenBase& WindowScreen();
-
-  /**
    * Set the menu strip for the window.
    * 
    * If the window open, the old menu strip will be replaced by the 
@@ -217,7 +211,7 @@ public:
   void SetMenu(AMenu* pMenu);
 
 protected:
-  ScreenBase& m_AScreen;
+  ScreenBase*& m_pScreen;
   struct MsgPort*& m_pIdcmpMsgPort;
   struct Window* m_pWindow;
   bool m_bBorderless;
@@ -246,7 +240,7 @@ protected:
    * successful opening and decreased at each closing of a window.
    *
    */
-  WindowBase(ScreenBase& appScreen, 
+  WindowBase(ScreenBase*& pScreen, 
              struct MsgPort*& pIdcmpMsgPort,
              int& numOpenWindows);
 

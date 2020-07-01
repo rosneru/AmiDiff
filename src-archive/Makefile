@@ -87,7 +87,7 @@ _OBJ=$(SRC_ROOT)/amigautils/AmigaFile.o \
 		$(SRC_ROOT)/diffengine/Pair.o \
 		$(SRC_ROOT)/gui/ADiffViewPens.o \
 		$(SRC_ROOT)/gui/AMenu.o \
-		$(SRC_ROOT)/gui/AScreen.o \
+		$(SRC_ROOT)/gui/ScreenBase.o \
 		$(SRC_ROOT)/gui/DiffWindow.o \
 		$(SRC_ROOT)/gui/FilesWindow.o \
 		$(SRC_ROOT)/gui/ProgressWindow.o \

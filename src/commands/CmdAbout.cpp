@@ -1,7 +1,7 @@
 #include "MessageBox.h"
 #include "CmdAbout.h"
 
-CmdAbout::CmdAbout(AScreen& screen,
+CmdAbout::CmdAbout(ScreenBase& screen,
                    AMenu& menu,
                    const char* pVersTag)
   : m_Screen(screen),

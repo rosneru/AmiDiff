@@ -4,8 +4,8 @@
 #include "AMenu.h"
 
 
-AMenu::AMenu(AScreen& screen)
-  : m_Screen(screen),
+AMenu::AMenu(ScreenBase*& pScreen)
+  : m_pScreen(pScreen),
     m_pMenu(NULL)
 {
 
@@ -20,7 +20,12 @@ AMenu::~AMenu()
 
 bool AMenu::Create(struct NewMenu* pMenuDefinition)
 {
-  if(m_Screen.GadtoolsVisualInfo() == NULL)
+  if(m_pScreen == NULL)
+  {
+    return false;
+  }
+
+  if(m_pScreen->GadtoolsVisualInfo() == NULL)
   {
     // No VisualInfo available to create the menu
     return false;
@@ -35,7 +40,7 @@ bool AMenu::Create(struct NewMenu* pMenuDefinition)
   }
 
   // Create the layout for the menu
-  if(LayoutMenus(m_pMenu, m_Screen.GadtoolsVisualInfo(),
+  if(LayoutMenus(m_pMenu, m_pScreen->GadtoolsVisualInfo(),
                  GTMN_NewLookMenus, TRUE, // Ignored before v39
                  TAG_DONE) == FALSE)
   {
