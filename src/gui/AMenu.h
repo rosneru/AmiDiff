@@ -4,7 +4,7 @@
 #include <intuition/intuition.h>
 #include <intuition/screens.h>
 #include <libraries/gadtools.h>
-#include "AScreen.h"
+#include "ScreenBase.h"
 
 /**
  * Class for the application menu. It can be created with a GadTools
@@ -16,7 +16,7 @@
 class AMenu
 {
 public:
-  AMenu(AScreen& screen);
+  AMenu(ScreenBase& screen);
   ~AMenu();
 
   /**
@@ -84,7 +84,7 @@ public:
                       APTR pUserDataMenuItemToEnable);
 
 private:
-  AScreen& m_Screen;
+  ScreenBase& m_Screen;
   struct Menu* m_pMenu;
 
 

@@ -3,7 +3,7 @@
 
 #include <exec/ports.h>
 
-#include "AScreen.h"
+#include "ScreenBase.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
 
@@ -16,7 +16,7 @@
 class ProgressWindow : public WindowBase
 {
 public:
-  ProgressWindow(AScreen& appScreen, 
+  ProgressWindow(ScreenBase& appScreen, 
                  struct MsgPort*& pIdcmpMsgPort,
                  int& numOpenWindows, 
                  bool& bCancelRequested);

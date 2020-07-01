@@ -32,7 +32,8 @@ Application::Application(ADiffViewArgs& args)
                  m_pMsgPortProgress,
                  m_bCancelRequested,
                  m_bExitAllowed),
-    m_Screen(m_Settings),
+    m_ClonedWorkbenchScreen(m_Settings, 3),
+    m_JoinedPublicScreen(m_Settings, args.PubScreenName()),
     m_Menu(m_Screen),
     m_MenuDiffWindow(m_Screen),
     m_DiffWindow(m_Screen,
@@ -144,8 +145,8 @@ bool Application::Run()
   if(m_Args.PubScreenName().Length() > 0)
   {
     // Use a given public screen
-    m_Screen.Open(AScreen::SME_UseNamedPubScreen,
-                  m_Args.PubScreenName());
+    m_Screen.Open(ScreenBase::SME_UseNamedPubScreen,
+                  m_Args.PubScreenName().C_str());
 
     // If running on Workbench screen, set FilesWindow as an AppWindow
     if(m_Args.PubScreenName() == "Workbench")
@@ -156,7 +157,7 @@ bool Application::Run()
   else
   {
     // Open a Workbench clone screen with 8 colors
-    m_Screen.Open(AScreen::SME_CloneWorkbench8Col);
+    m_Screen.Open(ScreenBase::SME_CloneWorkbench8Col);
   }
 
   if (!m_Screen.IsOpen())

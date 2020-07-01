@@ -47,7 +47,7 @@ DEPS=$(SRC_ROOT)/amigautils/AmigaFile.h \
 		$(SRC_ROOT)/diffengine/Pair.h \
 		$(SRC_ROOT)/gui/ADiffViewPens.h \
 		$(SRC_ROOT)/gui/AMenu.h \
-		$(SRC_ROOT)/gui/AScreen.h \
+		$(SRC_ROOT)/gui/ScreenBase.h \
 		$(SRC_ROOT)/gui/DiffWindow.h \
 		$(SRC_ROOT)/gui/FilesWindow.h \
 		$(SRC_ROOT)/gui/ProgressWindow.h \

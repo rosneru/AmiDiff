@@ -5,7 +5,7 @@
 
 ADiffViewPens::ADiffViewPens(struct Screen*& pScreen,
                              struct DrawInfo*& pDrawInfo,
-                             ADiffViewSettings& settings)
+                             const ADiffViewSettings& settings)
   : m_pScreen(pScreen),
     m_pDrawInfo(pDrawInfo),
     m_Settings(settings),

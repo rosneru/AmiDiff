@@ -13,7 +13,8 @@
 #include "ADiffViewArgs.h"
 #include "ADiffViewSettings.h"
 #include "AMenu.h"
-#include "AScreen.h"
+#include "ClonedWorkbenchScreen.h"
+#include "JoinedPublicScreen.h"
 #include "CmdAbout.h"
 #include "CmdOpenWindow.h"
 #include "CmdDiff.h"
@@ -54,7 +55,7 @@ private:
   bool m_bExitAllowed;
 
   /**
-   * IMPORTANT NOTE
+   * IMPORTANT:
    *
    * The order of the following items is IMPORTANT - Because the
    * destructor calls will be in reverse order.
@@ -62,7 +63,8 @@ private:
    */
 
   DiffWorker m_DiffWorker;
-  AScreen m_Screen;
+  ClonedWorkbenchScreen m_ClonedWorkbenchScreen;
+  JoinedPublicScreen m_JoinedPublicScreen;
   AMenu m_Menu;
   AMenu m_MenuDiffWindow;
   DiffWindow m_DiffWindow;

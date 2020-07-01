@@ -6,7 +6,7 @@
 #include <workbench/workbench.h>
 
 #include "AslFileRequest.h"
-#include "AScreen.h"
+#include "ScreenBase.h"
 #include "Command.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
@@ -22,7 +22,7 @@
 class FilesWindow : public WindowBase
 {
 public:
-  FilesWindow(AScreen& appScreen,
+  FilesWindow(ScreenBase& appScreen,
               struct MsgPort*& pIdcmpMsgPort,
               int& numWindowsOpen,
               SimpleString& leftFilePath,

@@ -17,7 +17,7 @@ class ADiffViewPens
 public:
   ADiffViewPens(struct Screen*& pScreen,
                 struct DrawInfo*& pDrawInfo,
-                ADiffViewSettings& settings);
+                const ADiffViewSettings& settings);
 
   ~ADiffViewPens();
 
@@ -47,7 +47,7 @@ public:
 private:
   struct Screen*& m_pScreen;
   struct DrawInfo*& m_pDrawInfo;
-  ADiffViewSettings& m_Settings;
+  const ADiffViewSettings& m_Settings;
 
   LONG m_RedPen;
   LONG m_YellowPen;

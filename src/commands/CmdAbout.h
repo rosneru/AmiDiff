@@ -2,7 +2,7 @@
 #define CMD_ABOUT_H
 
 #include "AMenu.h"
-#include "AScreen.h"
+#include "ScreenBase.h"
 #include "Command.h"
 #include "SimpleString.h"
 
@@ -16,7 +16,7 @@
 class CmdAbout : public Command
 {
 public:
-  CmdAbout(AScreen& screen,
+  CmdAbout(ScreenBase& screen,
            AMenu& menu,
            const char* pVersTag);
 
@@ -26,7 +26,7 @@ public:
   SimpleString m_AboutMsg;
 
 private:
-  AScreen& m_Screen;
+  ScreenBase& m_Screen;
   AMenu& m_Menu;
 };
 

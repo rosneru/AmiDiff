@@ -4,7 +4,7 @@
 #include <exec/ports.h>
 #include <intuition/screens.h>
 
-#include "AScreen.h"
+#include "ScreenBase.h"
 #include "DiffDocument.h"
 #include "DiffLine.h"
 #include "LinkedList.h"
@@ -20,7 +20,7 @@
 class DiffWindow : public ScrollbarWindow
 {
 public:
-  DiffWindow(AScreen& appScreen,
+  DiffWindow(ScreenBase& appScreen,
              struct MsgPort*& pIdcmpMsgPort,
              int& numOpenWindows);
 

@@ -28,7 +28,7 @@ public:
   /**
    * Return the ColorArray as Amiga-LoadRGB32-compliant array
    */
-  ULONG* GetColorArray();
+  const ULONG* GetColorArray() const;
 
   /**
    * Return the start of the array for color red.

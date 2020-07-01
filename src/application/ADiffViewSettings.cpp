@@ -44,7 +44,7 @@ bool ADiffViewSettings::Load()
   return true;
 }
 
-ULONG* ADiffViewSettings::GetColorArray()
+const ULONG* ADiffViewSettings::GetColorArray() const
 {
   return m_ColorArray.elem;
 }

@@ -7,7 +7,6 @@
 
 #include "ADiffViewPens.h"
 #include "ADiffViewSettings.h"
-#include "SimpleString.h"
 
 /**
  * Class  for the application main screen. At the moment it simply makes
@@ -16,48 +15,28 @@
  * @author Uwe Rosner
  * @date 23/09/2018
  */
-class AScreen
+class ScreenBase
 {
 public:
-  /**
-   * Used to specify the needed screen mode without messing around with
-   * too many parameters.
-   */
-  enum ScreenModeEasy
-  {
-    SME_UseWorkbench,       ///> Use the Worbkbench public screen
-    SME_CloneWorkbench8Col, ///> Creates a Workbench screen clone with 8 colors
-    SME_UseNamedPubScreen   ///> Use a pub screen with name as set in constructor
-  };
-
-  AScreen(ADiffViewSettings& settings);
-  ~AScreen();
+  ScreenBase(const ADiffViewSettings& settings);
+  ~ScreenBase();
 
   /**
-   * Opens a Workbench clone screen
+   * Open the screen
    *
    * @returns
    * false if oping fails
    */
-  bool Open(ScreenModeEasy screenModeEasy = SME_CloneWorkbench8Col,
-            SimpleString pubScreenName = "");
+  virtual bool Open() = 0;
 
   /**
-   * Closes the screen
+   * Close the screen
    */
-  void Close();
+  virtual void Close() = 0;
 
   bool IsOpen() const;
 
-  const char* Title() const;
-
-  /**
-   * NOTE Setting the title does not work when screen is already open
-   */
-  void SetTitle(SimpleString title);
-
   UWORD FontHeight() const;
-
   WORD BarHeight() const;
 
 
@@ -103,19 +82,15 @@ public:
   const ADiffViewPens& Pens() const;
 
 
-private:
+protected:
   struct Screen* m_pScreen;
   struct DrawInfo* m_pDrawInfo;
   struct TextFont* m_pTextFont;
 
   ADiffViewPens m_Pens;
-  ADiffViewSettings& m_Settings;
+  const ADiffViewSettings& m_Settings;
 
   APTR m_pVisualInfo;
-  SimpleString m_Title;
-
-  ScreenModeEasy m_ScreenModeEasy;
-  SimpleString m_PubScreenName;
 };
 
 

@@ -170,7 +170,7 @@ File
 "gui/ADiffViewPens.h"
 "application/ADiffViewSettings.h"
 "application/ADiffViewArgs.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
@@ -187,7 +187,7 @@ File
 "application/Application.h"
 "application/ADiffViewArgs.h"
 "application/ADiffViewSettings.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
 "commands/Command.h"
 "worker/WorkerBase.h"
@@ -205,7 +205,7 @@ File
 "commands/CmdAbout.h"
 "commands/Command.h"
 "gui/ADiffViewPens.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdAbout.o" "objects_debug/CmdAbout.debug"
 ""
@@ -225,7 +225,7 @@ File
 "gui/ADiffViewPens.h"
 "diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "gui/AMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
@@ -241,7 +241,7 @@ File
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "commands/Command.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 Storm Shell Project (Dependencies)
@@ -258,7 +258,7 @@ File
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "commands/Command.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 Storm Shell Project (Dependencies)
@@ -271,7 +271,7 @@ File
 "commands/CmdOpenWindow.cpp"
 "commands/CmdOpenWindow.h"
 "gui/ADiffViewPens.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdOpenWindow.o" "objects_debug/CmdOpenWindow.debug"
 ""
@@ -365,7 +365,7 @@ File
 1 "gui/AMenu.cpp"
 "gui/AMenu.cpp"
 "gui/AMenu.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AMenu.o" "objects_debug/AMenu.debug"
@@ -374,7 +374,7 @@ Storm Shell Project (Dependencies)
 File
 1 "gui/AScreen.cpp"
 "gui/AScreen.cpp"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AScreen.o" "objects_debug/AScreen.debug"
@@ -389,7 +389,7 @@ File
 "gui/ScrollbarWindow.h"
 "diffengine/DiffFileBase.h"
 "gui/ADiffViewPens.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 Storm Shell Project (Dependencies)
@@ -402,7 +402,7 @@ File
 "gui/FilesWindow.h"
 "gui/WindowBase.h"
 "gui/ADiffViewPens.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "gui/AMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/FilesWindow.o" "objects_debug/FilesWindow.debug"
@@ -414,7 +414,7 @@ File
 "gui/ProgressWindow.h"
 "gui/WindowBase.h"
 "gui/ADiffViewPens.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "gui/AMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ProgressWindow.o" "objects_debug/ProgressWindow.debug"
@@ -426,7 +426,7 @@ File
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "gui/ADiffViewPens.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "gui/AMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ScrollbarWindow.o" "objects_debug/ScrollbarWindow.debug"
@@ -438,7 +438,7 @@ File
 "gui/WindowBase.h"
 "gui/ADiffViewPens.h"
 "gui/AMenu.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/WindowBase.o" "objects_debug/WindowBase.debug"
 ""
@@ -493,7 +493,7 @@ File
 "gui/ADiffViewPens.h"
 "diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
-"gui/AScreen.h"
+"gui/ScreenBase.h"
 "gui/AMenu.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
@@ -687,8 +687,8 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "gui/AScreen.h"
-"gui/AScreen.h"
+2 "gui/ScreenBase.h"
+"gui/ScreenBase.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

@@ -1,4 +1,7 @@
 {
   "C_Cpp.intelliSenseEngineFallback": "Enabled",
-  "editor.rulers": [72]
+  "editor.rulers": [
+    72
+  ],
+  "cSpell.enabled": false
 }
