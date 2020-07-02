@@ -58,6 +58,12 @@ public:
   bool DontAsk() const;
 
   /**
+   * If true, the window to ask for the files to diff will always be 
+   * opened on Workbench screen
+   */
+  bool AskOnWorkbench();
+
+  /**
    * If true, the line numbers will be shown in the diff result window.
    *
    * Defaults to true; 
@@ -72,10 +78,22 @@ private:
   SimpleString m_LeftFilePath;
   SimpleString m_RightFilePath;
   bool m_bDontAsk;
+  bool m_bAskOnWorkbench;
   bool m_bShowLineNumbers;
 
   void readWorkbenchArgs();
   void readCommandLineArgs();
+
+  /**
+   * Uses FindTooltype to find and return the value of given name.
+   * Returns NULL if tooltype not found.
+   * 
+   * Is basically just a wrapper around FindTooltype with the proper
+   * types needed. Helps to avoid some casts and STRPTR compiler 
+   * warnings in readWorkbenchArgs()
+   */
+  char* toolTypeValue(const STRPTR* ppTooltypeArray, 
+                      const char* pTooltypeName);
 };
 
 #endif // ADIFFVIEW_ARGS_H

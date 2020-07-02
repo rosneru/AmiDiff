@@ -15,6 +15,7 @@ ADiffViewArgs::ADiffViewArgs(int argc, char **argv)
   : m_ArgC(argc),
     m_pArgV(argv),
     m_bDontAsk(false),
+    m_bAskOnWorkbench(false),
     m_bShowLineNumbers(true)
 {
   if(argc == 0)
@@ -64,6 +65,10 @@ bool ADiffViewArgs::DontAsk() const
   return m_bDontAsk;
 }
 
+bool ADiffViewArgs::AskOnWorkbench()
+{
+  return m_bAskOnWorkbench;
+}
 
 bool ADiffViewArgs::ShowLineNumbers() const
 {
@@ -101,47 +106,27 @@ void ADiffViewArgs::readWorkbenchArgs()
 
         if(pDiskObject != NULL)
         {
-          STRPTR pValue;
+          const STRPTR* ppTooltypeArray = pDiskObject->do_ToolTypes;
 
-          // Trying to read the value of the PUBSCREEN tooltype
-          // from the application icon
-          const char *pToolTypePubScreen = "PUBSCREEN";
-          pValue = (STRPTR) FindToolType(pDiskObject->do_ToolTypes,
-                                         (STRPTR)pToolTypePubScreen);
-
+          char* pValue = toolTypeValue(ppTooltypeArray, "PUBSCREEN");
           if(pValue != NULL)
           {
-            // The tooltype exists and the value has been read.
-            // Now save the value in the provided variable.
             m_PubScreenName = pValue;
           }
 
-          // Trying to read the value of the DONOTASK tooltype
-          // from the application icon
-          const char *pToolTypeDontAsk = "DONOTASK";
-          pValue = (STRPTR) FindToolType(pDiskObject->do_ToolTypes, 
-                                         (STRPTR)pToolTypeDontAsk);
-
-          if(pValue != NULL)
+          if(toolTypeValue(ppTooltypeArray, "DONOTASK") != NULL)
           {
-            // The tooltype exists. The value is ignored here
-            // because its a boolean tooltype. Now set the provided
-            // variable.
             m_bDontAsk = true;
           }
 
-          // Trying to read the value of the NOLINENUMBERS tooltype
-          // fromm the application icon
-          const char *pToolTypeNoLineNums = "NOLINENUMBERS";
-          pValue = (STRPTR) FindToolType(pDiskObject->do_ToolTypes, 
-                                         (STRPTR)pToolTypeNoLineNums);
-
-          if(pValue != NULL)
+          if(toolTypeValue(ppTooltypeArray, "ASKONWORKBENCH") != NULL)
           {
-            // The tooltype exists. The value is ignored here
-            // because its a boolean tooltype. Now set the provided
-            // variable.
-            m_bShowLineNumbers = false;
+            m_bAskOnWorkbench = true;
+          }
+
+          if(toolTypeValue(ppTooltypeArray, "NOLINENUMBERS") != NULL)
+          {
+             m_bShowLineNumbers = false;
           }
 
           FreeDiskObject(pDiskObject);
@@ -185,8 +170,8 @@ void ADiffViewArgs::readWorkbenchArgs()
 void ADiffViewArgs::readCommandLineArgs()
 {
     // Reading the command line arguments
-    SimpleString argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S,NOLINENUMBERS/S";
-    LONG args[] = {0, 0, 0, 0};
+    SimpleString argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S,ASKONWORKBENCH/S,NOLINENUMBERS/S";
+    LONG args[] = {0, 0, 0, 0, 0};
 
     struct RDArgs* pReadArgs = ReadArgs(argTempl.C_str(), args, NULL);
     if(pReadArgs == NULL)
@@ -224,8 +209,20 @@ void ADiffViewArgs::readCommandLineArgs()
 
     if(args[3] != 0)
     {
+      m_bAskOnWorkbench = true;
+    }
+
+    if(args[4] != 0)
+    {
       m_bShowLineNumbers = false;
     }
 
     FreeArgs(pReadArgs);
+}
+
+
+char* ADiffViewArgs::toolTypeValue(const STRPTR* ppTooltypeArray, 
+                                   const char* pTooltypeName)
+{
+  return (char*)FindToolType(ppTooltypeArray, (STRPTR)pTooltypeName);
 }
