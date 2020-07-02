@@ -33,7 +33,8 @@ Application::Application(ADiffViewArgs& args)
                  m_bCancelRequested,
                  m_bExitAllowed),
     m_ClonedWorkbenchScreen(m_Settings, VERS, 3),
-    m_JoinedPublicScreen(m_Settings, args.PubScreenName()),
+    m_JoinedPublicScreen(m_Settings, args.PubScreenName().C_str()),
+    m_WorkbenchPublicScreen(m_Settings, "Workbench"),
     m_pDiffWindowScreen(NULL),
     m_pFilesWindowScreen(NULL),
     m_Menu(m_pDiffWindowScreen),
@@ -158,8 +159,17 @@ bool Application::Run()
     m_pDiffWindowScreen = &m_ClonedWorkbenchScreen;
   }
 
-  // TODO Fix for new arg WBOPENFILESWINDOW
   m_pFilesWindowScreen = m_pDiffWindowScreen;
+  if(m_Args.AskOnWorkbench())
+  {
+    // The FilesWindow should be opened on Workbench screen
+    if(m_WorkbenchPublicScreen.Open())
+    {
+      m_pFilesWindowScreen = &m_WorkbenchPublicScreen;
+      bFilesWindowIsAppWindow = true;
+    }
+  }
+
 
   m_pDiffWindowScreen->Open();
   if (!m_pDiffWindowScreen->IsOpen())

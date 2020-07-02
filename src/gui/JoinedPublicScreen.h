@@ -8,7 +8,7 @@ class JoinedPublicScreen : public ScreenBase
 {
 public:
   JoinedPublicScreen(const ADiffViewSettings& settings,
-                     const SimpleString& pubScreenName);
+                     const char* pPubScreenName);
 
   virtual ~JoinedPublicScreen();
 
@@ -16,7 +16,7 @@ public:
   void Close();
 
 private:
-  const SimpleString& m_PubScreenName;
+  const SimpleString m_PubScreenName;
 };
 
 #endif

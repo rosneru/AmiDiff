@@ -4,9 +4,9 @@
 #include "JoinedPublicScreen.h"
 
 JoinedPublicScreen::JoinedPublicScreen(const ADiffViewSettings& settings,
-                                       const SimpleString& pubScreenName)
+                                       const char* pPubScreenName)
   : ScreenBase(settings),
-    m_PubScreenName(pubScreenName)
+    m_PubScreenName(pPubScreenName)
 {
 
 }
