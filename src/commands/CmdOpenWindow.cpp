@@ -10,7 +10,7 @@ CmdOpenWindow::~CmdOpenWindow()
 {
 }
 
-void CmdOpenWindow::Execute() const
+void CmdOpenWindow::Execute(struct Window* pActiveWindow) const
 {
   if(m_Window.IsOpen())
   {

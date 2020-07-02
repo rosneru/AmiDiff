@@ -11,7 +11,7 @@ CmdNavNextDiff::~CmdNavNextDiff()
 
 }
 
-void CmdNavNextDiff::Execute() const
+void CmdNavNextDiff::Execute(struct Window* pActiveWindow) const
 {
   m_DiffWindow.NavigateToNextDiff();
 }

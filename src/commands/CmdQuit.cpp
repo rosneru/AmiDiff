@@ -12,7 +12,7 @@ CmdQuit::~CmdQuit()
 
 }
 
-void CmdQuit::Execute() const
+void CmdQuit::Execute(struct Window* pActiveWindow) const
 {
   if(m_bExitAllowed)
   {

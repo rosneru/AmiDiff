@@ -52,20 +52,6 @@ struct Screen* ScreenBase::IntuiScreen()
   return m_pScreen;
 }
 
-struct Window* ScreenBase::ActiveWindow() const
-{
-  // Locking the intuition base
-  ULONG intuitionLock = LockIBase(0L);
-
-  // Getting the active window
-  struct Window* pActiveWin = IntuitionBase->ActiveWindow;
-
-  // Unlocking  the intuition base
-  UnlockIBase(intuitionLock);
-
-  return pActiveWin;
-}
-
 struct DrawInfo* ScreenBase::IntuiDrawInfo()
 {
   return m_pDrawInfo;

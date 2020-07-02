@@ -21,11 +21,8 @@ CmdAbout::~CmdAbout()
 {
 }
 
-void CmdAbout::Execute() const
+void CmdAbout::Execute(struct Window* pActiveWindow) const
 {
-  // Get the active window
-  struct Window* pActiveWindow = m_Screen.ActiveWindow();
-
   // Disable this command in the menu of the active window
   m_Menu.DisableMenuItem(pActiveWindow, (APTR)this);
 

@@ -17,7 +17,7 @@ class CmdQuit : public Command
 public:
   virtual ~CmdQuit();
   CmdQuit(bool& exitAllowed, bool& exitRequested);
-  virtual void Execute() const;
+  virtual void Execute(struct Window* pActiveWindow) const;
 
 private:
   bool& m_bExitAllowed;

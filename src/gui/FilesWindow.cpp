@@ -601,7 +601,7 @@ void FilesWindow::compare()
   m_RightFilePath = pRightStrGadgetText;
 
   // Perform the diff
-  m_CmdDiff.Execute();
+  m_CmdDiff.Execute(NULL);
 }
 
 

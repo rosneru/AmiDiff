@@ -15,7 +15,7 @@ class CmdNavNextDiff : public Command
 public:
   CmdNavNextDiff(DiffWindow& diffWindow);
   virtual ~CmdNavNextDiff();
-  virtual void Execute() const;
+  virtual void Execute(struct Window* pActiveWindow) const;
 
 private:
   DiffWindow& m_DiffWindow;

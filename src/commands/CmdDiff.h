@@ -18,7 +18,7 @@ class CmdDiff : public Command
 public:
   CmdDiff(DiffWorker& diffWorker);
   virtual ~CmdDiff();
-  virtual void Execute() const;
+  virtual void Execute(struct Window* pActiveWindow) const;
 
 private:
   DiffWorker& m_DiffWorker;

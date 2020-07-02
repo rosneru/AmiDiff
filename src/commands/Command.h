@@ -1,6 +1,8 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
+#include <intuition/intuition.h>
+
 /**
  * Base class of all commands. Is an abstract class because of the
  * abstract Execute() method.
@@ -15,7 +17,7 @@ class Command
 {
 public:
   virtual ~Command();
-  virtual void Execute() const = 0;
+  virtual void Execute(struct Window* pActiveWindow) const = 0;
 
 protected:
   Command();

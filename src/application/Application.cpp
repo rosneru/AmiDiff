@@ -249,7 +249,7 @@ bool Application::Run()
     // The DONTASK argument has been set and left and right file are
     // also given: Start the diff immediately
     //
-    m_CmdDiff.Execute();
+    m_CmdDiff.Execute(NULL);
   }
   else
   {
@@ -312,7 +312,7 @@ void Application::intuiEventLoop()
     if(m_NumWindowsOpen < 1)
     {
       // Exitting as there are no windows open anymore.
-      m_CmdQuit.Execute(); // Only sets m_bExitRequested to true.
+      m_CmdQuit.Execute(NULL); // Only sets m_bExitRequested to true.
     }
   }
   while(!m_bExitRequested);
@@ -356,7 +356,7 @@ void Application::handleIdcmpMessages()
     ULONG msgClass = pIdcmpMsg->Class;
     UWORD msgCode = pIdcmpMsg->Code;
     APTR msgIAddress = pIdcmpMsg->IAddress;
-    struct Window* msgWindow = pIdcmpMsg->IDCMPWindow;
+    struct Window* pMsgWindow = pIdcmpMsg->IDCMPWindow;
 
     // When we're through with a message, reply
     GT_ReplyIMsg(pIdcmpMsg);
@@ -393,7 +393,7 @@ void Application::handleIdcmpMessages()
           Command* pSelecedCommand = static_cast<Command*>(pUserData);
 
           // Execute this command
-          pSelecedCommand->Execute();
+          pSelecedCommand->Execute(pMsgWindow);
         }
       }
 
@@ -403,15 +403,15 @@ void Application::handleIdcmpMessages()
     //
     // All other idcmp messages are handled in the appropriate window
     //
-    if(msgWindow == m_DiffWindow.IntuiWindow())
+    if(pMsgWindow == m_DiffWindow.IntuiWindow())
     {
       m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
     }
-    else if(msgWindow == m_FilesWindow.IntuiWindow())
+    else if(pMsgWindow == m_FilesWindow.IntuiWindow())
     {
       m_FilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
     }
-    else if(msgWindow == m_ProgressWindow.IntuiWindow())
+    else if(pMsgWindow == m_ProgressWindow.IntuiWindow())
     {
       m_ProgressWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
     }

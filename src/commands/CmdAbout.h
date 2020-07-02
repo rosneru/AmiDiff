@@ -21,7 +21,7 @@ public:
            const char* pVersTag);
 
   virtual ~CmdAbout();
-  virtual void Execute() const;
+  virtual void Execute(struct Window* pActiveWindow) const;
 
   SimpleString m_AboutMsg;
 

@@ -11,7 +11,7 @@ CmdDiff::~CmdDiff()
 
 }
 
-void CmdDiff::Execute() const
+void CmdDiff::Execute(struct Window* pActiveWindow) const
 {
   // Run() starts the diff as asynchronous background process
   m_DiffWorker.Run();
