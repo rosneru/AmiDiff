@@ -27,7 +27,7 @@ add_executable (ADiffView
                 commands/CmdNavPrevDiff.cpp
                 commands/CmdOpenWindow.cpp
                 commands/CmdQuit.cpp
-                commands/Command.cpp
+                commands/CommandBase.cpp
                 diffengine/DiffEngine.cpp
                 diffengine/DiffEngineAmiga.cpp
                 diffengine/DiffFileAmiga.cpp

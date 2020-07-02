@@ -9,6 +9,7 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
                        DiffWindow& diffWindow,
                        FilesWindow& filesWindow,
                        ProgressWindow& progressWindow,
+                       CmdOpenWindow& cmdOpenFilesWindow,
                        struct MsgPort*& pProgressPort,
                        bool& bCancelRequested,
                        bool& bExitAllowed)
@@ -18,6 +19,7 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
     m_DiffWindow(diffWindow),
     m_FilesWindow(filesWindow),
     m_ProgressWindow(progressWindow),
+    m_CmdOpenFilesWindow(cmdOpenFilesWindow),
     m_ProgressOffset(0),
     m_bCancelRequested(bCancelRequested),
     m_bExitAllowed(bExitAllowed),
@@ -72,7 +74,6 @@ bool DiffWorker::Diff()
   // Close FilesWindow, open ProgressWindow etc
   //
   m_ProgressWindow.Open();
-  APTR pDisabledMenuItem = m_FilesWindow.DisabledMenuItem();
   m_FilesWindow.Close();
   m_DiffWindow.Close();
 
@@ -89,7 +90,7 @@ bool DiffWorker::Diff()
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "Failed to create the memory pool.", "Ok");
 
-    m_FilesWindow.Open(pDisabledMenuItem);
+    m_CmdOpenFilesWindow.Execute(NULL);
     m_ProgressWindow.Close();
 
     m_bExitAllowed = true;
@@ -106,7 +107,7 @@ bool DiffWorker::Diff()
                  "Error: Left file name not set.",
                  "Ok");
 
-    m_FilesWindow.Open(pDisabledMenuItem);
+    m_CmdOpenFilesWindow.Execute(NULL);
     m_ProgressWindow.Close();
 
     m_bExitAllowed = true;
@@ -119,7 +120,7 @@ bool DiffWorker::Diff()
                  "Error: Right file name not set.",
                  "Ok");
 
-    m_FilesWindow.Open(pDisabledMenuItem);
+    m_CmdOpenFilesWindow.Execute(NULL);
     m_ProgressWindow.Close();
 
     m_bExitAllowed = true;
@@ -142,7 +143,7 @@ bool DiffWorker::Diff()
                    m_LeftSrcFile.Error(), "Ok");
     }
 
-    m_FilesWindow.Open(pDisabledMenuItem);
+    m_CmdOpenFilesWindow.Execute(NULL);
     m_ProgressWindow.Close();
 
     m_bExitAllowed = true;
@@ -163,7 +164,7 @@ bool DiffWorker::Diff()
                    m_RightSrcFile.Error(), "Ok");
     }
 
-    m_FilesWindow.Open(pDisabledMenuItem);
+    m_CmdOpenFilesWindow.Execute(NULL);
     m_ProgressWindow.Close();
 
     m_bExitAllowed = true;
@@ -199,7 +200,7 @@ bool DiffWorker::Diff()
                    "Error while performing the diff.", "Ok");
     }
 
-    m_FilesWindow.Open(pDisabledMenuItem);
+    m_CmdOpenFilesWindow.Execute(NULL);
     m_ProgressWindow.Close();
 
     m_bExitAllowed = true;
@@ -212,7 +213,7 @@ bool DiffWorker::Diff()
     request.Show(m_ProgressWindow.IntuiWindow(),
                  "No differences found: the files are equal.", "Ok");
 
-    m_FilesWindow.Open(pDisabledMenuItem);
+    m_CmdOpenFilesWindow.Execute(NULL);
     m_ProgressWindow.Close();
 
     m_bExitAllowed = true;
@@ -228,7 +229,7 @@ bool DiffWorker::Diff()
                                      m_RightSrcFilePath.C_str());
 
   m_DiffWindow.SetLineNumbersVisible(m_bShowLineNumbers);
-  m_DiffWindow.Open(NULL, WindowBase::IP_Fill);
+  m_DiffWindow.Open(WindowBase::IP_Fill);
   m_DiffWindow.SetContent(m_pDiffDocument,
                           &m_DiffStartIdxsList,
                           totalTime,

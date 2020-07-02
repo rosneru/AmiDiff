@@ -28,17 +28,10 @@ public:
   /**
    * Opening the window.
    *
-   * @param pMenuItemDisableAtOpen
-   * A pointer to an user data field of a menu item which is associated
-   * with this window. If the menu item is found by the given user data
-   * it will be disabled at window opening time and enabled when the
-   * window is closed. Provide NULL if no menu item should be disabled.
-   *
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(const APTR pMenuItemDisableAtOpen = NULL,
-            InitialPosition initialPos = WindowBase::IP_Center);
+  bool Open(InitialPosition initialPos = WindowBase::IP_Center);
 
   /**
    * Handles given IDCMP event.

@@ -49,8 +49,7 @@ public:
    * @returns
    * false if opening fails
    */
-  virtual bool Open(const APTR pMenuItemDisableAtOpen = NULL,
-                    InitialPosition initialPos = WindowBase::IP_Center);
+  virtual bool Open(InitialPosition initialPos = WindowBase::IP_Center);
 
 
   /**

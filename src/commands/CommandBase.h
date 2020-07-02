@@ -3,6 +3,9 @@
 
 #include <intuition/intuition.h>
 
+#include "Array.h"
+#include "WindowBase.h"
+
 /**
  * Base class of all commands. Is an abstract class because of the
  * abstract Execute() method.
@@ -13,14 +16,21 @@
  * @author Uwe Rosner
  * @date 24/09/2018
  */
-class Command
+class CommandBase
 {
 public:
-  virtual ~Command();
-  virtual void Execute(struct Window* pActiveWindow) const = 0;
+  CommandBase(Array<WindowBase*>& windowArray);
+  virtual ~CommandBase();
+  virtual void Execute(struct Window* pActiveWindow) = 0;
 
 protected:
-  Command();
+  CommandBase();
+
+  void disableThisCmdInAllWindowsMenus();
+  void enableThisCmdInAllWindowsMenus();
+
+private:
+    Array<WindowBase*>& m_WindowArray;
 };
 
 #endif // COMMAND_H

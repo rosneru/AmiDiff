@@ -7,7 +7,7 @@
 
 #include "AslFileRequest.h"
 #include "ScreenBase.h"
-#include "Command.h"
+#include "CommandBase.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
 
@@ -27,7 +27,7 @@ public:
               int& numWindowsOpen,
               SimpleString& leftFilePath,
               SimpleString& rightFilePath,
-              const Command& cmdDiff);
+              CommandBase& cmdDiff);
 
   virtual ~FilesWindow();
 
@@ -36,17 +36,10 @@ public:
   /**
    * Opening the window.
    *
-   * @param pMenuItemDisableAtOpen
-   * A pointer to an user data field of a menu item which is associated
-   * with this window. If the menu item is found by the given user data
-   * it will be disabled at window opening time and enabled when the
-   * window is closed. Provide NULL if no menu item should be disabled.
-   *
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(const APTR pMenuItemDisableAtOpen = NULL,
-            InitialPosition initialPos = WindowBase::IP_Center);
+  bool Open(InitialPosition initialPos = WindowBase::IP_Center);
 
   /**
    * Handles given IDCMP event.
@@ -71,7 +64,7 @@ private:
   SimpleString& m_LeftFilePath;
   SimpleString& m_RightFilePath;
 
-  const Command& m_CmdDiff;
+  CommandBase& m_CmdDiff;
 
   /**
    * IDs to help to interpret the events of this window's Gadtools

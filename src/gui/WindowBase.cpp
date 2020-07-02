@@ -31,8 +31,7 @@ WindowBase::WindowBase(ScreenBase*& pScreen,
     m_pFirstGadget(NULL),
     m_pAppWindowPort(NULL),
     m_pAppWindow(NULL),
-    m_AppWindowId(0),
-    m_pMenuItemDisableAtOpen(NULL)
+    m_AppWindowId(0)
 {
 
 }
@@ -44,15 +43,13 @@ WindowBase::~WindowBase()
 }
 
 
-bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
-                      InitialPosition initialPos)
+bool WindowBase::Open(InitialPosition initialPos)
 {
   if(m_pScreen == NULL)
   {
     return false;
   }
 
-  m_pMenuItemDisableAtOpen = pMenuItemDisableAtOpen;
   m_InitialPosition = initialPos;
 
   //
@@ -196,11 +193,6 @@ bool WindowBase::Open(const APTR pMenuItemDisableAtOpen,
     return true;
   }
 
-  if(pMenuItemDisableAtOpen != NULL)
-  {
-    m_pMenu->DisableMenuItem(m_pWindow, m_pMenuItemDisableAtOpen);
-  }
-
   return true;
 }
 
@@ -210,11 +202,6 @@ void WindowBase::Close()
   if(!IsOpen())
   {
     return;
-  }
-
-  if(m_pMenu != NULL && m_pMenuItemDisableAtOpen != NULL)
-  {
-    m_pMenu->EnableMenuItem(m_pWindow, m_pMenuItemDisableAtOpen);
   }
 
   if(m_pMenu != NULL)
@@ -236,12 +223,6 @@ void WindowBase::Close()
 bool WindowBase::IsOpen() const
 {
   return m_pWindow != NULL;
-}
-
-
-const APTR WindowBase::DisabledMenuItem() const
-{
-  return m_pMenuItemDisableAtOpen;
 }
 
 
@@ -407,6 +388,11 @@ void WindowBase::SetMenu(AMenu* pMenu)
   // The window is already open: attach the newly added menu to it
   m_pMenu->AttachToWindow(m_pWindow);
   return;
+}
+
+AMenu* WindowBase::Menu()
+{
+  return m_pMenu;
 }
 
 

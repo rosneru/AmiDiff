@@ -1,7 +1,7 @@
 #ifndef CMD_QUIT_H
 #define CMD_QUIT_H
 
-#include "Command.h"
+#include "CommandBase.h"
 
 /**
  * Command for exiting the application. It takes an boolean reference
@@ -12,12 +12,16 @@
  * @author Uwe Rosner
  * @date 24/09/2018
  */
-class CmdQuit : public Command
+class CmdQuit : public CommandBase
 {
 public:
+  CmdQuit(Array<WindowBase*>& windowArray,
+          bool& exitAllowed, 
+          bool& exitRequested);
+  
   virtual ~CmdQuit();
-  CmdQuit(bool& exitAllowed, bool& exitRequested);
-  virtual void Execute(struct Window* pActiveWindow) const;
+
+  virtual void Execute(struct Window* pActiveWindow);
 
 private:
   bool& m_bExitAllowed;

@@ -139,8 +139,7 @@ void DiffWindow::Resized()
 }
 
 
-bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
-                      InitialPosition initialPos)
+bool DiffWindow::Open(InitialPosition initialPos)
 {
   if(m_pScreen == NULL)
   {
@@ -166,7 +165,7 @@ bool DiffWindow::Open(const APTR pMenuItemDisableAtOpen,
   //
   // Open the window
   //
-  if(!ScrollbarWindow::Open(pMenuItemDisableAtOpen, initialPos))
+  if(!ScrollbarWindow::Open(initialPos))
   {
     return false;
   }

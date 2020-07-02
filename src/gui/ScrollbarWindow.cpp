@@ -100,10 +100,9 @@ ScrollbarWindow::~ScrollbarWindow()
 
 
 
-bool ScrollbarWindow::Open(const APTR pMenuItemDisableAtOpen,
-                           InitialPosition initialPos)
+bool ScrollbarWindow::Open(InitialPosition initialPos)
 {
-  if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPos))
+  if(!WindowBase::Open(initialPos))
   {
     return false;
   }

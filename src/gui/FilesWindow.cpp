@@ -22,7 +22,7 @@ FilesWindow::FilesWindow(ScreenBase*& pScreen,
                          int& numWindowsOpen,
                          SimpleString& leftFilePath,
                          SimpleString& rightFilePath,
-                         const Command& cmdDiff)
+                         CommandBase& cmdDiff)
   : WindowBase(pScreen, pIdcmpMsgPort, numWindowsOpen),
     m_AslRequest(m_pWindow),
     m_bFileRequestOpen(false),
@@ -70,10 +70,9 @@ void FilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool FilesWindow::Open(const APTR pMenuItemDisableAtOpen,
-                       InitialPosition initialPos)
+bool FilesWindow::Open(InitialPosition initialPos)
 {
-  if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPos))
+  if(!WindowBase::Open(initialPos))
   {
     return false;
   }

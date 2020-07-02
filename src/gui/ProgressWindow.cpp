@@ -57,15 +57,14 @@ void ProgressWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool ProgressWindow::Open(const APTR pMenuItemDisableAtOpen,
-                          InitialPosition initialPos)
+bool ProgressWindow::Open(InitialPosition initialPos)
 {
   if(m_pScreen == NULL)
   {
     return false;
   }
 
-  if(!WindowBase::Open(pMenuItemDisableAtOpen, initialPos))
+  if(!WindowBase::Open(initialPos))
   {
     return false;
   }

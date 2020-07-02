@@ -13,6 +13,7 @@
 #include "ADiffViewArgs.h"
 #include "ADiffViewSettings.h"
 #include "AMenu.h"
+#include "Array.h"
 #include "ClonedWorkbenchScreen.h"
 #include "JoinedPublicScreen.h"
 #include "CmdAbout.h"
@@ -77,8 +78,10 @@ private:
   CmdNavNextDiff m_CmdNavNextDiff;
   CmdNavPrevDiff m_CmdNavPrevDiff;
   CmdQuit m_CmdQuit;
-  CmdOpenWindow m_CmdOpen;
+  CmdOpenWindow m_CmdOpenFilesWindow;
   CmdAbout m_CmdAbout;
+
+  Array<WindowBase*> m_WindowArray;
 
   /**
    * Handling messages from Intuition

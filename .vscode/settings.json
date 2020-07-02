@@ -3,5 +3,8 @@
   "editor.rulers": [
     72
   ],
-  "cSpell.enabled": false
+  "cSpell.enabled": false,
+  "files.associations": {
+    "fstream": "cpp"
+  }
 }

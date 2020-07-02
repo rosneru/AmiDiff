@@ -51,21 +51,12 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  virtual bool Open(const APTR pMenuItemDisableAtOpen,
-                    InitialPosition initialPos = IP_Center) = 0;
+  virtual bool Open(InitialPosition initialPos = IP_Center) = 0;
 
   /**
    * Closes the window.
    */
   void Close();
-
-
-  /**
-   * Returns a pointer to the menu item which was disabled at window
-   * opening or NULL if there was no item disabled.
-   */
-  const APTR DisabledMenuItem() const;
-
 
   /**
    * Abstract method. Forces inheriting classes to handle the given
@@ -210,6 +201,11 @@ public:
    */
   void SetMenu(AMenu* pMenu);
 
+  /**
+   * Returns the menu strip which is attached to this window
+   */
+  AMenu* Menu();
+
 protected:
   ScreenBase*& m_pScreen;
   struct MsgPort*& m_pIdcmpMsgPort;
@@ -342,7 +338,6 @@ private:
   struct AppWindow* m_pAppWindow;
   ULONG m_AppWindowId;
 
-  APTR m_pMenuItemDisableAtOpen;
 
   /**
    * Use this method to close any windows that share an IDCMP port

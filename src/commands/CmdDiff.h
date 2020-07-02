@@ -2,7 +2,7 @@
 #define CMD_DIFF_H
 
 #include "DiffWorker.h"
-#include "Command.h"
+#include "CommandBase.h"
 
 /**
  * Command for opening a window.
@@ -13,12 +13,14 @@
  * @author Uwe Rosner
  * @date 26/10/2018
  */
-class CmdDiff : public Command
+class CmdDiff : public CommandBase
 {
 public:
-  CmdDiff(DiffWorker& diffWorker);
+  CmdDiff(Array<WindowBase*>& windowArray,
+          DiffWorker& diffWorker);
+
   virtual ~CmdDiff();
-  virtual void Execute(struct Window* pActiveWindow) const;
+  virtual void Execute(struct Window* pActiveWindow);
 
 private:
   DiffWorker& m_DiffWorker;

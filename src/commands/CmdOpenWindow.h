@@ -2,8 +2,7 @@
 #define CMD_OPEN_WINDOW_H
 
 #include "AMenu.h"
-#include "Command.h"
-#include "WindowBase.h"
+#include "CommandBase.h"
 
 /**
  * Command for opening a window.
@@ -14,12 +13,14 @@
  * @author Uwe Rosner
  * @date 24/10/2018
  */
-class CmdOpenWindow : public Command
+class CmdOpenWindow : public CommandBase
 {
 public:
-  CmdOpenWindow(WindowBase& window);
+  CmdOpenWindow(Array<WindowBase*>& windowArray,
+                WindowBase& window);
+
   virtual ~CmdOpenWindow();
-  virtual void Execute(struct Window* pActiveWindow) const;
+  virtual void Execute(struct Window* pActiveWindow);
 
 private:
   WindowBase& m_Window;

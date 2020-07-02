@@ -7,7 +7,7 @@
 #include <workbench/workbench.h>
 
 #include "ADiffView_rev.h"
-#include "Command.h"
+#include "CommandBase.h"
 #include "MessageBox.h"
 #include "ProgressMessage.h"
 
@@ -29,6 +29,7 @@ Application::Application(ADiffViewArgs& args)
                  m_DiffWindow,
                  m_FilesWindow,
                  m_ProgressWindow,
+                 m_CmdOpenFilesWindow,
                  m_pMsgPortProgress,
                  m_bCancelRequested,
                  m_bExitAllowed),
@@ -52,14 +53,12 @@ Application::Application(ADiffViewArgs& args)
                      m_pMsgPortIDCMP,
                      m_NumWindowsOpen,
                      m_bCancelRequested),
-    m_CmdDiff(m_DiffWorker),
-    m_CmdNavNextDiff(m_DiffWindow),
-    m_CmdNavPrevDiff(m_DiffWindow),
-    m_CmdQuit(m_bExitAllowed,
-              m_bExitRequested),
-    m_CmdOpen(m_FilesWindow),
-    m_CmdAbout(*m_pDiffWindowScreen,
-               m_Menu,
+    m_CmdDiff(m_WindowArray, m_DiffWorker),
+    m_CmdNavNextDiff(m_WindowArray,m_DiffWindow),
+    m_CmdNavPrevDiff(m_WindowArray,m_DiffWindow),
+    m_CmdQuit(m_WindowArray, m_bExitAllowed, m_bExitRequested),
+    m_CmdOpenFilesWindow(m_WindowArray, m_FilesWindow),
+    m_CmdAbout(m_WindowArray,
                VERSTAG)
 {
   //
@@ -68,6 +67,11 @@ Application::Application(ADiffViewArgs& args)
   // and version. Referencing it also means that the c:version command will
   // work for ADiffView.
   //
+
+  // Add all windows to the array
+  m_WindowArray.Push(&m_DiffWindow);
+  m_WindowArray.Push(&m_FilesWindow);
+  m_WindowArray.Push(&m_ProgressWindow);
 }
 
 
@@ -187,7 +191,7 @@ bool Application::Run()
   struct NewMenu menuDefinition[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpen },
+    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
     {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
     {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
     {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
@@ -197,7 +201,7 @@ bool Application::Run()
   struct NewMenu menuDefinitionDiffWindow[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpen },
+    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
     {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
     {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
     {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
@@ -258,7 +262,7 @@ bool Application::Run()
     //
     // Passing a pointer to the command "Open files" to disable that
     // menu item at opening.
-    m_FilesWindow.Open(&m_CmdOpen);
+    m_CmdOpenFilesWindow.Execute(NULL);
   }
 
   //
@@ -390,7 +394,7 @@ void Application::handleIdcmpMessages()
         if(pUserData != NULL)
         {
           // The menu user_data contains a pointer to a Command
-          Command* pSelecedCommand = static_cast<Command*>(pUserData);
+          CommandBase* pSelecedCommand = static_cast<CommandBase*>(pUserData);
 
           // Execute this command
           pSelecedCommand->Execute(pMsgWindow);

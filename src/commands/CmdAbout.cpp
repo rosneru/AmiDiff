@@ -1,11 +1,10 @@
 #include "MessageBox.h"
 #include "CmdAbout.h"
 
-CmdAbout::CmdAbout(ScreenBase& screen,
-                   AMenu& menu,
+
+CmdAbout::CmdAbout(Array<WindowBase*>& windowArray,
                    const char* pVersTag)
-  : m_Screen(screen),
-    m_Menu(menu)
+  : CommandBase(windowArray)
 {
   m_AboutMsg = pVersTag + 7;  // Skip the first 7 chars of pVersTag
                               // which is only "\0$VER: "
@@ -21,15 +20,14 @@ CmdAbout::~CmdAbout()
 {
 }
 
-void CmdAbout::Execute(struct Window* pActiveWindow) const
+void CmdAbout::Execute(struct Window* pActiveWindow)
 {
-  // Disable this command in the menu of the active window
-  m_Menu.DisableMenuItem(pActiveWindow, (APTR)this);
+  disableThisCmdInAllWindowsMenus();
 
   // Display the about dialog
   MessageBox messageBox;
   messageBox.Show(pActiveWindow, "About", m_AboutMsg.C_str(), "Ok");
 
-  // Enable this command in the menu of the active window
-  m_Menu.EnableMenuItem(pActiveWindow, (APTR)this);
+  // Enable this command in all windows / menus
+  enableThisCmdInAllWindowsMenus();
 }

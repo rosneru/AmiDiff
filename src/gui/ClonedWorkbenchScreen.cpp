@@ -26,13 +26,13 @@ bool ClonedWorkbenchScreen::Open()
   // of how many the Workbench screen might have.
   //
   m_pScreen = OpenScreenTags(NULL,
-                              SA_LikeWorkbench, TRUE,
-                              SA_Type, CUSTOMSCREEN,
-                              SA_Depth, m_Depth,
-                              SA_SharePens,TRUE,
-                              SA_Title, m_pTitle,
-                              SA_Colors32, m_Settings.GetColorArray(),
-                              TAG_DONE);
+                             SA_LikeWorkbench, TRUE,
+                             SA_Type, CUSTOMSCREEN,
+                             SA_Depth, m_Depth,
+                             SA_SharePens,TRUE,
+                             SA_Title, m_pTitle,
+                             SA_Colors32, m_Settings.GetColorArray(),
+                             TAG_DONE);
 
   if(m_pScreen == NULL)
   {
@@ -88,4 +88,3 @@ void ClonedWorkbenchScreen::Close()
     m_pScreen = NULL;
   }
 }
-

@@ -3,7 +3,7 @@
 
 #include <exec/ports.h>
 
-#include "WorkerBase.h"
+#include "CmdOpenWindow.h"
 #include "DiffDocument.h"
 #include "DiffEngineAmiga.h"
 #include "DiffFileAmiga.h"
@@ -13,6 +13,7 @@
 #include "ProgressWindow.h"
 #include "SimpleString.h"
 #include "StopWatch.h"
+#include "WorkerBase.h"
 
 /**
  * Class to perform the diff as a background process. Also managing
@@ -31,6 +32,7 @@ public:
              DiffWindow& diffWindow,
              FilesWindow& filesWindow,
              ProgressWindow& progressWindow,
+             CmdOpenWindow& cmdOpen,
              struct MsgPort*& pProgressPort,
              bool& bCancelRequested,
              bool& bExitAllowed);
@@ -74,6 +76,7 @@ private:
   DiffWindow& m_DiffWindow;
   FilesWindow& m_FilesWindow;
   ProgressWindow& m_ProgressWindow;
+  CmdOpenWindow& m_CmdOpenFilesWindow;
   int m_ProgressOffset;
   bool& m_bCancelRequested;
   bool& m_bExitAllowed;
