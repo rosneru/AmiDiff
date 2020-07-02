@@ -14,7 +14,7 @@ ClonedWorkbenchScreen::ClonedWorkbenchScreen(const ADiffViewSettings& settings,
 
 ClonedWorkbenchScreen::~ClonedWorkbenchScreen()
 {
-
+  Close();
 }
 
 bool ClonedWorkbenchScreen::Open()

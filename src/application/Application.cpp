@@ -57,7 +57,7 @@ Application::Application(ADiffViewArgs& args)
     m_CmdQuit(m_bExitAllowed,
               m_bExitRequested),
     m_CmdOpen(m_FilesWindow),
-    m_CmdAbout(m_Screen,
+    m_CmdAbout(*m_pDiffWindowScreen,
                m_Menu,
                VERSTAG)
 {

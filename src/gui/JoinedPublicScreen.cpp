@@ -13,7 +13,7 @@ JoinedPublicScreen::JoinedPublicScreen(const ADiffViewSettings& settings,
 
 JoinedPublicScreen::~JoinedPublicScreen()
 {
-
+  Close();
 }
 
 bool JoinedPublicScreen::Open()

@@ -18,7 +18,7 @@ ScreenBase::ScreenBase(const ADiffViewSettings& settings)
 
 ScreenBase::~ScreenBase()
 {
-  Close();
+
 }
 
 

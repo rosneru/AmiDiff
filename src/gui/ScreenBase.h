@@ -19,7 +19,7 @@ class ScreenBase
 {
 public:
   ScreenBase(const ADiffViewSettings& settings);
-  ~ScreenBase();
+  virtual ~ScreenBase();
 
   /**
    * Open the screen
