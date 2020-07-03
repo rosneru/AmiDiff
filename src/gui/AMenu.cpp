@@ -75,16 +75,6 @@ bool AMenu::AttachToWindow(struct Window* pWindow)
 }
 
 
-bool AMenu::UpdateInWindow(struct Window* pWindow)
-{
-  if(ResetMenuStrip(pWindow, m_pMenu) == FALSE)
-  {
-    // Binding the menu to given window failed
-    return false;
-  }
-
-  return true;
-}
 
 
 void AMenu::DetachFromWindow(struct Window* pWindow)

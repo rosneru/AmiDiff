@@ -34,12 +34,6 @@ public:
    */
   bool AttachToWindow(struct Window* pWindow);
 
-  /**
-   * Update a previosly set attached menu. Call this if an checkbox has
-   * changed or if a item has been enabled or disabled.
-   *
-   */
-  bool UpdateInWindow(struct Window* pWindow);
 
   /**
    *  Remove menu from window. Call this at least before closing the
