@@ -38,7 +38,7 @@ Application::Application(ADiffViewArgs& args)
     m_WorkbenchPublicScreen(m_Settings, "Workbench"),
     m_pDiffWindowScreen(NULL),
     m_pFilesWindowScreen(NULL),
-    m_Menu(m_pDiffWindowScreen),
+    m_MenuAboutWindow(m_pDiffWindowScreen),
     m_MenuDiffWindow(m_pFilesWindowScreen),
     m_DiffWindow(m_pDiffWindowScreen,
                  m_pMsgPortIDCMP,
@@ -148,7 +148,7 @@ bool Application::Run()
   bool bFilesWindowIsAppWindow = false;
   if(m_Args.PubScreenName().Length() > 0)
   {
-    // Use a given public screen
+    // For DiffWindow use a given public screen
     m_pDiffWindowScreen = &m_JoinedPublicScreen;
 
     // If running on Workbench screen, set FilesWindow as an AppWindow
@@ -159,7 +159,8 @@ bool Application::Run()
   }
   else
   {
-    // Use a Workbench clone screen (with 8 colors; see constructor)
+    // For DiffWindow  use a Workbench clone screen (with 8 colors; see
+    // constructor)
     m_pDiffWindowScreen = &m_ClonedWorkbenchScreen;
   }
 
@@ -188,7 +189,7 @@ bool Application::Run()
   // to detect which menu item was selected. It will be a command, and
   // only its Execute() method must be called.
   //
-  struct NewMenu menuDefinition[] =
+  struct NewMenu menuDefAboutWindow[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
     {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
@@ -198,7 +199,7 @@ bool Application::Run()
     { NM_END,     NULL,                     0 , 0, 0, 0 },
   };
 
-  struct NewMenu menuDefinitionDiffWindow[] =
+  struct NewMenu menuDefDiffWindow[] =
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
     {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
@@ -215,13 +216,13 @@ bool Application::Run()
   //
   // Create the menus
   //
-  if(m_Menu.Create(menuDefinition) == false)
+  if(m_MenuAboutWindow.Create(menuDefAboutWindow) == false)
   {
     m_ErrorMsg = "Failed to create the main menu.";
     return false;
   }
 
-  if(m_MenuDiffWindow.Create(menuDefinitionDiffWindow) == false)
+  if(m_MenuDiffWindow.Create(menuDefDiffWindow) == false)
   {
     m_ErrorMsg = "Failed to create the menu for the diff window.";
     return false;
@@ -241,7 +242,7 @@ bool Application::Run()
     m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
   }
 
-  m_FilesWindow.SetMenu(&m_Menu);
+  m_FilesWindow.SetMenu(&m_MenuAboutWindow);
   m_DiffWindow.SetMenu(&m_MenuDiffWindow);
   m_DiffWindow.SetSmartRefresh(true);
 
@@ -374,7 +375,7 @@ void Application::handleIdcmpMessages()
       struct MenuItem* pSelectedItem = NULL;
 
       // Create an array of all menus to be searched for the item
-      AMenu* pMenus[] = {&m_Menu, &m_MenuDiffWindow};
+      AMenu* pMenus[] = {&m_MenuAboutWindow, &m_MenuDiffWindow};
 
       // Iterate all those menus, trying to find the item
       for(size_t i = 0; i < (sizeof pMenus / sizeof pMenus[0]); i++)

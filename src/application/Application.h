@@ -69,7 +69,7 @@ private:
   JoinedPublicScreen m_WorkbenchPublicScreen;
   ScreenBase* m_pDiffWindowScreen;
   ScreenBase* m_pFilesWindowScreen;
-  AMenu m_Menu;
+  AMenu m_MenuAboutWindow;
   AMenu m_MenuDiffWindow;
   DiffWindow m_DiffWindow;
   FilesWindow m_FilesWindow;
