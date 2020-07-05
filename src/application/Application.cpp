@@ -168,20 +168,8 @@ bool Application::Run()
   m_pFilesWindowScreen = m_pDiffWindowScreen;
   if(m_Args.AskOnWorkbench())
   {
-    // The FilesWindow should be opened on Workbench screen
-    if(m_WorkbenchPublicScreen.Open())
-    {
-      m_pFilesWindowScreen = &m_WorkbenchPublicScreen;
-      bFilesWindowIsAppWindow = true;
-    }
-  }
-
-
-  m_pDiffWindowScreen->Open();
-  if (!m_pDiffWindowScreen->IsOpen())
-  {
-    m_ErrorMsg = "Failed to open the screen.";
-    return false;
+    m_pFilesWindowScreen = &m_WorkbenchPublicScreen;
+    bFilesWindowIsAppWindow = true;
   }
 
   //
@@ -214,38 +202,38 @@ bool Application::Run()
   };
 
 
-  //
-  // Create the menus
-  //
-  if(m_MenuAboutWindow.Create(menuDefAboutWindow, m_pFilesWindowScreen) == false)
-  {
-    m_ErrorMsg = "Failed to create the main menu.";
-    return false;
-  }
+  // //
+  // // Create the menus
+  // //
+  // if(m_MenuAboutWindow.Create(menuDefAboutWindow, m_pFilesWindowScreen) == false)
+  // {
+  //   m_ErrorMsg = "Failed to create the main menu.";
+  //   return false;
+  // }
 
-  if(m_MenuDiffWindow.Create(menuDefDiffWindow, m_pDiffWindowScreen) == false)
-  {
-    m_ErrorMsg = "Failed to create the menu for the diff window.";
-    return false;
-  }
+  // if(m_MenuDiffWindow.Create(menuDefDiffWindow, m_pDiffWindowScreen) == false)
+  // {
+  //   m_ErrorMsg = "Failed to create the menu for the diff window.";
+  //   return false;
+  // }
 
 
-  //
-  // Prepare the windows
-  //
-  if(bFilesWindowIsAppWindow)
-  {
-    // Create a message port for the AppWindow
-    // No NULL check needed. In this case it simply won't work.
-    m_pMsgPortAppWindow = CreateMsgPort();
+  // //
+  // // Prepare the windows
+  // //
+  // if(bFilesWindowIsAppWindow)
+  // {
+  //   // Create a message port for the AppWindow
+  //   // No NULL check needed. In this case it simply won't work.
+  //   m_pMsgPortAppWindow = CreateMsgPort();
 
-    // FilesWindow should be an AppWindow
-    m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
-  }
+  //   // FilesWindow should be an AppWindow
+  //   m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
+  // }
 
-  m_FilesWindow.SetMenu(&m_MenuAboutWindow);
-  m_DiffWindow.SetMenu(&m_MenuDiffWindow);
-  m_DiffWindow.SetSmartRefresh(true);
+  // m_FilesWindow.SetMenu(&m_MenuAboutWindow);
+  // m_DiffWindow.SetMenu(&m_MenuDiffWindow);
+  // m_DiffWindow.SetSmartRefresh(true);
 
   if((m_LeftFilePath.Length() > 0) &&
      (m_RightFilePath.Length() > 0) &&
