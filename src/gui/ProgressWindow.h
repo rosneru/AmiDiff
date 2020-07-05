@@ -19,7 +19,8 @@ public:
   ProgressWindow(ScreenBase*& pScreen, 
                  struct MsgPort*& pIdcmpMsgPort,
                  int& numOpenWindows, 
-                 bool& bCancelRequested);
+                 bool& bCancelRequested,
+                 AMenu* pMenu);
 
   virtual ~ProgressWindow();
 

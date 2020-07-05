@@ -238,7 +238,8 @@ protected:
    */
   WindowBase(ScreenBase*& pScreen, 
              struct MsgPort*& pIdcmpMsgPort,
-             int& numOpenWindows);
+             int& numOpenWindows,
+             AMenu* pMenu);
 
 
   virtual ~WindowBase();

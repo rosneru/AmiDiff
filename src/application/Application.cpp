@@ -38,21 +38,22 @@ Application::Application(ADiffViewArgs& args)
     m_WorkbenchPublicScreen(m_Settings, "Workbench"),
     m_pDiffWindowScreen(NULL),
     m_pFilesWindowScreen(NULL),
-    m_MenuAboutWindow(m_pDiffWindowScreen),
-    m_MenuDiffWindow(m_pFilesWindowScreen),
     m_DiffWindow(m_pDiffWindowScreen,
                  m_pMsgPortIDCMP,
-                 m_NumWindowsOpen),
+                 m_NumWindowsOpen,
+                 &m_MenuDiffWindow),
     m_FilesWindow(m_pFilesWindowScreen,
                   m_pMsgPortIDCMP,
                   m_NumWindowsOpen,
                   m_LeftFilePath,
                   m_RightFilePath,
-                  m_CmdDiff),
+                  m_CmdDiff,
+                  &m_MenuAboutWindow),
     m_ProgressWindow(m_pFilesWindowScreen,
                      m_pMsgPortIDCMP,
                      m_NumWindowsOpen,
-                     m_bCancelRequested),
+                     m_bCancelRequested,
+                     NULL),
     m_CmdDiff(m_WindowArray, m_DiffWorker),
     m_CmdNavNextDiff(m_WindowArray,m_DiffWindow),
     m_CmdNavPrevDiff(m_WindowArray,m_DiffWindow),
@@ -216,13 +217,13 @@ bool Application::Run()
   //
   // Create the menus
   //
-  if(m_MenuAboutWindow.Create(menuDefAboutWindow) == false)
+  if(m_MenuAboutWindow.Create(menuDefAboutWindow, m_pFilesWindowScreen) == false)
   {
     m_ErrorMsg = "Failed to create the main menu.";
     return false;
   }
 
-  if(m_MenuDiffWindow.Create(menuDefDiffWindow) == false)
+  if(m_MenuDiffWindow.Create(menuDefDiffWindow, m_pDiffWindowScreen) == false)
   {
     m_ErrorMsg = "Failed to create the menu for the diff window.";
     return false;

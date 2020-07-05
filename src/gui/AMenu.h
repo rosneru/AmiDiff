@@ -16,13 +16,13 @@
 class AMenu
 {
 public:
-  AMenu(ScreenBase*& pScreen);
+  AMenu();
   ~AMenu();
 
   /**
    * Creating and outlaying the menu
    */
-  bool Create(struct NewMenu* pMenuDefinition);
+  bool Create(struct NewMenu* pMenuDefinition, ScreenBase* pScreen);
 
   /**
    * Freeing the menu and all obtained resources
@@ -78,7 +78,6 @@ public:
                       APTR pUserDataMenuItemToEnable);
 
 private:
-  ScreenBase*& m_pScreen;
   struct Menu* m_pMenu;
 
 

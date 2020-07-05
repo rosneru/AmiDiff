@@ -13,8 +13,9 @@
 
 ScrollbarWindow::ScrollbarWindow(ScreenBase*& pScreen,
                                  struct MsgPort*& pIdcmpMsgPort,
-                                 int& numOpenWindows)
-  : WindowBase(pScreen, pIdcmpMsgPort, numOpenWindows),
+                                 int& numOpenWindows,
+                                 AMenu* pMenu)
+  : WindowBase(pScreen, pIdcmpMsgPort, numOpenWindows, pMenu),
     m_InnerWindowRight(0),
     m_InnerWindowBottom(0),
     m_SizeImageWidth(18),

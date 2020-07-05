@@ -11,7 +11,8 @@
 
 WindowBase::WindowBase(ScreenBase*& pScreen,
                        struct MsgPort*& pIdcmpMsgPort,
-                       int& numOpenWindows)
+                       int& numOpenWindows,
+                       AMenu* pMenu)
   : m_pScreen(pScreen),
     m_pIdcmpMsgPort(pIdcmpMsgPort),
     m_pWindow(NULL),
@@ -22,7 +23,7 @@ WindowBase::WindowBase(ScreenBase*& pScreen,
     m_WinWidth(0),
     m_WinHeight(0),
     m_bInitialized(false),
-    m_pMenu(NULL),
+    m_pMenu(pMenu),
     m_NumOpenWindows(numOpenWindows),
     m_bIsFixed(false),
     m_InitialPosition(IP_Center),

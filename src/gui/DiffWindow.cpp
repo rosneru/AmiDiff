@@ -20,8 +20,9 @@ extern struct GfxBase* GfxBase;
 
 DiffWindow::DiffWindow(ScreenBase*& pScreen,
                        struct MsgPort*& pIdcmpMsgPort,
-                       int& numOpenWindows)
-  : ScrollbarWindow(pScreen, pIdcmpMsgPort, numOpenWindows),
+                       int& numOpenWindows,
+                       AMenu* pMenu)
+  : ScrollbarWindow(pScreen, pIdcmpMsgPort, numOpenWindows, pMenu),
     m_pDocument(NULL),
     m_EmptyChar('\0'),
     m_pLastParentGadget(NULL),

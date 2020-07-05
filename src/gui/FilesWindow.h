@@ -27,7 +27,8 @@ public:
               int& numWindowsOpen,
               SimpleString& leftFilePath,
               SimpleString& rightFilePath,
-              CommandBase& cmdDiff);
+              CommandBase& cmdDiff,
+              AMenu* pMenu);
 
   virtual ~FilesWindow();
 
