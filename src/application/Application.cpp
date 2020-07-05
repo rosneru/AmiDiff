@@ -39,13 +39,13 @@ Application::Application(ADiffViewArgs& args)
     m_pFilesWindowScreen(NULL),
     m_DiffWindow(m_pDiffWindowScreen,
                  m_pMsgPortIDCMP,
-                 &m_MenuDiffWindow),
+                 &m_DiffWindowMenu),
     m_FilesWindow(m_pFilesWindowScreen,
                   m_pMsgPortIDCMP,
                   m_LeftFilePath,
                   m_RightFilePath,
                   m_CmdDiff,
-                  &m_MenuAboutWindow),
+                  &m_FilesWindowMenu),
     m_ProgressWindow(m_pFilesWindowScreen,
                      m_pMsgPortIDCMP,
                      m_bCancelRequested,
@@ -180,60 +180,44 @@ bool Application::Run()
     m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
   }
 
-  // //
-  // // Fill the GadTools menu structs, supplying pointers to the commands
-  // // as user data. So in event loop no complicated evaluation is needed
-  // // to detect which menu item was selected. It will be a command, and
-  // // only its Execute() method must be called.
-  // //
-  // struct NewMenu menuDefAboutWindow[] =
-  // {
-  //   { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-  //   {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
-  //   {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
-  //   {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
-  //   {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
-  //   { NM_END,     NULL,                     0 , 0, 0, 0 },
-  // };
+  //
+  // Fill the GadTools menu structs, supplying pointers to the commands
+  // as user data. So in event loop no complicated evaluation is needed
+  // to detect which menu item was selected. It will be a command, and
+  // only its Execute() method must be called.
+  //
+  struct NewMenu aboutWinNewMenu[] =
+  {
+    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
+    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
+    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
+    {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
+    {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
+    { NM_END,     NULL,                     0 , 0, 0, 0 },
+  };
 
-  // struct NewMenu menuDefDiffWindow[] =
-  // {
-  //   { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-  //   {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
-  //   {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
-  //   {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
-  //   {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
-  //   { NM_TITLE,   "Navigate",               0 , 0, 0, 0 },
-  //   {   NM_ITEM,    "Previous difference", "P", 0, 0, &m_CmdNavPrevDiff },
-  //   {   NM_ITEM,    "Next difference",     "N", 0, 0, &m_CmdNavNextDiff },
-  //   { NM_END,     NULL,                     0 , 0, 0, 0 },
-  // };
+  size_t aboutWinMenuSize = sizeof(aboutWinNewMenu) / sizeof(aboutWinNewMenu[0]);
+  m_FilesWindowMenu.SetMenuDefinition(aboutWinNewMenu, aboutWinMenuSize);
+  m_FilesWindow.SetMenu(&m_FilesWindowMenu);
 
+  struct NewMenu diffWinNewMenu[] =
+  {
+    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
+    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
+    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
+    {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
+    {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
+    { NM_TITLE,   "Navigate",               0 , 0, 0, 0 },
+    {   NM_ITEM,    "Previous difference", "P", 0, 0, &m_CmdNavPrevDiff },
+    {   NM_ITEM,    "Next difference",     "N", 0, 0, &m_CmdNavNextDiff },
+    { NM_END,     NULL,                     0 , 0, 0, 0 },
+  };
 
-  // //
-  // // Create the menus
-  // //
-  // if(m_MenuAboutWindow.Create(menuDefAboutWindow, m_pFilesWindowScreen) == false)
-  // {
-  //   m_ErrorMsg = "Failed to create the main menu.";
-  //   return false;
-  // }
+  size_t diffWinMenuSize = sizeof(diffWinNewMenu) / sizeof(diffWinNewMenu[0]);
+  m_DiffWindowMenu.SetMenuDefinition(diffWinNewMenu, diffWinMenuSize);
+  m_DiffWindow.SetMenu(&m_DiffWindowMenu);
 
-  // if(m_MenuDiffWindow.Create(menuDefDiffWindow, m_pDiffWindowScreen) == false)
-  // {
-  //   m_ErrorMsg = "Failed to create the menu for the diff window.";
-  //   return false;
-  // }
-
-
-  // //
-  // // Prepare the windows
-  // //
-
-
-  // m_FilesWindow.SetMenu(&m_MenuAboutWindow);
-  // m_DiffWindow.SetMenu(&m_MenuDiffWindow);
-  // m_DiffWindow.SetSmartRefresh(true);
+  m_DiffWindow.SetSmartRefresh(true);
 
   if((m_LeftFilePath.Length() > 0) &&
      (m_RightFilePath.Length() > 0) &&
@@ -365,7 +349,7 @@ void Application::handleIdcmpMessages()
       struct MenuItem* pSelectedItem = NULL;
 
       // Create an array of all menus to be searched for the item
-      AMenu* pMenus[] = {&m_MenuAboutWindow, &m_MenuDiffWindow};
+      AMenu* pMenus[] = {&m_FilesWindowMenu, &m_DiffWindowMenu};
 
       // Iterate all those menus, trying to find the item
       for(size_t i = 0; i < (sizeof pMenus / sizeof pMenus[0]); i++)

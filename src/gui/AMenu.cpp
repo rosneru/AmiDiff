@@ -1,11 +1,14 @@
+#include <clib/exec_protos.h>
 #include <clib/gadtools_protos.h>
 #include <clib/intuition_protos.h>
+#include <exec/memory.h>
 
 #include "AMenu.h"
 
 
 AMenu::AMenu()
-  : m_pMenu(NULL)
+  : m_pMenuDefinition(NULL),
+    m_pMenu(NULL)
 {
 
 }
@@ -13,12 +16,37 @@ AMenu::AMenu()
 
 AMenu::~AMenu()
 {
-  Dispose();
+  if(m_pMenu != NULL)
+  {
+    FreeMenus(m_pMenu);
+    m_pMenu = NULL;
+  }
+
+  FreeVec(m_pMenuDefinition);
+  m_pMenuDefinition = NULL;
 }
 
-
-bool AMenu::Create(struct NewMenu* pMenuDefinition, ScreenBase* pScreen)
+bool AMenu::SetMenuDefinition(struct NewMenu* pMenuDef, size_t numItems)
 {
+  size_t arraySize = numItems * sizeof(struct NewMenu);
+  m_pMenuDefinition = (struct NewMenu*) AllocVec(arraySize, 
+                                                 MEMF_PUBLIC|MEMF_CLEAR);
+  if(m_pMenuDefinition == NULL)
+  {
+    return false;
+  }
+
+  CopyMem(pMenuDef, m_pMenuDefinition, arraySize);
+  return true;
+}
+
+bool AMenu::Create(ScreenBase* pScreen)
+{
+  if(m_pMenu != NULL)
+  {
+    return false;
+  }
+
   if(pScreen == NULL || !pScreen->IsOpen())
   {
     return false;
@@ -31,7 +59,7 @@ bool AMenu::Create(struct NewMenu* pMenuDefinition, ScreenBase* pScreen)
   }
 
   // Create the menu
-  m_pMenu = CreateMenus(pMenuDefinition, TAG_DONE);
+  m_pMenu = CreateMenus(m_pMenuDefinition, TAG_DONE);
   if(m_pMenu == NULL)
   {
     // Failed to create the menu
@@ -44,22 +72,15 @@ bool AMenu::Create(struct NewMenu* pMenuDefinition, ScreenBase* pScreen)
                  TAG_DONE) == FALSE)
   {
     // Failed to create the layout for the menu
-    Dispose();
     return false;
   }
+
+  FreeVec(m_pMenuDefinition);
+  m_pMenuDefinition = NULL;
 
   return true;
 }
 
-
-void AMenu::Dispose()
-{
-  if(m_pMenu != NULL)
-  {
-    FreeMenus(m_pMenu);
-    m_pMenu = NULL;
-  }
-}
 
 
 bool AMenu::AttachToWindow(struct Window* pWindow)

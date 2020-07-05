@@ -20,14 +20,16 @@ public:
   ~AMenu();
 
   /**
-   * Creating and outlaying the menu
+   * Sets the menu definition which will be used when the menu really is
+   * created with Create(). The given menu definition is copied, so the
+   * original pointer mustn't be valid when Create() is called. 
    */
-  bool Create(struct NewMenu* pMenuDefinition, ScreenBase* pScreen);
+  bool SetMenuDefinition(struct NewMenu* pMenuDef, size_t numItems);
 
   /**
-   * Freeing the menu and all obtained resources
+   * Creating and outlaying the menu
    */
-  void Dispose();
+  bool Create(ScreenBase* pScreen);
 
   /**
    * Wire the menu strip to a window. Can be done for multiple windows.
@@ -78,6 +80,7 @@ public:
                       APTR pUserDataMenuItemToEnable);
 
 private:
+  struct NewMenu* m_pMenuDefinition;
   struct Menu* m_pMenu;
 
 

@@ -170,6 +170,15 @@ bool WindowBase::Open(InitialPosition initialPos)
 
   m_pScreen->IncreaseNumOpenWindows();
 
+  // Create a menu if there has been set one
+  if(m_pMenu != NULL)
+  {
+    if(m_pMenu->Create(m_pScreen) == true)
+    {
+      m_pMenu->AttachToWindow(m_pWindow);
+    }
+  }
+
   // The window uses this message port which can be the same as used by
   // other windows
   m_pWindow->UserPort = m_pIdcmpMsgPort;
