@@ -66,6 +66,11 @@ public:
    */
   const ADiffViewPens& Pens() const;
 
+  size_t NumOpenWindows() const;
+
+  void IncreaseNumOpenWindows();
+  void DecreaseNumOpenWindows();
+
 
 protected:
   struct Screen* m_pScreen;
@@ -74,6 +79,8 @@ protected:
 
   ADiffViewPens m_Pens;
   const ADiffViewSettings& m_Settings;
+
+  size_t m_NumWindowsOpen;
 
   APTR m_pVisualInfo;
 };

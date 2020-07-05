@@ -24,7 +24,6 @@ class FilesWindow : public WindowBase
 public:
   FilesWindow(ScreenBase*& pScreen,
               struct MsgPort*& pIdcmpMsgPort,
-              int& numWindowsOpen,
               SimpleString& leftFilePath,
               SimpleString& rightFilePath,
               CommandBase& cmdDiff,

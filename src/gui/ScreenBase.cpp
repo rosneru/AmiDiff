@@ -12,6 +12,7 @@ ScreenBase::ScreenBase(const ADiffViewSettings& settings)
     m_pDrawInfo(NULL),
     m_Pens(m_pScreen, m_pDrawInfo, settings),
     m_Settings(settings),
+    m_NumWindowsOpen(0),
     m_pVisualInfo(NULL)
 {
 }
@@ -75,4 +76,22 @@ APTR ScreenBase::GadtoolsVisualInfo()
 const ADiffViewPens& ScreenBase::Pens() const
 {
   return m_Pens;
+}
+
+size_t ScreenBase::NumOpenWindows() const
+{
+  return m_NumWindowsOpen;
+}
+
+void ScreenBase::IncreaseNumOpenWindows()
+{
+  m_NumWindowsOpen++;
+}
+
+void ScreenBase::DecreaseNumOpenWindows()
+{
+  if(m_NumWindowsOpen > 0)
+  {
+    m_NumWindowsOpen--;
+  }
 }

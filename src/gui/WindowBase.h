@@ -238,7 +238,6 @@ protected:
    */
   WindowBase(ScreenBase*& pScreen, 
              struct MsgPort*& pIdcmpMsgPort,
-             int& numOpenWindows,
              AMenu* pMenu);
 
 
@@ -328,7 +327,6 @@ protected:
   struct Image* createImageObj(ULONG sysImageId, ULONG& width, ULONG& height);
 
 private:
-  int& m_NumOpenWindows;
   bool m_bIsFixed;
   InitialPosition m_InitialPosition;
   ULONG m_WindowFlags;

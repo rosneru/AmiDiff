@@ -50,7 +50,6 @@ private:
 
   SimpleString m_ErrorMsg;
 
-  int m_NumWindowsOpen;
   bool m_bCancelRequested;
   bool m_bExitRequested;
   bool m_bExitAllowed;

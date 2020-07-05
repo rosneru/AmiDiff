@@ -19,12 +19,11 @@
 
 FilesWindow::FilesWindow(ScreenBase*& pScreen,
                          struct MsgPort*& pIdcmpMsgPort,
-                         int& numWindowsOpen,
                          SimpleString& leftFilePath,
                          SimpleString& rightFilePath,
                          CommandBase& cmdDiff,
                          AMenu* pMenu)
-  : WindowBase(pScreen, pIdcmpMsgPort, numWindowsOpen, pMenu),
+  : WindowBase(pScreen, pIdcmpMsgPort, pMenu),
     m_AslRequest(m_pWindow),
     m_bFileRequestOpen(false),
     m_LeftFilePath(leftFilePath),

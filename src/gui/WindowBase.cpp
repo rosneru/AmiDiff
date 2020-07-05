@@ -11,7 +11,6 @@
 
 WindowBase::WindowBase(ScreenBase*& pScreen,
                        struct MsgPort*& pIdcmpMsgPort,
-                       int& numOpenWindows,
                        AMenu* pMenu)
   : m_pScreen(pScreen),
     m_pIdcmpMsgPort(pIdcmpMsgPort),
@@ -24,7 +23,6 @@ WindowBase::WindowBase(ScreenBase*& pScreen,
     m_WinHeight(0),
     m_bInitialized(false),
     m_pMenu(pMenu),
-    m_NumOpenWindows(numOpenWindows),
     m_bIsFixed(false),
     m_InitialPosition(IP_Center),
     m_WindowFlags(0),
@@ -170,6 +168,8 @@ bool WindowBase::Open(InitialPosition initialPos)
     return false;
   }
 
+  m_pScreen->IncreaseNumOpenWindows();
+
   // The window uses this message port which can be the same as used by
   // other windows
   m_pWindow->UserPort = m_pIdcmpMsgPort;
@@ -185,8 +185,6 @@ bool WindowBase::Open(InitialPosition initialPos)
                                 m_pAppWindowPort,
                                 TAG_DONE, NULL);
   }
-
-  m_NumOpenWindows++;
 
   if(m_pMenu == NULL)
   {
@@ -225,7 +223,7 @@ void WindowBase::Close()
   }
 
   closeWindowSafely();
-  m_NumOpenWindows--;
+  m_pScreen->DecreaseNumOpenWindows();
 }
 
 

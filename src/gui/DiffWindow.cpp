@@ -20,9 +20,8 @@ extern struct GfxBase* GfxBase;
 
 DiffWindow::DiffWindow(ScreenBase*& pScreen,
                        struct MsgPort*& pIdcmpMsgPort,
-                       int& numOpenWindows,
                        AMenu* pMenu)
-  : ScrollbarWindow(pScreen, pIdcmpMsgPort, numOpenWindows, pMenu),
+  : ScrollbarWindow(pScreen, pIdcmpMsgPort, pMenu),
     m_pDocument(NULL),
     m_EmptyChar('\0'),
     m_pLastParentGadget(NULL),
@@ -147,6 +146,14 @@ bool DiffWindow::Open(InitialPosition initialPos)
     return false;
   }
 
+  //
+  // Open the window (and the screen if it isn't open yet)
+  //
+  if(!ScrollbarWindow::Open(initialPos))
+  {
+    return false;
+  }
+
   m_pDocument = NULL;
   
   //
@@ -162,14 +169,6 @@ bool DiffWindow::Open(InitialPosition initialPos)
   m_TextAttr.ta_YSize = m_pScreen->IntuiDrawInfo()->dri_Font->tf_YSize;
   m_TextAttr.ta_Style = m_pScreen->IntuiDrawInfo()->dri_Font->tf_Style;
   m_TextAttr.ta_Flags = m_pScreen->IntuiDrawInfo()->dri_Font->tf_Flags;
-
-  //
-  // Open the window
-  //
-  if(!ScrollbarWindow::Open(initialPos))
-  {
-    return false;
-  }
 
   SetAPen(m_pWindow->RPort, m_pScreen->Pens().Text());
 

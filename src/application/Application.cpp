@@ -20,7 +20,6 @@ Application::Application(ADiffViewArgs& args)
     m_pMsgPortIDCMP(NULL),
     m_pMsgPortProgress(NULL),
     m_pMsgPortAppWindow(NULL),
-    m_NumWindowsOpen(0),
     m_bCancelRequested(false),
     m_bExitRequested(false),
     m_bExitAllowed(true),
@@ -40,18 +39,15 @@ Application::Application(ADiffViewArgs& args)
     m_pFilesWindowScreen(NULL),
     m_DiffWindow(m_pDiffWindowScreen,
                  m_pMsgPortIDCMP,
-                 m_NumWindowsOpen,
                  &m_MenuDiffWindow),
     m_FilesWindow(m_pFilesWindowScreen,
                   m_pMsgPortIDCMP,
-                  m_NumWindowsOpen,
                   m_LeftFilePath,
                   m_RightFilePath,
                   m_CmdDiff,
                   &m_MenuAboutWindow),
     m_ProgressWindow(m_pFilesWindowScreen,
                      m_pMsgPortIDCMP,
-                     m_NumWindowsOpen,
                      m_bCancelRequested,
                      NULL),
     m_CmdDiff(m_WindowArray, m_DiffWorker),
@@ -125,7 +121,7 @@ bool Application::Run()
   m_pMsgPortProgress = CreateMsgPort();
   if(m_pMsgPortProgress == NULL)
   {
-    m_ErrorMsg = "failed to create the progress message port.";
+    m_ErrorMsg = "Failed to create the progress message port.";
     return false;
   }
 
@@ -143,20 +139,12 @@ bool Application::Run()
   m_DiffWorker.SetLineNumbers(m_Args.ShowLineNumbers());
 
 
-  //
-  // Prepare the screen
-  //
-  bool bFilesWindowIsAppWindow = false;
+  // Select on which kind of screen the DiffWindow will appear depending
+  // on arguments
   if(m_Args.PubScreenName().Length() > 0)
   {
     // For DiffWindow use a given public screen
     m_pDiffWindowScreen = &m_JoinedPublicScreen;
-
-    // If running on Workbench screen, set FilesWindow as an AppWindow
-    if(m_Args.PubScreenName() == "Workbench")
-    {
-      bFilesWindowIsAppWindow = true;
-    }
   }
   else
   {
@@ -165,41 +153,61 @@ bool Application::Run()
     m_pDiffWindowScreen = &m_ClonedWorkbenchScreen;
   }
 
+  // Select on which kind of screen the FilesWindow will appear
+  // depending on arguments
   m_pFilesWindowScreen = m_pDiffWindowScreen;
   if(m_Args.AskOnWorkbench())
   {
     m_pFilesWindowScreen = &m_WorkbenchPublicScreen;
-    bFilesWindowIsAppWindow = true;
   }
 
-  //
-  // Fill the GadTools menu structs, supplying pointers to the commands
-  // as user data. So in event loop no complicated evaluation is needed
-  // to detect which menu item was selected. It will be a command, and
-  // only its Execute() method must be called.
-  //
-  struct NewMenu menuDefAboutWindow[] =
-  {
-    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
-    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
-    {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
-    {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
-    { NM_END,     NULL,                     0 , 0, 0, 0 },
-  };
+  // If running on Workbench screen, set OpenFilesWindow as an AppWindow
+  bool bFilesWindowIsAppWindow = (m_Args.PubScreenName() == "Workbench") ||
+                                 (m_Args.AskOnWorkbench() == true);
 
-  struct NewMenu menuDefDiffWindow[] =
+  if(bFilesWindowIsAppWindow)
   {
-    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
-    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
-    {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
-    {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
-    { NM_TITLE,   "Navigate",               0 , 0, 0, 0 },
-    {   NM_ITEM,    "Previous difference", "P", 0, 0, &m_CmdNavPrevDiff },
-    {   NM_ITEM,    "Next difference",     "N", 0, 0, &m_CmdNavNextDiff },
-    { NM_END,     NULL,                     0 , 0, 0, 0 },
-  };
+    // Create a message port for the AppWindow
+    // No NULL check needed. In this case it simply won't work.
+    m_pMsgPortAppWindow = CreateMsgPort();
+    if(m_pMsgPortAppWindow == NULL)
+    {
+      m_ErrorMsg = "Failed to create the app window message port.";
+      return false;
+    }
+
+    // FilesWindow should be an AppWindow
+    m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
+  }
+
+  // //
+  // // Fill the GadTools menu structs, supplying pointers to the commands
+  // // as user data. So in event loop no complicated evaluation is needed
+  // // to detect which menu item was selected. It will be a command, and
+  // // only its Execute() method must be called.
+  // //
+  // struct NewMenu menuDefAboutWindow[] =
+  // {
+  //   { NM_TITLE,   "Project",                0 , 0, 0, 0 },
+  //   {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
+  //   {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
+  //   {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
+  //   {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
+  //   { NM_END,     NULL,                     0 , 0, 0, 0 },
+  // };
+
+  // struct NewMenu menuDefDiffWindow[] =
+  // {
+  //   { NM_TITLE,   "Project",                0 , 0, 0, 0 },
+  //   {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
+  //   {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
+  //   {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
+  //   {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
+  //   { NM_TITLE,   "Navigate",               0 , 0, 0, 0 },
+  //   {   NM_ITEM,    "Previous difference", "P", 0, 0, &m_CmdNavPrevDiff },
+  //   {   NM_ITEM,    "Next difference",     "N", 0, 0, &m_CmdNavNextDiff },
+  //   { NM_END,     NULL,                     0 , 0, 0, 0 },
+  // };
 
 
   // //
@@ -221,15 +229,7 @@ bool Application::Run()
   // //
   // // Prepare the windows
   // //
-  // if(bFilesWindowIsAppWindow)
-  // {
-  //   // Create a message port for the AppWindow
-  //   // No NULL check needed. In this case it simply won't work.
-  //   m_pMsgPortAppWindow = CreateMsgPort();
 
-  //   // FilesWindow should be an AppWindow
-  //   m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
-  // }
 
   // m_FilesWindow.SetMenu(&m_MenuAboutWindow);
   // m_DiffWindow.SetMenu(&m_MenuDiffWindow);
@@ -303,7 +303,8 @@ void Application::intuiEventLoop()
       handleIdcmpMessages();
     }
 
-    if(m_NumWindowsOpen < 1)
+    if((m_pDiffWindowScreen->NumOpenWindows() < 1) &&
+       (m_pFilesWindowScreen->NumOpenWindows() < 1))
     {
       // Exitting as there are no windows open anymore.
       m_CmdQuit.Execute(NULL); // Only sets m_bExitRequested to true.
