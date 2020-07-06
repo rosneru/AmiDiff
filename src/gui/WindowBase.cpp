@@ -170,15 +170,6 @@ bool WindowBase::Open(InitialPosition initialPos)
 
   m_pScreen->IncreaseNumOpenWindows();
 
-  // Create a menu if there has been set one
-  if(m_pMenu != NULL)
-  {
-    if(m_pMenu->Create(m_pScreen) == true)
-    {
-      m_pMenu->AttachToWindow(m_pWindow);
-    }
-  }
-
   // The window uses this message port which can be the same as used by
   // other windows
   m_pWindow->UserPort = m_pIdcmpMsgPort;
@@ -202,11 +193,11 @@ bool WindowBase::Open(InitialPosition initialPos)
     return true;
   }
 
-  // Set menu strip to the window
-  if(m_pMenu->AttachToWindow(m_pWindow) == false)
+  // Create the menu if; returns true if already done
+  if(m_pMenu->Create(m_pScreen) == true)
   {
-    // TODO React somehow on this failing?
-    return true;
+    // Attach the menu to the window
+    m_pMenu->AttachToWindow(m_pWindow);
   }
 
   return true;
@@ -401,8 +392,13 @@ void WindowBase::SetMenu(AMenu* pMenu)
     return;
   }
 
-  // The window is already open: attach the newly added menu to it
-  m_pMenu->AttachToWindow(m_pWindow);
+  // Create the menu; returns true if already done
+  if(m_pMenu->Create(m_pScreen) == true)
+  {
+    // Attach the menu to the window
+    m_pMenu->AttachToWindow(m_pWindow);
+  }
+
   return;
 }
 

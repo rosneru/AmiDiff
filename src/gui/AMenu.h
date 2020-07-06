@@ -27,7 +27,10 @@ public:
   bool SetMenuDefinition(struct NewMenu* pMenuDef, size_t numItems);
 
   /**
-   * Creating and outlaying the menu
+   * Creating the menu and its layout depending on the layout of the
+   * screen it appears on.
+   * 
+   * \return true on success or if already done; false on error.
    */
   bool Create(ScreenBase* pScreen);
 

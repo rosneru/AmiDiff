@@ -44,7 +44,8 @@ bool AMenu::Create(ScreenBase* pScreen)
 {
   if(m_pMenu != NULL)
   {
-    return false;
+    // Menu already been created
+    return true;
   }
 
   if(pScreen == NULL || !pScreen->IsOpen())
