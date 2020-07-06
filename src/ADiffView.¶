@@ -160,7 +160,6 @@ File
 "application/Application.cpp"
 "application/Application.h"
 "worker/WorkerBase.h"
-"worker/ProgressReporter.h"
 "worker/WorkerStartupMsg.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
@@ -168,11 +167,12 @@ File
 "gui/ScrollbarWindow.h"
 "application/ADiffView_rev.h"
 "gui/ADiffViewPens.h"
-"application/ADiffViewSettings.h"
 "application/ADiffViewArgs.h"
 "gui/ScreenBase.h"
 "diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
+"gui/AMenu.h"
+"commands/CmdOpenWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -189,12 +189,12 @@ File
 "application/ADiffViewSettings.h"
 "gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
-"commands/Command.h"
 "worker/WorkerBase.h"
-"worker/ProgressReporter.h"
 "worker/WorkerStartupMsg.h"
 "diffengine/DiffFileBase.h"
 "gui/ScrollbarWindow.h"
+"commands/CommandBase.h"
+"commands/CmdOpenWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -203,11 +203,23 @@ File
 1 "commands/CmdAbout.cpp"
 "commands/CmdAbout.cpp"
 "commands/CmdAbout.h"
-"commands/Command.h"
 "gui/ADiffViewPens.h"
 "gui/ScreenBase.h"
+"commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdAbout.o" "objects_debug/CmdAbout.debug"
+""
+1 1
+File
+1 "commands/CmdCloseWindow.cpp"
+"commands/CmdCloseWindow.cpp"
+"commands/CmdCloseWindow.h"
+"gui/ScreenBase.h"
+"gui/ADiffViewPens.h"
+"commands/CmdOpenWindow.h"
+"commands/CommandBase.h"
+Storm Shell Project (Dependencies)
+"objects_debug/CmdCloseWindow.o" "objects_debug/CmdCloseWindow.debug"
 ""
 1 1
 File
@@ -215,18 +227,17 @@ File
 "commands/CmdDiff.cpp"
 "commands/CmdDiff.h"
 "worker/WorkerBase.h"
-"worker/ProgressReporter.h"
 "worker/WorkerStartupMsg.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
 "diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
-"gui/WindowBase.h"
 "gui/ADiffViewPens.h"
 "diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
 "gui/ScreenBase.h"
-"gui/AMenu.h"
+"commands/CmdOpenWindow.h"
+"commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
 ""
@@ -240,10 +251,10 @@ File
 "diffengine/DiffLine.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
-"commands/Command.h"
 "gui/ScreenBase.h"
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
+"commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdNavNextDiff.o" "objects_debug/CmdNavNextDiff.debug"
 ""
@@ -257,21 +268,21 @@ File
 "diffengine/DiffLine.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
-"commands/Command.h"
 "gui/ScreenBase.h"
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
+"commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdNavPrevDiff.o" "objects_debug/CmdNavPrevDiff.debug"
 ""
 1 1
 File
 1 "commands/CmdOpenWindow.cpp"
-"commands/Command.h"
 "commands/CmdOpenWindow.cpp"
 "commands/CmdOpenWindow.h"
 "gui/ADiffViewPens.h"
 "gui/ScreenBase.h"
+"commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdOpenWindow.o" "objects_debug/CmdOpenWindow.debug"
 ""
@@ -280,17 +291,23 @@ File
 1 "commands/CmdQuit.cpp"
 "commands/CmdQuit.cpp"
 "commands/CmdQuit.h"
-"commands/Command.h"
+"commands/CommandBase.h"
+"gui/AMenu.h"
+"gui/ScreenBase.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdQuit.o" "objects_debug/CmdQuit.debug"
 ""
 1 1
 File
-1 "commands/Command.cpp"
-"commands/Command.cpp"
-"commands/Command.h"
+1 "commands/CommandBase.cpp"
+"commands/CommandBase.cpp"
+"commands/CommandBase.h"
+"gui/AMenu.h"
+"gui/ScreenBase.h"
+"gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
-"objects_debug/Command.o" "objects_debug/Command.debug"
+"objects_debug/CommandBase.o" "objects_debug/CommandBase.debug"
 ""
 1 1
 File
@@ -401,7 +418,6 @@ File
 1 "gui/FilesWindow.cpp"
 "gui/FilesWindow.cpp"
 "gui/FilesWindow.h"
-"gui/WindowBase.h"
 "gui/ADiffViewPens.h"
 "gui/ScreenBase.h"
 "gui/AMenu.h"
@@ -503,18 +519,17 @@ File
 "worker/DiffWorker.cpp"
 "worker/DiffWorker.h"
 "worker/WorkerBase.h"
-"worker/ProgressReporter.h"
 "worker/WorkerStartupMsg.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
 "diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
-"gui/WindowBase.h"
 "gui/ADiffViewPens.h"
 "diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
 "gui/ScreenBase.h"
-"gui/AMenu.h"
+"commands/CmdOpenWindow.h"
+"commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
 ""
@@ -606,6 +621,13 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "commands/CmdCloseWindow.h"
+"commands/CmdCloseWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "commands/CmdDiff.h"
 "commands/CmdPerformDiff.h"
 "commands/CmdDiff.h"
@@ -644,8 +666,8 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "commands/Command.h"
-"commands/Command.h"
+2 "commands/CommandBase.h"
+"commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
