@@ -3,6 +3,7 @@
 
 #include <exec/ports.h>
 
+#include "CmdCloseWindow.h"
 #include "CmdOpenWindow.h"
 #include "DiffDocument.h"
 #include "DiffEngineAmiga.h"
@@ -30,9 +31,9 @@ public:
   DiffWorker(SimpleString& leftFilePath,
              SimpleString& rightFilePath,
              DiffWindow& diffWindow,
-             FilesWindow& filesWindow,
              ProgressWindow& progressWindow,
-             CmdOpenWindow& cmdOpen,
+             CmdOpenWindow& cmdOpenFilesWindow,
+             CmdCloseWindow& cmdCloseFilesWindow,
              struct MsgPort*& pProgressPort,
              bool& bCancelRequested,
              bool& bExitAllowed);
@@ -74,9 +75,9 @@ private:
   SimpleString& m_RightSrcFilePath;
 
   DiffWindow& m_DiffWindow;
-  FilesWindow& m_FilesWindow;
   ProgressWindow& m_ProgressWindow;
   CmdOpenWindow& m_CmdOpenFilesWindow;
+  CmdCloseWindow& m_CmdCloseFilesWindow;
   int m_ProgressOffset;
   bool& m_bCancelRequested;
   bool& m_bExitAllowed;

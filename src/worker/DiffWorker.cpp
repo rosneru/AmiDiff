@@ -7,9 +7,9 @@
 DiffWorker::DiffWorker(SimpleString& leftFilePath,
                        SimpleString& rightFilePath,
                        DiffWindow& diffWindow,
-                       FilesWindow& filesWindow,
                        ProgressWindow& progressWindow,
                        CmdOpenWindow& cmdOpenFilesWindow,
+                       CmdCloseWindow& cmdCloseFilesWindow,
                        struct MsgPort*& pProgressPort,
                        bool& bCancelRequested,
                        bool& bExitAllowed)
@@ -17,9 +17,9 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
     m_LeftSrcFilePath(leftFilePath),
     m_RightSrcFilePath(rightFilePath),
     m_DiffWindow(diffWindow),
-    m_FilesWindow(filesWindow),
     m_ProgressWindow(progressWindow),
     m_CmdOpenFilesWindow(cmdOpenFilesWindow),
+    m_CmdCloseFilesWindow(cmdCloseFilesWindow),
     m_ProgressOffset(0),
     m_bCancelRequested(bCancelRequested),
     m_bExitAllowed(bExitAllowed),
@@ -74,7 +74,7 @@ bool DiffWorker::Diff()
   // Close FilesWindow, open ProgressWindow etc
   //
   m_ProgressWindow.Open();
-  m_FilesWindow.Close();
+  m_CmdCloseFilesWindow.Execute(NULL);
   m_DiffWindow.Close();
 
   // Close documents if already existing.
