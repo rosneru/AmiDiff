@@ -27,6 +27,7 @@ public:
               SimpleString& leftFilePath,
               SimpleString& rightFilePath,
               CommandBase& cmdDiff,
+              CommandBase& cmdCloseFilesWindow,
               AMenu* pMenu);
 
   virtual ~FilesWindow();
@@ -65,6 +66,7 @@ private:
   SimpleString& m_RightFilePath;
 
   CommandBase& m_CmdDiff;
+  CommandBase& m_CmdCloseFilesWindow;
 
   /**
    * IDs to help to interpret the events of this window's Gadtools

@@ -17,6 +17,7 @@
 #include "ClonedWorkbenchScreen.h"
 #include "JoinedPublicScreen.h"
 #include "CmdAbout.h"
+#include "CmdCloseWindow.h"
 #include "CmdOpenWindow.h"
 #include "CmdDiff.h"
 #include "CmdNavNextDiff.h"
@@ -78,6 +79,7 @@ private:
   CmdNavPrevDiff m_CmdNavPrevDiff;
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpenFilesWindow;
+  CmdCloseWindow m_CmdCloseFilesWindow;
   CmdAbout m_CmdAbout;
 
   Array<WindowBase*> m_WindowArray;

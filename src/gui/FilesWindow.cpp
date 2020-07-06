@@ -22,6 +22,7 @@ FilesWindow::FilesWindow(ScreenBase*& pScreen,
                          SimpleString& leftFilePath,
                          SimpleString& rightFilePath,
                          CommandBase& cmdDiff,
+                         CommandBase& cmdCloseFilesWindow,
                          AMenu* pMenu)
   : WindowBase(pScreen, pIdcmpMsgPort, pMenu),
     m_AslRequest(m_pWindow),
@@ -29,6 +30,7 @@ FilesWindow::FilesWindow(ScreenBase*& pScreen,
     m_LeftFilePath(leftFilePath),
     m_RightFilePath(rightFilePath),
     m_CmdDiff(cmdDiff),
+    m_CmdCloseFilesWindow(cmdCloseFilesWindow),
     m_pGadtoolsContext(NULL),
     m_pGadStrLeftFile(NULL),
     m_pGadStrRightFile(NULL),
@@ -44,7 +46,7 @@ FilesWindow::FilesWindow(ScreenBase*& pScreen,
 
 FilesWindow::~FilesWindow()
 {
-  Close();
+  m_CmdCloseFilesWindow.Execute(NULL);
 
   if(m_pGadtoolsContext != NULL)
   {
@@ -118,7 +120,7 @@ void FilesWindow::HandleIdcmp(ULONG msgClass,
     {
       if(!m_bFileRequestOpen)
       {
-        Close();
+        m_CmdCloseFilesWindow.Execute(NULL);
       }
       break;
     }
@@ -212,7 +214,7 @@ void FilesWindow::handleGadgetEvent(struct Gadget* pGadget)
       break;
 
     case GID_CancelButton:
-      Close();
+      m_CmdCloseFilesWindow.Execute(NULL);
       break;
   }
 }
@@ -275,7 +277,7 @@ void FilesWindow::handleVanillaKey(UWORD code)
 
     case 'c': // Cancel
     case 'C':
-      Close();
+      m_CmdCloseFilesWindow.Execute(NULL);
       break;
 
   }

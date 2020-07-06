@@ -45,6 +45,7 @@ Application::Application(ADiffViewArgs& args)
                   m_LeftFilePath,
                   m_RightFilePath,
                   m_CmdDiff,
+                  m_CmdCloseFilesWindow,
                   &m_FilesWindowMenu),
     m_ProgressWindow(m_pFilesWindowScreen,
                      m_pMsgPortIDCMP,
@@ -55,6 +56,7 @@ Application::Application(ADiffViewArgs& args)
     m_CmdNavPrevDiff(m_WindowArray,m_DiffWindow),
     m_CmdQuit(m_WindowArray, m_bExitAllowed, m_bExitRequested),
     m_CmdOpenFilesWindow(m_WindowArray, m_FilesWindow),
+    m_CmdCloseFilesWindow(m_WindowArray, m_CmdOpenFilesWindow, m_FilesWindow),
     m_CmdAbout(m_WindowArray,
                VERSTAG)
 {
@@ -92,24 +94,25 @@ Application::~Application()
     m_pMsgPortIDCMP = NULL;
   }
 
-    if(m_pMsgPortAppWindow!= NULL)
+  if(m_pMsgPortAppWindow!= NULL)
   {
     DeleteMsgPort(m_pMsgPortAppWindow);
     m_pMsgPortAppWindow = NULL;
   }
-
-
 }
 
 
 bool Application::Run()
 {
+  // If running on Workbench screen, set OpenFilesWindow as an AppWindow
+  bool bFilesWindowIsAppWindow = (m_Args.PubScreenName() == "Workbench") ||
+                                 (m_Args.AskOnWorkbench() == true);
+
   //
   // Message port initialization
   //
 
-
-  // Create a message port for all windows' IDCMP messages
+  // Create a message port for all windows (IDCMP) messages
   m_pMsgPortIDCMP = CreateMsgPort();
   if(m_pMsgPortIDCMP == NULL)
   {
@@ -125,14 +128,22 @@ bool Application::Run()
     return false;
   }
 
-  //
-  // Load the settings.
-  //
-  // Note: As they can contain e.g. colors for screen / windows etc.
-  //       this is done as early as possible and before opening any
-  //       of the above mentioned.
-  //
-  //
+  if(bFilesWindowIsAppWindow)
+  {
+    // Create a message port for the AppWindow
+    m_pMsgPortAppWindow = CreateMsgPort();
+    if(m_pMsgPortAppWindow == NULL)
+    {
+      m_ErrorMsg = "Failed to create the app window message port.";
+      return false;
+    }
+
+    // FilesWindow should be an AppWindow
+    m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
+  }
+
+  // Load the settings. As they can contain e.g. colors for screen /
+  // windows etc. this is done before opening any of the mentioned.
   m_Settings.Load();
 
   // Apply some settings and arguments
@@ -161,24 +172,6 @@ bool Application::Run()
     m_pFilesWindowScreen = &m_WorkbenchPublicScreen;
   }
 
-  // If running on Workbench screen, set OpenFilesWindow as an AppWindow
-  bool bFilesWindowIsAppWindow = (m_Args.PubScreenName() == "Workbench") ||
-                                 (m_Args.AskOnWorkbench() == true);
-
-  if(bFilesWindowIsAppWindow)
-  {
-    // Create a message port for the AppWindow
-    // No NULL check needed. In this case it simply won't work.
-    m_pMsgPortAppWindow = CreateMsgPort();
-    if(m_pMsgPortAppWindow == NULL)
-    {
-      m_ErrorMsg = "Failed to create the app window message port.";
-      return false;
-    }
-
-    // FilesWindow should be an AppWindow
-    m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
-  }
 
   //
   // Fill the GadTools menu structs, supplying pointers to the commands
@@ -287,6 +280,7 @@ void Application::intuiEventLoop()
       handleIdcmpMessages();
     }
 
+    // Check all screens for any open windows
     if((m_pDiffWindowScreen->NumOpenWindows() < 1) &&
        (m_pFilesWindowScreen->NumOpenWindows() < 1))
     {
