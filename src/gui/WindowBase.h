@@ -51,7 +51,7 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  virtual bool Open(InitialPosition initialPos = IP_Center) = 0;
+  virtual bool Open(InitialPosition initialPos = IP_Center);
 
   /**
    * Closes the window.
