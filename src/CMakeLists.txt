@@ -22,6 +22,7 @@ add_executable (ADiffView
                 application/Application.cpp
                 application/main.cpp
                 commands/CmdAbout.cpp
+                commands/CmdCloseWindow.cpp
                 commands/CmdDiff.cpp
                 commands/CmdNavNextDiff.cpp
                 commands/CmdNavPrevDiff.cpp

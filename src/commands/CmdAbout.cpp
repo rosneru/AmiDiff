@@ -22,12 +22,12 @@ CmdAbout::~CmdAbout()
 
 void CmdAbout::Execute(struct Window* pActiveWindow)
 {
-  disableThisCmdInAllWindowsMenus();
+  DisableInAllWindowMenus();
 
   // Display the about dialog
   MessageBox messageBox;
   messageBox.Show(pActiveWindow, "About", m_AboutMsg.C_str(), "Ok");
 
   // Enable this command in all windows / menus
-  enableThisCmdInAllWindowsMenus();
+  EnableInAllWindowMenus();
 }

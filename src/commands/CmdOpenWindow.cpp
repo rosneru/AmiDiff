@@ -19,7 +19,9 @@ void CmdOpenWindow::Execute(struct Window* pActiveWindow)
     return;
   }
 
-  disableThisCmdInAllWindowsMenus();
-  m_Window.Open();
-  // enableThisCmdInAllWindowsMenus();
+  
+  if(m_Window.Open() == true)
+  {
+    DisableInAllWindowMenus();
+  }
 }

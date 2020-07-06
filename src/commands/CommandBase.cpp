@@ -2,7 +2,7 @@
 
 
 CommandBase::CommandBase(Array<WindowBase*>& windowArray)
-  : m_WindowArray(windowArray)
+  : m_Windows(windowArray)
 {
 
 }
@@ -12,26 +12,26 @@ CommandBase::~CommandBase()
 
 }
 
-void CommandBase::disableThisCmdInAllWindowsMenus()
+void CommandBase::DisableInAllWindowMenus() const
 {
-  for(size_t i = 0; i < m_WindowArray.Size(); i++)
+  for(size_t i = 0; i < m_Windows.Size(); i++)
   {
-    AMenu* pMenu = m_WindowArray[i]->Menu();
+    AMenu* pMenu = m_Windows[i]->Menu();
     if(pMenu != NULL)
     {
-      pMenu->DisableMenuItem(m_WindowArray[i]->IntuiWindow(), (APTR)this);
+      pMenu->DisableMenuItem(m_Windows[i]->IntuiWindow(), (APTR)this);
     }
   }
 }
 
-void CommandBase::enableThisCmdInAllWindowsMenus()
+void CommandBase::EnableInAllWindowMenus() const
 {
-  for(size_t i = 0; i < m_WindowArray.Size(); i++)
+  for(size_t i = 0; i < m_Windows.Size(); i++)
   {
-    AMenu* pMenu = m_WindowArray[i]->Menu();
+    AMenu* pMenu = m_Windows[i]->Menu();
     if(pMenu != NULL)
     {
-      pMenu->EnableMenuItem(m_WindowArray[i]->IntuiWindow(), (APTR)this);
+      pMenu->EnableMenuItem(m_Windows[i]->IntuiWindow(), (APTR)this);
     }
   }
 }

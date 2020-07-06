@@ -23,14 +23,14 @@ public:
   virtual ~CommandBase();
   virtual void Execute(struct Window* pActiveWindow) = 0;
 
+  void DisableInAllWindowMenus() const;
+  void EnableInAllWindowMenus() const;
+
 protected:
   CommandBase();
 
-  void disableThisCmdInAllWindowsMenus();
-  void enableThisCmdInAllWindowsMenus();
-
 private:
-    Array<WindowBase*>& m_WindowArray;
+    Array<WindowBase*>& m_Windows;
 };
 
-#endif // COMMAND_H
+#endif
