@@ -22,8 +22,11 @@ AMenu::~AMenu()
     m_pMenu = NULL;
   }
 
-  FreeVec(m_pMenuDefinition);
-  m_pMenuDefinition = NULL;
+  if(m_pMenuDefinition != NULL)
+  {
+    FreeVec(m_pMenuDefinition);
+    m_pMenuDefinition = NULL;
+  }
 }
 
 bool AMenu::SetMenuDefinition(struct NewMenu* pMenuDef, size_t numItems)

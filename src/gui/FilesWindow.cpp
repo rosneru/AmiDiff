@@ -46,7 +46,7 @@ FilesWindow::FilesWindow(ScreenBase*& pScreen,
 
 FilesWindow::~FilesWindow()
 {
-  m_CmdCloseFilesWindow.Execute(NULL);
+  Close();
 
   if(m_pGadtoolsContext != NULL)
   {

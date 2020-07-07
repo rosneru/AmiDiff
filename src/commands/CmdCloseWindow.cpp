@@ -23,6 +23,6 @@ void CmdCloseWindow::Execute(struct Window* pActiveWindow)
 
   m_Window.Close();
 
-  // Re-enable the 
+  // Re-enable the command that was used to open the window in all menus
   m_OpenWindowCommand.EnableInAllWindowMenus();
 }
