@@ -66,8 +66,8 @@ void CommandBase::enableBusyPointerForAllWindows()
   for(size_t i = 0; i < m_Windows.Size(); i++)
   {
     struct Window* pIntuiWindow = m_Windows[i]->IntuiWindow();
-    
-    if(pIntuiWindow != NULL && m_Windows[i]->IsOpen())
+
+    if(pIntuiWindow != NULL)
     {
       Request(&m_SleepRequester, pIntuiWindow);
       SetWindowPointer(pIntuiWindow, WA_BusyPointer, TRUE, TAG_DONE);
