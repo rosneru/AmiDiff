@@ -216,7 +216,7 @@ void WindowBase::Close()
     m_pMenu->DetachFromWindow(m_pWindow);
   }
 
-  if(m_pAppWindow == NULL)
+  if(m_pAppWindow != NULL)
   {
     RemoveAppWindow(m_pAppWindow);
     m_pAppWindow = NULL;

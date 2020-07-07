@@ -32,7 +32,7 @@ AMenu::~AMenu()
 bool AMenu::SetMenuDefinition(struct NewMenu* pMenuDef, size_t numItems)
 {
   size_t arraySize = numItems * sizeof(struct NewMenu);
-  m_pMenuDefinition = (struct NewMenu*) AllocVec(arraySize, 
+  m_pMenuDefinition = (struct NewMenu*) AllocVec(arraySize,
                                                  MEMF_PUBLIC|MEMF_CLEAR);
   if(m_pMenuDefinition == NULL)
   {
@@ -132,9 +132,9 @@ void AMenu::DisableMenuItem(struct Window* pWindow,
 
 
 void AMenu::EnableMenuItem(struct Window* pWindow,
-  APTR pUserDataMenuItemToEnable)
+                           APTR pUserDataMenuItemToEnable)
 {
-  if(pUserDataMenuItemToEnable == NULL)
+  if((pWindow == NULL) || (pUserDataMenuItemToEnable == NULL))
   {
     return;
   }
@@ -150,7 +150,7 @@ void AMenu::EnableMenuItem(struct Window* pWindow,
 }
 
 
-struct MenuItem* AMenu::findItemByUserData(APTR pUserDataToFind, 
+struct MenuItem* AMenu::findItemByUserData(APTR pUserDataToFind,
                                              WORD& foundMenuNumber)
 {
   if(m_pMenu == NULL)
