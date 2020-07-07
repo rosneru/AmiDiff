@@ -19,8 +19,10 @@ void CommandBase::EnableInAllWindowMenus() const
 {
   for(size_t i = 0; i < m_Windows.Size(); i++)
   {
+    struct Window* pIntuiWindow = m_Windows[i]->IntuiWindow();
     AMenu* pMenu = m_Windows[i]->Menu();
-    if((pMenu != NULL) && (m_Windows[i]->IntuiWindow() != NULL))
+
+    if(pIntuiWindow != NULL && pMenu != NULL)
     {
       pMenu->EnableMenuItem(m_Windows[i]->IntuiWindow(), (APTR)this);
     }
@@ -32,8 +34,10 @@ void CommandBase::DisableInAllWindowMenus() const
 {
   for(size_t i = 0; i < m_Windows.Size(); i++)
   {
+    struct Window* pIntuiWindow = m_Windows[i]->IntuiWindow();
     AMenu* pMenu = m_Windows[i]->Menu();
-    if(pMenu != NULL)
+
+    if(pIntuiWindow != NULL && pMenu != NULL)
     {
       pMenu->DisableMenuItem(m_Windows[i]->IntuiWindow(), (APTR)this);
     }
@@ -45,11 +49,12 @@ void CommandBase::disableBusyPointerForAllWindows()
 {
   for(size_t i = 0; i < m_Windows.Size(); i++)
   {
-    struct Window* pWindow = m_Windows[i]->IntuiWindow();
-    if(pWindow != NULL && m_Windows[i]->IsOpen())
+    struct Window* pIntuiWindow = m_Windows[i]->IntuiWindow();
+
+    if(pIntuiWindow != NULL && m_Windows[i]->IsOpen())
     {
-      EndRequest(&m_SleepRequester, pWindow);
-      SetWindowPointer(pWindow, WA_BusyPointer, FALSE, TAG_DONE);
+      EndRequest(&m_SleepRequester, pIntuiWindow);
+      SetWindowPointer(pIntuiWindow, WA_BusyPointer, FALSE, TAG_DONE);
     }
   }
 }
@@ -60,11 +65,12 @@ void CommandBase::enableBusyPointerForAllWindows()
 
   for(size_t i = 0; i < m_Windows.Size(); i++)
   {
-    struct Window* pWindow = m_Windows[i]->IntuiWindow();
-    if(pWindow != NULL && m_Windows[i]->IsOpen())
+    struct Window* pIntuiWindow = m_Windows[i]->IntuiWindow();
+    
+    if(pIntuiWindow != NULL && m_Windows[i]->IsOpen())
     {
-      Request(&m_SleepRequester, pWindow);
-      SetWindowPointer(pWindow, WA_BusyPointer, TRUE, TAG_DONE);
+      Request(&m_SleepRequester, pIntuiWindow);
+      SetWindowPointer(pIntuiWindow, WA_BusyPointer, TRUE, TAG_DONE);
     }
   }
 }
