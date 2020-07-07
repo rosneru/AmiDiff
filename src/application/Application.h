@@ -33,7 +33,7 @@ class Application
 {
 public:
   Application(ADiffViewArgs& args);
-  ~Application();
+  virtual ~Application();
 
   bool Run();
   SimpleString& ErrorMsg();

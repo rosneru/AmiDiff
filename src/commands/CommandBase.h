@@ -23,14 +23,18 @@ public:
   virtual ~CommandBase();
   virtual void Execute(struct Window* pActiveWindow) = 0;
 
-  void DisableInAllWindowMenus() const;
   void EnableInAllWindowMenus() const;
+  void DisableInAllWindowMenus() const;
 
 protected:
   CommandBase();
 
+  void enableBusyPointerForAllWindows();
+  void disableBusyPointerForAllWindows();
+
 private:
     Array<WindowBase*>& m_Windows;
+    struct Requester m_SleepRequester;
 };
 
 #endif

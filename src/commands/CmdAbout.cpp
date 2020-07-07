@@ -22,12 +22,19 @@ CmdAbout::~CmdAbout()
 
 void CmdAbout::Execute(struct Window* pActiveWindow)
 {
+  // Disable the "About..." item (this command) in all menus
   DisableInAllWindowMenus();
+
+  // Set the busy pointer for all windows
+  enableBusyPointerForAllWindows();
 
   // Display the about dialog
   MessageBox messageBox;
   messageBox.Show(pActiveWindow, "About", m_AboutMsg.C_str(), "Ok");
 
-  // Enable this command in all windows / menus
+  // Set the normal pointer for all windows
+  disableBusyPointerForAllWindows();
+
+  // Enable the "About..." item (this command) in all menus
   EnableInAllWindowMenus();
 }

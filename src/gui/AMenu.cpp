@@ -113,7 +113,7 @@ struct Menu* AMenu::IntuiMenu()
 
 
 void AMenu::DisableMenuItem(struct Window* pWindow,
-  APTR pUserDataMenuItemToDisable)
+                            APTR pUserDataMenuItemToDisable)
 {
   if(pUserDataMenuItemToDisable == NULL)
   {
