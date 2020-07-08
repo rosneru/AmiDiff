@@ -210,8 +210,6 @@ bool Application::Run()
   m_DiffWindowMenu.SetMenuDefinition(diffWinNewMenu, diffWinMenuSize);
   m_DiffWindow.SetMenu(&m_DiffWindowMenu);
 
-  m_DiffWindow.SetSmartRefresh(true);
-
   if((m_LeftFilePath.Length() > 0) &&
      (m_RightFilePath.Length() > 0) &&
      (m_Args.DontAsk() == true))

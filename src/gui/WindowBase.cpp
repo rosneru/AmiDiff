@@ -16,7 +16,6 @@ WindowBase::WindowBase(ScreenBase*& pScreen,
     m_pIdcmpMsgPort(pIdcmpMsgPort),
     m_pWindow(NULL),
     m_bBorderless(false),
-    m_bSmartRefresh(false),
     m_WinLeft(0),
     m_WinTop(0),
     m_WinWidth(0),
@@ -133,18 +132,9 @@ bool WindowBase::Open(InitialPosition initialPos)
     m_WindowFlags |= WFLG_DRAGBAR;
   }
 
-  ULONG smartOrSimpleRefresh = WA_SmartRefresh;
-  if(m_bSmartRefresh == false)
-  {
-    // Simple-refresh mode
-    smartOrSimpleRefresh = WA_SimpleRefresh;
-  }
-
-  //
   // Open the window
-  //
   m_pWindow = OpenWindowTags(NULL,
-                             smartOrSimpleRefresh, TRUE,
+                             WA_SmartRefresh, TRUE,
                              WA_Left, m_WinLeft,
                              WA_Top, m_WinTop,
                              WA_Width, m_WinWidth,
@@ -292,17 +282,6 @@ void WindowBase::SetBorderless(bool bBorderless)
   }
 
   m_bBorderless = bBorderless;
-}
-
-
-void WindowBase::SetSmartRefresh(bool bSmartRefresh)
-{
-  if(IsOpen())
-  {
-    return;
-  }
-
-  m_bSmartRefresh = bSmartRefresh;
 }
 
 

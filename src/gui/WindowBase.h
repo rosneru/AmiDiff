@@ -131,16 +131,6 @@ public:
    */
   void SetBorderless(bool bBorderless);
 
-  /**
-   * Sets if the window is a smart refresh window
-
-   * 
-   * @param bFixWindow
-   * When true the window will be a smart refresh window after opening.
-   * When false it will be simple refresh.
-   */
-  void SetSmartRefresh(bool bSmartRefresh);
-
 
   /**
    * The window is prepared to be a Workbench AppWindow using given 
@@ -211,7 +201,6 @@ protected:
   struct MsgPort*& m_pIdcmpMsgPort;
   struct Window* m_pWindow;
   bool m_bBorderless;
-  bool m_bSmartRefresh;
   LONG m_WinLeft;
   LONG m_WinTop;
   LONG m_WinWidth;

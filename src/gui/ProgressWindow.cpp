@@ -298,8 +298,6 @@ void ProgressWindow::initialize()
            IDCMP_REFRESHWINDOW |  // Get msg when must refreshing
            IDCMP_GADGETUP);       // Get msg when gadgets changed
 
-  SetSmartRefresh(true);
-
   // Initialize the intui text structure for progress value display
   m_ProgressValueIText.FrontPen  = m_pScreen->Pens().HighlightedText();
   m_ProgressValueIText.BackPen   = m_pScreen->Pens().Background();

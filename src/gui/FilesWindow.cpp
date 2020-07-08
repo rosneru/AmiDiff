@@ -475,8 +475,8 @@ void FilesWindow::initialize()
   setIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
            IDCMP_VANILLAKEY |     // Get msg when RAW key pressed
            IDCMP_CLOSEWINDOW |    // Get msg when close gadget clicked
-           IDCMP_REFRESHWINDOW |  // Get msg when must refreshing
-           IDCMP_GADGETUP);       // Get msg when gadgets changed
+           IDCMP_REFRESHWINDOW |  // Get msg when must refresh; needed by GadTools
+           IDCMP_GADGETUP);       // Get msg when gadgets state changed
 
   m_bInitialized = true;
 }
