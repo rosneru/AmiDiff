@@ -24,6 +24,9 @@ public:
 
   SimpleString m_AboutMsg;
 
+private:
+  long showRequester(struct Window* pActiveWindow);
+
 };
 
 #endif // CMD_ABOUT_H

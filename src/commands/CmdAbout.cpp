@@ -1,4 +1,7 @@
-#include "MessageBox.h"
+#include <clib/exec_protos.h>
+#include <clib/gadtools_protos.h>
+#include <clib/intuition_protos.h>
+#include <intuition/intuition.h>
 #include "CmdAbout.h"
 
 
@@ -29,12 +32,71 @@ void CmdAbout::Execute(struct Window* pActiveWindow)
   enableBusyPointerForAllWindows();
 
   // Display the about dialog
-  MessageBox messageBox;
-  messageBox.Show(pActiveWindow, "About", m_AboutMsg.C_str(), "Ok");
+  // MessageBox messageBox;
+  // messageBox.Show(pActiveWindow, "About", m_AboutMsg.C_str(), "Ok");
+  showRequester(pActiveWindow);
 
   // Set the normal pointer for all windows
   disableBusyPointerForAllWindows();
 
   // Enable the "About..." item (this command) in all menus
   EnableInAllWindowMenus();
+}
+
+long CmdAbout::showRequester(struct Window* pActiveWindow)
+{
+  struct EasyStruct easyStruct;
+  easyStruct.es_StructSize = sizeof(easyStruct);
+  easyStruct.es_Flags = 0;
+  easyStruct.es_Title = (UBYTE*)"About";
+  easyStruct.es_TextFormat = (UBYTE*)m_AboutMsg.C_str();
+  easyStruct.es_GadgetFormat = (UBYTE*)"Ok";
+
+  struct Window* pRequesterWindow = BuildEasyRequestArgs(pActiveWindow, 
+                                                         &easyStruct, 
+                                                         NULL, 
+                                                         NULL);
+
+  if (pRequesterWindow == NULL)
+  {
+    return 0;
+  }
+
+  ULONG requestWindowFlags = 1UL << pRequesterWindow->UserPort->mp_SigBit;
+
+  ULONG activeWindowFlags = 0;
+  if (pActiveWindow != NULL)
+  {
+    activeWindowFlags = 1UL << pActiveWindow->UserPort->mp_SigBit;
+  }
+
+  long input = -1;
+  do
+  {
+    ULONG flags = Wait(requestWindowFlags | activeWindowFlags);
+    if (flags & activeWindowFlags)
+    {
+      struct IntuiMessage* pIntuiMessage;
+      while ((pIntuiMessage = GT_GetIMsg(pActiveWindow->UserPort)) != NULL)
+      {
+        switch (pIntuiMessage->Class)
+        {
+          case IDCMP_REFRESHWINDOW:
+            GT_BeginRefresh(pIntuiMessage->IDCMPWindow);  // was pActiveWindow
+            GT_EndRefresh(pIntuiMessage->IDCMPWindow, TRUE); // was pActiveWindow
+            break;
+        }
+
+        GT_ReplyIMsg(pIntuiMessage);
+      }
+    }
+
+    if (flags & requestWindowFlags)
+    {
+      input = SysReqHandler(pRequesterWindow, NULL, FALSE);
+    }
+
+  } while (input < 0);
+
+  return input;
 }
