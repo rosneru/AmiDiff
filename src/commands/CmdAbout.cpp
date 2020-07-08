@@ -103,8 +103,8 @@ long CmdAbout::showRequester(struct Window* pActiveWindow)
 
           // One of the windows must be refreshed
           case IDCMP_REFRESHWINDOW:
-            GT_BeginRefresh(pMsg->IDCMPWindow);  // was pActiveWindow
-            GT_EndRefresh(pMsg->IDCMPWindow, TRUE); // was pActiveWindow
+            GT_BeginRefresh(pMsg->IDCMPWindow);
+            GT_EndRefresh(pMsg->IDCMPWindow, TRUE);
             break;
         }
 
