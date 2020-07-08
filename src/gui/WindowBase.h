@@ -32,6 +32,14 @@ public:
                 ///> the four last parameters of SetInitialPosition
   };
 
+  /**
+   * IMPORTENT: Resizable childs should override this and re-paint their
+   * contents according the new size.
+   *
+   * This should be called from the application if the signal
+   * IDCMP_NEWSIZE for this window is received.
+   */
+  virtual void Resized();
 
   /**
    * Base class method for opening the window. Derived classes should

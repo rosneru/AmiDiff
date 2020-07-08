@@ -27,13 +27,14 @@ public:
   void DisableInAllWindowMenus() const;
 
 protected:
+  Array<WindowBase*>& m_Windows;
+
   CommandBase();
 
   void enableBusyPointerForAllWindows();
   void disableBusyPointerForAllWindows();
 
 private:
-    Array<WindowBase*>& m_Windows;
     struct Requester m_SleepRequester;
 };
 

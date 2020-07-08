@@ -40,6 +40,11 @@ WindowBase::~WindowBase()
   Close();
 }
 
+void WindowBase::Resized()
+{
+  // Resizable childs should override this and re-paint their contents
+  // according the new size.
+}
 
 bool WindowBase::Open(InitialPosition initialPos)
 {

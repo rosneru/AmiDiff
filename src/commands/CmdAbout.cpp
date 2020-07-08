@@ -3,6 +3,7 @@
 #include <clib/intuition_protos.h>
 #include <intuition/intuition.h>
 #include "CmdAbout.h"
+#include "MessageBox.h"
 
 
 CmdAbout::CmdAbout(Array<WindowBase*>& windowArray,
@@ -32,8 +33,6 @@ void CmdAbout::Execute(struct Window* pActiveWindow)
   enableBusyPointerForAllWindows();
 
   // Display the about dialog
-  // MessageBox messageBox;
-  // messageBox.Show(pActiveWindow, "About", m_AboutMsg.C_str(), "Ok");
   showRequester(pActiveWindow);
 
   // Set the normal pointer for all windows
@@ -54,7 +53,7 @@ long CmdAbout::showRequester(struct Window* pActiveWindow)
 
   struct Window* pRequesterWindow = BuildEasyRequestArgs(pActiveWindow, 
                                                          &easyStruct, 
-                                                         NULL, 
+                                                         0, 
                                                          NULL);
 
   if (pRequesterWindow == NULL)
@@ -76,18 +75,32 @@ long CmdAbout::showRequester(struct Window* pActiveWindow)
     ULONG flags = Wait(requestWindowFlags | activeWindowFlags);
     if (flags & activeWindowFlags)
     {
-      struct IntuiMessage* pIntuiMessage;
-      while ((pIntuiMessage = GT_GetIMsg(pActiveWindow->UserPort)) != NULL)
+      struct IntuiMessage* pMsg;
+      while ((pMsg = GT_GetIMsg(pActiveWindow->UserPort)) != NULL)
       {
-        switch (pIntuiMessage->Class)
+        switch (pMsg->Class)
         {
+          // One of the windows has been resized
+          case IDCMP_NEWSIZE:
+            for(size_t i = 0; i < m_Windows.Size(); i++)
+            {
+              if(m_Windows[i]->IntuiWindow() == pMsg->IDCMPWindow)
+              {
+                // Re-paint the obscured area of resized window
+                m_Windows[i]->Resized();
+                break;
+              }
+            }
+            break;
+
+          // One of the windows must be refreshed
           case IDCMP_REFRESHWINDOW:
-            GT_BeginRefresh(pIntuiMessage->IDCMPWindow);  // was pActiveWindow
-            GT_EndRefresh(pIntuiMessage->IDCMPWindow, TRUE); // was pActiveWindow
+            GT_BeginRefresh(pMsg->IDCMPWindow);  // was pActiveWindow
+            GT_EndRefresh(pMsg->IDCMPWindow, TRUE); // was pActiveWindow
             break;
         }
 
-        GT_ReplyIMsg(pIntuiMessage);
+        GT_ReplyIMsg(pMsg);
       }
     }
 
@@ -98,5 +111,6 @@ long CmdAbout::showRequester(struct Window* pActiveWindow)
 
   } while (input < 0);
 
+  FreeSysRequest(pRequesterWindow);
   return input;
 }
