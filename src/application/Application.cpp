@@ -8,7 +8,6 @@
 
 #include "ADiffView_rev.h"
 #include "CommandBase.h"
-#include "MessageBox.h"
 #include "ProgressMessage.h"
 
 #include "Application.h"
@@ -40,7 +39,8 @@ Application::Application(ADiffViewArgs& args)
     m_DiffWindow(m_pDiffWindowScreen,
                  m_pMsgPortIDCMP,
                  &m_DiffWindowMenu),
-    m_FilesWindow(m_pFilesWindowScreen,
+    m_FilesWindow(m_WindowArray,
+                  m_pFilesWindowScreen,
                   m_pMsgPortIDCMP,
                   m_LeftFilePath,
                   m_RightFilePath,

@@ -13,7 +13,6 @@ set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAG
 
 add_executable (ADiffView
                 amigautils/AmigaFile.cpp
-                amigautils/AslFileRequest.cpp
                 amigautils/LinkedListAmiga.cpp
                 amigautils/MessageBox.cpp
                 amigautils/StopWatch.cpp
@@ -21,13 +20,14 @@ add_executable (ADiffView
                 application/ADiffViewSettings.cpp
                 application/Application.cpp
                 application/main.cpp
-                commands/CmdRequester.cpp
                 commands/CmdCloseWindow.cpp
                 commands/CmdDiff.cpp
+                commands/CmdFileRequester.cpp
                 commands/CmdNavNextDiff.cpp
                 commands/CmdNavPrevDiff.cpp
                 commands/CmdOpenWindow.cpp
                 commands/CmdQuit.cpp
+                commands/CmdRequester.cpp
                 commands/CommandBase.cpp
                 diffengine/DiffEngine.cpp
                 diffengine/DiffEngineAmiga.cpp

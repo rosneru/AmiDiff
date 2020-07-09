@@ -1,5 +1,5 @@
-#ifndef CMD_ABOUT_H
-#define CMD_ABOUT_H
+#ifndef CMD_REQUESTER_H
+#define CMD_REQUESTER_H
 
 #include "AMenu.h"
 #include "CommandBase.h"

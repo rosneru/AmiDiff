@@ -200,17 +200,6 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "commands/CmdRequester.cpp"
-"commands/CmdRequester.cpp"
-"commands/CmdRequester.h"
-"gui/ADiffViewPens.h"
-"gui/ScreenBase.h"
-"commands/CommandBase.h"
-Storm Shell Project (Dependencies)
-"objects_debug/CmdRequester.o" "objects_debug/CmdRequester.debug"
-""
-1 1
-File
 1 "commands/CmdCloseWindow.cpp"
 "commands/CmdCloseWindow.cpp"
 "commands/CmdCloseWindow.h"
@@ -240,6 +229,17 @@ File
 "commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
+""
+1 1
+File
+1 "commands/CmdFileRequester.cpp"
+"commands/CmdFileRequester.cpp"
+"commands/CmdFileRequester.h"
+"gui/ScreenBase.h"
+"gui/ADiffViewPens.h"
+"commands/CommandBase.h"
+Storm Shell Project (Dependencies)
+"objects_debug/CmdFileRequester.o" "objects_debug/CmdFileRequester.debug"
 ""
 1 1
 File
@@ -297,6 +297,17 @@ File
 "gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdQuit.o" "objects_debug/CmdQuit.debug"
+""
+1 1
+File
+1 "commands/CmdRequester.cpp"
+"commands/CmdRequester.cpp"
+"commands/CmdRequester.h"
+"gui/ADiffViewPens.h"
+"gui/ScreenBase.h"
+"commands/CommandBase.h"
+Storm Shell Project (Dependencies)
+"objects_debug/CmdRequester.o" "objects_debug/CmdRequester.debug"
 ""
 1 1
 File
@@ -613,14 +624,6 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "commands/CmdRequester.h"
-"commands/CmdOpenAbout.h"
-"commands/CmdRequester.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
 2 "commands/CmdCloseWindow.h"
 "commands/CmdCloseWindow.h"
 Storm Shell Project (Dependencies)
@@ -631,6 +634,13 @@ File
 2 "commands/CmdDiff.h"
 "commands/CmdPerformDiff.h"
 "commands/CmdDiff.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "commands/CmdFileRequester.h"
+"commands/CmdFileRequester.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -661,6 +671,14 @@ Storm Shell Project (Dependencies)
 File
 2 "commands/CmdQuit.h"
 "commands/CmdQuit.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "commands/CmdRequester.h"
+"commands/CmdOpenAbout.h"
+"commands/CmdRequester.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

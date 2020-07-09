@@ -3,7 +3,6 @@
 #include <clib/intuition_protos.h>
 #include <intuition/intuition.h>
 #include "CmdRequester.h"
-#include "MessageBox.h"
 
 
 CmdRequester::CmdRequester(Array<WindowBase*>& windowArray,

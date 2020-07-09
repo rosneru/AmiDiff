@@ -17,7 +17,8 @@
 #include "FilesWindow.h"
 
 
-FilesWindow::FilesWindow(ScreenBase*& pScreen,
+FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
+                         ScreenBase*& pScreen,
                          struct MsgPort*& pIdcmpMsgPort,
                          SimpleString& leftFilePath,
                          SimpleString& rightFilePath,
@@ -25,12 +26,12 @@ FilesWindow::FilesWindow(ScreenBase*& pScreen,
                          CommandBase& cmdCloseFilesWindow,
                          AMenu* pMenu)
   : WindowBase(pScreen, pIdcmpMsgPort, pMenu),
-    m_AslRequest(m_pWindow),
-    m_bFileRequestOpen(false),
     m_LeftFilePath(leftFilePath),
     m_RightFilePath(rightFilePath),
     m_CmdDiff(cmdDiff),
     m_CmdCloseFilesWindow(cmdCloseFilesWindow),
+    m_CmdSelectLeftFile(windowArray, "Select left (original) file"),
+    m_CmdSelectRightFile(windowArray, "Select right (changed) file"),
     m_pGadtoolsContext(NULL),
     m_pGadStrLeftFile(NULL),
     m_pGadStrRightFile(NULL),
@@ -84,7 +85,7 @@ bool FilesWindow::Open(InitialPosition initialPos)
 
   // Enable or disable the 'Diff' and 'Swap' buttons depending on some
   // conditions
-  enableIfPossible();
+  checkEnableButtons();
 
   return true;
 }
@@ -118,10 +119,7 @@ void FilesWindow::HandleIdcmp(ULONG msgClass,
 
     case IDCMP_CLOSEWINDOW:
     {
-      if(!m_bFileRequestOpen)
-      {
-        m_CmdCloseFilesWindow.Execute(NULL);
-      }
+      m_CmdCloseFilesWindow.Execute(NULL);
       break;
     }
 
@@ -179,7 +177,7 @@ void FilesWindow::HandleAppMessage(struct AppMessage* pAppMsg)
   }
 
   FreeVec(pBuf);
-  enableIfPossible();
+  checkEnableButtons();
 }
 
 
@@ -194,7 +192,7 @@ void FilesWindow::handleGadgetEvent(struct Gadget* pGadget)
   {
     case GID_LeftFileString:
     case GID_RightFileString:
-      enableIfPossible();
+      checkEnableButtons();
       break;
 
     case GID_LeftFileButton:  // Select left file
@@ -484,50 +482,48 @@ void FilesWindow::initialize()
 
 void FilesWindow::selectLeftFile()
 {
-  disableAll();
-
   // Read latest string gadgets contents before continue
   STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
   STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
 
   if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
   {
+    checkEnableButtons();
     return;
   }
 
-  SimpleString path = pLeftStrGadgetText;
-  bool bPathOnly = false;
-  if(path.Length() == 0)
+  if(strlen(pLeftStrGadgetText) == 0)
   {
     // Left file path is empty, so use the path of the right file for
     // pre-selection (regardless if that also is empty)
-    path = pRightStrGadgetText;
-
+    m_CmdSelectLeftFile.SetInitialFilePath(pRightStrGadgetText);
+    
     // Do not use the file name 'though
-    bPathOnly = true;
+    m_CmdSelectLeftFile.SetPreselectPathOnly(true);
   }
-
-  SimpleString title("Select left (original) file");
-  SimpleString sel = m_AslRequest.SelectFile(title,
-                                             path,
-                                             bPathOnly);
-
-  if(sel.Length() == 0)
+  else
   {
-    enableAll();
+    m_CmdSelectLeftFile.SetInitialFilePath(pLeftStrGadgetText);
+    m_CmdSelectLeftFile.SetPreselectPathOnly(false);
+  }
+  
+  m_CmdSelectLeftFile.Execute(m_pWindow);
+
+  if(m_CmdSelectLeftFile.SelectedFile().Length() == 0)
+  {
+    checkEnableButtons();
     return;
   }
 
-  setStringGadgetText(m_pGadStrLeftFile, sel.C_str());
-
-  enableAll();
-  return;
+  setStringGadgetText(m_pGadStrLeftFile, 
+                      m_CmdSelectLeftFile.SelectedFile().C_str());
+  
+  checkEnableButtons();
 }
 
 
 void FilesWindow::selectRightFile()
 {
-  disableAll();
 
   // Read latest string gadgets contents before continue
   STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
@@ -535,34 +531,37 @@ void FilesWindow::selectRightFile()
 
   if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
   {
+    checkEnableButtons();
     return;
   }
 
-  SimpleString path = pRightStrGadgetText;
-  bool bPathOnly = false;
-  if(path.Length() == 0)
+  if(strlen(pRightStrGadgetText) == 0)
   {
     // Right file path is empty, so use the path of the left file for
     // pre-selection (regardless if that also is empty)
-    path = pLeftStrGadgetText;
-
+    m_CmdSelectRightFile.SetInitialFilePath(pLeftStrGadgetText);
+    
     // Do not use the file name 'though
-    bPathOnly = true;
+    m_CmdSelectRightFile.SetPreselectPathOnly(true);
+  }
+  else
+  {
+    m_CmdSelectRightFile.SetInitialFilePath(pRightStrGadgetText);
+    m_CmdSelectRightFile.SetPreselectPathOnly(false);
   }
 
-  SimpleString title("Select right (changed) file");
-  SimpleString sel = m_AslRequest.SelectFile(title, path, bPathOnly);
+  m_CmdSelectRightFile.Execute(m_pWindow);
 
-  if(sel.Length() == 0)
+  if(m_CmdSelectRightFile.SelectedFile().Length() == 0)
   {
-    enableAll();
+    checkEnableButtons();
     return;
   }
 
-  setStringGadgetText(m_pGadStrRightFile, sel.C_str());
+  setStringGadgetText(m_pGadStrRightFile, 
+                      m_CmdSelectRightFile.SelectedFile().C_str());
 
-  enableAll();
-  return;
+  checkEnableButtons();
 }
 
 
@@ -606,70 +605,7 @@ void FilesWindow::compare()
 }
 
 
-void FilesWindow::enableAll()
-{
-  GT_SetGadgetAttrs(m_pGadStrLeftFile, m_pWindow, NULL,
-                    GA_Disabled, FALSE,
-                    TAG_DONE);
-
-  GT_SetGadgetAttrs(m_pGadStrRightFile, m_pWindow, NULL,
-                    GA_Disabled, FALSE,
-                    TAG_DONE);
-
-  GT_SetGadgetAttrs(m_pGadBtnSelectLeft, m_pWindow, NULL,
-                    GA_Disabled, FALSE,
-                    TAG_DONE);
-
-  GT_SetGadgetAttrs(m_pGadBtnSelectRight, m_pWindow, NULL,
-                    GA_Disabled, FALSE,
-                    TAG_DONE);
-
-  GT_SetGadgetAttrs(m_pGadBtnCancel, m_pWindow, NULL,
-                    GA_Disabled, FALSE,
-                    TAG_DONE);
-
-  // Enable or disable the 'Diff' and 'Swap' buttons depending on some
-  // conditions
-  enableIfPossible();
-
-  // TODO enable menu item "Quit"
-}
-
-void FilesWindow::disableAll()
-{
-  GT_SetGadgetAttrs(m_pGadStrLeftFile, m_pWindow, NULL,
-    GA_Disabled, TRUE,
-    TAG_DONE);
-
-  GT_SetGadgetAttrs(m_pGadStrRightFile, m_pWindow, NULL,
-    GA_Disabled, TRUE,
-    TAG_DONE);
-
-  GT_SetGadgetAttrs(m_pGadBtnSelectLeft, m_pWindow, NULL,
-    GA_Disabled, TRUE,
-    TAG_DONE);
-
-  GT_SetGadgetAttrs(m_pGadBtnSelectRight, m_pWindow, NULL,
-    GA_Disabled, TRUE,
-    TAG_DONE);
-
-  GT_SetGadgetAttrs(m_pGadBtnCancel, m_pWindow, NULL,
-    GA_Disabled, TRUE,
-    TAG_DONE);
-
-  GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
-    GA_Disabled, TRUE,
-    TAG_DONE);
-
-  GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
-    GA_Disabled, TRUE,
-    TAG_DONE);
-
-  // TODO disable menu item "Quit"
-}
-
-
-void FilesWindow::enableIfPossible()
+void FilesWindow::checkEnableButtons()
 {
   if(!IsOpen() || (m_pGadBtnDiff == NULL) || (m_pGadBtnSwap == NULL))
   {

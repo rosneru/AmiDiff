@@ -5,9 +5,10 @@
 #include <intuition/screens.h>
 #include <workbench/workbench.h>
 
-#include "AslFileRequest.h"
+#include <Array.h>
 #include "ScreenBase.h"
 #include "CommandBase.h"
+#include "CmdFileRequester.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
 
@@ -22,7 +23,8 @@
 class FilesWindow : public WindowBase
 {
 public:
-  FilesWindow(ScreenBase*& pScreen,
+  FilesWindow(Array<WindowBase*>& windowArray,
+              ScreenBase*& pScreen,
               struct MsgPort*& pIdcmpMsgPort,
               SimpleString& leftFilePath,
               SimpleString& rightFilePath,
@@ -59,14 +61,14 @@ public:
   void HandleAppMessage(struct AppMessage* pAppMsg);
 
 private:
-  AslFileRequest m_AslRequest;
-  bool m_bFileRequestOpen;
-
   SimpleString& m_LeftFilePath;
   SimpleString& m_RightFilePath;
 
   CommandBase& m_CmdDiff;
   CommandBase& m_CmdCloseFilesWindow;
+
+  CmdFileRequester m_CmdSelectLeftFile;
+  CmdFileRequester m_CmdSelectRightFile;
 
   /**
    * IDs to help to interpret the events of this window's Gadtools
@@ -116,27 +118,12 @@ private:
   void swapFiles();
   void compare();
 
-  /**
-   * Enables all gadgets in the window except the 'Diff' button which
-   * only is enabled when both string gadgets contain text.
-   */
-  void enableAll();
-
-
-  /**
-   * Disables all gadgets in the window.
-   *
-   * Should be called e.g. before an ASL reuest is opened to prevent
-   * from input during request is open.
-   */
-  void disableAll();
-
 
   /**
    * Enables or disables the 'Diff' and 'Swap' buttons depending on
    * some conditions.
    */
-  void enableIfPossible();
+  void checkEnableButtons();
 
 
   /**
