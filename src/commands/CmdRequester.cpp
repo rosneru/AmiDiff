@@ -2,29 +2,28 @@
 #include <clib/gadtools_protos.h>
 #include <clib/intuition_protos.h>
 #include <intuition/intuition.h>
-#include "CmdAbout.h"
+#include "CmdRequester.h"
 #include "MessageBox.h"
 
 
-CmdAbout::CmdAbout(Array<WindowBase*>& windowArray,
-                   const char* pVersTag)
-  : CommandBase(windowArray)
+CmdRequester::CmdRequester(Array<WindowBase*>& windowArray,
+                           const SimpleString& message,
+                           const char* pTitle,
+                           const char* pButtons)
+  : CommandBase(windowArray),
+    m_Message(message),
+    m_pTitle(pTitle),
+    m_pButtons(pButtons)
 {
-  m_AboutMsg = pVersTag + 7;  // Skip the first 7 chars of pVersTag
-                              // which is only "\0$VER: "
-  m_AboutMsg += "\n\n";
-  m_AboutMsg += "Copyright(c) 2020 Uwe Rosner (u.rosner@ymail.com)";
-  m_AboutMsg += "\n\n";
-  m_AboutMsg += "This release of ADiffView may be freely distributed.\n";
-  m_AboutMsg += "It may not be comercially distributed without the\n";
-  m_AboutMsg += "explicit permission of the author.\n";
+
 }
 
-CmdAbout::~CmdAbout()
+CmdRequester::~CmdRequester()
 {
+
 }
 
-void CmdAbout::Execute(struct Window* pActiveWindow)
+void CmdRequester::Execute(struct Window* pActiveWindow)
 {
   // Disable the "About..." item (this command) in all menus
   DisableInAllWindowMenus();
@@ -42,8 +41,13 @@ void CmdAbout::Execute(struct Window* pActiveWindow)
   EnableInAllWindowMenus();
 }
 
-long CmdAbout::showRequester(struct Window* pActiveWindow)
+long CmdRequester::showRequester(struct Window* pActiveWindow)
 {
+  if((m_pTitle == NULL) || (m_pButtons == NULL))
+  {
+    return 0;
+  }
+
   //
   // Build the EasyRequest manually. This low-level approach allows
   // better control of the requests behavior. For example it gives
@@ -55,9 +59,9 @@ long CmdAbout::showRequester(struct Window* pActiveWindow)
   struct EasyStruct easyStruct;
   easyStruct.es_StructSize = sizeof(easyStruct);
   easyStruct.es_Flags = 0;
-  easyStruct.es_Title = (UBYTE*)"About";
-  easyStruct.es_TextFormat = (UBYTE*)m_AboutMsg.C_str();
-  easyStruct.es_GadgetFormat = (UBYTE*)"Ok";
+  easyStruct.es_Title = (UBYTE*)m_pTitle;
+  easyStruct.es_TextFormat = (UBYTE*)m_Message.C_str();
+  easyStruct.es_GadgetFormat = (UBYTE*)m_pButtons;
 
   struct Window* pRequesterWindow = BuildEasyRequestArgs(pActiveWindow, 
                                                          &easyStruct, 
@@ -94,7 +98,7 @@ long CmdAbout::showRequester(struct Window* pActiveWindow)
             {
               if(m_Windows[i]->IntuiWindow() == pMsg->IDCMPWindow)
               {
-                // Re-paint the obscured area of resized window
+                // Re-paint the resized window
                 m_Windows[i]->Resized();
                 break;
               }

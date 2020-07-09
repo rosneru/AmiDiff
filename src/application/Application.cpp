@@ -57,8 +57,7 @@ Application::Application(ADiffViewArgs& args)
     m_CmdQuit(m_WindowArray, m_bExitAllowed, m_bExitRequested),
     m_CmdOpenFilesWindow(m_WindowArray, m_FilesWindow),
     m_CmdCloseFilesWindow(m_WindowArray, m_CmdOpenFilesWindow, m_FilesWindow),
-    m_CmdAbout(m_WindowArray,
-               VERSTAG)
+    m_CmdAboutRequester(m_WindowArray, m_AboutMsg, "About", "Ok")
 {
   //
   // Note: VERSTAG above has been created with bumprev and is defined
@@ -66,6 +65,17 @@ Application::Application(ADiffViewArgs& args)
   // and version. Referencing it also means that the c:version command will
   // work for ADiffView.
   //
+
+  // Create the message to be displayed in the about dialog
+  m_AboutMsg = VERSTAG + 7;   // Skip the first 7 chars of pVersTag
+                              // which is only "\0$VER: "
+  m_AboutMsg += "\n\n";
+  m_AboutMsg += "Copyright(c) 2020 Uwe Rosner (u.rosner@ymail.com)";
+  m_AboutMsg += "\n\n";
+  m_AboutMsg += "This release of ADiffView may be freely distributed.\n";
+  m_AboutMsg += "It may not be comercially distributed without the\n";
+  m_AboutMsg += "explicit permission of the author.\n";
+
 
   // Add all windows to the array
   m_WindowArray.Push(&m_DiffWindow);
@@ -183,7 +193,7 @@ bool Application::Run()
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
     {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
-    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
+    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAboutRequester },
     {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
     {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
     { NM_END,     NULL,                     0 , 0, 0, 0 },
@@ -197,7 +207,7 @@ bool Application::Run()
   {
     { NM_TITLE,   "Project",                0 , 0, 0, 0 },
     {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
-    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAbout },
+    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAboutRequester },
     {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
     {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
     { NM_TITLE,   "Navigate",               0 , 0, 0, 0 },

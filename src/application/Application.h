@@ -16,7 +16,7 @@
 #include "Array.h"
 #include "ClonedWorkbenchScreen.h"
 #include "JoinedPublicScreen.h"
-#include "CmdAbout.h"
+#include "CmdRequester.h"
 #include "CmdCloseWindow.h"
 #include "CmdOpenWindow.h"
 #include "CmdDiff.h"
@@ -80,7 +80,8 @@ private:
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpenFilesWindow;
   CmdCloseWindow m_CmdCloseFilesWindow;
-  CmdAbout m_CmdAbout;
+  CmdRequester m_CmdAboutRequester;
+  SimpleString m_AboutMsg;
 
   Array<WindowBase*> m_WindowArray;
 

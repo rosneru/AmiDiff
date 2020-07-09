@@ -200,14 +200,14 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "commands/CmdAbout.cpp"
-"commands/CmdAbout.cpp"
-"commands/CmdAbout.h"
+1 "commands/CmdRequester.cpp"
+"commands/CmdRequester.cpp"
+"commands/CmdRequester.h"
 "gui/ADiffViewPens.h"
 "gui/ScreenBase.h"
 "commands/CommandBase.h"
 Storm Shell Project (Dependencies)
-"objects_debug/CmdAbout.o" "objects_debug/CmdAbout.debug"
+"objects_debug/CmdRequester.o" "objects_debug/CmdRequester.debug"
 ""
 1 1
 File
@@ -613,9 +613,9 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "commands/CmdAbout.h"
+2 "commands/CmdRequester.h"
 "commands/CmdOpenAbout.h"
-"commands/CmdAbout.h"
+"commands/CmdRequester.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

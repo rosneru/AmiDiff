@@ -32,7 +32,7 @@ DEPS=$(SRC_ROOT)/amigautils/AmigaFile.h \
 		$(SRC_ROOT)/application/ADiffViewArgs.h \
 		$(SRC_ROOT)/application/ADiffViewSettings.h \
 		$(SRC_ROOT)/application/Application.h \
-		$(SRC_ROOT)/commands/CmdAbout.h \
+		$(SRC_ROOT)/commands/CmdRequester.h \
 		$(SRC_ROOT)/commands/CmdDiff.h \
 		$(SRC_ROOT)/commands/CmdNavNextDiff.h \
 		$(SRC_ROOT)/commands/CmdNavPrevDiff.h \
@@ -72,7 +72,7 @@ _OBJ=$(SRC_ROOT)/amigautils/AmigaFile.o \
 		$(SRC_ROOT)/application/ADiffViewSettings.o \
 		$(SRC_ROOT)/application/Application.o \
 		$(SRC_ROOT)/application/main.o \
-		$(SRC_ROOT)/commands/CmdAbout.o \
+		$(SRC_ROOT)/commands/CmdRequester.o \
 		$(SRC_ROOT)/commands/CmdDiff.o \
 		$(SRC_ROOT)/commands/CmdNavNextDiff.o \
 		$(SRC_ROOT)/commands/CmdNavPrevDiff.o \
