@@ -27,11 +27,15 @@ public:
   const SimpleString& SelectedFile() const;
 private:
   const char* m_pTitle;
-  SimpleString m_InitialFilePath;
+  SimpleString m_InitialFileFullPath;
   SimpleString m_SelectedFilePath;
   bool m_bPreselectPathOnly;
 
   void selectFile(struct Window* pActiveWindow);
+
+  static void intuiHook(struct Hook* pHook,
+                        struct FileRequester* pFileRequester,
+                        struct IntuiMessage* pMsg);
 };
 
 #endif

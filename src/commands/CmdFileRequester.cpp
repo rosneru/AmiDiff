@@ -1,7 +1,9 @@
 #include <string.h>
 #include <clib/asl_protos.h>
+#include <clib/alib_protos.h>
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
+#include <clib/gadtools_protos.h>
 #include <exec/memory.h>
 #include <libraries/asl.h>
 #include "CmdFileRequester.h"
@@ -47,7 +49,7 @@ void CmdFileRequester::SetPreselectPathOnly(bool yes)
 
 void CmdFileRequester::SetInitialFilePath(const char* pInitialPath)
 {
-  m_InitialFilePath = pInitialPath;
+  m_InitialFileFullPath = pInitialPath;
 }
 
 
@@ -66,36 +68,44 @@ void CmdFileRequester::selectFile(struct Window* pActiveWindow)
 
   m_SelectedFilePath = "";
 
-  SimpleString initialFilePart = "";
-  SimpleString initialPathPart = "";
-  if(m_InitialFilePath.Length() > 0)
+  SimpleString initialFile = "";
+  SimpleString initialPath = "";
+  if(m_InitialFileFullPath.Length() > 0)
   {
     // Extract path and file name from initial full file name path
-    const char* pFullPath = m_InitialFilePath.C_str();
+    const char* pFullPath = m_InitialFileFullPath.C_str();
     const char* pPathPart = PathPart(pFullPath);
     const char* pFilePart = FilePart(pFullPath);
 
     size_t pathLen = pPathPart - pFullPath;
     if(pathLen > 0)
     {
-      initialPathPart = m_InitialFilePath.SubStr(0, pathLen);
+      initialPath = m_InitialFileFullPath.SubStr(0, pathLen);
     }
 
-    initialFilePart = pFilePart;
+    initialFile = pFilePart;
   }
 
   if(m_bPreselectPathOnly)
   {
     // Only take the path-part for pre-selection, not the file name
-    initialFilePart = "";
+    initialFile = "";
   }
+
+  struct Hook aslHook;
+  aslHook.h_Entry = reinterpret_cast<ULONG (*)()>(HookEntry);
+  aslHook.h_SubEntry = reinterpret_cast<ULONG (*)()>(intuiHook);
+
 
   // Allocate data structure for the ASL requester
   struct FileRequester* pFileRequest = (struct FileRequester*)
     AllocAslRequestTags(ASL_FileRequest,
-                        ASL_Hail, (ULONG) m_pTitle,
-                        ASL_Dir, (ULONG) initialPathPart.C_str(),
-                        ASL_File, (ULONG) initialFilePart.C_str(),
+                        ASLFR_TitleText, (ULONG) m_pTitle,
+                        ASLFR_InitialDrawer, (ULONG) initialPath.C_str(),
+                        ASLFR_InitialFile, (ULONG) initialFile.C_str(),
+                        ASLFR_Window, (ULONG) pActiveWindow,
+                        ASLFR_RejectIcons, TRUE,
+                        ASLFR_IntuiMsgFunc, &aslHook,
                         TAG_DONE);
 
   if(pFileRequest == NULL)
@@ -105,10 +115,7 @@ void CmdFileRequester::selectFile(struct Window* pActiveWindow)
   }
 
   // Open the file requester and wait until the user selected a file
-  if(AslRequestTags(pFileRequest,
-                    ASLFR_Window, (ULONG)pActiveWindow,
-                    ASLFR_RejectIcons, TRUE,
-                    TAG_DONE) == FALSE)
+  if(AslRequestTags(pFileRequest, TAG_DONE) == FALSE)
   {
     // Requester opening failed
     FreeAslRequest(pFileRequest);
@@ -129,15 +136,40 @@ void CmdFileRequester::selectFile(struct Window* pActiveWindow)
   strcpy(pFullPathBuf, pFileRequest->fr_Drawer);
 
   // Calling a dos.library function to combine path and file name
-  if(AddPart(pFullPathBuf, pFileRequest->fr_File, bufLen) == FALSE)
+  if(AddPart(pFullPathBuf, pFileRequest->fr_File, bufLen) == TRUE)
   {
-    FreeVec(pFullPathBuf);
-    FreeAslRequest(pFileRequest);
-    return;
+    // Path and file name are combined; this is the user selected path
+    m_SelectedFilePath = pFullPathBuf;
   }
-
-  m_SelectedFilePath = pFullPathBuf;
 
   FreeVec(pFullPathBuf);
   FreeAslRequest(pFileRequest);
+}
+
+
+void CmdFileRequester::intuiHook(struct Hook* pHook,
+                                 struct FileRequester* pFileRequester,
+                                 struct IntuiMessage* pMsg)
+{
+  switch (pMsg->Class)
+  {
+    // One of the windows has been resized
+    // case IDCMP_NEWSIZE:
+    //   for(size_t i = 0; i < m_Windows.Size(); i++)
+    //   {
+    //     if(m_Windows[i]->IntuiWindow() == pMsg->IDCMPWindow)
+    //     {
+    //       // Re-paint the resized window
+    //       m_Windows[i]->Resized();
+    //       break;
+    //     }
+    //   }
+    //   break;
+
+    // One of the windows must be refreshed
+    case IDCMP_REFRESHWINDOW:
+      GT_BeginRefresh(pMsg->IDCMPWindow);
+      GT_EndRefresh(pMsg->IDCMPWindow, TRUE);
+      break;
+  }
 }

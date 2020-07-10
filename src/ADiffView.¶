@@ -108,14 +108,6 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "amigautils/AslFileRequest.cpp"
-"amigautils/AslFileRequest.cpp"
-"amigautils/AslFileRequest.h"
-Storm Shell Project (Dependencies)
-"objects_debug/AslFileRequest.o" "objects_debug/AslFileRequest.debug"
-""
-1 1
-File
 1 "amigautils/LinkedListAmiga.cpp"
 "amigautils/LinkedListAmiga.cpp"
 "amigautils/LinkedListAmiga.h"
@@ -563,13 +555,6 @@ Section
 File
 2 "amigautils/AmigaFile.h"
 "amigautils/AmigaFile.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "amigautils/AslFileRequest.h"
-"amigautils/AslFileRequest.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
