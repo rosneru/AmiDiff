@@ -1,8 +1,8 @@
 #include "CmdNavNextDiff.h"
 
-CmdNavNextDiff::CmdNavNextDiff(Array<WindowBase*>& windowArray,
+CmdNavNextDiff::CmdNavNextDiff(Array<WindowBase*>* pAllWindowsArray,
                                DiffWindow& diffWindow)
-  : CommandBase(windowArray),
+  : CommandBase(pAllWindowsArray),
     m_DiffWindow(diffWindow)
 {
 

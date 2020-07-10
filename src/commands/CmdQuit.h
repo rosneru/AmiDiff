@@ -15,7 +15,7 @@
 class CmdQuit : public CommandBase
 {
 public:
-  CmdQuit(Array<WindowBase*>& windowArray,
+  CmdQuit(Array<WindowBase*>* pAllWindowsArray,
           bool& exitAllowed, 
           bool& exitRequested);
   

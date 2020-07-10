@@ -16,7 +16,7 @@
 class CmdCloseWindow : public CommandBase
 {
 public:
-  CmdCloseWindow(Array<WindowBase*>& windowArray,
+  CmdCloseWindow(Array<WindowBase*>* pAllWindowsArray,
                  const CmdOpenWindow& openWindowCommand,
                  WindowBase& window);
 

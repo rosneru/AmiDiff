@@ -51,13 +51,13 @@ Application::Application(ADiffViewArgs& args)
                      m_pMsgPortIDCMP,
                      m_bCancelRequested,
                      NULL),
-    m_CmdDiff(m_WindowArray, m_DiffWorker),
-    m_CmdNavNextDiff(m_WindowArray,m_DiffWindow),
-    m_CmdNavPrevDiff(m_WindowArray,m_DiffWindow),
-    m_CmdQuit(m_WindowArray, m_bExitAllowed, m_bExitRequested),
-    m_CmdOpenFilesWindow(m_WindowArray, m_FilesWindow),
-    m_CmdCloseFilesWindow(m_WindowArray, m_CmdOpenFilesWindow, m_FilesWindow),
-    m_CmdAboutRequester(m_WindowArray, m_AboutMsg, "About", "Ok")
+    m_CmdDiff(&m_WindowArray, m_DiffWorker),
+    m_CmdNavNextDiff(&m_WindowArray,m_DiffWindow),
+    m_CmdNavPrevDiff(&m_WindowArray,m_DiffWindow),
+    m_CmdQuit(&m_WindowArray, m_bExitAllowed, m_bExitRequested),
+    m_CmdOpenFilesWindow(&m_WindowArray, m_FilesWindow),
+    m_CmdCloseFilesWindow(&m_WindowArray, m_CmdOpenFilesWindow, m_FilesWindow),
+    m_CmdAboutRequester(&m_WindowArray, m_AboutMsg, "About", "Ok")
 {
   //
   // Note: VERSTAG above has been created with bumprev and is defined

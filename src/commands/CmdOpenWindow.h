@@ -16,7 +16,7 @@
 class CmdOpenWindow : public CommandBase
 {
 public:
-  CmdOpenWindow(Array<WindowBase*>& windowArray,
+  CmdOpenWindow(Array<WindowBase*>* pAllWindowsArray,
                 WindowBase& window);
 
   virtual ~CmdOpenWindow();

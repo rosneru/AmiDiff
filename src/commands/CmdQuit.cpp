@@ -1,10 +1,10 @@
 #include "CmdQuit.h"
 
 
-CmdQuit::CmdQuit(Array<WindowBase*>& windowArray,
+CmdQuit::CmdQuit(Array<WindowBase*>* pAllWindowsArray,
                  bool& exitAllowed, 
                  bool& exitRequested)
-  : CommandBase(windowArray),
+  : CommandBase(pAllWindowsArray),
     m_bExitAllowed(exitAllowed),
     m_bExitRequested(exitRequested)
 {

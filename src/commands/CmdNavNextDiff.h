@@ -13,7 +13,7 @@
 class CmdNavNextDiff : public CommandBase
 {
 public:
-  CmdNavNextDiff(Array<WindowBase*>& windowArray,
+  CmdNavNextDiff(Array<WindowBase*>* pAllWindowsArray,
                  DiffWindow& diffWindow);
 
   virtual ~CmdNavNextDiff();

@@ -9,9 +9,9 @@
 #include "CmdFileRequester.h"
 
 
-CmdFileRequester::CmdFileRequester(Array<WindowBase*>& windowArray,
+CmdFileRequester::CmdFileRequester(Array<WindowBase*>* pAllWindowsArray,
                                    const char* pTitle)
-  : CommandBase(windowArray),
+  : CommandBase(pAllWindowsArray),
     m_pTitle(pTitle)
 {
 
@@ -154,17 +154,17 @@ void CmdFileRequester::intuiHook(struct Hook* pHook,
   switch (pMsg->Class)
   {
     // One of the windows has been resized
-    // case IDCMP_NEWSIZE:
-    //   for(size_t i = 0; i < m_Windows.Size(); i++)
-    //   {
-    //     if(m_Windows[i]->IntuiWindow() == pMsg->IDCMPWindow)
-    //     {
-    //       // Re-paint the resized window
-    //       m_Windows[i]->Resized();
-    //       break;
-    //     }
-    //   }
-    //   break;
+    case IDCMP_NEWSIZE:
+      for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
+      {
+        if((*m_pAllWindowsArray)[i]->IntuiWindow() == pMsg->IDCMPWindow)
+        {
+          // Re-paint the resized window
+          (*m_pAllWindowsArray)[i]->Resized();
+          break;
+        }
+      }
+      break;
 
     // One of the windows must be refreshed
     case IDCMP_REFRESHWINDOW:

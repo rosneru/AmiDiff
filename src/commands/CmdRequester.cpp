@@ -5,11 +5,11 @@
 #include "CmdRequester.h"
 
 
-CmdRequester::CmdRequester(Array<WindowBase*>& windowArray,
+CmdRequester::CmdRequester(Array<WindowBase*>* pAllWindowsArray,
                            const SimpleString& message,
                            const char* pTitle,
                            const char* pButtons)
-  : CommandBase(windowArray),
+  : CommandBase(pAllWindowsArray),
     m_Message(message),
     m_pTitle(pTitle),
     m_pButtons(pButtons)
@@ -93,12 +93,12 @@ long CmdRequester::showRequester(struct Window* pActiveWindow)
         {
           // One of the windows has been resized
           case IDCMP_NEWSIZE:
-            for(size_t i = 0; i < m_Windows.Size(); i++)
+            for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
             {
-              if(m_Windows[i]->IntuiWindow() == pMsg->IDCMPWindow)
+              if((*m_pAllWindowsArray)[i]->IntuiWindow() == pMsg->IDCMPWindow)
               {
                 // Re-paint the resized window
-                m_Windows[i]->Resized();
+                (*m_pAllWindowsArray)[i]->Resized();
                 break;
               }
             }

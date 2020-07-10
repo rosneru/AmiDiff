@@ -19,7 +19,7 @@
 class CommandBase
 {
 public:
-  CommandBase(Array<WindowBase*>& windowArray);
+  CommandBase(Array<WindowBase*>* pAllWindowsArray);
   virtual ~CommandBase();
   virtual void Execute(struct Window* pActiveWindow) = 0;
 
@@ -27,7 +27,7 @@ public:
   void DisableInAllWindowMenus() const;
 
 protected:
-  Array<WindowBase*>& m_Windows;
+  static Array<WindowBase*>* m_pAllWindowsArray;
 
   CommandBase();
 

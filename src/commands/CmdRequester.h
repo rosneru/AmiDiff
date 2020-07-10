@@ -16,7 +16,7 @@
 class CmdRequester : public CommandBase
 {
 public:
-  CmdRequester(Array<WindowBase*>& windowArray,
+  CmdRequester(Array<WindowBase*>* pAllWindowsArray,
                const SimpleString& message,
                const char* pTitle,
                const char* pButtons);

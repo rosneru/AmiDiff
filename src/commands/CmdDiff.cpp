@@ -1,8 +1,8 @@
 #include "CmdDiff.h"
 
-CmdDiff::CmdDiff(Array<WindowBase*>& windowArray,
+CmdDiff::CmdDiff(Array<WindowBase*>* pAllWindowsArray,
                  DiffWorker& diffWorker)
-  : CommandBase(windowArray),
+  : CommandBase(pAllWindowsArray),
     m_DiffWorker(diffWorker)
 {
 

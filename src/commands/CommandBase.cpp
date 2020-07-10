@@ -1,12 +1,12 @@
 #include <clib/intuition_protos.h>
 #include "CommandBase.h"
 
+Array<WindowBase*>* CommandBase::m_pAllWindowsArray(NULL);
 
-CommandBase::CommandBase(Array<WindowBase*>& windowArray)
-  : m_Windows(windowArray),
-    m_SleepRequester()
+CommandBase::CommandBase(Array<WindowBase*>* pAllWindowsArray)
+  : m_SleepRequester()
 {
-
+  m_pAllWindowsArray = pAllWindowsArray;
 }
 
 CommandBase::~CommandBase()
@@ -17,14 +17,14 @@ CommandBase::~CommandBase()
 
 void CommandBase::EnableInAllWindowMenus() const
 {
-  for(size_t i = 0; i < m_Windows.Size(); i++)
+  for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
   {
-    struct Window* pIntuiWindow = m_Windows[i]->IntuiWindow();
-    AMenu* pMenu = m_Windows[i]->Menu();
+    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
+    AMenu* pMenu = (*m_pAllWindowsArray)[i]->Menu();
 
     if(pIntuiWindow != NULL && pMenu != NULL)
     {
-      pMenu->EnableMenuItem(m_Windows[i]->IntuiWindow(), (APTR)this);
+      pMenu->EnableMenuItem((*m_pAllWindowsArray)[i]->IntuiWindow(), (APTR)this);
     }
   }
 }
@@ -32,14 +32,14 @@ void CommandBase::EnableInAllWindowMenus() const
 
 void CommandBase::DisableInAllWindowMenus() const
 {
-  for(size_t i = 0; i < m_Windows.Size(); i++)
+  for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
   {
-    struct Window* pIntuiWindow = m_Windows[i]->IntuiWindow();
-    AMenu* pMenu = m_Windows[i]->Menu();
+    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
+    AMenu* pMenu = (*m_pAllWindowsArray)[i]->Menu();
 
     if(pIntuiWindow != NULL && pMenu != NULL)
     {
-      pMenu->DisableMenuItem(m_Windows[i]->IntuiWindow(), (APTR)this);
+      pMenu->DisableMenuItem((*m_pAllWindowsArray)[i]->IntuiWindow(), (APTR)this);
     }
   }
 }
@@ -47,11 +47,11 @@ void CommandBase::DisableInAllWindowMenus() const
 
 void CommandBase::disableBusyPointerForAllWindows()
 {
-  for(size_t i = 0; i < m_Windows.Size(); i++)
+  for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
   {
-    struct Window* pIntuiWindow = m_Windows[i]->IntuiWindow();
+    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
 
-    if(pIntuiWindow != NULL && m_Windows[i]->IsOpen())
+    if(pIntuiWindow != NULL && (*m_pAllWindowsArray)[i]->IsOpen())
     {
       EndRequest(&m_SleepRequester, pIntuiWindow);
       SetWindowPointer(pIntuiWindow, WA_BusyPointer, FALSE, TAG_DONE);
@@ -63,9 +63,9 @@ void CommandBase::enableBusyPointerForAllWindows()
 {  
   InitRequester(&m_SleepRequester);
 
-  for(size_t i = 0; i < m_Windows.Size(); i++)
+  for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
   {
-    struct Window* pIntuiWindow = m_Windows[i]->IntuiWindow();
+    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
 
     if(pIntuiWindow != NULL)
     {
