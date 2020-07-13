@@ -3,11 +3,13 @@
 #include <clib/exec_protos.h>
 #include <clib/intuition_protos.h>
 #include <clib/wb_protos.h>
+#include <graphics/gfxbase.h>
 #include <intuition/intuition.h>
 #include <intuition/imageclass.h>
 
 #include "WindowBase.h"
 
+extern struct GfxBase* GfxBase;
 
 WindowBase::WindowBase(ScreenBase*& pScreen,
                        struct MsgPort*& pIdcmpMsgPort,
@@ -16,12 +18,13 @@ WindowBase::WindowBase(ScreenBase*& pScreen,
     m_pIdcmpMsgPort(pIdcmpMsgPort),
     m_pWindow(NULL),
     m_bBorderless(false),
-    m_WinLeft(0),
-    m_WinTop(0),
-    m_WinWidth(0),
-    m_WinHeight(0),
+    m_Left(0),
+    m_Top(0),
+    m_Width(0),
+    m_Height(0),
     m_bInitialized(false),
     m_pMenu(pMenu),
+    m_pDefaultTextFont(((struct GfxBase *)GfxBase)->DefaultFont),
     m_bIsFixed(false),
     m_InitialPosition(IP_Center),
     m_WindowFlags(0),
@@ -31,7 +34,6 @@ WindowBase::WindowBase(ScreenBase*& pScreen,
     m_pAppWindow(NULL),
     m_AppWindowId(0)
 {
-
 }
 
 
@@ -89,41 +91,41 @@ bool WindowBase::Open(InitialPosition initialPos)
   switch(m_InitialPosition)
   {
     case IP_Center:
-      if(m_WinWidth == 0)
+      if(m_Width == 0)
       {
         // Initial window width not set in initialize()
-        m_WinWidth = screenWidth * 60 / 10;
+        m_Width = screenWidth * 60 / 10;
       }
 
-      if(m_WinHeight == 0)
+      if(m_Height == 0)
       {
         // Initial window heigth not set in initialize()
-        m_WinHeight = screenHeight * 60 / 10;
+        m_Height = screenHeight * 60 / 10;
       }
 
-      m_WinTop = screenHeight / 2 - m_WinHeight / 2;
-      m_WinLeft = screenWidth / 2 - m_WinWidth / 2;
+      m_Top = screenHeight / 2 - m_Height / 2;
+      m_Left = screenWidth / 2 - m_Width / 2;
       break;
 
     case IP_Fill:
-      m_WinWidth = screenWidth;
-      m_WinHeight = screenHeight - screenBarHeight - 1;
-      m_WinTop = screenBarHeight + 1;
-      m_WinLeft = 0;
+      m_Width = screenWidth;
+      m_Height = screenHeight - screenBarHeight - 1;
+      m_Top = screenBarHeight + 1;
+      m_Left = 0;
       break;
 
     case IP_Left:
-      m_WinWidth = screenWidth / 2;
-      m_WinHeight = screenHeight - screenBarHeight - 1;
-      m_WinTop = screenBarHeight + 1;
-      m_WinLeft = 0;
+      m_Width = screenWidth / 2;
+      m_Height = screenHeight - screenBarHeight - 1;
+      m_Top = screenBarHeight + 1;
+      m_Left = 0;
       break;
 
     case IP_Right:
-      m_WinWidth = screenWidth / 2;
-      m_WinHeight = screenHeight - screenBarHeight - 1;
-      m_WinTop = screenBarHeight + 1;
-      m_WinLeft = m_WinWidth;
+      m_Width = screenWidth / 2;
+      m_Height = screenHeight - screenBarHeight - 1;
+      m_Top = screenBarHeight + 1;
+      m_Left = m_Width;
       break;
 
     case IP_Explicit:
@@ -140,15 +142,15 @@ bool WindowBase::Open(InitialPosition initialPos)
   // Open the window
   m_pWindow = OpenWindowTags(NULL,
                              WA_SmartRefresh, TRUE,
-                             WA_Left, m_WinLeft,
-                             WA_Top, m_WinTop,
-                             WA_Width, m_WinWidth,
-                             WA_Height, m_WinHeight,
+                             WA_Left, m_Left,
+                             WA_Top, m_Top,
+                             WA_Width, m_Width,
+                             WA_Height, m_Height,
                              WA_Title, (ULONG) m_Title.C_str(),
                              WA_Activate, TRUE,
                              WA_PubScreen, (UBYTE*) m_pScreen->IntuiScreen(),
                              WA_Flags, m_WindowFlags,
-                             WA_MinWidth, 320,
+                             WA_MinWidth, 230,
                              WA_MinHeight, 64,
                              WA_MaxWidth, ~0,
                              WA_MaxHeight, ~0,
@@ -261,10 +263,10 @@ void WindowBase::SetInitialDimension(ULONG left,
   }
 
   m_InitialPosition = WindowBase::IP_Explicit;
-  m_WinLeft = left;
-  m_WinTop = top;
-  m_WinWidth = width;
-  m_WinHeight = height;
+  m_Left = left;
+  m_Top = top;
+  m_Width = width;
+  m_Height = height;
 }
 
 
@@ -311,8 +313,8 @@ void WindowBase::Move(long dX, long dY)
   }
 
   MoveWindow(m_pWindow, dX, dY);
-  m_WinLeft = m_pWindow->LeftEdge;
-  m_WinTop = m_pWindow->TopEdge;
+  m_Left = m_pWindow->LeftEdge;
+  m_Top = m_pWindow->TopEdge;
 }
 
 
@@ -324,8 +326,8 @@ void WindowBase::Size(long dX, long dY)
   }
 
   SizeWindow(m_pWindow, dX, dY);
-  m_WinWidth = m_pWindow->Width;
-  m_WinHeight = m_pWindow->Height;
+  m_Width = m_pWindow->Width;
+  m_Height = m_pWindow->Height;
 }
 
 
@@ -340,10 +342,10 @@ void WindowBase::ChangeWindowBox(long left,
   }
 
   ChangeWindowBox(left, top, width, height);
-  m_WinLeft = m_pWindow->LeftEdge;
-  m_WinTop = m_pWindow->TopEdge;
-  m_WinWidth = m_pWindow->Width;
-  m_WinHeight = m_pWindow->Height;
+  m_Left = m_pWindow->LeftEdge;
+  m_Top = m_pWindow->TopEdge;
+  m_Width = m_pWindow->Width;
+  m_Height = m_pWindow->Height;
 }
 
 

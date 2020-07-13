@@ -47,15 +47,15 @@ void TextWindow::Resized()
     return;
   }
 
-  if(m_pWindow->Width == m_WinWidth &&
-    m_pWindow->Height == m_WinHeight)
+  if(m_pWindow->Width == m_Width &&
+    m_pWindow->Height == m_Height)
   {
     // nothing changed
     return;
   }
 
-  m_WinWidth = m_pWindow->Width;
-  m_WinHeight = m_pWindow->Height;
+  m_Width = m_pWindow->Width;
+  m_Height = m_pWindow->Height;
 
   // Calculate some values which have to calculated after window
   // opening and after resizing

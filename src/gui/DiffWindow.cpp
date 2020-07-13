@@ -7,7 +7,6 @@
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
 #include <clib/utility_protos.h>
-#include <graphics/gfxbase.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
@@ -15,7 +14,6 @@
 #include <libraries/gadtools.h>
 #include "DiffWindow.h"
 
-extern struct GfxBase* GfxBase;
 
 
 DiffWindow::DiffWindow(ScreenBase*& pScreen,
@@ -34,6 +32,9 @@ DiffWindow::DiffWindow(ScreenBase*& pScreen,
     m_bShowLineNumbers(false),
     m_LineNumsWidth_chars(0),
     m_LineNumsWidth_pix(0),
+    m_FontWidth_pix(m_pDefaultTextFont->tf_XSize),
+    m_FontHeight_pix(m_pDefaultTextFont->tf_YSize),
+    m_FontBaseline_pix(m_pDefaultTextFont->tf_Baseline),
     m_X(0),
     m_Y(0),
     m_MaxTextAreaChars(0),
@@ -59,16 +60,6 @@ DiffWindow::DiffWindow(ScreenBase*& pScreen,
     m_DeletedText(" Deleted "),
     m_StatusBarText("No diff performed.")
 {
-  //
-  // Get the width and height of a char of the systems default
-  // monospace font.
-  //
-  struct TextFont* defaultTextFont =
-    ((struct GfxBase *)GfxBase)->DefaultFont;
-
-  m_FontWidth_pix = defaultTextFont->tf_XSize;
-  m_FontHeight_pix = defaultTextFont->tf_YSize;
-  m_FontBaseline_pix = defaultTextFont->tf_Baseline;
 }
 
 
@@ -100,15 +91,15 @@ void DiffWindow::Resized()
     return;
   }
 
-  if(m_pWindow->Width == m_WinWidth &&
-     m_pWindow->Height == m_WinHeight)
+  if(m_pWindow->Width == m_Width &&
+     m_pWindow->Height == m_Height)
   {
     // nothing changed
     return;
   }
 
-  m_WinWidth = m_pWindow->Width;
-  m_WinHeight = m_pWindow->Height;
+  m_Width = m_pWindow->Width;
+  m_Height = m_pWindow->Height;
 
   // Calculate some values which have to calculated after window
   // opening and after resizing

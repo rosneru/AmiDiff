@@ -209,12 +209,13 @@ protected:
   struct MsgPort*& m_pIdcmpMsgPort;
   struct Window* m_pWindow;
   bool m_bBorderless;
-  LONG m_WinLeft;
-  LONG m_WinTop;
-  LONG m_WinWidth;
-  LONG m_WinHeight;
+  LONG m_Left;
+  LONG m_Top;
+  LONG m_Width;
+  LONG m_Height;
   bool m_bInitialized;
   AMenu* m_pMenu;
+  struct TextFont* m_pDefaultTextFont;
   SimpleString m_Title;
 
 

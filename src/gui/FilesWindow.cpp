@@ -292,7 +292,7 @@ void FilesWindow::initialize()
   //
   // Calculate some basic values
   //
-  m_WinWidth = (WORD)m_pScreen->IntuiScreen()->Width / 2;
+  m_Width = (WORD)m_pScreen->IntuiScreen()->Width / 2;
   m_FontHeight = m_pScreen->FontHeight();
   WORD barHeight = m_pScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
 
@@ -301,7 +301,7 @@ void FilesWindow::initialize()
 
   WORD top = barHeight + vSpace;
   WORD left = hSpace;
-  WORD right = m_WinWidth - hSpace;
+  WORD right = m_Width - hSpace;
 
   WORD btnsWidth = 60;
   WORD btnsHeight = m_FontHeight + 6;
@@ -459,7 +459,7 @@ void FilesWindow::initialize()
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
-  m_WinHeight = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
+  m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
 
   // Setting window title
   SetTitle("Open the files to diff");

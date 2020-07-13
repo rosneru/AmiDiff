@@ -5,6 +5,7 @@
 #include <clib/gadtools_protos.h>
 #include <clib/graphics_protos.h>
 #include <clib/intuition_protos.h>
+#include <graphics/rastport.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
@@ -68,6 +69,44 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   {
     return false;
   }
+
+
+  // Set the windows rastport to fill with a pattern for the structured
+  // background
+  UWORD areafillPattern[2] = {0xaaaa, 0x5555};
+  m_pWindow->RPort->AreaPtrn = areafillPattern;
+  m_pWindow->RPort->AreaPtSz = 1;
+
+  // Fill the structured background
+  SetDrMd(m_pWindow->RPort, JAM1);
+  SetAPen(m_pWindow->RPort, m_pScreen->Pens().HighlightedText());
+  struct Screen* pScreen = m_pScreen->IntuiScreen();
+  RectFill(m_pWindow->RPort, 
+           pScreen->WBorLeft,
+           pScreen->WBorTop + pScreen->BarHeight - 1,
+           m_pWindow->Width - pScreen->WBorRight - 1,
+           m_pWindow->Height - pScreen->WBorBottom - 1);
+
+  // Re-set the windows RastPort to fill without a pattern
+  m_pWindow->RPort->AreaPtrn = NULL;
+
+  // 
+  short outerXOffset = 12;
+  SetAPen(m_pWindow->RPort, m_pScreen->Pens().Background());
+  RectFill(m_pWindow->RPort, 
+           pScreen->WBorLeft + outerXOffset,
+           pScreen->WBorTop + pScreen->BarHeight + 10,
+           m_pWindow->Width - pScreen->WBorRight - 1 - outerXOffset,
+           pScreen->WBorTop + pScreen->BarHeight + 10 + 2 * m_pDefaultTextFont->tf_YSize);
+
+    DrawBevelBox(m_pWindow->RPort,
+                 pScreen->WBorLeft + outerXOffset,
+                 pScreen->WBorTop + pScreen->BarHeight + 10,
+                 m_pWindow->Width - 2 * outerXOffset - pScreen->WBorLeft - pScreen->WBorRight,
+                 2 * m_pDefaultTextFont->tf_YSize + 1,
+                 GT_VisualInfo, m_pScreen->GadtoolsVisualInfo(),
+                 GTBB_Recessed, TRUE,
+                 TAG_DONE);
 
   // Draw a bevel box around the area where the progress bar will be
   DrawBevelBox(m_pWindow->RPort,
@@ -201,7 +240,6 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   PrintIText(m_pWindow->RPort, &m_ProgressValueIText, -dX, 0);
 }
 
-
 void ProgressWindow::initialize()
 {
   if(m_pScreen == NULL)
@@ -209,79 +247,82 @@ void ProgressWindow::initialize()
     return;
   }
 
-  m_WinWidth = (WORD)m_pScreen->IntuiScreen()->Width / 2;
-  m_FontHeight = m_pScreen->FontHeight();
-  WORD barHeight = m_pScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
+  m_Width = 230;
+  m_Height = 78 - m_pScreen->IntuiScreen()->BarHeight;
 
-  WORD hSpace = 10;
-  WORD vSpace = 6;
+  // m_Width = (WORD)m_pScreen->IntuiScreen()->Width / 2;
+  // m_FontHeight = m_pScreen->FontHeight();
+  // WORD barHeight = m_pScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
 
-  WORD top = barHeight + vSpace;
-  WORD left = hSpace;
-  WORD right = m_WinWidth - hSpace;
-  WORD buttonWidth = 60;
-  WORD buttonHeight = m_FontHeight + vSpace;
-  WORD stringGadgetWidth = right - left - hSpace / 2 - buttonWidth;
+  // WORD hSpace = 10;
+  // WORD vSpace = 6;
 
-  //
-  // Setting up the gadgets
-  //
+  // WORD top = barHeight + vSpace;
+  // WORD left = hSpace;
+  // WORD right = m_Width - hSpace;
+  // WORD buttonWidth = 60;
+  // WORD buttonHeight = m_FontHeight + vSpace;
+  // WORD stringGadgetWidth = right - left - hSpace / 2 - buttonWidth;
 
-  // Create a place for GadTools context data
-  struct Gadget* pFakeGad;
-  pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
-  if(pFakeGad == NULL)
-  {
-    return;
-  }
+  // //
+  // // Setting up the gadgets
+  // //
 
-  // Setting the first gadget of the gadet list for the window
-  setFirstGadget(m_pGadtoolsContext);
+  // // Create a place for GadTools context data
+  // struct Gadget* pFakeGad;
+  // pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
+  // if(pFakeGad == NULL)
+  // {
+  //   return;
+  // }
 
-  // Declare the basic gadget structure and fill with basic values
-  struct NewGadget newGadget;
-  newGadget.ng_TextAttr   = m_pScreen->IntuiTextAttr();
-  newGadget.ng_VisualInfo = m_pScreen->GadtoolsVisualInfo();
+  // // Setting the first gadget of the gadet list for the window
+  // setFirstGadget(m_pGadtoolsContext);
 
-  // Creating the string gadget to display the progress description
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    = top;
-  newGadget.ng_Width      = stringGadgetWidth;
-  newGadget.ng_Height     = buttonHeight;
-  newGadget.ng_GadgetID   = GID_TxtDescription;
-  newGadget.ng_GadgetText = NULL;
-  newGadget.ng_Flags      = 0;
+  // // Declare the basic gadget structure and fill with basic values
+  // struct NewGadget newGadget;
+  // newGadget.ng_TextAttr   = m_pScreen->IntuiTextAttr();
+  // newGadget.ng_VisualInfo = m_pScreen->GadtoolsVisualInfo();
 
-  m_pGadTxtDescription = CreateGadget(TEXT_KIND,
-                                      pFakeGad, &newGadget,
-                                      TAG_DONE);
+  // // Creating the string gadget to display the progress description
+  // newGadget.ng_LeftEdge   = left;
+  // newGadget.ng_TopEdge    = top;
+  // newGadget.ng_Width      = stringGadgetWidth;
+  // newGadget.ng_Height     = buttonHeight;
+  // newGadget.ng_GadgetID   = GID_TxtDescription;
+  // newGadget.ng_GadgetText = NULL;
+  // newGadget.ng_Flags      = 0;
 
-  // Preparing the newGadget struct for the progress value gadget
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += buttonHeight + vSpace;
+  // m_pGadTxtDescription = CreateGadget(TEXT_KIND,
+  //                                     pFakeGad, &newGadget,
+  //                                     TAG_DONE);
 
-  // Actually the progressbar "gadget" is just a BevelBox which is
-  // drawn after window opening. So just remembering the progress
-  // gadget dimensions as they are needed later
-  m_ProgressBarLeft = newGadget.ng_LeftEdge;
-  m_ProgressBarTop = newGadget.ng_TopEdge;
-  m_ProgressBarWidth = newGadget.ng_Width;
-  m_ProgressBarHeight = newGadget.ng_Height;
+  // // Preparing the newGadget struct for the progress value gadget
+  // newGadget.ng_LeftEdge   = left;
+  // newGadget.ng_TopEdge    += buttonHeight + vSpace;
 
-  // Creating the Cancel button in right of the "progress gadget"
-  newGadget.ng_LeftEdge   = right - buttonWidth;
-  newGadget.ng_Width      = buttonWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
-  newGadget.ng_GadgetID   = GID_BtnCancel;
+  // // Actually the progressbar "gadget" is just a BevelBox which is
+  // // drawn after window opening. So just remembering the progress
+  // // gadget dimensions as they are needed later
+  // m_ProgressBarLeft = newGadget.ng_LeftEdge;
+  // m_ProgressBarTop = newGadget.ng_TopEdge;
+  // m_ProgressBarWidth = newGadget.ng_Width;
+  // m_ProgressBarHeight = newGadget.ng_Height;
 
-  m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
-                                 m_pGadTxtDescription, &newGadget,
-                                 GT_Underscore, '_',
-                                 TAG_DONE);
+  // // Creating the Cancel button in right of the "progress gadget"
+  // newGadget.ng_LeftEdge   = right - buttonWidth;
+  // newGadget.ng_Width      = buttonWidth;
+  // newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
+  // newGadget.ng_GadgetID   = GID_BtnCancel;
 
-  // Adjust the window height depending on the y-Pos and height of the
-  // last gadget
-  m_WinHeight = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
+  // m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
+  //                                m_pGadTxtDescription, &newGadget,
+  //                                GT_Underscore, '_',
+  //                                TAG_DONE);
+
+  // // Adjust the window height depending on the y-Pos and height of the
+  // // last gadget
+  // m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
 
   // Setting window title
   SetTitle("ADiffView progress..");
