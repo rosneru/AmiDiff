@@ -42,6 +42,7 @@ add_executable (ADiffView
                 gui/ClonedWorkbenchScreen.cpp
                 gui/DiffWindow.cpp
                 gui/FilesWindow.cpp
+                gui/Rect.cpp
                 gui/ProgressWindow.cpp
                 gui/ScrollbarWindow.cpp
                 gui/WindowBase.cpp

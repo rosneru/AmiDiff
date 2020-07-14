@@ -3,6 +3,7 @@
 
 #include <exec/ports.h>
 
+#include "Rect.h"
 #include "ScreenBase.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
@@ -68,22 +69,17 @@ private:
   bool& m_bCancelRequested;
 
   struct Gadget* m_pGadtoolsContext;
-  struct Gadget* m_pGadTxtDescription;
   struct Gadget* m_pGadBtnCancel;
 
-  ULONG m_ProgressBarLeft;
-  ULONG m_ProgressBarTop;
-  ULONG m_ProgressBarWidth;
-  ULONG m_ProgressBarHeight;
+  Rect m_OuterRect;
+  Rect m_ProgressRect;
+  size_t m_TextLenZero;
+  size_t m_TextLenHundred;
 
   SimpleString m_ProgressDescr;
-  SimpleString m_ProgressValue;
-
-  struct IntuiText m_ProgressValueIText;
-
 
   /**
-   * Initializes some window specific feature. Gadgets, etc.
+   * Initializes some window contents, Gadgets, etc.
    */
   void initialize();
 };

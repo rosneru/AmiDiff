@@ -23,13 +23,7 @@ ProgressWindow::ProgressWindow(ScreenBase*& pScreen,
   : WindowBase(pScreen, pIdcmpMsgPort, pMenu),
     m_bCancelRequested(bCancelRequested),
     m_pGadtoolsContext(NULL),
-    m_pGadTxtDescription(NULL),
-    m_pGadBtnCancel(NULL),
-    m_ProgressBarLeft(0),
-    m_ProgressBarTop(0),
-    m_ProgressBarWidth(0),
-    m_ProgressBarHeight(0),
-    m_ProgressValueIText()
+    m_pGadBtnCancel(NULL)
 {
 
 }
@@ -42,7 +36,6 @@ ProgressWindow::~ProgressWindow()
   {
     FreeGadgets(m_pGadtoolsContext);
     m_pGadtoolsContext = NULL;
-    m_pGadTxtDescription = NULL;
     m_pGadBtnCancel = NULL;
   }
 }
@@ -77,10 +70,11 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   m_pWindow->RPort->AreaPtrn = areafillPattern;
   m_pWindow->RPort->AreaPtSz = 1;
 
+  struct Screen* pScreen = m_pScreen->IntuiScreen();
+
   // Fill the structured background
   SetDrMd(m_pWindow->RPort, JAM1);
   SetAPen(m_pWindow->RPort, m_pScreen->Pens().HighlightedText());
-  struct Screen* pScreen = m_pScreen->IntuiScreen();
   RectFill(m_pWindow->RPort, 
            pScreen->WBorLeft,
            pScreen->WBorTop + pScreen->BarHeight - 1,
@@ -90,32 +84,32 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   // Re-set the windows RastPort to fill without a pattern
   m_pWindow->RPort->AreaPtrn = NULL;
 
-  // 
-  short outerXOffset = 12;
+  // Draw the outer gray area and bevel box
   SetAPen(m_pWindow->RPort, m_pScreen->Pens().Background());
   RectFill(m_pWindow->RPort, 
-           pScreen->WBorLeft + outerXOffset,
-           pScreen->WBorTop + pScreen->BarHeight + 10,
-           m_pWindow->Width - pScreen->WBorRight - 1 - outerXOffset,
-           pScreen->WBorTop + pScreen->BarHeight + 10 + 2 * m_pDefaultTextFont->tf_YSize);
+           m_OuterRect.Left(),
+           m_OuterRect.Top(),
+           m_OuterRect.Right(),
+           m_OuterRect.Bottom());
 
-    DrawBevelBox(m_pWindow->RPort,
-                 pScreen->WBorLeft + outerXOffset,
-                 pScreen->WBorTop + pScreen->BarHeight + 10,
-                 m_pWindow->Width - 2 * outerXOffset - pScreen->WBorLeft - pScreen->WBorRight,
-                 2 * m_pDefaultTextFont->tf_YSize + 1,
-                 GT_VisualInfo, m_pScreen->GadtoolsVisualInfo(),
-                 GTBB_Recessed, TRUE,
-                 TAG_DONE);
+  DrawBevelBox(m_pWindow->RPort,
+               m_OuterRect.Left(),
+               m_OuterRect.Top(),
+               m_OuterRect.Width(),
+               m_OuterRect.Height(),
+               GT_VisualInfo, m_pScreen->GadtoolsVisualInfo(),
+               GTBB_Recessed, TRUE,
+               TAG_DONE);
 
   // Draw a bevel box around the area where the progress bar will be
   DrawBevelBox(m_pWindow->RPort,
-    m_ProgressBarLeft, m_ProgressBarTop,
-    m_ProgressBarWidth, m_ProgressBarHeight,
-    GT_VisualInfo, m_pScreen->GadtoolsVisualInfo(),
-    GTBB_Recessed, TRUE,
-    TAG_DONE);
-
+               m_ProgressRect.Left() - 1,
+               m_ProgressRect.Top() - 1,
+               m_ProgressRect.Width() + 2,
+               m_ProgressRect.Height() + 2,
+               GT_VisualInfo, m_pScreen->GadtoolsVisualInfo(),
+               GTBB_Recessed, TRUE,
+               TAG_DONE);
 
   // Enable the Cancel button in case it has been disabled the last
   // time the window was open
@@ -187,7 +181,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   int progrWidth = 1;
   if(pProgrMsg->progress > 0)
   {
-    progrWidth = (m_ProgressBarWidth - 2) * pProgrMsg->progress / 100;
+    progrWidth = (m_ProgressRect.Width() - 2) * pProgrMsg->progress / 100;
   }
 
   // Set color to <blue> for painting the progress bar
@@ -195,49 +189,25 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
 
   // Fill the progress bar area
   RectFill(m_pWindow->RPort,
-           m_ProgressBarLeft + 2,
-           m_ProgressBarTop + 1,
-           m_ProgressBarLeft + progrWidth - 1,
-           m_ProgressBarTop + m_ProgressBarHeight - 2);
+           m_ProgressRect.Left(),
+           m_ProgressRect.Top(),
+           m_ProgressRect.Left() + progrWidth,
+           m_ProgressRect.Bottom());
 
   // Set color to <background> for painting the grey background of the
   // yet uncovered area of the progress bar
   SetAPen(m_pWindow->RPort, m_pScreen->Pens().Background());
 
-  // Fill the yet uncovered progress bar area with the background
-  // color. This is necessary to clear the formerly printed text.
-  RectFill(m_pWindow->RPort,
-           m_ProgressBarLeft + 2 + progrWidth,
-           m_ProgressBarTop + 1,
-           m_ProgressBarLeft + m_ProgressBarWidth - 3,
-           m_ProgressBarTop + m_ProgressBarHeight - 2);
-
   // NOTE: The following condition is a workaround because SimpleString
   // curently has no != overload
   if(!(m_ProgressDescr == pProgrMsg->pDescription))
   {
-    // Progress description as it has changed
+    // Update progress description as it has changed
     m_ProgressDescr = pProgrMsg->pDescription;
 
-    // Update the description gadged
-    GT_SetGadgetAttrs(m_pGadTxtDescription,
-                      m_pWindow,
-                      NULL,
-                      GTTX_Text, m_ProgressDescr.C_str(),
-                      TAG_DONE);
+    // Update the description in window title
+    SetWindowTitles(m_pWindow, m_ProgressDescr.C_str(), (STRPTR)~0);
   }
-
-  m_ProgressValue = pProgrMsg->progress;
-  m_ProgressValue += " %";
-
-  m_ProgressValueIText.IText = (UBYTE*) m_ProgressValue.C_str();
-
-  // Calculate dX to print the text centered
-  LONG textLength = IntuiTextLength(&m_ProgressValueIText);
-  ULONG dX = textLength / 2;
-
-
-  PrintIText(m_pWindow->RPort, &m_ProgressValueIText, -dX, 0);
 }
 
 void ProgressWindow::initialize()
@@ -247,8 +217,19 @@ void ProgressWindow::initialize()
     return;
   }
 
+  struct Screen* pScreen = m_pScreen->IntuiScreen();
+
+  size_t outerXOffset = 12;
+  m_OuterRect.Set(pScreen->WBorLeft + outerXOffset,
+                  pScreen->WBorTop + pScreen->BarHeight + 10,
+                  m_pWindow->Width - pScreen->WBorRight - 1 - outerXOffset,
+                  pScreen->WBorTop + pScreen->BarHeight + 10 + 2 * m_pDefaultTextFont->tf_YSize);
+
+  m_TextLenZero = TextLength(m_pWindow->RPort, "0%", 2);
+  m_TextLenHundred = TextLength(m_pWindow->RPort, "100%", 4);
+
   m_Width = 230;
-  m_Height = 78 - m_pScreen->IntuiScreen()->BarHeight;
+  m_Height = 78;
 
   // m_Width = (WORD)m_pScreen->IntuiScreen()->Width / 2;
   // m_FontHeight = m_pScreen->FontHeight();
@@ -338,18 +319,6 @@ void ProgressWindow::initialize()
            IDCMP_RAWKEY |         // Get msg when printable key pressed
            IDCMP_REFRESHWINDOW |  // Get msg when must refreshing
            IDCMP_GADGETUP);       // Get msg when gadgets changed
-
-  // Initialize the intui text structure for progress value display
-  m_ProgressValueIText.FrontPen  = m_pScreen->Pens().HighlightedText();
-  m_ProgressValueIText.BackPen   = m_pScreen->Pens().Background();
-  m_ProgressValueIText.DrawMode  = JAM1;
-  m_ProgressValueIText.LeftEdge  = (m_ProgressBarWidth / 2) + m_ProgressBarLeft;
-
-  m_ProgressValueIText.TopEdge   = m_ProgressBarTop + ((m_ProgressBarHeight - m_FontHeight) / 2);
-
-  m_ProgressValueIText.ITextFont = NULL;
-  m_ProgressValueIText.NextText  = NULL;
-
 
   m_bInitialized = true;
 }
