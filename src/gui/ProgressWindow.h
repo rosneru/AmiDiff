@@ -73,8 +73,11 @@ private:
 
   Rect m_OuterRect;
   Rect m_ProgressRect;
-  size_t m_TextLenZero;
-  size_t m_TextLenHundred;
+
+  SimpleString m_TextZero;
+  SimpleString m_TextHundred;
+  size_t m_TextZeroWidth;
+  size_t m_TextHundredWidth;
 
   SimpleString m_ProgressDescr;
 

@@ -24,7 +24,7 @@ WindowBase::WindowBase(ScreenBase*& pScreen,
     m_Height(0),
     m_bInitialized(false),
     m_pMenu(pMenu),
-    m_pDefaultTextFont(((struct GfxBase *)GfxBase)->DefaultFont),
+    m_pTextFont(((struct GfxBase *)GfxBase)->DefaultFont),
     m_bIsFixed(false),
     m_InitialPosition(IP_Center),
     m_WindowFlags(0),
@@ -302,50 +302,6 @@ void WindowBase::EnableAppWindow(struct MsgPort* pAppWindowPort,
 
   m_pAppWindowPort = pAppWindowPort;
   m_AppWindowId = appWindowId;
-}
-
-
-void WindowBase::Move(long dX, long dY)
-{
-  if(!IsOpen())
-  {
-    return;
-  }
-
-  MoveWindow(m_pWindow, dX, dY);
-  m_Left = m_pWindow->LeftEdge;
-  m_Top = m_pWindow->TopEdge;
-}
-
-
-void WindowBase::Size(long dX, long dY)
-{
-  if(!IsOpen())
-  {
-    return;
-  }
-
-  SizeWindow(m_pWindow, dX, dY);
-  m_Width = m_pWindow->Width;
-  m_Height = m_pWindow->Height;
-}
-
-
-void WindowBase::ChangeWindowBox(long left,
-                                 long top,
-                                 long width,
-                                 long height)
-{
-  if(!IsOpen())
-  {
-    return;
-  }
-
-  ChangeWindowBox(left, top, width, height);
-  m_Left = m_pWindow->LeftEdge;
-  m_Top = m_pWindow->TopEdge;
-  m_Width = m_pWindow->Width;
-  m_Height = m_pWindow->Height;
 }
 
 

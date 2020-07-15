@@ -149,38 +149,6 @@ public:
   void EnableAppWindow(struct MsgPort* pAppWindowPort, 
                        ULONG appWindowId);
 
-
-  /**
-   * Moves an opened window to new position
-   *
-   * @param dX
-   * Delta of window position on x-axis. Can be pos. or neg.
-   *
-   * @param dY
-   * Delta of window position on y-axis. Can be pos. or neg.
-   */
-  void Move(long dX, long dY);
-
-
-  /**
-   * Resizes an opened window.
-   *
-   * @param dX
-   * Delta of window size on x-axis. Can be pos. or neg.
-   *
-   * @param dY
-   * Delta of window size on y-axis. Can be pos. or neg.
-   */
-  void Size(long dX, long dY);
-
-
-  /**
-   * Resizes an opened window and moves it to a new position.
-   * Coordinates are absolute and no deltas.
-   */
-  void ChangeWindowBox(long left, long top, long width, long height);
-
-
   /**
    * Returns the intuition window structure or NULL if window is not
    * open.
@@ -215,7 +183,7 @@ protected:
   LONG m_Height;
   bool m_bInitialized;
   AMenu* m_pMenu;
-  struct TextFont* m_pDefaultTextFont;
+  struct TextFont* m_pTextFont;
   SimpleString m_Title;
 
 

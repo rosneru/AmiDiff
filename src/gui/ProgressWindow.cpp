@@ -23,7 +23,9 @@ ProgressWindow::ProgressWindow(ScreenBase*& pScreen,
   : WindowBase(pScreen, pIdcmpMsgPort, pMenu),
     m_bCancelRequested(bCancelRequested),
     m_pGadtoolsContext(NULL),
-    m_pGadBtnCancel(NULL)
+    m_pGadBtnCancel(NULL),
+    m_TextZero("0%"),
+    m_TextHundred("100%")
 {
 
 }
@@ -103,13 +105,28 @@ bool ProgressWindow::Open(InitialPosition initialPos)
 
   // Draw a bevel box around the area where the progress bar will be
   DrawBevelBox(m_pWindow->RPort,
-               m_ProgressRect.Left() - 1,
+               m_ProgressRect.Left() - 2,
                m_ProgressRect.Top() - 1,
-               m_ProgressRect.Width() + 2,
-               m_ProgressRect.Height() + 2,
+               m_ProgressRect.Width() + 4,
+               m_ProgressRect.Height() + 3,
                GT_VisualInfo, m_pScreen->GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
+
+  // Drawing the '0%' and '100%' texts
+  SetAPen(m_pWindow->RPort, m_pScreen->Pens().Text());
+
+  Move(m_pWindow->RPort,
+       (m_OuterRect.Left() + m_ProgressRect.Left()) / 2 - m_TextZeroWidth / 2,
+       m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
+  
+  Text(m_pWindow->RPort, m_TextZero.C_str(), m_TextZero.Length());
+
+  Move(m_pWindow->RPort,
+       (m_OuterRect.Right() + m_ProgressRect.Right()) / 2 - m_TextHundredWidth / 2,
+       m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
+  
+  Text(m_pWindow->RPort, m_TextHundred.C_str(), m_TextHundred.Length());
 
   // Enable the Cancel button in case it has been disabled the last
   // time the window was open
@@ -217,19 +234,27 @@ void ProgressWindow::initialize()
     return;
   }
 
-  struct Screen* pScreen = m_pScreen->IntuiScreen();
-
-  size_t outerXOffset = 12;
-  m_OuterRect.Set(pScreen->WBorLeft + outerXOffset,
-                  pScreen->WBorTop + pScreen->BarHeight + 10,
-                  m_pWindow->Width - pScreen->WBorRight - 1 - outerXOffset,
-                  pScreen->WBorTop + pScreen->BarHeight + 10 + 2 * m_pDefaultTextFont->tf_YSize);
-
-  m_TextLenZero = TextLength(m_pWindow->RPort, "0%", 2);
-  m_TextLenHundred = TextLength(m_pWindow->RPort, "100%", 4);
-
   m_Width = 230;
   m_Height = 78;
+
+  struct Screen* pScreen = m_pScreen->IntuiScreen();
+
+  size_t xOffset = 5;
+  size_t yOffset = 5;
+
+  m_OuterRect.Set(pScreen->WBorLeft + xOffset,
+                  pScreen->WBorTop + pScreen->BarHeight + yOffset,
+                  m_Width - pScreen->WBorRight - 1 - xOffset,
+                  pScreen->WBorTop + pScreen->BarHeight + yOffset + 3 * m_pTextFont->tf_YSize);
+
+  m_TextZeroWidth = TextLength(&pScreen->RastPort, m_TextZero.C_str(), 2);
+  m_TextHundredWidth = TextLength(&pScreen->RastPort, m_TextHundred.C_str(), 4);
+
+  m_ProgressRect.Set(m_OuterRect.Left() + m_TextZeroWidth + 2 * xOffset,
+                     m_OuterRect.Top() + m_pTextFont->tf_YSize,
+                     m_OuterRect.Right() - m_TextHundredWidth - 2 * xOffset, 
+                     m_OuterRect.Top() + 2 * m_pTextFont->tf_YSize);
+
 
   // m_Width = (WORD)m_pScreen->IntuiScreen()->Width / 2;
   // m_FontHeight = m_pScreen->FontHeight();
