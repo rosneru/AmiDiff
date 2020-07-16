@@ -81,8 +81,7 @@ int main(int argc, char **argv)
   // Create a settings instance
   ADiffViewSettings settings;
 
-  // Select on which kind of screen the DiffWindow will appear depending
-  // on arguments
+  // Create (and open) the screen depending on args
   ScreenBase* pScreenBase = NULL;
   if(args.PubScreenName().Length() > 0)
   {
@@ -101,11 +100,6 @@ int main(int argc, char **argv)
     return 0;
   }
 
-  // Create (and open) the screen depending on args
-  ClonedWorkbenchScreen m_ClonedWorkbenchScreen(settings, VERS, 3);
-  JoinedPublicScreen m_JoinedPublicScreen(settings, args.PubScreenName().C_str());
-  JoinedPublicScreen m_WorkbenchPublicScreen(settings, "Workbench");
-
   // Create and run the application
   Application* pApplication = new Application(pScreenBase, args, settings);
   bool bOk = pApplication->Run();
@@ -116,6 +110,7 @@ int main(int argc, char **argv)
   }
 
   delete pApplication;
+  delete pScreenBase;
   return 0;
 }
 

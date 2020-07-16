@@ -18,7 +18,7 @@
 class ScrollbarWindow : public WindowBase
 {
 public:
-  ScrollbarWindow(ScreenBase*& pScreen, 
+  ScrollbarWindow(ScreenBase* pScreenBase, 
                   struct MsgPort*& pIdcmpMsgPort,
                   AMenu* pMenu);
 

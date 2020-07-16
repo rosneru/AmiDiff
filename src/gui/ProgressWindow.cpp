@@ -31,11 +31,11 @@ ProgressWindow::ProgressWindow(ScreenBase*& pScreenBase,
 
   m_Width = 230;
 
-  struct Screen* pScr = m_pScreen->IntuiScreen();
+  struct Screen* pScr = m_pScreenBase->IntuiScreen();
 
   size_t xOffset = 6;
   size_t yOffset = 6;
-  if(m_pScreen->IsHiresMode())
+  if(m_pScreenBase->IsHiresMode())
   {
     // When in hires mode the pixels are none-square. They are twice
     // as high as wide, and this is corrected here.
@@ -72,8 +72,8 @@ ProgressWindow::ProgressWindow(ScreenBase*& pScreenBase,
   setFirstGadget(m_pGadtoolsContext);
 
   // Declare the basic gadget structure and fill with basic values
-  m_NewGadget.ng_TextAttr   = m_pScreen->IntuiTextAttr();
-  m_NewGadget.ng_VisualInfo = m_pScreen->GadtoolsVisualInfo();
+  m_NewGadget.ng_TextAttr   = m_pScreenBase->IntuiTextAttr();
+  m_NewGadget.ng_VisualInfo = m_pScreenBase->GadtoolsVisualInfo();
 
   // Creating the string gadget to display the progress description
   m_NewGadget.ng_LeftEdge   = m_Width / 2 - buttonWidth / 2;
@@ -127,7 +127,7 @@ void ProgressWindow::Refresh()
 
 bool ProgressWindow::Open(InitialPosition initialPos)
 {
-  if(m_pScreen == NULL)
+  if(m_pScreenBase == NULL)
   {
     return false;
   }
@@ -144,11 +144,11 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   m_pWindow->RPort->AreaPtrn = areafillPattern;
   m_pWindow->RPort->AreaPtSz = 1;
 
-  struct Screen* pScreen = m_pScreen->IntuiScreen();
+  struct Screen* pScreen = m_pScreenBase->IntuiScreen();
 
   // Fill the structured background
   SetDrMd(m_pWindow->RPort, JAM1);
-  SetAPen(m_pWindow->RPort, m_pScreen->Pens().HighlightedText());
+  SetAPen(m_pWindow->RPort, m_pScreenBase->Pens().HighlightedText());
   RectFill(m_pWindow->RPort, 
            pScreen->WBorLeft,
            pScreen->WBorTop + pScreen->BarHeight - 1,
@@ -159,7 +159,7 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   m_pWindow->RPort->AreaPtrn = NULL;
 
   // Draw the outer gray area and bevel box
-  SetAPen(m_pWindow->RPort, m_pScreen->Pens().Background());
+  SetAPen(m_pWindow->RPort, m_pScreenBase->Pens().Background());
   RectFill(m_pWindow->RPort, 
            m_OuterRect.Left(),
            m_OuterRect.Top(),
@@ -171,7 +171,7 @@ bool ProgressWindow::Open(InitialPosition initialPos)
                m_OuterRect.Top(),
                m_OuterRect.Width(),
                m_OuterRect.Height(),
-               GT_VisualInfo, m_pScreen->GadtoolsVisualInfo(),
+               GT_VisualInfo, m_pScreenBase->GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
@@ -181,12 +181,12 @@ bool ProgressWindow::Open(InitialPosition initialPos)
                m_ProgressRect.Top() - 1,
                m_ProgressRect.Width() + 4,
                m_ProgressRect.Height() + 3,
-               GT_VisualInfo, m_pScreen->GadtoolsVisualInfo(),
+               GT_VisualInfo, m_pScreenBase->GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
   // Drawing the '0%' and '100%' texts
-  SetAPen(m_pWindow->RPort, m_pScreen->Pens().Text());
+  SetAPen(m_pWindow->RPort, m_pScreenBase->Pens().Text());
 
   Move(m_pWindow->RPort,
        (m_OuterRect.Left() + m_ProgressRect.Left()) / 2 - m_TextZeroWidth / 2,
@@ -275,7 +275,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   }
 
   // Set color to <blue> for painting the progress bar
-  SetAPen(m_pWindow->RPort, m_pScreen->Pens().Fill());
+  SetAPen(m_pWindow->RPort, m_pScreenBase->Pens().Fill());
 
   // Fill the progress bar area
   RectFill(m_pWindow->RPort,
@@ -286,7 +286,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
 
   // Set color to <background> for painting the grey background of the
   // yet uncovered area of the progress bar
-  SetAPen(m_pWindow->RPort, m_pScreen->Pens().Background());
+  SetAPen(m_pWindow->RPort, m_pScreenBase->Pens().Background());
 
   // NOTE: The following condition is a workaround because SimpleString
   // curently has no != overload

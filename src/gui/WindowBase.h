@@ -173,7 +173,7 @@ public:
   AMenu* Menu();
 
 protected:
-  ScreenBase*& m_pScreen;
+  ScreenBase* m_pScreenBase;
   struct MsgPort*& m_pIdcmpMsgPort;
   struct Window* m_pWindow;
   bool m_bBorderless;
@@ -203,7 +203,7 @@ protected:
    * successful opening and decreased at each closing of a window.
    *
    */
-  WindowBase(ScreenBase*& pScreen, 
+  WindowBase(ScreenBase* pScreenBase, 
              struct MsgPort*& pIdcmpMsgPort,
              AMenu* pMenu);
 

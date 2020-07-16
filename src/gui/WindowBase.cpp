@@ -11,10 +11,10 @@
 
 extern struct GfxBase* GfxBase;
 
-WindowBase::WindowBase(ScreenBase*& pScreen,
+WindowBase::WindowBase(ScreenBase* pScreenBase,
                        struct MsgPort*& pIdcmpMsgPort,
                        AMenu* pMenu)
-  : m_pScreen(pScreen),
+  : m_pScreenBase(pScreenBase),
     m_pIdcmpMsgPort(pIdcmpMsgPort),
     m_pWindow(NULL),
     m_bBorderless(false),
@@ -49,14 +49,14 @@ void WindowBase::Resized()
 
 bool WindowBase::Open(InitialPosition initialPos)
 {
-  if(m_pScreen == NULL)
+  if(m_pScreenBase == NULL)
   {
     return false;
   }
 
-  if(m_pScreen->IsOpen() == false)
+  if(m_pScreenBase->IsOpen() == false)
   {
-    if(m_pScreen->Open() == false)
+    if(m_pScreenBase->Open() == false)
     {
       return false;
     }
@@ -78,9 +78,9 @@ bool WindowBase::Open(InitialPosition initialPos)
   //
   // Calculating window size etc in dependency of screen dimensions
   //
-  int screenWidth = m_pScreen->IntuiScreen()->Width;
-  int screenHeight = m_pScreen->IntuiScreen()->Height;
-  int screenBarHeight = m_pScreen->IntuiScreen()->BarHeight;
+  int screenWidth = m_pScreenBase->IntuiScreen()->Width;
+  int screenHeight = m_pScreenBase->IntuiScreen()->Height;
+  int screenBarHeight = m_pScreenBase->IntuiScreen()->BarHeight;
 
   switch(m_InitialPosition)
   {
@@ -142,7 +142,7 @@ bool WindowBase::Open(InitialPosition initialPos)
                              WA_Height, m_Height,
                              WA_Title, (ULONG) m_Title.C_str(),
                              WA_Activate, TRUE,
-                             WA_PubScreen, (UBYTE*) m_pScreen->IntuiScreen(),
+                             WA_PubScreen, (UBYTE*) m_pScreenBase->IntuiScreen(),
                              WA_Flags, m_WindowFlags,
                              WA_MinWidth, 230,
                              WA_MinHeight, 64,
@@ -159,7 +159,7 @@ bool WindowBase::Open(InitialPosition initialPos)
     return false;
   }
 
-  m_pScreen->IncreaseNumOpenWindows();
+  m_pScreenBase->IncreaseNumOpenWindows();
 
   // The window uses this message port which can be the same as used by
   // other windows
@@ -185,7 +185,7 @@ bool WindowBase::Open(InitialPosition initialPos)
   }
 
   // Create the menu if; returns true if already done
-  if(m_pMenu->Create(m_pScreen) == true)
+  if(m_pMenu->Create(m_pScreenBase) == true)
   {
     // Attach the menu to the window
     m_pMenu->AttachToWindow(m_pWindow);
@@ -214,7 +214,7 @@ void WindowBase::Close()
   }
 
   closeWindowSafely();
-  m_pScreen->DecreaseNumOpenWindows();
+  m_pScreenBase->DecreaseNumOpenWindows();
 }
 
 
@@ -329,7 +329,7 @@ void WindowBase::SetMenu(AMenu* pMenu)
   }
 
   // Create the menu; returns true if already done
-  if(m_pMenu->Create(m_pScreen) == true)
+  if(m_pMenu->Create(m_pScreenBase) == true)
   {
     // Attach the menu to the window
     m_pMenu->AttachToWindow(m_pWindow);
@@ -400,7 +400,7 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId,
                                          ULONG& width,
                                          ULONG& height)
 {
-  if(m_pScreen == NULL)
+  if(m_pScreenBase == NULL)
   {
     return NULL;
   }
@@ -409,7 +409,7 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId,
       NULL, SYSICLASS,
       SYSIA_Which, sysImageId,
       SYSIA_Size, SYSISIZE_MEDRES,
-      SYSIA_DrawInfo, m_pScreen->IntuiDrawInfo(),
+      SYSIA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
       TAG_DONE);
 
   if(pImage != NULL)

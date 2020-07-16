@@ -24,7 +24,7 @@ class FilesWindow : public WindowBase
 {
 public:
   FilesWindow(Array<WindowBase*>& windowArray,
-              ScreenBase*& pScreen,
+              ScreenBase* pScreenBase,
               struct MsgPort*& pIdcmpMsgPort,
               SimpleString& leftFilePath,
               SimpleString& rightFilePath,

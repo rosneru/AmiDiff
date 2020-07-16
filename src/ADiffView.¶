@@ -165,6 +165,7 @@ File
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 "commands/CmdOpenWindow.h"
+"gui/Rect.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -187,6 +188,8 @@ File
 "gui/ScrollbarWindow.h"
 "commands/CommandBase.h"
 "commands/CmdOpenWindow.h"
+"application/ADiffView_rev.h"
+"gui/Rect.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -219,6 +222,7 @@ File
 "gui/ScreenBase.h"
 "commands/CmdOpenWindow.h"
 "commands/CommandBase.h"
+"gui/Rect.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
 ""
@@ -446,8 +450,15 @@ File
 "gui/ADiffViewPens.h"
 "gui/ScreenBase.h"
 "gui/AMenu.h"
+"gui/Rect.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ProgressWindow.o" "objects_debug/ProgressWindow.debug"
+""
+1 1
+File
+1 "gui/Rect.cpp"
+Storm Shell Project (Dependencies)
+"objects_debug/Rect.o" "objects_debug/Rect.debug"
 ""
 1 1
 File
@@ -533,6 +544,7 @@ File
 "gui/ScreenBase.h"
 "commands/CmdOpenWindow.h"
 "commands/CommandBase.h"
+"gui/Rect.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
 ""
@@ -763,6 +775,12 @@ Storm Shell Project (Dependencies)
 File
 2 "gui/ProgressWindow.h"
 "gui/ProgressWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "gui/Rect.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

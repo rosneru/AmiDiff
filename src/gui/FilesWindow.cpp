@@ -18,14 +18,14 @@
 
 
 FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
-                         ScreenBase*& pScreen,
+                         ScreenBase* pScreenBase,
                          struct MsgPort*& pIdcmpMsgPort,
                          SimpleString& leftFilePath,
                          SimpleString& rightFilePath,
                          CommandBase& cmdDiff,
                          CommandBase& cmdCloseFilesWindow,
                          AMenu* pMenu)
-  : WindowBase(pScreen, pIdcmpMsgPort, pMenu),
+  : WindowBase(pScreenBase, pIdcmpMsgPort, pMenu),
     m_LeftFilePath(leftFilePath),
     m_RightFilePath(rightFilePath),
     m_CmdDiff(cmdDiff),
@@ -44,9 +44,9 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
   //
   // Calculate some basic values
   //
-  m_Width = (WORD)m_pScreen->IntuiScreen()->Width / 2;
-  m_FontHeight = m_pScreen->FontHeight();
-  WORD barHeight = m_pScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
+  m_Width = (WORD)m_pScreenBase->IntuiScreen()->Width / 2;
+  m_FontHeight = m_pScreenBase->FontHeight();
+  WORD barHeight = m_pScreenBase->IntuiScreen()->WBorTop + m_FontHeight + 2;
 
   WORD hSpace = 10;
   WORD vSpace = 10;
@@ -58,7 +58,7 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
   WORD btnsWidth = 60;
   WORD btnsHeight = m_FontHeight + 6;
 
-  WORD btnSelectWidth = TextLength(&m_pScreen->IntuiScreen()->RastPort, "...", 3) + 8;
+  WORD btnSelectWidth = TextLength(&m_pScreenBase->IntuiScreen()->RastPort, "...", 3) + 8;
   WORD btnSelectLeft = right - btnSelectWidth;
 
   WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
@@ -82,8 +82,8 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
   struct NewGadget newGadget;
 
   // Row 1  contains  a label
-  newGadget.ng_TextAttr   = m_pScreen->IntuiTextAttr();
-  newGadget.ng_VisualInfo = m_pScreen->GadtoolsVisualInfo();
+  newGadget.ng_TextAttr   = m_pScreenBase->IntuiTextAttr();
+  newGadget.ng_VisualInfo = m_pScreenBase->GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadWidth;
