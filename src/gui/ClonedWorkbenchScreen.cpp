@@ -25,7 +25,7 @@ bool ClonedWorkbenchScreen::Open()
   // It is only *nearly* a copy because it'll have 8 colors instead
   // of how many the Workbench screen might have.
   //
-  m_pScreen = OpenScreenTags(NULL,
+  m_pIntuiScreen = OpenScreenTags(NULL,
                              SA_LikeWorkbench, TRUE,
                              SA_Type, CUSTOMSCREEN,
                              SA_Depth, m_Depth,
@@ -34,12 +34,12 @@ bool ClonedWorkbenchScreen::Open()
                              SA_Colors32, m_Settings.GetColorArray(),
                              TAG_DONE);
 
-  if(m_pScreen == NULL)
+  if(m_pIntuiScreen == NULL)
   {
     return false;
   }
 
-  m_pDrawInfo = GetScreenDrawInfo(m_pScreen);
+  m_pDrawInfo = GetScreenDrawInfo(m_pIntuiScreen);
   if(m_pDrawInfo == NULL)
   {
     Close();
@@ -53,7 +53,7 @@ bool ClonedWorkbenchScreen::Open()
   }
 
   // Get visual info from screen
-  m_pVisualInfo = (APTR) GetVisualInfo(m_pScreen, TAG_DONE);
+  m_pVisualInfo = (APTR) GetVisualInfo(m_pIntuiScreen, TAG_DONE);
   if(m_pVisualInfo == NULL)
   {
     Close();
@@ -76,15 +76,15 @@ void ClonedWorkbenchScreen::Close()
   // screen is needed there
   m_Pens.Dispose();
 
-  if(m_pDrawInfo != NULL && m_pScreen != NULL)
+  if(m_pDrawInfo != NULL && m_pIntuiScreen != NULL)
   {
-    FreeScreenDrawInfo(m_pScreen, m_pDrawInfo);
+    FreeScreenDrawInfo(m_pIntuiScreen, m_pDrawInfo);
     m_pDrawInfo = NULL;
   }
 
-  if(m_pScreen != NULL)
+  if(m_pIntuiScreen != NULL)
   {
-    CloseScreen(m_pScreen);
-    m_pScreen = NULL;
+    CloseScreen(m_pIntuiScreen);
+    m_pIntuiScreen = NULL;
   }
 }

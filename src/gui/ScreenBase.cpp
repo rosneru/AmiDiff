@@ -8,9 +8,9 @@
 extern struct IntuitionBase* IntuitionBase;
 
 ScreenBase::ScreenBase(const ADiffViewSettings& settings)
-  : m_pScreen(NULL),
+  : m_pIntuiScreen(NULL),
     m_pDrawInfo(NULL),
-    m_Pens(m_pScreen, m_pDrawInfo, settings),
+    m_Pens(m_pIntuiScreen, m_pDrawInfo, settings),
     m_Settings(settings),
     m_NumWindowsOpen(0),
     m_pVisualInfo(NULL)
@@ -25,7 +25,7 @@ ScreenBase::~ScreenBase()
 
 bool ScreenBase::IsOpen() const
 {
-  return (m_pScreen != NULL);
+  return (m_pIntuiScreen != NULL);
 }
 
 UWORD ScreenBase::FontHeight() const
@@ -40,17 +40,17 @@ UWORD ScreenBase::FontHeight() const
 
 WORD ScreenBase::BarHeight() const
 {
-  if(m_pScreen == NULL)
+  if(m_pIntuiScreen == NULL)
   {
     return 0;
   }
 
-	return m_pScreen->WBorTop + FontHeight() + 2;
+	return m_pIntuiScreen->WBorTop + FontHeight() + 2;
 }
 
 struct Screen* ScreenBase::IntuiScreen()
 {
-  return m_pScreen;
+  return m_pIntuiScreen;
 }
 
 struct DrawInfo* ScreenBase::IntuiDrawInfo()
@@ -60,12 +60,12 @@ struct DrawInfo* ScreenBase::IntuiDrawInfo()
 
 struct TextAttr* ScreenBase::IntuiTextAttr()
 {
-  if(m_pScreen == NULL)
+  if(m_pIntuiScreen == NULL)
   {
     return 0;
   }
 
-  return m_pScreen->Font;
+  return m_pIntuiScreen->Font;
 }
 
 APTR ScreenBase::GadtoolsVisualInfo()
@@ -98,12 +98,12 @@ void ScreenBase::DecreaseNumOpenWindows()
 
 bool ScreenBase::IsHiresMode() const
 {
-  if(m_pScreen == NULL)
+  if(m_pIntuiScreen == NULL)
   {
     return false;
   }
 
-  LONG modeId = GetVPModeID(&(m_pScreen->ViewPort));
+  LONG modeId = GetVPModeID(&(m_pIntuiScreen->ViewPort));
   if(modeId == INVALID_ID)
   {
     return false;

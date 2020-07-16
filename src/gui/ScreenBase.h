@@ -78,7 +78,7 @@ public:
   bool IsHiresMode() const;
 
 protected:
-  struct Screen* m_pScreen;
+  struct Screen* m_pIntuiScreen;
   struct DrawInfo* m_pDrawInfo;
   struct TextFont* m_pTextFont;
 

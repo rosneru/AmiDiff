@@ -18,14 +18,14 @@ JoinedPublicScreen::~JoinedPublicScreen()
 
 bool JoinedPublicScreen::Open()
 {
-  m_pScreen = LockPubScreen(m_PubScreenName.C_str());
+  m_pIntuiScreen = LockPubScreen(m_PubScreenName.C_str());
 
-  if(m_pScreen == NULL)
+  if(m_pIntuiScreen == NULL)
   {
     return false;
   }
 
-  m_pDrawInfo = GetScreenDrawInfo(m_pScreen);
+  m_pDrawInfo = GetScreenDrawInfo(m_pIntuiScreen);
   if(m_pDrawInfo == NULL)
   {
     Close();
@@ -39,7 +39,7 @@ bool JoinedPublicScreen::Open()
   }
 
   // Get visual info from screen
-  m_pVisualInfo = (APTR) GetVisualInfo(m_pScreen, TAG_DONE);
+  m_pVisualInfo = (APTR) GetVisualInfo(m_pIntuiScreen, TAG_DONE);
   if(m_pVisualInfo == NULL)
   {
     Close();
@@ -61,15 +61,15 @@ void JoinedPublicScreen::Close()
   // screen is needed there
   m_Pens.Dispose();
 
-  if(m_pDrawInfo != NULL && m_pScreen != NULL)
+  if(m_pDrawInfo != NULL && m_pIntuiScreen != NULL)
   {
-    FreeScreenDrawInfo(m_pScreen, m_pDrawInfo);
+    FreeScreenDrawInfo(m_pIntuiScreen, m_pDrawInfo);
     m_pDrawInfo = NULL;
   }
 
-  if(m_pScreen != NULL)
+  if(m_pIntuiScreen != NULL)
   {
-    UnlockPubScreen(NULL, m_pScreen);
-    m_pScreen = NULL;
+    UnlockPubScreen(NULL, m_pIntuiScreen);
+    m_pIntuiScreen = NULL;
   }
 }
