@@ -103,12 +103,6 @@ private:
   void handleGadgetEvent(struct Gadget* pGadget);
   void handleVanillaKey(UWORD code);
 
-
-  /**
-   * Initializes the window specific features. Gadgets, etc.
-   */
-  void initialize();
-
   //
   // These next four methods are the main functions of this window
   // which are mapped to the butons and keys.

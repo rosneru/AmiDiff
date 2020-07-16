@@ -22,7 +22,6 @@ WindowBase::WindowBase(ScreenBase*& pScreen,
     m_Top(0),
     m_Width(0),
     m_Height(0),
-    m_bInitialized(false),
     m_pMenu(pMenu),
     m_pTextFont(((struct GfxBase *)GfxBase)->DefaultFont),
     m_bIsFixed(false),
@@ -74,11 +73,6 @@ bool WindowBase::Open(InitialPosition initialPos)
     // Not opening the window if it is already open
     // TODO Alternatively: bring window to front and return true;
     return true;
-  }
-
-  if(!m_bInitialized)
-  {
-    initialize();
   }
 
   //

@@ -12,10 +12,13 @@
 
 #include "Application.h"
 
-Application::Application(ADiffViewArgs& args)
+Application::Application(ScreenBase* pScreenBase, 
+                         ADiffViewArgs& args, 
+                         ADiffViewSettings& settings)
   : m_Args(args),
     m_LeftFilePath(args.LeftFile()),   // copy (not reference) to member
     m_RightFilePath(args.RightFile()), // copy (not reference) to member
+    m_Settings(settings),
     m_pMsgPortIDCMP(NULL),
     m_pMsgPortProgress(NULL),
     m_pMsgPortAppWindow(NULL),
@@ -31,23 +34,19 @@ Application::Application(ADiffViewArgs& args)
                  m_pMsgPortProgress,
                  m_bCancelRequested,
                  m_bExitAllowed),
-    m_ClonedWorkbenchScreen(m_Settings, VERS, 3),
-    m_JoinedPublicScreen(m_Settings, args.PubScreenName().C_str()),
-    m_WorkbenchPublicScreen(m_Settings, "Workbench"),
-    m_pDiffWindowScreen(NULL),
-    m_pFilesWindowScreen(NULL),
-    m_DiffWindow(m_pDiffWindowScreen,
+    m_pScreenBase(pScreenBase),
+    m_DiffWindow(pScreenBase,
                  m_pMsgPortIDCMP,
                  &m_DiffWindowMenu),
     m_FilesWindow(m_WindowArray,
-                  m_pFilesWindowScreen,
+                  pScreenBase,
                   m_pMsgPortIDCMP,
                   m_LeftFilePath,
                   m_RightFilePath,
                   m_CmdDiff,
                   m_CmdCloseFilesWindow,
                   &m_FilesWindowMenu),
-    m_ProgressWindow(m_pFilesWindowScreen,
+    m_ProgressWindow(pScreenBase,
                      m_pMsgPortIDCMP,
                      m_bCancelRequested,
                      NULL),
@@ -152,36 +151,8 @@ bool Application::Run()
     m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
   }
 
-  // Load the settings. As they can contain e.g. colors for screen /
-  // windows etc. this is done before opening any of the mentioned.
-  m_Settings.Load();
-
   // Apply some settings and arguments
   m_DiffWorker.SetLineNumbers(m_Args.ShowLineNumbers());
-
-
-  // Select on which kind of screen the DiffWindow will appear depending
-  // on arguments
-  if(m_Args.PubScreenName().Length() > 0)
-  {
-    // For DiffWindow use a given public screen
-    m_pDiffWindowScreen = &m_JoinedPublicScreen;
-  }
-  else
-  {
-    // For DiffWindow  use a Workbench clone screen (with 8 colors; see
-    // constructor)
-    m_pDiffWindowScreen = &m_ClonedWorkbenchScreen;
-  }
-
-  // Select on which kind of screen the FilesWindow will appear
-  // depending on arguments
-  m_pFilesWindowScreen = m_pDiffWindowScreen;
-  if(m_Args.AskOnWorkbench())
-  {
-    m_pFilesWindowScreen = &m_WorkbenchPublicScreen;
-  }
-
 
   //
   // Fill the GadTools menu structs, supplying pointers to the commands
@@ -289,8 +260,7 @@ void Application::intuiEventLoop()
     }
 
     // Check all screens for any open windows
-    if((m_pDiffWindowScreen->NumOpenWindows() < 1) &&
-       (m_pFilesWindowScreen->NumOpenWindows() < 1))
+    if(m_pScreenBase->NumOpenWindows() < 1)
     {
       // Exitting as there are no windows open anymore.
       m_CmdQuit.Execute(NULL); // Only sets m_bExitRequested to true.

@@ -140,11 +140,6 @@ protected:
   long m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar
 
   /**
-   * Initializes some window specific feature. Gadgets, etc.
-   */
-  virtual void initialize();
-
-  /**
    * Calculates some inner window sizes which is needed after window
    * opening and after resizing.
    */

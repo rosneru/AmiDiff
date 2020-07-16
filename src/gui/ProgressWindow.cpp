@@ -16,18 +16,90 @@
 #include "ProgressWindow.h"
 
 
-ProgressWindow::ProgressWindow(ScreenBase*& pScreen,
+ProgressWindow::ProgressWindow(ScreenBase*& pScreenBase,
                                struct MsgPort*& pIdcmpMsgPort,
                                bool& bCancelRequested,
                                AMenu* pMenu)
-  : WindowBase(pScreen, pIdcmpMsgPort, pMenu),
+  : WindowBase(pScreenBase, pIdcmpMsgPort, pMenu),
     m_bCancelRequested(bCancelRequested),
+    m_NewGadget(),
     m_pGadtoolsContext(NULL),
-    m_pGadBtnCancel(NULL),
+    m_pGadBtnStop(NULL),
     m_TextZero("0%"),
     m_TextHundred("100%")
 {
 
+  m_Width = 230;
+
+  struct Screen* pScr = m_pScreen->IntuiScreen();
+
+  size_t xOffset = 6;
+  size_t yOffset = 6;
+  if(m_pScreen->IsHiresMode())
+  {
+    // When in hires mode the pixels are none-square. They are twice
+    // as high as wide, and this is corrected here.
+    yOffset /= 2;
+  }
+
+  m_OuterRect.Set(pScr->WBorLeft + xOffset,
+                  pScr->WBorTop + pScr->BarHeight + yOffset,
+                  m_Width - pScr->WBorRight - 1 - xOffset,
+                  pScr->WBorTop + pScr->BarHeight + yOffset + 3 * m_pTextFont->tf_YSize);
+
+  m_TextZeroWidth = TextLength(&pScr->RastPort, m_TextZero.C_str(), 2);
+  m_TextHundredWidth = TextLength(&pScr->RastPort, m_TextHundred.C_str(), 4);
+
+  m_ProgressRect.Set(m_OuterRect.Left() + m_TextZeroWidth + 2 * xOffset,
+                     m_OuterRect.Top() + m_pTextFont->tf_YSize,
+                     m_OuterRect.Right() - m_TextHundredWidth - 2 * xOffset, 
+                     m_OuterRect.Top() + 2 * m_pTextFont->tf_YSize);
+
+  //
+  // Setting up the gadgets
+  //
+
+  // Create GadTools context data
+  m_pGadtoolsContext = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
+  if(m_pGadtoolsContext == NULL)
+  {
+    return;
+  }
+
+  size_t buttonWidth = 60;
+
+  // Setting the first gadget of the gadet list for the window
+  setFirstGadget(m_pGadtoolsContext);
+
+  // Declare the basic gadget structure and fill with basic values
+  m_NewGadget.ng_TextAttr   = m_pScreen->IntuiTextAttr();
+  m_NewGadget.ng_VisualInfo = m_pScreen->GadtoolsVisualInfo();
+
+  // Creating the string gadget to display the progress description
+  m_NewGadget.ng_LeftEdge   = m_Width / 2 - buttonWidth / 2;
+  m_NewGadget.ng_TopEdge    = m_OuterRect.Bottom() + yOffset;
+  m_NewGadget.ng_Width      = buttonWidth;
+  m_NewGadget.ng_Height     = m_pTextFont->tf_YSize + 2 * yOffset;
+  m_NewGadget.ng_GadgetID   = GID_BtnStop;
+  m_NewGadget.ng_GadgetText = (UBYTE*) "Stop";
+  m_NewGadget.ng_Flags      = 0;
+
+  m_Height = m_NewGadget.ng_TopEdge + m_NewGadget.ng_Height + yOffset + pScr->WBorBottom;
+
+  // Setting window title
+  SetTitle("Loading left file");
+
+  // Setting the window flags
+  setFlags(WFLG_DRAGBAR |         // Add a drag gadget
+           WFLG_DEPTHGADGET);     // Add a depth gadget
+
+
+  // Setting the IDCMP messages we want to receive for this window
+  setIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
+           IDCMP_VANILLAKEY |     // Get msg when RAW key pressed
+           IDCMP_RAWKEY |         // Get msg when printable key pressed
+           IDCMP_REFRESHWINDOW |  // Get msg when must refreshing
+           IDCMP_GADGETUP);       // Get msg when gadgets changed
 }
 
 ProgressWindow::~ProgressWindow()
@@ -38,7 +110,7 @@ ProgressWindow::~ProgressWindow()
   {
     FreeGadgets(m_pGadtoolsContext);
     m_pGadtoolsContext = NULL;
-    m_pGadBtnCancel = NULL;
+    m_pGadBtnStop = NULL;
   }
 }
 
@@ -128,11 +200,12 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   
   Text(m_pWindow->RPort, m_TextHundred.C_str(), m_TextHundred.Length());
 
-  // Enable the Cancel button in case it has been disabled the last
-  // time the window was open
-  GT_SetGadgetAttrs(m_pGadBtnCancel, IntuiWindow(), NULL,
-    GA_Disabled, FALSE,
-    TAG_DONE);
+  // Create the stop gadget
+  m_pGadBtnStop = CreateGadget(BUTTON_KIND,
+                               m_pGadtoolsContext, &m_NewGadget,
+                               TAG_DONE);
+
+  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
 
   return true;
 }
@@ -152,14 +225,14 @@ void ProgressWindow::HandleIdcmp(ULONG msgClass,
     case IDCMP_GADGETUP:
     {
       struct Gadget* pGadget = (struct Gadget*) pItemAddress;
-      if(pGadget->GadgetID == GID_BtnCancel)
+      if(pGadget->GadgetID == GID_BtnStop)
       {
         // Set the flag which will stop background process as soon as
         // possible
         m_bCancelRequested = true;
 
         // Disable the Cancel button
-        GT_SetGadgetAttrs(m_pGadBtnCancel, IntuiWindow(), NULL,
+        GT_SetGadgetAttrs(m_pGadBtnStop, IntuiWindow(), NULL,
           GA_Disabled, TRUE,
           TAG_DONE);
       }
@@ -225,131 +298,4 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
     // Update the description in window title
     SetWindowTitles(m_pWindow, m_ProgressDescr.C_str(), (STRPTR)~0);
   }
-}
-
-void ProgressWindow::initialize()
-{
-  if(m_pScreen == NULL)
-  {
-    return;
-  }
-
-  m_Width = 230;
-  m_Height = 78;
-
-  struct Screen* pScreen = m_pScreen->IntuiScreen();
-
-  size_t xOffset = 6;
-  size_t yOffset = 6;
-  if(m_pScreen->IsHiresMode())
-  {
-    // On hires reduce yOffset as the pixels there are none-square. 
-    // They are double as high as wide and this is corrected here.
-    yOffset /= 2;
-  }
-
-  m_OuterRect.Set(pScreen->WBorLeft + xOffset,
-                  pScreen->WBorTop + pScreen->BarHeight + yOffset,
-                  m_Width - pScreen->WBorRight - 1 - xOffset,
-                  pScreen->WBorTop + pScreen->BarHeight + yOffset + 3 * m_pTextFont->tf_YSize);
-
-  m_TextZeroWidth = TextLength(&pScreen->RastPort, m_TextZero.C_str(), 2);
-  m_TextHundredWidth = TextLength(&pScreen->RastPort, m_TextHundred.C_str(), 4);
-
-  m_ProgressRect.Set(m_OuterRect.Left() + m_TextZeroWidth + 2 * xOffset,
-                     m_OuterRect.Top() + m_pTextFont->tf_YSize,
-                     m_OuterRect.Right() - m_TextHundredWidth - 2 * xOffset, 
-                     m_OuterRect.Top() + 2 * m_pTextFont->tf_YSize);
-
-
-  // m_Width = (WORD)m_pScreen->IntuiScreen()->Width / 2;
-  // m_FontHeight = m_pScreen->FontHeight();
-  // WORD barHeight = m_pScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
-
-  // WORD hSpace = 10;
-  // WORD vSpace = 6;
-
-  // WORD top = barHeight + vSpace;
-  // WORD left = hSpace;
-  // WORD right = m_Width - hSpace;
-  // WORD buttonWidth = 60;
-  // WORD buttonHeight = m_FontHeight + vSpace;
-  // WORD stringGadgetWidth = right - left - hSpace / 2 - buttonWidth;
-
-  // //
-  // // Setting up the gadgets
-  // //
-
-  // // Create a place for GadTools context data
-  // struct Gadget* pFakeGad;
-  // pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
-  // if(pFakeGad == NULL)
-  // {
-  //   return;
-  // }
-
-  // // Setting the first gadget of the gadet list for the window
-  // setFirstGadget(m_pGadtoolsContext);
-
-  // // Declare the basic gadget structure and fill with basic values
-  // struct NewGadget newGadget;
-  // newGadget.ng_TextAttr   = m_pScreen->IntuiTextAttr();
-  // newGadget.ng_VisualInfo = m_pScreen->GadtoolsVisualInfo();
-
-  // // Creating the string gadget to display the progress description
-  // newGadget.ng_LeftEdge   = left;
-  // newGadget.ng_TopEdge    = top;
-  // newGadget.ng_Width      = stringGadgetWidth;
-  // newGadget.ng_Height     = buttonHeight;
-  // newGadget.ng_GadgetID   = GID_TxtDescription;
-  // newGadget.ng_GadgetText = NULL;
-  // newGadget.ng_Flags      = 0;
-
-  // m_pGadTxtDescription = CreateGadget(TEXT_KIND,
-  //                                     pFakeGad, &newGadget,
-  //                                     TAG_DONE);
-
-  // // Preparing the newGadget struct for the progress value gadget
-  // newGadget.ng_LeftEdge   = left;
-  // newGadget.ng_TopEdge    += buttonHeight + vSpace;
-
-  // // Actually the progressbar "gadget" is just a BevelBox which is
-  // // drawn after window opening. So just remembering the progress
-  // // gadget dimensions as they are needed later
-  // m_ProgressBarLeft = newGadget.ng_LeftEdge;
-  // m_ProgressBarTop = newGadget.ng_TopEdge;
-  // m_ProgressBarWidth = newGadget.ng_Width;
-  // m_ProgressBarHeight = newGadget.ng_Height;
-
-  // // Creating the Cancel button in right of the "progress gadget"
-  // newGadget.ng_LeftEdge   = right - buttonWidth;
-  // newGadget.ng_Width      = buttonWidth;
-  // newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
-  // newGadget.ng_GadgetID   = GID_BtnCancel;
-
-  // m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
-  //                                m_pGadTxtDescription, &newGadget,
-  //                                GT_Underscore, '_',
-  //                                TAG_DONE);
-
-  // // Adjust the window height depending on the y-Pos and height of the
-  // // last gadget
-  // m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
-
-  // Setting window title
-  SetTitle("ADiffView progress..");
-
-  // Setting the window flags
-  setFlags(WFLG_DRAGBAR |         // Add a drag gadget
-           WFLG_DEPTHGADGET);     // Add a depth gadget
-
-
-  // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
-           IDCMP_VANILLAKEY |     // Get msg when RAW key pressed
-           IDCMP_RAWKEY |         // Get msg when printable key pressed
-           IDCMP_REFRESHWINDOW |  // Get msg when must refreshing
-           IDCMP_GADGETUP);       // Get msg when gadgets changed
-
-  m_bInitialized = true;
 }

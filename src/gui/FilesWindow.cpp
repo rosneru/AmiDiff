@@ -41,14 +41,197 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
     m_pGadBtnSwap(NULL),
     m_pGadBtnCancel(NULL)
 {
+  //
+  // Calculate some basic values
+  //
+  m_Width = (WORD)m_pScreen->IntuiScreen()->Width / 2;
+  m_FontHeight = m_pScreen->FontHeight();
+  WORD barHeight = m_pScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
 
+  WORD hSpace = 10;
+  WORD vSpace = 10;
+
+  WORD top = barHeight + vSpace;
+  WORD left = hSpace;
+  WORD right = m_Width - hSpace;
+
+  WORD btnsWidth = 60;
+  WORD btnsHeight = m_FontHeight + 6;
+
+  WORD btnSelectWidth = TextLength(&m_pScreen->IntuiScreen()->RastPort, "...", 3) + 8;
+  WORD btnSelectLeft = right - btnSelectWidth;
+
+  WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
+
+  //
+  // Setting up the gadgets
+  //
+
+  // Create a place for GadTools context data
+  struct Gadget* pFakeGad;
+  pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
+  if(pFakeGad == NULL)
+  {
+    return;
+  }
+
+  // Setting the first gadget of the gadet list for the window
+  setFirstGadget(m_pGadtoolsContext);
+
+  // Declare the basic gadget structure
+  struct NewGadget newGadget;
+
+  // Row 1  contains  a label
+  newGadget.ng_TextAttr   = m_pScreen->IntuiTextAttr();
+  newGadget.ng_VisualInfo = m_pScreen->GadtoolsVisualInfo();
+  newGadget.ng_LeftEdge   = left + 2;
+  newGadget.ng_TopEdge    = top;
+  newGadget.ng_Width      = stringGadWidth;
+  newGadget.ng_Height     = m_FontHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "_Left file";
+  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
+
+  struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
+                                             pFakeGad,
+                                             &newGadget,
+                                             GT_Underscore, '_',
+                                             TAG_DONE);
+
+  // Row 2 contains a string gadget and selection button for the
+  // filename of the left file
+
+  // Creating the string gadget
+  newGadget.ng_LeftEdge   = left;
+  newGadget.ng_TopEdge    += m_FontHeight + 2;
+  newGadget.ng_Width      = stringGadWidth;
+  newGadget.ng_Height     = btnsHeight;
+  newGadget.ng_GadgetText = NULL;
+  newGadget.ng_GadgetID   = GID_LeftFileString;
+  newGadget.ng_Flags      = 0;
+
+  m_pGadStrLeftFile = CreateGadget(STRING_KIND,
+                                   pLabelGadget,
+                                   &newGadget,
+                                   GTST_MaxChars, 200, // TODO remove constant
+                                   TAG_DONE);
+
+  // Creating the Select button
+  newGadget.ng_LeftEdge   = btnSelectLeft;
+  newGadget.ng_Width      = btnSelectWidth;
+  newGadget.ng_GadgetText = (UBYTE*) "...";
+  newGadget.ng_GadgetID   = GID_LeftFileButton;
+  newGadget.ng_Flags      = 0;
+
+  m_pGadBtnSelectLeft = CreateGadget(BUTTON_KIND,
+                                     m_pGadStrLeftFile,
+                                     &newGadget,
+                                     TAG_DONE);
+
+  // Row 3  contains a label
+  newGadget.ng_LeftEdge   = left + 2;
+  newGadget.ng_TopEdge    += btnsHeight + vSpace;
+  newGadget.ng_Width      = stringGadWidth;
+  newGadget.ng_Height     = m_FontHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "_Right file";
+  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
+
+  pLabelGadget = CreateGadget(TEXT_KIND,
+                              m_pGadBtnSelectLeft,
+                              &newGadget,
+                              GT_Underscore, '_',
+                              TAG_DONE);
+
+  // Row 4 contains a string gadget and selection button for the
+  // filename of the right file
+
+  // Creating the string gadget
+  newGadget.ng_LeftEdge   = left;
+  newGadget.ng_TopEdge    += m_FontHeight + 2;
+  newGadget.ng_Width      = stringGadWidth;
+  newGadget.ng_Height     = btnsHeight;
+  newGadget.ng_GadgetText = NULL;
+  newGadget.ng_GadgetID   = GID_RightFileString;
+  newGadget.ng_Flags      = 0;
+
+  m_pGadStrRightFile = CreateGadget(STRING_KIND,
+                                    pLabelGadget,
+                                    &newGadget,
+                                    GTST_MaxChars, 200, // TODO remove constant
+                                    TAG_DONE);
+
+  // Creating the Select button
+  newGadget.ng_LeftEdge   = btnSelectLeft;
+  newGadget.ng_Width      = btnSelectWidth;
+  newGadget.ng_GadgetText = (UBYTE*) "...";
+  newGadget.ng_GadgetID   = GID_RightFileButton;
+  newGadget.ng_Flags      = 0;
+
+  m_pGadBtnSelectRight = CreateGadget(BUTTON_KIND,
+                                      m_pGadStrRightFile,
+                                      &newGadget,
+                                      TAG_DONE);
+
+  // Row 5 conatins the buttons Diff, Swap and Cancel
+
+  // Creating the Diff button
+  newGadget.ng_LeftEdge   = left;
+  newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
+  newGadget.ng_Width      = btnsWidth;
+  newGadget.ng_GadgetText = (UBYTE*) "_Diff";
+  newGadget.ng_GadgetID   = GID_DiffButton;
+
+  m_pGadBtnDiff = CreateGadget(BUTTON_KIND,
+                               m_pGadBtnSelectRight,
+                               &newGadget,
+                               GT_Underscore, '_',
+                               TAG_DONE);
+
+  // Creating the Swap button
+  newGadget.ng_LeftEdge   = (right - left - btnsWidth) / 2;
+  newGadget.ng_GadgetText = (UBYTE*) "_Swap";
+  newGadget.ng_GadgetID   = GID_SwapButton;
+
+  m_pGadBtnSwap = CreateGadget(BUTTON_KIND,
+                               m_pGadBtnDiff,
+                               &newGadget,
+                               GT_Underscore, '_',
+                               TAG_DONE);
+
+
+  // Creating the Cancel button
+  newGadget.ng_LeftEdge   = right - btnsWidth;
+  newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
+  newGadget.ng_GadgetID   = GID_CancelButton;
+
+  m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
+                                 m_pGadBtnSwap,
+                                 &newGadget,
+                                 GT_Underscore, '_',
+                                 TAG_DONE);
+
+  // Adjust the window height depending on the y-Pos and height of the
+  // last gadget
+  m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
+
+  // Setting window title
+  SetTitle("Open the files to diff");
+
+  // Setting the window flags
+  setFlags(WFLG_CLOSEGADGET |     // Add a close gadget
+           WFLG_DRAGBAR |         // Add a drag gadget
+           WFLG_DEPTHGADGET);     // Add a depth gadget
+
+  // Setting the IDCMP messages we want to receive for this window
+  setIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
+           IDCMP_VANILLAKEY |     // Get msg when RAW key pressed
+           IDCMP_CLOSEWINDOW |    // Get msg when close gadget clicked
+           IDCMP_REFRESHWINDOW |  // Get msg when must refresh; needed by GadTools
+           IDCMP_GADGETUP);       // Get msg when gadgets state changed
 }
 
 
 FilesWindow::~FilesWindow()
 {
-  Close();
-
   if(m_pGadtoolsContext != NULL)
   {
     FreeGadgets(m_pGadtoolsContext);
@@ -62,7 +245,6 @@ FilesWindow::~FilesWindow()
   m_pGadBtnDiff = NULL;
   m_pGadBtnSwap = NULL;
   m_pGadBtnCancel = NULL;
-
 }
 
 
@@ -279,204 +461,6 @@ void FilesWindow::handleVanillaKey(UWORD code)
       break;
 
   }
-}
-
-
-void FilesWindow::initialize()
-{
-  if(m_pScreen == NULL)
-  {
-    return;
-  }
-
-  //
-  // Calculate some basic values
-  //
-  m_Width = (WORD)m_pScreen->IntuiScreen()->Width / 2;
-  m_FontHeight = m_pScreen->FontHeight();
-  WORD barHeight = m_pScreen->IntuiScreen()->WBorTop + m_FontHeight + 2;
-
-  WORD hSpace = 10;
-  WORD vSpace = 10;
-
-  WORD top = barHeight + vSpace;
-  WORD left = hSpace;
-  WORD right = m_Width - hSpace;
-
-  WORD btnsWidth = 60;
-  WORD btnsHeight = m_FontHeight + 6;
-
-  WORD btnSelectWidth = TextLength(&m_pScreen->IntuiScreen()->RastPort, "...", 3) + 8;
-  WORD btnSelectLeft = right - btnSelectWidth;
-
-  WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
-
-  //
-  // Setting up the gadgets
-  //
-
-  // Create a place for GadTools context data
-  struct Gadget* pFakeGad;
-  pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
-  if(pFakeGad == NULL)
-  {
-    return;
-  }
-
-  // Setting the first gadget of the gadet list for the window
-  setFirstGadget(m_pGadtoolsContext);
-
-  // Declare the basic gadget structure
-  struct NewGadget newGadget;
-
-  // Row 1  contains  a label
-  newGadget.ng_TextAttr   = m_pScreen->IntuiTextAttr();
-  newGadget.ng_VisualInfo = m_pScreen->GadtoolsVisualInfo();
-  newGadget.ng_LeftEdge   = left + 2;
-  newGadget.ng_TopEdge    = top;
-  newGadget.ng_Width      = stringGadWidth;
-  newGadget.ng_Height     = m_FontHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "_Left file";
-  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
-
-  struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
-                                             pFakeGad,
-                                             &newGadget,
-                                             GT_Underscore, '_',
-                                             TAG_DONE);
-
-  // Row 2 contains a string gadget and selection button for the
-  // filename of the left file
-
-  // Creating the string gadget
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += m_FontHeight + 2;
-  newGadget.ng_Width      = stringGadWidth;
-  newGadget.ng_Height     = btnsHeight;
-  newGadget.ng_GadgetText = NULL;
-  newGadget.ng_GadgetID   = GID_LeftFileString;
-  newGadget.ng_Flags      = 0;
-
-  m_pGadStrLeftFile = CreateGadget(STRING_KIND,
-                                   pLabelGadget,
-                                   &newGadget,
-                                   GTST_MaxChars, 200, // TODO remove constant
-                                   TAG_DONE);
-
-  // Creating the Select button
-  newGadget.ng_LeftEdge   = btnSelectLeft;
-  newGadget.ng_Width      = btnSelectWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "...";
-  newGadget.ng_GadgetID   = GID_LeftFileButton;
-  newGadget.ng_Flags      = 0;
-
-  m_pGadBtnSelectLeft = CreateGadget(BUTTON_KIND,
-                                     m_pGadStrLeftFile,
-                                     &newGadget,
-                                     TAG_DONE);
-
-  // Row 3  contains a label
-  newGadget.ng_LeftEdge   = left + 2;
-  newGadget.ng_TopEdge    += btnsHeight + vSpace;
-  newGadget.ng_Width      = stringGadWidth;
-  newGadget.ng_Height     = m_FontHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "_Right file";
-  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
-
-  pLabelGadget = CreateGadget(TEXT_KIND,
-                              m_pGadBtnSelectLeft,
-                              &newGadget,
-                              GT_Underscore, '_',
-                              TAG_DONE);
-
-  // Row 4 contains a string gadget and selection button for the
-  // filename of the right file
-
-  // Creating the string gadget
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += m_FontHeight + 2;
-  newGadget.ng_Width      = stringGadWidth;
-  newGadget.ng_Height     = btnsHeight;
-  newGadget.ng_GadgetText = NULL;
-  newGadget.ng_GadgetID   = GID_RightFileString;
-  newGadget.ng_Flags      = 0;
-
-  m_pGadStrRightFile = CreateGadget(STRING_KIND,
-                                    pLabelGadget,
-                                    &newGadget,
-                                    GTST_MaxChars, 200, // TODO remove constant
-                                    TAG_DONE);
-
-  // Creating the Select button
-  newGadget.ng_LeftEdge   = btnSelectLeft;
-  newGadget.ng_Width      = btnSelectWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "...";
-  newGadget.ng_GadgetID   = GID_RightFileButton;
-  newGadget.ng_Flags      = 0;
-
-  m_pGadBtnSelectRight = CreateGadget(BUTTON_KIND,
-                                      m_pGadStrRightFile,
-                                      &newGadget,
-                                      TAG_DONE);
-
-  // Row 5 conatins the buttons Diff, Swap and Cancel
-
-  // Creating the Diff button
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
-  newGadget.ng_Width      = btnsWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "_Diff";
-  newGadget.ng_GadgetID   = GID_DiffButton;
-
-  m_pGadBtnDiff = CreateGadget(BUTTON_KIND,
-                               m_pGadBtnSelectRight,
-                               &newGadget,
-                               GT_Underscore, '_',
-                               TAG_DONE);
-
-  // Creating the Swap button
-  newGadget.ng_LeftEdge   = (right - left - btnsWidth) / 2;
-  newGadget.ng_GadgetText = (UBYTE*) "_Swap";
-  newGadget.ng_GadgetID   = GID_SwapButton;
-
-  m_pGadBtnSwap = CreateGadget(BUTTON_KIND,
-                               m_pGadBtnDiff,
-                               &newGadget,
-                               GT_Underscore, '_',
-                               TAG_DONE);
-
-
-  // Creating the Cancel button
-  newGadget.ng_LeftEdge   = right - btnsWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
-  newGadget.ng_GadgetID   = GID_CancelButton;
-
-  m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
-                                 m_pGadBtnSwap,
-                                 &newGadget,
-                                 GT_Underscore, '_',
-                                 TAG_DONE);
-
-  // Adjust the window height depending on the y-Pos and height of the
-  // last gadget
-  m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
-
-  // Setting window title
-  SetTitle("Open the files to diff");
-
-  // Setting the window flags
-  setFlags(WFLG_CLOSEGADGET |     // Add a close gadget
-           WFLG_DRAGBAR |         // Add a drag gadget
-           WFLG_DEPTHGADGET);     // Add a depth gadget
-
-  // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
-           IDCMP_VANILLAKEY |     // Get msg when RAW key pressed
-           IDCMP_CLOSEWINDOW |    // Get msg when close gadget clicked
-           IDCMP_REFRESHWINDOW |  // Get msg when must refresh; needed by GadTools
-           IDCMP_GADGETUP);       // Get msg when gadgets state changed
-
-  m_bInitialized = true;
 }
 
 

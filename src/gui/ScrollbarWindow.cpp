@@ -30,93 +30,6 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase*& pScreen,
     m_pUpArrowButton(NULL),
     m_pDownArrowButton(NULL)
 {
-
-}
-
-ScrollbarWindow::~ScrollbarWindow()
-{
-  Close();
-
-  if(m_pLeftArrowButton != NULL)
-  {
-    DisposeObject(m_pLeftArrowButton);
-    m_pLeftArrowButton = NULL;
-  }
-
-  if(m_pLeftArrowImage != NULL)
-  {
-    DisposeObject(m_pLeftArrowImage);
-    m_pLeftArrowImage = NULL;
-  }
-
-  if(m_pRightArrowButton != NULL)
-  {
-    DisposeObject(m_pRightArrowButton);
-    m_pRightArrowButton = NULL;
-  }
-
-  if(m_pRightArrowImage != NULL)
-  {
-    DisposeObject(m_pRightArrowImage);
-    m_pRightArrowImage = NULL;
-  }
-
-  if(m_pXPropGadget != NULL)
-  {
-    DisposeObject(m_pXPropGadget);
-    m_pXPropGadget = NULL;
-  }
-
-  if(m_pDownArrowButton != NULL)
-  {
-    DisposeObject(m_pDownArrowButton);
-    m_pDownArrowButton = NULL;
-  }
-
-  if(m_pDownArrowImage != NULL)
-  {
-    DisposeObject(m_pDownArrowImage);
-    m_pDownArrowImage = NULL;
-  }
-
-  if(m_pUpArrowButton != NULL)
-  {
-    DisposeObject(m_pUpArrowButton);
-    m_pUpArrowButton = NULL;
-  }
-
-  if(m_pUpArrowImage != NULL)
-  {
-    DisposeObject(m_pUpArrowImage);
-    m_pUpArrowImage = NULL;
-  }
-
-  if(m_pYPropGadget != NULL)
-  {
-    DisposeObject(m_pYPropGadget);
-    m_pYPropGadget = NULL;
-  }
-}
-
-
-
-bool ScrollbarWindow::Open(InitialPosition initialPos)
-{
-  if(!WindowBase::Open(initialPos))
-  {
-    return false;
-  }
-
-  return true;
-}
-
-void ScrollbarWindow::initialize()
-{
-  if(m_pScreen == NULL)
-  {
-    return;
-  }
-
   //
   // Setting up scroll bars and gadgets for the window. They will be
   // attached to the window at opening time
@@ -265,10 +178,83 @@ void ScrollbarWindow::initialize()
 
   // Setting the first gadget of the gadet list for the window
   setFirstGadget(m_pDownArrowButton);
-
-  m_bInitialized = true;
-
 }
+
+ScrollbarWindow::~ScrollbarWindow()
+{
+  if(m_pLeftArrowButton != NULL)
+  {
+    DisposeObject(m_pLeftArrowButton);
+    m_pLeftArrowButton = NULL;
+  }
+
+  if(m_pLeftArrowImage != NULL)
+  {
+    DisposeObject(m_pLeftArrowImage);
+    m_pLeftArrowImage = NULL;
+  }
+
+  if(m_pRightArrowButton != NULL)
+  {
+    DisposeObject(m_pRightArrowButton);
+    m_pRightArrowButton = NULL;
+  }
+
+  if(m_pRightArrowImage != NULL)
+  {
+    DisposeObject(m_pRightArrowImage);
+    m_pRightArrowImage = NULL;
+  }
+
+  if(m_pXPropGadget != NULL)
+  {
+    DisposeObject(m_pXPropGadget);
+    m_pXPropGadget = NULL;
+  }
+
+  if(m_pDownArrowButton != NULL)
+  {
+    DisposeObject(m_pDownArrowButton);
+    m_pDownArrowButton = NULL;
+  }
+
+  if(m_pDownArrowImage != NULL)
+  {
+    DisposeObject(m_pDownArrowImage);
+    m_pDownArrowImage = NULL;
+  }
+
+  if(m_pUpArrowButton != NULL)
+  {
+    DisposeObject(m_pUpArrowButton);
+    m_pUpArrowButton = NULL;
+  }
+
+  if(m_pUpArrowImage != NULL)
+  {
+    DisposeObject(m_pUpArrowImage);
+    m_pUpArrowImage = NULL;
+  }
+
+  if(m_pYPropGadget != NULL)
+  {
+    DisposeObject(m_pYPropGadget);
+    m_pYPropGadget = NULL;
+  }
+}
+
+
+
+bool ScrollbarWindow::Open(InitialPosition initialPos)
+{
+  if(!WindowBase::Open(initialPos))
+  {
+    return false;
+  }
+
+  return true;
+}
+
 
 void ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddress)
 {

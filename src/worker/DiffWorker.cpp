@@ -132,7 +132,7 @@ bool DiffWorker::Diff()
   //
   // Pre-processing the left file
   //
-  setProgressDescription("Pre-processing left file..");
+  setProgressDescription("Loading left file");
 
   // If there was an error return to FilesWindow
   if(m_LeftSrcFile.PreProcess(m_LeftSrcFilePath.C_str()) == false)
@@ -153,7 +153,7 @@ bool DiffWorker::Diff()
   //
   // Pre-processing the right file
   //
-  setProgressDescription("Pre-processing right file..");
+  setProgressDescription("Loading right file");
 
   // If there was an error return to FilesWindow
   if(m_RightSrcFile.PreProcess(m_RightSrcFilePath.C_str()) == false)
@@ -187,7 +187,7 @@ bool DiffWorker::Diff()
   //
   // Compare the files
   //
-  setProgressDescription("Comparing the files..");
+  setProgressDescription("Comparing the files");
   bool diffOk = m_DiffEngine.Diff();
   long totalTime = m_StopWatch.Pick();
 

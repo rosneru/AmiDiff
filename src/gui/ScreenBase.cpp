@@ -103,34 +103,10 @@ bool ScreenBase::IsHiresMode() const
     return false;
   }
 
-  LONG modeId = GetVPModeID(&(m_pIntuiScreen->ViewPort));
-  if(modeId == INVALID_ID)
+  if(m_pIntuiScreen->Flags & SCREENHIRES)
   {
-    return false;
+    return true;
   }
 
-  DisplayInfoHandle pHandle = FindDisplayInfo(modeId);
-  if(pHandle == NULL)
-  {
-    return false;
-  }
-
-  MonitorInfo monitorInfo;
-  ULONG result = GetDisplayInfoData(pHandle, 
-                                    &monitorInfo, 
-                                    sizeof(monitorInfo),
-                                    DTAG_MNTR,
-                                    modeId);
-
-  if(result == 0)
-  {
-    return false;
-  }
-
-  if(monitorInfo.Mspc->ratioh != monitorInfo.Mspc->ratiov)
-  {
-    return false;
-  }
-
-  return true;
+  return false;
 }

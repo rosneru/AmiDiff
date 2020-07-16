@@ -32,7 +32,9 @@
 class Application
 {
 public:
-  Application(ADiffViewArgs& args);
+  Application(ScreenBase* pScreenBase, 
+              ADiffViewArgs& args, 
+              ADiffViewSettings& settings);
   virtual ~Application();
 
   bool Run();
@@ -43,7 +45,7 @@ private:
   SimpleString m_LeftFilePath;
   SimpleString m_RightFilePath;
 
-  ADiffViewSettings m_Settings;
+  ADiffViewSettings& m_Settings;
 
   struct MsgPort* m_pMsgPortIDCMP;
   struct MsgPort* m_pMsgPortProgress;
@@ -64,11 +66,7 @@ private:
    */
 
   DiffWorker m_DiffWorker;
-  ClonedWorkbenchScreen m_ClonedWorkbenchScreen;
-  JoinedPublicScreen m_JoinedPublicScreen;
-  JoinedPublicScreen m_WorkbenchPublicScreen;
-  ScreenBase* m_pDiffWindowScreen;
-  ScreenBase* m_pFilesWindowScreen;
+  ScreenBase* m_pScreenBase;
   AMenu m_FilesWindowMenu;
   AMenu m_DiffWindowMenu;
   DiffWindow m_DiffWindow;

@@ -46,11 +46,16 @@
 #include <clib/exec_protos.h>
 #include <workbench/startup.h>
 
+#include "ADiffViewArgs.h"
+#include "ADiffViewSettings.h"
+#include "ADiffView_rev.h"
 #include "Application.h"
+#include "ClonedWorkbenchScreen.h"
+#include "JoinedPublicScreen.h"
 #include "MessageBox.h"
+#include "ScreenBase.h"
 #include "SimpleString.h"
 
-#include "ADiffViewArgs.h"
 
 extern struct IntuitionBase* IntuitionBase;
 
@@ -71,18 +76,46 @@ int main(int argc, char **argv)
   }
 
   // Parse the command line or Workbench start arguments
-  ADiffViewArgs arguments(argc, argv);
+  ADiffViewArgs args(argc, argv);
+
+  // Create a settings instance
+  ADiffViewSettings settings;
+
+  // Select on which kind of screen the DiffWindow will appear depending
+  // on arguments
+  ScreenBase* pScreenBase = NULL;
+  if(args.PubScreenName().Length() > 0)
+  {
+    // Use a given public screen
+    pScreenBase = new JoinedPublicScreen(settings, args.PubScreenName().C_str());
+  }
+  else
+  {
+    // Clone the Workbench screen but use 8 colors
+    pScreenBase = new ClonedWorkbenchScreen(settings, VERS, 3);
+  }
+
+  if((pScreenBase == NULL) || (pScreenBase->Open() == false))
+  {
+    request.Show("ADiffView failed to open the screen.", "Ok");
+    return 0;
+  }
+
+  // Create (and open) the screen depending on args
+  ClonedWorkbenchScreen m_ClonedWorkbenchScreen(settings, VERS, 3);
+  JoinedPublicScreen m_JoinedPublicScreen(settings, args.PubScreenName().C_str());
+  JoinedPublicScreen m_WorkbenchPublicScreen(settings, "Workbench");
 
   // Create and run the application
-  Application* app = new Application(arguments);
-  bool bOk = app->Run();
+  Application* pApplication = new Application(pScreenBase, args, settings);
+  bool bOk = pApplication->Run();
   if(!bOk)
   {
     // On error display a message
-    request.Show(app->ErrorMsg(), "Ok");
+    request.Show(pApplication->ErrorMsg(), "Ok");
   }
 
-  delete app;
+  delete pApplication;
   return 0;
 }
 

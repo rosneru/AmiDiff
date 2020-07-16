@@ -231,11 +231,6 @@ private:
   void handleVanillaKey(UWORD code);
 
 
-  /**
-   * Initializes some window specific features. Gadgets, etc.
-   */
-  void initialize();
-
   void createGadgets();
 
   /**

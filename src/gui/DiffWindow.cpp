@@ -60,6 +60,28 @@ DiffWindow::DiffWindow(ScreenBase*& pScreen,
     m_DeletedText(" Deleted "),
     m_StatusBarText("No diff performed.")
 {
+  // If parent window already defined gadgets, we store the last of
+  // these gadgeds and the count of defined gadgets. They are needed
+  // for dynamically re-creating this window's gadgets at window
+  // resizing etc.
+  m_pLastParentGadget = getLastGadget();
+
+  // Create this window's gadgets
+  createGadgets();
+
+  // Set the default title
+  SetTitle("DiffWindow");
+
+  // Setting the window flags
+  setFlags(WFLG_CLOSEGADGET |     // Add a close gadget
+           WFLG_DEPTHGADGET |     // Add a depth gadget
+           WFLG_SIZEGADGET |      // Add a size gadget
+           WFLG_GIMMEZEROZERO);   // Different layers for border and content
+
+  // Setting the IDCMP messages we want to receive for this window
+  setIDCMP(IDCMP_MENUPICK |       // Inform about menu selection
+           IDCMP_CLOSEWINDOW |    // Inform about click on close gadget
+           IDCMP_NEWSIZE);        // Inform about resizing
 }
 
 
@@ -567,39 +589,6 @@ void DiffWindow::NavigateToPrevDiff()
 
   // Set scrollbar to new y position
   setYScrollTop(m_Y);
-}
-
-
-void DiffWindow::initialize()
-{
-  // Call parent method to ensure that the scroll gadgets in the window
-  // borders are initialized first.
-  ScrollbarWindow::initialize();
-
-  // If parent window already defined gadgets, we store the last of
-  // these gadgeds and the count of defined gadgets. They are needed
-  // for dynamically re-creating this window's gadgets at window
-  // resizing etc.
-  m_pLastParentGadget = getLastGadget();
-
-  // Create this window's gadgets
-  createGadgets();
-
-  // Set the default title
-  SetTitle("DiffWindow");
-
-  // Setting the window flags
-  setFlags(WFLG_CLOSEGADGET |     // Add a close gadget
-           WFLG_DEPTHGADGET |     // Add a depth gadget
-           WFLG_SIZEGADGET |      // Add a size gadget
-           WFLG_GIMMEZEROZERO);   // Different layers for border and content
-
-  // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Inform about menu selection
-           IDCMP_CLOSEWINDOW |    // Inform about click on close gadget
-           IDCMP_NEWSIZE);        // Inform about resizing
-
-  m_bInitialized = true;
 }
 
 

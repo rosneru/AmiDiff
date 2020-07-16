@@ -17,7 +17,7 @@
 class ProgressWindow : public WindowBase
 {
 public:
-  ProgressWindow(ScreenBase*& pScreen, 
+  ProgressWindow(ScreenBase*& pScreeBase, 
                  struct MsgPort*& pIdcmpMsgPort,
                  bool& bCancelRequested,
                  AMenu* pMenu);
@@ -60,16 +60,14 @@ private:
    */
   enum GadgetId
   {
-    GID_TxtDescription,
-    GID_BtnCancel,
+    GID_BtnStop,
   };
-
-  WORD m_FontHeight;  ///> Height of current text font
 
   bool& m_bCancelRequested;
 
+  struct NewGadget m_NewGadget;
   struct Gadget* m_pGadtoolsContext;
-  struct Gadget* m_pGadBtnCancel;
+  struct Gadget* m_pGadBtnStop;
 
   Rect m_OuterRect;
   Rect m_ProgressRect;
@@ -81,10 +79,6 @@ private:
 
   SimpleString m_ProgressDescr;
 
-  /**
-   * Initializes some window contents, Gadgets, etc.
-   */
-  void initialize();
 };
 
 
