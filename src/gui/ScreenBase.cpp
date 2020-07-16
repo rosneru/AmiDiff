@@ -95,3 +95,42 @@ void ScreenBase::DecreaseNumOpenWindows()
     m_NumWindowsOpen--;
   }
 }
+
+bool ScreenBase::IsHiresMode() const
+{
+  if(m_pScreen == NULL)
+  {
+    return false;
+  }
+
+  LONG modeId = GetVPModeID(&(m_pScreen->ViewPort));
+  if(modeId == INVALID_ID)
+  {
+    return false;
+  }
+
+  DisplayInfoHandle pHandle = FindDisplayInfo(modeId);
+  if(pHandle == NULL)
+  {
+    return false;
+  }
+
+  MonitorInfo monitorInfo;
+  ULONG result = GetDisplayInfoData(pHandle, 
+                                    &monitorInfo, 
+                                    sizeof(monitorInfo),
+                                    DTAG_MNTR,
+                                    modeId);
+
+  if(result == 0)
+  {
+    return false;
+  }
+
+  if(monitorInfo.Mspc->ratioh != monitorInfo.Mspc->ratiov)
+  {
+    return false;
+  }
+
+  return true;
+}

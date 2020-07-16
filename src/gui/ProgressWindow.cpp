@@ -91,8 +91,8 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   RectFill(m_pWindow->RPort, 
            m_OuterRect.Left(),
            m_OuterRect.Top(),
-           m_OuterRect.Right(),
-           m_OuterRect.Bottom());
+           m_OuterRect.Right() - 1,
+           m_OuterRect.Bottom() - 1);
 
   DrawBevelBox(m_pWindow->RPort,
                m_OuterRect.Left(),
@@ -239,8 +239,14 @@ void ProgressWindow::initialize()
 
   struct Screen* pScreen = m_pScreen->IntuiScreen();
 
-  size_t xOffset = 5;
-  size_t yOffset = 5;
+  size_t xOffset = 6;
+  size_t yOffset = 6;
+  if(m_pScreen->IsHiresMode())
+  {
+    // On hires reduce yOffset as the pixels there are none-square. 
+    // They are double as high as wide and this is corrected here.
+    yOffset /= 2;
+  }
 
   m_OuterRect.Set(pScreen->WBorLeft + xOffset,
                   pScreen->WBorTop + pScreen->BarHeight + yOffset,

@@ -71,6 +71,11 @@ public:
   void IncreaseNumOpenWindows();
   void DecreaseNumOpenWindows();
 
+  /**
+   * Returns true if the screen is in a Hires mode which means it has
+   * non-square pixels.
+   */
+  bool IsHiresMode() const;
 
 protected:
   struct Screen* m_pScreen;
