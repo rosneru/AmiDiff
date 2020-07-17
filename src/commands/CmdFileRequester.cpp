@@ -126,17 +126,17 @@ void CmdFileRequester::selectFile(struct Window* pActiveWindow)
   size_t bufLen = strlen(pFileRequest->fr_Drawer);
   bufLen += strlen(pFileRequest->fr_File);
   bufLen += 2; // One for delimiter (AddPart) and one for final \0.
-  STRPTR pFullPathBuf = (STRPTR) AllocVec(bufLen, MEMF_PUBLIC);
+  STRPTR pFullPathBuf = (STRPTR) AllocVec(bufLen, MEMF_PUBLIC|MEMF_CLEAR);
   if(pFullPathBuf == NULL)
   {
     FreeAslRequest(pFileRequest);
     return;
   }
-  
+
   strcpy(pFullPathBuf, pFileRequest->fr_Drawer);
 
   // Calling a dos.library function to combine path and file name
-  if(AddPart(pFullPathBuf, pFileRequest->fr_File, bufLen) == TRUE)
+  if(AddPart(pFullPathBuf, pFileRequest->fr_File, bufLen) == DOSTRUE)
   {
     // Path and file name are combined; this is the user selected path
     m_SelectedFilePath = pFullPathBuf;
