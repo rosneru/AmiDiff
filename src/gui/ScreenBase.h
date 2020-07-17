@@ -36,10 +36,6 @@ public:
 
   bool IsOpen() const;
 
-  UWORD FontHeight() const;
-  WORD BarHeight() const;
-
-
   /**
    * Returns the intuition screen structure or NULL if screen is not open
    */

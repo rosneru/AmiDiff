@@ -174,7 +174,7 @@ bool DiffWindow::Open(InitialPosition initialPos)
   // in the initialize() method which is called from WindowBase::Open()
   // shortly before opening, so the Open() call is done afterwards.
   //
-  m_IndentY = 2 * m_pScreenBase->FontHeight();
+  m_IndentY = 2 *  m_pScreenBase->IntuiDrawInfo()->dri_Font->tf_YSize;
   m_TextArea1Left = m_IndentX;
   m_TextAreasTop = m_IndentY;
 
@@ -625,7 +625,7 @@ void DiffWindow::createGadgets()
     }
   }
 
-  WORD m_FontHeight = m_pScreenBase->FontHeight();
+  WORD m_FontHeight =  m_pScreenBase->IntuiDrawInfo()->dri_Font->tf_YSize;
 
   struct NewGadget newGadget;
   newGadget.ng_TextAttr   = m_pScreenBase->IntuiTextAttr();

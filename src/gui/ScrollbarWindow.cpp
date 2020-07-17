@@ -18,7 +18,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
     m_InnerWindowRight(0),
     m_InnerWindowBottom(0),
     m_SizeImageWidth(18),
-    m_SizeImageHeight(10),
+    m_SizeImgHeight(10),
     m_pLeftArrowImage(NULL),
     m_pRightArrowImage(NULL),
     m_pUpArrowImage(NULL),
@@ -35,11 +35,11 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
   // attached to the window at opening time
   //
   ULONG imageWidth = 0;   // to successfully store the other images widths
-  ULONG imageHeight = 0;  // to successfully store the other images heights
+  ULONG imgHeight = 0;  // to successfully store the other images heights
 
   // Getting the width and height of the current system size gadget
   struct Image* pSizeImage = createImageObj(
-    SIZEIMAGE, m_SizeImageWidth, m_SizeImageHeight);
+    SIZEIMAGE, m_SizeImageWidth, m_SizeImgHeight);
 
   // the size image is only needed for getting its width and height so
   // it can be disposed right now
@@ -50,25 +50,25 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
   }
 
   // Creating the arrow down image and getting its width and height
-  m_pDownArrowImage = createImageObj(DOWNIMAGE, imageWidth, imageHeight);
+  m_pDownArrowImage = createImageObj(DOWNIMAGE, imageWidth, imgHeight);
 
   // Creating the arrow down gadget
   m_pDownArrowButton = (struct Gadget*) 
-                        NewObject(NULL, BUTTONGCLASS,
-                        GA_ID, GID_ArrowDown,
-                        GA_RelRight, -imageWidth+1,
-                        GA_RelBottom, -m_SizeImageHeight-imageHeight+1,
-                        GA_Width, imageWidth,
-                        GA_Height, imageHeight,
-                        GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
-                        GA_GZZGadget, TRUE,
-                        GA_RightBorder, TRUE,
-                        GA_Image, m_pDownArrowImage,
-                        ICA_TARGET, ICTARGET_IDCMP,
-                        TAG_DONE, NULL);
+    NewObject(NULL, BUTTONGCLASS,
+              GA_ID, GID_ArrowDown,
+              GA_RelRight, -imageWidth+1,
+              GA_RelBottom, -m_SizeImgHeight-imgHeight+1,
+              GA_Width, imageWidth,
+              GA_Height, imgHeight,
+              GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
+              GA_GZZGadget, TRUE,
+              GA_RightBorder, TRUE,
+              GA_Image, m_pDownArrowImage,
+              ICA_TARGET, ICTARGET_IDCMP,
+              TAG_DONE, NULL);
 
   // Creating the arrow up image and getting its width and height
-  m_pUpArrowImage = createImageObj(UPIMAGE, imageWidth, imageHeight);
+  m_pUpArrowImage = createImageObj(UPIMAGE, imageWidth, imgHeight);
 
   // Creating the arrow down gadget
   m_pUpArrowButton = (struct Gadget*) 
@@ -76,9 +76,9 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               GA_Previous, m_pDownArrowButton,
               GA_ID, GID_ArrowUp,
               GA_RelRight, -imageWidth+1,
-              GA_RelBottom, -m_SizeImageHeight-imageHeight-imageHeight+1,
+              GA_RelBottom, -m_SizeImgHeight-imgHeight-imgHeight+1,
               GA_Width, imageWidth,
-              GA_Height, imageHeight,
+              GA_Height, imgHeight,
               GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
@@ -87,14 +87,16 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               TAG_DONE, NULL);
 
   // Creating the vertical proportional gadget / slider
+  BYTE barHeight = m_pScreenBase->IntuiScreen()->BarHeight;
 	m_pYPropGadget = (struct Gadget*) 
     NewObject(NULL, PROPGCLASS,
               GA_Previous, m_pUpArrowButton,
               GA_ID, GID_PropY,
               GA_RelRight, -m_SizeImageWidth+4,
-              GA_Top, m_pScreenBase->BarHeight(),
+              GA_Top, barHeight + 2,
               GA_Width, m_SizeImageWidth-6,
-              GA_RelHeight, -m_SizeImageHeight-imageHeight-imageHeight-m_pScreenBase->BarHeight()-1,
+              GA_RelHeight, -m_SizeImgHeight - imgHeight - imgHeight 
+                            - barHeight + 1,
               GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
@@ -110,7 +112,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
   // Creating the arrow left image and getting its width and height
   m_pRightArrowImage = createImageObj(RIGHTIMAGE, 
                                       imageWidth, 
-                                      imageHeight);
+                                      imgHeight);
 
   // Creating the arrow right gadget
   m_pRightArrowButton = (struct Gadget*) 
@@ -118,9 +120,9 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               GA_Previous, m_pYPropGadget,
               GA_ID, GID_ArrowRight,
               GA_RelRight, -m_SizeImageWidth-imageWidth+1,
-              GA_RelBottom, -imageHeight+1,
+              GA_RelBottom, -imgHeight+1,
               GA_Width, imageWidth,
-              GA_Height, imageHeight,
+              GA_Height, imgHeight,
               GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
@@ -129,7 +131,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               TAG_DONE, NULL);
 
   // Creating the arrow left image and getting its width and height
-  m_pLeftArrowImage = createImageObj(LEFTIMAGE, imageWidth, imageHeight);
+  m_pLeftArrowImage = createImageObj(LEFTIMAGE, imageWidth, imgHeight);
 
   // Creating the arrow left gadget
   m_pLeftArrowButton = (struct Gadget*) 
@@ -137,9 +139,9 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               GA_Previous, m_pRightArrowButton,
               GA_ID, GID_ArrowLeft,
               GA_RelRight, -m_SizeImageWidth-imageWidth-imageWidth+1,
-              GA_RelBottom, -imageHeight+1,
+              GA_RelBottom, -imgHeight+1,
               GA_Width, imageWidth,
-              GA_Height, imageHeight,
+              GA_Height, imgHeight,
               GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
@@ -153,9 +155,9 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               GA_Previous, m_pLeftArrowButton,
               GA_ID, GID_PropX,
               GA_Left, m_pScreenBase->IntuiScreen()->WBorLeft,
-              GA_RelBottom, -m_SizeImageHeight+3,
+              GA_RelBottom, -m_SizeImgHeight+3,
               GA_RelWidth, -m_SizeImageWidth-imageWidth-imageWidth-m_pScreenBase->IntuiScreen()->WBorLeft-1,
-              GA_Height, m_SizeImageHeight-4,
+              GA_Height, m_SizeImgHeight-4,
               GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
@@ -374,8 +376,8 @@ void ScrollbarWindow::calcSizes()
     - m_SizeImageWidth;
 
   m_InnerWindowBottom = m_pWindow->Height
-    - m_pScreenBase->BarHeight()
-    - m_SizeImageHeight;
+    - m_pScreenBase->IntuiScreen()->BarHeight
+    - m_SizeImgHeight;
 }
 
 

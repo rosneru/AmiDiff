@@ -28,25 +28,6 @@ bool ScreenBase::IsOpen() const
   return (m_pIntuiScreen != NULL);
 }
 
-UWORD ScreenBase::FontHeight() const
-{
-  if(m_pDrawInfo == NULL)
-  {
-    return 0;
-  }
-
-  return m_pDrawInfo->dri_Font->tf_YSize;
-}
-
-WORD ScreenBase::BarHeight() const
-{
-  if(m_pIntuiScreen == NULL)
-  {
-    return 0;
-  }
-
-	return m_pIntuiScreen->WBorTop + FontHeight() + 2;
-}
 
 struct Screen* ScreenBase::IntuiScreen()
 {

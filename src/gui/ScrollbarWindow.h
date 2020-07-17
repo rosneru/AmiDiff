@@ -196,7 +196,7 @@ private:
   };
 
   ULONG m_SizeImageWidth;
-  ULONG m_SizeImageHeight;
+  ULONG m_SizeImgHeight;
 
   struct Image* m_pLeftArrowImage;    ///> h-scrollbar left button image
   struct Image* m_pRightArrowImage;   ///> h-scrollbar right button image

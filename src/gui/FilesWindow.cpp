@@ -44,9 +44,11 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
   //
   // Calculate some basic values
   //
-  m_Width = (WORD)m_pScreenBase->IntuiScreen()->Width / 2;
-  m_FontHeight = m_pScreenBase->FontHeight();
-  WORD barHeight = m_pScreenBase->IntuiScreen()->WBorTop + m_FontHeight + 2;
+  struct Screen* pIntuiScreen = m_pScreenBase->IntuiScreen();
+  UWORD fontHeight = m_pScreenBase->IntuiDrawInfo()->dri_Font->tf_YSize;
+  
+  m_Width = (WORD)pIntuiScreen->Width / 2;
+  WORD barHeight = pIntuiScreen->WBorTop + fontHeight + 2;
 
   WORD hSpace = 10;
   WORD vSpace = 10;
@@ -56,7 +58,7 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
   WORD right = m_Width - hSpace;
 
   WORD btnsWidth = 60;
-  WORD btnsHeight = m_FontHeight + 6;
+  WORD btnsHeight = fontHeight + 6;
 
   WORD btnSelectWidth = TextLength(&m_pScreenBase->IntuiScreen()->RastPort, "...", 3) + 8;
   WORD btnSelectLeft = right - btnSelectWidth;
@@ -87,7 +89,7 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadWidth;
-  newGadget.ng_Height     = m_FontHeight;
+  newGadget.ng_Height     = fontHeight;
   newGadget.ng_GadgetText = (UBYTE*) "_Left file";
   newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
@@ -102,7 +104,7 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
 
   // Creating the string gadget
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += m_FontHeight + 2;
+  newGadget.ng_TopEdge    += fontHeight + 2;
   newGadget.ng_Width      = stringGadWidth;
   newGadget.ng_Height     = btnsHeight;
   newGadget.ng_GadgetText = NULL;
@@ -131,7 +133,7 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    += btnsHeight + vSpace;
   newGadget.ng_Width      = stringGadWidth;
-  newGadget.ng_Height     = m_FontHeight;
+  newGadget.ng_Height     = fontHeight;
   newGadget.ng_GadgetText = (UBYTE*) "_Right file";
   newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
@@ -146,7 +148,7 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
 
   // Creating the string gadget
   newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += m_FontHeight + 2;
+  newGadget.ng_TopEdge    += fontHeight + 2;
   newGadget.ng_Width      = stringGadWidth;
   newGadget.ng_Height     = btnsHeight;
   newGadget.ng_GadgetText = NULL;
