@@ -174,7 +174,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
   SetTitle("ScrollbarWindow");
 
   // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_VANILLAKEY |     // Inform about normal key presses
+  addIDCMP(IDCMP_VANILLAKEY |     // Inform about normal key presses
            IDCMP_RAWKEY |         // Inform about RAW key presses
            IDCMP_IDCMPUPDATE);    // Inform about BOOPSI gadget updates
 

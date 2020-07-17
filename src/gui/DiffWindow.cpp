@@ -73,13 +73,13 @@ DiffWindow::DiffWindow(ScreenBase* pScreenBase,
   SetTitle("DiffWindow");
 
   // Setting the window flags
-  setFlags(WFLG_CLOSEGADGET |     // Add a close gadget
+  addFlags(WFLG_CLOSEGADGET |     // Add a close gadget
            WFLG_DEPTHGADGET |     // Add a depth gadget
            WFLG_SIZEGADGET |      // Add a size gadget
            WFLG_GIMMEZEROZERO);   // Different layers for border and content
 
   // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Inform about menu selection
+  addIDCMP(IDCMP_MENUPICK |       // Inform about menu selection
            IDCMP_CLOSEWINDOW |    // Inform about click on close gadget
            IDCMP_NEWSIZE);        // Inform about resizing
 }

@@ -344,13 +344,13 @@ AMenu* WindowBase::Menu()
 }
 
 
-void WindowBase::setFlags(ULONG flags)
+void WindowBase::addFlags(ULONG flags)
 {
   m_WindowFlags |= flags;
 }
 
 
-void WindowBase::setIDCMP(ULONG idcmp)
+void WindowBase::addIDCMP(ULONG idcmp)
 {
   m_WindowIdcmp |= idcmp;
 }

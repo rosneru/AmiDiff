@@ -90,12 +90,12 @@ ProgressWindow::ProgressWindow(ScreenBase*& pScreenBase,
   SetTitle("Loading left file");
 
   // Setting the window flags
-  setFlags(WFLG_DRAGBAR |         // Add a drag gadget
+  addFlags(WFLG_DRAGBAR |         // Add a drag gadget
            WFLG_DEPTHGADGET);     // Add a depth gadget
 
 
   // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
+  addIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
            IDCMP_VANILLAKEY |     // Get msg when RAW key pressed
            IDCMP_RAWKEY |         // Get msg when printable key pressed
            IDCMP_REFRESHWINDOW |  // Get msg when must refreshing

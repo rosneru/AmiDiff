@@ -246,13 +246,13 @@ void TextWindow::initialize()
   SetTitle("TextWindow");
 
   // Setting the window flags
-  setFlags(WFLG_CLOSEGADGET |     // Add a close gadget
+  addFlags(WFLG_CLOSEGADGET |     // Add a close gadget
            WFLG_DEPTHGADGET |     // Add a depth gadget
            WFLG_SIZEGADGET |      // Add a size gadget
            WFLG_GIMMEZEROZERO);   // Different layers for border and content
 
   // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
+  addIDCMP(IDCMP_MENUPICK |       // Inform us about menu selection
            IDCMP_CLOSEWINDOW |    // Inform us about click on close gadget
            IDCMP_NEWSIZE);        // Inform us about resizing
 

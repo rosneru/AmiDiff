@@ -219,12 +219,12 @@ FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
   SetTitle("Open the files to diff");
 
   // Setting the window flags
-  setFlags(WFLG_CLOSEGADGET |     // Add a close gadget
+  addFlags(WFLG_CLOSEGADGET |     // Add a close gadget
            WFLG_DRAGBAR |         // Add a drag gadget
            WFLG_DEPTHGADGET);     // Add a depth gadget
 
   // Setting the IDCMP messages we want to receive for this window
-  setIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
+  addIDCMP(IDCMP_MENUPICK |       // Get msg when menu selected
            IDCMP_VANILLAKEY |     // Get msg when RAW key pressed
            IDCMP_CLOSEWINDOW |    // Get msg when close gadget clicked
            IDCMP_REFRESHWINDOW |  // Get msg when must refresh; needed by GadTools

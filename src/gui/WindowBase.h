@@ -191,7 +191,7 @@ protected:
   /**
    * Creates a new window object
    *
-   * @param pAScreen
+   * @param pScreenBase
    * Screen on which the window will occur at opening time
    *
    * @param pIdcmpMsgPort
@@ -212,26 +212,27 @@ protected:
 
 
   /**
-   * Setting the window flags. Should be done before window opening.
+   * *Or*ing the given window flags to the existing ones.
+   *
+   * Must be done before window opening, no effect after
    *
    * Derived classes can and should set this inside their initialize()
    * implementation to set the needed window flags. Can be called
    * multiple times. the given flags are then added by performing an
    * OR-operation.
    */
-  virtual void setFlags(ULONG flags);
+  virtual void addFlags(ULONG flags);
 
 
   /**
-   * Setting the window IDCMP flags, oring them to the already existing
-   * ones.
+   * *Or*ing the given idcmp flags to the existing ones.
    *
-   * Should be done before window opening.
+   * Must be done before window opening, no effect after
    *
    * Derived classes can and should set this inside their initialize()
    * implementation to set the needed window idcmp messages.
    */
-  virtual void setIDCMP(ULONG idcmp);
+  virtual void addIDCMP(ULONG idcmp);
 
 
   /**
