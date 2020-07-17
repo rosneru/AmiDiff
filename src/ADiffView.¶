@@ -49,7 +49,7 @@ GCC Options (1)
 0
 Defines (End)
 1 0 0 1 0
-3 0 0 0 1 1 0
+3 0 0 1 0 1 0
 0 2 1 0 0
 0 0 0 0 1 1 0
 0 0 0 0
@@ -160,12 +160,12 @@ File
 "application/ADiffView_rev.h"
 "gui/ADiffViewPens.h"
 "application/ADiffViewArgs.h"
-"gui/ScreenBase.h"
 "diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 "commands/CmdOpenWindow.h"
 "gui/Rect.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -180,7 +180,6 @@ File
 "application/Application.h"
 "application/ADiffViewArgs.h"
 "application/ADiffViewSettings.h"
-"gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
 "worker/WorkerBase.h"
 "worker/WorkerStartupMsg.h"
@@ -190,6 +189,7 @@ File
 "commands/CmdOpenWindow.h"
 "application/ADiffView_rev.h"
 "gui/Rect.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -198,10 +198,10 @@ File
 1 "commands/CmdCloseWindow.cpp"
 "commands/CmdCloseWindow.cpp"
 "commands/CmdCloseWindow.h"
-"gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
 "commands/CmdOpenWindow.h"
 "commands/CommandBase.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdCloseWindow.o" "objects_debug/CmdCloseWindow.debug"
 ""
@@ -219,10 +219,10 @@ File
 "gui/ADiffViewPens.h"
 "diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
-"gui/ScreenBase.h"
 "commands/CmdOpenWindow.h"
 "commands/CommandBase.h"
 "gui/Rect.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
 ""
@@ -231,9 +231,9 @@ File
 1 "commands/CmdFileRequester.cpp"
 "commands/CmdFileRequester.cpp"
 "commands/CmdFileRequester.h"
-"gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
 "commands/CommandBase.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdFileRequester.o" "objects_debug/CmdFileRequester.debug"
 ""
@@ -247,10 +247,10 @@ File
 "diffengine/DiffLine.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
-"gui/ScreenBase.h"
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 "commands/CommandBase.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdNavNextDiff.o" "objects_debug/CmdNavNextDiff.debug"
 ""
@@ -264,10 +264,10 @@ File
 "diffengine/DiffLine.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
-"gui/ScreenBase.h"
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 "commands/CommandBase.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdNavPrevDiff.o" "objects_debug/CmdNavPrevDiff.debug"
 ""
@@ -277,8 +277,8 @@ File
 "commands/CmdOpenWindow.cpp"
 "commands/CmdOpenWindow.h"
 "gui/ADiffViewPens.h"
-"gui/ScreenBase.h"
 "commands/CommandBase.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdOpenWindow.o" "objects_debug/CmdOpenWindow.debug"
 ""
@@ -289,8 +289,8 @@ File
 "commands/CmdQuit.h"
 "commands/CommandBase.h"
 "gui/AMenu.h"
-"gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdQuit.o" "objects_debug/CmdQuit.debug"
 ""
@@ -300,8 +300,8 @@ File
 "commands/CmdRequester.cpp"
 "commands/CmdRequester.h"
 "gui/ADiffViewPens.h"
-"gui/ScreenBase.h"
 "commands/CommandBase.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdRequester.o" "objects_debug/CmdRequester.debug"
 ""
@@ -311,8 +311,8 @@ File
 "commands/CommandBase.cpp"
 "commands/CommandBase.h"
 "gui/AMenu.h"
-"gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CommandBase.o" "objects_debug/CommandBase.debug"
 ""
@@ -389,20 +389,10 @@ File
 1 "gui/AMenu.cpp"
 "gui/AMenu.cpp"
 "gui/AMenu.h"
-"gui/ScreenBase.h"
 "gui/ADiffViewPens.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/AMenu.o" "objects_debug/AMenu.debug"
-""
-1 1
-File
-1 "gui/ClonedWorkbenchScreen.cpp"
-"gui/ClonedWorkbenchScreen.cpp"
-"gui/ClonedWorkbenchScreen.h"
-"gui/ScreenBase.h"
-"gui/ADiffViewPens.h"
-Storm Shell Project (Dependencies)
-"objects_debug/ClonedWorkbenchScreen.o" "objects_debug/ClonedWorkbenchScreen.debug"
 ""
 1 1
 File
@@ -414,9 +404,9 @@ File
 "gui/ScrollbarWindow.h"
 "diffengine/DiffFileBase.h"
 "gui/ADiffViewPens.h"
-"gui/ScreenBase.h"
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
 ""
@@ -426,20 +416,39 @@ File
 "gui/FilesWindow.cpp"
 "gui/FilesWindow.h"
 "gui/ADiffViewPens.h"
-"gui/ScreenBase.h"
 "gui/AMenu.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/FilesWindow.o" "objects_debug/FilesWindow.debug"
 ""
 1 1
 File
-1 "gui/JoinedPublicScreen.cpp"
-"gui/JoinedPublicScreen.cpp"
-"gui/JoinedPublicScreen.h"
-"gui/ScreenBase.h"
+1 "gui/OpenClonedWorkbenchScreen.cpp"
+"gui/OpenClonedWorkbenchScreen.cpp"
+"gui/OpenClonedWorkbenchScreen.h"
+"gui/OpenScreenBase.h"
 "gui/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
-"objects_debug/JoinedPublicScreen.o" "objects_debug/JoinedPublicScreen.debug"
+"objects_debug/OpenClonedWorkbenchScreen.o" "objects_debug/OpenClonedWorkbenchScreen.debug"
+""
+1 1
+File
+1 "gui/OpenJoinedPublicScreen.cpp"
+"gui/OpenJoinedPublicScreen.cpp"
+"gui/OpenJoinedPublicScreen.h"
+"gui/OpenScreenBase.h"
+"gui/ADiffViewPens.h"
+Storm Shell Project (Dependencies)
+"objects_debug/OpenJoinedPublicScreen.o" "objects_debug/OpenJoinedPublicScreen.debug"
+""
+1 1
+File
+1 "gui/OpenScreenBase.cpp"
+"gui/OpenScreenBase.cpp"
+"gui/OpenScreenBase.h"
+"gui/ADiffViewPens.h"
+Storm Shell Project (Dependencies)
+"objects_debug/OpenScreenBase.o" "objects_debug/OpenScreenBase.debug"
 ""
 1 1
 File
@@ -448,26 +457,19 @@ File
 "gui/ProgressWindow.h"
 "gui/WindowBase.h"
 "gui/ADiffViewPens.h"
-"gui/ScreenBase.h"
 "gui/AMenu.h"
 "gui/Rect.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ProgressWindow.o" "objects_debug/ProgressWindow.debug"
 ""
 1 1
 File
 1 "gui/Rect.cpp"
+"gui/Rect.cpp"
+"gui/Rect.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Rect.o" "objects_debug/Rect.debug"
-""
-1 1
-File
-1 "gui/ScreenBase.cpp"
-"gui/ScreenBase.cpp"
-"gui/ScreenBase.h"
-"gui/ADiffViewPens.h"
-Storm Shell Project (Dependencies)
-"objects_debug/ScreenBase.o" "objects_debug/ScreenBase.debug"
 ""
 1 1
 File
@@ -476,8 +478,8 @@ File
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
 "gui/ADiffViewPens.h"
-"gui/ScreenBase.h"
 "gui/AMenu.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ScrollbarWindow.o" "objects_debug/ScrollbarWindow.debug"
 ""
@@ -488,7 +490,7 @@ File
 "gui/WindowBase.h"
 "gui/ADiffViewPens.h"
 "gui/AMenu.h"
-"gui/ScreenBase.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/WindowBase.o" "objects_debug/WindowBase.debug"
 ""
@@ -541,10 +543,10 @@ File
 "gui/ADiffViewPens.h"
 "diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
-"gui/ScreenBase.h"
 "commands/CmdOpenWindow.h"
 "commands/CommandBase.h"
 "gui/Rect.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
 ""
@@ -744,13 +746,6 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "gui/ClonedWorkbenchScreen.h"
-"gui/ClonedWorkbenchScreen.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
 2 "gui/DiffWindow.h"
 "gui/DiffWindow.h"
 Storm Shell Project (Dependencies)
@@ -766,8 +761,22 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "gui/JoinedPublicScreen.h"
-"gui/JoinedPublicScreen.h"
+2 "gui/OpenClonedWorkbenchScreen.h"
+"gui/OpenClonedWorkbenchScreen.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "gui/OpenJoinedPublicScreen.h"
+"gui/OpenJoinedPublicScreen.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "gui/OpenScreenBase.h"
+"gui/OpenScreenBase.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -781,13 +790,7 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "gui/Rect.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "gui/ScreenBase.h"
-"gui/ScreenBase.h"
+"gui/Rect.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

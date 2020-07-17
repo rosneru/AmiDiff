@@ -49,11 +49,11 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
     pSizeImage = NULL;
   }
 
-  // Creating the arrow down image and getting its width and height
+  // Create the arrow down image and getting its width and height
   m_pDownArrowImage = createImageObj(DOWNIMAGE, imageWidth, imgHeight);
 
-  // Creating the arrow down gadget
-  m_pDownArrowButton = (struct Gadget*) 
+  // Create the arrow down gadget
+  m_pDownArrowButton = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
               GA_ID, GID_ArrowDown,
               GA_RelRight, -imageWidth+1,
@@ -67,11 +67,11 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               ICA_TARGET, ICTARGET_IDCMP,
               TAG_DONE, NULL);
 
-  // Creating the arrow up image and getting its width and height
+  // Create the arrow up image and getting its width and height
   m_pUpArrowImage = createImageObj(UPIMAGE, imageWidth, imgHeight);
 
-  // Creating the arrow down gadget
-  m_pUpArrowButton = (struct Gadget*) 
+  // Create the arrow down gadget
+  m_pUpArrowButton = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
               GA_Previous, m_pDownArrowButton,
               GA_ID, GID_ArrowUp,
@@ -86,17 +86,20 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               ICA_TARGET, ICTARGET_IDCMP,
               TAG_DONE, NULL);
 
-  // Creating the vertical proportional gadget / slider
+  // Create the vertical proportional gadget / slider
   BYTE barHeight = m_pScreenBase->IntuiScreen()->BarHeight;
-	m_pYPropGadget = (struct Gadget*) 
+  BYTE wborTop = m_pScreenBase->IntuiScreen()->WBorTop;
+  BYTE wborBottom = m_pScreenBase->IntuiScreen()->WBorBottom;
+
+	m_pYPropGadget = (struct Gadget*)
     NewObject(NULL, PROPGCLASS,
               GA_Previous, m_pUpArrowButton,
               GA_ID, GID_PropY,
               GA_RelRight, -m_SizeImageWidth+4,
               GA_Top, barHeight + 2,
               GA_Width, m_SizeImageWidth-6,
-              GA_RelHeight, -m_SizeImgHeight - imgHeight - imgHeight 
-                            - barHeight + 1,
+              GA_RelHeight, - m_SizeImgHeight - imgHeight - imgHeight
+                            - barHeight - wborTop - wborBottom,
               GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
@@ -109,13 +112,13 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               ICA_TARGET, ICTARGET_IDCMP,
               TAG_DONE, NULL);
 
-  // Creating the arrow left image and getting its width and height
-  m_pRightArrowImage = createImageObj(RIGHTIMAGE, 
-                                      imageWidth, 
+  // Create the arrow left image and getting its width and height
+  m_pRightArrowImage = createImageObj(RIGHTIMAGE,
+                                      imageWidth,
                                       imgHeight);
 
-  // Creating the arrow right gadget
-  m_pRightArrowButton = (struct Gadget*) 
+  // Create the arrow right gadget
+  m_pRightArrowButton = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
               GA_Previous, m_pYPropGadget,
               GA_ID, GID_ArrowRight,
@@ -130,11 +133,11 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               ICA_TARGET, ICTARGET_IDCMP,
               TAG_DONE, NULL);
 
-  // Creating the arrow left image and getting its width and height
+  // Create the arrow left image and getting its width and height
   m_pLeftArrowImage = createImageObj(LEFTIMAGE, imageWidth, imgHeight);
 
-  // Creating the arrow left gadget
-  m_pLeftArrowButton = (struct Gadget*) 
+  // Create the arrow left gadget
+  m_pLeftArrowButton = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
               GA_Previous, m_pRightArrowButton,
               GA_ID, GID_ArrowLeft,
@@ -149,14 +152,18 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               ICA_TARGET, ICTARGET_IDCMP,
               TAG_DONE, NULL);
 
-  // Creating the horizontal proportional gadget / slider
-  m_pXPropGadget = (struct Gadget*) 
+  // Create the horizontal proportional gadget / slider
+  BYTE wborLeft = m_pScreenBase->IntuiScreen()->WBorLeft;
+  BYTE wborRight = m_pScreenBase->IntuiScreen()->WBorRight;
+
+  m_pXPropGadget = (struct Gadget*)
     NewObject(NULL, PROPGCLASS,
               GA_Previous, m_pLeftArrowButton,
               GA_ID, GID_PropX,
               GA_Left, m_pScreenBase->IntuiScreen()->WBorLeft,
               GA_RelBottom, -m_SizeImgHeight+3,
-              GA_RelWidth, -m_SizeImageWidth-imageWidth-imageWidth-m_pScreenBase->IntuiScreen()->WBorLeft-1,
+              GA_RelWidth, - m_SizeImageWidth - imageWidth - imageWidth
+                           - wborLeft - wborRight,
               GA_Height, m_SizeImgHeight-4,
               GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
