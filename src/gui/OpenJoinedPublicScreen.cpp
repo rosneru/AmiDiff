@@ -1,55 +1,41 @@
 #include <clib/intuition_protos.h>
 #include <clib/gadtools_protos.h>
 
-#include "JoinedPublicScreen.h"
+#include "OpenJoinedPublicScreen.h"
 
-JoinedPublicScreen::JoinedPublicScreen(const ADiffViewSettings& settings,
-                                       const char* pPubScreenName)
+OpenJoinedPublicScreen::OpenJoinedPublicScreen(const ADiffViewSettings& settings,
+                                               const char* pPubScreenName)
   : ScreenBase(settings),
     m_PubScreenName(pPubScreenName)
-{
-
-}
-
-JoinedPublicScreen::~JoinedPublicScreen()
-{
-  Close();
-}
-
-bool JoinedPublicScreen::Open()
 {
   m_pIntuiScreen = LockPubScreen(m_PubScreenName.C_str());
 
   if(m_pIntuiScreen == NULL)
   {
-    return false;
+    throw "Failed to lock public screen.";
   }
 
   m_pDrawInfo = GetScreenDrawInfo(m_pIntuiScreen);
   if(m_pDrawInfo == NULL)
   {
-    Close();
-    return false;
+    throw "Failed to get the screen draw info";
   }
 
   // Trying to initialize our four needed color pens
   if(m_Pens.Create() == false)
   {
-    return false;
+    throw "Failed to the create pens.";
   }
 
   // Get visual info from screen
   m_pVisualInfo = (APTR) GetVisualInfo(m_pIntuiScreen, TAG_DONE);
   if(m_pVisualInfo == NULL)
   {
-    Close();
-    return false;
+    throw "Failed to get the visual info.";
   }
-
-  return true;
 }
 
-void JoinedPublicScreen::Close()
+OpenJoinedPublicScreen::~OpenJoinedPublicScreen()
 {
   if(m_pVisualInfo != NULL)
   {

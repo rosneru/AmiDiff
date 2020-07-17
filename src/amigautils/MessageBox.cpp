@@ -36,6 +36,15 @@ void MessageBox::Show(struct Window* pWindow,
   Show(pWindow, message, buttonText);
 }
 
+
+void MessageBox::Show(const SimpleString& windowTitle,
+                      const SimpleString& message,
+                      const SimpleString& buttonText)
+{
+  Show(NULL, windowTitle, message, buttonText);
+}
+
+
 void MessageBox::Show(struct Window* pWindow,
                       const SimpleString& message,
                       const SimpleString& buttonText)

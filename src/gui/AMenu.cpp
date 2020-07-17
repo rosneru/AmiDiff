@@ -51,7 +51,7 @@ bool AMenu::Create(ScreenBase* pScreen)
     return true;
   }
 
-  if(pScreen == NULL || !pScreen->IsOpen())
+  if(pScreen == NULL)
   {
     return false;
   }

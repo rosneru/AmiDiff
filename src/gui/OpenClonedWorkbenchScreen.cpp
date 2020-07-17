@@ -1,23 +1,13 @@
 #include <clib/intuition_protos.h>
 #include <clib/gadtools_protos.h>
-#include "ClonedWorkbenchScreen.h"
+#include "OpenClonedWorkbenchScreen.h"
 
-ClonedWorkbenchScreen::ClonedWorkbenchScreen(const ADiffViewSettings& settings,
+OpenClonedWorkbenchScreen::OpenClonedWorkbenchScreen(const ADiffViewSettings& settings,
                                              const char* pTitle,
                                              short depth)
   : ScreenBase(settings),
     m_pTitle(pTitle),
     m_Depth(depth)
-{
-
-}
-
-ClonedWorkbenchScreen::~ClonedWorkbenchScreen()
-{
-  Close();
-}
-
-bool ClonedWorkbenchScreen::Open()
 {
   //
   // Opening a nearly-copy of the Workbench screen
@@ -26,45 +16,41 @@ bool ClonedWorkbenchScreen::Open()
   // of how many the Workbench screen might have.
   //
   m_pIntuiScreen = OpenScreenTags(NULL,
-                             SA_LikeWorkbench, TRUE,
-                             SA_Type, CUSTOMSCREEN,
-                             SA_Depth, m_Depth,
-                             SA_SharePens,TRUE,
-                             SA_Title, m_pTitle,
-                             SA_Colors32, m_Settings.GetColorArray(),
-                             TAG_DONE);
+                                  SA_LikeWorkbench, TRUE,
+                                  SA_Type, CUSTOMSCREEN,
+                                  SA_Depth, m_Depth,
+                                  SA_SharePens,TRUE,
+                                  SA_Title, m_pTitle,
+                                  SA_Colors32, m_Settings.GetColorArray(),
+                                  TAG_DONE);
 
   if(m_pIntuiScreen == NULL)
   {
-    return false;
+    throw "Failed to open the screen.";
   }
 
   m_pDrawInfo = GetScreenDrawInfo(m_pIntuiScreen);
   if(m_pDrawInfo == NULL)
   {
-    Close();
-    return false;
+    throw "Failed to get the screen draw info";
   }
 
   // Trying to initialize our four needed color pens
   if(m_Pens.Create() == false)
   {
-    return false;
+    throw "Failed to the create pens.";
   }
 
   // Get visual info from screen
   m_pVisualInfo = (APTR) GetVisualInfo(m_pIntuiScreen, TAG_DONE);
   if(m_pVisualInfo == NULL)
   {
-    Close();
-    return false;
+    throw "Failed to get the visual info.";
   }
-
-  return true;
 }
 
 
-void ClonedWorkbenchScreen::Close()
+OpenClonedWorkbenchScreen::~OpenClonedWorkbenchScreen()
 {
   if(m_pVisualInfo != NULL)
   {

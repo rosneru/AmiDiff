@@ -2,18 +2,15 @@
 #define JOINED_PUBLIC_SCREEN_H
 
 #include "SimpleString.h"
-#include "ScreenBase.h"
+#include "OpenScreenBase.h"
 
-class JoinedPublicScreen : public ScreenBase
+class OpenJoinedPublicScreen : public ScreenBase
 {
 public:
-  JoinedPublicScreen(const ADiffViewSettings& settings,
+  OpenJoinedPublicScreen(const ADiffViewSettings& settings,
                      const char* pPubScreenName);
 
-  virtual ~JoinedPublicScreen();
-
-  bool Open();
-  void Close();
+  virtual ~OpenJoinedPublicScreen();
 
 private:
   const SimpleString m_PubScreenName;

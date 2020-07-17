@@ -50,10 +50,10 @@
 #include "ADiffViewSettings.h"
 #include "ADiffView_rev.h"
 #include "Application.h"
-#include "ClonedWorkbenchScreen.h"
-#include "JoinedPublicScreen.h"
+#include "OpenClonedWorkbenchScreen.h"
+#include "OpenJoinedPublicScreen.h"
 #include "MessageBox.h"
-#include "ScreenBase.h"
+#include "OpenScreenBase.h"
 #include "SimpleString.h"
 
 
@@ -72,46 +72,64 @@ int main(int argc, char **argv)
   {
     request.Show("This program needs at least OS 3.0 / v39 to run.",
                  "Ok");
-    return 20;
+    return RETURN_FAIL;
   }
 
-  // Parse the command line or Workbench start arguments
-  ADiffViewArgs args(argc, argv);
-
-  // Create a settings instance
-  ADiffViewSettings settings;
-
-  // Create (and open) the screen depending on args
   ScreenBase* pScreenBase = NULL;
-  if(args.PubScreenName().Length() > 0)
+  Application* pApplication = NULL;
+
+  ULONG exitCode = RETURN_OK;
+
+  try
   {
-    // Use a given public screen
-    pScreenBase = new JoinedPublicScreen(settings, args.PubScreenName().C_str());
+    // Parse the command line or Workbench start arguments
+    ADiffViewArgs args(argc, argv);
+
+    // Create a settings instance
+    ADiffViewSettings settings;
+
+    // Create (and open) the screen depending on args
+    if(args.PubScreenName().Length() > 0)
+    {
+      // Use a given public screen
+      pScreenBase = new OpenJoinedPublicScreen(settings, args.PubScreenName().C_str());
+    }
+    else
+    {
+      // Clone the Workbench screen but use 8 colors
+      pScreenBase = new OpenClonedWorkbenchScreen(settings, VERS, 3);
+    }
+
+    // Create and run the application
+    pApplication = new Application(pScreenBase, args, settings);
+    bool bOk = pApplication->Run();
+    if(!bOk)
+    {
+      // On error display a message
+      throw pApplication->ErrorMsg();
+    }
   }
-  else
+  catch(const char* pMsg)
   {
-    // Clone the Workbench screen but use 8 colors
-    pScreenBase = new ClonedWorkbenchScreen(settings, VERS, 3);
+    SimpleString msgString = pMsg;
+    request.Show("ADiffView internal error",
+                 pMsg,
+                 "Exit");
+
+    exitCode = RETURN_FAIL;
   }
 
-  if((pScreenBase == NULL) || (pScreenBase->Open() == false))
+  if(pApplication != NULL)
   {
-    request.Show("ADiffView failed to open the screen.", "Ok");
-    return 0;
+    delete pApplication;
   }
 
-  // Create and run the application
-  Application* pApplication = new Application(pScreenBase, args, settings);
-  bool bOk = pApplication->Run();
-  if(!bOk)
+  if(pScreenBase != NULL)
   {
-    // On error display a message
-    request.Show(pApplication->ErrorMsg(), "Ok");
+    delete pScreenBase;
   }
-
-  delete pApplication;
-  delete pScreenBase;
-  return 0;
+  
+  return exitCode;
 }
 
 

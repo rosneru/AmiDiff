@@ -6,7 +6,7 @@
 #include <workbench/workbench.h>
 
 #include <Array.h>
-#include "ScreenBase.h"
+#include "OpenScreenBase.h"
 #include "CommandBase.h"
 #include "CmdFileRequester.h"
 #include "SimpleString.h"

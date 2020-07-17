@@ -80,42 +80,6 @@ Application::Application(ScreenBase* pScreenBase,
   m_WindowArray.Push(&m_DiffWindow);
   m_WindowArray.Push(&m_FilesWindow);
   m_WindowArray.Push(&m_ProgressWindow);
-}
-
-
-Application::~Application()
-{
-  // Ensure that all windows are closed before deleting the message
-  // ports
-  m_DiffWindow.Close();
-  m_FilesWindow.Close();
-  m_ProgressWindow.Close();
-
-  if(m_pMsgPortProgress != NULL)
-  {
-    DeleteMsgPort(m_pMsgPortProgress);
-    m_pMsgPortProgress = NULL;
-  }
-
-  if(m_pMsgPortIDCMP != NULL)
-  {
-    DeleteMsgPort(m_pMsgPortIDCMP);
-    m_pMsgPortIDCMP = NULL;
-  }
-
-  if(m_pMsgPortAppWindow!= NULL)
-  {
-    DeleteMsgPort(m_pMsgPortAppWindow);
-    m_pMsgPortAppWindow = NULL;
-  }
-}
-
-
-bool Application::Run()
-{
-  // If running on Workbench screen, set OpenFilesWindow as an AppWindow
-  bool bFilesWindowIsAppWindow = (m_Args.PubScreenName() == "Workbench") ||
-                                 (m_Args.AskOnWorkbench() == true);
 
   //
   // Message port initialization
@@ -125,26 +89,26 @@ bool Application::Run()
   m_pMsgPortIDCMP = CreateMsgPort();
   if(m_pMsgPortIDCMP == NULL)
   {
-    m_ErrorMsg = "Failed to create the windows message port.";
-    return false;
+    throw "Failed to create the windows message port.";
   }
 
   // Create a message port for progress notification
   m_pMsgPortProgress = CreateMsgPort();
   if(m_pMsgPortProgress == NULL)
   {
-    m_ErrorMsg = "Failed to create the progress message port.";
-    return false;
+    throw "Failed to create the progress message port.";
   }
 
+  // If running on Workbench screen, set OpenFilesWindow as an AppWindow
+  bool bFilesWindowIsAppWindow = (m_Args.PubScreenName() == "Workbench") ||
+                                 (m_Args.AskOnWorkbench() == true);
   if(bFilesWindowIsAppWindow)
   {
     // Create a message port for the AppWindow
     m_pMsgPortAppWindow = CreateMsgPort();
     if(m_pMsgPortAppWindow == NULL)
     {
-      m_ErrorMsg = "Failed to create the app window message port.";
-      return false;
+      throw "Failed to create the app window message port.";
     }
 
     // FilesWindow should be an AppWindow
@@ -210,14 +174,45 @@ bool Application::Run()
     // menu item at opening.
     m_CmdOpenFilesWindow.Execute(NULL);
   }
+}
 
+
+Application::~Application()
+{
+  // Ensure that all windows are closed before deleting the message
+  // ports
+  m_DiffWindow.Close();
+  m_FilesWindow.Close();
+  m_ProgressWindow.Close();
+
+  if(m_pMsgPortProgress != NULL)
+  {
+    DeleteMsgPort(m_pMsgPortProgress);
+    m_pMsgPortProgress = NULL;
+  }
+
+  if(m_pMsgPortIDCMP != NULL)
+  {
+    DeleteMsgPort(m_pMsgPortIDCMP);
+    m_pMsgPortIDCMP = NULL;
+  }
+
+  if(m_pMsgPortAppWindow!= NULL)
+  {
+    DeleteMsgPort(m_pMsgPortAppWindow);
+    m_pMsgPortAppWindow = NULL;
+  }
+}
+
+
+bool Application::Run()
+{
   //
   // The main event loop
   //
   intuiEventLoop();
 
   return true;
-
 }
 
 

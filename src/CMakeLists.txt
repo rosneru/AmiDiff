@@ -5,8 +5,8 @@ set(CROSS_COMPILE m68k-amigaos-)
 
 SET(CMAKE_CXX_COMPILER m68k-amigaos-g++)
 
-SET(CMAKE_CXX_FLAGS_DEBUG "-noixemul -fomit-frame-pointer -fno-rtti -fno-exceptions -Wall -O0 -g -Wl,--amiga-debug-hunk -ldebug -D LINUX")
-SET(CMAKE_CXX_FLAGS_RELEASE "-noixemul -fomit-frame-pointer -fno-rtti -fno-exceptions -Wall -Os -s -D LINUX")
+SET(CMAKE_CXX_FLAGS_DEBUG "-noixemul -fomit-frame-pointer -fno-rtti -Wall -O0 -g -Wl,--amiga-debug-hunk -ldebug -D LINUX")
+SET(CMAKE_CXX_FLAGS_RELEASE "-noixemul -fomit-frame-pointer -fno-rtti -Wall -Os -s -D LINUX")
 
 
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <OBJECTS>  -o <TARGET>")
@@ -37,13 +37,13 @@ add_executable (ADiffView
                 diffengine/Pair.cpp
                 gui/ADiffViewPens.cpp
                 gui/AMenu.cpp
-                gui/ScreenBase.cpp
-                gui/JoinedPublicScreen.cpp
-                gui/ClonedWorkbenchScreen.cpp
                 gui/DiffWindow.cpp
                 gui/FilesWindow.cpp
-                gui/Rect.cpp
+                gui/OpenClonedWorkbenchScreen.cpp
+                gui/OpenJoinedPublicScreen.cpp
+                gui/OpenScreenBase.cpp
                 gui/ProgressWindow.cpp
+                gui/Rect.cpp
                 gui/ScrollbarWindow.cpp
                 gui/WindowBase.cpp
                 model/DiffDocument.cpp

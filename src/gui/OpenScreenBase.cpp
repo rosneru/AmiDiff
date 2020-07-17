@@ -3,7 +3,7 @@
 #include <clib/intuition_protos.h>
 #include <graphics/text.h>
 #include <intuition/intuitionbase.h>
-#include "ScreenBase.h"
+#include "OpenScreenBase.h"
 
 extern struct IntuitionBase* IntuitionBase;
 
@@ -20,12 +20,6 @@ ScreenBase::ScreenBase(const ADiffViewSettings& settings)
 ScreenBase::~ScreenBase()
 {
 
-}
-
-
-bool ScreenBase::IsOpen() const
-{
-  return (m_pIntuiScreen != NULL);
 }
 
 

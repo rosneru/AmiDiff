@@ -5,7 +5,7 @@
 #include <intuition/screens.h>
 #include <workbench/workbench.h>
 #include "AMenu.h"
-#include "ScreenBase.h"
+#include "OpenScreenBase.h"
 #include "SimpleString.h"
 
 /**

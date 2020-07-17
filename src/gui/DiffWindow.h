@@ -4,7 +4,7 @@
 #include <exec/ports.h>
 #include <intuition/screens.h>
 
-#include "ScreenBase.h"
+#include "OpenScreenBase.h"
 #include "DiffDocument.h"
 #include "DiffLine.h"
 #include "LinkedList.h"

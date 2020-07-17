@@ -21,6 +21,10 @@ public:
             const SimpleString& message,
             const SimpleString& buttonText);
 
+  void Show(const SimpleString& windowTitle,
+            const SimpleString& message,
+            const SimpleString& buttonText);       
+
   void Show(struct Window* pWindow,
             const SimpleString& message,
             const SimpleString& buttonText);

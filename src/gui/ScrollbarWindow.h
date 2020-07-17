@@ -4,7 +4,7 @@
 #include <exec/ports.h>
 #include <intuition/screens.h>
 
-#include "ScreenBase.h"
+#include "OpenScreenBase.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
 

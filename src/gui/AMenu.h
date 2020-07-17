@@ -4,7 +4,7 @@
 #include <intuition/intuition.h>
 #include <intuition/screens.h>
 #include <libraries/gadtools.h>
-#include "ScreenBase.h"
+#include "OpenScreenBase.h"
 
 /**
  * Class for the application menu. It can be created with a GadTools

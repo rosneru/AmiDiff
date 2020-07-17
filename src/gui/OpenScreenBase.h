@@ -9,8 +9,11 @@
 #include "ADiffViewSettings.h"
 
 /**
- * Class  for the application main screen. At the moment it simply makes
- * an identical copy of the Workbench screen.
+ * An Amiga screen to be used for an application. This class is
+ * abstract, so only a derived class can be instanciated. 
+ *
+ * Right after instanciaten the screen is open. Destroy the instance to
+ * close the screen.
  *
  * @author Uwe Rosner
  * @date 23/09/2018
@@ -19,22 +22,7 @@ class ScreenBase
 {
 public:
   ScreenBase(const ADiffViewSettings& settings);
-  virtual ~ScreenBase();
-
-  /**
-   * Open the screen
-   *
-   * @returns
-   * false if oping fails
-   */
-  virtual bool Open() = 0;
-
-  /**
-   * Close the screen
-   */
-  virtual void Close() = 0;
-
-  bool IsOpen() const;
+  virtual ~ScreenBase() = 0; // Make it abstract.
 
   /**
    * Returns the intuition screen structure or NULL if screen is not open

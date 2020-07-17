@@ -4,7 +4,7 @@
 #include <exec/ports.h>
 
 #include "Rect.h"
-#include "ScreenBase.h"
+#include "OpenScreenBase.h"
 #include "SimpleString.h"
 #include "WindowBase.h"
 

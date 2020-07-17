@@ -54,14 +54,6 @@ bool WindowBase::Open(InitialPosition initialPos)
     return false;
   }
 
-  if(m_pScreenBase->IsOpen() == false)
-  {
-    if(m_pScreenBase->Open() == false)
-    {
-      return false;
-    }
-  }
-
   m_InitialPosition = initialPos;
 
   //
