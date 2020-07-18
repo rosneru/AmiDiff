@@ -127,7 +127,7 @@ ULONG AmigaFile::GetSize()
 }
 
 
-bool AmigaFile::ReadLines(Array<SimpleString*>& array)
+bool AmigaFile::ReadLines(std::vector<SimpleString*>& array)
 {
   if(m_FileDescriptor == 0)
   {
@@ -160,7 +160,7 @@ bool AmigaFile::ReadLines(Array<SimpleString*>& array)
   int i = 0;
   while(ReadLine(line))
   {
-    array.Push(new SimpleString(line));
+    array.push_back(new SimpleString(line));
     i++;
 
     //

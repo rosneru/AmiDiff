@@ -15,7 +15,7 @@
 class CmdFileRequester : public CommandBase
 {
 public:
-  CmdFileRequester(Array<WindowBase*>* pAllWindowsArray,
+  CmdFileRequester(std::vector<WindowBase*>* pAllWindowsArray,
                    const char* pTitle);
 
   virtual ~CmdFileRequester();

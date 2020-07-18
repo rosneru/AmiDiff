@@ -1,6 +1,6 @@
 #include "CmdNavPrevDiff.h"
 
-CmdNavPrevDiff::CmdNavPrevDiff(Array<WindowBase*>* pAllWindowsArray,
+CmdNavPrevDiff::CmdNavPrevDiff(std::vector<WindowBase*>* pAllWindowsArray,
                                DiffWindow& diffWindow)
   : CommandBase(pAllWindowsArray),
     m_DiffWindow(diffWindow)

@@ -77,9 +77,9 @@ Application::Application(ScreenBase* pScreenBase,
 
 
   // Add all windows to the array
-  m_WindowArray.Push(&m_DiffWindow);
-  m_WindowArray.Push(&m_FilesWindow);
-  m_WindowArray.Push(&m_ProgressWindow);
+  m_WindowArray.push_back(&m_DiffWindow);
+  m_WindowArray.push_back(&m_FilesWindow);
+  m_WindowArray.push_back(&m_ProgressWindow);
 
   //
   // Message port initialization

@@ -8,12 +8,13 @@
 #ifndef APPLICATION
 #define APPLICATION
 
+#include <vector>
+
 #include <exec/ports.h>
 
 #include "ADiffViewArgs.h"
 #include "ADiffViewSettings.h"
 #include "AMenu.h"
-#include "Array.h"
 #include "OpenClonedWorkbenchScreen.h"
 #include "OpenJoinedPublicScreen.h"
 #include "CmdRequester.h"
@@ -81,7 +82,7 @@ private:
   CmdRequester m_CmdAboutRequester;
   SimpleString m_AboutMsg;
 
-  Array<WindowBase*> m_WindowArray;
+  std::vector<WindowBase*> m_WindowArray;
 
   /**
    * Handling messages from Intuition

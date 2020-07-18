@@ -2,7 +2,7 @@
 #define TEXT_DOCUMENT_H
 
 #include "Document.h"
-#include "Array.h"
+#include <vector>
 #include "SimpleString.h"
 
 

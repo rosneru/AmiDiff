@@ -1,9 +1,10 @@
 #ifndef AMIGA_FILE_H
 #define AMIGA_FILE_H
 
+#include <vector>
+
 #include <exec/types.h>
 #include <libraries/dos.h>
-#include "Array.h"
 #include "ProgressReporter.h"
 #include "SimpleString.h"
 
@@ -96,7 +97,7 @@ public:
    * @param array
    * Array to store the lines
    */
-  bool ReadLines(Array<SimpleString*>& array);
+  bool ReadLines(std::vector<SimpleString*>& array);
 
   /**
    * Reads the next line from file

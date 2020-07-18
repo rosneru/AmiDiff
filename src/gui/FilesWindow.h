@@ -5,7 +5,7 @@
 #include <intuition/screens.h>
 #include <workbench/workbench.h>
 
-#include <Array.h>
+#include <vector>
 #include "OpenScreenBase.h"
 #include "CommandBase.h"
 #include "CmdFileRequester.h"
@@ -23,7 +23,7 @@
 class FilesWindow : public WindowBase
 {
 public:
-  FilesWindow(Array<WindowBase*>& windowArray,
+  FilesWindow(std::vector<WindowBase*>& windowArray,
               ScreenBase* pScreenBase,
               struct MsgPort*& pIdcmpMsgPort,
               SimpleString& leftFilePath,

@@ -16,7 +16,7 @@
 class CmdRequester : public CommandBase
 {
 public:
-  CmdRequester(Array<WindowBase*>* pAllWindowsArray,
+  CmdRequester(std::vector<WindowBase*>* pAllWindowsArray,
                const SimpleString& message,
                const char* pTitle,
                const char* pButtons);

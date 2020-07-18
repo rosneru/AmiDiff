@@ -1,7 +1,7 @@
 #include "CmdQuit.h"
 
 
-CmdQuit::CmdQuit(Array<WindowBase*>* pAllWindowsArray,
+CmdQuit::CmdQuit(std::vector<WindowBase*>* pAllWindowsArray,
                  bool& exitAllowed, 
                  bool& exitRequested)
   : CommandBase(pAllWindowsArray),

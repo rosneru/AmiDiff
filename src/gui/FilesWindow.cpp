@@ -17,7 +17,7 @@
 #include "FilesWindow.h"
 
 
-FilesWindow::FilesWindow(Array<WindowBase*>& windowArray,
+FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                          ScreenBase* pScreenBase,
                          struct MsgPort*& pIdcmpMsgPort,
                          SimpleString& leftFilePath,

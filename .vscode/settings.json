@@ -24,6 +24,27 @@
     "stdexcept": "cpp",
     "system_error": "cpp",
     "typeinfo": "cpp",
-    "utility": "cpp"
+    "utility": "cpp",
+    "cctype": "cpp",
+    "clocale": "cpp",
+    "cmath": "cpp",
+    "cstdarg": "cpp",
+    "cstdint": "cpp",
+    "cstdlib": "cpp",
+    "cwctype": "cpp",
+    "deque": "cpp",
+    "unordered_map": "cpp",
+    "exception": "cpp",
+    "algorithm": "cpp",
+    "iterator": "cpp",
+    "numeric": "cpp",
+    "string": "cpp",
+    "iosfwd": "cpp",
+    "iostream": "cpp",
+    "istream": "cpp",
+    "limits": "cpp",
+    "ostream": "cpp",
+    "sstream": "cpp",
+    "streambuf": "cpp"
   }
 }

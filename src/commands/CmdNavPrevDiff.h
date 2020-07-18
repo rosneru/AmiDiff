@@ -13,7 +13,7 @@
 class CmdNavPrevDiff : public CommandBase
 {
 public:
-  CmdNavPrevDiff(Array<WindowBase*>* pAllWindowsArray,
+  CmdNavPrevDiff(std::vector<WindowBase*>* pAllWindowsArray,
                  DiffWindow& diffWindow);
 
   virtual ~CmdNavPrevDiff();

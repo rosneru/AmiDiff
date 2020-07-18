@@ -1,9 +1,9 @@
 #include <clib/intuition_protos.h>
 #include "CommandBase.h"
 
-Array<WindowBase*>* CommandBase::m_pAllWindowsArray(NULL);
+std::vector<WindowBase*>* CommandBase::m_pAllWindowsArray(NULL);
 
-CommandBase::CommandBase(Array<WindowBase*>* pAllWindowsArray)
+CommandBase::CommandBase(std::vector<WindowBase*>* pAllWindowsArray)
   : m_SleepRequester()
 {
   m_pAllWindowsArray = pAllWindowsArray;
@@ -17,7 +17,7 @@ CommandBase::~CommandBase()
 
 void CommandBase::EnableInAllWindowMenus() const
 {
-  for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
+  for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
   {
     struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
     AMenu* pMenu = (*m_pAllWindowsArray)[i]->Menu();
@@ -32,7 +32,7 @@ void CommandBase::EnableInAllWindowMenus() const
 
 void CommandBase::DisableInAllWindowMenus() const
 {
-  for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
+  for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
   {
     struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
     AMenu* pMenu = (*m_pAllWindowsArray)[i]->Menu();
@@ -47,7 +47,7 @@ void CommandBase::DisableInAllWindowMenus() const
 
 void CommandBase::disableBusyPointerForAllWindows()
 {
-  for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
+  for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
   {
     struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
 
@@ -63,7 +63,7 @@ void CommandBase::enableBusyPointerForAllWindows()
 {  
   InitRequester(&m_SleepRequester);
 
-  for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
+  for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
   {
     struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
 

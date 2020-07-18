@@ -3,6 +3,8 @@ Settings (Start)
 C/C++ Environment
 "StormC:include"
 0
+"StormC:STLPort"
+0
 "application"
 0
 "amigautils"

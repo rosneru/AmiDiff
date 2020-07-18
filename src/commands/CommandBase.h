@@ -3,7 +3,7 @@
 
 #include <intuition/intuition.h>
 
-#include "Array.h"
+#include <vector>
 #include "WindowBase.h"
 
 /**
@@ -19,7 +19,7 @@
 class CommandBase
 {
 public:
-  CommandBase(Array<WindowBase*>* pAllWindowsArray);
+  CommandBase(std::vector<WindowBase*>* pAllWindowsArray);
   virtual ~CommandBase();
   virtual void Execute(struct Window* pActiveWindow) = 0;
 
@@ -27,7 +27,7 @@ public:
   void DisableInAllWindowMenus() const;
 
 protected:
-  static Array<WindowBase*>* m_pAllWindowsArray;
+  static std::vector<WindowBase*>* m_pAllWindowsArray;
 
   CommandBase();
 

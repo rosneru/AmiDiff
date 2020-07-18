@@ -9,7 +9,7 @@
 #include "CmdFileRequester.h"
 
 
-CmdFileRequester::CmdFileRequester(Array<WindowBase*>* pAllWindowsArray,
+CmdFileRequester::CmdFileRequester(std::vector<WindowBase*>* pAllWindowsArray,
                                    const char* pTitle)
   : CommandBase(pAllWindowsArray),
     m_pTitle(pTitle)
@@ -155,7 +155,7 @@ void CmdFileRequester::intuiHook(struct Hook* pHook,
   {
     // One of the windows has been resized
     case IDCMP_NEWSIZE:
-      for(size_t i = 0; i < m_pAllWindowsArray->Size(); i++)
+      for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
       {
         if((*m_pAllWindowsArray)[i]->IntuiWindow() == pMsg->IDCMPWindow)
         {

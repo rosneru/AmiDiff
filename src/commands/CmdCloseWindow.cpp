@@ -1,6 +1,6 @@
 #include "CmdCloseWindow.h"
 
-CmdCloseWindow::CmdCloseWindow(Array<WindowBase*>* pAllWindowsArray,
+CmdCloseWindow::CmdCloseWindow(std::vector<WindowBase*>* pAllWindowsArray,
                                const CmdOpenWindow& openWindowCommand,
                                WindowBase& window)
   : CommandBase(pAllWindowsArray),
