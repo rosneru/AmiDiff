@@ -17,9 +17,6 @@
 class AmigaFile
 {
 public:
-  AmigaFile();
-  virtual ~AmigaFile();
-
   /**
    * Wrapper for the AmigaOS Access modes
    */
@@ -31,27 +28,14 @@ public:
   };
 
   /**
-   * Opens a file
+   * Creates an open file with given name and given access mode.
    *
-   * If file is already open it must be closed before opening a
-   * different file for this object. Otherwise open will return false.
-   *
-   * @param pFileName
-   * Name of the file to open.
-
-   *
-   * @param accessMode
-   * AccessMode of file to open; @see AccessMode
-   *
-   * @returns
-   * If file successfully opened: true; if not: false
+   * @param pFileName Name of the file to open.
+   * @param accessMode One of MODE_NEWFILE, MODE_READWRITE or
+   *        MODE_OLDFILE. DMODE_OLDFILE.
    */
-  bool Open(const char* pFileName, AccessMode accessMode = AM_OldFile);
-
-  /**
-   * Closes the file
-   */
-   void Close();
+  AmigaFile(const char* pFileName, ULONG accessMode = MODE_OLDFILE);
+  virtual ~AmigaFile();
 
   /**
    * Counts the number of lines in file. The file has to be opened
@@ -112,8 +96,6 @@ public:
 
   char* ReadLine();
 
-  const char* Error();
-
   /**
    * Setting the progress reporter
    */
@@ -124,7 +106,6 @@ private:
   STRPTR m_pLineBuf;
   BPTR m_FileDescriptor;
   SimpleString m_FileName;
-  SimpleString m_ErrorMsg;
 
   ProgressReporter* m_pProgressReporter;  ///> for progress reporting
 

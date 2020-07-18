@@ -4,7 +4,6 @@
 #include "stdio.h"
 
 #include "DiffLine.h"
-#include "ProgressReporter.h"
 
 
 /**
@@ -45,14 +44,8 @@ public:
 
   void AddBlankLine();
 
-  /**
-   * Setting the progress reporter
-   */
-  void SetProgressReporter(ProgressReporter* pProgressReporter);
-
 protected:
   bool& m_bCancelRequested;
-  ProgressReporter* m_pProgressReporter;
 
   size_t m_NumLines;
   DiffLine** m_pDiffLinesArray;

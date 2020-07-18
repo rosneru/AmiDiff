@@ -26,31 +26,20 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
     m_pPoolHeader(NULL),
     m_DiffStartIdxsList(m_pPoolHeader),
     m_pDiffDocument(NULL),
-    m_LeftSrcFile(m_pPoolHeader, m_bCancelRequested),
-    m_RightSrcFile(m_pPoolHeader, m_bCancelRequested),
-    m_LeftDiffFile(m_pPoolHeader, m_bCancelRequested),
-    m_RightDiffFile(m_pPoolHeader, m_bCancelRequested),
-    m_DiffEngine(m_LeftSrcFile,
-                 m_RightSrcFile,
-                 m_LeftDiffFile,
-                 m_RightDiffFile,
+    m_pLeftSrcFile(NULL),
+    m_pRightSrcFile(NULL),
+    m_pLeftDiffFile(NULL),
+    m_pRightDiffFile(NULL),
+    m_DiffEngine(*m_pLeftSrcFile,
+                 *m_pRightSrcFile,
+                 *m_pLeftDiffFile,
+                 *m_pRightDiffFile,
                  m_pPoolHeader,
                  m_bCancelRequested,
                  &m_DiffStartIdxsList),
     m_bShowLineNumbers(false)
 {
 
-  //
-  // Registering *this* as receiver for progress messages for some
-  // objects.
-  //
-  // NOTE *this* is a WorkerBase who itself is a ProgressReporter.
-  //      That one finally forwards these messages to the intuition
-  //      event loop where they are eventually processed in a window.
-  //
-  m_LeftSrcFile.SetProgressReporter(this);
-  m_RightSrcFile.SetProgressReporter(this);
-  m_DiffEngine.SetProgressReporter(this);
 }
 
 DiffWorker::~DiffWorker()
@@ -99,7 +88,7 @@ bool DiffWorker::Diff()
 
 
   //
-  // Checking some obvious things
+  // Some basic tests
   //
   if(m_LeftSrcFilePath.Length() == 0)
   {
@@ -129,18 +118,61 @@ bool DiffWorker::Diff()
 
   m_StopWatch.Start();
 
-  //
-  // Pre-processing the left file
-  //
-  setProgressDescription("Loading left file");
 
-  // If there was an error return to FilesWindow
-  if(m_LeftSrcFile.PreProcess(m_LeftSrcFilePath.C_str()) == false)
+  try
+  {
+    // Load and analyze the left file
+    setProgressDescription("Loading left file");
+    m_pLeftSrcFile = new DiffInputFileAmiga(m_pPoolHeader,
+                                            m_bCancelRequested,
+                                            this,
+                                            m_LeftSrcFilePath.C_str());
+
+    // Load and analyze the right file
+    setProgressDescription("Loading right file");
+    m_pRightSrcFile = new DiffInputFileAmiga(m_pPoolHeader,
+                                             m_bCancelRequested,
+                                             this,
+                                             m_RightSrcFilePath.C_str());
+
+    // Collect line numbers if  this is enabled
+    if(m_bShowLineNumbers)
+    {
+      size_t maxNumLines = m_pLeftSrcFile->NumLines();
+      if(m_pRightSrcFile->NumLines() > maxNumLines)
+      {
+        maxNumLines = m_pRightSrcFile->NumLines();
+      }
+
+      m_pLeftSrcFile->CollectLineNumbers(maxNumLines);
+      m_pRightSrcFile->CollectLineNumbers(maxNumLines);
+    }
+
+    m_pLeftDiffFile = new DiffFileAmiga(m_pPoolHeader,
+                                        m_bCancelRequested,
+                                        this);
+
+    m_pRightDiffFile = new DiffFileAmiga(m_pPoolHeader,
+                                         m_bCancelRequested,
+                                         this);
+
+    // Compare the files
+    setProgressDescription("Comparing the files");
+    bool diffOk = m_DiffEngine.Diff();
+
+    // If there was an error return to FilesWindow
+    if(!diffOk)
+    {
+      throw "Error while performing the diff.";
+    }
+
+  }
+  catch(const char* pError)
   {
     if(!m_bCancelRequested)
     {
       request.Show(m_ProgressWindow.IntuiWindow(),
-                   m_LeftSrcFile.Error(), "Ok");
+                   pError, "Abort");
     }
 
     m_CmdOpenFilesWindow.Execute(NULL);
@@ -150,62 +182,7 @@ bool DiffWorker::Diff()
     return false;
   }
 
-  //
-  // Pre-processing the right file
-  //
-  setProgressDescription("Loading right file");
-
-  // If there was an error return to FilesWindow
-  if(m_RightSrcFile.PreProcess(m_RightSrcFilePath.C_str()) == false)
-  {
-    if(!m_bCancelRequested)
-    {
-      request.Show(m_ProgressWindow.IntuiWindow(),
-                   m_RightSrcFile.Error(), "Ok");
-    }
-
-    m_CmdOpenFilesWindow.Execute(NULL);
-    m_ProgressWindow.Close();
-
-    m_bExitAllowed = true;
-    return false;
-  }
-
-  // Collect line numbers if  this is enabled
-  if(m_bShowLineNumbers)
-  {
-    size_t maxNumLines = m_LeftSrcFile.NumLines();
-    if(m_RightSrcFile.NumLines() > maxNumLines)
-    {
-      maxNumLines = m_RightSrcFile.NumLines();
-    }
-
-    m_LeftSrcFile.CollectLineNumbers(maxNumLines);
-    m_RightSrcFile.CollectLineNumbers(maxNumLines);
-  }
-
-  //
-  // Compare the files
-  //
-  setProgressDescription("Comparing the files");
-  bool diffOk = m_DiffEngine.Diff();
   long totalTime = m_StopWatch.Pick();
-
-  // If there was an error return to FilesWindow
-  if(!diffOk)
-  {
-    if(!m_bCancelRequested)
-    {
-      request.Show(m_ProgressWindow.IntuiWindow(),
-                   "Error while performing the diff.", "Ok");
-    }
-
-    m_CmdOpenFilesWindow.Execute(NULL);
-    m_ProgressWindow.Close();
-
-    m_bExitAllowed = true;
-    return false;
-  }
 
   // If there are no changes return to FilesWindow
   if(m_DiffEngine.NumDifferences() == 0)
@@ -223,9 +200,9 @@ bool DiffWorker::Diff()
   //
   // Prepare diff window and set results
   //
-  m_pDiffDocument = new DiffDocument(m_LeftDiffFile, 
+  m_pDiffDocument = new DiffDocument(*m_pLeftDiffFile, 
                                      m_LeftSrcFilePath.C_str(),
-                                     m_RightDiffFile,
+                                     *m_pRightDiffFile,
                                      m_RightSrcFilePath.C_str());
 
   m_DiffWindow.SetLineNumbersVisible(m_bShowLineNumbers);
@@ -253,10 +230,30 @@ void DiffWorker::disposeDocuments()
     m_pDiffDocument = NULL;
   }
 
-  m_LeftSrcFile.Clear();
-  m_RightSrcFile.Clear();
-  m_LeftDiffFile.Clear();
-  m_RightDiffFile.Clear();
+
+  if(m_pLeftSrcFile != NULL)
+  {
+    delete m_pLeftSrcFile;;
+    m_pLeftSrcFile = NULL;
+  }
+
+  if(m_pRightSrcFile != NULL)
+  {
+    delete m_pRightSrcFile;;
+    m_pRightSrcFile = NULL;
+  }
+
+  if(m_pLeftDiffFile != NULL)
+  {
+    delete m_pLeftDiffFile;;
+    m_pLeftDiffFile = NULL;
+  }
+
+  if(m_pRightDiffFile != NULL)
+  {
+    delete m_pRightDiffFile;;
+    m_pRightDiffFile = NULL;
+  }
 
   m_DiffStartIdxsList.Clear();
 

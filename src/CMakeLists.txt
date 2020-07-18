@@ -33,6 +33,7 @@ add_executable (ADiffView
                 diffengine/DiffEngineAmiga.cpp
                 diffengine/DiffFileAmiga.cpp
                 diffengine/DiffFileBase.cpp
+                diffengine/DiffInputFileAmiga.cpp
                 diffengine/DiffLine.cpp
                 diffengine/Pair.cpp
                 gui/ADiffViewPens.cpp

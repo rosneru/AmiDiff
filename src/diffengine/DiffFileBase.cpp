@@ -2,7 +2,6 @@
 
 DiffFileBase::DiffFileBase(bool& bCancelRequested)
   : m_bCancelRequested(bCancelRequested),
-    m_pProgressReporter(NULL),
     m_NumLines(0),
     m_pDiffLinesArray(NULL),
     m_NextAddedLineIdx(0),
@@ -97,12 +96,6 @@ void DiffFileBase::AddBlankLine()
 {
   static const char* pEmptyLine = "";
   AddString(pEmptyLine, DiffLine::Normal, NULL);
-}
-
-
-void DiffFileBase::SetProgressReporter(ProgressReporter* pProgressReporter)
-{
-  m_pProgressReporter = pProgressReporter;
 }
 
 

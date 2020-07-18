@@ -8,6 +8,7 @@
 #include "DiffDocument.h"
 #include "DiffEngineAmiga.h"
 #include "DiffFileAmiga.h"
+#include "DiffInputFileAmiga.h"
 #include "DiffWindow.h"
 #include "FilesWindow.h"
 #include "LinkedListAmiga.h"
@@ -88,10 +89,10 @@ private:
 
   DiffDocument* m_pDiffDocument;
 
-  DiffFileAmiga m_LeftSrcFile;
-  DiffFileAmiga m_RightSrcFile;
-  DiffFileAmiga m_LeftDiffFile;
-  DiffFileAmiga m_RightDiffFile;
+  DiffInputFileAmiga* m_pLeftSrcFile;
+  DiffInputFileAmiga* m_pRightSrcFile;
+  DiffFileAmiga* m_pLeftDiffFile;
+  DiffFileAmiga* m_pRightDiffFile;
 
   DiffEngineAmiga m_DiffEngine;
 

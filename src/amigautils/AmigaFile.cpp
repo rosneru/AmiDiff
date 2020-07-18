@@ -2,13 +2,20 @@
 #include <clib/exec_protos.h>
 #include "AmigaFile.h"
 
-AmigaFile::AmigaFile()
+AmigaFile::AmigaFile(const char* pFileName, ULONG accessMode)
   : MAX_LINE_LENGTH(1024), // TODO A better solution needed?
     m_FileDescriptor(0),
-    m_ErrorMsg("Unknown error in class AmigaFile."),
+    m_FileName(pFileName),
     m_pProgressReporter(NULL)
 {
   m_pLineBuf = (STRPTR) AllocVec(MAX_LINE_LENGTH, 0L);
+
+  // Opening the file
+  m_FileDescriptor = Open(pFileName, accessMode);
+  if(m_FileDescriptor == 0)
+  {
+    throw "Failed to open file.";
+  }
 }
 
 
@@ -17,69 +24,14 @@ AmigaFile::~AmigaFile()
   if(m_pLineBuf != NULL)
   {
     FreeVec(m_pLineBuf);
+    m_pLineBuf = NULL;
   }
-}
 
-
-bool AmigaFile::Open(const char* pFileName, AccessMode accessMode)
-{
   if(m_FileDescriptor != 0)
   {
-    m_ErrorMsg = "The file \n'";
-    m_ErrorMsg += pFileName;
-    m_ErrorMsg += "'\ncan not be opened.\n\n";
-    m_ErrorMsg += "Reason: Another file is still open and hasn't\n";
-    m_ErrorMsg += "been closed.";
-
-    return false;
+    Close(m_FileDescriptor);
+    m_FileDescriptor = 0;
   }
-
-  m_FileName = pFileName;
-
-  // Determining the corresponding accessMode for AmigaDOS
-  int amigaDosAccessMode;
-  switch(accessMode)
-  {
-    case AM_NewFile:
-    {
-      amigaDosAccessMode = MODE_NEWFILE;
-      break;
-    }
-
-    case AM_ReadWrite:
-    {
-      amigaDosAccessMode = MODE_READWRITE;
-      break;
-    }
-
-    default:
-    {
-      amigaDosAccessMode = MODE_OLDFILE;
-      break;
-    }
-  }
-
-  // Opening the file
-  m_FileDescriptor = ::Open(pFileName, amigaDosAccessMode);
-  if(m_FileDescriptor == 0)
-  {
-    // Opening failed
-    m_ErrorMsg = "The file \n'";
-    m_ErrorMsg += pFileName;
-    m_ErrorMsg += "'\ncan not be opened.";
-
-    return false;
-  }
-
-  return true;
-}
-
-
-void AmigaFile::Close()
-{
-  ::Close(m_FileDescriptor);
-  m_FileDescriptor = 0;
-  m_FileName = "";
 }
 
 
@@ -129,16 +81,6 @@ ULONG AmigaFile::GetSize()
 
 bool AmigaFile::ReadLines(std::vector<SimpleString*>& linesVector)
 {
-  if(m_FileDescriptor == 0)
-  {
-    // File not opened
-    m_ErrorMsg = "Failed to perform ReadLines() because the file\n'";
-    m_ErrorMsg += m_FileName;
-    m_ErrorMsg += "'\nhasn't been opened yet.";
-
-    return false;
-  }
-
   // Initialize some variables needed for progress reporting
   int lastProgressValue = -1;
   int numLines = 0;
@@ -237,12 +179,6 @@ char* AmigaFile::ReadLine()
   }
 
   return m_pLineBuf;
-}
-
-
-const char* AmigaFile::Error()
-{
-  return m_ErrorMsg.C_str();
 }
 
 
