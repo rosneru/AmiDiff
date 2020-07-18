@@ -97,7 +97,7 @@ public:
    * @param array
    * Array to store the lines
    */
-  bool ReadLines(std::vector<SimpleString*>& array);
+  bool ReadLines(std::vector<SimpleString*>& linesVector);
 
   /**
    * Reads the next line from file

@@ -16,7 +16,7 @@
 class CmdCloseWindow : public CommandBase
 {
 public:
-  CmdCloseWindow(std::vector<WindowBase*>* pAllWindowsArray,
+  CmdCloseWindow(std::vector<WindowBase*>* pAllWindowsVector,
                  const CmdOpenWindow& openWindowCommand,
                  WindowBase& window);
 

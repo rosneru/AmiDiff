@@ -16,7 +16,7 @@
 class CmdDiff : public CommandBase
 {
 public:
-  CmdDiff(std::vector<WindowBase*>* pAllWindowsArray,
+  CmdDiff(std::vector<WindowBase*>* pAllWindowsVector,
           DiffWorker& diffWorker);
 
   virtual ~CmdDiff();

@@ -9,9 +9,9 @@
 #include "CmdFileRequester.h"
 
 
-CmdFileRequester::CmdFileRequester(std::vector<WindowBase*>* pAllWindowsArray,
+CmdFileRequester::CmdFileRequester(std::vector<WindowBase*>* pAllWindowsVector,
                                    const char* pTitle)
-  : CommandBase(pAllWindowsArray),
+  : CommandBase(pAllWindowsVector),
     m_pTitle(pTitle)
 {
 

@@ -1,8 +1,8 @@
 #include "CmdOpenWindow.h"
 
-CmdOpenWindow::CmdOpenWindow(std::vector<WindowBase*>* pAllWindowsArray,
+CmdOpenWindow::CmdOpenWindow(std::vector<WindowBase*>* pAllWindowsVector,
                              WindowBase& window)
-  : CommandBase(pAllWindowsArray),
+  : CommandBase(pAllWindowsVector),
     m_Window(window)
 {
 

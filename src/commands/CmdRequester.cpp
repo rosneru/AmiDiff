@@ -5,11 +5,11 @@
 #include "CmdRequester.h"
 
 
-CmdRequester::CmdRequester(std::vector<WindowBase*>* pAllWindowsArray,
+CmdRequester::CmdRequester(std::vector<WindowBase*>* pAllWindowsVector,
                            const SimpleString& message,
                            const char* pTitle,
                            const char* pButtons)
-  : CommandBase(pAllWindowsArray),
+  : CommandBase(pAllWindowsVector),
     m_Message(message),
     m_pTitle(pTitle),
     m_pButtons(pButtons)

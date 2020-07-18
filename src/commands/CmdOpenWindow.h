@@ -16,7 +16,7 @@
 class CmdOpenWindow : public CommandBase
 {
 public:
-  CmdOpenWindow(std::vector<WindowBase*>* pAllWindowsArray,
+  CmdOpenWindow(std::vector<WindowBase*>* pAllWindowsVector,
                 WindowBase& window);
 
   virtual ~CmdOpenWindow();

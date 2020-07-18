@@ -15,7 +15,7 @@
 class CmdQuit : public CommandBase
 {
 public:
-  CmdQuit(std::vector<WindowBase*>* pAllWindowsArray,
+  CmdQuit(std::vector<WindowBase*>* pAllWindowsVector,
           bool& exitAllowed, 
           bool& exitRequested);
   

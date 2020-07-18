@@ -3,10 +3,10 @@
 
 std::vector<WindowBase*>* CommandBase::m_pAllWindowsArray(NULL);
 
-CommandBase::CommandBase(std::vector<WindowBase*>* pAllWindowsArray)
+CommandBase::CommandBase(std::vector<WindowBase*>* pAllWindowsVector)
   : m_SleepRequester()
 {
-  m_pAllWindowsArray = pAllWindowsArray;
+  m_pAllWindowsArray = pAllWindowsVector;
 }
 
 CommandBase::~CommandBase()

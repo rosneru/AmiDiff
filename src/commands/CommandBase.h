@@ -19,7 +19,7 @@
 class CommandBase
 {
 public:
-  CommandBase(std::vector<WindowBase*>* pAllWindowsArray);
+  CommandBase(std::vector<WindowBase*>* pAllWindowsVector);
   virtual ~CommandBase();
   virtual void Execute(struct Window* pActiveWindow) = 0;
 
