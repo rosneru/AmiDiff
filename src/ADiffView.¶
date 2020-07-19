@@ -339,13 +339,13 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "diffengine/DiffFileAmiga.cpp"
-"diffengine/DiffFileAmiga.cpp"
-"diffengine/DiffFileAmiga.h"
+1 "diffengine/DiffOutputFileAmiga.cpp"
+"diffengine/DiffOutputFileAmiga.cpp"
+"diffengine/DiffOutputFileAmiga.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
-"objects_debug/DiffFileAmiga.o" "objects_debug/DiffFileAmiga.debug"
+"objects_debug/DiffOutputFileAmiga.o" "objects_debug/DiffOutputFileAmiga.debug"
 ""
 1 1
 File
@@ -710,8 +710,8 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "diffengine/DiffFileAmiga.h"
-"diffengine/DiffFileAmiga.h"
+2 "diffengine/DiffOutputFileAmiga.h"
+"diffengine/DiffOutputFileAmiga.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

@@ -24,10 +24,6 @@ public:
                      const char* pFileName);
   virtual ~DiffInputFileAmiga();
 
-  void Clear();
-
-  bool PreProcess(const char* pFileName);
-
   void CollectLineNumbers(size_t maxNumLines);
 
   /**

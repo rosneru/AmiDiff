@@ -1,16 +1,16 @@
 #ifndef DIFF_DOCUMENT_H
 #define DIFF_DOCUMENT_H
 
-#include "DiffFileAmiga.h"
+#include "DiffOutputFileAmiga.h"
 #include "DiffLine.h"
 #include "SimpleString.h"
 
 class DiffDocument
 {
 public:
-  DiffDocument(DiffFileAmiga& leftFile,
+  DiffDocument(DiffOutputFileAmiga& leftFile,
                const char* pLeftFileName,
-               DiffFileAmiga& rightFile,
+               DiffOutputFileAmiga& rightFile,
                const char* pRightFileName);
 
   virtual ~DiffDocument();
@@ -25,9 +25,9 @@ public:
   const DiffLine* RightLine(size_t index) const;
 
 private:
-  DiffFileAmiga& m_LeftFile;
+  DiffOutputFileAmiga& m_LeftFile;
   const char* m_pLeftFileName;
-  DiffFileAmiga& m_RightFile;
+  DiffOutputFileAmiga& m_RightFile;
   const char* m_pRightFileName;
 
   char* m_FileName;

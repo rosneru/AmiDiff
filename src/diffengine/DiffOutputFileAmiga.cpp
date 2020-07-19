@@ -10,9 +10,9 @@
 #include <clib/exec_protos.h>
 
 
-#include "DiffFileAmiga.h"
+#include "DiffOutputFileAmiga.h"
 
-DiffFileAmiga::DiffFileAmiga(APTR& pPoolHeader,
+DiffOutputFileAmiga::DiffOutputFileAmiga(APTR& pPoolHeader,
                              bool& bCancelRequested,
                              ProgressReporter* pProgressReporter)
   : DiffFileBase(bCancelRequested),
@@ -21,7 +21,7 @@ DiffFileAmiga::DiffFileAmiga(APTR& pPoolHeader,
 }
 
 
-DiffFileAmiga::~DiffFileAmiga()
+DiffOutputFileAmiga::~DiffOutputFileAmiga()
 {
   // The array address is cleared but nothing else is deleted or freed
   // here, because an external memory pool is used for all heap allocs.
@@ -34,13 +34,7 @@ DiffFileAmiga::~DiffFileAmiga()
 }
 
 
-void DiffFileAmiga::Clear()
-{
-
-}
-
-
-long DiffFileAmiga::AddString(const char* pText,
+long DiffOutputFileAmiga::AddString(const char* pText,
                               DiffLine::LineState lineState,
                               const char* pFormattedLineNumber)
 {

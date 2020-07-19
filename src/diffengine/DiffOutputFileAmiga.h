@@ -1,5 +1,5 @@
-#ifndef DIFF_FILE_PARTITION_AMIGA_H
-#define DIFF_FILE_PARTITION_AMIGA_H
+#ifndef DIFF_OUTPUT_FILE_AMIGA_H
+#define DIFF_OUTPUT_FILE_AMIGA_H
 
 #include <exec/types.h>
 
@@ -15,15 +15,13 @@
  * @author Uwe Rosner
  * @date 09/11/2018
  */
-class DiffFileAmiga : public DiffFileBase
+class DiffOutputFileAmiga : public DiffFileBase
 {
 public:
-  DiffFileAmiga(APTR& pPoolHeader, 
-                bool& bCancelRequested, 
-                ProgressReporter* pProgressReporter);
-  virtual ~DiffFileAmiga();
-
-  void Clear();
+  DiffOutputFileAmiga(APTR& pPoolHeader, 
+                      bool& bCancelRequested, 
+                      ProgressReporter* pProgressReporter);
+  virtual ~DiffOutputFileAmiga();
 
   /**
    * Adds a DiffLine to file using given string and line state.

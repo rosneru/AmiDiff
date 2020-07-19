@@ -3,7 +3,6 @@
 #include "MessageBox.h"
 #include "DiffEngineAmiga.h"
 #include "DiffWorker.h"
-#include "LinkedListAmiga.h"
 
 DiffWorker::DiffWorker(SimpleString& leftFilePath,
                        SimpleString& rightFilePath,
@@ -142,11 +141,11 @@ bool DiffWorker::Diff()
       m_pRightSrcFile->CollectLineNumbers(maxNumLines);
     }
 
-    m_pLeftDiffFile = new DiffFileAmiga(m_pPoolHeader,
+    m_pLeftDiffFile = new DiffOutputFileAmiga(m_pPoolHeader,
                                         m_bCancelRequested,
                                         this);
 
-    m_pRightDiffFile = new DiffFileAmiga(m_pPoolHeader,
+    m_pRightDiffFile = new DiffOutputFileAmiga(m_pPoolHeader,
                                          m_bCancelRequested,
                                          this);
 

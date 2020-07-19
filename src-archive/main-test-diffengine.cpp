@@ -20,7 +20,7 @@
 #include <workbench/startup.h>
 
 #include "DiffFileBase.h"
-#include "DiffFileAmiga.h"
+#include "DiffOutputFileAmiga.h"
 #include "DiffEngineAmiga.h"
 #include "LinkedListAmiga.h"
 #include "DiffLine.h"
@@ -46,14 +46,14 @@ int main(int argc, char **argv)
 
   LinkedListAmiga list(m_pPoolHeader);
 
-  DiffFileAmiga srcA(m_pPoolHeader, cancelRequested);
+  DiffOutputFileAmiga srcA(m_pPoolHeader, cancelRequested);
   srcA.PreProcess("/testfiles/testcase_23_RealLifeApp-left.cs");
 
-  DiffFileAmiga srcB(m_pPoolHeader, cancelRequested);
+  DiffOutputFileAmiga srcB(m_pPoolHeader, cancelRequested);
   srcB.PreProcess("/testfiles/testcase_23_RealLifeApp-right.cs");
 
-  DiffFileAmiga targetA(m_pPoolHeader, cancelRequested);
-  DiffFileAmiga targetB(m_pPoolHeader, cancelRequested);
+  DiffOutputFileAmiga targetA(m_pPoolHeader, cancelRequested);
+  DiffOutputFileAmiga targetB(m_pPoolHeader, cancelRequested);
 
   DiffEngineAmiga diffEngine(srcA,
                              srcB,

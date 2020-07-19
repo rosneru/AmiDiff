@@ -1,9 +1,9 @@
 #include "DiffDocument.h"
 
 
-DiffDocument::DiffDocument(DiffFileAmiga& leftFile,
+DiffDocument::DiffDocument(DiffOutputFileAmiga& leftFile,
                            const char* pLeftFileName,
-                           DiffFileAmiga& rightFile,
+                           DiffOutputFileAmiga& rightFile,
                            const char* pRightFileName)
   : m_LeftFile(leftFile),
     m_pLeftFileName(pLeftFileName),

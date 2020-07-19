@@ -6,7 +6,7 @@
 #include "CmdCloseWindow.h"
 #include "CmdOpenWindow.h"
 #include "DiffDocument.h"
-#include "DiffFileAmiga.h"
+#include "DiffOutputFileAmiga.h"
 #include "DiffInputFileAmiga.h"
 #include "DiffWindow.h"
 #include "FilesWindow.h"
@@ -90,8 +90,8 @@ private:
 
   DiffInputFileAmiga* m_pLeftSrcFile;
   DiffInputFileAmiga* m_pRightSrcFile;
-  DiffFileAmiga* m_pLeftDiffFile;
-  DiffFileAmiga* m_pRightDiffFile;
+  DiffOutputFileAmiga* m_pLeftDiffFile;
+  DiffOutputFileAmiga* m_pRightDiffFile;
 
   bool m_bShowLineNumbers;
   

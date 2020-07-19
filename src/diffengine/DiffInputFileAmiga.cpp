@@ -138,12 +138,6 @@ DiffInputFileAmiga::~DiffInputFileAmiga()
 }
 
 
-void DiffInputFileAmiga::Clear()
-{
-
-}
-
-
 void DiffInputFileAmiga::CollectLineNumbers(size_t maxNumLines)
 {
   int digits = numDigits(maxNumLines);
