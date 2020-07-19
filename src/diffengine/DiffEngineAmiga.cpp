@@ -10,14 +10,14 @@
 
 #include "DiffEngineAmiga.h"
 
-DiffEngineAmiga::DiffEngineAmiga(DiffFileBase& a,
-                                 DiffFileBase& b,
-                                 DiffFileBase& aDiff,
-                                 DiffFileBase& bDiff,
+DiffEngineAmiga::DiffEngineAmiga(DiffFileBase* pA,
+                                 DiffFileBase* pB,
+                                 DiffFileBase* pADiff,
+                                 DiffFileBase* pBDiff,
                                  APTR& pPoolHeader,
                                  bool& bCancelRequested,
                                  LinkedList* pDiffStartIdxsList)
-  : DiffEngine(a, b, aDiff, bDiff, bCancelRequested, pDiffStartIdxsList),
+  : DiffEngine(pA, pB, pADiff, pBDiff, bCancelRequested, pDiffStartIdxsList),
     m_pPoolHeader(pPoolHeader),
     m_pErrMsgLowMem("Not enough memory."),
     m_pErrMsgMemPool("Memory pool not initialized."),

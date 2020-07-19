@@ -16,10 +16,10 @@
 class DiffEngineAmiga : public DiffEngine
 {
 public:
-  DiffEngineAmiga(DiffFileBase& a,
-                  DiffFileBase& b,
-                  DiffFileBase& aDiff,
-                  DiffFileBase& bDiff,
+  DiffEngineAmiga(DiffFileBase* pA,
+                  DiffFileBase* pB,
+                  DiffFileBase* pADiff,
+                  DiffFileBase* pBDiff,
                   APTR& pPoolHeader,
                   bool& bCancelRequested,
                   LinkedList* pDiffStartIdxsList);

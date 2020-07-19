@@ -57,10 +57,10 @@ class DiffEngine
 {
 
 public:
-  DiffEngine(DiffFileBase& a,
-             DiffFileBase& b,
-             DiffFileBase& aDiff,
-             DiffFileBase& bDiff,
+  DiffEngine(DiffFileBase* pA,
+             DiffFileBase* pB,
+             DiffFileBase* pADiff,
+             DiffFileBase* pBDiff,
              bool& bCancelRequested,
              LinkedList* pDiffStartIdxsList = NULL);
 
@@ -85,10 +85,10 @@ protected:
   virtual void addDiffIdxToList(size_t diffIdx);
 
 private:
-  DiffFileBase& m_A;
-  DiffFileBase& m_B;
-  DiffFileBase& m_ADiff;
-  DiffFileBase& m_BDiff;
+  DiffFileBase* m_pA;
+  DiffFileBase* m_pB;
+  DiffFileBase* m_pADiff;
+  DiffFileBase* m_pBDiff;
 
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;
@@ -148,7 +148,7 @@ private:
    * This leads to more readable diff sequences when comparing
    * text files.
    */
-  void optimize(DiffFileBase& data);
+  void optimize(DiffFileBase* pData);
 
 
   void reportProgress(int progress);

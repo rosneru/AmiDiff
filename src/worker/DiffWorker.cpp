@@ -1,6 +1,7 @@
 #include <clib/exec_protos.h>
 
 #include "MessageBox.h"
+#include "DiffEngineAmiga.h"
 #include "DiffWorker.h"
 #include "LinkedListAmiga.h"
 
@@ -30,13 +31,6 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
     m_pRightSrcFile(NULL),
     m_pLeftDiffFile(NULL),
     m_pRightDiffFile(NULL),
-    m_DiffEngine(*m_pLeftSrcFile,
-                 *m_pRightSrcFile,
-                 *m_pLeftDiffFile,
-                 *m_pRightDiffFile,
-                 m_pPoolHeader,
-                 m_bCancelRequested,
-                 &m_DiffStartIdxsList),
     m_bShowLineNumbers(false)
 {
 
@@ -51,6 +45,7 @@ void DiffWorker::SetLineNumbers(bool bEnabled)
 {
   m_bShowLineNumbers = bEnabled;
 }
+
 
 bool DiffWorker::Diff()
 {
@@ -118,7 +113,6 @@ bool DiffWorker::Diff()
 
   m_StopWatch.Start();
 
-
   try
   {
     // Load and analyze the left file
@@ -158,13 +152,54 @@ bool DiffWorker::Diff()
 
     // Compare the files
     setProgressDescription("Comparing the files");
-    bool diffOk = m_DiffEngine.Diff();
+    DiffEngineAmiga* pDiffEngine = new DiffEngineAmiga(m_pLeftSrcFile,
+                                                       m_pRightSrcFile,
+                                                       m_pLeftDiffFile,
+                                                       m_pRightDiffFile,
+                                                       m_pPoolHeader,
+                                                       m_bCancelRequested,
+                                                       &m_DiffStartIdxsList);
+    bool diffOk = pDiffEngine->Diff();
 
     // If there was an error return to FilesWindow
     if(!diffOk)
     {
       throw "Error while performing the diff.";
     }
+
+    long totalTime = m_StopWatch.Pick();
+
+    // If there are no changes return to FilesWindow
+    if(pDiffEngine->NumDifferences() == 0)
+    {
+      request.Show(m_ProgressWindow.IntuiWindow(),
+                  "No differences found: the files are equal.", "Ok");
+
+      m_CmdOpenFilesWindow.Execute(NULL);
+      m_ProgressWindow.Close();
+
+      m_bExitAllowed = true;
+      return false;
+    }
+
+    //
+    // Prepare diff window and set results
+    //
+    m_pDiffDocument = new DiffDocument(*m_pLeftDiffFile, 
+                                      m_LeftSrcFilePath.C_str(),
+                                      *m_pRightDiffFile,
+                                      m_RightSrcFilePath.C_str());
+
+    m_DiffWindow.SetLineNumbersVisible(m_bShowLineNumbers);
+    m_DiffWindow.Open(WindowBase::IP_Fill);
+    m_DiffWindow.SetContent(m_pDiffDocument,
+                            &m_DiffStartIdxsList,
+                            totalTime,
+                            pDiffEngine->NumAdded(),
+                            pDiffEngine->NumChanged(),
+                            pDiffEngine->NumDeleted());
+
+    m_ProgressWindow.Close();
 
   }
   catch(const char* pError)
@@ -181,41 +216,6 @@ bool DiffWorker::Diff()
     m_bExitAllowed = true;
     return false;
   }
-
-  long totalTime = m_StopWatch.Pick();
-
-  // If there are no changes return to FilesWindow
-  if(m_DiffEngine.NumDifferences() == 0)
-  {
-    request.Show(m_ProgressWindow.IntuiWindow(),
-                 "No differences found: the files are equal.", "Ok");
-
-    m_CmdOpenFilesWindow.Execute(NULL);
-    m_ProgressWindow.Close();
-
-    m_bExitAllowed = true;
-    return false;
-  }
-
-  //
-  // Prepare diff window and set results
-  //
-  m_pDiffDocument = new DiffDocument(*m_pLeftDiffFile, 
-                                     m_LeftSrcFilePath.C_str(),
-                                     *m_pRightDiffFile,
-                                     m_RightSrcFilePath.C_str());
-
-  m_DiffWindow.SetLineNumbersVisible(m_bShowLineNumbers);
-  m_DiffWindow.Open(WindowBase::IP_Fill);
-  m_DiffWindow.SetContent(m_pDiffDocument,
-                          &m_DiffStartIdxsList,
-                          totalTime,
-                          m_DiffEngine.NumAdded(),
-                          m_DiffEngine.NumChanged(),
-                          m_DiffEngine.NumDeleted());
-
-  m_ProgressWindow.Close();
-
 
   m_bExitAllowed = true;
   return true;

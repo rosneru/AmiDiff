@@ -16,7 +16,6 @@ class DiffFileBase
 {
   friend class DiffEngine;
 
-  // Constructor
 public:
   DiffFileBase(bool& bCancelRequested);
 
