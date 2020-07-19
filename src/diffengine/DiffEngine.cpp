@@ -30,7 +30,7 @@ DiffEngine::~DiffEngine()
 
 }
 
-#include <stdio.h>
+
 bool DiffEngine::Diff()
 {
   //
@@ -42,15 +42,15 @@ bool DiffEngine::Diff()
   m_PercentIncrement = 90 / NUM_NOTIFICATIONS;
   m_NextNotifyPosition = m_NotifyIncrement;
   m_Percent = 0;
-printf("1..");
+
   reportProgress(0);
-printf("2..");
+
 
   //
   // Calculate some needed values
   //
   m_Max = m_pA->NumLines() + m_pB->NumLines() + 1;
-printf("m_Max = %d\n", m_Max);
+
   m_pDownVector = new long[2 * m_Max + 2];
   m_pUpVector = new long[2 * m_Max + 2];
 
@@ -63,16 +63,13 @@ printf("m_Max = %d\n", m_Max);
   //   While calculating the lcs the deleted lines in left file m_A are
   //   marked with DiffLine::Deleted and the inserted lines in right
   //   file m_b are marked with DiffLine::Added
-printf("3..");
   lcs(0, m_pA->NumLines(), 0, m_pB->NumLines());
-printf("4..");
 
   delete[] m_pUpVector;
   m_pUpVector = NULL;
 
   delete[] m_pDownVector;
   m_pDownVector = NULL;
-printf("5..");
 
   if(m_bCancelRequested)
   {

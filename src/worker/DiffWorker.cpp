@@ -142,12 +142,12 @@ bool DiffWorker::Diff()
     }
 
     m_pLeftDiffFile = new DiffOutputFileAmiga(m_pPoolHeader,
-                                        m_bCancelRequested,
-                                        this);
+                                              m_bCancelRequested,
+                                              this);
 
     m_pRightDiffFile = new DiffOutputFileAmiga(m_pPoolHeader,
-                                         m_bCancelRequested,
-                                         this);
+                                               m_bCancelRequested,
+                                               this);
 
     // Compare the files
     setProgressDescription("Comparing the files");
@@ -158,6 +158,7 @@ bool DiffWorker::Diff()
                                                        m_pPoolHeader,
                                                        m_bCancelRequested,
                                                        &m_DiffStartIdxsList);
+    pDiffEngine->SetProgressReporter(this);
     bool diffOk = pDiffEngine->Diff();
 
     // If there was an error return to FilesWindow

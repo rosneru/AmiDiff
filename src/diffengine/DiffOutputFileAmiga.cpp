@@ -13,8 +13,8 @@
 #include "DiffOutputFileAmiga.h"
 
 DiffOutputFileAmiga::DiffOutputFileAmiga(APTR& pPoolHeader,
-                             bool& bCancelRequested,
-                             ProgressReporter* pProgressReporter)
+                                         bool& bCancelRequested,
+                                         ProgressReporter* pProgressReporter)
   : DiffFileBase(bCancelRequested),
     m_pPoolHeader(pPoolHeader)
 {
@@ -35,8 +35,8 @@ DiffOutputFileAmiga::~DiffOutputFileAmiga()
 
 
 long DiffOutputFileAmiga::AddString(const char* pText,
-                              DiffLine::LineState lineState,
-                              const char* pFormattedLineNumber)
+                                    DiffLine::LineState lineState,
+                                    const char* pFormattedLineNumber)
 {
   if(m_NumLines < 1)
   {
