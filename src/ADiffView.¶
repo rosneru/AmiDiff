@@ -157,12 +157,10 @@ File
 "worker/WorkerStartupMsg.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
-"diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
 "application/ADiffView_rev.h"
 "gui/ADiffViewPens.h"
 "application/ADiffViewArgs.h"
-"diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 "commands/CmdOpenWindow.h"
@@ -176,8 +174,6 @@ File
 1 "application/main.cpp"
 "application/main.cpp"
 "diffengine/DiffLine.h"
-"diffengine/Pair.h"
-"diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
 "application/Application.h"
 "application/ADiffViewArgs.h"
@@ -216,10 +212,8 @@ File
 "worker/WorkerStartupMsg.h"
 "diffengine/DiffFileBase.h"
 "diffengine/DiffLine.h"
-"diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
 "gui/ADiffViewPens.h"
-"diffengine/DiffEngine.h"
 "oscottlibs/LinkedListNode.h"
 "commands/CmdOpenWindow.h"
 "commands/CommandBase.h"
@@ -361,6 +355,16 @@ File
 "diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffFileBase.o" "objects_debug/DiffFileBase.debug"
+""
+1 1
+File
+1 "diffengine/DiffInputFileAmiga.cpp"
+"diffengine/DiffInputFileAmiga.cpp"
+"diffengine/DiffInputFileAmiga.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
+Storm Shell Project (Dependencies)
+"objects_debug/DiffInputFileAmiga.o" "objects_debug/DiffInputFileAmiga.debug"
 ""
 1 1
 File
@@ -715,6 +719,13 @@ Storm Shell Project (Dependencies)
 File
 2 "diffengine/DiffFileBase.h"
 "diffengine/DiffFileBase.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "diffengine/DiffInputFileAmiga.h"
+"diffengine/DiffInputFileAmiga.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
