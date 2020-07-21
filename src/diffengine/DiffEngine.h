@@ -1,10 +1,11 @@
 #ifndef DIFF_ENGINE_H
 #define DIFF_ENGINE_H
 
+#include <vector>
+
 #include "Pair.h"
 #include "DiffLine.h"
 #include "DiffFileBase.h"
-#include "LinkedList.h"
 
 #include "ProgressReporter.h"
 
@@ -62,7 +63,7 @@ public:
              DiffFileBase* pADiff,
              DiffFileBase* pBDiff,
              bool& bCancelRequested,
-             LinkedList* pDiffStartIdxsList = NULL);
+             std::vector<size_t>& diffIndices);
 
   ~DiffEngine();
 
@@ -81,8 +82,7 @@ public:
   void SetProgressReporter(ProgressReporter* pProgressReporter);
 
 protected:
-  LinkedList* m_pDiffStartIdxsList;
-  virtual void addDiffIdxToList(size_t diffIdx);
+  std::vector<size_t>& m_DiffIndices;
 
 private:
   DiffFileBase* m_pA;

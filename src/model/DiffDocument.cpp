@@ -9,7 +9,9 @@ DiffDocument::DiffDocument(DiffOutputFileAmiga& leftFile,
     m_pLeftFileName(pLeftFileName),
     m_RightFile(rightFile),
     m_pRightFileName(pRightFileName),
-    m_MaxLineLength(0)
+    m_MaxLineLength(0),
+    m_DiffIndices(),
+    m_DiffIndicesIdx(0)
 {
 
 }
@@ -71,4 +73,58 @@ const DiffLine* DiffDocument::LeftLine(size_t index) const
 const DiffLine* DiffDocument::RightLine(size_t index) const
 {
   return m_RightFile.GetLine(index);
+}
+
+size_t DiffDocument::FirstDiffIndex() 
+{
+  if(m_DiffIndices.size() == 0)
+  {
+    return 0;
+  }
+
+  m_DiffIndicesIdx = m_DiffIndices.front();
+  return m_DiffIndices[m_DiffIndicesIdx];
+}
+
+size_t DiffDocument::LastDiffIndex() 
+{
+  if(m_DiffIndices.size() == 0)
+  {
+    return 0;
+  }
+
+  m_DiffIndicesIdx = m_DiffIndices.back();
+  return m_DiffIndices[m_DiffIndicesIdx];
+}
+
+size_t DiffDocument::NextDiffIndex() 
+{
+  if(m_DiffIndices.size() == 0)
+  {
+    return 0;
+  }
+
+  if(m_DiffIndicesIdx > (m_DiffIndices.size() - 1))
+  {
+    return m_DiffIndicesIdx;
+  }
+
+  m_DiffIndicesIdx++;
+  return m_DiffIndices[m_DiffIndicesIdx];
+}
+
+size_t DiffDocument::PrevDiffIndex() 
+{
+  if(m_DiffIndices.size() == 0)
+  {
+    return 0;
+  }
+
+  if(m_DiffIndicesIdx < 1)
+  {
+    return m_DiffIndicesIdx;
+  }
+
+  m_DiffIndicesIdx--;
+  return m_DiffIndices[m_DiffIndicesIdx];
 }

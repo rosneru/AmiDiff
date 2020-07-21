@@ -16,8 +16,8 @@ DiffEngineAmiga::DiffEngineAmiga(DiffFileBase* pA,
                                  DiffFileBase* pBDiff,
                                  APTR& pPoolHeader,
                                  bool& bCancelRequested,
-                                 LinkedList* pDiffStartIdxsList)
-  : DiffEngine(pA, pB, pADiff, pBDiff, bCancelRequested, pDiffStartIdxsList),
+                                 std::vector<size_t>& diffIndices)
+  : DiffEngine(pA, pB, pADiff, pBDiff, bCancelRequested, diffIndices),
     m_pPoolHeader(pPoolHeader),
     m_pErrMsgLowMem("Not enough memory."),
     m_pErrMsgMemPool("Memory pool not initialized."),
@@ -42,26 +42,4 @@ void DiffEngineAmiga::Clear()
 const char* DiffEngineAmiga::Error()
 {
   return m_pError;
-}
-
-
-void DiffEngineAmiga::addDiffIdxToList(size_t diffIdx)
-{
-  if(m_pPoolHeader == NULL)
-  {
-    // Won't work without memory pool
-    m_pError = m_pErrMsgMemPool;
-    return;
-  }
-
-  size_t* pItem = (size_t*) AllocPooled(m_pPoolHeader, sizeof(size_t));
-  if(pItem == NULL)
-  {
-    m_pError = m_pErrMsgLowMem;
-    return;
-  }
-
-  pItem[0] = diffIdx;
-
-  m_pDiffStartIdxsList->InsertTail(pItem);
 }

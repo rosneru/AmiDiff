@@ -26,7 +26,6 @@ DiffWindow::DiffWindow(ScreenBase* pScreenBase,
     m_pGadtoolsContext(NULL),
     m_pGadTxtLeftFile(NULL),
     m_pGadTxtRightFile(NULL),
-    m_pDiffStartIdxsList(NULL),
     m_bNoNavigationDone(true),
     m_NumDifferences(0),
     m_bShowLineNumbers(false),
@@ -218,7 +217,6 @@ bool DiffWindow::Open(InitialPosition initialPos)
 
 
 bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
-                            LinkedList* pDiffStartIdxsList,
                             long diffTime,
                             int numAdded,
                             int numChanged,
@@ -235,7 +233,6 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
   }
 
   m_pDocument = pDiffDocument;
-  m_pDiffStartIdxsList = pDiffStartIdxsList;
 
   m_NumDifferences = numAdded + numChanged + numDeleted;
 
@@ -482,11 +479,6 @@ void DiffWindow::YDecrease(size_t numLines,
 
 void DiffWindow::NavigateToNextDiff()
 {
-  if(m_pDiffStartIdxsList == NULL)
-  {
-    return;
-  }
-
   // Calculating the yLimit (max y allowed for scrolling) enables to
   // determine if we're already on the last page
   size_t yLimit = m_NumLines - m_MaxTextAreaLines;
@@ -496,35 +488,25 @@ void DiffWindow::NavigateToNextDiff()
     bAlreadyOnLastPage = true;
   }
 
-  size_t* pItem = NULL;
+  size_t idx = 0;
   if(m_bNoNavigationDone == true)
   {
     m_bNoNavigationDone = false;
-    pItem = (size_t*)m_pDiffStartIdxsList->GetFirst();
+    idx = m_pDocument->FirstDiffIndex();
   }
   else if(bAlreadyOnLastPage == true)
   {
     // When already on last page don't navigate through all the diffs
     // that maybe there. Instead jump to the first diff.
-    pItem = (size_t*)m_pDiffStartIdxsList->GetFirst();
+    idx = m_pDocument->FirstDiffIndex();
   }
   else
   {
-    pItem = (size_t*)m_pDiffStartIdxsList->GetNext();
-    if(pItem == NULL)
-    {
-      // There is no next diff. Jump to the first one.
-      pItem = (size_t*)m_pDiffStartIdxsList->GetFirst();
-    }
-  }
-
-  if(pItem == NULL)
-  {
-    return;
+    idx = m_pDocument->NextDiffIndex();
   }
 
   // Scroll y to next diff
-  YChangedHandler(*pItem);
+  YChangedHandler(idx);
 
   // Set scrollbar to new y position
   setYScrollTop(m_Y);
@@ -533,59 +515,48 @@ void DiffWindow::NavigateToNextDiff()
 
 void DiffWindow::NavigateToPrevDiff()
 {
-  if(m_pDiffStartIdxsList == NULL)
-  {
-    return;
-  }
-
   // Calculating the yLimit (max y pos for scrolling)
   size_t yLimit = m_NumLines - m_MaxTextAreaLines;
 
-  size_t* pItem = NULL;
+  size_t idx = NULL;
 
   if(m_bNoNavigationDone == true)
   {
     m_bNoNavigationDone = false;
-    pItem = (size_t*)m_pDiffStartIdxsList->GetLast();
+    idx = m_pDocument->LastDiffIndex();
   }
   else
   {
-    pItem = (size_t*)m_pDiffStartIdxsList->GetPrev();
+    idx = m_pDocument->PrevDiffIndex();
 
-    if(pItem != NULL)
+    if(idx != NULL)
     {
-      while((pItem != NULL) && (*pItem > yLimit))
+      while(idx > yLimit)
       {
-        pItem = (size_t*)m_pDiffStartIdxsList->GetPrev();
+        idx = m_pDocument->PrevDiffIndex();
       }
 
     }
     else
     {
       // There is no prev diff. Jump to the last one.
-      pItem = (size_t*)m_pDiffStartIdxsList->GetLast();
+      idx = m_pDocument->LastDiffIndex();
 
       // We want to select the upmost diff on the last page. So we
       // rewind from last diff by calling GetPrev until the diff idx
       // is less than yLimit. This is the first diff that isn't on that
       //  page anymore, so we call GetNext().
-      while((pItem != NULL) && (*pItem > yLimit))
+      while(idx > yLimit)
       {
-        pItem = (size_t*)m_pDiffStartIdxsList->GetPrev();
+        idx = m_pDocument->PrevDiffIndex();
       }
 
-      pItem = (size_t*)m_pDiffStartIdxsList->GetNext();
+      idx = m_pDocument->NextDiffIndex();
     }
   }
 
-
-  if(pItem == NULL)
-  {
-    return;
-  }
-
   // Scroll y to prev diff
-  YChangedHandler(*pItem);
+  YChangedHandler(idx);
 
   // Set scrollbar to new y position
   setYScrollTop(m_Y);

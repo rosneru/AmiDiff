@@ -13,7 +13,6 @@ set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAG
 
 add_executable (ADiffView
                 amigautils/AmigaFile.cpp
-                amigautils/LinkedListAmiga.cpp
                 amigautils/MessageBox.cpp
                 amigautils/StopWatch.cpp
                 application/ADiffViewArgs.cpp
@@ -48,8 +47,6 @@ add_executable (ADiffView
                 gui/ScrollbarWindow.cpp
                 gui/WindowBase.cpp
                 model/DiffDocument.cpp
-                oscottlibs/LinkedList.cpp
-                oscottlibs/LinkedListNode.cpp
                 oscottlibs/SimpleString.cpp
                 worker/DiffWorker.cpp
                 worker/WorkerBase.cpp)

@@ -7,7 +7,6 @@
 #include "OpenScreenBase.h"
 #include "DiffDocument.h"
 #include "DiffLine.h"
-#include "LinkedList.h"
 #include "SimpleString.h"
 #include "ScrollbarWindow.h"
 
@@ -71,7 +70,6 @@ public:
    * of the array pDiffStartIdxs.
    */
   bool SetContent(DiffDocument* pDiffDocument,
-                  LinkedList* pDiffStartIdxsList,
                   long diffTime,
                   int numAdded,
                   int numChanged,
@@ -169,7 +167,6 @@ private:
   struct Gadget* m_pGadTxtLeftFile;
   struct Gadget* m_pGadTxtRightFile;
 
-  LinkedList* m_pDiffStartIdxsList; ///> A list of size_t*, which content the y-start-idx of each diff
   bool m_bNoNavigationDone;
   long m_NumDifferences;      ///> Number of differences
 

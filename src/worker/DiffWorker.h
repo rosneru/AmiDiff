@@ -1,6 +1,8 @@
 #ifndef DIFF_WORKER_H
 #define DIFF_WORKER_H
 
+#include <vector>
+
 #include <exec/ports.h>
 
 #include "CmdCloseWindow.h"
@@ -10,7 +12,6 @@
 #include "DiffInputFileAmiga.h"
 #include "DiffWindow.h"
 #include "FilesWindow.h"
-#include "LinkedListAmiga.h"
 #include "ProgressWindow.h"
 #include "SimpleString.h"
 #include "StopWatch.h"
@@ -83,8 +84,6 @@ private:
   bool& m_bExitAllowed;
 
   APTR m_pPoolHeader;
-
-  LinkedListAmiga m_DiffStartIdxsList;
 
   DiffDocument* m_pDiffDocument;
 

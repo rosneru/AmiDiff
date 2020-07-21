@@ -22,7 +22,7 @@ public:
                   DiffFileBase* pBDiff,
                   APTR& pPoolHeader,
                   bool& bCancelRequested,
-                  LinkedList* pDiffStartIdxsList);
+                  std::vector<size_t>& diffIndices);
 
   ~DiffEngineAmiga();
 
@@ -36,8 +36,6 @@ private:
   const char* m_pErrMsgMemPool;
   const char* m_pErrMsgUnknown;
   const char* m_pError;
-
-  void addDiffIdxToList(size_t diffIdx);
 };
 
 #endif // DIFFENGINE_AMIGA_H

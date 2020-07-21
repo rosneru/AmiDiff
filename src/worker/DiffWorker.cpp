@@ -24,7 +24,6 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
     m_bCancelRequested(bCancelRequested),
     m_bExitAllowed(bExitAllowed),
     m_pPoolHeader(NULL),
-    m_DiffStartIdxsList(m_pPoolHeader),
     m_pDiffDocument(NULL),
     m_pLeftSrcFile(NULL),
     m_pRightSrcFile(NULL),
@@ -128,7 +127,7 @@ bool DiffWorker::Diff()
                                              this,
                                              m_RightSrcFilePath.C_str());
 
-    // Collect line numbers if  this is enabled
+    // Collect line numbers if this is enabled
     if(m_bShowLineNumbers)
     {
       size_t maxNumLines = m_pLeftSrcFile->NumLines();
@@ -150,14 +149,14 @@ bool DiffWorker::Diff()
                                                this);
 
     // Compare the files
+    std::vector<size_t> m_DiffIndices;  // TODO remove, this will crash! Only to make building posible.
     setProgressDescription("Comparing the files");
-    DiffEngineAmiga* pDiffEngine = new DiffEngineAmiga(m_pLeftSrcFile,
-                                                       m_pRightSrcFile,
-                                                       m_pLeftDiffFile,
-                                                       m_pRightDiffFile,
-                                                       m_pPoolHeader,
-                                                       m_bCancelRequested,
-                                                       &m_DiffStartIdxsList);
+    DiffEngine* pDiffEngine = new DiffEngine(m_pLeftSrcFile,
+                                             m_pRightSrcFile,
+                                             m_pLeftDiffFile,
+                                             m_pRightDiffFile,
+                                             m_bCancelRequested,
+                                             m_DiffIndices);
     pDiffEngine->SetProgressReporter(this);
     bool diffOk = pDiffEngine->Diff();
 
@@ -193,7 +192,6 @@ bool DiffWorker::Diff()
     m_DiffWindow.SetLineNumbersVisible(m_bShowLineNumbers);
     m_DiffWindow.Open(WindowBase::IP_Fill);
     m_DiffWindow.SetContent(m_pDiffDocument,
-                            &m_DiffStartIdxsList,
                             totalTime,
                             pDiffEngine->NumAdded(),
                             pDiffEngine->NumChanged(),
@@ -255,7 +253,7 @@ void DiffWorker::disposeDocuments()
     m_pRightDiffFile = NULL;
   }
 
-  m_DiffStartIdxsList.Clear();
+  // m_DiffIndices.clear();
 
   //
   // Deleting the memory pool as a whole gives an extreme

@@ -7,8 +7,8 @@ DiffEngine::DiffEngine(DiffFileBase* pA,
                        DiffFileBase* pADiff,
                        DiffFileBase* pBDiff,
                        bool& bCancelRequested,
-                       LinkedList* pDiffStartIdxsList)
-  : m_pDiffStartIdxsList(pDiffStartIdxsList),
+                       std::vector<size_t>& diffIndices)
+  : m_DiffIndices(diffIndices),
     m_pA(pA),
     m_pB(pB),
     m_pADiff(pADiff),
@@ -132,19 +132,6 @@ void DiffEngine::SetProgressReporter(ProgressReporter* pProgressReporter)
   m_pProgressReporter = pProgressReporter;
 }
 
-void DiffEngine::addDiffIdxToList(size_t diffIdx)
-{
-  if(m_pDiffStartIdxsList == NULL)
-  {
-    return;
-  }
-
-  size_t* pItem = new size_t[1];
-  pItem[0] = diffIdx;
-
-  m_pDiffStartIdxsList->InsertTail(pItem);
-}
-
 
 void DiffEngine::createDiffFiles()
 {
@@ -205,7 +192,7 @@ void DiffEngine::createDiffFiles()
         // Add start of this block of CHANGED lines to differences list
         m_NumChanged++;
         bBlockAlreadyAdded = true;
-        addDiffIdxToList(idx); // -2 ... has been decremented above
+        m_DiffIndices.push_back(idx); // -2 ... has been decremented above
       }
     }
 
@@ -222,7 +209,7 @@ void DiffEngine::createDiffFiles()
         // Add start of this block of DELETED lines to differences list
         m_NumDeletedA++;
         bBlockAlreadyAdded = true;
-        addDiffIdxToList(idx);
+        m_DiffIndices.push_back(idx);
       }
     }
 
@@ -239,7 +226,7 @@ void DiffEngine::createDiffFiles()
         // Add start of this block of ADDED lines to differences list
         m_NumInsertedB++;
         bBlockAlreadyAdded = true;
-        addDiffIdxToList(idx);
+        m_DiffIndices.push_back(idx);
       }
     }
   }
