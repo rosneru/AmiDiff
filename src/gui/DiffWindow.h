@@ -52,28 +52,9 @@ public:
 
 
   /**
-   * Set the main content for the DiffWindow.
-   *
-   * @param pLeftDocument The DiffDocument to be displayed on the left
-   * side. Should be created with the resulting left DiffFile after
-   * DiffEngine.Diff() has run successfully.
-   *
-   * @param pRightDocument The DiffDocument to be displayed on the right
-   * side. Should be created with the resulting right DiffFile after
-   * DiffEngine.Diff() has run successfully.
-   *
-   * @param pDiffStartIdxs An array, containing the y-start-idx of each
-   * diff
-   *
-   * @param numDifferences The number of differences. Summarized the
-   * changed, added and inserted lines. This is also the number of items
-   * of the array pDiffStartIdxs.
+   * Set the diff document to be displayed in DiffWindow.
    */
-  bool SetContent(DiffDocument* pDiffDocument,
-                  long diffTime,
-                  int numAdded,
-                  int numChanged,
-                  int numDeleted);
+  bool SetContent(DiffDocument* pDiffDocument);
 
 
   /**

@@ -216,11 +216,7 @@ bool DiffWindow::Open(InitialPosition initialPos)
 }
 
 
-bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
-                            long diffTime,
-                            int numAdded,
-                            int numChanged,
-                            int numDeleted)
+bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 {
   if(m_pScreenBase == NULL)
   {
@@ -234,18 +230,20 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument,
 
   m_pDocument = pDiffDocument;
 
-  m_NumDifferences = numAdded + numChanged + numDeleted;
+  m_NumDifferences = pDiffDocument->NumAdded() 
+                   + pDiffDocument->NumChanged()
+                   + pDiffDocument->NumDeleted();
 
   m_StatusBarText = "Diff performed in ";
-  m_StatusBarText += diffTime;
+  m_StatusBarText += pDiffDocument->DiffTime();
   m_StatusBarText += " ms. Total changes: ";
   m_StatusBarText += m_NumDifferences;
   m_StatusBarText += "   |   ";
 
   SimpleString emptyStr = "";
-  m_AddedText = emptyStr + numAdded + " Added ";
-  m_ChangedText = emptyStr + numChanged + " Changed ";
-  m_DeletedText = emptyStr + numDeleted + " Deleted ";
+  m_AddedText = emptyStr + pDiffDocument->NumAdded() + " Added ";
+  m_ChangedText = emptyStr + pDiffDocument->NumChanged() + " Changed ";
+  m_DeletedText = emptyStr + pDiffDocument->NumDeleted() + " Deleted ";
 
   m_bNoNavigationDone = true;
   m_X = 0;

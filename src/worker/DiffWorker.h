@@ -83,21 +83,11 @@ private:
   bool& m_bCancelRequested;
   bool& m_bExitAllowed;
 
-  APTR m_pPoolHeader;
-
   DiffDocument* m_pDiffDocument;
 
-  DiffInputFileAmiga* m_pLeftSrcFile;
-  DiffInputFileAmiga* m_pRightSrcFile;
-  DiffOutputFileAmiga* m_pLeftDiffFile;
-  DiffOutputFileAmiga* m_pRightDiffFile;
 
   bool m_bShowLineNumbers;
-  
-  StopWatch m_StopWatch;
 
-
-  void disposeDocuments();
 
   /**
    * Implemented abstract method from WorkerBase.

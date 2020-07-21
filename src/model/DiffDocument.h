@@ -3,23 +3,30 @@
 
 #include <vector>
 
+#include "DiffInputFileAmiga.h"
 #include "DiffOutputFileAmiga.h"
 #include "DiffLine.h"
+#include "ProgressReporter.h"
 #include "SimpleString.h"
 
 class DiffDocument
 {
 public:
-  DiffDocument(DiffOutputFileAmiga& leftFile,
-               const char* pLeftFileName,
-               DiffOutputFileAmiga& rightFile,
-               const char* pRightFileName);
+  DiffDocument(const char* pLeftFilePath,
+               const char* pRightFilePath,
+               bool& bCancelRequested,
+               ProgressReporter* pProgressReporter);
 
   virtual ~DiffDocument();
 
   const char* LeftFileName() const;
   const char* RightFileName() const;
   
+  long DiffTime() const;
+  size_t NumAdded() const;
+  size_t NumChanged() const;
+  size_t NumDeleted() const;
+
   size_t NumLines() const;
   size_t MaxLineLength();
   
@@ -32,15 +39,21 @@ public:
   size_t PrevDiffIndex();
 
 private:
-  DiffOutputFileAmiga& m_LeftFile;
   const char* m_pLeftFileName;
-  DiffOutputFileAmiga& m_RightFile;
   const char* m_pRightFileName;
-
-  char* m_FileName;
-  size_t m_MaxLineLength;
-
+  APTR m_pPoolHeader;
+  DiffInputFileAmiga* m_pLeftSrcFile;
+  DiffInputFileAmiga* m_pRightSrcFile;
+  DiffOutputFileAmiga* m_pLeftDiffFile;
+  DiffOutputFileAmiga* m_pRightDiffFile;
   std::vector<size_t> m_DiffIndices;
+  
+  long m_DiffTime;
+  size_t m_NumAdded;
+  size_t m_NumChanged;
+  size_t m_NumDeleted;
+
+  size_t m_MaxLineLength;
   size_t m_DiffIndicesIdx;
 };
 
