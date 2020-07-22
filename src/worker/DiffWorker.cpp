@@ -12,9 +12,9 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
                        struct MsgPort*& pProgressPort,
                        bool& bCancelRequested,
                        bool& bExitAllowed)
-  : WorkerBase(pProgressPort),
-    m_LeftSrcFilePath(leftFilePath),
+  : m_LeftSrcFilePath(leftFilePath),
     m_RightSrcFilePath(rightFilePath),
+    m_Progress(pProgressPort, m_pReplyPort),
     m_DiffWindow(diffWindow),
     m_ProgressWindow(progressWindow),
     m_CmdOpenFilesWindow(cmdOpenFilesWindow),
@@ -96,14 +96,14 @@ bool DiffWorker::Diff()
 
   try
   {
-    setProgressDescription("Creating diff document");
-    notifyProgressChanged(50);
+    m_Progress.setProgressDescription("Creating diff document");
+    m_Progress.notifyProgressChanged(50);
     m_StopWatch.Start();
     m_pDiffDocument = new DiffDocument(m_LeftSrcFilePath.C_str(),
                                        m_RightSrcFilePath.C_str(),
                                        m_bCancelRequested,
                                        m_StopWatch,
-                                       this);
+                                       NULL);
     // setProgressDescription("Loading left file");
 
     // setProgressDescription("Loading right file");
@@ -184,36 +184,36 @@ void DiffWorker::doWork()
   Diff();
 }
 
-void DiffWorker::notifyProgressChanged(int progress)
-{
-  //
-  // Reporting the 3 stages of diff-progress (preprocessing left file,
-  // preprocessing right file, performing the diff as 0..33%, 33%..66%
-  // and 66%..100%.
-  //
+// void DiffWorker::notifyProgressChanged(int progress)
+// {
+//   //
+//   // Reporting the 3 stages of diff-progress (preprocessing left file,
+//   // preprocessing right file, performing the diff as 0..33%, 33%..66%
+//   // and 66%..100%.
+//   //
 
-  if(progress == 100)
-  {
-    if(m_ProgressOffset == 0)
-    {
-      m_ProgressOffset = 33;
-      progress = 0;
-    }
-    else if(m_ProgressOffset == 33)
-    {
-      m_ProgressOffset = 66;
-      progress = 0;
-    }
-    else if(m_ProgressOffset == 66)
-    {
-      m_ProgressOffset = 0;
-      progress = -1;
-    }
-  }
-  else
-  {
-    progress = progress / 3 + 1;
-  }
+//   if(progress == 100)
+//   {
+//     if(m_ProgressOffset == 0)
+//     {
+//       m_ProgressOffset = 33;
+//       progress = 0;
+//     }
+//     else if(m_ProgressOffset == 33)
+//     {
+//       m_ProgressOffset = 66;
+//       progress = 0;
+//     }
+//     else if(m_ProgressOffset == 66)
+//     {
+//       m_ProgressOffset = 0;
+//       progress = -1;
+//     }
+//   }
+//   else
+//   {
+//     progress = progress / 3 + 1;
+//   }
 
-  WorkerBase::notifyProgressChanged(m_ProgressOffset + progress);
-}
+//   WorkerBase::notifyProgressChanged(m_ProgressOffset + progress);
+// }

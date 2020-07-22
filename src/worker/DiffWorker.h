@@ -12,6 +12,7 @@
 #include "DiffInputFileAmiga.h"
 #include "DiffWindow.h"
 #include "FilesWindow.h"
+#include "ProgressReporter.h"
 #include "ProgressWindow.h"
 #include "SimpleString.h"
 #include "StopWatch.h"
@@ -21,6 +22,7 @@
  * Class to perform the diff as a background process. Also managing
  * the opening and closing of the required windows to e.g. display the
  * file differences.
+
  *
  * @author Uwe Rosner
  * @date 26/10/2018
@@ -73,8 +75,8 @@ public:
 private:
   SimpleString& m_LeftSrcFilePath;
   SimpleString& m_RightSrcFilePath;
+  ProgressReporter m_Progress;
   StopWatch m_StopWatch;
-
   DiffWindow& m_DiffWindow;
   ProgressWindow& m_ProgressWindow;
   CmdOpenWindow& m_CmdOpenFilesWindow;
@@ -96,16 +98,16 @@ private:
    */
   void doWork();
 
-  /**
-   * Sending a message about progress to the port given in the
-   * constructor.
-   *
-   * NOTE Extends the basis class method. The 3 stages of progress in
-   *      diff (pre-processing left file, pre-processing right file
-   *      and performing the diff) are reported merged with 0..33%,
-   *      33%..66% and 66%..100%.
-   */
-  virtual void notifyProgressChanged(int progress);
+  // /**
+  //  * Sending a message about progress to the port given in the
+  //  * constructor.
+  //  *
+  //  * NOTE Extends the basis class method. The 3 stages of progress in
+  //  *      diff (pre-processing left file, pre-processing right file
+  //  *      and performing the diff) are reported merged with 0..33%,
+  //  *      33%..66% and 66%..100%.
+  //  */
+  // virtual void notifyProgressChanged(int progress);
 
 };
 

@@ -4,7 +4,6 @@
 #include <dos/dosextens.h>
 #include <exec/ports.h>
 
-#include "ProgressReporter.h"
 #include "SimpleString.h"
 #include "WorkerStartupMsg.h"
 
@@ -38,11 +37,11 @@
  * @author Uwe Rosner
  * @date 24/01/2019
  */
-class WorkerBase : public ProgressReporter
+class WorkerBase
 {
 public:
 
-  WorkerBase(struct MsgPort*& pProgressPort);
+  WorkerBase();
   virtual ~WorkerBase();
 
   /**
@@ -52,24 +51,14 @@ public:
 
 protected:
   WorkerStartupMsg* m_pStartupMsg;
-  struct MsgPort*& m_pProgressPort;
   struct MsgPort* m_pReplyPort;
 
   SimpleString m_LastError;
-  void setProgressDescription(const char* pProgressDescription);
 
   virtual void doWork() = 0;
 
-  /**
-   * Sending a message about progres to the port given in the
-   * constructor.
-   */
-  virtual void notifyProgressChanged(int progress);
-
-
 private:
   struct Process* m_pBackgrProcess;
-  const char* m_pProgressDescription;
   bool m_bExitRequested;
 
   static void startup();

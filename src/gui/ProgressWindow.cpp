@@ -87,7 +87,7 @@ ProgressWindow::ProgressWindow(ScreenBase*& pScreenBase,
   m_Height = m_NewGadget.ng_TopEdge + m_NewGadget.ng_Height + yOffset + pScr->WBorBottom;
 
   // Setting window title
-  SetTitle("Loading left file");
+  SetTitle("Progress window");
 
   // Setting the window flags
   addFlags(WFLG_DRAGBAR |         // Add a drag gadget

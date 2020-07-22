@@ -49,6 +49,7 @@ add_executable (ADiffView
                 model/DiffDocument.cpp
                 oscottlibs/SimpleString.cpp
                 worker/DiffWorker.cpp
+                worker/ProgressReporter.cpp
                 worker/WorkerBase.cpp)
 
 

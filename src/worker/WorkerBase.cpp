@@ -6,12 +6,10 @@
 #include "WorkerBase.h"
 #include "ProgressMessage.h"
 
-WorkerBase::WorkerBase(struct MsgPort*& pProgressPort)
+WorkerBase::WorkerBase()
   : m_pStartupMsg(NULL),
-    m_pProgressPort(pProgressPort),
     m_pReplyPort(NULL),
     m_pBackgrProcess(NULL),
-    m_pProgressDescription(NULL),
     m_bExitRequested(false)
 {
 }
@@ -109,29 +107,3 @@ void WorkerBase::startup()
 
 }
 
-
-void WorkerBase::setProgressDescription(const char *pProgressDescription)
-{
-  m_pProgressDescription = pProgressDescription;
-}
-
-
-void WorkerBase::notifyProgressChanged(int progress)
-{
-  if ((m_pProgressPort == NULL) || (m_pReplyPort == NULL))
-  {
-    return;
-  }
-
-  // Creating and initializing the progress message
-  struct ProgressMessage progressMessage;
-  progressMessage.mn_ReplyPort = m_pReplyPort;
-  progressMessage.progress = progress;
-  progressMessage.pDescription = m_pProgressDescription;
-
-  // Sending the progress message, waiting for the answer and taking the
-  // answer off the queue
-  PutMsg(m_pProgressPort, &progressMessage);
-  WaitPort(m_pReplyPort);
-  GetMsg(m_pReplyPort);
-}

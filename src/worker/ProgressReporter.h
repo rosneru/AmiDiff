@@ -13,7 +13,17 @@
 class ProgressReporter
 {
 public:
-  virtual void notifyProgressChanged(int progress) = 0;
+  ProgressReporter(struct MsgPort*& pProgressPort, 
+                   struct MsgPort*& pReplyPort);
+
+  virtual void notifyProgressChanged(int progress);
+  void setProgressDescription(const char* pProgressDescription);
+
+private:
+  struct MsgPort*& m_pProgressPort;
+  struct MsgPort*& m_pReplyPort;
+  const char* m_pProgressDescription;
+
 };
 
 #endif

@@ -55,7 +55,7 @@ public:
 private:
   SimpleString m_LeftFileName;
   SimpleString m_RightFileName;
-  MemoryPool m_Pool;
+  MemoryPool m_Pool; // Ensure Pool is created before the DiffFiles.
   DiffInputFileAmiga m_LeftSrcFile;
   DiffInputFileAmiga m_RightSrcFile;
   DiffOutputFileAmiga m_LeftDiffFile;
