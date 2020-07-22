@@ -22,7 +22,6 @@
  * the opening and closing of the required windows to e.g. display the
  * file differences.
  *
- *
  * @author Uwe Rosner
  * @date 26/10/2018
  */
@@ -74,6 +73,7 @@ public:
 private:
   SimpleString& m_LeftSrcFilePath;
   SimpleString& m_RightSrcFilePath;
+  StopWatch m_StopWatch;
 
   DiffWindow& m_DiffWindow;
   ProgressWindow& m_ProgressWindow;

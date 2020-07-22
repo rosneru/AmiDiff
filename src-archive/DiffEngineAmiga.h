@@ -36,6 +36,8 @@ private:
   const char* m_pErrMsgMemPool;
   const char* m_pErrMsgUnknown;
   const char* m_pError;
+
+  void addDiffIdxToList(size_t diffIdx);
 };
 
 #endif // DIFFENGINE_AMIGA_H

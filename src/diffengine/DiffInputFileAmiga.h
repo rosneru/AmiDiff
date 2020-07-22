@@ -18,7 +18,7 @@
 class DiffInputFileAmiga : public DiffFileBase
 {
 public:
-  DiffInputFileAmiga(APTR& pPoolHeader, 
+  DiffInputFileAmiga(APTR pPoolHeader, 
                      bool& bCancelRequested, 
                      ProgressReporter* pProgressReporter,
                      const char* pFileName);
@@ -36,7 +36,7 @@ public:
                  const char* pFormattedLineNumber);
 
 private:
-  APTR& m_pPoolHeader;
+  APTR m_pPoolHeader;
 };
 
 #endif // DIFF_FILE_PARTITION_AMIGA_H

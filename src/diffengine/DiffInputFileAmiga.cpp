@@ -12,7 +12,7 @@
 
 #include "DiffInputFileAmiga.h"
 
-DiffInputFileAmiga::DiffInputFileAmiga(APTR& pPoolHeader,
+DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
                              bool& bCancelRequested, 
                              ProgressReporter* pProgressReporter,
                              const char* pFileName)

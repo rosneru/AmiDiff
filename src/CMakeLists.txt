@@ -29,7 +29,6 @@ add_executable (ADiffView
                 commands/CmdRequester.cpp
                 commands/CommandBase.cpp
                 diffengine/DiffEngine.cpp
-                diffengine/DiffEngineAmiga.cpp
                 diffengine/DiffOutputFileAmiga.cpp
                 diffengine/DiffFileBase.cpp
                 diffengine/DiffInputFileAmiga.cpp
@@ -47,6 +46,7 @@ add_executable (ADiffView
                 gui/ScrollbarWindow.cpp
                 gui/WindowBase.cpp
                 model/DiffDocument.cpp
+                model/MemoryPool.cpp
                 oscottlibs/SimpleString.cpp
                 worker/DiffWorker.cpp
                 worker/WorkerBase.cpp)

@@ -2,17 +2,17 @@
 
 #include "DiffEngine.h"
 
-DiffEngine::DiffEngine(DiffFileBase* pA,
-                       DiffFileBase* pB,
-                       DiffFileBase* pADiff,
-                       DiffFileBase* pBDiff,
+DiffEngine::DiffEngine(DiffFileBase& a,
+                       DiffFileBase& b,
+                       DiffFileBase& aDiff,
+                       DiffFileBase& bDiff,
                        bool& bCancelRequested,
                        std::vector<size_t>& diffIndices)
   : m_DiffIndices(diffIndices),
-    m_pA(pA),
-    m_pB(pB),
-    m_pADiff(pADiff),
-    m_pBDiff(pBDiff),
+    m_pA(a),
+    m_pB(b),
+    m_pADiff(aDiff),
+    m_pBDiff(bDiff),
     m_bCancelRequested(bCancelRequested),
     m_pProgressReporter(NULL),
     m_NumInsertedB(0),
@@ -21,23 +21,13 @@ DiffEngine::DiffEngine(DiffFileBase* pA,
     m_Max(0),
     m_pDownVector(NULL),
     m_pUpVector(NULL)
-{
+{ 
 
-}
-
-DiffEngine::~DiffEngine()
-{
-
-}
-
-
-bool DiffEngine::Diff()
-{
   //
   // Set-up the progress reporting
   //
   const long NUM_NOTIFICATIONS = 18;
-  long numPositions = m_pA->NumLines();
+  long numPositions = m_pA.NumLines();
   m_NotifyIncrement = numPositions / NUM_NOTIFICATIONS;
   m_PercentIncrement = 90 / NUM_NOTIFICATIONS;
   m_NextNotifyPosition = m_NotifyIncrement;
@@ -49,8 +39,9 @@ bool DiffEngine::Diff()
   //
   // Calculate some needed values
   //
-  m_Max = m_pA->NumLines() + m_pB->NumLines() + 1;
+  m_Max = m_pA.NumLines() + m_pB.NumLines() + 1;
 
+  // TODO use std::vector
   m_pDownVector = new long[2 * m_Max + 2];
   m_pUpVector = new long[2 * m_Max + 2];
 
@@ -63,7 +54,7 @@ bool DiffEngine::Diff()
   //   While calculating the lcs the deleted lines in left file m_A are
   //   marked with DiffLine::Deleted and the inserted lines in right
   //   file m_b are marked with DiffLine::Added
-  lcs(0, m_pA->NumLines(), 0, m_pB->NumLines());
+  lcs(0, m_pA.NumLines(), 0, m_pB.NumLines());
 
   delete[] m_pUpVector;
   m_pUpVector = NULL;
@@ -73,8 +64,7 @@ bool DiffEngine::Diff()
 
   if(m_bCancelRequested)
   {
-    // Don't continue as cancel was requested
-    return false;
+    throw "User abort";
   }
 
 
@@ -99,9 +89,13 @@ bool DiffEngine::Diff()
 
   // Progress reporting
   reportProgress(100);
-
-  return true;
 }
+
+DiffEngine::~DiffEngine()
+{
+
+}
+
 
 long DiffEngine::NumDifferences() const
 {
@@ -138,8 +132,8 @@ void DiffEngine::createDiffFiles()
   size_t lineA = 0;
   size_t lineB = 0;
 
-  m_pADiff->setNumLines(m_pA->NumLines() + m_NumInsertedB);
-  m_pBDiff->setNumLines(m_pB->NumLines() + m_NumDeletedA);
+  m_pADiff.setNumLines(m_pA.NumLines() + m_NumInsertedB);
+  m_pBDiff.setNumLines(m_pB.NumLines() + m_NumDeletedA);
 
   // Clearing these variables as from now on they should not count
   //single lines anymore. Instead they should count difference blocks
@@ -148,44 +142,44 @@ void DiffEngine::createDiffFiles()
   m_NumDeletedA = 0;
   m_NumChanged = 0;
 
-  while (lineA < m_pA->NumLines() || lineB < m_pB->NumLines())
+  while (lineA < m_pA.NumLines() || lineB < m_pB.NumLines())
   {
     //
     // Handle the equal lines
     //
-    while( (lineA < m_pA->NumLines())
-     && (m_pA->GetLineState(lineA) == DiffLine::Normal)
-     && (lineB < m_pB->NumLines())
-     && (m_pB->GetLineState(lineB) == DiffLine::Normal))
+    while( (lineA < m_pA.NumLines())
+     && (m_pA.GetLineState(lineA) == DiffLine::Normal)
+     && (lineB < m_pB.NumLines())
+     && (m_pB.GetLineState(lineB) == DiffLine::Normal))
     {
-      DiffLine* pA = m_pA->GetLine(lineA++);
-      DiffLine* pB = m_pB->GetLine(lineB++);
+      DiffLine* pA = m_pA.GetLine(lineA++);
+      DiffLine* pB = m_pB.GetLine(lineB++);
 
-      m_pADiff->AddString(pA->Text(), DiffLine::Normal, pA->LineNum());
-      m_pBDiff->AddString(pB->Text(), DiffLine::Normal, pB->LineNum());
+      m_pADiff.AddString(pA->Text(), DiffLine::Normal, pA->LineNum());
+      m_pBDiff.AddString(pB->Text(), DiffLine::Normal, pB->LineNum());
     }
 
     //
     // Handle changed, deleted, inserted lines
     //
     bool bBlockAlreadyAdded = false;
-    while((lineA < m_pA->NumLines())
-      && (lineB < m_pB->NumLines())
-      && (m_pA->GetLineState(lineA) != DiffLine::Normal)
-      && (m_pB->GetLineState(lineB) != DiffLine::Normal))
+    while((lineA < m_pA.NumLines())
+      && (lineB < m_pB.NumLines())
+      && (m_pA.GetLineState(lineA) != DiffLine::Normal)
+      && (m_pB.GetLineState(lineB) != DiffLine::Normal))
     {
-      DiffLine* pA = m_pA->GetLine(lineA++);
-      DiffLine* pB = m_pB->GetLine(lineB++);
+      DiffLine* pA = m_pA.GetLine(lineA++);
+      DiffLine* pB = m_pB.GetLine(lineB++);
 
-      long idx = m_pADiff->AddString(pA->Text(), DiffLine::Changed, pA->LineNum());
-      m_pBDiff->AddString(pB->Text(), DiffLine::Changed, pB->LineNum());
+      long idx = m_pADiff.AddString(pA->Text(), DiffLine::Changed, pA->LineNum());
+      m_pBDiff.AddString(pB->Text(), DiffLine::Changed, pB->LineNum());
 
       // Note: By coverting a left-deleted and a right-inserted line
       //       into a changed line, left and right files each are
       //       getting shorter by 1 line. This is because the
       //       empty-line on other side isn't needed anymore.
-      m_pADiff->decrementNumLines();
-      m_pBDiff->decrementNumLines();
+      m_pADiff.decrementNumLines();
+      m_pBDiff.decrementNumLines();
 
       if(!bBlockAlreadyAdded)
       {
@@ -197,12 +191,12 @@ void DiffEngine::createDiffFiles()
     }
 
     bBlockAlreadyAdded = false;
-    while((lineA < m_pA->NumLines())
-       && (lineB >= m_pB->NumLines() || (m_pA->GetLineState(lineA) != DiffLine::Normal)))
+    while((lineA < m_pA.NumLines())
+       && (lineB >= m_pB.NumLines() || (m_pA.GetLineState(lineA) != DiffLine::Normal)))
     {
-      DiffLine* pA = m_pA->GetLine(lineA++);
-      long idx = m_pADiff->AddString(pA->Text(), DiffLine::Deleted, pA->LineNum());
-      m_pBDiff->AddBlankLine();
+      DiffLine* pA = m_pA.GetLine(lineA++);
+      long idx = m_pADiff.AddString(pA->Text(), DiffLine::Deleted, pA->LineNum());
+      m_pBDiff.AddBlankLine();
 
       if(!bBlockAlreadyAdded)
       {
@@ -214,12 +208,12 @@ void DiffEngine::createDiffFiles()
     }
 
     bBlockAlreadyAdded = false;
-    while((lineB < m_pB->NumLines())
-      && (lineA >= m_pA->NumLines() || (m_pB->GetLineState(lineB) != DiffLine::Normal)))
+    while((lineB < m_pB.NumLines())
+      && (lineA >= m_pA.NumLines() || (m_pB.GetLineState(lineB) != DiffLine::Normal)))
     {
-      DiffLine* pB = m_pB->GetLine(lineB++);
-      m_pADiff->AddBlankLine();
-      long idx = m_pBDiff->AddString(pB->Text(), DiffLine::Added, pB->LineNum());
+      DiffLine* pB = m_pB.GetLine(lineB++);
+      m_pADiff.AddBlankLine();
+      long idx = m_pBDiff.AddString(pB->Text(), DiffLine::Added, pB->LineNum());
 
       if(!bBlockAlreadyAdded)
       {
@@ -246,8 +240,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
   {
     if(m_bCancelRequested)
     {
-      // Don't continue as cancel was requested
-      return;
+      throw "User abort";
     }
 
     m_Percent += m_PercentIncrement;
@@ -257,7 +250,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 
   // Fast walkthrough equal lines at the start
   while((lowerA < upperA) && (lowerB < upperB)
-     && (m_pA->GetLine(lowerA)->Token() == m_pB->GetLine(lowerB)->Token()))
+     && (m_pA.GetLine(lowerA)->Token() == m_pB.GetLine(lowerB)->Token()))
   {
     lowerA++;
     lowerB++;
@@ -265,7 +258,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 
   // Fast walkthrough equal lines at the end
   while((lowerA < upperA) && (lowerB < upperB)
-     && (m_pA->GetLine(upperA - 1)->Token() == m_pB->GetLine(upperB - 1)->Token()))
+     && (m_pA.GetLine(upperA - 1)->Token() == m_pB.GetLine(upperB - 1)->Token()))
   {
     --upperA;
     --upperB;
@@ -275,7 +268,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
   {
     while(lowerB < upperB)
     {
-      m_pB->GetLine(lowerB++)->SetState(DiffLine::Added);
+      m_pB.GetLine(lowerB++)->SetState(DiffLine::Added);
       m_NumInsertedB++;
     }
   }
@@ -283,7 +276,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
   {
     while(lowerA < upperA)
     {
-      m_pA->GetLine(lowerA++)->SetState(DiffLine::Deleted);
+      m_pA.GetLine(lowerA++)->SetState(DiffLine::Deleted);
       m_NumDeletedA++;
     }
   }
@@ -294,16 +287,14 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 
     if(m_bCancelRequested)
     {
-      // Don't continue as cancel was requested
-      return;
+      throw "User abort";
     }
 
     lcs(smsrd.Left(), upperA, smsrd.Top(), upperB);
 
     if(m_bCancelRequested)
     {
-      // Don't continue as cancel was requested
-      return;
+      throw "User abort";
     }
   }
 }
@@ -361,7 +352,7 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
 
       // find the end of the furthest reaching forward D-path in diagonal k.
       while ((x < upperA) && (y < upperB)
-          && (m_pA->GetLine(x)->Token() == m_pB->GetLine(y)->Token()))
+          && (m_pA.GetLine(x)->Token() == m_pB.GetLine(y)->Token()))
           //&& (m_A.GetLine(x)->Text() == m_B.GetLine(y)->Text()))
       {
         x++;
@@ -405,7 +396,7 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
       y = x - k;
 
       while ((x > lowerA) && (y > lowerB)
-          && (m_pA->GetLine(x - 1)->Token() == m_pB->GetLine(y - 1)->Token()))
+          && (m_pA.GetLine(x - 1)->Token() == m_pB.GetLine(y - 1)->Token()))
           //&& (m_A.GetLine(x - 1)->Text() == m_B.GetLine(y - 1)->Text()))
       {
         // diagonal
@@ -435,16 +426,16 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
 }
 
 
-void DiffEngine::optimize(DiffFileBase* pData)
+void DiffEngine::optimize(DiffFileBase& diffFile)
 {
-  size_t dataLength = pData->NumLines();
+  size_t dataLength = diffFile.NumLines();
   size_t startPos = 0;
   size_t endPos = 0;
 
-  while(startPos < pData->NumLines())
+  while(startPos < diffFile.NumLines())
   {
     while((startPos < dataLength)
-       && (pData->GetLineState(startPos) == DiffLine::Normal))  // normal
+       && (diffFile.GetLineState(startPos) == DiffLine::Normal))  // normal
     {
       startPos++;
     }
@@ -452,16 +443,16 @@ void DiffEngine::optimize(DiffFileBase* pData)
     endPos = startPos;
 
     while((endPos < dataLength)
-      && (pData->GetLineState(startPos) != DiffLine::Normal)) // modified
+      && (diffFile.GetLineState(startPos) != DiffLine::Normal)) // modified
     {
       endPos++;
     }
 
     if((endPos < dataLength)
-     && (pData->GetLine(startPos)->Token() == pData->GetLine(endPos)->Token()))
+     && (diffFile.GetLine(startPos)->Token() == diffFile.GetLine(endPos)->Token()))
     {
-      pData->SetLineState(endPos, pData->GetLine(startPos)->State());
-      pData->SetLineState(startPos, DiffLine::Normal);
+      diffFile.SetLineState(endPos, diffFile.GetLine(startPos)->State());
+      diffFile.SetLineState(startPos, DiffLine::Normal);
     }
     else
     {

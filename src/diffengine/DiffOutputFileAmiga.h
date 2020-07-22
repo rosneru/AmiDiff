@@ -18,7 +18,7 @@
 class DiffOutputFileAmiga : public DiffFileBase
 {
 public:
-  DiffOutputFileAmiga(APTR& pPoolHeader, 
+  DiffOutputFileAmiga(APTR pPoolHeader, 
                       bool& bCancelRequested, 
                       ProgressReporter* pProgressReporter);
   virtual ~DiffOutputFileAmiga();
@@ -34,7 +34,7 @@ public:
 
 private:
   AmigaFile* m_pFile;
-  APTR& m_pPoolHeader;
+  APTR m_pPoolHeader;
 
   DiffLine* createDiffLine();
 };

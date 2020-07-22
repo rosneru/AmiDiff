@@ -5,9 +5,12 @@
 
 #include "DiffInputFileAmiga.h"
 #include "DiffOutputFileAmiga.h"
+#include "DiffEngine.h"
 #include "DiffLine.h"
+#include "MemoryPool.h"
 #include "ProgressReporter.h"
 #include "SimpleString.h"
+#include "StopWatch.h"
 
 class DiffDocument
 {
@@ -15,6 +18,7 @@ public:
   DiffDocument(const char* pLeftFilePath,
                const char* pRightFilePath,
                bool& bCancelRequested,
+               StopWatch& stopWatch,
                ProgressReporter* pProgressReporter);
 
   virtual ~DiffDocument();
@@ -41,12 +45,14 @@ public:
 private:
   const char* m_pLeftFileName;
   const char* m_pRightFileName;
-  APTR m_pPoolHeader;
-  DiffInputFileAmiga* m_pLeftSrcFile;
-  DiffInputFileAmiga* m_pRightSrcFile;
-  DiffOutputFileAmiga* m_pLeftDiffFile;
-  DiffOutputFileAmiga* m_pRightDiffFile;
+  MemoryPool m_Pool;
+  DiffInputFileAmiga m_LeftSrcFile;
+  DiffInputFileAmiga m_RightSrcFile;
+  DiffOutputFileAmiga m_LeftDiffFile;
+  DiffOutputFileAmiga m_RightDiffFile;
   std::vector<size_t> m_DiffIndices;
+  size_t m_DiffIndicesIdx;
+  DiffEngine m_DiffEngine;
   
   long m_DiffTime;
   size_t m_NumAdded;
@@ -54,7 +60,6 @@ private:
   size_t m_NumDeleted;
 
   size_t m_MaxLineLength;
-  size_t m_DiffIndicesIdx;
 };
 
 #endif // DIFF_DOCUMENT_H

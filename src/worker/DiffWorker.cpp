@@ -1,7 +1,6 @@
 #include <clib/exec_protos.h>
 
 #include "MessageBox.h"
-#include "DiffEngineAmiga.h"
 #include "DiffWorker.h"
 
 DiffWorker::DiffWorker(SimpleString& leftFilePath,
@@ -41,6 +40,7 @@ DiffWorker::~DiffWorker()
 void DiffWorker::SetLineNumbers(bool bEnabled)
 {
   m_bShowLineNumbers = bEnabled;
+  m_bShowLineNumbers = false;
 }
 
 
@@ -96,9 +96,11 @@ bool DiffWorker::Diff()
 
   try
   {
+    m_StopWatch.Start();
     m_pDiffDocument = new DiffDocument(m_LeftSrcFilePath.C_str(),
                                        m_RightSrcFilePath.C_str(),
                                        m_bCancelRequested,
+                                       m_StopWatch,
                                        this);
     // setProgressDescription("Loading left file");
 

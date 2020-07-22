@@ -3,105 +3,45 @@
 #include <exec/memory.h>
 #include "DiffDocument.h"
 #include "DiffEngine.h"
-#include "StopWatch.h"
 
 DiffDocument::DiffDocument(const char* pLeftFilePath,
                            const char* pRightFilePath,
                            bool& bCancelRequested,
+                           StopWatch& stopWatch,
                            ProgressReporter* pProgressReporter)
-  : m_pPoolHeader(NULL),
-    m_pLeftSrcFile(NULL),
-    m_pRightSrcFile(NULL),
-    m_pLeftDiffFile(NULL),
-    m_pRightDiffFile(NULL),
+  : m_LeftSrcFile(m_Pool.Header(),
+                  bCancelRequested,
+                  pProgressReporter,
+                  pLeftFilePath),
+    m_RightSrcFile(m_Pool.Header(),
+                   bCancelRequested,
+                   pProgressReporter,
+                   pRightFilePath),
+    m_LeftDiffFile(m_Pool.Header(), bCancelRequested, pProgressReporter),
+    m_RightDiffFile(m_Pool.Header(), bCancelRequested, pProgressReporter),
+    m_DiffIndices(),
+    m_DiffIndicesIdx(0),
+    m_DiffEngine(m_LeftSrcFile,
+                 m_RightSrcFile,
+                 m_LeftDiffFile,
+                 m_RightDiffFile,
+                 bCancelRequested,
+                 m_DiffIndices),
     m_DiffTime(0),
     m_NumAdded(0),
     m_NumChanged(0),
     m_NumDeleted(0),
-    m_MaxLineLength(0),
-    m_DiffIndices(),
-    m_DiffIndicesIdx(0)
+    m_MaxLineLength(0)
 {
-  // Create the memory pool
-  m_pPoolHeader = CreatePool(MEMF_ANY|MEMF_CLEAR, 50000, 25000);
-  if(m_pPoolHeader == NULL)
-  {
-    throw "Failed to create the memory pool.";
-  }
-
-  StopWatch m_StopWatch;
-
-  // Load and analyze the left file
-  m_pLeftSrcFile = new DiffInputFileAmiga(m_pPoolHeader,
-                                          bCancelRequested,
-                                          pProgressReporter,
-                                          pLeftFilePath);
-
-  // Load and analyze the right file
-  m_pRightSrcFile = new DiffInputFileAmiga(m_pPoolHeader,
-                                            bCancelRequested,
-                                            pProgressReporter,
-                                            pRightFilePath);
-
-  m_pLeftDiffFile = new DiffOutputFileAmiga(m_pPoolHeader,
-                                            bCancelRequested,
-                                            pProgressReporter);
-
-  m_pRightDiffFile = new DiffOutputFileAmiga(m_pPoolHeader,
-                                              bCancelRequested,
-                                              pProgressReporter);
-
-  DiffEngine diffEngine(m_pLeftSrcFile,
-                        m_pRightSrcFile,
-                        m_pLeftDiffFile,
-                        m_pRightDiffFile,
-                        bCancelRequested,
-                        m_DiffIndices);
-
-  // Compare the files
-  bool diffOk = diffEngine.Diff();
-  if(!diffOk)
-  {
-    throw "Error while performing the diff.";
-  }
-
-  m_DiffTime = m_StopWatch.Pick();
-  m_NumAdded = diffEngine.NumAdded();
-  m_NumChanged = diffEngine.NumChanged();
-  m_NumDeleted = diffEngine.NumDeleted();
+  m_DiffTime = stopWatch.Pick();
+  m_NumAdded = m_DiffEngine.NumAdded();
+  m_NumChanged = m_DiffEngine.NumChanged();
+  m_NumDeleted = m_DiffEngine.NumDeleted();
 }
 
 DiffDocument::~DiffDocument()
 {
-  if(m_pRightSrcFile != NULL)
-  {
-    delete m_pRightSrcFile;
-    m_pRightSrcFile = NULL;
-  }
-  
-  if(m_pLeftSrcFile != NULL)
-  {
-    delete m_pLeftSrcFile;
-    m_pLeftSrcFile = NULL;
-  }
 
-  if(m_pRightDiffFile != NULL)
-  {
-    delete m_pRightDiffFile;
-    m_pRightDiffFile = NULL;
-  }
-
-  if(m_pLeftDiffFile != NULL)
-  {
-    delete m_pLeftDiffFile;
-    m_pLeftDiffFile = NULL;
-  }
-
-  if(m_pPoolHeader != NULL)
-  {
-    DeletePool(m_pPoolHeader);
-    m_pPoolHeader = NULL;
-  }
 }
 
 const char* DiffDocument::LeftFileName() const
@@ -137,40 +77,31 @@ size_t DiffDocument::NumDeleted() const
 
 size_t DiffDocument::NumLines() const
 {
-  if(m_pLeftDiffFile == NULL)
-  {
-    return 0;
-  }
 
   // Note: Right diff file should have the same number of lines
-  return m_pLeftDiffFile->NumLines();
+  return m_LeftDiffFile.NumLines();
 }
 
 size_t DiffDocument::MaxLineLength()
 {
-  if((m_pLeftDiffFile == NULL) || (m_pRightDiffFile == NULL))
-  {
-    return 0;
-  }
-
   if(m_MaxLineLength > 0)
   {
     return m_MaxLineLength;
   }
 
-  for(size_t i = 0; i < m_pLeftDiffFile->NumLines(); i++)
+  for(size_t i = 0; i < m_LeftDiffFile.NumLines(); i++)
   {
-    if(m_pLeftDiffFile->GetLine(i)->NumChars() > m_MaxLineLength)
+    if(m_LeftDiffFile.GetLine(i)->NumChars() > m_MaxLineLength)
     {
-      m_MaxLineLength = m_pLeftDiffFile->GetLine(i)->NumChars();
+      m_MaxLineLength = m_LeftDiffFile.GetLine(i)->NumChars();
     }
   }
 
-  for(size_t i = 0; i < m_pRightDiffFile->NumLines(); i++)
+  for(size_t i = 0; i < m_RightDiffFile.NumLines(); i++)
   {
-    if(m_pRightDiffFile->GetLine(i)->NumChars() > m_MaxLineLength)
+    if(m_RightDiffFile.GetLine(i)->NumChars() > m_MaxLineLength)
     {
-      m_MaxLineLength = m_pRightDiffFile->GetLine(i)->NumChars();
+      m_MaxLineLength = m_RightDiffFile.GetLine(i)->NumChars();
     }
   }
 
@@ -180,31 +111,17 @@ size_t DiffDocument::MaxLineLength()
 
 const DiffLine* DiffDocument::LeftLine(size_t index) const
 {
-  if(m_pLeftDiffFile == NULL)
-  {
-    return NULL;
-  }
-
-  return m_pLeftDiffFile->GetLine(index);
+  return m_LeftDiffFile.GetLine(index);
 }
 
 
 const DiffLine* DiffDocument::RightLine(size_t index) const
 {
-  if(m_pRightDiffFile == NULL)
-  {
-    return NULL;
-  }
-
-  return m_pRightDiffFile->GetLine(index);
+  return m_RightDiffFile.GetLine(index);
 }
 
 size_t DiffDocument::FirstDiffIndex() 
 {
-  if(m_DiffIndices.size() == 0)
-  {
-    return 0;
-  }
 
   m_DiffIndicesIdx = m_DiffIndices.front();
   return m_DiffIndices[m_DiffIndicesIdx];

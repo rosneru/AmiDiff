@@ -58,16 +58,20 @@ class DiffEngine
 {
 
 public:
-  DiffEngine(DiffFileBase* pA,
-             DiffFileBase* pB,
-             DiffFileBase* pADiff,
-             DiffFileBase* pBDiff,
+  /**
+   * Creates the DiffEngine with the given input and output files. On
+   * creation the diff is calculated automatically.
+   * 
+   * Throws an exception on user abort.
+   */
+  DiffEngine(DiffFileBase& a,
+             DiffFileBase& b,
+             DiffFileBase& aDiff,
+             DiffFileBase& bDiff,
              bool& bCancelRequested,
              std::vector<size_t>& diffIndices);
 
   ~DiffEngine();
-
-  bool Diff();
 
   long NumDifferences() const;
 
@@ -85,10 +89,10 @@ protected:
   std::vector<size_t>& m_DiffIndices;
 
 private:
-  DiffFileBase* m_pA;
-  DiffFileBase* m_pB;
-  DiffFileBase* m_pADiff;
-  DiffFileBase* m_pBDiff;
+  DiffFileBase& m_pA;
+  DiffFileBase& m_pB;
+  DiffFileBase& m_pADiff;
+  DiffFileBase& m_pBDiff;
 
   bool& m_bCancelRequested;
   ProgressReporter* m_pProgressReporter;
@@ -148,7 +152,7 @@ private:
    * This leads to more readable diff sequences when comparing
    * text files.
    */
-  void optimize(DiffFileBase* pData);
+  void optimize(DiffFileBase& diffFile);
 
 
   void reportProgress(int progress);

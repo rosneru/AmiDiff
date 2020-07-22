@@ -12,7 +12,7 @@
 
 #include "DiffOutputFileAmiga.h"
 
-DiffOutputFileAmiga::DiffOutputFileAmiga(APTR& pPoolHeader,
+DiffOutputFileAmiga::DiffOutputFileAmiga(APTR pPoolHeader,
                                          bool& bCancelRequested,
                                          ProgressReporter* pProgressReporter)
   : DiffFileBase(bCancelRequested),
