@@ -6,6 +6,8 @@ DiffEngine::DiffEngine(DiffFileBase& a,
                        DiffFileBase& b,
                        DiffFileBase& aDiff,
                        DiffFileBase& bDiff,
+                       ProgressReporter& progress,
+                       const char* pProgressDescription,
                        bool& bCancelRequested,
                        std::vector<size_t>& diffIndices)
   : m_DiffIndices(diffIndices),
@@ -14,7 +16,7 @@ DiffEngine::DiffEngine(DiffFileBase& a,
     m_pADiff(aDiff),
     m_pBDiff(bDiff),
     m_bCancelRequested(bCancelRequested),
-    m_pProgressReporter(NULL),
+    m_Progress(progress),
     m_NumInsertedB(0),
     m_NumDeletedA(0),
     m_NumChanged(0),
@@ -22,6 +24,7 @@ DiffEngine::DiffEngine(DiffFileBase& a,
     m_pDownVector(NULL),
     m_pUpVector(NULL)
 { 
+  m_Progress.SetDescription(pProgressDescription);
 
   //
   // Set-up the progress reporting
@@ -33,8 +36,7 @@ DiffEngine::DiffEngine(DiffFileBase& a,
   m_NextNotifyPosition = m_NotifyIncrement;
   m_Percent = 0;
 
-  reportProgress(0);
-
+  m_Progress.SetValue(0);
 
   //
   // Calculate some needed values
@@ -69,7 +71,7 @@ DiffEngine::DiffEngine(DiffFileBase& a,
 
 
   // Progress reporting
-  reportProgress(90);
+  m_Progress.SetValue(90);
 
   //
   // Optimizing the diffed files for better diff-readability
@@ -78,7 +80,7 @@ DiffEngine::DiffEngine(DiffFileBase& a,
   optimize(m_pBDiff);
 
   // Progress reporting
-  reportProgress(95);
+  m_Progress.SetValue(95);
 
   //
   // Calculate the target DiffFilePartitions from src diff files.
@@ -88,7 +90,7 @@ DiffEngine::DiffEngine(DiffFileBase& a,
   createDiffFiles();
 
   // Progress reporting
-  reportProgress(100);
+  m_Progress.SetValue(100);
 }
 
 DiffEngine::~DiffEngine()
@@ -118,12 +120,6 @@ long DiffEngine::NumChanged() const
 long DiffEngine::NumDeleted() const
 {
   return m_NumDeletedA;
-}
-
-
-void DiffEngine::SetProgressReporter(ProgressReporter* pProgressReporter)
-{
-  m_pProgressReporter = pProgressReporter;
 }
 
 
@@ -245,7 +241,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 
     m_Percent += m_PercentIncrement;
     m_NextNotifyPosition += m_NotifyIncrement;
-    reportProgress(m_Percent);
+    m_Progress.SetValue(m_Percent);
   }
 
   // Fast walkthrough equal lines at the start
@@ -458,14 +454,5 @@ void DiffEngine::optimize(DiffFileBase& diffFile)
     {
       startPos = endPos;
     }
-  }
-}
-
-
-void DiffEngine::reportProgress(int progress)
-{
-  if(m_pProgressReporter != NULL)
-  {
-    m_pProgressReporter->notifyProgressChanged(progress);
   }
 }

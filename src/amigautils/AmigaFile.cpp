@@ -5,8 +5,7 @@
 AmigaFile::AmigaFile(const char* pFileName, ULONG accessMode)
   : MAX_LINE_LENGTH(1024), // TODO A better solution needed?
     m_FileDescriptor(0),
-    m_FileName(pFileName),
-    m_pProgressReporter(NULL)
+    m_FileName(pFileName)
 {
   m_pLineBuf = (STRPTR) AllocVec(MAX_LINE_LENGTH, 0L);
 
@@ -81,14 +80,6 @@ ULONG AmigaFile::GetSize()
 
 bool AmigaFile::ReadLines(std::vector<SimpleString*>& linesVector)
 {
-  // Initialize some variables needed for progress reporting
-  int lastProgressValue = -1;
-  int numLines = 0;
-  if(m_pProgressReporter != NULL)
-  {
-    numLines = CountLines();
-  }
-
   // Rewind reading pointer to start of file
   Seek(m_FileDescriptor, 0, OFFSET_BEGINNING);
 
@@ -104,34 +95,6 @@ bool AmigaFile::ReadLines(std::vector<SimpleString*>& linesVector)
   {
     linesVector.push_back(new SimpleString(line));
     i++;
-
-    //
-    // Progress reporting
-    //
-    if(m_pProgressReporter != NULL)
-    {
-      // Report the 'lastProgressValue - 1' to ensure that the final
-      // value of 100 (%) is sent after the last line is read.
-      int newProgressValue = (i * 100 / numLines) - 1;
-
-      if(newProgressValue > lastProgressValue)
-      {
-       // For performance reasons only report 5% steps
-       if(newProgressValue % 5 == 0)
-        {
-          lastProgressValue = newProgressValue;
-          m_pProgressReporter->notifyProgressChanged(lastProgressValue);
-        }
-      }
-    }
-  }
-
-  //
-  // Progress reporting (final value)
-  //
-  if(m_pProgressReporter != NULL)
-  {
-    m_pProgressReporter->notifyProgressChanged(100);
   }
 
   // Rewind reading pointer to start of file
@@ -179,10 +142,4 @@ char* AmigaFile::ReadLine()
   }
 
   return m_pLineBuf;
-}
-
-
-void AmigaFile::SetProgressReporter(ProgressReporter* pProgressReporter)
-{
-  m_pProgressReporter = pProgressReporter;
 }

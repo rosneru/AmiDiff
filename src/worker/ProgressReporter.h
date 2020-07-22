@@ -1,6 +1,7 @@
-#ifndef PROGRESS_REPORTER
-#define PROGRESS_REPORTER
+#ifndef PROGRESS_REPORTER_H
+#define PROGRESS_REPORTER_H
 
+#include <exec/ports.h>
 
 /**
  * This is an abstract class / interface to allow an object to report
@@ -16,8 +17,8 @@ public:
   ProgressReporter(struct MsgPort*& pProgressPort, 
                    struct MsgPort*& pReplyPort);
 
-  virtual void notifyProgressChanged(int progress);
-  void setProgressDescription(const char* pProgressDescription);
+  virtual void SetValue(int progress);
+  void SetDescription(const char* pProgressDescription);
 
 private:
   struct MsgPort*& m_pProgressPort;

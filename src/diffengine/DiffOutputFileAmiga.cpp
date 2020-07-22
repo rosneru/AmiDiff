@@ -13,8 +13,7 @@
 #include "DiffOutputFileAmiga.h"
 
 DiffOutputFileAmiga::DiffOutputFileAmiga(APTR pPoolHeader,
-                                         bool& bCancelRequested,
-                                         ProgressReporter* pProgressReporter)
+                                         bool& bCancelRequested)
   : DiffFileBase(bCancelRequested),
     m_pPoolHeader(pPoolHeader)
 {
@@ -52,7 +51,6 @@ long DiffOutputFileAmiga::AddString(const char* pText,
     if(m_pDiffLinesArray == NULL)
     {
       // m_pError = m_pErrMsgLowMem;
-      // m_pFile->Close();
       return -1;
     }
   }

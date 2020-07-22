@@ -15,17 +15,17 @@ ProgressReporter::ProgressReporter(struct MsgPort*& pProgressPort,
 
 }
 
-void ProgressReporter::setProgressDescription(const char *pProgressDescription)
+
+void ProgressReporter::SetDescription(const char *pProgressDescription)
 {
   m_pProgressDescription = pProgressDescription;
 }
 
-#include <stdio.h>
-void ProgressReporter::notifyProgressChanged(int progress)
+
+void ProgressReporter::SetValue(int progress)
 {
   if ((m_pProgressPort == NULL) || (m_pReplyPort == NULL))
   {
-    printf("m_pProgressPort=%zu, m_pReplyPort=%zu\n", m_pProgressPort, m_pReplyPort);
     return;
   }
 

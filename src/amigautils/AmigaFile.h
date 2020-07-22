@@ -5,7 +5,6 @@
 
 #include <exec/types.h>
 #include <libraries/dos.h>
-#include "ProgressReporter.h"
 #include "SimpleString.h"
 
 /**
@@ -96,19 +95,11 @@ public:
 
   char* ReadLine();
 
-  /**
-   * Setting the progress reporter
-   */
-  void SetProgressReporter(ProgressReporter* pProgressReporter);
-
 private:
   const ULONG MAX_LINE_LENGTH;
   STRPTR m_pLineBuf;
   BPTR m_FileDescriptor;
   SimpleString m_FileName;
-
-  ProgressReporter* m_pProgressReporter;  ///> for progress reporting
-
 };
 
 #endif

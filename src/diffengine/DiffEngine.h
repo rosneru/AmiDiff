@@ -68,6 +68,8 @@ public:
              DiffFileBase& b,
              DiffFileBase& aDiff,
              DiffFileBase& bDiff,
+             ProgressReporter& progress,
+             const char* pProgressDescription,
              bool& bCancelRequested,
              std::vector<size_t>& diffIndices);
 
@@ -79,12 +81,6 @@ public:
   long NumChanged() const;
   long NumDeleted() const;
 
-
-  /**
-   * Setting the progress reporter
-   */
-  void SetProgressReporter(ProgressReporter* pProgressReporter);
-
 protected:
   std::vector<size_t>& m_DiffIndices;
 
@@ -95,7 +91,7 @@ private:
   DiffFileBase& m_pBDiff;
 
   bool& m_bCancelRequested;
-  ProgressReporter* m_pProgressReporter;
+  ProgressReporter& m_Progress;
 
   long m_NumInsertedB;
   long m_NumDeletedA;
@@ -153,9 +149,6 @@ private:
    * text files.
    */
   void optimize(DiffFileBase& diffFile);
-
-
-  void reportProgress(int progress);
 };
 
 #endif

@@ -3,7 +3,6 @@
 
 #include <exec/types.h>
 
-#include "AmigaFile.h"
 #include "DiffFileBase.h"
 #include "ProgressReporter.h"
 
@@ -19,8 +18,7 @@ class DiffOutputFileAmiga : public DiffFileBase
 {
 public:
   DiffOutputFileAmiga(APTR pPoolHeader, 
-                      bool& bCancelRequested, 
-                      ProgressReporter* pProgressReporter);
+                      bool& bCancelRequested);
   virtual ~DiffOutputFileAmiga();
 
   /**
@@ -33,7 +31,6 @@ public:
                  const char* pFormattedLineNumber);
 
 private:
-  AmigaFile* m_pFile;
   APTR m_pPoolHeader;
 
   DiffLine* createDiffLine();

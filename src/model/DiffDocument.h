@@ -29,7 +29,7 @@ public:
                const char* pRightFilePath,
                bool& bCancelRequested,
                StopWatch& stopWatch,
-               ProgressReporter* pProgressReporter);
+               ProgressReporter& progress);
 
   virtual ~DiffDocument();
 

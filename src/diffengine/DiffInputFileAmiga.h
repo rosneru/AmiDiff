@@ -20,7 +20,8 @@ class DiffInputFileAmiga : public DiffFileBase
 public:
   DiffInputFileAmiga(APTR pPoolHeader, 
                      bool& bCancelRequested, 
-                     ProgressReporter* pProgressReporter,
+                     ProgressReporter& progress,
+                     const char* pProgressDescription,
                      const char* pFileName);
   virtual ~DiffInputFileAmiga();
 

@@ -13,24 +13,14 @@
 #include "DiffInputFileAmiga.h"
 
 DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
-                             bool& bCancelRequested, 
-                             ProgressReporter* pProgressReporter,
-                             const char* pFileName)
+                                       bool& bCancelRequested, 
+                                       ProgressReporter& progress,
+                                       const char* pProgressDescription,
+                                       const char* pFileName)
   : DiffFileBase(bCancelRequested),
     m_pPoolHeader(pPoolHeader)
 {
-  // if(m_pPoolHeader == NULL)
-  // {
-  //   // Won't work without memory pool
-  //   m_pError = m_pErrMsgMemPool;
-  //   return false;
-  // }
-
-  // if(m_pDiffLinesArray != NULL)
-  // {
-  //   // Already initialized
-  //   return true;
-  // }
+  progress.SetDescription(pProgressDescription);
 
   AmigaFile* m_pFile = new AmigaFile(pFileName, MODE_OLDFILE);
   
@@ -84,25 +74,22 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
     // Append DiffLine to list
     m_pDiffLinesArray[i++] = pDiffLine;
 
-    //
-    // Progress reporting
-    //
-    if(pProgressReporter != NULL)
-    {
-      // Report the 'lastProgressValue - 1' to ensure that the final
-      // value of 100 (%) is sent after the last line is read.
-      int newProgressValue = (i * 100 / m_NumLines) - 1;
 
-      if(newProgressValue > lastProgressValue)
+    // Progress reporting: Report the 'lastProgressValue - 1' to ensure
+    // that the final value of 100 (%) is sent after the last line is
+    // read.
+    int newProgressValue = (i * 100 / m_NumLines) - 1;
+
+    if(newProgressValue > lastProgressValue)
+    {
+      // For performance reasons report only 3% steps
+      if(newProgressValue % 3 == 0)
       {
-        // For performance reasons report only 3% steps
-        if(newProgressValue % 3 == 0)
-        {
-          lastProgressValue = newProgressValue;
-          pProgressReporter->notifyProgressChanged(lastProgressValue);
-        }
+        lastProgressValue = newProgressValue;
+        progress.SetValue(lastProgressValue);
       }
     }
+
 
     //
     // Handling a potential cancel request
@@ -113,13 +100,7 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
     }
   }
 
-  //
-  // Progress reporting (final value)
-  //
-  if(pProgressReporter != NULL)
-  {
-    pProgressReporter->notifyProgressChanged(100);
-  }
+  progress.SetValue(100);
 
   delete m_pFile;
 }
