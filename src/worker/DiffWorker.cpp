@@ -96,6 +96,8 @@ bool DiffWorker::Diff()
 
   try
   {
+    setProgressDescription("Creating diff document");
+    notifyProgressChanged(50);
     m_StopWatch.Start();
     m_pDiffDocument = new DiffDocument(m_LeftSrcFilePath.C_str(),
                                        m_RightSrcFilePath.C_str(),

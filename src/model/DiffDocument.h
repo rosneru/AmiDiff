@@ -12,9 +12,19 @@
 #include "SimpleString.h"
 #include "StopWatch.h"
 
+/**
+ * The document wich holds the result of the compare operation and can
+ * be displayed in a DiffWindow.
+ * 
+ * @author Uwe Rosner
+ * @date 24/09/2018
+ */
 class DiffDocument
 {
 public:
+  /**
+   * Creating the document immediately starts comparing the files.
+   */
   DiffDocument(const char* pLeftFilePath,
                const char* pRightFilePath,
                bool& bCancelRequested,
@@ -43,8 +53,8 @@ public:
   size_t PrevDiffIndex();
 
 private:
-  const char* m_pLeftFileName;
-  const char* m_pRightFileName;
+  SimpleString m_LeftFileName;
+  SimpleString m_RightFileName;
   MemoryPool m_Pool;
   DiffInputFileAmiga m_LeftSrcFile;
   DiffInputFileAmiga m_RightSrcFile;

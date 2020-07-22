@@ -9,16 +9,18 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
                            bool& bCancelRequested,
                            StopWatch& stopWatch,
                            ProgressReporter* pProgressReporter)
-  : m_LeftSrcFile(m_Pool.Header(),
+  : m_LeftFileName(pLeftFilePath),
+    m_RightFileName(pRightFilePath),
+    m_LeftSrcFile(m_Pool.Header(),
                   bCancelRequested,
-                  pProgressReporter,
+                  NULL,
                   pLeftFilePath),
     m_RightSrcFile(m_Pool.Header(),
                    bCancelRequested,
-                   pProgressReporter,
+                   NULL,
                    pRightFilePath),
-    m_LeftDiffFile(m_Pool.Header(), bCancelRequested, pProgressReporter),
-    m_RightDiffFile(m_Pool.Header(), bCancelRequested, pProgressReporter),
+    m_LeftDiffFile(m_Pool.Header(), bCancelRequested, NULL),
+    m_RightDiffFile(m_Pool.Header(), bCancelRequested, NULL),
     m_DiffIndices(),
     m_DiffIndicesIdx(0),
     m_DiffEngine(m_LeftSrcFile,
@@ -46,12 +48,12 @@ DiffDocument::~DiffDocument()
 
 const char* DiffDocument::LeftFileName() const
 {
-  return m_pLeftFileName;
+  return m_LeftFileName.C_str();
 }
 
 const char* DiffDocument::RightFileName() const
 {
-  return m_pRightFileName;
+  return m_RightFileName.C_str();
 }
 
 long DiffDocument::DiffTime() const
@@ -147,7 +149,7 @@ size_t DiffDocument::NextDiffIndex()
 
   if(m_DiffIndicesIdx > (m_DiffIndices.size() - 1))
   {
-    return m_DiffIndicesIdx;
+    return m_DiffIndices.back();
   }
 
   m_DiffIndicesIdx++;
@@ -163,7 +165,7 @@ size_t DiffDocument::PrevDiffIndex()
 
   if(m_DiffIndicesIdx < 1)
   {
-    return m_DiffIndicesIdx;
+    return m_DiffIndices.front();
   }
 
   m_DiffIndicesIdx--;
