@@ -11,7 +11,8 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
                        CmdCloseWindow& cmdCloseFilesWindow,
                        struct MsgPort*& pProgressPort,
                        bool& bCancelRequested,
-                       bool& bExitAllowed)
+                       bool& bExitAllowed,
+                       bool bShowLineNumbers)
   : m_LeftSrcFilePath(leftFilePath),
     m_RightSrcFilePath(rightFilePath),
     m_Progress(pProgressPort, m_pReplyPort),
@@ -21,10 +22,9 @@ DiffWorker::DiffWorker(SimpleString& leftFilePath,
     m_CmdCloseFilesWindow(cmdCloseFilesWindow),
     m_bCancelRequested(bCancelRequested),
     m_bExitAllowed(bExitAllowed),
-    m_pDiffDocument(NULL),
-    m_bShowLineNumbers(false)
+    m_bShowLineNumbers(bShowLineNumbers),
+    m_pDiffDocument(NULL)
 {
-
 }
 
 DiffWorker::~DiffWorker()
@@ -34,12 +34,6 @@ DiffWorker::~DiffWorker()
     delete m_pDiffDocument;
     m_pDiffDocument = NULL;
   }
-}
-
-void DiffWorker::SetLineNumbers(bool bEnabled)
-{
-  m_bShowLineNumbers = bEnabled;
-  m_bShowLineNumbers = false;
 }
 
 
@@ -100,62 +94,20 @@ bool DiffWorker::Diff()
                                        m_RightSrcFilePath.C_str(),
                                        m_bCancelRequested,
                                        m_StopWatch,
-                                       m_Progress);
-    // setProgressDescription("Loading left file");
+                                       m_Progress,
+                                       m_bShowLineNumbers);
 
-    // setProgressDescription("Loading right file");
-
-    // TODO TODO TODO
-    // // Collect line numbers if this is enabled
-    // if(m_bShowLineNumbers)
-    // {
-    //   size_t maxNumLines = m_pLeftSrcFile->NumLines();
-    //   if(m_pRightSrcFile->NumLines() > maxNumLines)
-    //   {
-    //     maxNumLines = m_pRightSrcFile->NumLines();
-    //   }
-
-    //   m_pLeftSrcFile->CollectLineNumbers(maxNumLines);
-    //   m_pRightSrcFile->CollectLineNumbers(maxNumLines);
-    // }
-
-
-
-    // setProgressDescription("Comparing the files");
-
-    
-    // pDiffEngine->SetProgressReporter(this);
-
-
-    // If there are no changes return to FilesWindow
-    
-    // TODO TODO TODO
-    // if(pDiffEngine->NumDifferences() == 0)
-    // {
-    //   request.Show(m_ProgressWindow.IntuiWindow(),
-    //                "No differences found: the files are equal.", "Ok");
-
-    //   m_CmdOpenFilesWindow.Execute(NULL);
-    //   m_ProgressWindow.Close();
-
-    //   m_bExitAllowed = true;
-    //   return false;
-    // }
-
-    //
-    // Prepare diff window and set results
-    //
-    // m_pDiffDocument = new DiffDocument(*m_pLeftDiffFile, 
-    //                                   m_LeftSrcFilePath.C_str(),
-    //                                   *m_pRightDiffFile,
-    //                                   m_RightSrcFilePath.C_str());
+    if(m_pDiffDocument->NumDifferences() < 1)
+    {
+      throw "No differences found: the files are equal.";
+    }
   }
   catch(const char* pError)
   {
     if(!m_bCancelRequested)
     {
       request.Show(m_ProgressWindow.IntuiWindow(),
-                   pError, "Abort");
+                   pError, "Ok.");
     }
 
     m_CmdOpenFilesWindow.Execute(NULL);
@@ -165,7 +117,6 @@ bool DiffWorker::Diff()
     return false;
   }
 
-  m_DiffWindow.SetLineNumbersVisible(m_bShowLineNumbers);
   m_DiffWindow.Open(WindowBase::IP_Fill);
   m_DiffWindow.SetContent(m_pDiffDocument);
 

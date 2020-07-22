@@ -33,7 +33,8 @@ Application::Application(ScreenBase* pScreenBase,
                  m_CmdCloseFilesWindow,
                  m_pMsgPortProgress,
                  m_bCancelRequested,
-                 m_bExitAllowed),
+                 m_bExitAllowed,
+                 m_Args.ShowLineNumbers()),
     m_pScreenBase(pScreenBase),
     m_DiffWindow(pScreenBase,
                  m_pMsgPortIDCMP,
@@ -115,8 +116,6 @@ Application::Application(ScreenBase* pScreenBase,
     m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
   }
 
-  // Apply some settings and arguments
-  m_DiffWorker.SetLineNumbers(m_Args.ShowLineNumbers());
 
   //
   // Fill the GadTools menu structs, supplying pointers to the commands

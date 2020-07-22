@@ -28,7 +28,6 @@ DiffWindow::DiffWindow(ScreenBase* pScreenBase,
     m_pGadTxtRightFile(NULL),
     m_bNoNavigationDone(true),
     m_NumDifferences(0),
-    m_bShowLineNumbers(false),
     m_LineNumsWidth_chars(0),
     m_LineNumsWidth_pix(0),
     m_FontWidth_pix(m_pTextFont->tf_XSize),
@@ -96,12 +95,6 @@ DiffWindow::~DiffWindow()
 
   m_pGadTxtLeftFile = NULL;
   m_pGadTxtRightFile = NULL;
-}
-
-
-void DiffWindow::SetLineNumbersVisible(bool bEnabled)
-{
-  m_bShowLineNumbers = bEnabled;
 }
 
 
@@ -274,7 +267,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   // Ensure that the gadgets are re-drawn
   RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
 
-  if(m_bShowLineNumbers)
+  if(pDiffDocument->LineNumbersEnabled())
   {
     const DiffLine* pLine = m_pDocument->LeftLine(0);
     const char* pLineNum = pLine->LineNum();
@@ -876,7 +869,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     indent = (m_MaxTextAreaChars - count) * m_FontWidth_pix;
   }
 
-  if(!bHorizontallyScrolled && m_bShowLineNumbers)
+  if(!bHorizontallyScrolled && m_pDocument->LineNumbersEnabled())
   {
     //
     // Print the line numbers in left and right

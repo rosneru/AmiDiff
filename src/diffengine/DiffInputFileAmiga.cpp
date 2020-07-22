@@ -16,11 +16,13 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
                                        bool& bCancelRequested, 
                                        ProgressReporter& progress,
                                        const char* pProgressDescription,
-                                       const char* pFileName)
+                                       const char* pFileName,
+                                       bool lineNumbersEnabled)
   : DiffFileBase(bCancelRequested),
     m_pPoolHeader(pPoolHeader)
 {
   progress.SetDescription(pProgressDescription);
+  progress.SetValue(1);
 
   AmigaFile* m_pFile = new AmigaFile(pFileName, MODE_OLDFILE);
   
@@ -98,6 +100,11 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
     {
       throw "User abort.";
     }
+  }
+
+  if(lineNumbersEnabled)
+  {
+    CollectLineNumbers(m_NumLines);
   }
 
   progress.SetValue(100);

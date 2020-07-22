@@ -38,16 +38,10 @@ public:
              CmdCloseWindow& cmdCloseFilesWindow,
              struct MsgPort*& pProgressPort,
              bool& bCancelRequested,
-             bool& bExitAllowed);
+             bool& bExitAllowed,
+             bool bShowLineNumbers);
 
   virtual ~DiffWorker();
-
-  /**
-   * When called before performing a diff, the line numbers for the 
-   * files are stored and displayed in the DiffWindow depending on
-   * the given value.
-   */
-  void SetLineNumbers(bool bEnabled);
 
   /**
    * Performs the diff using LeftFilePath and RightFilePath as input
@@ -83,11 +77,10 @@ private:
   CmdCloseWindow& m_CmdCloseFilesWindow;
   bool& m_bCancelRequested;
   bool& m_bExitAllowed;
-
+  bool m_bShowLineNumbers;
   DiffDocument* m_pDiffDocument;
 
 
-  bool m_bShowLineNumbers;
 
 
   /**

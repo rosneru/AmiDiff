@@ -25,14 +25,6 @@ public:
 
   virtual ~DiffWindow();
 
-
-  /**
-   * When called before opening, the line numbers of the files are
-   * displayed depending on the given value.
-   */
-  void SetLineNumbersVisible(bool bEnabled);
-
-
   /**
    * Reorganizes the window including re-calculating the scrollbars. If
    * needed also re-drawing the obscured text areas.
@@ -151,7 +143,6 @@ private:
   bool m_bNoNavigationDone;
   long m_NumDifferences;      ///> Number of differences
 
-  bool m_bShowLineNumbers;
   UWORD m_LineNumsWidth_chars;
   UWORD m_LineNumsWidth_pix;
   SimpleString m_LineNumberEmpty;

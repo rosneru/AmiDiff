@@ -29,7 +29,8 @@ public:
                const char* pRightFilePath,
                bool& bCancelRequested,
                StopWatch& stopWatch,
-               ProgressReporter& progress);
+               ProgressReporter& progress,
+               bool lineNumbersEnabled);
 
   virtual ~DiffDocument();
 
@@ -43,14 +44,18 @@ public:
 
   size_t NumLines() const;
   size_t MaxLineLength();
-  
+
   const DiffLine* LeftLine(size_t index) const;
   const DiffLine* RightLine(size_t index) const;
+
+  size_t NumDifferences() const;
 
   size_t FirstDiffIndex();
   size_t LastDiffIndex();
   size_t NextDiffIndex();
   size_t PrevDiffIndex();
+
+  bool LineNumbersEnabled() const;
 
 private:
   SimpleString m_LeftFileName;
@@ -63,11 +68,10 @@ private:
   std::vector<size_t> m_DiffIndices;
   size_t m_DiffIndicesIdx;
   DiffEngine m_DiffEngine;
-  
+
+  bool m_LineNumbersEnabled;
+
   long m_DiffTime;
-  size_t m_NumAdded;
-  size_t m_NumChanged;
-  size_t m_NumDeleted;
 
   size_t m_MaxLineLength;
 };

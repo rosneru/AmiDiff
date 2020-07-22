@@ -22,7 +22,8 @@ public:
                      bool& bCancelRequested, 
                      ProgressReporter& progress,
                      const char* pProgressDescription,
-                     const char* pFileName);
+                     const char* pFileName,
+                     bool lineNumbersEnabled);
   virtual ~DiffInputFileAmiga();
 
   void CollectLineNumbers(size_t maxNumLines);

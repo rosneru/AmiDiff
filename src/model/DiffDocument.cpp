@@ -8,19 +8,22 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
                            const char* pRightFilePath,
                            bool& bCancelRequested,
                            StopWatch& stopWatch,
-                           ProgressReporter& progress)
+                           ProgressReporter& progress,
+                           bool lineNumbersEnabled)
   : m_LeftFileName(pLeftFilePath),
     m_RightFileName(pRightFilePath),
     m_LeftSrcFile(m_Pool.Header(),
                   bCancelRequested,
                   progress,
                   "Loading left file",
-                  pLeftFilePath),
+                  pLeftFilePath,
+                  lineNumbersEnabled),
     m_RightSrcFile(m_Pool.Header(),
                    bCancelRequested,
                    progress,
                    "Loading right file",
-                   pRightFilePath),
+                   pRightFilePath,
+                   lineNumbersEnabled),
     m_LeftDiffFile(m_Pool.Header(), bCancelRequested),
     m_RightDiffFile(m_Pool.Header(), bCancelRequested),
     m_DiffIndices(),
@@ -33,16 +36,11 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
                  "Comparing the files",
                  bCancelRequested,
                  m_DiffIndices),
+    m_LineNumbersEnabled(lineNumbersEnabled),
     m_DiffTime(0),
-    m_NumAdded(0),
-    m_NumChanged(0),
-    m_NumDeleted(0),
     m_MaxLineLength(0)
 {
   m_DiffTime = stopWatch.Pick();
-  m_NumAdded = m_DiffEngine.NumAdded();
-  m_NumChanged = m_DiffEngine.NumChanged();
-  m_NumDeleted = m_DiffEngine.NumDeleted();
 }
 
 DiffDocument::~DiffDocument()
@@ -67,17 +65,17 @@ long DiffDocument::DiffTime() const
 
 size_t DiffDocument::NumAdded() const
 {
-  return m_NumAdded;
+  return m_DiffEngine.NumAdded();
 }
 
 size_t DiffDocument::NumChanged() const
 {
-  return m_NumChanged;
+  return m_DiffEngine.NumChanged();
 }
 
 size_t DiffDocument::NumDeleted() const
 {
-  return m_NumDeleted;
+  return m_DiffEngine.NumDeleted();
 }
 
 
@@ -124,6 +122,11 @@ const DiffLine* DiffDocument::LeftLine(size_t index) const
 const DiffLine* DiffDocument::RightLine(size_t index) const
 {
   return m_RightDiffFile.GetLine(index);
+}
+
+size_t DiffDocument::NumDifferences() const
+{
+  return m_DiffEngine.NumDifferences();
 }
 
 size_t DiffDocument::FirstDiffIndex() 
@@ -174,4 +177,9 @@ size_t DiffDocument::PrevDiffIndex()
 
   m_DiffIndicesIdx--;
   return m_DiffIndices[m_DiffIndicesIdx];
+}
+
+bool DiffDocument::LineNumbersEnabled() const
+{
+  return m_LineNumbersEnabled;
 }
