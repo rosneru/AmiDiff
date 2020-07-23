@@ -1,67 +1,38 @@
-#include <clib/exec_protos.h>
 #include <clib/intuition_protos.h>
 #include "MessageBox.h"
 
-MessageBox::MessageBox()
-  : m_pEasyStruct(NULL)
+MessageBox::MessageBox(struct Window* pWindow)
+  : m_pWindow(pWindow)
 {
-  m_pEasyStruct = (struct EasyStruct*)
-    AllocVec(sizeof(struct EasyStruct), MEMF_CLEAR);
 
-  if(m_pEasyStruct == NULL)
-  {
-    return;
-  }
-
-  m_pEasyStruct->es_StructSize = sizeof(EasyStruct);
-  m_pEasyStruct->es_Flags = 0;
-  m_pEasyStruct->es_Title = NULL;
+  m_EasyStruct.es_StructSize = sizeof(EasyStruct);
+  m_EasyStruct.es_Flags = 0;
+  m_EasyStruct.es_Title = NULL;
 }
 
 MessageBox::~MessageBox()
 {
-  if(m_pEasyStruct != NULL)
-  {
-    FreeVec(m_pEasyStruct);
-    m_pEasyStruct = NULL;
-  }
+
 }
 
-void MessageBox::Show(struct Window* pWindow,
-                      const SimpleString& windowTitle,
-                      const SimpleString& message,
-                      const SimpleString& buttonText)
+void MessageBox::Show(const char* pWindowTitle,
+                      const char* pMessage,
+                      const char* pButtonText)
 {
-  m_pEasyStruct->es_Title = (UBYTE*) windowTitle.C_str();
-  Show(pWindow, message, buttonText);
-}
+  m_EasyStruct.es_Title = (UBYTE*) pWindowTitle;
+  m_EasyStruct.es_TextFormat = (UBYTE*)pMessage;
+  m_EasyStruct.es_GadgetFormat = (UBYTE*)pButtonText;
 
-
-void MessageBox::Show(const SimpleString& windowTitle,
-                      const SimpleString& message,
-                      const SimpleString& buttonText)
-{
-  Show(NULL, windowTitle, message, buttonText);
+  EasyRequest(m_pWindow, &m_EasyStruct, NULL);
 }
 
 
-void MessageBox::Show(struct Window* pWindow,
-                      const SimpleString& message,
-                      const SimpleString& buttonText)
+void MessageBox::Show(const char* pMessage,
+                      const char* pButtonText)
 {
-  if(m_pEasyStruct == NULL)
-  {
-    return;
-  }
+  m_EasyStruct.es_Title = NULL;
+  m_EasyStruct.es_TextFormat = (UBYTE*)pMessage;
+  m_EasyStruct.es_GadgetFormat = (UBYTE*)pButtonText;
 
-  m_pEasyStruct->es_TextFormat = (UBYTE*)message.C_str();
-  m_pEasyStruct->es_GadgetFormat = (UBYTE*)buttonText.C_str();
-
-  EasyRequest(pWindow, m_pEasyStruct, NULL);
-}
-
-void MessageBox::Show(const SimpleString& message,
-                      const SimpleString& buttonText)
-{
-  Show(NULL, message, buttonText);
+  EasyRequest(m_pWindow, &m_EasyStruct, NULL);
 }

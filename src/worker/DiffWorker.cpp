@@ -39,7 +39,6 @@ DiffWorker::~DiffWorker()
 
 bool DiffWorker::Diff()
 {
-  MessageBox request;
   m_bCancelRequested = false;
   m_bExitAllowed = false;
   m_Progress.Reset();
@@ -55,10 +54,10 @@ bool DiffWorker::Diff()
   //
   // Some basic tests
   //
+  MessageBox request(m_ProgressWindow.IntuiWindow());
   if(m_LeftSrcFilePath.Length() == 0)
   {
-    request.Show(m_ProgressWindow.IntuiWindow(),
-                 "Error: Left file name not set.",
+    request.Show("Error: Left file name not set.",
                  "Ok");
 
     m_CmdOpenFilesWindow.Execute(NULL);
@@ -70,8 +69,7 @@ bool DiffWorker::Diff()
 
   if(m_RightSrcFilePath.Length() == 0)
   {
-    request.Show(m_ProgressWindow.IntuiWindow(),
-                 "Error: Right file name not set.",
+    request.Show("Error: Right file name not set.",
                  "Ok");
 
     m_CmdOpenFilesWindow.Execute(NULL);
@@ -106,8 +104,7 @@ bool DiffWorker::Diff()
   {
     if(!m_bCancelRequested)
     {
-      request.Show(m_ProgressWindow.IntuiWindow(),
-                   pError, "Ok.");
+      request.Show(pError, "Ok.");
     }
 
     m_CmdOpenFilesWindow.Execute(NULL);

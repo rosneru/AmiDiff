@@ -79,7 +79,7 @@ private:
   CmdRequester m_CmdAboutRequester;
   SimpleString m_AboutMsg;
 
-  std::vector<WindowBase*> m_WindowArray;
+  std::vector<WindowBase*> m_AllWindows;
 
   /**
    * Handling messages from Intuition

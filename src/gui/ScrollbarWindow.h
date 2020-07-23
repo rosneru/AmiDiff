@@ -5,7 +5,6 @@
 #include <intuition/screens.h>
 
 #include "OpenScreenBase.h"
-#include "SimpleString.h"
 #include "WindowBase.h"
 
 /**

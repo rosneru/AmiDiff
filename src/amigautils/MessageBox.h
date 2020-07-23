@@ -2,7 +2,7 @@
 #define MESSAGE_BOX_H
 
 #include <intuition/intuition.h>
-#include "SimpleString.h"
+
 
 /**
  * Displays a requester with a message to the user.
@@ -13,27 +13,20 @@
 class MessageBox
 {
 public:
-  MessageBox();
+  MessageBox(struct Window* pWindow = NULL);
   virtual ~MessageBox();
 
-  void Show(struct Window* pWindow,
-            const SimpleString& windowTitle,
-            const SimpleString& message,
-            const SimpleString& buttonText);
+  void Show(const char* pWindowTitle,
+            const char* pMessage,
+            const char* pButtonText);
 
-  void Show(const SimpleString& windowTitle,
-            const SimpleString& message,
-            const SimpleString& buttonText);       
 
-  void Show(struct Window* pWindow,
-            const SimpleString& message,
-            const SimpleString& buttonText);
-
-  void Show(const SimpleString& message,
-            const SimpleString& buttonText);
+  void Show(const char* pMessage,
+            const char* pButtonText);
 
 private:
-    struct EasyStruct* m_pEasyStruct;
+    struct Window* m_pWindow;
+    struct EasyStruct m_EasyStruct;
 };
 
 #endif
