@@ -38,8 +38,7 @@ public:
               ADiffViewSettings& settings);
   virtual ~Application();
 
-  bool Run();
-  SimpleString& ErrorMsg();
+  void Run();
 
 private:
   ADiffViewArgs& m_Args;
@@ -51,8 +50,6 @@ private:
   struct MsgPort* m_pMsgPortIDCMP;
   struct MsgPort* m_pMsgPortProgress;
   struct MsgPort* m_pMsgPortAppWindow;
-
-  SimpleString m_ErrorMsg;
 
   bool m_bCancelRequested;
   bool m_bExitRequested;

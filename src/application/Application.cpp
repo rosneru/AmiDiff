@@ -204,20 +204,12 @@ Application::~Application()
 }
 
 
-bool Application::Run()
+void Application::Run()
 {
   //
   // The main event loop
   //
   intuiEventLoop();
-
-  return true;
-}
-
-
-SimpleString& Application::ErrorMsg()
-{
-  return m_ErrorMsg;
 }
 
 

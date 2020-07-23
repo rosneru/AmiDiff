@@ -102,12 +102,7 @@ int main(int argc, char **argv)
 
     // Create and run the application
     pApplication = new Application(pScreenBase, args, settings);
-    bool bOk = pApplication->Run();
-    if(!bOk)
-    {
-      // On error display a message
-      throw pApplication->ErrorMsg();
-    }
+    pApplication->Run();
   }
   catch(const char* pMsg)
   {

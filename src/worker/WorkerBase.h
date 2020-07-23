@@ -4,35 +4,11 @@
 #include <dos/dosextens.h>
 #include <exec/ports.h>
 
-#include "SimpleString.h"
 #include "WorkerStartupMsg.h"
 
 /**
  * This is an abstract class to provide background worker functionality
  * e.g. for time-consuming operations.
- *
- * To implement this functionality a class can inherit from this class
- * fulfilling the following conditions:
- *
- * 1. In its constructor it the has to pass a message port to the base
- * constructor to which the progress messages will be sent. These
- * messages have to be received (using Wait()) and replied (using
- * ReplyMsg) in the application event loop. The progress messages are
- * of type WorkerProgresMsg, @see WorkerProgresMsg.h
- *
- * 2. It must implement the doWork() method in which it should perform
- * the time-consuming operations.
- *
- * 3. It can send progress messages using the method sendProgress(int)
- * where progress should be a value between 0..100
- *
- * The WorkerBase itself inherits from the abstract class 
- * ProgressReporter and implements its notifyProgressChanged() method.
- * So a class with a time consuming operation can hold a pointer to
- * the WorkerBase (e.g. define a SetProgressReporter() method) and
- * then use the notifyProgressChanged() method of the ProgressReporter
- * to trigger the WorkerBase to send the WorkerProgresMsg's to
- * the progress message port.
  *
  * @author Uwe Rosner
  * @date 24/01/2019
@@ -53,8 +29,10 @@ protected:
   WorkerStartupMsg* m_pStartupMsg;
   struct MsgPort* m_pReplyPort;
 
-  SimpleString m_LastError;
-
+  /**
+   * Method to perform the time consuming background work.
+   * Must be implemented by inheriting classes.
+   */
   virtual void doWork() = 0;
 
 private:

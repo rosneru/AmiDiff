@@ -87,9 +87,6 @@ void WorkerBase::startup()
     return;
   }
 
-  // TODO Remove..
-  //class WorkerBase *that = pStartupMsg->that;
-
   // Create the reply port for this process. It is used to receive
   // answers from main for the sent progress messages.
   pStartupMsg->that->m_pReplyPort = CreateMsgPort();
@@ -103,7 +100,4 @@ void WorkerBase::startup()
 
   DeleteMsgPort(pStartupMsg->that->m_pReplyPort);
   pStartupMsg->that->m_pReplyPort = NULL;
-
-
 }
-
