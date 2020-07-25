@@ -75,24 +75,17 @@ void WorkerBase::startup()
   struct WorkerStartupMsg* pStartupMsg = (struct WorkerStartupMsg*)
     GetMsg(&pProcess->pr_MsgPort);
 
-  if (pStartupMsg == NULL)
+  if ((pStartupMsg == NULL) || (pStartupMsg->that == NULL))
   {
-    // Error in process startup: Empty start msg
-    return;
-  }
-
-  if(pStartupMsg->that == NULL)
-  {
-    // Error in process startup: Empty worker pointer in start msg
+    // Need pStartupMsg and ist 'that' pointer
     return;
   }
 
   // Create the reply port for this process. It is used to receive
   // answers from main for the sent progress messages.
-  pStartupMsg->that->m_pReplyPort = CreateMsgPort();
-  if (pStartupMsg->that->m_pReplyPort == NULL)
+  if ((pStartupMsg->that->m_pReplyPort = CreateMsgPort()) == NULL)
   {
-    // Error in process startup: Can't create message port
+    // Failed to create message port
     return;
   }
 

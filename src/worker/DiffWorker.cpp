@@ -104,7 +104,7 @@ bool DiffWorker::Diff()
   {
     if(!m_bCancelRequested)
     {
-      request.Show(pError, "Ok.");
+      request.Show(pError, "Ok");
     }
 
     m_CmdOpenFilesWindow.Execute(NULL);
