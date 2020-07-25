@@ -39,6 +39,8 @@ public:
 
 private:
   APTR m_pPoolHeader;
+  AmigaFile m_File;
+ 
 };
 
 #endif // DIFF_FILE_PARTITION_AMIGA_H

@@ -19,16 +19,15 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
                                        const char* pFileName,
                                        bool lineNumbersEnabled)
   : DiffFileBase(bCancelRequested),
-    m_pPoolHeader(pPoolHeader)
+    m_pPoolHeader(pPoolHeader),
+    m_File(pFileName, MODE_OLDFILE)
 {
   progress.SetDescription(pProgressDescription);
   progress.SetValue(1);
-
-  AmigaFile* m_pFile = new AmigaFile(pFileName, MODE_OLDFILE);
   
   // Initialize some variables needed for progress reporting
   int lastProgressValue = -1;
-  m_NumLines = m_pFile->CountLines();
+  m_NumLines = m_File.CountLines();
 
   if(m_NumLines == 0)
   {
@@ -47,7 +46,7 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
   char* pReadLine = NULL;
   int i = 0;
 
-  while((pReadLine = m_pFile->ReadLine()) != NULL)
+  while((pReadLine = m_File.ReadLine()) != NULL)
   {
     char* pLine = (char*) AllocPooled(m_pPoolHeader,
                                       strlen(pReadLine) + 1);
@@ -108,8 +107,6 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
   }
 
   progress.SetValue(100);
-
-  delete m_pFile;
 }
 
 
