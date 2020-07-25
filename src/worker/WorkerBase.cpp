@@ -36,6 +36,7 @@ bool WorkerBase::Run()
   // Create the background process
   m_pBackgrProcess = CreateNewProcTags(NP_Name, "WorkerBase",
                                        NP_Entry, &startup,
+                                       NP_StackSize, 30000,
                                        TAG_DONE);
 
   if (m_pBackgrProcess == NULL)
