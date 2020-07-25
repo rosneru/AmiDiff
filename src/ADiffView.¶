@@ -110,11 +110,11 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "amigautils/LinkedListAmiga.cpp"
-"amigautils/LinkedListAmiga.cpp"
-"amigautils/LinkedListAmiga.h"
+1 "amigautils/MemoryPool.cpp"
+"amigautils/MemoryPool.cpp"
+"amigautils/MemoryPool.h"
 Storm Shell Project (Dependencies)
-"objects_debug/LinkedListAmiga.o" "objects_debug/LinkedListAmiga.debug"
+"objects_debug/MemoryPool.o" "objects_debug/MemoryPool.debug"
 ""
 1 1
 File
@@ -161,11 +161,12 @@ File
 "application/ADiffView_rev.h"
 "gui/ADiffViewPens.h"
 "application/ADiffViewArgs.h"
-"oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 "commands/CmdOpenWindow.h"
 "gui/Rect.h"
 "gui/OpenScreenBase.h"
+"diffengine/Pair.h"
+"worker/DiffWorkerProgressReporter.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -174,7 +175,6 @@ File
 1 "application/main.cpp"
 "application/main.cpp"
 "diffengine/DiffLine.h"
-"oscottlibs/LinkedListNode.h"
 "application/Application.h"
 "application/ADiffViewArgs.h"
 "application/ADiffViewSettings.h"
@@ -188,6 +188,8 @@ File
 "application/ADiffView_rev.h"
 "gui/Rect.h"
 "gui/OpenScreenBase.h"
+"diffengine/Pair.h"
+"worker/DiffWorkerProgressReporter.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -214,11 +216,12 @@ File
 "diffengine/DiffLine.h"
 "gui/ScrollbarWindow.h"
 "gui/ADiffViewPens.h"
-"oscottlibs/LinkedListNode.h"
 "commands/CmdOpenWindow.h"
 "commands/CommandBase.h"
 "gui/Rect.h"
 "gui/OpenScreenBase.h"
+"diffengine/Pair.h"
+"worker/DiffWorkerProgressReporter.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
 ""
@@ -243,10 +246,10 @@ File
 "diffengine/DiffLine.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
-"oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 "commands/CommandBase.h"
 "gui/OpenScreenBase.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdNavNextDiff.o" "objects_debug/CmdNavNextDiff.debug"
 ""
@@ -260,10 +263,10 @@ File
 "diffengine/DiffLine.h"
 "gui/ScrollbarWindow.h"
 "gui/WindowBase.h"
-"oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 "commands/CommandBase.h"
 "gui/OpenScreenBase.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdNavPrevDiff.o" "objects_debug/CmdNavPrevDiff.debug"
 ""
@@ -320,32 +323,8 @@ File
 "diffengine/DiffLine.h"
 "diffengine/Pair.h"
 "diffengine/DiffFileBase.h"
-"oscottlibs/LinkedListNode.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffEngine.o" "objects_debug/DiffEngine.debug"
-""
-1 1
-File
-1 "diffengine/DiffEngineAmiga.cpp"
-"diffengine/DiffEngineAmiga.cpp"
-"diffengine/DiffEngineAmiga.h"
-"diffengine/DiffEngine.h"
-"diffengine/Pair.h"
-"diffengine/DiffLine.h"
-"diffengine/DiffFileBase.h"
-"oscottlibs/LinkedListNode.h"
-Storm Shell Project (Dependencies)
-"objects_debug/DiffEngineAmiga.o" "objects_debug/DiffEngineAmiga.debug"
-""
-1 1
-File
-1 "diffengine/DiffOutputFileAmiga.cpp"
-"diffengine/DiffOutputFileAmiga.cpp"
-"diffengine/DiffOutputFileAmiga.h"
-"diffengine/DiffFileBase.h"
-"diffengine/DiffLine.h"
-Storm Shell Project (Dependencies)
-"objects_debug/DiffOutputFileAmiga.o" "objects_debug/DiffOutputFileAmiga.debug"
 ""
 1 1
 File
@@ -373,6 +352,16 @@ File
 "diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffLine.o" "objects_debug/DiffLine.debug"
+""
+1 1
+File
+1 "diffengine/DiffOutputFileAmiga.cpp"
+"diffengine/DiffOutputFileAmiga.cpp"
+"diffengine/DiffOutputFileAmiga.h"
+"diffengine/DiffFileBase.h"
+"diffengine/DiffLine.h"
+Storm Shell Project (Dependencies)
+"objects_debug/DiffOutputFileAmiga.o" "objects_debug/DiffOutputFileAmiga.debug"
 ""
 1 1
 File
@@ -410,9 +399,9 @@ File
 "gui/ScrollbarWindow.h"
 "diffengine/DiffFileBase.h"
 "gui/ADiffViewPens.h"
-"oscottlibs/LinkedListNode.h"
 "gui/AMenu.h"
 "gui/OpenScreenBase.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
 ""
@@ -507,25 +496,9 @@ File
 "model/DiffDocument.h"
 "diffengine/DiffLine.h"
 "diffengine/DiffFileBase.h"
+"diffengine/Pair.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffDocument.o" "objects_debug/DiffDocument.debug"
-""
-1 1
-File
-1 "oscottlibs/LinkedList.cpp"
-"oscottlibs/LinkedList.cpp"
-"oscottlibs/LinkedList.h"
-"oscottlibs/LinkedListNode.h"
-Storm Shell Project (Dependencies)
-"objects_debug/LinkedList.o" "objects_debug/LinkedList.debug"
-""
-1 1
-File
-1 "oscottlibs/LinkedListNode.cpp"
-"oscottlibs/LinkedListNode.cpp"
-"oscottlibs/LinkedListNode.h"
-Storm Shell Project (Dependencies)
-"objects_debug/LinkedListNode.o" "objects_debug/LinkedListNode.debug"
 ""
 1 1
 File
@@ -547,21 +520,37 @@ File
 "diffengine/Pair.h"
 "gui/ScrollbarWindow.h"
 "gui/ADiffViewPens.h"
-"diffengine/DiffEngine.h"
-"oscottlibs/LinkedListNode.h"
 "commands/CmdOpenWindow.h"
 "commands/CommandBase.h"
 "gui/Rect.h"
 "gui/OpenScreenBase.h"
+"worker/DiffWorkerProgressReporter.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
+""
+1 1
+File
+1 "worker/DiffWorkerProgressReporter.cpp"
+"worker/DiffWorkerProgressReporter.cpp"
+"worker/DiffWorkerProgressReporter.h"
+"worker/ProgressReporter.h"
+Storm Shell Project (Dependencies)
+"objects_debug/DiffWorkerProgressReporter.o" "objects_debug/DiffWorkerProgressReporter.debug"
+""
+1 1
+File
+1 "worker/ProgressReporter.cpp"
+"worker/ProgressReporter.cpp"
+"worker/ProgressMessage.h"
+"worker/ProgressReporter.h"
+Storm Shell Project (Dependencies)
+"objects_debug/ProgressReporter.o" "objects_debug/ProgressReporter.debug"
 ""
 1 1
 File
 1 "worker/WorkerBase.cpp"
 "worker/WorkerBase.cpp"
 "worker/WorkerBase.h"
-"worker/ProgressReporter.h"
 "worker/WorkerStartupMsg.h"
 "worker/ProgressMessage.h"
 Storm Shell Project (Dependencies)
@@ -582,6 +571,13 @@ Storm Shell Project (Dependencies)
 File
 2 "amigautils/LinkedListAmiga.h"
 "amigautils/LinkedListAmiga.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "amigautils/MemoryPool.h"
+"amigautils/MemoryPool.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -710,13 +706,6 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "diffengine/DiffOutputFileAmiga.h"
-"diffengine/DiffOutputFileAmiga.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
 2 "diffengine/DiffFileBase.h"
 "diffengine/DiffFileBase.h"
 Storm Shell Project (Dependencies)
@@ -733,6 +722,13 @@ Storm Shell Project (Dependencies)
 File
 2 "diffengine/DiffLine.h"
 "diffengine/DiffLine.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "diffengine/DiffOutputFileAmiga.h"
+"diffengine/DiffOutputFileAmiga.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -854,6 +850,13 @@ Storm Shell Project (Dependencies)
 File
 2 "worker/DiffWorker.h"
 "worker/DiffWorker.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "worker/DiffWorkerProgressReporter.h"
+"worker/DiffWorkerProgressReporter.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

@@ -37,10 +37,10 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
 
   // Create an array of DiffLine-pointers to hold all needed lines
   size_t arraySize = sizeof(DiffLine*) * m_NumLines;
-  m_pDiffLinesArray = (DiffLine**) AllocPooled(m_pPoolHeader, arraySize);
+  m_pDiffLinesArray = (DiffLine**) AllocPooled(m_pPoolHeader, arraySize * 100000);
   if(m_pDiffLinesArray == NULL)
   {
-    throw "Failed to load file.";
+    throw "Failed to allocate memory.";
   }
 
   char* pReadLine = NULL;
