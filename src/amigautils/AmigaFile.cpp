@@ -4,6 +4,7 @@
 
 AmigaFile::AmigaFile(const char* pFileName, ULONG accessMode)
   : MAX_LINE_LENGTH(1024), // TODO A better solution needed?
+    m_pLineBuf(NULL),
     m_FileDescriptor(0),
     m_FileName(pFileName)
 {
