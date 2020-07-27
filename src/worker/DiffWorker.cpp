@@ -110,6 +110,8 @@ bool DiffWorker::Diff()
     m_CmdOpenFilesWindow.Execute(NULL);
     m_ProgressWindow.Close();
 
+    m_Progress.SetValue(100);
+
     m_bExitAllowed = true;
     return false;
   }

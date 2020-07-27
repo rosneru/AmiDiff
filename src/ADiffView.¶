@@ -51,7 +51,7 @@ GCC Options (1)
 0
 Defines (End)
 1 0 0 1 0
-3 0 0 1 0 1 0
+3 0 0 1 1 1 0
 0 2 1 0 0
 0 0 0 0 1 1 0
 0 0 0 0
@@ -895,7 +895,6 @@ Section
 7
 File
 10 "ADiffView"
-"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""
