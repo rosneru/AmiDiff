@@ -311,7 +311,7 @@ void TextWindow::calcSizes()
 }
 
 
-void TextWindow::paintLine(const SimpleString* p_pLine, WORD p_TopEdge)
+void TextWindow::paintLine(const std::string* p_pLine, WORD p_TopEdge)
 {
   // Move rastport cursor to start of left line
   ::Move(m_pWindow->RPort,
@@ -351,7 +351,7 @@ void TextWindow::paintDocument(bool p_bStartFromTop)
       break;
     }
 
-    const SimpleString* pLine = m_pDocument->GetIndexedLine(i);
+    const std::string* pLine = m_pDocument->GetIndexedLine(i);
 
     if(pLine == NULL)
     {
@@ -400,7 +400,7 @@ size_t TextWindow::scrollNCharsRight(int p_ScrollNumCharsRight)
   // fill the gap with the previous chars
   for(int i = m_Y; i < m_Y + m_MaxWinLines; i++)
   {
-    const SimpleString* pLine = m_pDocument->GetIndexedLine(i);
+    const std::string* pLine = m_pDocument->GetIndexedLine(i);
 
     if(pLine == NULL)
     {
@@ -458,7 +458,7 @@ size_t TextWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
   // Fill the gap with the following chars
   for(int i = m_Y; i < m_Y + m_MaxWinLines; i++)
   {
-    const SimpleString* pLine = m_pDocument->GetIndexedLine(i);
+    const std::string* pLine = m_pDocument->GetIndexedLine(i);
 
     if(pLine == NULL)
     {
@@ -503,7 +503,7 @@ size_t TextWindow::scrollNLinesDown(int p_ScrollNumLinesDown)
   for(int i = 0; i < p_ScrollNumLinesDown; i++)
   {
     int lineIndex = m_Y - p_ScrollNumLinesDown + i;
-    const SimpleString* pLine = m_pDocument->GetIndexedLine(lineIndex);
+    const std::string* pLine = m_pDocument->GetIndexedLine(lineIndex);
 
     if(pLine == NULL)
     {
@@ -553,7 +553,7 @@ size_t TextWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
   for(int i = 0; i < p_ScrollUpNumLinesUp; i++)
   {
     int lineIndex = m_Y + m_MaxWinLines + i;
-    const SimpleString* pLine = m_pDocument->GetIndexedLine(lineIndex);
+    const std::string* pLine = m_pDocument->GetIndexedLine(lineIndex);
 
     if(pLine == NULL)
     {

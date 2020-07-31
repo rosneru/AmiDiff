@@ -8,6 +8,7 @@
 #ifndef APPLICATION
 #define APPLICATION
 
+#include <string>
 #include <vector>
 
 #include <exec/ports.h>
@@ -27,7 +28,6 @@
 #include "DiffWorker.h"
 #include "FilesWindow.h"
 #include "ProgressWindow.h"
-#include "SimpleString.h"
 #include "DiffWindow.h"
 
 class Application
@@ -42,8 +42,8 @@ public:
 
 private:
   ADiffViewArgs& m_Args;
-  SimpleString m_LeftFilePath;
-  SimpleString m_RightFilePath;
+  std::string m_LeftFilePath;
+  std::string m_RightFilePath;
 
   ADiffViewSettings& m_Settings;
 
@@ -77,7 +77,7 @@ private:
   CmdOpenWindow m_CmdOpenFilesWindow;
   CmdCloseWindow m_CmdCloseFilesWindow;
   CmdRequester m_CmdAboutRequester;
-  SimpleString m_AboutMsg;
+  std::string m_AboutMsg;
 
   std::vector<WindowBase*> m_AllWindows;
 

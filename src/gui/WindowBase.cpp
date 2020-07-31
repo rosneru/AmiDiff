@@ -132,7 +132,7 @@ bool WindowBase::Open(InitialPosition initialPos)
                              WA_Top, m_Top,
                              WA_Width, m_Width,
                              WA_Height, m_Height,
-                             WA_Title, (ULONG) m_Title.C_str(),
+                             WA_Title, (ULONG) m_Title.c_str(),
                              WA_Activate, TRUE,
                              WA_PubScreen, (UBYTE*) m_pScreenBase->IntuiScreen(),
                              WA_Flags, m_WindowFlags,
@@ -218,11 +218,11 @@ bool WindowBase::IsOpen() const
 
 const char* WindowBase::Title() const
 {
-  return m_Title.C_str();
+  return m_Title.c_str();
 }
 
 
-void WindowBase::SetTitle(SimpleString newTitle)
+void WindowBase::SetTitle(std::string newTitle)
 {
   m_Title = newTitle;
 
@@ -234,7 +234,7 @@ void WindowBase::SetTitle(SimpleString newTitle)
 
   // Call intuition function to set the window title
   // Note the ~0 inverts the value and is a value of -1
-  SetWindowTitles(m_pWindow, m_Title.C_str(), (STRPTR) ~0);
+  SetWindowTitles(m_pWindow, m_Title.c_str(), (STRPTR) ~0);
 }
 
 

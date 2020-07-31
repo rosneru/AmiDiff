@@ -79,7 +79,7 @@ ULONG AmigaFile::GetSize()
 }
 
 
-bool AmigaFile::ReadLines(std::vector<SimpleString*>& linesVector)
+bool AmigaFile::ReadLines(std::vector<std::string*>& linesVector)
 {
   // Rewind reading pointer to start of file
   Seek(m_FileDescriptor, 0, OFFSET_BEGINNING);
@@ -90,11 +90,11 @@ bool AmigaFile::ReadLines(std::vector<SimpleString*>& linesVector)
   // ****
 
   // Reading all lines and increment counter
-  SimpleString line;
+  std::string line;
   int i = 0;
   while(ReadLine(line))
   {
-    linesVector.push_back(new SimpleString(line));
+    linesVector.push_back(new std::string(line));
     i++;
   }
 
@@ -105,7 +105,7 @@ bool AmigaFile::ReadLines(std::vector<SimpleString*>& linesVector)
 }
 
 
-bool AmigaFile::ReadLine(SimpleString& line)
+bool AmigaFile::ReadLine(std::string& line)
 {
   if(ReadLine() == NULL)
   {

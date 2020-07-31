@@ -1,11 +1,12 @@
 #ifndef PROGRESS_WINDOW_H
 #define PROGRESS_WINDOW_H
 
+#include <string>
+
 #include <exec/ports.h>
 
 #include "Rect.h"
 #include "OpenScreenBase.h"
-#include "SimpleString.h"
 #include "WindowBase.h"
 
 /**
@@ -72,12 +73,12 @@ private:
   Rect m_OuterRect;
   Rect m_ProgressRect;
 
-  SimpleString m_TextZero;
-  SimpleString m_TextHundred;
+  std::string m_TextZero;
+  std::string m_TextHundred;
   size_t m_TextZeroWidth;
   size_t m_TextHundredWidth;
 
-  SimpleString m_ProgressDescr;
+  std::string m_ProgressDescr;
 
 };
 

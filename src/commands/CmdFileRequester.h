@@ -1,9 +1,10 @@
 #ifndef CMD_FILE_REQUESTER_H
 #define CMD_FILE_REQUESTER_H
 
+#include <string>
+
 #include "AMenu.h"
 #include "CommandBase.h"
-#include "SimpleString.h"
 
 
 /**
@@ -24,11 +25,11 @@ public:
   void SetPreselectPathOnly(bool yes);
   void SetInitialFilePath(const char* initialPath);
 
-  const SimpleString& SelectedFile() const;
+  const std::string& SelectedFile() const;
 private:
   const char* m_pTitle;
-  SimpleString m_InitialFileFullPath;
-  SimpleString m_SelectedFilePath;
+  std::string m_InitialFileFullPath;
+  std::string m_SelectedFilePath;
   bool m_bPreselectPathOnly;
 
   void selectFile(struct Window* pActiveWindow);

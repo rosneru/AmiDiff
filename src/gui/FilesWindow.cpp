@@ -20,8 +20,8 @@
 FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                          ScreenBase* pScreenBase,
                          struct MsgPort*& pIdcmpMsgPort,
-                         SimpleString& leftFilePath,
-                         SimpleString& rightFilePath,
+                         std::string& leftFilePath,
+                         std::string& rightFilePath,
                          CommandBase& cmdDiff,
                          CommandBase& cmdCloseFilesWindow,
                          AMenu* pMenu)
@@ -264,8 +264,8 @@ bool FilesWindow::Open(InitialPosition initialPos)
     return false;
   }
 
-  setStringGadgetText(m_pGadStrLeftFile, m_LeftFilePath.C_str());
-  setStringGadgetText(m_pGadStrRightFile, m_RightFilePath.C_str());
+  setStringGadgetText(m_pGadStrLeftFile, m_LeftFilePath.c_str());
+  setStringGadgetText(m_pGadStrRightFile, m_RightFilePath.c_str());
 
   // Enable or disable the 'Diff' and 'Swap' buttons depending on some
   // conditions
@@ -495,14 +495,14 @@ void FilesWindow::selectLeftFile()
   
   m_CmdSelectLeftFile.Execute(m_pWindow);
 
-  if(m_CmdSelectLeftFile.SelectedFile().Length() == 0)
+  if(m_CmdSelectLeftFile.SelectedFile().length() == 0)
   {
     checkEnableButtons();
     return;
   }
 
   setStringGadgetText(m_pGadStrLeftFile, 
-                      m_CmdSelectLeftFile.SelectedFile().C_str());
+                      m_CmdSelectLeftFile.SelectedFile().c_str());
   
   checkEnableButtons();
 }
@@ -538,14 +538,14 @@ void FilesWindow::selectRightFile()
 
   m_CmdSelectRightFile.Execute(m_pWindow);
 
-  if(m_CmdSelectRightFile.SelectedFile().Length() == 0)
+  if(m_CmdSelectRightFile.SelectedFile().length() == 0)
   {
     checkEnableButtons();
     return;
   }
 
   setStringGadgetText(m_pGadStrRightFile, 
-                      m_CmdSelectRightFile.SelectedFile().C_str());
+                      m_CmdSelectRightFile.SelectedFile().c_str());
 
   checkEnableButtons();
 }
@@ -561,10 +561,10 @@ void FilesWindow::swapFiles()
     return;
   }
 
-  SimpleString formerLeftFilePath = pLeftStrGadgetText;
+  std::string formerLeftFilePath = pLeftStrGadgetText;
 
   setStringGadgetText(m_pGadStrLeftFile, pRightStrGadgetText);
-  setStringGadgetText(m_pGadStrRightFile, formerLeftFilePath.C_str());
+  setStringGadgetText(m_pGadStrRightFile, formerLeftFilePath.c_str());
 }
 
 

@@ -1,15 +1,16 @@
 #ifndef FILES_WINDOW_H
 #define FILES_WINDOW_H
 
+#include <string>
+#include <vector>
+
 #include <exec/ports.h>
 #include <intuition/screens.h>
 #include <workbench/workbench.h>
 
-#include <vector>
 #include "OpenScreenBase.h"
 #include "CommandBase.h"
 #include "CmdFileRequester.h"
-#include "SimpleString.h"
 #include "WindowBase.h"
 
 /**
@@ -26,8 +27,8 @@ public:
   FilesWindow(std::vector<WindowBase*>& windowArray,
               ScreenBase* pScreenBase,
               struct MsgPort*& pIdcmpMsgPort,
-              SimpleString& leftFilePath,
-              SimpleString& rightFilePath,
+              std::string& leftFilePath,
+              std::string& rightFilePath,
               CommandBase& cmdDiff,
               CommandBase& cmdCloseFilesWindow,
               AMenu* pMenu);
@@ -61,8 +62,8 @@ public:
   void HandleAppMessage(struct AppMessage* pAppMsg);
 
 private:
-  SimpleString& m_LeftFilePath;
-  SimpleString& m_RightFilePath;
+  std::string& m_LeftFilePath;
+  std::string& m_RightFilePath;
 
   CommandBase& m_CmdDiff;
   CommandBase& m_CmdCloseFilesWindow;

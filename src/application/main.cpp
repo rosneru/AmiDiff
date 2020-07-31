@@ -38,6 +38,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <string>
+
 #include <dos/dos.h>
 #include <exec/types.h>
 #include <exec/libraries.h>
@@ -54,7 +56,6 @@
 #include "OpenJoinedPublicScreen.h"
 #include "MessageBox.h"
 #include "OpenScreenBase.h"
-#include "SimpleString.h"
 
 
 extern struct IntuitionBase* IntuitionBase;
@@ -89,10 +90,10 @@ int main(int argc, char **argv)
     ADiffViewSettings settings;
 
     // Create (and open) the screen depending on args
-    if(args.PubScreenName().Length() > 0)
+    if(args.PubScreenName().length() > 0)
     {
       // Use a given public screen
-      pScreenBase = new OpenJoinedPublicScreen(settings, args.PubScreenName().C_str());
+      pScreenBase = new OpenJoinedPublicScreen(settings, args.PubScreenName().c_str());
     }
     else
     {
@@ -106,7 +107,7 @@ int main(int argc, char **argv)
   }
   catch(const char* pMsg)
   {
-    SimpleString msgString = pMsg;
+    std::string msgString = pMsg;
     request.Show("ADiffView internal error",
                  pMsg,
                  "Exit");

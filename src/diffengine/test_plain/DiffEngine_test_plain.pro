@@ -15,7 +15,7 @@ SOURCES += \
     ../DiffLine.cpp \
     ../../oscottlibs/LinkedList.cpp \
     ../../oscottlibs/LinkedListNode.cpp \
-    ../../oscottlibs/SimpleString.cpp \
+    ../../oscottlibs/std::string.cpp \
     ../DiffFileLinux.cpp \
     ../Pair.cpp \
     ../DiffFileBase.cpp
@@ -26,7 +26,7 @@ HEADERS += \
     ../DiffLine.h \
     ../../oscottlibs/LinkedList.h \
     ../../oscottlibs/LinkedListNode.h \
-    ../../oscottlibs/SimpleString.h \
+    ../../oscottlibs/std::string.h \
     ../DiffFileLinux.h \
     ../../oscottlibs/Array.h \
     ../Pair.h \

@@ -3,8 +3,8 @@
 #include "MessageBox.h"
 #include "DiffWorker.h"
 
-DiffWorker::DiffWorker(SimpleString& leftFilePath,
-                       SimpleString& rightFilePath,
+DiffWorker::DiffWorker(std::string& leftFilePath,
+                       std::string& rightFilePath,
                        DiffWindow& diffWindow,
                        ProgressWindow& progressWindow,
                        CmdOpenWindow& cmdOpenFilesWindow,
@@ -55,7 +55,7 @@ bool DiffWorker::Diff()
   // Some basic tests
   //
   MessageBox request(m_ProgressWindow.IntuiWindow());
-  if(m_LeftSrcFilePath.Length() == 0)
+  if(m_LeftSrcFilePath.length() == 0)
   {
     request.Show("Error: Left file name not set.",
                  "Ok");
@@ -67,7 +67,7 @@ bool DiffWorker::Diff()
     return false;
   }
 
-  if(m_RightSrcFilePath.Length() == 0)
+  if(m_RightSrcFilePath.length() == 0)
   {
     request.Show("Error: Right file name not set.",
                  "Ok");
@@ -88,8 +88,8 @@ bool DiffWorker::Diff()
   try
   {
     m_StopWatch.Start();
-    m_pDiffDocument = new DiffDocument(m_LeftSrcFilePath.C_str(),
-                                       m_RightSrcFilePath.C_str(),
+    m_pDiffDocument = new DiffDocument(m_LeftSrcFilePath.c_str(),
+                                       m_RightSrcFilePath.c_str(),
                                        m_bCancelRequested,
                                        m_StopWatch,
                                        m_Progress,

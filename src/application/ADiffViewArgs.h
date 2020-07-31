@@ -1,7 +1,7 @@
 #ifndef ADIFFVIEW_ARGS_H
 #define ADIFFVIEW_ARGS_H
 
-#include "SimpleString.h"
+#include <string>
 
 /**
  * Class to parse and store the command line / workbench arguments
@@ -34,17 +34,17 @@ public:
    * Name of the public screen to run ADiffView on
    * If empty a own screen will be opened (Workbench clone, 8 colors)
    */
-  const SimpleString& PubScreenName() const;
+  const std::string& PubScreenName() const;
 
   /**
    * Path to left file
    */
-  const SimpleString& LeftFile() const;
+  const std::string& LeftFile() const;
 
   /**
    * Path to right file
    */
-  const SimpleString& RightFile() const;
+  const std::string& RightFile() const;
 
   /**
    * If true, the diff will be performed immediately without waiting 
@@ -74,9 +74,9 @@ private:
   int m_ArgC;
   char** m_pArgV;
 
-  SimpleString m_PubScreenName;
-  SimpleString m_LeftFilePath;
-  SimpleString m_RightFilePath;
+  std::string m_PubScreenName;
+  std::string m_LeftFilePath;
+  std::string m_RightFilePath;
   bool m_bDontAsk;
   bool m_bAskOnWorkbench;
   bool m_bShowLineNumbers;

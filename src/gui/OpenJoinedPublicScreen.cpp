@@ -8,7 +8,7 @@ OpenJoinedPublicScreen::OpenJoinedPublicScreen(const ADiffViewSettings& settings
   : ScreenBase(settings),
     m_PubScreenName(pPubScreenName)
 {
-  m_pIntuiScreen = LockPubScreen(m_PubScreenName.C_str());
+  m_pIntuiScreen = LockPubScreen(m_PubScreenName.c_str());
 
   if(m_pIntuiScreen == NULL)
   {

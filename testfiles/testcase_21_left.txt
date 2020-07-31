@@ -2,7 +2,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
-#include "SimpleString.h"
+#include <string>
 
 using namespace std;
 
@@ -24,6 +24,6 @@ int main()
   string firstTest = "Totally first test";
   cout << firstTest << endl;
 
-  SimpleString secondTest = "Test with own string object";
-  cout << secondTest.C_str() << endl;
+  std::string secondTest = "Test with own string object";
+  cout << secondTest.c_str() << endl;
 }

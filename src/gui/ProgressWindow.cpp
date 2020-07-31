@@ -47,8 +47,8 @@ ProgressWindow::ProgressWindow(ScreenBase*& pScreenBase,
                   m_Width - pScr->WBorRight - 1 - xOffset,
                   pScr->WBorTop + pScr->BarHeight + yOffset + 3 * m_pTextFont->tf_YSize);
 
-  m_TextZeroWidth = TextLength(&pScr->RastPort, m_TextZero.C_str(), 2);
-  m_TextHundredWidth = TextLength(&pScr->RastPort, m_TextHundred.C_str(), 4);
+  m_TextZeroWidth = TextLength(&pScr->RastPort, m_TextZero.c_str(), 2);
+  m_TextHundredWidth = TextLength(&pScr->RastPort, m_TextHundred.c_str(), 4);
 
   m_ProgressRect.Set(m_OuterRect.Left() + m_TextZeroWidth + 2 * xOffset,
                      m_OuterRect.Top() + m_pTextFont->tf_YSize,
@@ -192,13 +192,13 @@ bool ProgressWindow::Open(InitialPosition initialPos)
        (m_OuterRect.Left() + m_ProgressRect.Left()) / 2 - m_TextZeroWidth / 2,
        m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
   
-  Text(m_pWindow->RPort, m_TextZero.C_str(), m_TextZero.Length());
+  Text(m_pWindow->RPort, m_TextZero.c_str(), m_TextZero.length());
 
   Move(m_pWindow->RPort,
        (m_OuterRect.Right() + m_ProgressRect.Right()) / 2 - m_TextHundredWidth / 2,
        m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
   
-  Text(m_pWindow->RPort, m_TextHundred.C_str(), m_TextHundred.Length());
+  Text(m_pWindow->RPort, m_TextHundred.c_str(), m_TextHundred.length());
 
   // Create the stop gadget
   m_pGadBtnStop = CreateGadget(BUTTON_KIND,
@@ -288,7 +288,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   // yet uncovered area of the progress bar
   SetAPen(m_pWindow->RPort, m_pScreenBase->Pens().Background());
 
-  // NOTE: The following condition is a workaround because SimpleString
+  // NOTE: The following condition is a workaround because std::string
   // curently has no != overload
   if(!(m_ProgressDescr == pProgrMsg->pDescription))
   {
@@ -296,6 +296,6 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
     m_ProgressDescr = pProgrMsg->pDescription;
 
     // Update the description in window title
-    SetWindowTitles(m_pWindow, m_ProgressDescr.C_str(), (STRPTR)~0);
+    SetWindowTitles(m_pWindow, m_ProgressDescr.c_str(), (STRPTR)~0);
   }
 }

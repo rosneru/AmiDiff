@@ -42,19 +42,19 @@ ADiffViewArgs::~ADiffViewArgs()
 }
 
 
-const SimpleString& ADiffViewArgs::PubScreenName() const
+const std::string& ADiffViewArgs::PubScreenName() const
 {
   return m_PubScreenName;
 }
 
 
-const SimpleString& ADiffViewArgs::LeftFile() const
+const std::string& ADiffViewArgs::LeftFile() const
 {
   return m_LeftFilePath;
 }
 
 
-const SimpleString& ADiffViewArgs::RightFile() const
+const std::string& ADiffViewArgs::RightFile() const
 {
   return m_RightFilePath;
 }
@@ -137,7 +137,7 @@ void ADiffViewArgs::readWorkbenchArgs()
       }
       else if(i < 3)
       {
-        SimpleString fullPath;
+        std::string fullPath;
 
         if(NameFromLock(pWbArg[i].wa_Lock, pBuf, bufLen) != 0)
         {
@@ -170,10 +170,10 @@ void ADiffViewArgs::readWorkbenchArgs()
 void ADiffViewArgs::readCommandLineArgs()
 {
     // Reading the command line arguments
-    SimpleString argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S,ASKONWORKBENCH/S,NOLINENUMBERS/S";
+    std::string argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S,ASKONWORKBENCH/S,NOLINENUMBERS/S";
     LONG args[] = {0, 0, 0, 0, 0};
 
-    struct RDArgs* pReadArgs = ReadArgs(argTempl.C_str(), args, NULL);
+    struct RDArgs* pReadArgs = ReadArgs(argTempl.c_str(), args, NULL);
     if(pReadArgs == NULL)
     {
       return;

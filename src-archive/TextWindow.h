@@ -5,7 +5,7 @@
 #include <intuition/screens.h>
 
 #include "AppScreen.h"
-#include "SimpleString.h"
+#include <string>
 #include "TextDocument.h"
 #include "ScrollbarWindow.h"
 
@@ -176,7 +176,7 @@ private:
   /**
    * Prints the given line at given y-position p_TopEdge.
    */
-    void paintLine(const SimpleString* p_pLine, WORD p_TopEdge);
+    void paintLine(const std::string* p_pLine, WORD p_TopEdge);
 
   /**
    * Scrolls the current text in the text area left by

@@ -53,7 +53,7 @@ void CmdFileRequester::SetInitialFilePath(const char* pInitialPath)
 }
 
 
-const SimpleString& CmdFileRequester::SelectedFile() const
+const std::string& CmdFileRequester::SelectedFile() const
 {
   return m_SelectedFilePath;
 }
@@ -68,19 +68,19 @@ void CmdFileRequester::selectFile(struct Window* pActiveWindow)
 
   m_SelectedFilePath = "";
 
-  SimpleString initialFile = "";
-  SimpleString initialPath = "";
-  if(m_InitialFileFullPath.Length() > 0)
+  std::string initialFile = "";
+  std::string initialPath = "";
+  if(m_InitialFileFullPath.length() > 0)
   {
     // Extract path and file name from initial full file name path
-    const char* pFullPath = m_InitialFileFullPath.C_str();
+    const char* pFullPath = m_InitialFileFullPath.c_str();
     const char* pPathPart = PathPart(pFullPath);
     const char* pFilePart = FilePart(pFullPath);
 
     size_t pathLen = pPathPart - pFullPath;
     if(pathLen > 0)
     {
-      initialPath = m_InitialFileFullPath.SubStr(0, pathLen);
+      initialPath = m_InitialFileFullPath.substr(0, pathLen);
     }
 
     initialFile = pFilePart;
@@ -101,8 +101,8 @@ void CmdFileRequester::selectFile(struct Window* pActiveWindow)
   struct FileRequester* pFileRequest = (struct FileRequester*)
     AllocAslRequestTags(ASL_FileRequest,
                         ASLFR_TitleText, (ULONG) m_pTitle,
-                        ASLFR_InitialDrawer, (ULONG) initialPath.C_str(),
-                        ASLFR_InitialFile, (ULONG) initialFile.C_str(),
+                        ASLFR_InitialDrawer, (ULONG) initialPath.c_str(),
+                        ASLFR_InitialFile, (ULONG) initialFile.c_str(),
                         ASLFR_Window, (ULONG) pActiveWindow,
                         ASLFR_RejectIcons, TRUE,
                         ASLFR_IntuiMsgFunc, &aslHook,

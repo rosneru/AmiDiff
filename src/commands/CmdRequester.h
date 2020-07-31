@@ -3,7 +3,7 @@
 
 #include "AMenu.h"
 #include "CommandBase.h"
-#include "SimpleString.h"
+#include <string>
 
 
 /**
@@ -17,7 +17,7 @@ class CmdRequester : public CommandBase
 {
 public:
   CmdRequester(std::vector<WindowBase*>* pAllWindowsVector,
-               const SimpleString& message,
+               const std::string& message,
                const char* pTitle,
                const char* pButtons);
 
@@ -25,7 +25,7 @@ public:
   virtual void Execute(struct Window* pActiveWindow);
 
 private:
-  const SimpleString& m_Message;
+  const std::string& m_Message;
   const char* m_pTitle;
   const char* m_pButtons;
 

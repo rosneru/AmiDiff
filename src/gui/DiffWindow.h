@@ -1,13 +1,14 @@
 #ifndef DIFF_WINDOW_H
 #define DIFF_WINDOW_H
 
+#include <string>
+
 #include <exec/ports.h>
 #include <intuition/screens.h>
 
 #include "OpenScreenBase.h"
 #include "DiffDocument.h"
 #include "DiffLine.h"
-#include "SimpleString.h"
 #include "ScrollbarWindow.h"
 
 /**
@@ -145,7 +146,7 @@ private:
 
   UWORD m_LineNumsWidth_chars;
   UWORD m_LineNumsWidth_pix;
-  SimpleString m_LineNumberEmpty;
+  std::string m_LineNumberEmpty;
 
   UWORD m_FontWidth_pix;    ///> Width of the rastport text font
   UWORD m_FontHeight_pix;   ///> Height of the rastport text font
@@ -185,10 +186,10 @@ private:
   LONG m_ScrollAreasYMin;
   LONG m_ScrollAreasYMax;
 
-  SimpleString m_ChangedText;
-  SimpleString m_AddedText;
-  SimpleString m_DeletedText;
-  SimpleString m_StatusBarText;
+  char m_ChangedText[20];
+  char m_AddedText[20];
+  char m_DeletedText[20];
+  char m_StatusBarText[60];
 
   struct TextAttr m_TextAttr;
 

@@ -12,7 +12,7 @@ public:
   virtual ~OpenJoinedPublicScreen();
 
 private:
-  const SimpleString m_PubScreenName;
+  const std::string m_PubScreenName;
 };
 
 #endif

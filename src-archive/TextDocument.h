@@ -3,7 +3,7 @@
 
 #include "Document.h"
 #include <vector>
-#include "SimpleString.h"
+#include <string>
 
 
 class TextDocument : public Document
@@ -11,18 +11,18 @@ class TextDocument : public Document
 public:
   TextDocument();
   virtual ~TextDocument();
-  bool Load(const SimpleString& p_FileName);
+  bool Load(const std::string& p_FileName);
   void Clear();
 
   virtual size_t NumLines() const;
   virtual size_t MaxLineLength();
-  virtual const SimpleString* GetIndexedLine(int p_LineIdx);
+  virtual const std::string* GetIndexedLine(int p_LineIdx);
 
 protected:
   size_t m_MaxLineLength;
 
 private:
-  Array<SimpleString*> m_Lines;
+  Array<std::string*> m_Lines;
 };
 
 

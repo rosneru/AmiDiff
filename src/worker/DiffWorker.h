@@ -14,7 +14,7 @@
 #include "DiffWorkerProgressReporter.h"
 #include "FilesWindow.h"
 #include "ProgressWindow.h"
-#include "SimpleString.h"
+#include <string>
 #include "StopWatch.h"
 #include "WorkerBase.h"
 
@@ -30,8 +30,8 @@
 class DiffWorker : public WorkerBase
 {
 public:
-  DiffWorker(SimpleString& leftFilePath,
-             SimpleString& rightFilePath,
+  DiffWorker(std::string& leftFilePath,
+             std::string& rightFilePath,
              DiffWindow& diffWindow,
              ProgressWindow& progressWindow,
              CmdOpenWindow& cmdOpenFilesWindow,
@@ -67,8 +67,8 @@ public:
   DiffFileBase& RightFileDiff();
 
 private:
-  SimpleString& m_LeftSrcFilePath;
-  SimpleString& m_RightSrcFilePath;
+  std::string& m_LeftSrcFilePath;
+  std::string& m_RightSrcFilePath;
   DiffWorkerProgressReporter m_Progress;
   StopWatch m_StopWatch;
   DiffWindow& m_DiffWindow;

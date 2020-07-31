@@ -13,7 +13,6 @@
                 "${workspaceFolder}/src/diffengine",
                 "${workspaceFolder}/src/gui",
                 "${workspaceFolder}/src/model",
-                "${workspaceFolder}/src/oscottlibs",
                 "${workspaceFolder}/src/worker"
             ],
             "defines": ["LINUX"],

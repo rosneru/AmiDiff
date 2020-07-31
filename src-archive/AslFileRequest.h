@@ -1,8 +1,8 @@
 #ifndef ASL_FILE_REQUEST_H
 #define ASL_FILE_REQUEST_H
 
+#include <string>
 #include <intuition/intuition.h>
-#include "SimpleString.h"
 
 /**
  * Provides an easy to use ASL file requester.
@@ -35,8 +35,8 @@ public:
    * Full path to the selected file or an empty string if dialog was
    * canceled by the user.
    */
-  SimpleString SelectFile(const SimpleString& title,
-                          const SimpleString& initialFileFullPath,
+  std::string SelectFile(const std::string& title,
+                          const std::string& initialFileFullPath,
                           bool bPreselectPathOnly = false);
 
 private:

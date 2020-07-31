@@ -6,7 +6,7 @@
 
 
 CmdRequester::CmdRequester(std::vector<WindowBase*>* pAllWindowsVector,
-                           const SimpleString& message,
+                           const std::string& message,
                            const char* pTitle,
                            const char* pButtons)
   : CommandBase(pAllWindowsVector),
@@ -59,7 +59,7 @@ long CmdRequester::showRequester(struct Window* pActiveWindow)
   easyStruct.es_StructSize = sizeof(easyStruct);
   easyStruct.es_Flags = 0;
   easyStruct.es_Title = (UBYTE*)m_pTitle;
-  easyStruct.es_TextFormat = (UBYTE*)m_Message.C_str();
+  easyStruct.es_TextFormat = (UBYTE*)m_Message.c_str();
   easyStruct.es_GadgetFormat = (UBYTE*)m_pButtons;
 
   struct Window* pRequesterWindow = BuildEasyRequestArgs(pActiveWindow, 

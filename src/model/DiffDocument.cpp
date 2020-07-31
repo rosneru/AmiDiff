@@ -10,9 +10,7 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
                            StopWatch& stopWatch,
                            ProgressReporter& progress,
                            bool lineNumbersEnabled)
-  : m_LeftFileName(pLeftFilePath),
-    m_RightFileName(pRightFilePath),
-    m_LeftSrcFile(m_Pool.Header(),
+  : m_LeftSrcFile(m_Pool.Header(),
                   bCancelRequested,
                   progress,
                   "Loading left file",
@@ -40,6 +38,8 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
     m_DiffTime(0),
     m_MaxLineLength(0)
 {
+  m_LeftFileName = pLeftFilePath;
+  m_RightFileName = pRightFilePath;  
   m_DiffTime = stopWatch.Pick();
 }
 
@@ -50,12 +50,12 @@ DiffDocument::~DiffDocument()
 
 const char* DiffDocument::LeftFileName() const
 {
-  return m_LeftFileName.C_str();
+  return m_LeftFileName.c_str();
 }
 
 const char* DiffDocument::RightFileName() const
 {
-  return m_RightFileName.C_str();
+  return m_RightFileName.c_str();
 }
 
 long DiffDocument::DiffTime() const

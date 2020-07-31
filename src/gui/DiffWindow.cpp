@@ -53,9 +53,6 @@ DiffWindow::DiffWindow(ScreenBase* pScreenBase,
     m_ScrollArea2XMax(0),
     m_ScrollAreasYMin(0),
     m_ScrollAreasYMax(0),
-    m_ChangedText(" Changed "),
-    m_AddedText(" Added "),
-    m_DeletedText(" Deleted "),
     m_StatusBarText("No diff performed.")
 {
   // If parent window already defined gadgets, we store the last of
@@ -227,16 +224,22 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
                    + pDiffDocument->NumChanged()
                    + pDiffDocument->NumDeleted();
 
-  m_StatusBarText = "Diff performed in ";
-  m_StatusBarText += pDiffDocument->DiffTime();
-  m_StatusBarText += " ms. Total changes: ";
-  m_StatusBarText += m_NumDifferences;
-  m_StatusBarText += "   |   ";
+  snprintf(m_StatusBarText, 60,
+           "Diff performed in %ld s. Total changes: %ld   |   ",
+           pDiffDocument->DiffTime(),
+           m_NumDifferences);
 
-  SimpleString emptyStr = "";
-  m_AddedText = emptyStr + pDiffDocument->NumAdded() + " Added ";
-  m_ChangedText = emptyStr + pDiffDocument->NumChanged() + " Changed ";
-  m_DeletedText = emptyStr + pDiffDocument->NumDeleted() + " Deleted ";
+  snprintf(m_AddedText, 20,
+           "%zu Added",
+           pDiffDocument->NumAdded());
+
+  snprintf(m_ChangedText, 20,
+           "%zu Changed",
+           pDiffDocument->NumChanged());
+
+  snprintf(m_DeletedText, 20,
+           "%zu Deleted",
+           pDiffDocument->NumDeleted());
 
   m_bNoNavigationDone = true;
   m_X = 0;
@@ -275,7 +278,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
     m_LineNumsWidth_chars = strlen(pLineNum);
     m_LineNumsWidth_pix = m_LineNumsWidth_chars * m_FontWidth_pix;
 
-    m_LineNumberEmpty = SimpleString(' ', m_LineNumsWidth_chars);
+    m_LineNumberEmpty = std::string(' ', m_LineNumsWidth_chars);
   }
 
   // Get the number of lines (will/should be equal for left and right)
@@ -884,7 +887,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     const char* pLineNum = pLeftLine->LineNum();
     if(pLineNum == NULL)
     {
-      pLineNum = m_LineNumberEmpty.C_str();
+      pLineNum = m_LineNumberEmpty.c_str();
     }
 
     // Print left line's original line number
@@ -899,7 +902,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     pLineNum = pRightLine->LineNum();
     if(pLineNum == NULL)
     {
-      pLineNum = m_LineNumberEmpty.C_str();
+      pLineNum = m_LineNumberEmpty.c_str();
     }
 
     // Print right line's original line number
@@ -1005,25 +1008,25 @@ void DiffWindow::paintStatusBar()
 
   intuiText.TopEdge   = top;
   intuiText.LeftEdge  = left;
-  intuiText.IText = (UBYTE*) m_StatusBarText.C_str();
+  intuiText.IText = (UBYTE*) m_StatusBarText;
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText);
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_pScreenBase->Pens().Green();
-  intuiText.IText = (UBYTE*) m_AddedText.C_str();
+  intuiText.IText = (UBYTE*) m_AddedText;
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_pScreenBase->Pens().Yellow();
-  intuiText.IText = (UBYTE*) m_ChangedText.C_str();
+  intuiText.IText = (UBYTE*) m_ChangedText;
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_pScreenBase->Pens().Red();
-  intuiText.IText = (UBYTE*) m_DeletedText.C_str();
+  intuiText.IText = (UBYTE*) m_DeletedText;
   PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
 }
 

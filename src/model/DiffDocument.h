@@ -2,6 +2,7 @@
 #define DIFF_DOCUMENT_H
 
 #include <vector>
+#include <string>
 
 #include "DiffInputFileAmiga.h"
 #include "DiffOutputFileAmiga.h"
@@ -9,7 +10,6 @@
 #include "DiffLine.h"
 #include "MemoryPool.h"
 #include "ProgressReporter.h"
-#include "SimpleString.h"
 #include "StopWatch.h"
 
 /**
@@ -58,8 +58,8 @@ public:
   bool LineNumbersEnabled() const;
 
 private:
-  SimpleString m_LeftFileName;
-  SimpleString m_RightFileName;
+  std::string m_LeftFileName;
+  std::string m_RightFileName;
   MemoryPool m_Pool; // Ensure Pool is created before the DiffFiles.
   DiffInputFileAmiga m_LeftSrcFile;
   DiffInputFileAmiga m_RightSrcFile;

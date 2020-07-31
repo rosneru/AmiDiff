@@ -1,11 +1,11 @@
 #ifndef AMIGA_FILE_H
 #define AMIGA_FILE_H
 
+#include <string>
 #include <vector>
 
 #include <exec/types.h>
 #include <libraries/dos.h>
-#include "SimpleString.h"
 
 /**
  * Provides an easy to use object for using dos file operation.
@@ -68,19 +68,19 @@ public:
    * Reads the file line by line storing each line at the bottom of the
    * provided list.
    *
-   * The lines are stored as dynamically created SimpleString objects,
+   * The lines are stored as dynamically created std::string objects,
    * so these objects have to be deleted manually after use.
    *
    * NOTE: This method reports its progress between 0 and 100 (%) if an
    * external ProgressReporter is added to this instance using the
    * SetProgressReporter() method,.
    *
-   * @see SimpleString
+   * @see std::string
    *
    * @param array
    * Array to store the lines
    */
-  bool ReadLines(std::vector<SimpleString*>& linesVector);
+  bool ReadLines(std::vector<std::string*>& linesVector);
 
   /**
    * Reads the next line from file
@@ -91,7 +91,7 @@ public:
    * @returns
    * true when reading was successful or false if eof or file not open
    */
-  bool ReadLine(SimpleString& line);
+  bool ReadLine(std::string& line);
 
   char* ReadLine();
 
@@ -99,7 +99,7 @@ private:
   const ULONG MAX_LINE_LENGTH;
   STRPTR m_pLineBuf;
   BPTR m_FileDescriptor;
-  SimpleString m_FileName;
+  std::string m_FileName;
 };
 
 #endif

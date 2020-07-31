@@ -21,9 +21,9 @@ TextDocument::~TextDocument()
  * Name of text file to load
  *
  */
-bool TextDocument::Load(const SimpleString& p_FileName)
+bool TextDocument::Load(const std::string& p_FileName)
 {
-  if(p_FileName.Length() == 0)
+  if(p_FileName.length() == 0)
   {
     return false;
   }
@@ -32,7 +32,7 @@ bool TextDocument::Load(const SimpleString& p_FileName)
 
   // Open file
   AmigaFile file;
-  if(file.Open(p_FileName.C_str(), AmigaFile::AM_OldFile) == false)
+  if(file.Open(p_FileName.c_str(), AmigaFile::AM_OldFile) == false)
   {
     return false;
   }
@@ -56,7 +56,7 @@ void TextDocument::Clear()
     return;
   }
 
-  const SimpleString* pLine;
+  const std::string* pLine;
   while((pLine = m_Lines.Pop()) != NULL)
   {
     delete pLine;
@@ -94,7 +94,7 @@ size_t TextDocument::MaxLineLength()
 }
 
 
-const SimpleString* TextDocument::GetIndexedLine(int p_LineIdx)
+const std::string* TextDocument::GetIndexedLine(int p_LineIdx)
 {
   m_LastScrollDirection = None;
   return m_Lines[p_LineIdx];

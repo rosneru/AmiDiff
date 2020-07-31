@@ -1,12 +1,14 @@
 #ifndef WINDOW_BASE_H
 #define WINDOW_BASE_H
 
+#include <string>
+
 #include <exec/ports.h>
 #include <intuition/screens.h>
 #include <workbench/workbench.h>
+
 #include "AMenu.h"
 #include "OpenScreenBase.h"
-#include "SimpleString.h"
 
 /**
  * Abstract base class for all other windows
@@ -92,7 +94,7 @@ public:
    * Sets the window title
    * NOTE: Works only before opening the window
    */
-  void SetTitle(SimpleString newTitle);
+  void SetTitle(std::string newTitle);
 
 
   /**
@@ -185,7 +187,7 @@ protected:
 
   AMenu* m_pMenu;
   struct TextFont* m_pTextFont;
-  SimpleString m_Title;
+  std::string m_Title;
 
 
   /**

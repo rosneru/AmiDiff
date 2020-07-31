@@ -82,11 +82,11 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         readStringGadgetsText();
 
         // Open an ASL file request to let the user select the file
-        SimpleString leftFilePath = m_DiffFacade.LeftFilePath();
+        std::string leftFilePath = m_DiffFacade.LeftFilePath();
         if(selectFile(leftFilePath, "Select left (original) file"))
         {
           setStringGadgetText(m_pLeftFileStringGadget, leftFilePath);
-          m_DiffFacade.SetLeftFilePath(leftFilePath.C_str());
+          m_DiffFacade.SetLeftFilePath(leftFilePath.c_str());
           setDiffButtonState();
         }
       }
@@ -98,11 +98,11 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         readStringGadgetsText();
 
         // Open an ASL file request to let the user select the file
-        SimpleString rightFilePath = m_DiffFacade.RightFilePath();
+        std::string rightFilePath = m_DiffFacade.RightFilePath();
         if(selectFile(rightFilePath, "Select right (changed) file"))
         {
           setStringGadgetText(m_pRightFileStringGadget, rightFilePath);
-          m_DiffFacade.SetRightFilePath(rightFilePath.C_str());
+          m_DiffFacade.SetRightFilePath(rightFilePath.c_str());
           setDiffButtonState();
 
         }
@@ -120,8 +120,8 @@ void OpenFilesWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
         readStringGadgetsText();
 
         // If now one of the texts is empty, do not perform the Diff
-        if(m_DiffFacade.LeftFilePath().Length() == 0 ||
-           m_DiffFacade.RightFilePath().Length() == 0)
+        if(m_DiffFacade.LeftFilePath().length() == 0 ||
+           m_DiffFacade.RightFilePath().length() == 0)
         {
           return;
         }
@@ -324,8 +324,8 @@ void OpenFilesWindow::initialize()
 }
 
 
-bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
-  const SimpleString& p_RequestTitle)
+bool OpenFilesWindow::selectFile(std::string& p_FilePath,
+  const std::string& p_RequestTitle)
 {
   if(m_bFileRequestOpen)
   {
@@ -337,9 +337,9 @@ bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
   disableAll();
 
   AslFileRequest request(IntuiWindow());
-  SimpleString selectedFile = request.SelectFile(p_RequestTitle, p_FilePath);
+  std::string selectedFile = request.SelectFile(p_RequestTitle, p_FilePath);
 
-  if(selectedFile.Length() == 0)
+  if(selectedFile.length() == 0)
   {
     // Cancelled or nothing selected
     m_bFileRequestOpen = false;
@@ -349,7 +349,7 @@ bool OpenFilesWindow::selectFile(SimpleString& p_FilePath,
 
   // Note: This will copy selectedFile to the target of p_FilePath
   //       (the variable p_FilePath points to).
-  //       @see  SimpleString& operator=(const SimpleString& p_Other);
+  //       @see  std::string& operator=(const std::string& p_Other);
   //
   //       The reference itself is not rebound to p_FilePath as by
   //       design refereces can't be rebound after initialization.
@@ -427,8 +427,8 @@ void OpenFilesWindow::setDiffButtonState()
     return;
   }
 
-  if(m_DiffFacade.LeftFilePath().Length() > 0 &&
-     m_DiffFacade.RightFilePath().Length() > 0)
+  if(m_DiffFacade.LeftFilePath().length() > 0 &&
+     m_DiffFacade.RightFilePath().length() > 0)
   {
     // Enable "Diff" button
     GT_SetGadgetAttrs(m_pDiffButton, m_pWindow, NULL,
@@ -446,7 +446,7 @@ void OpenFilesWindow::setDiffButtonState()
 }
 
 void OpenFilesWindow::setStringGadgetText(struct Gadget* p_pGadget,
-  const SimpleString& p_Text)
+  const std::string& p_Text)
 {
   if(!IsOpen() || p_pGadget == NULL)
   {
@@ -454,7 +454,7 @@ void OpenFilesWindow::setStringGadgetText(struct Gadget* p_pGadget,
   }
 
   GT_SetGadgetAttrs(p_pGadget, m_pWindow, NULL,
-    GTST_String, p_Text.C_str(),
+    GTST_String, p_Text.c_str(),
     TAG_END);
 }
 

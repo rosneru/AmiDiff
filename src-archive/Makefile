@@ -56,7 +56,7 @@ DEPS=$(SRC_ROOT)/amigautils/AmigaFile.h \
 		$(SRC_ROOT)/model/DiffDocument.h \
 		$(SRC_ROOT)/oscottlibs/LinkedList.h \
 		$(SRC_ROOT)/oscottlibs/LinkedListNode.h \
-		$(SRC_ROOT)/oscottlibs/SimpleString.h \
+		$(SRC_ROOT)/oscottlibs/std::string.h \
 		$(SRC_ROOT)/worker/DiffWorker.h \
 		$(SRC_ROOT)/worker/ProgressMessage.h \
 		$(SRC_ROOT)/worker/ProgressReporter.h \
@@ -96,7 +96,7 @@ _OBJ=$(SRC_ROOT)/amigautils/AmigaFile.o \
 		$(SRC_ROOT)/model/DiffDocument.o \
 		$(SRC_ROOT)/oscottlibs/LinkedList.o \
 		$(SRC_ROOT)/oscottlibs/LinkedListNode.o \
-		$(SRC_ROOT)/oscottlibs/SimpleString.o \
+		$(SRC_ROOT)/oscottlibs/std::string.o \
 		$(SRC_ROOT)/worker/DiffWorker.o \
 		$(SRC_ROOT)/worker/WorkerBase.o
  

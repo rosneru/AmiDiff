@@ -1,9 +1,9 @@
 #ifndef ADIFFVIEW_SETTINGS_H
 #define ADIFFVIEW_SETTINGS_H
 
+#include <string>
 #include <exec/types.h>
 
-#include "SimpleString.h"
 
 /**
  * Class to store the settings of ADiffView.

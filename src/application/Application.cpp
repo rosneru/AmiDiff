@@ -154,8 +154,8 @@ Application::Application(ScreenBase* pScreenBase,
   m_DiffWindowMenu.SetMenuDefinition(diffWinNewMenu, diffWinMenuSize);
   m_DiffWindow.SetMenu(&m_DiffWindowMenu);
 
-  if((m_LeftFilePath.Length() > 0) &&
-     (m_RightFilePath.Length() > 0) &&
+  if((m_LeftFilePath.length() > 0) &&
+     (m_RightFilePath.length() > 0) &&
      (m_Args.DontAsk() == true))
   {
     //

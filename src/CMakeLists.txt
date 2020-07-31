@@ -47,7 +47,6 @@ add_executable (ADiffView
                 gui/ScrollbarWindow.cpp
                 gui/WindowBase.cpp
                 model/DiffDocument.cpp
-                oscottlibs/SimpleString.cpp
                 worker/DiffWorker.cpp
                 worker/DiffWorkerProgressReporter.cpp
                 worker/ProgressReporter.cpp
@@ -61,7 +60,6 @@ target_include_directories (ADiffView PUBLIC
                             diffengine
                             gui
                             model
-                            oscottlibs
                             worker
                             .)
 
