@@ -20,13 +20,6 @@ Studio Code
 
 ## Howto build
 
-### Initialize the submodules
-
-After cloning the needed submodules should be initialized:
-
-    git submodule init
-    git submodule update
-
 ### Build on Linux
 
 The Makefile to build this project must be created with cmake:
