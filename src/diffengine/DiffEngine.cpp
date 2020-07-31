@@ -20,9 +20,9 @@ DiffEngine::DiffEngine(DiffFileBase& a,
     m_NumInsertedB(0),
     m_NumDeletedA(0),
     m_NumChanged(0),
-    m_Max(0),
-    m_pDownVector(NULL),
-    m_pUpVector(NULL)
+    m_Max(m_pA.NumLines() + m_pB.NumLines() + 1),
+    m_pDownVector(2 * m_Max + 2),
+    m_pUpVector(2 * m_Max + 2)
 { 
   m_Progress.SetDescription(pProgressDescription);
 
@@ -38,15 +38,6 @@ DiffEngine::DiffEngine(DiffFileBase& a,
 
   m_Progress.SetValue(0);
 
-  //
-  // Calculate some needed values
-  //
-  m_Max = m_pA.NumLines() + m_pB.NumLines() + 1;
-
-  // TODO use std::vector
-  m_pDownVector = new long[2 * m_Max + 2];
-  m_pUpVector = new long[2 * m_Max + 2];
-
   m_NumInsertedB = 0;
   m_NumDeletedA = 0;
   m_NumChanged = 0;
@@ -58,17 +49,10 @@ DiffEngine::DiffEngine(DiffFileBase& a,
   //   file m_b are marked with DiffLine::Added
   lcs(0, m_pA.NumLines(), 0, m_pB.NumLines());
 
-  delete[] m_pUpVector;
-  m_pUpVector = NULL;
-
-  delete[] m_pDownVector;
-  m_pDownVector = NULL;
-
   if(m_bCancelRequested)
   {
     throw "User abort";
   }
-
 
   // Progress reporting
   m_Progress.SetValue(90);
@@ -220,8 +204,6 @@ void DiffEngine::createDiffFiles()
       }
     }
   }
-
-
 }
 
 

@@ -100,8 +100,8 @@ private:
 
 
   long m_Max;
-  long* m_pDownVector;
-  long* m_pUpVector;
+  std::vector<long> m_pDownVector;
+  std::vector<long> m_pUpVector;
 
   // The next four fields are for progress notification
   long m_Percent;
