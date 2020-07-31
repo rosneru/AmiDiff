@@ -277,7 +277,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
     m_LineNumsWidth_chars = strlen(pLineNum);
     m_LineNumsWidth_pix = m_LineNumsWidth_chars * m_FontWidth_pix;
 
-    m_LineNumberEmpty = std::string(' ', m_LineNumsWidth_chars);
+    m_LineNumberEmpty = std::string(m_LineNumsWidth_chars, ' ');
   }
 
   // Get the number of lines (will/should be equal for left and right)
