@@ -65,24 +65,6 @@ public:
   ULONG GetSize();
 
   /**
-   * Reads the file line by line storing each line at the bottom of the
-   * provided list.
-   *
-   * The lines are stored as dynamically created std::string objects,
-   * so these objects have to be deleted manually after use.
-   *
-   * NOTE: This method reports its progress between 0 and 100 (%) if an
-   * external ProgressReporter is added to this instance using the
-   * SetProgressReporter() method,.
-   *
-   * @see std::string
-   *
-   * @param array
-   * Array to store the lines
-   */
-  bool ReadLines(std::vector<std::string*>& linesVector);
-
-  /**
    * Reads the next line from file
    *
    * @param line

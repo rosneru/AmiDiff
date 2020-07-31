@@ -79,32 +79,6 @@ ULONG AmigaFile::GetSize()
 }
 
 
-bool AmigaFile::ReadLines(std::vector<std::string*>& linesVector)
-{
-  // Rewind reading pointer to start of file
-  Seek(m_FileDescriptor, 0, OFFSET_BEGINNING);
-
-  // ****
-  // Initially clearing the Array
-  // TODO: Implement Clear() method in Array
-  // ****
-
-  // Reading all lines and increment counter
-  std::string line;
-  int i = 0;
-  while(ReadLine(line))
-  {
-    linesVector.push_back(new std::string(line));
-    i++;
-  }
-
-  // Rewind reading pointer to start of file
-  Seek(m_FileDescriptor, 0, OFFSET_BEGINNING);
-
-  return true;
-}
-
-
 bool AmigaFile::ReadLine(std::string& line)
 {
   if(ReadLine() == NULL)

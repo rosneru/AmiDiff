@@ -17,8 +17,6 @@ C/C++ Environment
 0
 "model"
 0
-"oscottlibs"
-0
 "worker"
 0
 Includepath (End)
@@ -502,14 +500,6 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "oscottlibs/std::string.cpp"
-"oscottlibs/std::string.cpp"
-"oscottlibs/std::string.h"
-Storm Shell Project (Dependencies)
-"objects_debug/std::string.o" "objects_debug/std::string.debug"
-""
-1 1
-File
 1 "worker/DiffWorker.cpp"
 "worker/DiffWorker.cpp"
 "worker/DiffWorker.h"
@@ -822,27 +812,6 @@ Storm Shell Project (Dependencies)
 File
 2 "model/DiffDocument.h"
 "model/DiffDocument.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "oscottlibs/LinkedList.h"
-"oscottlibs/LinkedList.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "oscottlibs/LinkedListNode.h"
-"oscottlibs/LinkedListNode.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "oscottlibs/std::string.h"
-"oscottlibs/std::string.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

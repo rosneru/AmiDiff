@@ -52,8 +52,7 @@ DiffWindow::DiffWindow(ScreenBase* pScreenBase,
     m_ScrollArea2XMinVScroll(0),
     m_ScrollArea2XMax(0),
     m_ScrollAreasYMin(0),
-    m_ScrollAreasYMax(0),
-    m_StatusBarText("No diff performed.")
+    m_ScrollAreasYMax(0)
 {
   // If parent window already defined gadgets, we store the last of
   // these gadgeds and the count of defined gadgets. They are needed
@@ -157,7 +156,7 @@ bool DiffWindow::Open(InitialPosition initialPos)
   }
 
   m_pDocument = NULL;
-  
+
   //
   // Calculate some initial values. It's possible that they are needed
   // in the initialize() method which is called from WindowBase::Open()
@@ -220,26 +219,26 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
   m_pDocument = pDiffDocument;
 
-  m_NumDifferences = pDiffDocument->NumAdded() 
+  m_NumDifferences = pDiffDocument->NumAdded()
                    + pDiffDocument->NumChanged()
                    + pDiffDocument->NumDeleted();
 
-  snprintf(m_StatusBarText, 60,
-           "Diff performed in %ld s. Total changes: %ld   |   ",
-           pDiffDocument->DiffTime(),
-           m_NumDifferences);
+  sprintf(m_StatusBarText,
+          "Diff performed in %ld s. Total changes: %ld   |   ",
+          pDiffDocument->DiffTime(),
+          m_NumDifferences);
 
-  snprintf(m_AddedText, 20,
-           "%zu Added",
-           pDiffDocument->NumAdded());
+  sprintf(m_AddedText,
+          "%zu Added",
+          pDiffDocument->NumAdded());
 
-  snprintf(m_ChangedText, 20,
-           "%zu Changed",
-           pDiffDocument->NumChanged());
+  sprintf(m_ChangedText,
+          "%zu Changed",
+          pDiffDocument->NumChanged());
 
-  snprintf(m_DeletedText, 20,
-           "%zu Deleted",
-           pDiffDocument->NumDeleted());
+  sprintf(m_DeletedText,
+          "%zu Deleted",
+          pDiffDocument->NumDeleted());
 
   m_bNoNavigationDone = true;
   m_X = 0;
@@ -910,7 +909,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   }
 
   // Getting the RastPort for the left line to draw in. This depends on
-  // the line background color which itself depends on the diff state 
+  // the line background color which itself depends on the diff state
   // of the line.
   RastPort* pRPort = diffStateToRastPort(pLeftLine->State());
 
@@ -928,8 +927,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
          numCharsToPrint);
   }
 
-  // Getting the RastPort for the right line to draw in. This depends 
-  // on the line background color which itself depends on the diff 
+  // Getting the RastPort for the right line to draw in. This depends
+  // on the line background color which itself depends on the diff
   // state of the line.
   pRPort = diffStateToRastPort(pRightLine->State());
 
@@ -1031,7 +1030,7 @@ void DiffWindow::paintStatusBar()
 }
 
 
-LONG DiffWindow::calcNumPrintChars(const DiffLine* pDiffLine, 
+LONG DiffWindow::calcNumPrintChars(const DiffLine* pDiffLine,
                                      int count,
                                      int startIndex)
 {
