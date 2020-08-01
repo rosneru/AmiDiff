@@ -3,7 +3,6 @@
 
 #include <exec/types.h>
 
-#include "AmigaFile.h"
 #include "DiffFileBase.h"
 #include "ProgressReporter.h"
 
@@ -39,8 +38,7 @@ public:
 
 private:
   APTR m_pPoolHeader;
-  AmigaFile m_File;
- 
+  char* m_pFileBuffer;
 };
 
 #endif // DIFF_FILE_PARTITION_AMIGA_H

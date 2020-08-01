@@ -1,3 +1,5 @@
+#include <stddef.h>
+
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
 #include "AmigaFile.h"
@@ -5,8 +7,7 @@
 AmigaFile::AmigaFile(const char* pFileName, ULONG accessMode)
   : MAX_LINE_LENGTH(1024), // TODO A better solution needed?
     m_pLineBuf(NULL),
-    m_FileDescriptor(0),
-    m_FileName(pFileName)
+    m_FileDescriptor(0)
 {
   m_pLineBuf = (STRPTR) AllocVec(MAX_LINE_LENGTH, 0L);
 
@@ -37,12 +38,6 @@ AmigaFile::~AmigaFile()
 
 ULONG AmigaFile::CountLines()
 {
-  if(m_FileDescriptor == 0)
-  {
-    // File not opened
-    return 0;
-  }
-
   ULONG numLines = 0;
   size_t readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a
                                             // bug in AmigaOS v36/37
@@ -63,42 +58,8 @@ ULONG AmigaFile::CountLines()
 }
 
 
-ULONG AmigaFile::GetSize()
-{
-  if(m_FileDescriptor == 0)
-  {
-    // File not opened
-    return 0;
-  }
-
-  Seek(m_FileDescriptor, 0, OFFSET_BEGINING);
-  ULONG size = Seek(m_FileDescriptor, 0, OFFSET_END);
-  Seek(m_FileDescriptor, 0, OFFSET_BEGINING);
-
-  return size;
-}
-
-
-bool AmigaFile::ReadLine(std::string& line)
-{
-  if(ReadLine() == NULL)
-  {
-    return false;
-  }
-
-  line = m_pLineBuf;
-  return true;
-}
-
-
 char* AmigaFile::ReadLine()
 {
-  if(m_FileDescriptor == 0)
-  {
-    // File not opened
-    return NULL;
-  }
-
   ULONG readBufSize = MAX_LINE_LENGTH - 1; // -1 => Workaround for a OS v36 failure
 
   if(FGets(m_FileDescriptor, m_pLineBuf, readBufSize) == NULL)
@@ -117,4 +78,20 @@ char* AmigaFile::ReadLine()
   }
 
   return m_pLineBuf;
+}
+
+
+ULONG AmigaFile::ByteSize()
+{
+  Seek(m_FileDescriptor, 0, OFFSET_END);
+  ULONG size = Seek(m_FileDescriptor, 0, OFFSET_BEGINING);
+
+  return size;
+}
+
+
+bool AmigaFile::ReadFile(void* pBuffer, size_t bufferSize)
+{
+  LONG bytesRead = Read(m_FileDescriptor, pBuffer, bufferSize);
+  return bytesRead == static_cast<LONG>(bufferSize);
 }

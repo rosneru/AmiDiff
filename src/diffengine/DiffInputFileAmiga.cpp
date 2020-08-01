@@ -9,97 +9,90 @@
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
 
-
+#include "AmigaFile.h"
 #include "DiffInputFileAmiga.h"
 
 DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
-                                       bool& bCancelRequested, 
+                                       bool& bCancelRequested,
                                        ProgressReporter& progress,
                                        const char* pProgressDescription,
                                        const char* pFileName,
                                        bool lineNumbersEnabled)
   : DiffFileBase(bCancelRequested),
     m_pPoolHeader(pPoolHeader),
-    m_File(pFileName, MODE_OLDFILE)
+    m_pFileBuffer(NULL)
 {
   progress.SetDescription(pProgressDescription);
-  progress.SetValue(1);
-  
-  // Initialize some variables needed for progress reporting
-  int lastProgressValue = -1;
-  m_NumLines = m_File.CountLines();
+  int formerProgress = 1;
+  progress.SetValue(formerProgress);
 
-  if(m_NumLines == 0)
+  // Create the opened input file
+  AmigaFile m_File(pFileName, MODE_OLDFILE);
+
+  // Get file size and read whole file
+  size_t fileBytes = m_File.ByteSize();
+  m_pFileBuffer = static_cast<char*>(AllocVec(fileBytes + 1,
+                                              MEMF_ANY|MEMF_PUBLIC));
+  if(m_pFileBuffer == NULL)
   {
-    // Empty file
-    return;
+    throw "Failed to allocate memory for file buffer.";
   }
 
-  // Create an array of DiffLine-pointers to hold all needed lines
-  size_t arraySize = sizeof(DiffLine*) * m_NumLines;
-  m_pDiffLinesArray = (DiffLine**) AllocPooled(m_pPoolHeader, arraySize);
-  if(m_pDiffLinesArray == NULL)
+  if(m_File.ReadFile(m_pFileBuffer, fileBytes) == false)
   {
-    throw "Failed to allocate memory.";
+    throw "Failed to read file.";
   }
 
-  char* pReadLine = NULL;
-  int i = 0;
-
-  while((pReadLine = m_File.ReadLine()) != NULL)
+  // Create DiffLine objects for each line in file buffer
+  char* pLineStart = m_pFileBuffer;
+  for(size_t i = 0; i < fileBytes; i++)
   {
-    char* pLine = (char*) AllocPooled(m_pPoolHeader,
-                                      strlen(pReadLine) + 1);
-    if(pLine == NULL)
+    if(m_pFileBuffer[i] == '\n')
     {
-      throw "Failed to allocate memory for input lines.";
-    }
-
-    strcpy(pLine, pReadLine);
-
-    DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
-                                                  sizeof(DiffLine));
-
-    if(pDiffLine == NULL)
-    {
-      throw "Failed to allocate memory for diff lines.";
-    }
-
-    // The next line is called 'replacement new'. It creates an object
-    // of DiffLine on the known address pDiffLine and calls the
-    // constructor. This has to be done here because a memory pool is
-    // used and the normal operator 'new' which reserves memory
-    // automatically wouldn't be appropriate.
-    new (pDiffLine) DiffLine(pLine);
-
-    // Append DiffLine to list
-    m_pDiffLinesArray[i++] = pDiffLine;
-
-
-    // Progress reporting: Report the 'lastProgressValue - 1' to ensure
-    // that the final value of 100 (%) is sent after the last line is
-    // read.
-    int newProgressValue = (i * 100 / m_NumLines) - 1;
-
-    if(newProgressValue > lastProgressValue)
-    {
-      // For performance reasons report only 3% steps
-      if(newProgressValue % 3 == 0)
+      // Handle a potential cancel request
+      if(m_bCancelRequested == true)
       {
-        lastProgressValue = newProgressValue;
-        progress.SetValue(lastProgressValue);
+        throw "User abort.";
+      }
+
+      // Finalize the current line
+      m_pFileBuffer[i] = 0;
+
+      // Create DiffLine from curren line
+      DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
+                                                    sizeof(DiffLine));
+
+      if(pDiffLine == NULL)
+      {
+        throw "Failed to allocate memory for diff lines.";
+      }
+
+      // The next line is called 'replacement new'. It creates an object
+      // of DiffLine on the known address pDiffLine and calls the
+      // constructor. Here this must be used because the memory pool
+      // doesn't work with normal 'new' operator.
+      new (pDiffLine) DiffLine(pLineStart);
+
+      // Append DiffLine to list
+      m_DiffLinesVector.push_back(pDiffLine);
+
+      // Next line starts after current line and thin finalizing '\0'
+      pLineStart = m_pFileBuffer + i + 1;
+
+      // Progress reporting: Report the 'progressValue - 1' to ensure
+      // that the final value of 100 (%) is sent after the last line is
+      // read.
+      int progressVal = (pLineStart - m_pFileBuffer) * 100 / fileBytes - 1;
+      if(progressVal != formerProgress)
+      {
+        formerProgress = progressVal;
+
+        progress.SetValue(progressVal);
       }
     }
-
-
-    //
-    // Handling a potential cancel request
-    //
-    if(m_bCancelRequested == true)
-    {
-      throw "User abort.";
-    }
   }
+
+  m_NumLines = m_DiffLinesVector.size();
 
   if(lineNumbersEnabled)
   {
@@ -112,14 +105,7 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
 
 DiffInputFileAmiga::~DiffInputFileAmiga()
 {
-  // The array address is cleared but nothing else is deleted or freed
-  // here, because an external memory pool is used for all heap allocs.
-  // On exit or when performing another diff that memory pool is
-  // deleted outside with just one call. On the Amiga this is way
-  // faster than e.g. calling 5000 single delete [] in random order.
 
-  m_pDiffLinesArray = NULL;
-  m_NumLines = 0;
 }
 
 
@@ -151,19 +137,6 @@ long DiffInputFileAmiga::AddString(const char* pText,
     return -1;
   }
 
-  if(m_pDiffLinesArray == NULL)
-  {
-    // Create an array of DiffLine-pointers to hold all needed lines
-    size_t arraySize = sizeof(DiffLine*) * m_NumLines;
-    m_pDiffLinesArray = (DiffLine**) AllocPooled(m_pPoolHeader, arraySize);
-    if(m_pDiffLinesArray == NULL)
-    {
-      // m_pError = m_pErrMsgLowMem;
-      // m_pFile.Close();
-      return -1;
-    }
-  }
-
   DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
                                                 sizeof(DiffLine));
 
@@ -180,7 +153,7 @@ long DiffInputFileAmiga::AddString(const char* pText,
   // automatically wouldn't be appropriate.
   new (pDiffLine) DiffLine(pText, lineState, pFormattedLineNumber);
 
-  m_pDiffLinesArray[m_NextAddedLineIdx++] = pDiffLine;
+  m_DiffLinesVector.push_back(pDiffLine);
 
-  return m_NextAddedLineIdx - 1;
+  return m_DiffLinesVector.size() - 1;
 }

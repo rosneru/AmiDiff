@@ -2,6 +2,7 @@
 #define DIFF_FILE_PARTITION_H
 
 #include "stdio.h"
+#include <vector>
 
 #include "DiffLine.h"
 
@@ -47,13 +48,8 @@ protected:
   bool& m_bCancelRequested;
 
   size_t m_NumLines;
-  DiffLine** m_pDiffLinesArray;
+  std::vector<DiffLine*> m_DiffLinesVector;
 
-  /**
-   * The index which will be used on m_pDiffLines[] at the next
-   * AddString() call.
-   */
-  long m_NextAddedLineIdx;
 
   /**
    * Returns the number of digits of a given positive number.

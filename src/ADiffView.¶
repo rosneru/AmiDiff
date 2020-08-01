@@ -78,7 +78,7 @@ Linker
 Run
 30 "" "" "" 0
 ""
-ASKONWORKBENCH Shared:dev/projects_2018_2020/ADiffView/testfiles/testcase_23_RealLifeApp-left.cs Shared:dev/projects_2018_2020/ADiffView/testfiles/testcase_23_RealLifeApp-right.cs
+ASKONWORKBENCH Shared:dev/projects_2018_2020/ADiffView/testfiles/testcase_01_left.txt Shared:dev/projects_2018_2020/ADiffView/testfiles/testcase_01_left.txt
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 0 0
 0 0 0 "" ""
@@ -864,6 +864,7 @@ Section
 7
 File
 10 "ADiffView"
+"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

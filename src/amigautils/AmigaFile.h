@@ -1,14 +1,12 @@
 #ifndef AMIGA_FILE_H
 #define AMIGA_FILE_H
 
-#include <string>
-#include <vector>
-
 #include <exec/types.h>
 #include <libraries/dos.h>
 
 /**
- * Provides an easy to use object for using dos file operation.
+ * Represents an open file. On creation an exception is thrown if the
+ * file can't beopened.
  *
  * @author Uwe Rosner
  * @date 18/10/2018
@@ -16,16 +14,6 @@
 class AmigaFile
 {
 public:
-  /**
-   * Wrapper for the AmigaOS Access modes
-   */
-  enum AccessMode
-  {
-    AM_OldFile,   ///> Opens an existing file for reading or writing
-    AM_NewFile,   ///> Creates a new file for writing
-    AM_ReadWrite  ///> Opens a file with an shared lock, creates it if it didn't exist
-  };
-
   /**
    * Creates an open file with given name and given access mode.
    *
@@ -50,9 +38,19 @@ public:
    */
   ULONG CountLines();
 
+
   /**
-   * Gets the file size in bytes. The file has  to be opened before
-   * calling this method.
+   * Reads the next line of the file into an internal line buffer and
+   * returns the buffer address.
+   *
+   * NOTE: On each call the internal buffer is overwritten. You must
+   *       take care and preserve the read line if necessary.
+   */
+  char* ReadLine();
+
+
+  /**
+   * Gets the file size in bytes.
    *
    * NOTE: Changes the file handle position! After this operation the
    * file handle points to the start of the file.
@@ -62,26 +60,21 @@ public:
    * opened or that the file size = 0. Check the Open() result to be
    * sure.
    */
-  ULONG GetSize();
+  ULONG ByteSize();
+
 
   /**
-   * Reads the next line from file
-   *
-   * @param line
-   * Reference to a string variable to read into
-   *
-   * @returns
-   * true when reading was successful or false if eof or file not open
+   * Reads the whole file into the given buffer.
    */
-  bool ReadLine(std::string& line);
+  bool ReadFile(void* pBuffer, size_t bufferSize);
 
-  char* ReadLine();
+
+
 
 private:
   const ULONG MAX_LINE_LENGTH;
   STRPTR m_pLineBuf;
   BPTR m_FileDescriptor;
-  std::string m_FileName;
 };
 
 #endif
