@@ -25,8 +25,8 @@ DiffOutputFileAmiga::~DiffOutputFileAmiga()
 
 
 long DiffOutputFileAmiga::AddLine(const char* pText,
-                                    DiffLine::LineState lineState,
-                                    const char* pFormattedLineNumber)
+                                  DiffLine::LineState lineState,
+                                  const char* pFormattedLineNumber)
 {
   if(m_NumLines < 1)
   {
@@ -39,7 +39,6 @@ long DiffOutputFileAmiga::AddLine(const char* pText,
 
   if(pDiffLine == NULL)
   {
-    // m_pError = m_pErrMsgLowMem;
     return -1;
   }
 
