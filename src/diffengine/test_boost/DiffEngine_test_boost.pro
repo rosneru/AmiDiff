@@ -8,29 +8,24 @@ QMAKE_CXXFLAGS += -std=c++11 -Wall -Wconversion -Wextra -pedantic #-Weffc++
 LIBS += -lncurses \
         -lboost_unit_test_framework \
 
-INCLUDEPATH +=  ../ \
-                ../../worker \
-                ../../oscottlibs
+INCLUDEPATH +=  ../ 
+
 
 SOURCES += \
     DiffEngine_test_boost.cpp \
     ../DiffEngine.cpp \
     ../DiffFileBase.cpp \
+    ../DiffInputFileBase.cpp \
+    ../DiffInputFileLinux.cpp \
     ../DiffLine.cpp \
-    ../../oscottlibs/LinkedList.cpp \
-    ../../oscottlibs/LinkedListNode.cpp \
-    ../../oscottlibs/std::string.cpp \
-    ../Pair.cpp \
-    ../DiffFileLinux.cpp
+    ../Pair.cpp 
 
 
 HEADERS += \
+    ProgressReporter.h \
     ../DiffEngine.h \
     ../DiffFileBase.h \
+    ../DiffInputFileBase.h \
+    ../DiffInputFileLinux.h \
     ../DiffLine.h \
-    ../../oscottlibs/LinkedList.h \
-    ../../oscottlibs/LinkedListNode.h \
-    ../../oscottlibs/std::string.h \
-    ../../oscottlibs/Array.h \
-    ../Pair.h \
-    ../DiffFileLinux.h
+    ../Pair.h 

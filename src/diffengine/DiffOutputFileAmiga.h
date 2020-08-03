@@ -31,8 +31,6 @@ public:
 
 private:
   APTR m_pPoolHeader;
-
-  DiffLine* createDiffLine();
 };
 
 #endif // DIFF_FILE_PARTITION_AMIGA_H
