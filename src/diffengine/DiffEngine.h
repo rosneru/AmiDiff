@@ -65,10 +65,10 @@ public:
    * 
    * Throws an exception on user abort.
    */
-  DiffEngine(DiffInputFileBase& a,
-             DiffInputFileBase& b,
-             DiffOutputFileBase& aDiff,
-             DiffOutputFileBase& bDiff,
+  DiffEngine(DiffInputFileBase& aIn,
+             DiffInputFileBase& bIn,
+             DiffOutputFileBase& aOut,
+             DiffOutputFileBase& bOut,
              ProgressReporter& progress,
              const char* pProgressDescription,
              bool& bCancelRequested,
@@ -86,10 +86,10 @@ protected:
   std::vector<size_t>& m_DiffIndices;
 
 private:
-  DiffInputFileBase& m_pA;
-  DiffInputFileBase& m_pB;
-  DiffOutputFileBase& m_pADiff;
-  DiffOutputFileBase& m_pBDiff;
+  DiffInputFileBase& m_AIn;
+  DiffInputFileBase& m_BIn;
+  DiffOutputFileBase& m_AOut;
+  DiffOutputFileBase& m_pBOut;
 
   bool& m_bCancelRequested;
   ProgressReporter& m_Progress;
