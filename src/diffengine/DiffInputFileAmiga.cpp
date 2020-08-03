@@ -18,7 +18,7 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
                                        const char* pProgressDescription,
                                        const char* pFileName,
                                        bool lineNumbersEnabled)
-  : DiffFileBase(bCancelRequested),
+  : DiffInputFileBase(bCancelRequested),
     m_pPoolHeader(pPoolHeader),
     m_pFileBuffer(NULL)
 {
@@ -116,44 +116,19 @@ void DiffInputFileAmiga::collectLineNumbers(size_t maxNumLines)
   for(size_t i = 0; i < m_NumLines; i++)
   {
     char* pLineNumber = (char*) AllocPooled(m_pPoolHeader, digits + 2);
-    if(pLineNumber != NULL)
+    if(pLineNumber == NULL)
     {
-      sprintf(pLineNumber, "%*d ", digits, (i + 1));
+       throw "Failed to allocate memory for lines numbers.";
+    }
 
-      DiffLine* pLine = GetLine(i);
-      pLine->SetLineNum(pLineNumber);
+    sprintf(pLineNumber, "%*d ", digits, (i + 1));
+
+    DiffLine* pLine = GetLine(i);
+    pLine->SetLineNum(pLineNumber);
+
+    if(m_bCancelRequested == true)
+    {
+      throw "User abort.";
     }
   }
-}
-
-
-long DiffInputFileAmiga::AddString(const char* pText,
-                              DiffLine::LineState lineState,
-                              const char* pFormattedLineNumber)
-{
-  if(m_NumLines < 1)
-  {
-    // Not initialized
-    return -1;
-  }
-
-  DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
-                                                sizeof(DiffLine));
-
-  if(pDiffLine == NULL)
-  {
-    // m_pError = m_pErrMsgLowMem;
-    return -1;
-  }
-
-  // The next line is called 'replacement new'. It creates an object
-  // of DiffLine on the known address pDiffLine and calls the
-  // constructor. This has to be done here because a memory pool is
-  // used and the normal operator 'new' which reserves memory
-  // automatically wouldn't be appropriate.
-  new (pDiffLine) DiffLine(pText, lineState, pFormattedLineNumber);
-
-  m_Lines.push_back(pDiffLine);
-
-  return m_Lines.size() - 1;
 }

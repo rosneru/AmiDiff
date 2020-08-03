@@ -3,7 +3,7 @@
 
 #include <exec/types.h>
 
-#include "DiffFileBase.h"
+#include "DiffInputFileBase.h"
 #include "ProgressReporter.h"
 
 /**
@@ -14,7 +14,7 @@
  * @author Uwe Rosner
  * @date 18/07/2020
  */
-class DiffInputFileAmiga : public DiffFileBase
+class DiffInputFileAmiga : public DiffInputFileBase
 {
 public:
   DiffInputFileAmiga(APTR pPoolHeader, 
@@ -26,15 +26,6 @@ public:
 
   virtual ~DiffInputFileAmiga();
 
-
-  /**
-   * Adds a DiffLine to file using given string and line state.
-   * 
-   * Returns the index where the line was inserted or -1 on error.
-   */
-  long AddString(const char* pText,
-                 DiffLine::LineState lineState, 
-                 const char* pFormattedLineNumber);
 
 private:
   APTR m_pPoolHeader;

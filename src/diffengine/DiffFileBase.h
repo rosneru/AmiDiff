@@ -18,7 +18,7 @@ class DiffFileBase
   friend class DiffEngine;
 
 public:
-  DiffFileBase(bool& bCancelRequested);
+  DiffFileBase();
 
   size_t NumLines() const;
 
@@ -33,28 +33,10 @@ public:
 
   unsigned long GetLineToken(size_t idx) const;
 
-  /**
-   * Adds a DiffLine to file using given string and line state.
-   * 
-   * Returns the index where the line was inserted or -1 on error.
-   */
-  virtual long AddString(const char* pText, 
-                         DiffLine::LineState lineState,
-                         const char* pFormattedLineNumber) = 0;
-
-  void AddBlankLine();
-
 protected:
-  bool& m_bCancelRequested;
-
   size_t m_NumLines;
   std::vector<DiffLine*> m_Lines;
 
-
-  /**
-   * Returns the number of digits of a given positive number.
-   */
-  size_t numDigits(size_t number);
 
 private:
   const char m_EmptyText;

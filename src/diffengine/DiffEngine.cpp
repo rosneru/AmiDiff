@@ -2,10 +2,10 @@
 
 #include "DiffEngine.h"
 
-DiffEngine::DiffEngine(DiffFileBase& a,
-                       DiffFileBase& b,
-                       DiffFileBase& aDiff,
-                       DiffFileBase& bDiff,
+DiffEngine::DiffEngine(DiffInputFileBase& a,
+                       DiffInputFileBase& b,
+                       DiffOutputFileBase& aDiff,
+                       DiffOutputFileBase& bDiff,
                        ProgressReporter& progress,
                        const char* pProgressDescription,
                        bool& bCancelRequested,
@@ -135,8 +135,8 @@ void DiffEngine::createDiffFiles()
       DiffLine* pA = m_pA.GetLine(lineA++);
       DiffLine* pB = m_pB.GetLine(lineB++);
 
-      m_pADiff.AddString(pA->Text(), DiffLine::Normal, pA->LineNum());
-      m_pBDiff.AddString(pB->Text(), DiffLine::Normal, pB->LineNum());
+      m_pADiff.AddLine(pA->Text(), DiffLine::Normal, pA->LineNum());
+      m_pBDiff.AddLine(pB->Text(), DiffLine::Normal, pB->LineNum());
     }
 
     //
@@ -151,8 +151,8 @@ void DiffEngine::createDiffFiles()
       DiffLine* pA = m_pA.GetLine(lineA++);
       DiffLine* pB = m_pB.GetLine(lineB++);
 
-      long idx = m_pADiff.AddString(pA->Text(), DiffLine::Changed, pA->LineNum());
-      m_pBDiff.AddString(pB->Text(), DiffLine::Changed, pB->LineNum());
+      long idx = m_pADiff.AddLine(pA->Text(), DiffLine::Changed, pA->LineNum());
+      m_pBDiff.AddLine(pB->Text(), DiffLine::Changed, pB->LineNum());
 
       // Note: By coverting a left-deleted and a right-inserted line
       //       into a changed line, left and right files each are
@@ -175,7 +175,7 @@ void DiffEngine::createDiffFiles()
        && (lineB >= m_pB.NumLines() || (m_pA.GetLineState(lineA) != DiffLine::Normal)))
     {
       DiffLine* pA = m_pA.GetLine(lineA++);
-      long idx = m_pADiff.AddString(pA->Text(), DiffLine::Deleted, pA->LineNum());
+      long idx = m_pADiff.AddLine(pA->Text(), DiffLine::Deleted, pA->LineNum());
       m_pBDiff.AddBlankLine();
 
       if(!bBlockAlreadyAdded)
@@ -193,7 +193,7 @@ void DiffEngine::createDiffFiles()
     {
       DiffLine* pB = m_pB.GetLine(lineB++);
       m_pADiff.AddBlankLine();
-      long idx = m_pBDiff.AddString(pB->Text(), DiffLine::Added, pB->LineNum());
+      long idx = m_pBDiff.AddLine(pB->Text(), DiffLine::Added, pB->LineNum());
 
       if(!bBlockAlreadyAdded)
       {

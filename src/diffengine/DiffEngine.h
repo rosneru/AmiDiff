@@ -5,7 +5,8 @@
 
 #include "Pair.h"
 #include "DiffLine.h"
-#include "DiffFileBase.h"
+#include "DiffInputFileBase.h"
+#include "DiffOutputFileBase.h"
 
 #include "ProgressReporter.h"
 
@@ -64,10 +65,10 @@ public:
    * 
    * Throws an exception on user abort.
    */
-  DiffEngine(DiffFileBase& a,
-             DiffFileBase& b,
-             DiffFileBase& aDiff,
-             DiffFileBase& bDiff,
+  DiffEngine(DiffInputFileBase& a,
+             DiffInputFileBase& b,
+             DiffOutputFileBase& aDiff,
+             DiffOutputFileBase& bDiff,
              ProgressReporter& progress,
              const char* pProgressDescription,
              bool& bCancelRequested,
@@ -85,10 +86,10 @@ protected:
   std::vector<size_t>& m_DiffIndices;
 
 private:
-  DiffFileBase& m_pA;
-  DiffFileBase& m_pB;
-  DiffFileBase& m_pADiff;
-  DiffFileBase& m_pBDiff;
+  DiffInputFileBase& m_pA;
+  DiffInputFileBase& m_pB;
+  DiffOutputFileBase& m_pADiff;
+  DiffOutputFileBase& m_pBDiff;
 
   bool& m_bCancelRequested;
   ProgressReporter& m_Progress;
