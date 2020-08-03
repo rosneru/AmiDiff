@@ -52,7 +52,7 @@ long DiffOutputFileAmiga::AddString(const char* pText,
   // automatically wouldn't be appropriate.
   new (pDiffLine) DiffLine(pText, lineState, pFormattedLineNumber);
 
-  m_DiffLinesVector.push_back(pDiffLine);
+  m_Lines.push_back(pDiffLine);
 
-  return m_DiffLinesVector.size() - 1;
+  return m_Lines.size() - 1;
 }

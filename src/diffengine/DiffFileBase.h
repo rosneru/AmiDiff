@@ -48,7 +48,7 @@ protected:
   bool& m_bCancelRequested;
 
   size_t m_NumLines;
-  std::vector<DiffLine*> m_DiffLinesVector;
+  std::vector<DiffLine*> m_Lines;
 
 
   /**

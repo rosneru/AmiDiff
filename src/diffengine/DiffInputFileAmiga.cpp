@@ -74,7 +74,7 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
       new (pDiffLine) DiffLine(pLineStart);
 
       // Append DiffLine to list
-      m_DiffLinesVector.push_back(pDiffLine);
+      m_Lines.push_back(pDiffLine);
 
       // Next line starts after current line and thin finalizing '\0'
       pLineStart = m_pFileBuffer + i + 1;
@@ -92,11 +92,11 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
     }
   }
 
-  m_NumLines = m_DiffLinesVector.size();
+  m_NumLines = m_Lines.size();
 
   if(lineNumbersEnabled)
   {
-    CollectLineNumbers(m_NumLines);
+    collectLineNumbers(m_NumLines);
   }
 
   progress.SetValue(100);
@@ -109,7 +109,7 @@ DiffInputFileAmiga::~DiffInputFileAmiga()
 }
 
 
-void DiffInputFileAmiga::CollectLineNumbers(size_t maxNumLines)
+void DiffInputFileAmiga::collectLineNumbers(size_t maxNumLines)
 {
   int digits = numDigits(maxNumLines);
 
@@ -153,7 +153,7 @@ long DiffInputFileAmiga::AddString(const char* pText,
   // automatically wouldn't be appropriate.
   new (pDiffLine) DiffLine(pText, lineState, pFormattedLineNumber);
 
-  m_DiffLinesVector.push_back(pDiffLine);
+  m_Lines.push_back(pDiffLine);
 
-  return m_DiffLinesVector.size() - 1;
+  return m_Lines.size() - 1;
 }

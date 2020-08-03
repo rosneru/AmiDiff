@@ -23,9 +23,9 @@ public:
                      const char* pProgressDescription,
                      const char* pFileName,
                      bool lineNumbersEnabled);
+
   virtual ~DiffInputFileAmiga();
 
-  void CollectLineNumbers(size_t maxNumLines);
 
   /**
    * Adds a DiffLine to file using given string and line state.
@@ -39,6 +39,8 @@ public:
 private:
   APTR m_pPoolHeader;
   char* m_pFileBuffer;
+
+  void collectLineNumbers(size_t maxNumLines);
 };
 
 #endif // DIFF_FILE_PARTITION_AMIGA_H

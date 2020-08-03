@@ -3,7 +3,7 @@
 DiffFileBase::DiffFileBase(bool& bCancelRequested)
   : m_bCancelRequested(bCancelRequested),
     m_NumLines(0),
-    m_DiffLinesVector(NULL),
+    m_Lines(NULL),
     m_EmptyText('\0')
 {
 
@@ -23,7 +23,7 @@ DiffLine* DiffFileBase::GetLine(size_t idx) const
     return NULL;
   }
 
-  return m_DiffLinesVector[idx];
+  return m_Lines[idx];
 }
 
 
