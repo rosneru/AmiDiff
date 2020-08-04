@@ -250,7 +250,14 @@ void Application::handleAppWindowMessages()
   while((pAppMsg = (struct AppMessage*)
     GetMsg(m_Ports.Workbench())) != NULL)
   {
+    // When the files window is open it will handle the app message
     m_FilesWindow.HandleAppMessage(pAppMsg);
+
+    // But when its an AppIcon message, always bring the screen to front
+    if(m_IsAppIcon)
+    {
+      m_pScreenBase->ToFront();
+    }
 
     // All messages must be replied
     ReplyMsg((struct Message*)pAppMsg);

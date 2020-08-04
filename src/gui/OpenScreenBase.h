@@ -56,6 +56,11 @@ public:
   void DecreaseNumOpenWindows();
 
   /**
+   * Brings the screen to the front of the display.
+   */
+  void ToFront() const;
+
+  /**
    * Returns true if the screen is in a Hires mode which means it has
    * non-square pixels.
    */

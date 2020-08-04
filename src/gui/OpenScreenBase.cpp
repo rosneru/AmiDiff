@@ -71,6 +71,11 @@ void ScreenBase::DecreaseNumOpenWindows()
   }
 }
 
+void ScreenBase::ToFront() const
+{
+  ScreenToFront(m_pIntuiScreen);
+}
+
 bool ScreenBase::IsHiresMode() const
 {
   if(m_pIntuiScreen == NULL)
