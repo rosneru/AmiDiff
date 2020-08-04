@@ -82,8 +82,8 @@ private:
 
   std::vector<WindowBase*> m_AllWindows;
 
-  struct DiskObject* dobj;
-  struct AppIcon* appicon;
+  struct DiskObject* m_Icon;
+  struct AppIcon* m_pAppIcon;
 
   /**
    * Handling messages from Intuition

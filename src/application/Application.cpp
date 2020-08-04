@@ -207,7 +207,7 @@ void Application::intuiEventLoop()
   ULONG sigProgress = (1ul << m_Ports.Progress()->mp_SigBit);
 
   ULONG sigAppWin = 0;
-  if(m_IsAppWindow)
+  if(m_IsAppWindow || m_IsAppIcon)
   {
     sigAppWin = (1ul << m_Ports.Workbench()->mp_SigBit);
   }
