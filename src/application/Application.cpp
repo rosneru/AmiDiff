@@ -56,7 +56,9 @@ Application::Application(ScreenBase* pScreenBase,
     m_CmdQuit(&m_AllWindows, m_bExitAllowed, m_bExitRequested),
     m_CmdOpenFilesWindow(&m_AllWindows, m_FilesWindow),
     m_CmdCloseFilesWindow(&m_AllWindows, m_CmdOpenFilesWindow, m_FilesWindow),
-    m_CmdAboutRequester(&m_AllWindows, m_AboutMsg, "About", "Ok")
+    m_CmdAboutRequester(&m_AllWindows, m_AboutMsg, "About", "Ok"),
+    m_Icon(NULL),
+    m_pAppIcon(NULL)
 {
   //
   // Note: VERSTAG above has been created with bumprev and is defined
@@ -94,15 +96,15 @@ Application::Application(ScreenBase* pScreenBase,
 
     if(m_IsAppIcon)
     {
-      dobj = GetDefDiskObject(WBTOOL);
-      if(dobj != NULL)
+      m_Icon = GetDefDiskObject(WBTOOL);
+      if(m_Icon != NULL)
       {
-        appicon = AddAppIcon(0L,
+        m_pAppIcon = AddAppIcon(0L,
                              0L,
                              (UBYTE*)"ADiffView",
                              m_Ports.Workbench(),
                              0,
-                             dobj,
+                             m_Icon,
                              TAG_DONE);
       }
     }
@@ -170,16 +172,16 @@ Application::Application(ScreenBase* pScreenBase,
 
 Application::~Application()
 {
-  if(appicon != NULL)
+  if(m_pAppIcon != NULL)
   {
-    RemoveAppIcon(appicon);
-    appicon = NULL;
+    RemoveAppIcon(m_pAppIcon);
+    m_pAppIcon = NULL;
   }
 
-  if(dobj != NULL)
+  if(m_Icon != NULL)
   {
-    FreeDiskObject(dobj);
-    dobj = NULL;
+    FreeDiskObject(m_Icon);
+    m_Icon = NULL;
   }
 
   // Ensure that all windows are closed before deleting the message
