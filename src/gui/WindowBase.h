@@ -176,7 +176,7 @@ public:
 
 protected:
   ScreenBase* m_pScreenBase;
-  struct MsgPort*& m_pIdcmpMsgPort;
+  struct MsgPort* m_pIdcmpMsgPort;
   struct Window* m_pWindow;
   bool m_bBorderless;
 
@@ -206,7 +206,7 @@ protected:
    *
    */
   WindowBase(ScreenBase* pScreenBase, 
-             struct MsgPort*& pIdcmpMsgPort,
+             struct MsgPort* pIdcmpMsgPort,
              AMenu* pMenu);
 
 

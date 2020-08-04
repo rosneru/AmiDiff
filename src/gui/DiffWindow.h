@@ -21,7 +21,7 @@ class DiffWindow : public ScrollbarWindow
 {
 public:
   DiffWindow(ScreenBase* pScreenBase,
-             struct MsgPort*& pIdcmpMsgPort,
+             struct MsgPort* pIdcmpMsgPort,
              AMenu* pMenu);
 
   virtual ~DiffWindow();

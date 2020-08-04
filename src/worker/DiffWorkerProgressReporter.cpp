@@ -1,7 +1,7 @@
 #include "DiffWorkerProgressReporter.h"
 
 
-DiffWorkerProgressReporter::DiffWorkerProgressReporter(struct MsgPort*& pProgressPort, 
+DiffWorkerProgressReporter::DiffWorkerProgressReporter(struct MsgPort* pProgressPort, 
                                                        struct MsgPort*& pReplyPort)
   : ProgressReporter(pProgressPort, pReplyPort),
     m_ProgressOffset(0)

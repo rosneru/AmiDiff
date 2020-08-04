@@ -12,13 +12,13 @@
 class DiffWorkerProgressReporter : public ProgressReporter
 {
 public:
-  DiffWorkerProgressReporter(struct MsgPort*& pProgressPort, 
+  DiffWorkerProgressReporter(struct MsgPort* pProgressPort, 
                              struct MsgPort*& pReplyPort);
 
   virtual void SetValue(int progress);
 
   /**
-   * Reset the inernal offset. Should be done before starting the
+   * Reset the internal offset. Should be done before starting the
    * progress again.
    */
   void Reset();

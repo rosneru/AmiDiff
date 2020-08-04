@@ -6,7 +6,7 @@
 #include "ProgressMessage.h"
 #include "ProgressReporter.h"
 
-ProgressReporter::ProgressReporter(struct MsgPort*& pProgressPort,
+ProgressReporter::ProgressReporter(struct MsgPort* pProgressPort,
                                    struct MsgPort*& pReplyPort)
   : m_pProgressPort(pProgressPort),
     m_pReplyPort(pReplyPort),

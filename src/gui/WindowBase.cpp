@@ -12,7 +12,7 @@
 extern struct GfxBase* GfxBase;
 
 WindowBase::WindowBase(ScreenBase* pScreenBase,
-                       struct MsgPort*& pIdcmpMsgPort,
+                       struct MsgPort* pIdcmpMsgPort,
                        AMenu* pMenu)
   : m_pScreenBase(pScreenBase),
     m_pIdcmpMsgPort(pIdcmpMsgPort),

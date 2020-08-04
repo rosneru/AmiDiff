@@ -17,7 +17,7 @@
 
 
 ProgressWindow::ProgressWindow(ScreenBase*& pScreenBase,
-                               struct MsgPort*& pIdcmpMsgPort,
+                               struct MsgPort* pIdcmpMsgPort,
                                bool& bCancelRequested,
                                AMenu* pMenu)
   : WindowBase(pScreenBase, pIdcmpMsgPort, pMenu),

@@ -36,7 +36,7 @@ public:
              ProgressWindow& progressWindow,
              CmdOpenWindow& cmdOpenFilesWindow,
              CmdCloseWindow& cmdCloseFilesWindow,
-             struct MsgPort*& pProgressPort,
+             struct MsgPort* pProgressPort,
              bool& bCancelRequested,
              bool& bExitAllowed,
              bool bShowLineNumbers);

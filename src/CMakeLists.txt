@@ -17,6 +17,7 @@ add_executable (ADiffView
                 amigautils/MessageBox.cpp
                 amigautils/StopWatch.cpp
                 application/ADiffViewArgs.cpp
+                application/ADiffViewPorts.cpp
                 application/ADiffViewSettings.cpp
                 application/Application.cpp
                 application/main.cpp

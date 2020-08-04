@@ -12,7 +12,7 @@
 #include "ScrollbarWindow.h"
 
 ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
-                                 struct MsgPort*& pIdcmpMsgPort,
+                                 struct MsgPort* pIdcmpMsgPort,
                                  AMenu* pMenu)
   : WindowBase(pScreenBase, pIdcmpMsgPort, pMenu),
     m_InnerWindowRight(0),

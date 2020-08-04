@@ -1,9 +1,10 @@
 #include <stdio.h>
 
 #include <libraries/gadtools.h>
-#include <clib/exec_protos.h>
 #include <clib/gadtools_protos.h>
+#include <clib/icon_protos.h>
 #include <clib/intuition_protos.h>
+#include <clib/wb_protos.h>
 #include <workbench/workbench.h>
 
 #include "ADiffView_rev.h"
@@ -19,36 +20,35 @@ Application::Application(ScreenBase* pScreenBase,
     m_LeftFilePath(args.LeftFile()),   // copy (not reference) to member
     m_RightFilePath(args.RightFile()), // copy (not reference) to member
     m_Settings(settings),
-    m_pMsgPortIDCMP(NULL),
-    m_pMsgPortProgress(NULL),
-    m_pMsgPortAppWindow(NULL),
     m_bCancelRequested(false),
     m_bExitRequested(false),
     m_bExitAllowed(true),
+    m_IsAppWindow(m_Args.PubScreenName() == "Workbench"),
+    m_IsAppIcon(!m_IsAppWindow && !m_Args.NoAppIcon()),
     m_DiffWorker(m_LeftFilePath,
                  m_RightFilePath,
                  m_DiffWindow,
                  m_ProgressWindow,
                  m_CmdOpenFilesWindow,
                  m_CmdCloseFilesWindow,
-                 m_pMsgPortProgress,
+                 m_Ports.Progress(),
                  m_bCancelRequested,
                  m_bExitAllowed,
                  m_Args.ShowLineNumbers()),
     m_pScreenBase(pScreenBase),
     m_DiffWindow(pScreenBase,
-                 m_pMsgPortIDCMP,
+                 m_Ports.Idcmp(),
                  &m_DiffWindowMenu),
     m_FilesWindow(m_AllWindows,
                   pScreenBase,
-                  m_pMsgPortIDCMP,
+                  m_Ports.Idcmp(),
                   m_LeftFilePath,
                   m_RightFilePath,
                   m_CmdDiff,
                   m_CmdCloseFilesWindow,
                   &m_FilesWindowMenu),
     m_ProgressWindow(pScreenBase,
-                     m_pMsgPortIDCMP,
+                     m_Ports.Idcmp(),
                      m_bCancelRequested,
                      NULL),
     m_CmdDiff(&m_AllWindows, m_DiffWorker),
@@ -82,38 +82,26 @@ Application::Application(ScreenBase* pScreenBase,
   m_AllWindows.push_back(&m_FilesWindow);
   m_AllWindows.push_back(&m_ProgressWindow);
 
-  //
-  // Message port initialization
-  //
 
-  // Create a message port for all windows (IDCMP) messages
-  m_pMsgPortIDCMP = CreateMsgPort();
-  if(m_pMsgPortIDCMP == NULL)
+  // Create a MessagePort for Workbench app messages if needed
+  if(m_IsAppWindow || m_IsAppIcon)
   {
-    throw "Failed to create the windows message port.";
-  }
 
-  // Create a message port for progress notification
-  m_pMsgPortProgress = CreateMsgPort();
-  if(m_pMsgPortProgress == NULL)
-  {
-    throw "Failed to create the progress message port.";
-  }
-
-  // If running on Workbench screen, set OpenFilesWindow as an AppWindow
-  bool bFilesWindowIsAppWindow = (m_Args.PubScreenName() == "Workbench") ||
-                                 (m_Args.NoAppIcon() == true);
-  if(bFilesWindowIsAppWindow)
-  {
-    // Create a message port for the AppWindow
-    m_pMsgPortAppWindow = CreateMsgPort();
-    if(m_pMsgPortAppWindow == NULL)
+    if(m_IsAppWindow)
     {
-      throw "Failed to create the app window message port.";
+      // FilesWindow should be an AppWindow
+      m_FilesWindow.EnableAppWindow(m_Ports.Workbench(), 1);
     }
 
-    // FilesWindow should be an AppWindow
-    m_FilesWindow.EnableAppWindow(m_pMsgPortAppWindow, 1); // TODO Avoid numeric constant
+    if(m_IsAppIcon)
+    {
+      struct DiskObject* dobj = GetDefDiskObject(WBDISK);
+      if(dobj != NULL)
+      {
+        struct AppIcon* appicon = AddAppIconA(0L,0L,(UBYTE*)"TestAppIcon",m_Ports.Workbench(),NULL,dobj,NULL);
+
+      }
+    }
   }
 
 
@@ -183,24 +171,6 @@ Application::~Application()
   m_DiffWindow.Close();
   m_FilesWindow.Close();
   m_ProgressWindow.Close();
-
-  if(m_pMsgPortProgress != NULL)
-  {
-    DeleteMsgPort(m_pMsgPortProgress);
-    m_pMsgPortProgress = NULL;
-  }
-
-  if(m_pMsgPortIDCMP != NULL)
-  {
-    DeleteMsgPort(m_pMsgPortIDCMP);
-    m_pMsgPortIDCMP = NULL;
-  }
-
-  if(m_pMsgPortAppWindow!= NULL)
-  {
-    DeleteMsgPort(m_pMsgPortAppWindow);
-    m_pMsgPortAppWindow = NULL;
-  }
 }
 
 
@@ -215,13 +185,13 @@ void Application::Run()
 
 void Application::intuiEventLoop()
 {
-  ULONG sigIDCMP = (1ul << m_pMsgPortIDCMP->mp_SigBit);
-  ULONG sigProgress = (1ul << m_pMsgPortProgress->mp_SigBit);
+  ULONG sigIDCMP = (1ul << m_Ports.Idcmp()->mp_SigBit);
+  ULONG sigProgress = (1ul << m_Ports.Progress()->mp_SigBit);
 
   ULONG sigAppWin = 0;
-  if(m_pMsgPortAppWindow != NULL)
+  if(m_IsAppWindow)
   {
-    sigAppWin = (1ul << m_pMsgPortAppWindow->mp_SigBit);
+    sigAppWin = (1ul << m_Ports.Workbench()->mp_SigBit);
   }
 
   ULONG signals = sigIDCMP | sigProgress | sigAppWin;
@@ -260,7 +230,7 @@ void Application::handleAppWindowMessages()
 {
   struct AppMessage* pAppMsg = NULL;
   while((pAppMsg = (struct AppMessage*)
-    GetMsg(m_pMsgPortAppWindow)) != NULL)
+    GetMsg(m_Ports.Workbench())) != NULL)
   {
     m_FilesWindow.HandleAppMessage(pAppMsg);
 
@@ -274,7 +244,7 @@ void Application::handleProgressMessages()
 {
   struct ProgressMessage* pProgressMsg = NULL;
   while((pProgressMsg = (struct ProgressMessage*)
-    GetMsg(m_pMsgPortProgress)) != NULL)
+    GetMsg(m_Ports.Progress())) != NULL)
   {
     m_ProgressWindow.HandleProgress(pProgressMsg);
 
@@ -287,7 +257,7 @@ void Application::handleProgressMessages()
 void Application::handleIdcmpMessages()
 {
   struct IntuiMessage* pIdcmpMsg = NULL;
-  while ((pIdcmpMsg = GT_GetIMsg(m_pMsgPortIDCMP)) != NULL)
+  while ((pIdcmpMsg = GT_GetIMsg(m_Ports.Idcmp())) != NULL)
   {
     // Get all data we need from message
     ULONG msgClass = pIdcmpMsg->Class;

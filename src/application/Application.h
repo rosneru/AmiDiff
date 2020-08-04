@@ -11,9 +11,8 @@
 #include <string>
 #include <vector>
 
-#include <exec/ports.h>
-
 #include "ADiffViewArgs.h"
+#include "ADiffViewPorts.h"
 #include "ADiffViewSettings.h"
 #include "AMenu.h"
 #include "OpenClonedWorkbenchScreen.h"
@@ -47,13 +46,13 @@ private:
 
   ADiffViewSettings& m_Settings;
 
-  struct MsgPort* m_pMsgPortIDCMP;
-  struct MsgPort* m_pMsgPortProgress;
-  struct MsgPort* m_pMsgPortAppWindow;
+  ADiffViewPorts m_Ports;
 
   bool m_bCancelRequested;
   bool m_bExitRequested;
   bool m_bExitAllowed;
+  bool m_IsAppWindow;
+  bool m_IsAppIcon;
 
   /**
    * IMPORTANT:

@@ -19,7 +19,7 @@
 
 FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                          ScreenBase* pScreenBase,
-                         struct MsgPort*& pIdcmpMsgPort,
+                         struct MsgPort* pIdcmpMsgPort,
                          std::string& leftFilePath,
                          std::string& rightFilePath,
                          CommandBase& cmdDiff,

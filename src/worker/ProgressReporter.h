@@ -14,14 +14,14 @@
 class ProgressReporter
 {
 public:
-  ProgressReporter(struct MsgPort*& pProgressPort, 
+  ProgressReporter(struct MsgPort* pProgressPort, 
                    struct MsgPort*& pReplyPort);
 
   virtual void SetValue(int progress);
   void SetDescription(const char* pProgressDescription);
 
 private:
-  struct MsgPort*& m_pProgressPort;
+  struct MsgPort* m_pProgressPort;
   struct MsgPort*& m_pReplyPort;
   const char* m_pProgressDescription;
 

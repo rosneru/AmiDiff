@@ -19,7 +19,7 @@ class ProgressWindow : public WindowBase
 {
 public:
   ProgressWindow(ScreenBase*& pScreeBase, 
-                 struct MsgPort*& pIdcmpMsgPort,
+                 struct MsgPort* pIdcmpMsgPort,
                  bool& bCancelRequested,
                  AMenu* pMenu);
 
