@@ -13,7 +13,7 @@
 class DiffInputFileLinux : public DiffInputFileBase
 {
 public:
-  DiffInputFileLinux(bool& bCancelRequested, 
+  DiffInputFileLinux(bool& isCancelRequested, 
                      ProgressReporter& progress,
                      const char* pProgressDescription,
                      const char* pFileName,

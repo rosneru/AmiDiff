@@ -43,7 +43,7 @@ bool AMenu::SetMenuDefinition(struct NewMenu* pMenuDef, size_t numItems)
   return true;
 }
 
-bool AMenu::Create(ScreenBase* pScreen)
+bool AMenu::Create(ScreenBase& screen)
 {
   if(m_pMenu != NULL)
   {
@@ -51,12 +51,7 @@ bool AMenu::Create(ScreenBase* pScreen)
     return true;
   }
 
-  if(pScreen == NULL)
-  {
-    return false;
-  }
-
-  if(pScreen->GadtoolsVisualInfo() == NULL)
+  if(screen.GadtoolsVisualInfo() == NULL)
   {
     // No VisualInfo available to create the menu
     return false;
@@ -71,7 +66,7 @@ bool AMenu::Create(ScreenBase* pScreen)
   }
 
   // Create the layout for the menu
-  if(LayoutMenus(m_pMenu, pScreen->GadtoolsVisualInfo(),
+  if(LayoutMenus(m_pMenu, screen.GadtoolsVisualInfo(),
                  GTMN_NewLookMenus, TRUE, // Ignored before v39
                  TAG_DONE) == FALSE)
   {

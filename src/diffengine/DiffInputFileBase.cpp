@@ -1,7 +1,7 @@
 #include "DiffInputFileBase.h"
 
-DiffInputFileBase::DiffInputFileBase(bool& bCancelRequested)
-  : m_bCancelRequested(bCancelRequested)
+DiffInputFileBase::DiffInputFileBase(bool& isCancelRequested)
+  : m_IsCancelRequested(isCancelRequested)
 {
 
 }

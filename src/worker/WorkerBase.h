@@ -37,7 +37,7 @@ protected:
 
 private:
   struct Process* m_pBackgrProcess;
-  bool m_bExitRequested;
+  bool m_IsExitRequested;
 
   static void startup();
 };

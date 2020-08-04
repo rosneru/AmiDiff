@@ -32,7 +32,7 @@ public:
    * 
    * \return true on success or if already done; false on error.
    */
-  bool Create(ScreenBase* pScreen);
+  bool Create(ScreenBase& screen);
 
   /**
    * Wire the menu strip to a window. Can be done for multiple windows.

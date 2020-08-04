@@ -27,7 +27,7 @@ public:
    */
   DiffDocument(const char* pLeftFilePath,
                const char* pRightFilePath,
-               bool& bCancelRequested,
+               bool& isCancelRequested,
                StopWatch& stopWatch,
                ProgressReporter& progress,
                bool lineNumbersEnabled);

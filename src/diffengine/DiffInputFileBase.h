@@ -6,11 +6,11 @@
 class DiffInputFileBase : public DiffFileBase
 {
 public:
-  DiffInputFileBase(bool& bCancelRequested);
+  DiffInputFileBase(bool& isCancelRequested);
   virtual ~DiffInputFileBase();
 
 protected:
-  bool& m_bCancelRequested;
+  bool& m_IsCancelRequested;
 
   /**
    * Returns the number of digits of a given positive number.

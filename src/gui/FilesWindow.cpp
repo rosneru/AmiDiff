@@ -18,14 +18,14 @@
 
 
 FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
-                         ScreenBase* pScreenBase,
+                         ScreenBase& screen,
                          struct MsgPort* pIdcmpMsgPort,
                          std::string& leftFilePath,
                          std::string& rightFilePath,
                          CommandBase& cmdDiff,
                          CommandBase& cmdCloseFilesWindow,
                          AMenu* pMenu)
-  : WindowBase(pScreenBase, pIdcmpMsgPort, pMenu),
+  : WindowBase(screen, pIdcmpMsgPort, pMenu),
     m_LeftFilePath(leftFilePath),
     m_RightFilePath(rightFilePath),
     m_CmdDiff(cmdDiff),
@@ -39,13 +39,14 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     m_pGadBtnSelectRight(NULL),
     m_pGadBtnDiff(NULL),
     m_pGadBtnSwap(NULL),
+    m_pGadBtnClear(NULL),
     m_pGadBtnCancel(NULL)
 {
   //
   // Calculate some basic values
   //
-  struct Screen* pIntuiScreen = m_pScreenBase->IntuiScreen();
-  UWORD fontHeight = m_pScreenBase->IntuiDrawInfo()->dri_Font->tf_YSize;
+  struct Screen* pIntuiScreen = m_Screen.IntuiScreen();
+  UWORD fontHeight = m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
   
   m_Width = (WORD)pIntuiScreen->Width / 2;
   WORD barHeight = pIntuiScreen->WBorTop + fontHeight + 2;
@@ -60,7 +61,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   WORD btnsWidth = 60;
   WORD btnsHeight = fontHeight + 6;
 
-  WORD btnSelectWidth = TextLength(&m_pScreenBase->IntuiScreen()->RastPort, "...", 3) + 8;
+  WORD btnSelectWidth = TextLength(&m_Screen.IntuiScreen()->RastPort, "...", 3) + 8;
   WORD btnSelectLeft = right - btnSelectWidth;
 
   WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
@@ -84,8 +85,8 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   struct NewGadget newGadget;
 
   // Row 1  contains  a label
-  newGadget.ng_TextAttr   = m_pScreenBase->IntuiTextAttr();
-  newGadget.ng_VisualInfo = m_pScreenBase->GadtoolsVisualInfo();
+  newGadget.ng_TextAttr   = m_Screen.IntuiTextAttr();
+  newGadget.ng_VisualInfo = m_Screen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadWidth;

@@ -37,8 +37,8 @@ public:
              CmdOpenWindow& cmdOpenFilesWindow,
              CmdCloseWindow& cmdCloseFilesWindow,
              struct MsgPort* pProgressPort,
-             bool& bCancelRequested,
-             bool& bExitAllowed,
+             bool& isCancelRequested,
+             bool& isExitAllowed,
              bool bShowLineNumbers);
 
   virtual ~DiffWorker();
@@ -75,8 +75,8 @@ private:
   ProgressWindow& m_ProgressWindow;
   CmdOpenWindow& m_CmdOpenFilesWindow;
   CmdCloseWindow& m_CmdCloseFilesWindow;
-  bool& m_bCancelRequested;
-  bool& m_bExitAllowed;
+  bool& m_IsCancelRequested;
+  bool& m_IsExitAllowed;
   bool m_bShowLineNumbers;
   DiffDocument* m_pDiffDocument;
 

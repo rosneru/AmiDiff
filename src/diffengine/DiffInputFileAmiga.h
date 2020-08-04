@@ -18,7 +18,7 @@ class DiffInputFileAmiga : public DiffInputFileBase
 {
 public:
   DiffInputFileAmiga(APTR pPoolHeader, 
-                     bool& bCancelRequested, 
+                     bool& isCancelRequested, 
                      ProgressReporter& progress,
                      const char* pProgressDescription,
                      const char* pFileName,

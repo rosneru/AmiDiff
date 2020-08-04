@@ -34,7 +34,7 @@
 class Application
 {
 public:
-  Application(ScreenBase* pScreenBase, 
+  Application(ScreenBase& screen, 
               ADiffViewArgs& args, 
               ADiffViewSettings& settings);
   virtual ~Application();
@@ -42,17 +42,18 @@ public:
   void Run();
 
 private:
+  ScreenBase& m_Screen;
   ADiffViewArgs& m_Args;
+  ADiffViewSettings& m_Settings;
+
   std::string m_LeftFilePath;
   std::string m_RightFilePath;
 
-  ADiffViewSettings& m_Settings;
-
   ADiffViewPorts m_Ports;
 
-  bool m_bCancelRequested;
-  bool m_bExitRequested;
-  bool m_bExitAllowed;
+  bool m_IsCancelRequested;
+  bool m_IsExitRequested;
+  bool m_IsExitAllowed;
   bool m_IsAppWindow;
   bool m_IsAppIcon;
 
@@ -65,7 +66,6 @@ private:
    */
 
   DiffWorker m_DiffWorker;
-  ScreenBase* m_pScreenBase;
   AMenu m_FilesWindowMenu;
   AMenu m_DiffWindowMenu;
   DiffWindow m_DiffWindow;

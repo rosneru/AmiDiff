@@ -12,16 +12,17 @@
 
 #include "Application.h"
 
-Application::Application(ScreenBase* pScreenBase, 
+Application::Application(ScreenBase& screen, 
                          ADiffViewArgs& args, 
                          ADiffViewSettings& settings)
-  : m_Args(args),
+  : m_Screen(screen),
+    m_Args(args),
+    m_Settings(settings),
     m_LeftFilePath(args.LeftFile()),   // copy (not reference) to member
     m_RightFilePath(args.RightFile()), // copy (not reference) to member
-    m_Settings(settings),
-    m_bCancelRequested(false),
-    m_bExitRequested(false),
-    m_bExitAllowed(true),
+    m_IsCancelRequested(false),
+    m_IsExitRequested(false),
+    m_IsExitAllowed(true),
     m_IsAppWindow(m_Args.PubScreenName() == "Workbench"),
     m_IsAppIcon(!m_IsAppWindow && !m_Args.NoAppIcon()),
     m_DiffWorker(m_LeftFilePath,
@@ -31,29 +32,28 @@ Application::Application(ScreenBase* pScreenBase,
                  m_CmdOpenFilesWindow,
                  m_CmdCloseFilesWindow,
                  m_Ports.Progress(),
-                 m_bCancelRequested,
-                 m_bExitAllowed,
+                 m_IsCancelRequested,
+                 m_IsExitAllowed,
                  m_Args.ShowLineNumbers()),
-    m_pScreenBase(pScreenBase),
-    m_DiffWindow(pScreenBase,
+    m_DiffWindow(screen,
                  m_Ports.Idcmp(),
                  &m_DiffWindowMenu),
     m_FilesWindow(m_AllWindows,
-                  pScreenBase,
+                  screen,
                   m_Ports.Idcmp(),
                   m_LeftFilePath,
                   m_RightFilePath,
                   m_CmdDiff,
                   m_CmdCloseFilesWindow,
                   &m_FilesWindowMenu),
-    m_ProgressWindow(pScreenBase,
+    m_ProgressWindow(screen,
                      m_Ports.Idcmp(),
-                     m_bCancelRequested,
+                     m_IsCancelRequested,
                      NULL),
     m_CmdDiff(&m_AllWindows, m_DiffWorker),
-    m_CmdNavNextDiff(&m_AllWindows,m_DiffWindow),
-    m_CmdNavPrevDiff(&m_AllWindows,m_DiffWindow),
-    m_CmdQuit(&m_AllWindows, m_bExitAllowed, m_bExitRequested),
+    m_CmdNavNextDiff(&m_AllWindows, m_DiffWindow),
+    m_CmdNavPrevDiff(&m_AllWindows, m_DiffWindow),
+    m_CmdQuit(&m_AllWindows, m_IsExitAllowed, m_IsExitRequested),
     m_CmdOpenFilesWindow(&m_AllWindows, m_FilesWindow),
     m_CmdCloseFilesWindow(&m_AllWindows, m_CmdOpenFilesWindow, m_FilesWindow),
     m_CmdAboutRequester(&m_AllWindows, m_AboutMsg, "About", "Ok"),
@@ -234,13 +234,13 @@ void Application::intuiEventLoop()
     }
 
     // Check all screens for any open windows
-    if(m_pScreenBase->NumOpenWindows() < 1)
+    if(m_Screen.NumOpenWindows() < 1)
     {
       // Exitting as there are no windows open anymore.
-      m_CmdQuit.Execute(NULL); // Only sets m_bExitRequested to true.
+      m_CmdQuit.Execute(NULL); // Only sets m_IsExitRequested to true.
     }
   }
-  while(!m_bExitRequested);
+  while(!m_IsExitRequested);
 }
 
 
@@ -256,7 +256,7 @@ void Application::handleAppWindowMessages()
     // But when its an AppIcon message, always bring the screen to front
     if(m_IsAppIcon)
     {
-      m_pScreenBase->ToFront();
+      m_Screen.ToFront();
     }
 
     // All messages must be replied

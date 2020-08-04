@@ -5,8 +5,8 @@ CmdQuit::CmdQuit(std::vector<WindowBase*>* pAllWindowsVector,
                  bool& exitAllowed, 
                  bool& exitRequested)
   : CommandBase(pAllWindowsVector),
-    m_bExitAllowed(exitAllowed),
-    m_bExitRequested(exitRequested)
+    m_IsExitAllowed(exitAllowed),
+    m_IsExitRequested(exitRequested)
 {
 }
 
@@ -17,8 +17,8 @@ CmdQuit::~CmdQuit()
 
 void CmdQuit::Execute(struct Window* pActiveWindow)
 {
-  if(m_bExitAllowed)
+  if(m_IsExitAllowed)
   {
-    m_bExitRequested = true;
+    m_IsExitRequested = true;
   }
 }

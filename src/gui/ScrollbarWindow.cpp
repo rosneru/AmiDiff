@@ -11,10 +11,10 @@
 #include <intuition/icclass.h>
 #include "ScrollbarWindow.h"
 
-ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
+ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
                                  struct MsgPort* pIdcmpMsgPort,
                                  AMenu* pMenu)
-  : WindowBase(pScreenBase, pIdcmpMsgPort, pMenu),
+  : WindowBase(screen, pIdcmpMsgPort, pMenu),
     m_InnerWindowRight(0),
     m_InnerWindowBottom(0),
     m_SizeImageWidth(18),
@@ -60,7 +60,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               GA_RelBottom, -m_SizeImgHeight-imgHeight+1,
               GA_Width, imageWidth,
               GA_Height, imgHeight,
-              GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
+              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
               GA_Image, m_pDownArrowImage,
@@ -79,7 +79,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               GA_RelBottom, -m_SizeImgHeight-imgHeight-imgHeight+1,
               GA_Width, imageWidth,
               GA_Height, imgHeight,
-              GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
+              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
               GA_Image, m_pUpArrowImage,
@@ -87,9 +87,9 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               TAG_DONE, NULL);
 
   // Create the vertical proportional gadget / slider
-  BYTE barHeight = m_pScreenBase->IntuiScreen()->BarHeight;
-  BYTE wborTop = m_pScreenBase->IntuiScreen()->WBorTop;
-  BYTE wborBottom = m_pScreenBase->IntuiScreen()->WBorBottom;
+  BYTE barHeight = m_Screen.IntuiScreen()->BarHeight;
+  BYTE wborTop = m_Screen.IntuiScreen()->WBorTop;
+  BYTE wborBottom = m_Screen.IntuiScreen()->WBorBottom;
 
 	m_pYPropGadget = (struct Gadget*)
     NewObject(NULL, PROPGCLASS,
@@ -100,7 +100,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               GA_Width, m_SizeImageWidth-6,
               GA_RelHeight, - m_SizeImgHeight - imgHeight - imgHeight
                             - barHeight - wborTop - wborBottom,
-              GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
+              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
               PGA_Freedom, FREEVERT,
@@ -126,7 +126,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               GA_RelBottom, -imgHeight+1,
               GA_Width, imageWidth,
               GA_Height, imgHeight,
-              GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
+              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
               GA_Image, m_pRightArrowImage,
@@ -145,7 +145,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               GA_RelBottom, -imgHeight+1,
               GA_Width, imageWidth,
               GA_Height, imgHeight,
-              GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
+              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
               GA_Image, m_pLeftArrowImage,
@@ -153,19 +153,19 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase* pScreenBase,
               TAG_DONE, NULL);
 
   // Create the horizontal proportional gadget / slider
-  BYTE wborLeft = m_pScreenBase->IntuiScreen()->WBorLeft;
-  BYTE wborRight = m_pScreenBase->IntuiScreen()->WBorRight;
+  BYTE wborLeft = m_Screen.IntuiScreen()->WBorLeft;
+  BYTE wborRight = m_Screen.IntuiScreen()->WBorRight;
 
   m_pXPropGadget = (struct Gadget*)
     NewObject(NULL, PROPGCLASS,
               GA_Previous, m_pLeftArrowButton,
               GA_ID, GID_PropX,
-              GA_Left, m_pScreenBase->IntuiScreen()->WBorLeft,
+              GA_Left, m_Screen.IntuiScreen()->WBorLeft,
               GA_RelBottom, -m_SizeImgHeight+3,
               GA_RelWidth, - m_SizeImageWidth - imageWidth - imageWidth
                            - wborLeft - wborRight,
               GA_Height, m_SizeImgHeight-4,
-              GA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
+              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
               PGA_Freedom, FREEHORIZ,
@@ -372,18 +372,13 @@ void ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
 
 void ScrollbarWindow::calcSizes()
 {
-  if(m_pScreenBase == NULL)
-  {
-    return;
-  }
-
   // (Re-)calculate some values that may have be changed by re-sizing
   m_InnerWindowRight = m_pWindow->Width
-    - m_pScreenBase->IntuiScreen()->WBorLeft
+    - m_Screen.IntuiScreen()->WBorLeft
     - m_SizeImageWidth;
 
   m_InnerWindowBottom = m_pWindow->Height
-    - m_pScreenBase->IntuiScreen()->BarHeight
+    - m_Screen.IntuiScreen()->BarHeight
     - m_SizeImgHeight;
 }
 

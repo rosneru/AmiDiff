@@ -13,12 +13,12 @@
 #include "DiffInputFileAmiga.h"
 
 DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
-                                       bool& bCancelRequested,
+                                       bool& isCancelRequested,
                                        ProgressReporter& progress,
                                        const char* pProgressDescription,
                                        const char* pFileName,
                                        bool lineNumbersEnabled)
-  : DiffInputFileBase(bCancelRequested),
+  : DiffInputFileBase(isCancelRequested),
     m_pPoolHeader(pPoolHeader),
     m_pFileBuffer(NULL)
 {
@@ -50,7 +50,7 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
     if(m_pFileBuffer[i] == '\n')
     {
       // Handle a potential cancel request
-      if(m_bCancelRequested == true)
+      if(m_IsCancelRequested == true)
       {
         throw "User abort.";
       }
@@ -126,7 +126,7 @@ void DiffInputFileAmiga::collectLineNumbers(size_t maxNumLines)
     DiffLine* pLine = GetLine(i);
     pLine->SetLineNum(pLineNumber);
 
-    if(m_bCancelRequested == true)
+    if(m_IsCancelRequested == true)
     {
       throw "User abort.";
     }

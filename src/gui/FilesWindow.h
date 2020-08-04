@@ -25,7 +25,7 @@ class FilesWindow : public WindowBase
 {
 public:
   FilesWindow(std::vector<WindowBase*>& windowArray,
-              ScreenBase* pScreenBase,
+              ScreenBase& screen,
               struct MsgPort* pIdcmpMsgPort,
               std::string& leftFilePath,
               std::string& rightFilePath,
@@ -93,6 +93,7 @@ private:
   struct Gadget* m_pGadBtnSelectRight;
   struct Gadget* m_pGadBtnDiff;
   struct Gadget* m_pGadBtnSwap;
+  struct Gadget* m_pGadBtnClear;
   struct Gadget* m_pGadBtnCancel;
 
   //

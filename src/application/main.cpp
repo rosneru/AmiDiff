@@ -76,8 +76,6 @@ int main(int argc, char **argv)
     return RETURN_FAIL;
   }
 
-  ScreenBase* pScreenBase = NULL;
-  Application* pApplication = NULL;
 
   ULONG exitCode = RETURN_OK;
 
@@ -92,18 +90,20 @@ int main(int argc, char **argv)
     // Create (and open) the screen depending on args
     if(args.PubScreenName().length() > 0)
     {
-      // Use a given public screen
-      pScreenBase = new OpenJoinedPublicScreen(settings, args.PubScreenName().c_str());
+      // Run the app on a given public screen
+      OpenJoinedPublicScreen screen(settings, args.PubScreenName().c_str());
+      Application app(screen, args, settings);
+      app.Run();
     }
     else
     {
-      // Clone the Workbench screen but use 8 colors
-      pScreenBase = new OpenClonedWorkbenchScreen(settings, VERS, 3);
+      // Run the app on a Workbench screen clone with 8 colors
+      OpenClonedWorkbenchScreen screen(settings, VERS, 3);
+      Application app(screen, args, settings);
+      app.Run();
     }
 
     // Create and run the application
-    pApplication = new Application(pScreenBase, args, settings);
-    pApplication->Run();
   }
   catch(const char* pMsg)
   {
@@ -115,16 +115,6 @@ int main(int argc, char **argv)
     exitCode = RETURN_FAIL;
   }
 
-  if(pApplication != NULL)
-  {
-    delete pApplication;
-  }
-
-  if(pScreenBase != NULL)
-  {
-    delete pScreenBase;
-  }
-  
   return exitCode;
 }
 

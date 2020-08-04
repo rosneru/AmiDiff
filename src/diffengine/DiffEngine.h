@@ -71,7 +71,7 @@ public:
              DiffOutputFileBase& bOut,
              ProgressReporter& progress,
              const char* pProgressDescription,
-             bool& bCancelRequested,
+             bool& isCancelRequested,
              std::vector<size_t>& diffIndices);
 
   ~DiffEngine();
@@ -91,7 +91,7 @@ private:
   DiffOutputFileBase& m_AOut;
   DiffOutputFileBase& m_pBOut;
 
-  bool& m_bCancelRequested;
+  bool& m_IsCancelRequested;
   ProgressReporter& m_Progress;
 
   long m_NumInsertedB;

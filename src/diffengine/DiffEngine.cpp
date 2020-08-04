@@ -8,14 +8,14 @@ DiffEngine::DiffEngine(DiffInputFileBase& aIn,
                        DiffOutputFileBase& bOut,
                        ProgressReporter& progress,
                        const char* pProgressDescription,
-                       bool& bCancelRequested,
+                       bool& isCancelRequested,
                        std::vector<size_t>& diffIndices)
   : m_DiffIndices(diffIndices),
     m_AIn(aIn),
     m_BIn(bIn),
     m_AOut(aOut),
     m_pBOut(bOut),
-    m_bCancelRequested(bCancelRequested),
+    m_IsCancelRequested(isCancelRequested),
     m_Progress(progress),
     m_NumInsertedB(0),
     m_NumDeletedA(0),
@@ -49,7 +49,7 @@ DiffEngine::DiffEngine(DiffInputFileBase& aIn,
   //   file m_b are marked with DiffLine::Added
   lcs(0, m_AIn.NumLines(), 0, m_BIn.NumLines());
 
-  if(m_bCancelRequested)
+  if(m_IsCancelRequested)
   {
     throw "User abort";
   }
@@ -216,7 +216,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
   if((m_NotifyIncrement > 0)
    &&(lowerA > m_NextNotifyPosition))
   {
-    if(m_bCancelRequested)
+    if(m_IsCancelRequested)
     {
       throw "User abort";
     }
@@ -263,14 +263,14 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
     Pair smsrd = sms(lowerA, upperA, lowerB, upperB);
     lcs(lowerA, smsrd.Left(), lowerB, smsrd.Top());
 
-    if(m_bCancelRequested)
+    if(m_IsCancelRequested)
     {
       throw "User abort";
     }
 
     lcs(smsrd.Left(), upperA, smsrd.Top(), upperB);
 
-    if(m_bCancelRequested)
+    if(m_IsCancelRequested)
     {
       throw "User abort";
     }

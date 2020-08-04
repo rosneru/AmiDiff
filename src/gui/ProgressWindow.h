@@ -18,9 +18,9 @@
 class ProgressWindow : public WindowBase
 {
 public:
-  ProgressWindow(ScreenBase*& pScreeBase, 
+  ProgressWindow(ScreenBase& screen,
                  struct MsgPort* pIdcmpMsgPort,
-                 bool& bCancelRequested,
+                 bool& isCancelRequested,
                  AMenu* pMenu);
 
   virtual ~ProgressWindow();
@@ -64,7 +64,7 @@ private:
     GID_BtnStop,
   };
 
-  bool& m_bCancelRequested;
+  bool& m_IsCancelRequested;
 
   struct NewGadget m_NewGadget;
   struct Gadget* m_pGadtoolsContext;

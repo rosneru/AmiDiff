@@ -24,8 +24,8 @@ public:
   virtual void Execute(struct Window* pActiveWindow);
 
 private:
-  bool& m_bExitAllowed;
-  bool& m_bExitRequested;
+  bool& m_IsExitAllowed;
+  bool& m_IsExitRequested;
 };
 
 #endif // CMD_QUIT_H

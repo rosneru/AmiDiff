@@ -11,10 +11,10 @@
 
 extern struct GfxBase* GfxBase;
 
-WindowBase::WindowBase(ScreenBase* pScreenBase,
+WindowBase::WindowBase(ScreenBase& screen,
                        struct MsgPort* pIdcmpMsgPort,
                        AMenu* pMenu)
-  : m_pScreenBase(pScreenBase),
+  : m_Screen(screen),
     m_pIdcmpMsgPort(pIdcmpMsgPort),
     m_pWindow(NULL),
     m_bBorderless(false),
@@ -49,11 +49,6 @@ void WindowBase::Resized()
 
 bool WindowBase::Open(InitialPosition initialPos)
 {
-  if(m_pScreenBase == NULL)
-  {
-    return false;
-  }
-
   m_InitialPosition = initialPos;
 
   //
@@ -70,9 +65,9 @@ bool WindowBase::Open(InitialPosition initialPos)
   //
   // Calculating window size etc in dependency of screen dimensions
   //
-  int screenWidth = m_pScreenBase->IntuiScreen()->Width;
-  int screenHeight = m_pScreenBase->IntuiScreen()->Height;
-  int screenBarHeight = m_pScreenBase->IntuiScreen()->BarHeight;
+  int screenWidth = m_Screen.IntuiScreen()->Width;
+  int screenHeight = m_Screen.IntuiScreen()->Height;
+  int screenBarHeight = m_Screen.IntuiScreen()->BarHeight;
 
   switch(m_InitialPosition)
   {
@@ -134,7 +129,7 @@ bool WindowBase::Open(InitialPosition initialPos)
                              WA_Height, m_Height,
                              WA_Title, (ULONG) m_Title.c_str(),
                              WA_Activate, TRUE,
-                             WA_PubScreen, (UBYTE*) m_pScreenBase->IntuiScreen(),
+                             WA_PubScreen, (UBYTE*) m_Screen.IntuiScreen(),
                              WA_Flags, m_WindowFlags,
                              WA_MinWidth, 230,
                              WA_MinHeight, 64,
@@ -151,7 +146,7 @@ bool WindowBase::Open(InitialPosition initialPos)
     return false;
   }
 
-  m_pScreenBase->IncreaseNumOpenWindows();
+  m_Screen.IncreaseNumOpenWindows();
 
   // The window uses this message port which can be the same as used by
   // other windows
@@ -177,7 +172,7 @@ bool WindowBase::Open(InitialPosition initialPos)
   }
 
   // Create the menu if; returns true if already done
-  if(m_pMenu->Create(m_pScreenBase) == true)
+  if(m_pMenu->Create(m_Screen) == true)
   {
     // Attach the menu to the window
     m_pMenu->AttachToWindow(m_pWindow);
@@ -206,7 +201,7 @@ void WindowBase::Close()
   }
 
   closeWindowSafely();
-  m_pScreenBase->DecreaseNumOpenWindows();
+  m_Screen.DecreaseNumOpenWindows();
 }
 
 
@@ -321,7 +316,7 @@ void WindowBase::SetMenu(AMenu* pMenu)
   }
 
   // Create the menu; returns true if already done
-  if(m_pMenu->Create(m_pScreenBase) == true)
+  if(m_pMenu->Create(m_Screen) == true)
   {
     // Attach the menu to the window
     m_pMenu->AttachToWindow(m_pWindow);
@@ -392,16 +387,11 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId,
                                          ULONG& width,
                                          ULONG& height)
 {
-  if(m_pScreenBase == NULL)
-  {
-    return NULL;
-  }
-
   struct Image* pImage = (struct Image*) NewObject(
       NULL, SYSICLASS,
       SYSIA_Which, sysImageId,
       SYSIA_Size, SYSISIZE_MEDRES,
-      SYSIA_DrawInfo, m_pScreenBase->IntuiDrawInfo(),
+      SYSIA_DrawInfo, m_Screen.IntuiDrawInfo(),
       TAG_DONE);
 
   if(pImage != NULL)

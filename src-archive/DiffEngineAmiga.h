@@ -21,7 +21,7 @@ public:
                   DiffFileBase* pADiff,
                   DiffFileBase* pBDiff,
                   APTR& pPoolHeader,
-                  bool& bCancelRequested,
+                  bool& isCancelRequested,
                   std::vector<size_t>& diffIndices);
 
   ~DiffEngineAmiga();

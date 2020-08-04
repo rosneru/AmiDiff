@@ -10,8 +10,8 @@ DiffWorker::DiffWorker(std::string& leftFilePath,
                        CmdOpenWindow& cmdOpenFilesWindow,
                        CmdCloseWindow& cmdCloseFilesWindow,
                        struct MsgPort* pProgressPort,
-                       bool& bCancelRequested,
-                       bool& bExitAllowed,
+                       bool& isCancelRequested,
+                       bool& isExitAllowed,
                        bool bShowLineNumbers)
   : m_LeftSrcFilePath(leftFilePath),
     m_RightSrcFilePath(rightFilePath),
@@ -20,8 +20,8 @@ DiffWorker::DiffWorker(std::string& leftFilePath,
     m_ProgressWindow(progressWindow),
     m_CmdOpenFilesWindow(cmdOpenFilesWindow),
     m_CmdCloseFilesWindow(cmdCloseFilesWindow),
-    m_bCancelRequested(bCancelRequested),
-    m_bExitAllowed(bExitAllowed),
+    m_IsCancelRequested(isCancelRequested),
+    m_IsExitAllowed(isExitAllowed),
     m_bShowLineNumbers(bShowLineNumbers),
     m_pDiffDocument(NULL)
 {
@@ -39,8 +39,8 @@ DiffWorker::~DiffWorker()
 
 bool DiffWorker::Diff()
 {
-  m_bCancelRequested = false;
-  m_bExitAllowed = false;
+  m_IsCancelRequested = false;
+  m_IsExitAllowed = false;
   m_Progress.Reset();
 
   //
@@ -63,7 +63,7 @@ bool DiffWorker::Diff()
     m_CmdOpenFilesWindow.Execute(NULL);
     m_ProgressWindow.Close();
 
-    m_bExitAllowed = true;
+    m_IsExitAllowed = true;
     return false;
   }
 
@@ -75,7 +75,7 @@ bool DiffWorker::Diff()
     m_CmdOpenFilesWindow.Execute(NULL);
     m_ProgressWindow.Close();
 
-    m_bExitAllowed = true;
+    m_IsExitAllowed = true;
     return false;
   }
 
@@ -90,7 +90,7 @@ bool DiffWorker::Diff()
     m_StopWatch.Start();
     m_pDiffDocument = new DiffDocument(m_LeftSrcFilePath.c_str(),
                                        m_RightSrcFilePath.c_str(),
-                                       m_bCancelRequested,
+                                       m_IsCancelRequested,
                                        m_StopWatch,
                                        m_Progress,
                                        m_bShowLineNumbers);
@@ -102,7 +102,7 @@ bool DiffWorker::Diff()
   }
   catch(const char* pError)
   {
-    if(!m_bCancelRequested)
+    if(!m_IsCancelRequested)
     {
       request.Show(pError, "Ok");
     }
@@ -112,7 +112,7 @@ bool DiffWorker::Diff()
 
     m_Progress.SetValue(100);
 
-    m_bExitAllowed = true;
+    m_IsExitAllowed = true;
     return false;
   }
 
@@ -121,7 +121,7 @@ bool DiffWorker::Diff()
 
   m_ProgressWindow.Close();
 
-  m_bExitAllowed = true;
+  m_IsExitAllowed = true;
   return true;
 }
 

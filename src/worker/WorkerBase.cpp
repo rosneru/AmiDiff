@@ -10,7 +10,7 @@ WorkerBase::WorkerBase()
   : m_pStartupMsg(NULL),
     m_pReplyPort(NULL),
     m_pBackgrProcess(NULL),
-    m_bExitRequested(false)
+    m_IsExitRequested(false)
 {
 }
 
