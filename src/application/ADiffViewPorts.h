@@ -3,6 +3,12 @@
 
 #include <exec/ports.h>
 
+/**
+ * Class for all MessagePorts needed by ADiffView.
+ *
+ * @author Uwe Rosner
+ * @date 04/08/2020
+ */
 class ADiffViewPorts
 {
 public:

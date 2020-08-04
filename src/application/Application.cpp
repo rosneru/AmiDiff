@@ -5,7 +5,6 @@
 #include <clib/icon_protos.h>
 #include <clib/intuition_protos.h>
 #include <clib/wb_protos.h>
-#include <workbench/workbench.h>
 
 #include "ADiffView_rev.h"
 #include "CommandBase.h"
@@ -90,16 +89,21 @@ Application::Application(ScreenBase* pScreenBase,
     if(m_IsAppWindow)
     {
       // FilesWindow should be an AppWindow
-      m_FilesWindow.EnableAppWindow(m_Ports.Workbench(), 1);
+      m_FilesWindow.EnableAppWindow(m_Ports.Workbench(), 0L);
     }
 
     if(m_IsAppIcon)
     {
-      struct DiskObject* dobj = GetDefDiskObject(WBDISK);
+      dobj = GetDefDiskObject(WBTOOL);
       if(dobj != NULL)
       {
-        struct AppIcon* appicon = AddAppIconA(0L,0L,(UBYTE*)"TestAppIcon",m_Ports.Workbench(),NULL,dobj,NULL);
-
+        appicon = AddAppIcon(0L,
+                             0L,
+                             (UBYTE*)"ADiffView",
+                             m_Ports.Workbench(),
+                             0,
+                             dobj,
+                             TAG_DONE);
       }
     }
   }
@@ -121,8 +125,8 @@ Application::Application(ScreenBase* pScreenBase,
     { NM_END,     NULL,                     0 , 0, 0, 0 },
   };
 
-  size_t aboutWinMenuSize = sizeof(aboutWinNewMenu) / sizeof(aboutWinNewMenu[0]);
-  m_FilesWindowMenu.SetMenuDefinition(aboutWinNewMenu, aboutWinMenuSize);
+  size_t menuSize = sizeof(aboutWinNewMenu) / sizeof(aboutWinNewMenu[0]);
+  m_FilesWindowMenu.SetMenuDefinition(aboutWinNewMenu, menuSize);
   m_FilesWindow.SetMenu(&m_FilesWindowMenu);
 
   struct NewMenu diffWinNewMenu[] =
@@ -166,6 +170,18 @@ Application::Application(ScreenBase* pScreenBase,
 
 Application::~Application()
 {
+  if(appicon != NULL)
+  {
+    RemoveAppIcon(appicon);
+    appicon = NULL;
+  }
+
+  if(dobj != NULL)
+  {
+    FreeDiskObject(dobj);
+    dobj = NULL;
+  }
+
   // Ensure that all windows are closed before deleting the message
   // ports
   m_DiffWindow.Close();

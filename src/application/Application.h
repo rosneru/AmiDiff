@@ -8,6 +8,8 @@
 #ifndef APPLICATION
 #define APPLICATION
 
+#include <workbench/workbench.h>
+
 #include <string>
 #include <vector>
 
@@ -79,6 +81,9 @@ private:
   std::string m_AboutMsg;
 
   std::vector<WindowBase*> m_AllWindows;
+
+  struct DiskObject* dobj;
+  struct AppIcon* appicon;
 
   /**
    * Handling messages from Intuition
