@@ -15,7 +15,7 @@ ADiffViewArgs::ADiffViewArgs(int argc, char **argv)
   : m_ArgC(argc),
     m_pArgV(argv),
     m_bDontAsk(false),
-    m_bAskOnWorkbench(false),
+    m_bNoAppIcon(false),
     m_bShowLineNumbers(true)
 {
   if(argc == 0)
@@ -65,9 +65,9 @@ bool ADiffViewArgs::DontAsk() const
   return m_bDontAsk;
 }
 
-bool ADiffViewArgs::AskOnWorkbench()
+bool ADiffViewArgs::NoAppIcon()
 {
-  return m_bAskOnWorkbench;
+  return m_bNoAppIcon;
 }
 
 bool ADiffViewArgs::ShowLineNumbers() const
@@ -121,7 +121,7 @@ void ADiffViewArgs::readWorkbenchArgs()
 
           if(toolTypeValue(ppTooltypeArray, "ASKONWORKBENCH") != NULL)
           {
-            m_bAskOnWorkbench = true;
+            m_bNoAppIcon = true;
           }
 
           if(toolTypeValue(ppTooltypeArray, "NOLINENUMBERS") != NULL)
@@ -170,7 +170,7 @@ void ADiffViewArgs::readWorkbenchArgs()
 void ADiffViewArgs::readCommandLineArgs()
 {
     // Reading the command line arguments
-    std::string argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S,ASKONWORKBENCH/S,NOLINENUMBERS/S";
+    std::string argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S,NOAPPICON/S,NOLINENUMBERS/S";
     LONG args[] = {0, 0, 0, 0, 0};
 
     struct RDArgs* pReadArgs = ReadArgs(argTempl.c_str(), args, NULL);
@@ -209,7 +209,7 @@ void ADiffViewArgs::readCommandLineArgs()
 
     if(args[3] != 0)
     {
-      m_bAskOnWorkbench = true;
+      m_bNoAppIcon = true;
     }
 
     if(args[4] != 0)

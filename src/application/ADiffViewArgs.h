@@ -58,10 +58,10 @@ public:
   bool DontAsk() const;
 
   /**
-   * If true, the window to ask for the files to diff will always be 
-   * opened on Workbench screen
+   * If true, no AppIcon for file drag'n'drop is installed on the
+   * Workbench
    */
-  bool AskOnWorkbench();
+  bool NoAppIcon();
 
   /**
    * If true, the line numbers will be shown in the diff result window.
@@ -78,7 +78,7 @@ private:
   std::string m_LeftFilePath;
   std::string m_RightFilePath;
   bool m_bDontAsk;
-  bool m_bAskOnWorkbench;
+  bool m_bNoAppIcon;
   bool m_bShowLineNumbers;
 
   void readWorkbenchArgs();
@@ -96,4 +96,4 @@ private:
                       const char* pTooltypeName);
 };
 
-#endif // ADIFFVIEW_ARGS_H
+#endif

@@ -102,7 +102,7 @@ Application::Application(ScreenBase* pScreenBase,
 
   // If running on Workbench screen, set OpenFilesWindow as an AppWindow
   bool bFilesWindowIsAppWindow = (m_Args.PubScreenName() == "Workbench") ||
-                                 (m_Args.AskOnWorkbench() == true);
+                                 (m_Args.NoAppIcon() == true);
   if(bFilesWindowIsAppWindow)
   {
     // Create a message port for the AppWindow
