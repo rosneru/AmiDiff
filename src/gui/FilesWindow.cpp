@@ -60,11 +60,30 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   WORD hSpace = 10;
   WORD vSpace = 10;
 
-  // as default the windows width should be half of the screens width
+  // Check if needed to and adjust btnsWidth according to font and the
+  // width of the buttons in the bottom row
+  const char* btnTexts[]  = {"Compare", "Swap", "Clear", "Cancel"};
+  size_t numBottomButtons = sizeof(btnTexts) / (sizeof btnTexts[0]);
+
+  for(size_t i = 0; i < numBottomButtons; i++)
+  {
+    const char* pTxt = btnTexts[i];
+    WORD txtWidth = TextLength(&pIntuiScreen->RastPort, pTxt, strlen(pTxt));    
+    if(txtWidth > (btnsWidth - btnExtraHSpace))
+    {
+      btnsWidth = txtWidth + btnExtraHSpace;
+    }
+  }
+
+  // as default the window's width should be half of the screen's width
   m_Width = (WORD)pIntuiScreen->Width / 2;
-  LONG neededWidth = 4 * btnsWidth + 5 * hSpace + pIntuiScreen->WBorLeft 
-                                                + pIntuiScreen->WBorRight;
+
   // But it must be at least as wide as needed
+  LONG neededWidth = numBottomButtons * btnsWidth 
+                   + (numBottomButtons + 1) * hSpace 
+                   + pIntuiScreen->WBorLeft 
+                   + pIntuiScreen->WBorRight;
+
   if(m_Width < neededWidth)
   {
     m_Width = neededWidth;
