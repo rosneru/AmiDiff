@@ -83,6 +83,7 @@ private:
     GID_RightFileButton,
     GID_DiffButton,
     GID_SwapButton,
+    GID_ClearButton,
     GID_CancelButton,
   };
 
@@ -104,13 +105,14 @@ private:
   void handleVanillaKey(UWORD code);
 
   //
-  // These next four methods are the main functions of this window
-  // which are mapped to the butons and keys.
+  // These next methods are the main functions of this window and are
+  // mapped to the butons and keys.
   //
   void selectLeftFile();
   void selectRightFile();
   void swapFiles();
   void compare();
+  void clear();
 
 
   /**

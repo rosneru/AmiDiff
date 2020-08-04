@@ -1,6 +1,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <vector>
+
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
 #include <clib/gadtools_protos.h>
@@ -48,20 +50,37 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   struct Screen* pIntuiScreen = m_Screen.IntuiScreen();
   UWORD fontHeight = m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
   
-  m_Width = (WORD)pIntuiScreen->Width / 2;
-  WORD barHeight = pIntuiScreen->WBorTop + fontHeight + 2;
+  // Default button dimensions
+  WORD btnsWidth = 70;
+  WORD btnsHeight = fontHeight + 6;
+
+  // Extra space by which a button must be wider than its text to look good
+  const int btnExtraHSpace = 8;
 
   WORD hSpace = 10;
   WORD vSpace = 10;
 
+  // as default the windows width should be half of the screens width
+  m_Width = (WORD)pIntuiScreen->Width / 2;
+  LONG neededWidth = 4 * btnsWidth + 5 * hSpace + pIntuiScreen->WBorLeft 
+                                                + pIntuiScreen->WBorRight;
+  // But it must be at least as wide as needed
+  if(m_Width < neededWidth)
+  {
+    m_Width = neededWidth;
+  }
+
+  WORD barHeight = pIntuiScreen->WBorTop + fontHeight + 2;
+
+
   WORD top = barHeight + vSpace;
-  WORD left = hSpace;
-  WORD right = m_Width - hSpace;
+  WORD left = pIntuiScreen->WBorLeft + hSpace;
+  WORD right = m_Width - pIntuiScreen->WBorRight - hSpace;
 
-  WORD btnsWidth = 60;
-  WORD btnsHeight = fontHeight + 6;
 
-  WORD btnSelectWidth = TextLength(&m_Screen.IntuiScreen()->RastPort, "...", 3) + 8;
+  WORD btnSelectWidth = TextLength(&pIntuiScreen->RastPort, "...", 3) 
+                      + btnExtraHSpace;
+
   WORD btnSelectLeft = right - btnSelectWidth;
 
   WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
@@ -180,7 +199,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_LeftEdge   = left;
   newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
   newGadget.ng_Width      = btnsWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "_Diff";
+  newGadget.ng_GadgetText = (UBYTE*) "_Compare";
   newGadget.ng_GadgetID   = GID_DiffButton;
 
   m_pGadBtnDiff = CreateGadget(BUTTON_KIND,
@@ -190,7 +209,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                TAG_DONE);
 
   // Creating the Swap button
-  newGadget.ng_LeftEdge   = (right - left - btnsWidth) / 2;
+  newGadget.ng_LeftEdge   = (m_Width - hSpace) / 2 - btnsWidth;
   newGadget.ng_GadgetText = (UBYTE*) "_Swap";
   newGadget.ng_GadgetID   = GID_SwapButton;
 
@@ -200,6 +219,17 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                GT_Underscore, '_',
                                TAG_DONE);
 
+  // Creating the Clear button
+  newGadget.ng_LeftEdge   += btnsWidth + hSpace;
+  newGadget.ng_GadgetText = (UBYTE*) "Cl_ear";
+  newGadget.ng_GadgetID   = GID_ClearButton;
+
+  m_pGadBtnClear = CreateGadget(BUTTON_KIND,
+                                m_pGadBtnSwap,
+                                &newGadget,
+                                GT_Underscore, '_',
+                                TAG_DONE);
+
 
   // Creating the Cancel button
   newGadget.ng_LeftEdge   = right - btnsWidth;
@@ -207,7 +237,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_GadgetID   = GID_CancelButton;
 
   m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
-                                 m_pGadBtnSwap,
+                                 m_pGadBtnClear,
                                  &newGadget,
                                  GT_Underscore, '_',
                                  TAG_DONE);
@@ -437,8 +467,8 @@ void FilesWindow::handleVanillaKey(UWORD code)
       break;
     }
 
-    case 'd': // Compare the files and display the diff
-    case 'D':
+    case 'c': // Compare the files and display the diff
+    case 'C':
     {
       // Allow only if Diff button is enabled
       long disabled;
@@ -458,8 +488,7 @@ void FilesWindow::handleVanillaKey(UWORD code)
     }
 
 
-    case 'c': // Cancel
-    case 'C':
+    case 0x1b: // Esc key
       m_CmdCloseFilesWindow.Execute(NULL);
       break;
 
