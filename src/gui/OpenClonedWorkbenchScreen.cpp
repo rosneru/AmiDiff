@@ -32,12 +32,15 @@ OpenClonedWorkbenchScreen::OpenClonedWorkbenchScreen(const ADiffViewSettings& se
   m_pDrawInfo = GetScreenDrawInfo(m_pIntuiScreen);
   if(m_pDrawInfo == NULL)
   {
+    CloseScreen(m_pIntuiScreen);
     throw "Failed to get the screen draw info";
   }
 
   // Trying to initialize our four needed color pens
   if(m_Pens.Create() == false)
   {
+    FreeScreenDrawInfo(m_pIntuiScreen, m_pDrawInfo);
+    CloseScreen(m_pIntuiScreen);
     throw "Failed to the create pens.";
   }
 
@@ -45,6 +48,9 @@ OpenClonedWorkbenchScreen::OpenClonedWorkbenchScreen(const ADiffViewSettings& se
   m_pVisualInfo = (APTR) GetVisualInfo(m_pIntuiScreen, TAG_DONE);
   if(m_pVisualInfo == NULL)
   {
+    m_Pens.Dispose();
+    FreeScreenDrawInfo(m_pIntuiScreen, m_pDrawInfo);
+    CloseScreen(m_pIntuiScreen);
     throw "Failed to get the visual info.";
   }
 }
