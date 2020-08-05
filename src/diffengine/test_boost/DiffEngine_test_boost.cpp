@@ -185,78 +185,101 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
 }
 
 
-// /**
-//  * testcase_03_FB101-02-Simple
-//  *
-//  *   Left.txt     |   Right.txt
-//  *   ------------------------------
-//  *   AAAA         |   AAAA
-//  *   BBBB         |   FFFF
-//  *   CCCC         |   CCCC
-//  *   DDDD         |   DDDD
-//  *   EEEE         |   EEEE
-//  *   FFFF         |   FFFF
-//  *   GGGG         |   GGGG
-//  *                |
-//  *
-//  *   >> Changed line 2
-//  */
-// BOOST_AUTO_TEST_CASE( testcase_03_simple )
-// {
-//   bool cancelRequested = false;
-//   bool diffOk = false;
+/**
+ * testcase_03_FB101-02-Simple
+ *
+ *   Left.txt     |   Right.txt
+ *   ------------------------------
+ *   AAAA         |   AAAA
+ *   BBBB         |   FFFF
+ *   CCCC         |   CCCC
+ *   DDDD         |   DDDD
+ *   EEEE         |   EEEE
+ *   FFFF         |   FFFF
+ *   GGGG         |   GGGG
+ *                |
+ *
+ *   >> Changed line 2
+ */
+BOOST_AUTO_TEST_CASE( testcase_03_simple )
+{
+  try
+  {
+    bool cancelRequested = false;
+    bool diffOk = false;
+    std::vector<size_t> m_DiffIndices;
 
-//   DiffFileLinux srcA(cancelRequested);
-//   srcA.PreProcess("../../../testfiles/testcase_03_FB101-02-Simple_left.txt");
+    DiffInputFileLinux srcA(cancelRequested, 
+                            "testfiles/testcase_03_FB101-02-Simple_left.txt",
+                            true);
 
-//   DiffFileLinux srcB(cancelRequested);
-//   srcB.PreProcess("../../../testfiles/testcase_03_FB101-02-Simple_right.txt");
+    DiffInputFileLinux srcB(cancelRequested, 
+                            "testfiles/testcase_03_FB101-02-Simple_right.txt",
+                            true);
 
-//   DiffFileLinux diffA(cancelRequested);
-//   DiffFileLinux diffB(cancelRequested);
+    DiffOutputFileLinux diffA;
+    DiffOutputFileLinux diffB;
+    DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
+                          "Comparing...", cancelRequested, m_DiffIndices);
 
-//   DiffEngine diffEngine(srcA, srcB, diffA, diffB, cancelRequested);
-//   diffOk = diffEngine.Diff();
-
-//   BOOST_CHECK_EQUAL(diffOk, true);
-//   if(diffOk == false)
-//   {
-//     return;
-//   }
-
-//   BOOST_CHECK_EQUAL(diffA.NumLines(), 7);
-//   BOOST_CHECK_EQUAL(diffA.GetLineText(0), "AAAA");
-//   BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
-//   BOOST_CHECK_EQUAL(diffA.GetLineText(1), "BBBB");
-//   BOOST_CHECK_EQUAL(diffA.GetLineState(1), DiffLine::Changed);
-//   BOOST_CHECK_EQUAL(diffA.GetLineText(2), "CCCC");
-//   BOOST_CHECK_EQUAL(diffA.GetLineState(2), DiffLine::Normal);
-//   BOOST_CHECK_EQUAL(diffA.GetLineText(3), "DDDD");
-//   BOOST_CHECK_EQUAL(diffA.GetLineState(3), DiffLine::Normal);
-//   BOOST_CHECK_EQUAL(diffA.GetLineText(4), "EEEE");
-//   BOOST_CHECK_EQUAL(diffA.GetLineState(4), DiffLine::Normal);
-//   BOOST_CHECK_EQUAL(diffA.GetLineText(5), "FFFF");
-//   BOOST_CHECK_EQUAL(diffA.GetLineState(5), DiffLine::Normal);
-//   BOOST_CHECK_EQUAL(diffA.GetLineText(6), "GGGG");
-//   BOOST_CHECK_EQUAL(diffA.GetLineState(6), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.NumLines(), 7);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(0), "AAAA");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineNum(0), "1 ");
+    BOOST_CHECK_EQUAL(diffA.GetLineText(1), "BBBB");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(1), DiffLine::Changed);
+    BOOST_CHECK_EQUAL(diffA.GetLineNum(1), "2 ");
+    BOOST_CHECK_EQUAL(diffA.GetLineText(2), "CCCC");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(2), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineNum(2), "3 ");
+    BOOST_CHECK_EQUAL(diffA.GetLineText(3), "DDDD");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(3), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineNum(3), "4 ");
+    BOOST_CHECK_EQUAL(diffA.GetLineText(4), "EEEE");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(4), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineNum(4), "5 ");
+    BOOST_CHECK_EQUAL(diffA.GetLineText(5), "FFFF");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(5), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineNum(5), "6 ");
+    BOOST_CHECK_EQUAL(diffA.GetLineText(6), "GGGG");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(6), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineNum(6), "7 ");
 
 
-//   BOOST_CHECK_EQUAL(diffB.NumLines(), 7);
-//   BOOST_CHECK_EQUAL(diffB.GetLineText(0), "AAAA");
-//   BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
-//   BOOST_CHECK_EQUAL(diffB.GetLineText(1), "FFFF");
-//   BOOST_CHECK_EQUAL(diffB.GetLineState(1), DiffLine::Changed);
-//   BOOST_CHECK_EQUAL(diffB.GetLineText(2), "CCCC");
-//   BOOST_CHECK_EQUAL(diffB.GetLineState(2), DiffLine::Normal);
-//   BOOST_CHECK_EQUAL(diffB.GetLineText(3), "DDDD");
-//   BOOST_CHECK_EQUAL(diffB.GetLineState(3), DiffLine::Normal);
-//   BOOST_CHECK_EQUAL(diffB.GetLineText(4), "EEEE");
-//   BOOST_CHECK_EQUAL(diffB.GetLineState(4), DiffLine::Normal);
-//   BOOST_CHECK_EQUAL(diffB.GetLineText(5), "FFFF");
-//   BOOST_CHECK_EQUAL(diffB.GetLineState(5), DiffLine::Normal);
-//   BOOST_CHECK_EQUAL(diffB.GetLineText(6), "GGGG");
-//   BOOST_CHECK_EQUAL(diffB.GetLineState(6), DiffLine::Normal);
-// }
+    BOOST_CHECK_EQUAL(diffB.NumLines(), 7);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(0), "AAAA");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineNum(0), "1 ");
+    BOOST_CHECK_EQUAL(diffB.GetLineText(1), "FFFF");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(1), DiffLine::Changed);
+    BOOST_CHECK_EQUAL(diffB.GetLineNum(1), "2 ");
+    BOOST_CHECK_EQUAL(diffB.GetLineText(2), "CCCC");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(2), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineNum(2), "3 ");
+    BOOST_CHECK_EQUAL(diffB.GetLineText(3), "DDDD");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(3), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineNum(3), "4 ");
+    BOOST_CHECK_EQUAL(diffB.GetLineText(4), "EEEE");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(4), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineNum(4), "5 ");
+    BOOST_CHECK_EQUAL(diffB.GetLineText(5), "FFFF");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(5), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineNum(5), "6 ");
+    BOOST_CHECK_EQUAL(diffB.GetLineText(6), "GGGG");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(6), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineNum(6), "7 ");
+  }
+  catch(const char* pError)
+  {
+    auto locationBoost = boost::unit_test::framework::current_test_case().p_name;
+    std::string location(locationBoost);
+    printf("Exception in test %s: %s\n", 
+           location.c_str(),
+           pError);
+  }
+  
+
+}
 
 
 // BOOST_AUTO_TEST_CASE( testcase_03_var2 )
