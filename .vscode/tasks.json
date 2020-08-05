@@ -35,7 +35,7 @@
             ],
             "group": {
                 "kind": "test",
-                "isDefault": true,
+                "isDefault": true
             }
         }
     ]

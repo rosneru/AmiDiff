@@ -14,8 +14,6 @@ class DiffInputFileLinux : public DiffInputFileBase
 {
 public:
   DiffInputFileLinux(bool& isCancelRequested, 
-                     ProgressReporter& progress,
-                     const char* pProgressDescription,
                      const char* pFileName,
                      bool lineNumbersEnabled);
 
@@ -24,6 +22,7 @@ public:
 
 private:
   char* m_pFileBuffer;
+  char* m_pLineNumberBuffer;
   void collectLineNumbers(size_t maxNumLines);
 };
 

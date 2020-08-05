@@ -1,122 +1,114 @@
 #include <string.h>
+#include <stdio.h>
 
 #include "DiffInputFileLinux.h"
 
-DiffInputFileLinux::DiffInputFileLinux(bool& isCancelRequested,
-                                       ProgressReporter& progress,
-                                       const char* pProgressDescription,
+DiffInputFileLinux::DiffInputFileLinux(bool& isCancelRequested, 
                                        const char* pFileName,
                                        bool lineNumbersEnabled)
   : DiffInputFileBase(isCancelRequested),
-    m_pFileBuffer(NULL)
+    m_pFileBuffer(NULL),
+    m_pLineNumberBuffer(NULL)
 {
-  progress.SetDescription(pProgressDescription);
-  int formerProgress = 1;
-  progress.SetValue(formerProgress);
+  FILE* pFile = fopen(pFileName, "rb");
+  if(pFile == NULL)
+  {
+    throw "Failed to open file.";
+  }
 
-  // // Create the opened input file
-  // AmigaFile m_File(pFileName, MODE_OLDFILE);
+  // Get the file size
+  fseek (pFile, 0, SEEK_END);
+  size_t fileBytes = ftell (pFile);
+  fseek (pFile, 0, SEEK_SET);
 
-  // // Get file size and read whole file
-  // size_t fileBytes = m_File.ByteSize();
-  // m_pFileBuffer = static_cast<char*>(AllocVec(fileBytes + 1,
-  //                                             MEMF_ANY|MEMF_PUBLIC));
-  // if(m_pFileBuffer == NULL)
-  // {
-  //   throw "Failed to allocate memory for file buffer.";
-  // }
+  if(fileBytes < 1)
+  {
+    fclose(pFile);
+    throw "Empty file.";
+  }
 
-  // if(m_File.ReadFile(m_pFileBuffer, fileBytes) == false)
-  // {
-  //   throw "Failed to read file.";
-  // }
+  // Read the whole file
+  m_pFileBuffer = new char[fileBytes + 1];
+  size_t bytesRead = fread(m_pFileBuffer, 1, fileBytes, pFile);
+  if(bytesRead != fileBytes)
+  {
+    delete[] m_pFileBuffer;
+    m_pFileBuffer = NULL;
 
-  // // Create DiffLine objects for each line in file buffer
-  // char* pLineStart = m_pFileBuffer;
-  // for(size_t i = 0; i < fileBytes; i++)
-  // {
-  //   if(m_pFileBuffer[i] == '\n')
-  //   {
-  //     // Handle a potential cancel request
-  //     if(m_IsCancelRequested == true)
-  //     {
-  //       throw "User abort.";
-  //     }
+    fclose(pFile);
+    throw "Read wrong number of bytes from file.";
+  }
 
-  //     // Finalize the current line
-  //     m_pFileBuffer[i] = 0;
+  fclose(pFile);
 
-  //     // Create DiffLine from curren line
-  //     DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
-  //                                                   sizeof(DiffLine));
+    // Create DiffLine objects for each line in file buffer
+  char* pLineStart = m_pFileBuffer;
+  for(size_t i = 0; i < fileBytes; i++)
+  {
+    if(m_pFileBuffer[i] == '\n')
+    {
+      // Finalize the current line
+      m_pFileBuffer[i] = 0;
 
-  //     if(pDiffLine == NULL)
-  //     {
-  //       throw "Failed to allocate memory for diff lines.";
-  //     }
+      // Create DiffLine from curren line
+      DiffLine* pDiffLine = new DiffLine(pLineStart);
 
-  //     // The next line is called 'replacement new'. It creates an object
-  //     // of DiffLine on the known address pDiffLine and calls the
-  //     // constructor. Here this must be used because the memory pool
-  //     // doesn't work with normal 'new' operator.
-  //     new (pDiffLine) DiffLine(pLineStart);
+      // Append DiffLine to list
+      m_Lines.push_back(pDiffLine);
 
-  //     // Append DiffLine to list
-  //     m_Lines.push_back(pDiffLine);
+      // Next line starts after current line and thin finalizing '\0'
+      pLineStart = m_pFileBuffer + i + 1;
+    }
+  }
 
-  //     // Next line starts after current line and thin finalizing '\0'
-  //     pLineStart = m_pFileBuffer + i + 1;
+  m_NumLines = m_Lines.size();
 
-  //     // Progress reporting: Report the 'progressValue - 1' to ensure
-  //     // that the final value of 100 (%) is sent after the last line is
-  //     // read.
-  //     int progressVal = (pLineStart - m_pFileBuffer) * 100 / fileBytes - 1;
-  //     if(progressVal != formerProgress)
-  //     {
-  //       formerProgress = progressVal;
+  if(lineNumbersEnabled)
+  {
+    int digits = numDigits(m_NumLines);
+    size_t lineNumberBufSize = (digits + 2) * m_NumLines;
+    m_pLineNumberBuffer = new char[lineNumberBufSize];
 
-  //       progress.SetValue(progressVal);
-  //     }
-  //   }
-  // }
-
-  // m_NumLines = m_Lines.size();
-
-  // if(lineNumbersEnabled)
-  // {
-  //   collectLineNumbers(m_NumLines);
-  // }
-
-  progress.SetValue(100);
+    collectLineNumbers(m_NumLines);
+  }
 }
 
 
 DiffInputFileLinux::~DiffInputFileLinux()
 {
+  std::vector<DiffLine*>::iterator it;
+  for(it = m_Lines.begin(); it != m_Lines.end(); it++)
+  {
+    printf("%s\n", (*it)->Text());
+    delete *it;
+  }
 
+  if(m_pLineNumberBuffer != NULL)
+  {
+    delete[] m_pLineNumberBuffer;
+    m_pLineNumberBuffer = NULL;
+  }
+
+  if(m_pFileBuffer != NULL)
+  {
+    delete[] m_pFileBuffer;
+    m_pFileBuffer = NULL;
+  }
 }
 
 
 void DiffInputFileLinux::collectLineNumbers(size_t maxNumLines)
 {
-  // int digits = numDigits(maxNumLines);
+  int digits = numDigits(maxNumLines);
 
-  // for(size_t i = 0; i < m_NumLines; i++)
-  // {
-  //   char* pLineNumber = (char*) AllocPooled(m_pPoolHeader, digits + 2);
-  //   if(pLineNumber == NULL)
-  //   {
-  //      throw "Failed to allocate memory for lines numbers.";
-  //   }
+  for(size_t i = 0; i < m_NumLines; i++)
+  {
+    size_t bufIdx = i * (digits + 2);
+    char* pLineNumber = m_pLineNumberBuffer + bufIdx;
 
-  //   sprintf(pLineNumber, "%*d ", digits, (i + 1));
+    sprintf(pLineNumber, "%*d ", digits, (i + 1));
 
-  //   DiffLine* pLine = GetLine(i);
-  //   pLine->SetLineNum(pLineNumber);
-
-  //   if(m_IsCancelRequested == true)
-  //   {
-  //     throw "User abort.";
-  //   }
-  // }
+    DiffLine* pLine = GetLine(i);
+    pLine->SetLineNum(pLineNumber);
+  }
 }

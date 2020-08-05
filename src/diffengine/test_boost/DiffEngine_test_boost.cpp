@@ -10,7 +10,10 @@
 #if !defined( WIN32 )
     #define BOOST_TEST_DYN_LINK
 #endif
+
 #include <boost/test/unit_test.hpp>
+#include <boost/test/framework.hpp>
+#include <string>
 
 #include "DiffInputFileLinux.h"
 #include "DiffOutputFileLinux.h"
@@ -38,10 +41,24 @@
  */
 BOOST_AUTO_TEST_CASE( testcase_02 )
 {
-  bool cancelRequested = false;
-  bool diffOk = false;
+  try
+  {
+    bool cancelRequested = false;
+    bool diffOk = false;
 
-  // DiffInputFileLinux srcA(cancelRequested,)
+    DiffInputFileLinux srcA(cancelRequested, 
+                            "testfiles/testcase_02_left.txt",
+                            true);
+  }
+  catch(const char* pError)
+  {
+    auto locationBoost = boost::unit_test::framework::current_test_case().p_name;
+    std::string location(locationBoost);
+    printf("Exception in test %s: %s\n", 
+           location.c_str(),
+           pError);
+  }
+  
 /*
   DiffFileLinux srcA(cancelRequested);
   srcA.PreProcess("../../../testfiles/testcase_02_left.txt");
