@@ -41,6 +41,8 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
   bool cancelRequested = false;
   bool diffOk = false;
 
+  // DiffInputFileLinux srcA(cancelRequested,)
+/*
   DiffFileLinux srcA(cancelRequested);
   srcA.PreProcess("../../../testfiles/testcase_02_left.txt");
 
@@ -58,7 +60,7 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
   {
     return;
   }
-
+*/
   // BOOST_CHECK_EQUAL(diffA.NumLines(), 10);
   // BOOST_CHECK_EQUAL(diffA.GetLineText(0), "AAAA");
   // BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);

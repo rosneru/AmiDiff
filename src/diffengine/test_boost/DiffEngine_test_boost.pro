@@ -1,5 +1,6 @@
 TEMPLATE = app
 CONFIG += console c++11
+CONFIG += debug
 CONFIG -= app_bundle
 CONFIG -= qt
 
@@ -17,6 +18,8 @@ SOURCES += \
     ../DiffFileBase.cpp \
     ../DiffInputFileBase.cpp \
     ../DiffInputFileLinux.cpp \
+    ../DiffOutputFileBase.cpp \
+    ../DiffOutputFileLinux.cpp \
     ../DiffLine.cpp \
     ../Pair.cpp 
 
@@ -27,5 +30,7 @@ HEADERS += \
     ../DiffFileBase.h \
     ../DiffInputFileBase.h \
     ../DiffInputFileLinux.h \
+    ../DiffOutputFileBase.h \
+    ../DiffOutputFileLinux.h \
     ../DiffLine.h \
     ../Pair.h 

@@ -182,4 +182,5 @@ size_t DiffDocument::PrevDiffIndex()
 bool DiffDocument::LineNumbersEnabled() const
 {
   return m_LineNumbersEnabled;
+
 }
