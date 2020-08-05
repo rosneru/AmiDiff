@@ -38,11 +38,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <string>
-
 #include <dos/dos.h>
-#include <exec/types.h>
 #include <exec/libraries.h>
+#include <exec/memory.h>
+#include <exec/tasks.h>
+#include <exec/types.h>
 #include <intuition/intuitionbase.h>
 #include <clib/dos_protos.h>
 #include <clib/exec_protos.h>
@@ -57,15 +57,82 @@
 #include "MessageBox.h"
 #include "OpenScreenBase.h"
 
+#define STACKSIZE_NEEDED 8192
 
 extern struct IntuitionBase* IntuitionBase;
 
+/**
+ * StackSwap data. Must be in global scope.
+ */
+struct StackSwapStruct MyStackSwap;
+
+/**
+ * Return of 'proper' main function main2. Must be in global scope.
+ */
+int MainReturn;
+
+/**
+ * Declaration of the 'proper' main function. It is called from main
+ * after that has done its work of increasing the stack if necessary.
+ */
+int main2(int argc, char **argv);
+
+/**
+ * The main entry point. Only increases the stack size (if necessary)
+ * and then calls the proper main() function.
+ */
+int main(int argc, char **argv)
+{
+  struct Task* pTask = FindTask(NULL);
+  ULONG stackSize = (ULONG) pTask->tc_SPUpper - (ULONG) pTask->tc_SPLower;
+
+  printf("Current stack: %lu\n", stackSize);
+
+  if(stackSize < STACKSIZE_NEEDED)
+  {
+    ULONG* myStack = (ULONG*) AllocVec(STACKSIZE_NEEDED, MEMF_PUBLIC);
+    if(myStack == NULL)
+    {
+      printf("Failed to allocate new stack.\n");
+      return RETURN_FAIL;
+    }
+
+    MyStackSwap.stk_Lower = myStack;
+    MyStackSwap.stk_Upper = (ULONG) myStack + STACKSIZE_NEEDED;
+
+    MyStackSwap.stk_Pointer = (void*)(MyStackSwap.stk_Upper - 16);
+    StackSwap(&MyStackSwap);
+
+    // From here until the second StackSwap() call, the local variables
+    // within this function are off-limits (unless your compiler
+    // accesses them through a register other than A7 with a
+    // stack-frame)
+
+    MainReturn = main2(argc, argv);
+
+    StackSwap(&MyStackSwap);
+    
+    // Now locals can be accessed again
+    FreeVec(myStack);
+
+    return MainReturn;
+  }
+  else
+  {
+    return main2(argc, argv);
+  }
+}
 
 /**
  * CLI entry point
  */
-int main(int argc, char **argv)
+int main2(int argc, char **argv)
 {
+  struct Task* pTask = FindTask(NULL);
+  ULONG stackSize = (ULONG) pTask->tc_SPUpper - (ULONG) pTask->tc_SPLower;
+
+  printf("New stack: %lu\n", stackSize);
+
   MessageBox request;
 
   // Check if the OS version is at least v39 / OS 3.0; return otherwise
