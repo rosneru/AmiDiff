@@ -79,7 +79,6 @@ DiffInputFileLinux::~DiffInputFileLinux()
   std::vector<DiffLine*>::iterator it;
   for(it = m_Lines.begin(); it != m_Lines.end(); it++)
   {
-    printf("%s\n", (*it)->Text());
     delete *it;
   }
 

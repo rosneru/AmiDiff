@@ -13,13 +13,17 @@
 
 #include <boost/test/unit_test.hpp>
 #include <boost/test/framework.hpp>
+
 #include <string>
+#include <vector>
 
 #include "DiffInputFileLinux.h"
 #include "DiffOutputFileLinux.h"
 #include "DiffEngine.h"
 #include "DiffLine.h"
+#include "ProgressReporter.h"
 
+ProgressReporter progress;
 
 
 
@@ -45,10 +49,65 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
   {
     bool cancelRequested = false;
     bool diffOk = false;
+    std::vector<size_t> m_DiffIndices;
 
     DiffInputFileLinux srcA(cancelRequested, 
                             "testfiles/testcase_02_left.txt",
                             true);
+
+    DiffInputFileLinux srcB(cancelRequested, 
+                            "testfiles/testcase_02_right.txt",
+                            true);
+
+    DiffOutputFileLinux diffA;
+    DiffOutputFileLinux diffB;
+    DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
+                          "Comparing...", cancelRequested, m_DiffIndices);
+
+    BOOST_CHECK_EQUAL(diffA.NumLines(), 10);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(0), "AAAA");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(1), "BBBB");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(1), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(2), "");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(2), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(3), "");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(3), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(4), "CCCC");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(4), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(5), "DDDD");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(5), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(6), "EEEE");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(6), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(7), "");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(7), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(8), "FFFF");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(8), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(9), "GGGG");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(9), DiffLine::Normal);
+
+    BOOST_CHECK_EQUAL(diffB.NumLines(), 10);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(0), "AAAA");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(1), "BBBB");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(1), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(2), "1111");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(2), DiffLine::Added);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(3), "2222");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(3), DiffLine::Added);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(4), "CCCC");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(4), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(5), "DDDD");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(5), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(6), "EEEE");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(6), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(7), "3333");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(7), DiffLine::Added);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(8), "FFFF");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(8), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffB.GetLineText(9), "GGGG");
+    BOOST_CHECK_EQUAL(diffB.GetLineState(9), DiffLine::Normal);
+
   }
   catch(const char* pError)
   {

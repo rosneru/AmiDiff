@@ -13,8 +13,8 @@ class ProgressReporter
 public:
   ProgressReporter();
 
-  virtual void SetValue(int progress) {}
-  void SetDescription(const char* pProgressDescription){}
+  virtual void SetValue(int progress);
+  void SetDescription(const char* pProgressDescription);
 
 };
 

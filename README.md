@@ -47,3 +47,16 @@ from inside the build directory.
 The project file src/ADiffView.¶ can be loaded with StormC4. 
 
 Then it should compile without errors and just a few warnings..
+
+## Running the tests
+
+### Build
+
+tbd
+
+### Run
+
+The tests are now expected to be executed directly from the 1st level directory ADiffView.
+
+If run from another location the testfiles are not found.
+

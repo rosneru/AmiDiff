@@ -14,6 +14,7 @@ INCLUDEPATH +=  ../
 
 SOURCES += \
     DiffEngine_test_boost.cpp \
+    ProgressReporter.cpp \
     ../DiffEngine.cpp \
     ../DiffFileBase.cpp \
     ../DiffInputFileBase.cpp \
@@ -21,7 +22,7 @@ SOURCES += \
     ../DiffOutputFileBase.cpp \
     ../DiffOutputFileLinux.cpp \
     ../DiffLine.cpp \
-    ../Pair.cpp 
+    ../Pair.cpp
 
 
 HEADERS += \
