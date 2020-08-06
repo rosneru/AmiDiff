@@ -364,6 +364,7 @@ BOOST_AUTO_TEST_CASE( testcase_03_var2 )
            location.c_str(),
            pError);
   }
+}
 
 
 // /**
@@ -942,3 +943,91 @@ BOOST_AUTO_TEST_CASE( testcase_03_var2 )
 
 
 // }
+
+BOOST_AUTO_TEST_CASE( testcase_crash )
+{
+  try
+  {
+    bool cancelRequested = false;
+    bool diffOk = false;
+    std::vector<size_t> m_DiffIndices;
+
+    DiffInputFileLinux srcA(cancelRequested, 
+                            "CMakeLists.txt",
+                            true);
+
+    DiffInputFileLinux srcB(cancelRequested, 
+                            "LICENSE-3RD-PARTY",
+                            true);
+
+    DiffOutputFileLinux diffA;
+    DiffOutputFileLinux diffB;
+    DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
+                          "Comparing...", cancelRequested, m_DiffIndices);
+
+    BOOST_CHECK_EQUAL(diffEngine.NumDifferences(), 7);
+    BOOST_CHECK_EQUAL(diffEngine.NumAdded(), 5);
+    BOOST_CHECK_EQUAL(diffEngine.NumDeleted(), 0);
+    BOOST_CHECK_EQUAL(diffEngine.NumChanged(), 2);
+
+    BOOST_CHECK_EQUAL(diffA.NumLines(), 36);
+    BOOST_CHECK_EQUAL(diffA.GetLineText(0), "");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
+    BOOST_CHECK_EQUAL(diffA.GetLineNum(0), "");
+    BOOST_CHECK_EQUAL(diffA.GetLineText(1), "cmake_minimum_required (VERSION 2.8.11)");
+    BOOST_CHECK_EQUAL(diffA.GetLineState(1), DiffLine::Changed);
+    BOOST_CHECK_EQUAL(diffA.GetLineNum(1), "2 ");
+    // BOOST_CHECK_EQUAL(diffA.GetLineText(2), "");
+    // BOOST_CHECK_EQUAL(diffA.GetLineState(2), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffA.GetLineNum(2), "");
+    // BOOST_CHECK_EQUAL(diffA.GetLineText(3), "CCCC");
+    // BOOST_CHECK_EQUAL(diffA.GetLineState(3), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffA.GetLineNum(3), "3 ");
+    // BOOST_CHECK_EQUAL(diffA.GetLineText(4), "DDDD");
+    // BOOST_CHECK_EQUAL(diffA.GetLineState(4), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffA.GetLineNum(4), "4 ");
+    // BOOST_CHECK_EQUAL(diffA.GetLineText(5), "EEEE");
+    // BOOST_CHECK_EQUAL(diffA.GetLineState(5), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffA.GetLineNum(5), "5 ");
+    // BOOST_CHECK_EQUAL(diffA.GetLineText(6), "FFFF");
+    // BOOST_CHECK_EQUAL(diffA.GetLineState(6), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffA.GetLineNum(6), "6 ");
+    // BOOST_CHECK_EQUAL(diffA.GetLineText(7), "GGGG");
+    // BOOST_CHECK_EQUAL(diffA.GetLineState(7), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffA.GetLineNum(7), "7 ");
+
+    BOOST_CHECK_EQUAL(diffB.NumLines(), 36);
+    // BOOST_CHECK_EQUAL(diffB.GetLineText(0), "AAAA");
+    // BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffB.GetLineNum(0), "1 ");
+    // BOOST_CHECK_EQUAL(diffB.GetLineText(1), "FFFF");
+    // BOOST_CHECK_EQUAL(diffB.GetLineState(1), DiffLine::Changed);
+    // BOOST_CHECK_EQUAL(diffB.GetLineNum(1), "2 ");
+    // BOOST_CHECK_EQUAL(diffB.GetLineText(2), "ffff");
+    // BOOST_CHECK_EQUAL(diffB.GetLineState(2), DiffLine::Added);
+    // BOOST_CHECK_EQUAL(diffB.GetLineNum(2), "3 ");
+    // BOOST_CHECK_EQUAL(diffB.GetLineText(3), "CCCC");
+    // BOOST_CHECK_EQUAL(diffB.GetLineState(3), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffB.GetLineNum(3), "4 ");
+    // BOOST_CHECK_EQUAL(diffB.GetLineText(4), "DDDD");
+    // BOOST_CHECK_EQUAL(diffB.GetLineState(4), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffB.GetLineNum(4), "5 ");
+    // BOOST_CHECK_EQUAL(diffB.GetLineText(5), "EEEE");
+    // BOOST_CHECK_EQUAL(diffB.GetLineState(5), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffB.GetLineNum(5), "6 ");
+    // BOOST_CHECK_EQUAL(diffB.GetLineText(6), "FFFF");
+    // BOOST_CHECK_EQUAL(diffB.GetLineState(6), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffB.GetLineNum(6), "7 ");
+    // BOOST_CHECK_EQUAL(diffB.GetLineText(7), "GGGG");
+    // BOOST_CHECK_EQUAL(diffB.GetLineState(7), DiffLine::Normal);
+    // BOOST_CHECK_EQUAL(diffB.GetLineNum(7), "8 ");
+  }
+  catch(const char* pError)
+  {
+    auto locationBoost = boost::unit_test::framework::current_test_case().p_name;
+    std::string location(locationBoost);
+    printf("Exception in test %s: %s\n", 
+           location.c_str(),
+           pError);
+  }
+}
