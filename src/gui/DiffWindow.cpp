@@ -266,8 +266,6 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
     m_LineNumsWidth_chars = strlen(pLineNum);
     m_LineNumsWidth_pix = m_LineNumsWidth_chars * m_FontWidth_pix;
-
-    m_LineNumberEmpty = std::string(m_LineNumsWidth_chars, ' ');
   }
 
   // Get the number of lines (will/should be equal for left and right)
@@ -869,10 +867,6 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
     // Get the text or set to empty spaces when there is none
     const char* pLineNum = pLeftLine->LineNum();
-    if(pLineNum == NULL)
-    {
-      pLineNum = m_LineNumberEmpty.c_str();
-    }
 
     // Print left line's original line number
     Text(&m_RPortLineNum, pLineNum, m_LineNumsWidth_chars);
@@ -884,10 +878,6 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
     // Get the text or set to empty spaces when there is none
     pLineNum = pRightLine->LineNum();
-    if(pLineNum == NULL)
-    {
-      pLineNum = m_LineNumberEmpty.c_str();
-    }
 
     // Print right line's original line number
     Text(&m_RPortLineNum, pLineNum, m_LineNumsWidth_chars);

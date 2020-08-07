@@ -146,7 +146,6 @@ private:
 
   UWORD m_LineNumsWidth_chars;
   UWORD m_LineNumsWidth_pix;
-  std::string m_LineNumberEmpty;
 
   UWORD m_FontWidth_pix;    ///> Width of the rastport text font
   UWORD m_FontHeight_pix;   ///> Height of the rastport text font
