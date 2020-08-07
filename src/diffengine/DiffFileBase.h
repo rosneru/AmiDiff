@@ -15,8 +15,6 @@
  */
 class DiffFileBase
 {
-  friend class DiffEngine;
-
 public:
   DiffFileBase();
 
