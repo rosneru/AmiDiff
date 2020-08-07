@@ -34,6 +34,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     m_CmdCloseFilesWindow(cmdCloseFilesWindow),
     m_CmdSelectLeftFile(&windowArray, "Select left (original) file"),
     m_CmdSelectRightFile(&windowArray, "Select right (changed) file"),
+    m_MaxPathLength(1024),
     m_pGadtoolsContext(NULL),
     m_pGadStrLeftFile(NULL),
     m_pGadStrRightFile(NULL),
@@ -153,7 +154,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   m_pGadStrLeftFile = CreateGadget(STRING_KIND,
                                    pLabelGadget,
                                    &newGadget,
-                                   GTST_MaxChars, 200, // TODO remove constant
+                                   GTST_MaxChars, m_MaxPathLength,
                                    TAG_DONE);
 
   // Creating the Select button
@@ -197,7 +198,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   m_pGadStrRightFile = CreateGadget(STRING_KIND,
                                     pLabelGadget,
                                     &newGadget,
-                                    GTST_MaxChars, 200, // TODO remove constant
+                                    GTST_MaxChars, m_MaxPathLength,
                                     TAG_DONE);
 
   // Creating the Select button
@@ -441,6 +442,10 @@ void FilesWindow::handleGadgetEvent(struct Gadget* pGadget)
       swapFiles();
       break;
 
+    case GID_ClearButton:     // Clear the string gadgets
+      clear();
+      break;
+
     case GID_DiffButton:      // Compare the files and display the diff
       compare();
       break;
@@ -503,6 +508,26 @@ void FilesWindow::handleVanillaKey(UWORD code)
 
       // Button is enabled, perform its action
       compare();
+      break;
+    }
+
+    case 'e': // Clear the string gadgets
+    case 'E':
+    {
+      // Allow only if Clear button is enabled
+      long disabled;
+      long numProcessed;
+      numProcessed  = GT_GetGadgetAttrs(m_pGadBtnClear, m_pWindow, NULL,
+                                        GA_Disabled, &disabled,
+                                        TAG_DONE);
+
+      if((numProcessed != 1) || (disabled == 1))
+      {
+        return;
+      }
+
+      // Button is enabled, perform its action
+      clear();
       break;
     }
 
@@ -640,6 +665,13 @@ void FilesWindow::compare()
 }
 
 
+void FilesWindow::clear()
+{
+  setStringGadgetText(m_pGadStrLeftFile, "");
+  setStringGadgetText(m_pGadStrRightFile, "");
+}
+
+
 void FilesWindow::checkEnableButtons()
 {
   if(!IsOpen() || (m_pGadBtnDiff == NULL) || (m_pGadBtnSwap == NULL))
@@ -678,11 +710,21 @@ void FilesWindow::checkEnableButtons()
     GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
                       GA_Disabled, FALSE,
                       TAG_DONE);
+
+    // Enable "Clear" button
+    GT_SetGadgetAttrs(m_pGadBtnClear, m_pWindow, NULL,
+                      GA_Disabled, FALSE,
+                      TAG_DONE);
   }
   else
   {
     // Disable "Swap" button
     GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
+                      GA_Disabled, TRUE,
+                      TAG_DONE);
+
+    // Disable "Clear" button
+    GT_SetGadgetAttrs(m_pGadBtnClear, m_pWindow, NULL,
                       GA_Disabled, TRUE,
                       TAG_DONE);
   }

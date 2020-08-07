@@ -71,6 +71,8 @@ private:
   CmdFileRequester m_CmdSelectLeftFile;
   CmdFileRequester m_CmdSelectRightFile;
 
+  const ULONG m_MaxPathLength;
+
   /**
    * IDs to help to interpret the events of this window's Gadtools
    * gadgets.
