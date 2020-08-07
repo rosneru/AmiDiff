@@ -13,7 +13,7 @@
 class DiffOutputFileLinux : public DiffOutputFileBase
 {
 public:
-  DiffOutputFileLinux();
+  DiffOutputFileLinux(const DiffInputFileBase& diffInputFile);
   virtual ~DiffOutputFileLinux();
 
   long AddLine(const char* pText,

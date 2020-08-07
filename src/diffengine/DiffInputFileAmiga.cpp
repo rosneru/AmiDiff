@@ -92,11 +92,9 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
     }
   }
 
-  m_NumLines = m_Lines.size();
-
   if(lineNumbersEnabled)
   {
-    collectLineNumbers(m_NumLines);
+    collectLineNumbers(NumLines());
   }
 
   progress.SetValue(100);
@@ -113,7 +111,7 @@ void DiffInputFileAmiga::collectLineNumbers(size_t maxNumLines)
 {
   int digits = numDigits(maxNumLines);
 
-  for(size_t i = 0; i < m_NumLines; i++)
+  for(size_t i = 0; i < NumLines(); i++)
   {
     char* pLineNumber = (char*) AllocPooled(m_pPoolHeader, digits + 2);
     if(pLineNumber == NULL)

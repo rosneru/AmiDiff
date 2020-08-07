@@ -1,6 +1,8 @@
 #include "DiffOutputFileBase.h"
 
-  DiffOutputFileBase::DiffOutputFileBase()
+  DiffOutputFileBase::DiffOutputFileBase(const DiffInputFileBase& diffInputFile)
+    : m_pEmptyLine(""),
+      m_EmptyLineNumber(numDigits(diffInputFile.NumLines()) + 1, ' ')
   {
 
   }
@@ -13,6 +15,5 @@ DiffOutputFileBase::~DiffOutputFileBase()
 
 void DiffOutputFileBase::AddBlankLine()
 {
-  static const char* pEmptyLine = "";
-  AddLine(pEmptyLine, DiffLine::Normal, NULL);
+  AddLine(m_pEmptyLine, DiffLine::Normal, m_EmptyLineNumber.c_str());
 }

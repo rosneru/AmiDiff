@@ -12,8 +12,10 @@
 
 #include "DiffOutputFileAmiga.h"
 
-DiffOutputFileAmiga::DiffOutputFileAmiga(APTR pPoolHeader)
-  : m_pPoolHeader(pPoolHeader)
+DiffOutputFileAmiga::DiffOutputFileAmiga(const DiffInputFileBase& diffInputFile, 
+                                         APTR pPoolHeader)
+  : DiffOutputFileBase(diffInputFile),
+    m_pPoolHeader(pPoolHeader)
 {
 }
 
@@ -28,12 +30,6 @@ long DiffOutputFileAmiga::AddLine(const char* pText,
                                   DiffLine::LineState lineState,
                                   const char* pFormattedLineNumber)
 {
-  if(m_NumLines < 1)
-  {
-    // Not initialized
-    return -1;
-  }
-
   DiffLine* pDiffLine = (DiffLine*) AllocPooled(m_pPoolHeader,
                                                 sizeof(DiffLine));
 

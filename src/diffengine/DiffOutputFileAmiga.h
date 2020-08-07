@@ -17,7 +17,8 @@
 class DiffOutputFileAmiga : public DiffOutputFileBase
 {
 public:
-  DiffOutputFileAmiga(APTR pPoolHeader);
+  DiffOutputFileAmiga(const DiffInputFileBase& diffInputFile, 
+                      APTR pPoolHeader);
   virtual ~DiffOutputFileAmiga();
 
   /**

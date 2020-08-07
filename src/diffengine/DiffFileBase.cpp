@@ -1,8 +1,7 @@
 #include "DiffFileBase.h"
 
 DiffFileBase::DiffFileBase()
-  : m_NumLines(0),
-    m_EmptyText('\0')
+  : m_EmptyText('\0')
 {
 
 }
@@ -10,13 +9,13 @@ DiffFileBase::DiffFileBase()
 
 size_t DiffFileBase::NumLines() const
 {
-  return m_NumLines;
+  return m_Lines.size();
 }
 
 
 DiffLine* DiffFileBase::GetLine(size_t idx) const
 {
-  if(idx >= m_NumLines)
+  if(idx >= m_Lines.size())
   {
     return NULL;
   }
@@ -27,7 +26,7 @@ DiffLine* DiffFileBase::GetLine(size_t idx) const
 
 const char* DiffFileBase::GetLineText(size_t idx) const
 {
-  if(idx >= m_NumLines)
+  if(idx >= m_Lines.size())
   {
     return &m_EmptyText;
   }
@@ -38,7 +37,7 @@ const char* DiffFileBase::GetLineText(size_t idx) const
 
 const char* DiffFileBase::GetLineNum(size_t idx) const
 {
-  if(idx >= m_NumLines)
+  if(idx >= m_Lines.size())
   {
     return &m_EmptyText;
   }
@@ -67,7 +66,7 @@ unsigned long DiffFileBase::GetLineToken(size_t idx) const
 
 DiffLine::LineState DiffFileBase::GetLineState(size_t idx) const
 {
-  if(idx >= m_NumLines)
+  if(idx >= m_Lines.size())
   {
     return DiffLine::Undefined;
   }
@@ -88,14 +87,13 @@ void DiffFileBase::SetLineState(size_t idx, DiffLine::LineState state)
   pDiffLine->SetState(state);
 }
 
-
-void DiffFileBase::setNumLines(size_t numLines)
+size_t DiffFileBase::numDigits(size_t number)
 {
-  m_NumLines = numLines;
-}
+  size_t digits = 1;
+  if ( number >= 100000000 ) { digits += 8; number /= 100000000; }
+  if ( number >= 10000     ) { digits += 4; number /= 10000; }
+  if ( number >= 100       ) { digits += 2; number /= 100; }
+  if ( number >= 10        ) { digits += 1; }
 
-
-void DiffFileBase::decrementNumLines()
-{
-  m_NumLines--;
+  return digits;
 }

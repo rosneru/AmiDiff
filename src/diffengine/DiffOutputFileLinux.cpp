@@ -4,7 +4,8 @@
 
 #include "DiffOutputFileLinux.h"
 
-DiffOutputFileLinux::DiffOutputFileLinux()
+DiffOutputFileLinux::DiffOutputFileLinux(const DiffInputFileBase& diffInputFile)
+  : DiffOutputFileBase(diffInputFile)
 {
 }
 
@@ -23,14 +24,7 @@ long DiffOutputFileLinux::AddLine(const char* pText,
                                   DiffLine::LineState lineState,
                                   const char* pFormattedLineNumber)
 {
-  if(m_NumLines < 1)
-  {
-    // Not initialized
-    return -1;
-  }
-
   DiffLine* pDiffLine = new DiffLine(pText, lineState, pFormattedLineNumber);
-
   m_Lines.push_back(pDiffLine);
 
   return m_Lines.size() - 1;

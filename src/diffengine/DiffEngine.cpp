@@ -112,9 +112,6 @@ void DiffEngine::createDiffFiles()
   size_t lineA = 0;
   size_t lineB = 0;
 
-  m_AOut.setNumLines(m_AIn.NumLines() + m_NumInsertedB);
-  m_pBOut.setNumLines(m_BIn.NumLines() + m_NumDeletedA);
-
   // Clearing these variables as from now on they should not count
   //single lines anymore. Instead they should count difference blocks
   // of according type. They will be set anew below.
@@ -153,13 +150,6 @@ void DiffEngine::createDiffFiles()
 
       long idx = m_AOut.AddLine(pA->Text(), DiffLine::Changed, pA->LineNum());
       m_pBOut.AddLine(pB->Text(), DiffLine::Changed, pB->LineNum());
-
-      // Note: By coverting a left-deleted and a right-inserted line
-      //       into a changed line, left and right files each are
-      //       getting shorter by 1 line. This is because the
-      //       empty-line on other side isn't needed anymore.
-      m_AOut.decrementNumLines();
-      m_pBOut.decrementNumLines();
 
       if(!bBlockAlreadyAdded)
       {

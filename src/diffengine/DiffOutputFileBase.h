@@ -1,12 +1,14 @@
 #ifndef DIFF_OUTPUT_FILE_BASE_H
 #define DIFF_OUTPUT_FILE_BASE_H
 
-#include "DiffFileBase.h"
+#include <string>
+
+#include "DiffInputFileBase.h"
 
 class DiffOutputFileBase : public DiffFileBase
 {
 public:
-  DiffOutputFileBase();
+  DiffOutputFileBase(const DiffInputFileBase& diffInputFile);
   virtual ~DiffOutputFileBase();
 
   /**
@@ -20,6 +22,15 @@ public:
 
 
   void AddBlankLine();
+
+private:
+  const char* m_pEmptyLine;
+
+  /**
+   * A string filled with spaces to the same text width as a line number
+   * would be.
+   */
+  const std::string m_EmptyLineNumber;
 };
 
 #endif
