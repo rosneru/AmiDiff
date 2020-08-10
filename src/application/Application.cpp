@@ -20,6 +20,8 @@ Application::Application(ScreenBase& screen,
     m_Settings(settings),
     m_LeftFilePath(args.LeftFile()),   // copy (not reference) to member
     m_RightFilePath(args.RightFile()), // copy (not reference) to member
+    m_FilesWindowMenu(m_MenuDefFilesWindow),
+    m_DiffWindowMenu(m_MenuDefDiffWindow),
     m_IsCancelRequested(false),
     m_IsExitRequested(false),
     m_IsExitAllowed(true),
@@ -77,12 +79,10 @@ Application::Application(ScreenBase& screen,
   m_AboutMsg += "It may not be comercially distributed without the\n";
   m_AboutMsg += "explicit permission of the author.\n";
 
-
   // Add all windows to the array
   m_AllWindows.push_back(&m_DiffWindow);
   m_AllWindows.push_back(&m_FilesWindow);
   m_AllWindows.push_back(&m_ProgressWindow);
-
 
   // Create a MessagePort for Workbench app messages if needed
   if(m_IsAppWindow || m_IsAppIcon)
@@ -111,41 +111,7 @@ Application::Application(ScreenBase& screen,
   }
 
 
-  //
-  // Fill the GadTools menu structs, supplying pointers to the commands
-  // as user data. So in event loop no complicated evaluation is needed
-  // to detect which menu item was selected. It will be a command, and
-  // only its Execute() method must be called.
-  //
-  struct NewMenu aboutWinNewMenu[] =
-  {
-    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
-    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAboutRequester },
-    {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
-    {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
-    { NM_END,     NULL,                     0 , 0, 0, 0 },
-  };
-
-  size_t menuSize = sizeof(aboutWinNewMenu) / sizeof(aboutWinNewMenu[0]);
-  m_FilesWindowMenu.SetMenuDefinition(aboutWinNewMenu, menuSize);
   m_FilesWindow.SetMenu(&m_FilesWindowMenu);
-
-  struct NewMenu diffWinNewMenu[] =
-  {
-    { NM_TITLE,   "Project",                0 , 0, 0, 0 },
-    {   NM_ITEM,    "Open...",             "O", 0, 0, &m_CmdOpenFilesWindow },
-    {   NM_ITEM,    "About...",             0 , 0, 0, &m_CmdAboutRequester },
-    {   NM_ITEM,    NM_BARLABEL,            0 , 0, 0, 0 },
-    {   NM_ITEM,    "Quit",                "Q", 0, 0, &m_CmdQuit },
-    { NM_TITLE,   "Navigate",               0 , 0, 0, 0 },
-    {   NM_ITEM,    "Previous difference", "P", 0, 0, &m_CmdNavPrevDiff },
-    {   NM_ITEM,    "Next difference",     "N", 0, 0, &m_CmdNavNextDiff },
-    { NM_END,     NULL,                     0 , 0, 0, 0 },
-  };
-
-  size_t diffWinMenuSize = sizeof(diffWinNewMenu) / sizeof(diffWinNewMenu[0]);
-  m_DiffWindowMenu.SetMenuDefinition(diffWinNewMenu, diffWinMenuSize);
   m_DiffWindow.SetMenu(&m_DiffWindowMenu);
 
   if((m_LeftFilePath.length() > 0) &&

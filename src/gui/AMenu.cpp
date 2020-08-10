@@ -6,11 +6,13 @@
 #include "AMenu.h"
 
 
-AMenu::AMenu()
-  : m_pMenuDefinition(NULL),
-    m_pMenu(NULL)
+AMenu::AMenu(struct NewMenu* pMenuDefinition)
+  : m_pMenu(CreateMenus(pMenuDefinition, TAG_DONE))
 {
-
+  if(m_pMenu == NULL)
+  {
+    throw "Failed to create the menu";
+  }
 }
 
 
@@ -21,26 +23,6 @@ AMenu::~AMenu()
     FreeMenus(m_pMenu);
     m_pMenu = NULL;
   }
-
-  if(m_pMenuDefinition != NULL)
-  {
-    FreeVec(m_pMenuDefinition);
-    m_pMenuDefinition = NULL;
-  }
-}
-
-bool AMenu::SetMenuDefinition(struct NewMenu* pMenuDef, size_t numItems)
-{
-  size_t arraySize = numItems * sizeof(struct NewMenu);
-  m_pMenuDefinition = (struct NewMenu*) AllocVec(arraySize,
-                                                 MEMF_PUBLIC|MEMF_CLEAR);
-  if(m_pMenuDefinition == NULL)
-  {
-    return false;
-  }
-
-  CopyMem(pMenuDef, m_pMenuDefinition, arraySize);
-  return true;
 }
 
 bool AMenu::Create(ScreenBase& screen)
@@ -57,13 +39,7 @@ bool AMenu::Create(ScreenBase& screen)
     return false;
   }
 
-  // Create the menu
-  m_pMenu = CreateMenus(m_pMenuDefinition, TAG_DONE);
-  if(m_pMenu == NULL)
-  {
-    // Failed to create the menu
-    return false;
-  }
+
 
   // Create the layout for the menu
   if(LayoutMenus(m_pMenu, screen.GadtoolsVisualInfo(),
@@ -73,9 +49,6 @@ bool AMenu::Create(ScreenBase& screen)
     // Failed to create the layout for the menu
     return false;
   }
-
-  FreeVec(m_pMenuDefinition);
-  m_pMenuDefinition = NULL;
 
   return true;
 }

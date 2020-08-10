@@ -499,7 +499,7 @@ void DiffWindow::NavigateToPrevDiff()
   // Calculating the yLimit (max y pos for scrolling)
   size_t yLimit = m_NumLines - m_MaxTextAreaLines;
 
-  size_t idx = NULL;
+  size_t idx = 0;
 
   if(m_bNoNavigationDone == true)
   {
@@ -510,7 +510,7 @@ void DiffWindow::NavigateToPrevDiff()
   {
     idx = m_pDocument->PrevDiffIndex();
 
-    if(idx != NULL)
+    if(idx != 0)
     {
       while(idx > yLimit)
       {

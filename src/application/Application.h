@@ -49,7 +49,31 @@ private:
   std::string m_LeftFilePath;
   std::string m_RightFilePath;
 
-  ADiffViewPorts m_Ports;
+  struct NewMenu m_MenuDefFilesWindow[6] = 
+  {
+    { NM_TITLE,   "Project",                 0 , 0, 0, 0 },
+    {   NM_ITEM,    "Open...",              "O", 0, 0, &m_CmdOpenFilesWindow },
+    {   NM_ITEM,    "About...",              0 , 0, 0, &m_CmdAboutRequester },
+    {   NM_ITEM,    NM_BARLABEL,             0 , 0, 0, 0 },
+    {   NM_ITEM,    "Quit",                 "Q", 0, 0, &m_CmdQuit },
+    { NM_END,     NULL,                      0 , 0, 0, 0 },
+  };
+
+  struct NewMenu m_MenuDefDiffWindow[9] =
+  {
+    { NM_TITLE,   "Project",                 0 , 0, 0, 0 },
+    {   NM_ITEM,    "Open...",              "O", 0, 0, &m_CmdOpenFilesWindow },
+    {   NM_ITEM,    "About...",              0 , 0, 0, &m_CmdAboutRequester },
+    {   NM_ITEM,    NM_BARLABEL,             0 , 0, 0, 0 },
+    {   NM_ITEM,    "Quit",                 "Q", 0, 0, &m_CmdQuit },
+    { NM_TITLE,   "Navigate",                0 , 0, 0, 0 },
+    {   NM_ITEM,    "Previous difference",  "P", 0, 0, &m_CmdNavPrevDiff },
+    {   NM_ITEM,    "Next difference",      "N", 0, 0, &m_CmdNavNextDiff },
+    { NM_END,     NULL,                      0 , 0, 0, 0 },
+  };
+
+  AMenu m_FilesWindowMenu;
+  AMenu m_DiffWindowMenu;
 
   bool m_IsCancelRequested;
   bool m_IsExitRequested;
@@ -65,9 +89,8 @@ private:
    *
    */
 
+  ADiffViewPorts m_Ports;
   DiffWorker m_DiffWorker;
-  AMenu m_FilesWindowMenu;
-  AMenu m_DiffWindowMenu;
   DiffWindow m_DiffWindow;
   FilesWindow m_FilesWindow;
   ProgressWindow m_ProgressWindow;

@@ -16,7 +16,7 @@
 class AMenu
 {
 public:
-  AMenu();
+  AMenu(struct NewMenu* pMenuDefinition);
   ~AMenu();
 
   /**
@@ -24,7 +24,7 @@ public:
    * created with Create(). The given menu definition is copied, so the
    * original pointer mustn't be valid when Create() is called. 
    */
-  bool SetMenuDefinition(struct NewMenu* pMenuDef, size_t numItems);
+  // bool SetMenuDefinition(struct NewMenu* pMenuDef, size_t numItems);
 
   /**
    * Creating the menu and its layout depending on the layout of the
@@ -83,7 +83,6 @@ public:
                       APTR pUserDataMenuItemToEnable);
 
 private:
-  struct NewMenu* m_pMenuDefinition;
   struct Menu* m_pMenu;
 
 
