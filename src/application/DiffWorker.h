@@ -22,7 +22,6 @@
  * Class to perform the diff as a background process. Also managing
  * the opening and closing of the required windows to e.g. display the
  * file differences.
-
  *
  * @author Uwe Rosner
  * @date 26/10/2018
