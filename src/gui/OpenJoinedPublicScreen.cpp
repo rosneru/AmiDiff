@@ -5,10 +5,9 @@
 
 OpenJoinedPublicScreen::OpenJoinedPublicScreen(const ADiffViewSettings& settings,
                                                const char* pPubScreenName)
-  : ScreenBase(settings),
-    m_PubScreenName(pPubScreenName)
+  : ScreenBase(settings)
 {
-  m_pIntuiScreen = LockPubScreen(m_PubScreenName.c_str());
+  m_pIntuiScreen = LockPubScreen(pPubScreenName);
 
   if(m_pIntuiScreen == NULL)
   {

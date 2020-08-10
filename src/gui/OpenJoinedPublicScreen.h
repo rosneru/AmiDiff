@@ -11,8 +11,6 @@ public:
 
   virtual ~OpenJoinedPublicScreen();
 
-private:
-  const std::string m_PubScreenName;
 };
 
 #endif
