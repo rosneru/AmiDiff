@@ -19,19 +19,12 @@ public:
   ~MenuBase();
 
   /**
-   * Sets the menu definition which will be used when the menu really is
-   * created with Create(). The given menu definition is copied, so the
-   * original pointer mustn't be valid when Create() is called. 
-   */
-  // bool SetMenuDefinition(struct NewMenu* pMenuDef, size_t numItems);
-
-  /**
    * Creating the menu and its layout depending on the layout of the
    * screen it appears on.
    * 
-   * \return true on success or if already done; false on error.
+   * @returns true on success or if already done; false on error.
    */
-  bool Create(ScreenBase& screen);
+  bool Layout(ScreenBase& screen);
 
   /**
    * Wire the menu strip to a window. Can be done for multiple windows.
@@ -83,6 +76,7 @@ public:
 
 protected:
   struct Menu* m_pMenu;
+  bool m_IsLayoutDone;
 
   MenuBase();
 

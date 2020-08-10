@@ -172,7 +172,7 @@ bool WindowBase::Open(InitialPosition initialPos)
   }
 
   // Create the menu if; returns true if already done
-  if(m_pMenu->Create(m_Screen) == true)
+  if(m_pMenu->Layout(m_Screen) == true)
   {
     // Attach the menu to the window
     m_pMenu->AttachToWindow(m_pWindow);
@@ -316,7 +316,7 @@ void WindowBase::SetMenu(MenuBase* pMenu)
   }
 
   // Create the menu; returns true if already done
-  if(m_pMenu->Create(m_Screen) == true)
+  if(m_pMenu->Layout(m_Screen) == true)
   {
     // Attach the menu to the window
     m_pMenu->AttachToWindow(m_pWindow);

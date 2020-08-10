@@ -7,7 +7,8 @@
 
 
 MenuBase::MenuBase()
-  : m_pMenu(NULL)
+  : m_pMenu(NULL),
+  m_IsLayoutDone(false)
 {
 
 }
@@ -22,11 +23,10 @@ MenuBase::~MenuBase()
   }
 }
 
-bool MenuBase::Create(ScreenBase& screen)
+bool MenuBase::Layout(ScreenBase& screen)
 {
-  if(m_pMenu != NULL)
+  if(m_IsLayoutDone)
   {
-    // Menu already been created
     return true;
   }
 
@@ -35,8 +35,6 @@ bool MenuBase::Create(ScreenBase& screen)
     // No VisualInfo available to create the menu
     return false;
   }
-
-
 
   // Create the layout for the menu
   if(LayoutMenus(m_pMenu, screen.GadtoolsVisualInfo(),
@@ -47,6 +45,7 @@ bool MenuBase::Create(ScreenBase& screen)
     return false;
   }
 
+  m_IsLayoutDone = true;
   return true;
 }
 
