@@ -80,9 +80,6 @@ private:
   bool m_bShowLineNumbers;
   DiffDocument* m_pDiffDocument;
 
-
-
-
   /**
    * Implemented abstract method from WorkerBase.
    *

@@ -17,10 +17,13 @@ add_executable (ADiffView
                 amigautils/MessageBox.cpp
                 amigautils/StopWatch.cpp
                 application/ADiffViewArgs.cpp
+                application/ADiffViewPens.cpp
                 application/ADiffViewPorts.cpp
                 application/ADiffViewSettings.cpp
                 application/Application.cpp
-                application/main.cpp
+                application/DiffDocument.cpp
+                application/DiffWorker.cpp
+                application/DiffWorkerProgressReporter.cpp
                 commands/CmdCloseWindow.cpp
                 commands/CmdDiff.cpp
                 commands/CmdFileRequester.cpp
@@ -37,25 +40,22 @@ add_executable (ADiffView
                 diffengine/DiffOutputFileAmiga.cpp
                 diffengine/DiffOutputFileBase.cpp
                 diffengine/DiffLine.cpp
-                diffengine/Pair.cpp
-                gui/ADiffViewPens.cpp
-                gui/DiffWindow.cpp
-                gui/FilesWindow.cpp
-                gui/MenuBase.cpp
-                gui/MenuFilesWindow.cpp
-                gui/MenuDiffWindow.cpp
-                gui/OpenClonedWorkbenchScreen.cpp
-                gui/OpenJoinedPublicScreen.cpp
-                gui/OpenScreenBase.cpp
-                gui/ProgressWindow.cpp
-                gui/Rect.cpp
-                gui/ScrollbarWindow.cpp
-                gui/WindowBase.cpp
-                model/DiffDocument.cpp
-                worker/DiffWorker.cpp
-                worker/DiffWorkerProgressReporter.cpp
+                menus/MenuBase.cpp
+                menus/MenuFilesWindow.cpp
+                menus/MenuDiffWindow.cpp
+                model/Pair.cpp
+                model/Rect.cpp
+                screen/OpenClonedWorkbenchScreen.cpp
+                screen/OpenJoinedPublicScreen.cpp
+                screen/OpenScreenBase.cpp
+                windows/DiffWindow.cpp
+                windows/FilesWindow.cpp
+                windows/ProgressWindow.cpp
+                windows/ScrollbarWindow.cpp
+                windows/WindowBase.cpp
                 worker/ProgressReporter.cpp
-                worker/WorkerBase.cpp)
+                worker/WorkerBase.cpp
+                main.cpp)
 
 
 target_include_directories (ADiffView PUBLIC
@@ -63,8 +63,10 @@ target_include_directories (ADiffView PUBLIC
                             application
                             commands
                             diffengine
-                            gui
+                            menus
                             model
+                            screen
+                            windows
                             worker
                             .)
 

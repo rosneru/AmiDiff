@@ -7,7 +7,7 @@
 #include "ADiffViewSettings.h"
 
 /**
- * Class for the pens used by AmigaDiff
+ * Class for the pens used by ADiffView
  *
  * @author Uwe Rosner
  * @date 18/11/2018
@@ -22,7 +22,7 @@ public:
   ~ADiffViewPens();
 
   /**
-   * Create the color pens needed by AmigaDiff.
+   * Create the color pens needed by ADiffView.
    *
    */
   bool Create();
@@ -57,4 +57,3 @@ private:
 };
 
 #endif
-

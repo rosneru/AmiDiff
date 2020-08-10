@@ -11,8 +11,10 @@
                 "${workspaceFolder}/src/application",
                 "${workspaceFolder}/src/commands",
                 "${workspaceFolder}/src/diffengine",
-                "${workspaceFolder}/src/gui",
+                "${workspaceFolder}/src/menus",
                 "${workspaceFolder}/src/model",
+                "${workspaceFolder}/src/screen",
+                "${workspaceFolder}/src/windows",
                 "${workspaceFolder}/src/worker"
             ],
             "defines": ["LINUX"],
