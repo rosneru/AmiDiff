@@ -37,7 +37,7 @@ std::string AslFileRequest::SelectFile(const std::string& title,
     size_t pathLen = pPathPart - pFullPath;
     if(pathLen > 0)
     {
-      initialPathPart = initialFileFullPath.substr()0, pathLen);
+      initialPathPart = initialFileFullPath.substr(0, pathLen);
     }
 
     initialFilePart = pFilePart;
