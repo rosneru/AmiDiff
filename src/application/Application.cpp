@@ -20,13 +20,19 @@ Application::Application(ScreenBase& screen,
     m_Settings(settings),
     m_LeftFilePath(args.LeftFile()),   // copy (not reference) to member
     m_RightFilePath(args.RightFile()), // copy (not reference) to member
-    m_FilesWindowMenu(m_MenuDefFilesWindow),
-    m_DiffWindowMenu(m_MenuDefDiffWindow),
     m_IsCancelRequested(false),
     m_IsExitRequested(false),
     m_IsExitAllowed(true),
     m_IsAppWindow(m_Args.PubScreenName() == "Workbench"),
     m_IsAppIcon(!m_IsAppWindow && !m_Args.NoAppIcon()),
+    m_FilesWindowMenu(&m_CmdOpenFilesWindow, 
+                      &m_CmdAboutRequester, 
+                      &m_CmdQuit),
+    m_DiffWindowMenu(&m_CmdOpenFilesWindow, 
+                     &m_CmdAboutRequester, 
+                     &m_CmdQuit,
+                     &m_CmdNavNextDiff,
+                     &m_CmdNavPrevDiff),
     m_DiffWorker(m_LeftFilePath,
                  m_RightFilePath,
                  m_DiffWindow,
@@ -268,7 +274,7 @@ void Application::handleIdcmpMessages()
       struct MenuItem* pSelectedItem = NULL;
 
       // Create an array of all menus to be searched for the item
-      AMenu* pMenus[] = {&m_FilesWindowMenu, &m_DiffWindowMenu};
+      MenuBase* pMenus[] = {&m_FilesWindowMenu, &m_DiffWindowMenu};
 
       // Iterate all those menus, trying to find the item
       for(size_t i = 0; i < (sizeof pMenus / sizeof pMenus[0]); i++)

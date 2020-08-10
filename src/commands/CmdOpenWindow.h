@@ -1,7 +1,7 @@
 #ifndef CMD_OPEN_WINDOW_H
 #define CMD_OPEN_WINDOW_H
 
-#include "AMenu.h"
+#include "MenuBase.h"
 #include "CommandBase.h"
 
 /**

@@ -31,7 +31,7 @@ public:
               std::string& rightFilePath,
               CommandBase& cmdDiff,
               CommandBase& cmdCloseFilesWindow,
-              AMenu* pMenu);
+              MenuBase* pMenu);
 
   virtual ~FilesWindow();
 

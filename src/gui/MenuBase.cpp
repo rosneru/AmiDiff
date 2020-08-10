@@ -3,20 +3,17 @@
 #include <clib/intuition_protos.h>
 #include <exec/memory.h>
 
-#include "AMenu.h"
+#include "MenuBase.h"
 
 
-AMenu::AMenu(struct NewMenu* pMenuDefinition)
-  : m_pMenu(CreateMenus(pMenuDefinition, TAG_DONE))
+MenuBase::MenuBase()
+  : m_pMenu(NULL)
 {
-  if(m_pMenu == NULL)
-  {
-    throw "Failed to create the menu";
-  }
+
 }
 
 
-AMenu::~AMenu()
+MenuBase::~MenuBase()
 {
   if(m_pMenu != NULL)
   {
@@ -25,7 +22,7 @@ AMenu::~AMenu()
   }
 }
 
-bool AMenu::Create(ScreenBase& screen)
+bool MenuBase::Create(ScreenBase& screen)
 {
   if(m_pMenu != NULL)
   {
@@ -55,7 +52,7 @@ bool AMenu::Create(ScreenBase& screen)
 
 
 
-bool AMenu::AttachToWindow(struct Window* pWindow)
+bool MenuBase::AttachToWindow(struct Window* pWindow)
 {
   if(SetMenuStrip(pWindow, m_pMenu) == FALSE)
   {
@@ -69,27 +66,27 @@ bool AMenu::AttachToWindow(struct Window* pWindow)
 
 
 
-void AMenu::DetachFromWindow(struct Window* pWindow)
+void MenuBase::DetachFromWindow(struct Window* pWindow)
 {
   ClearMenuStrip(pWindow);
 }
 
-struct Menu* AMenu::IntuiMenu()
+struct Menu* MenuBase::IntuiMenu()
 {
   return m_pMenu;
 }
 
 
-void AMenu::DisableMenuItem(struct Window* pWindow,
-                            APTR pUserDataMenuItemToDisable)
+void MenuBase::DisableMenuItem(struct Window* pWindow,
+                            APTR pUserDatMenuBaseItemToDisable)
 {
-  if(pUserDataMenuItemToDisable == NULL)
+  if(pUserDatMenuBaseItemToDisable == NULL)
   {
     return;
   }
 
   WORD menuNumber = 0;
-  struct MenuItem* pFoundItem = findItemByUserData(pUserDataMenuItemToDisable, menuNumber);
+  struct MenuItem* pFoundItem = findItemByUserData(pUserDatMenuBaseItemToDisable, menuNumber);
   if(pFoundItem == NULL)
   {
     return;
@@ -99,16 +96,16 @@ void AMenu::DisableMenuItem(struct Window* pWindow,
 }
 
 
-void AMenu::EnableMenuItem(struct Window* pWindow,
-                           APTR pUserDataMenuItemToEnable)
+void MenuBase::EnableMenuItem(struct Window* pWindow,
+                           APTR pUserDatMenuBaseItemToEnable)
 {
-  if((pWindow == NULL) || (pUserDataMenuItemToEnable == NULL))
+  if((pWindow == NULL) || (pUserDatMenuBaseItemToEnable == NULL))
   {
     return;
   }
 
   WORD menuNumber = 0;
-  struct MenuItem* pFoundItem = findItemByUserData(pUserDataMenuItemToEnable, menuNumber);
+  struct MenuItem* pFoundItem = findItemByUserData(pUserDatMenuBaseItemToEnable, menuNumber);
   if(pFoundItem == NULL)
   {
     return;
@@ -118,7 +115,7 @@ void AMenu::EnableMenuItem(struct Window* pWindow,
 }
 
 
-struct MenuItem* AMenu::findItemByUserData(APTR pUserDataToFind,
+struct MenuItem* MenuBase::findItemByUserData(APTR pUserDataToFind,
                                              WORD& foundMenuNumber)
 {
   if(m_pMenu == NULL)

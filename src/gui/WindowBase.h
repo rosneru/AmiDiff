@@ -7,7 +7,7 @@
 #include <intuition/screens.h>
 #include <workbench/workbench.h>
 
-#include "AMenu.h"
+#include "MenuBase.h"
 #include "OpenScreenBase.h"
 
 /**
@@ -167,12 +167,12 @@ public:
    * If the window isn't open the given menu strip will be there after
    * opening.
    */
-  void SetMenu(AMenu* pMenu);
+  void SetMenu(MenuBase* pMenu);
 
   /**
    * Returns the menu strip which is attached to this window
    */
-  AMenu* Menu();
+  MenuBase* Menu();
 
 protected:
   ScreenBase& m_Screen;
@@ -185,7 +185,7 @@ protected:
   LONG m_Width;
   LONG m_Height;
 
-  AMenu* m_pMenu;
+  MenuBase* m_pMenu;
   struct TextFont* m_pTextFont;
   std::string m_Title;
 
@@ -207,7 +207,7 @@ protected:
    */
   WindowBase(ScreenBase& screen, 
              struct MsgPort* pIdcmpMsgPort,
-             AMenu* pMenu);
+             MenuBase* pMenu);
 
 
   virtual ~WindowBase();

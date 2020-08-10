@@ -1,7 +1,7 @@
 #ifndef CMD_REQUESTER_H
 #define CMD_REQUESTER_H
 
-#include "AMenu.h"
+#include "MenuBase.h"
 #include "CommandBase.h"
 #include <string>
 

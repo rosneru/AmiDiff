@@ -13,7 +13,7 @@
 
 ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
                                  struct MsgPort* pIdcmpMsgPort,
-                                 AMenu* pMenu)
+                                 MenuBase* pMenu)
   : WindowBase(screen, pIdcmpMsgPort, pMenu),
     m_InnerWindowRight(0),
     m_InnerWindowBottom(0),

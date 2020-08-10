@@ -1,7 +1,7 @@
 #ifndef CMD_CLOSE_WINDOW_H
 #define CMD_CLOSE_WINDOW_H
 
-#include "AMenu.h"
+#include "MenuBase.h"
 #include "CmdOpenWindow.h"
 #include "CommandBase.h"
 

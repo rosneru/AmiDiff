@@ -20,7 +20,7 @@ void CommandBase::EnableInAllWindowMenus() const
   for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
   {
     struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
-    AMenu* pMenu = (*m_pAllWindowsArray)[i]->Menu();
+    MenuBase* pMenu = (*m_pAllWindowsArray)[i]->Menu();
 
     if(pIntuiWindow != NULL && pMenu != NULL)
     {
@@ -35,7 +35,7 @@ void CommandBase::DisableInAllWindowMenus() const
   for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
   {
     struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
-    AMenu* pMenu = (*m_pAllWindowsArray)[i]->Menu();
+    MenuBase* pMenu = (*m_pAllWindowsArray)[i]->Menu();
 
     if(pIntuiWindow != NULL && pMenu != NULL)
     {

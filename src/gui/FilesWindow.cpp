@@ -26,7 +26,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                          std::string& rightFilePath,
                          CommandBase& cmdDiff,
                          CommandBase& cmdCloseFilesWindow,
-                         AMenu* pMenu)
+                         MenuBase* pMenu)
   : WindowBase(screen, pIdcmpMsgPort, pMenu),
     m_LeftFilePath(leftFilePath),
     m_RightFilePath(rightFilePath),

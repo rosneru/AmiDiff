@@ -18,7 +18,7 @@
 
 DiffWindow::DiffWindow(ScreenBase& screen,
                        struct MsgPort* pIdcmpMsgPort,
-                       AMenu* pMenu)
+                       MenuBase* pMenu)
   : ScrollbarWindow(screen, pIdcmpMsgPort, pMenu),
     m_pDocument(NULL),
     m_EmptyChar('\0'),

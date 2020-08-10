@@ -21,7 +21,7 @@ public:
   ProgressWindow(ScreenBase& screen,
                  struct MsgPort* pIdcmpMsgPort,
                  bool& isCancelRequested,
-                 AMenu* pMenu);
+                 MenuBase* pMenu);
 
   virtual ~ProgressWindow();
 

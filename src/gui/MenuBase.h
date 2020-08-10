@@ -1,5 +1,5 @@
-#ifndef APP_MENU_H
-#define APP_MENU_H
+#ifndef MENU_BASE_H
+#define MENU_BASE_H
 
 #include <intuition/intuition.h>
 #include <intuition/screens.h>
@@ -13,11 +13,10 @@
  * @author Uwe Rosner
  * @date 23/09/2018
  */
-class AMenu
+class MenuBase
 {
 public:
-  AMenu(struct NewMenu* pMenuDefinition);
-  ~AMenu();
+  ~MenuBase();
 
   /**
    * Sets the menu definition which will be used when the menu really is
@@ -82,9 +81,10 @@ public:
   void EnableMenuItem(struct Window* pWindow,
                       APTR pUserDataMenuItemToEnable);
 
-private:
+protected:
   struct Menu* m_pMenu;
 
+  MenuBase();
 
   /**
    * Browses all menu items trying to find the item with the given

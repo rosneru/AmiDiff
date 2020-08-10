@@ -39,9 +39,11 @@ add_executable (ADiffView
                 diffengine/DiffLine.cpp
                 diffengine/Pair.cpp
                 gui/ADiffViewPens.cpp
-                gui/AMenu.cpp
                 gui/DiffWindow.cpp
                 gui/FilesWindow.cpp
+                gui/MenuBase.cpp
+                gui/MenuFilesWindow.cpp
+                gui/MenuDiffWindow.cpp
                 gui/OpenClonedWorkbenchScreen.cpp
                 gui/OpenJoinedPublicScreen.cpp
                 gui/OpenScreenBase.cpp

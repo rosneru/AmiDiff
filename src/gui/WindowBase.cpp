@@ -13,7 +13,7 @@ extern struct GfxBase* GfxBase;
 
 WindowBase::WindowBase(ScreenBase& screen,
                        struct MsgPort* pIdcmpMsgPort,
-                       AMenu* pMenu)
+                       MenuBase* pMenu)
   : m_Screen(screen),
     m_pIdcmpMsgPort(pIdcmpMsgPort),
     m_pWindow(NULL),
@@ -292,7 +292,7 @@ struct Window* WindowBase::IntuiWindow()
 }
 
 
-void WindowBase::SetMenu(AMenu* pMenu)
+void WindowBase::SetMenu(MenuBase* pMenu)
 {
   if(pMenu == NULL)
   {
@@ -325,7 +325,7 @@ void WindowBase::SetMenu(AMenu* pMenu)
   return;
 }
 
-AMenu* WindowBase::Menu()
+MenuBase* WindowBase::Menu()
 {
   return m_pMenu;
 }

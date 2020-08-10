@@ -19,7 +19,7 @@
 ProgressWindow::ProgressWindow(ScreenBase& screen,
                                struct MsgPort* pIdcmpMsgPort,
                                bool& isCancelRequested,
-                               AMenu* pMenu)
+                               MenuBase* pMenu)
   : WindowBase(screen, pIdcmpMsgPort, pMenu),
     m_IsCancelRequested(isCancelRequested),
     m_NewGadget(),
