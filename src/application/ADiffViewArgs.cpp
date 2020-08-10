@@ -137,22 +137,19 @@ void ADiffViewArgs::readWorkbenchArgs()
       }
       else if(i < 3)
       {
-        std::string fullPath;
-
         if(NameFromLock(pWbArg[i].wa_Lock, pBuf, bufLen) != 0)
         {
           if(AddPart(pBuf,(STRPTR) pWbArg[i].wa_Name, bufLen))
           {
-            fullPath = pBuf;
-          }
 
-          if(i == 1)
-          {
-            m_LeftFilePath = fullPath;
-          }
-          else
-          {
-            m_RightFilePath = fullPath;
+            if(i == 1)
+            {
+              m_LeftFilePath = pBuf;
+            }
+            else
+            {
+              m_RightFilePath = pBuf;
+            }
           }
         }
       }
@@ -170,10 +167,10 @@ void ADiffViewArgs::readWorkbenchArgs()
 void ADiffViewArgs::readCommandLineArgs()
 {
     // Reading the command line arguments
-    std::string argTempl = "FILES/M,PUBSCREEN/K,DONOTASK/S,NOAPPICON/S,NOLINENUMBERS/S";
+    const char argTempl[] = "FILES/M,PUBSCREEN/K,DONOTASK/S,NOAPPICON/S,NOLINENUMBERS/S";
     LONG args[] = {0, 0, 0, 0, 0};
 
-    struct RDArgs* pReadArgs = ReadArgs(argTempl.c_str(), args, NULL);
+    struct RDArgs* pReadArgs = ReadArgs(argTempl, args, NULL);
     if(pReadArgs == NULL)
     {
       return;
