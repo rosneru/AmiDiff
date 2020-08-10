@@ -1,9 +1,7 @@
 #ifndef DIFF_WORKER_H
 #define DIFF_WORKER_H
 
-#include <vector>
-
-#include <exec/ports.h>
+#include <string>
 
 #include "CmdCloseWindow.h"
 #include "CmdOpenWindow.h"
@@ -14,7 +12,6 @@
 #include "DiffWorkerProgressReporter.h"
 #include "FilesWindow.h"
 #include "ProgressWindow.h"
-#include <string>
 #include "StopWatch.h"
 #include "WorkerBase.h"
 
