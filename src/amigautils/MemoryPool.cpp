@@ -4,9 +4,8 @@
 #include "MemoryPool.h"
 
 MemoryPool::MemoryPool()
-  : m_pPoolHeader(NULL)
+  : m_pPoolHeader(CreatePool(MEMF_PUBLIC|MEMF_CLEAR, 50000, 25000))
 {
-  m_pPoolHeader = CreatePool(MEMF_PUBLIC|MEMF_CLEAR, 50000, 25000);
   if(m_pPoolHeader == NULL)
   {
     throw "Failed to create the memory pool.";
