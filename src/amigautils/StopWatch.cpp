@@ -2,7 +2,7 @@
 #include "StopWatch.h"
 
 // Base address of timer device; has to be global
-struct Library* TimerBase = NULL;
+struct TimerBase* TimerBase = NULL;
 
 StopWatch::StopWatch()
   : m_pMsgPort(CreateMsgPort()),
@@ -43,7 +43,7 @@ StopWatch::StopWatch()
   m_pTimeRequest->tr_node.io_Message.mn_Node.ln_Type = NT_REPLYMSG;
 
   // Setting the timer base
-  TimerBase = (struct Library*)m_pTimeRequest->tr_node.io_Device;
+  TimerBase = (struct TimerBase*)m_pTimeRequest->tr_node.io_Device;
 }
 
 StopWatch::~StopWatch()
