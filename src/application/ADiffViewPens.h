@@ -1,9 +1,7 @@
 #ifndef A_DIFF_VIEW_PENS_H
 #define A_DIFF_VIEW_PENS_H
 
-#include <graphics/view.h>
-#include <intuition/screens.h>
-
+#include "OpenScreenBase.h"
 #include "ADiffViewSettings.h"
 
 /**
@@ -15,23 +13,10 @@
 class ADiffViewPens
 {
 public:
-  ADiffViewPens(struct Screen*& pScreen,
-                struct DrawInfo*& pDrawInfo,
+  ADiffViewPens(ScreenBase& screenBase,
                 const ADiffViewSettings& settings);
 
   virtual ~ADiffViewPens();
-
-  /**
-   * Create the color pens needed by ADiffView.
-   *
-   */
-  bool Create();
-
-  /**
-   * Free allocated pens
-   */
-  void Dispose();
-
 
   LONG Background() const;
   LONG Text() const;
@@ -45,8 +30,7 @@ public:
 
 
 private:
-  struct Screen*& m_pScreen;
-  struct DrawInfo*& m_pDrawInfo;
+  ScreenBase& m_ScreenBase;
   const ADiffViewSettings& m_Settings;
 
   LONG m_RedPen;

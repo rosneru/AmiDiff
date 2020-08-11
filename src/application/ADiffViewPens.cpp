@@ -3,35 +3,18 @@
 #include "ADiffViewPens.h"
 
 
-ADiffViewPens::ADiffViewPens(struct Screen*& pScreen,
-                             struct DrawInfo*& pDrawInfo,
+ADiffViewPens::ADiffViewPens(ScreenBase& screenBase,
                              const ADiffViewSettings& settings)
-  : m_pScreen(pScreen),
-    m_pDrawInfo(pDrawInfo),
+  : m_ScreenBase(screenBase),
     m_Settings(settings),
     m_RedPen(-1),
     m_YellowPen(-1),
     m_GreenPen(-1),
     m_GrayPen(-1)
 {
-
-}
-
-ADiffViewPens::~ADiffViewPens()
-{
-  Dispose();
-}
-
-bool ADiffViewPens::Create()
-{
-  if(m_pScreen == NULL)
+  if(m_ScreenBase.IntuiScreen()->ViewPort.ColorMap == NULL)
   {
-    return false;
-  }
-
-  if(m_pScreen->ViewPort.ColorMap == NULL)
-  {
-    return false;
+    throw "Failed to create pens. Missing ColorMap in ViewPort.";
   }
 
   const ULONG* pColRed = m_Settings.GetColorRedArray();
@@ -40,94 +23,61 @@ bool ADiffViewPens::Create()
   const ULONG* pColGray = m_Settings.GetColorGrayArray();
 
   // Find the best pens for the neded colors
-  m_RedPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
+  m_RedPen = ObtainBestPen(m_ScreenBase.IntuiScreen()->ViewPort.ColorMap,
     pColRed[0], pColRed[1], pColRed[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
     TAG_DONE);
 
-  m_GreenPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
+  m_GreenPen = ObtainBestPen(m_ScreenBase.IntuiScreen()->ViewPort.ColorMap,
     pColGreen[0], pColGreen[1], pColGreen[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
     TAG_DONE);
 
-  m_YellowPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
+  m_YellowPen = ObtainBestPen(m_ScreenBase.IntuiScreen()->ViewPort.ColorMap,
     pColYellow[0], pColYellow[1], pColYellow[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
     TAG_DONE);
 
-  m_GrayPen = ObtainBestPen(m_pScreen->ViewPort.ColorMap,
+  m_GrayPen = ObtainBestPen(m_ScreenBase.IntuiScreen()->ViewPort.ColorMap,
     pColGray[0], pColGray[1], pColGray[2],
     OBP_FailIfBad, FALSE,
     OBP_Precision, PRECISION_EXACT,
     TAG_DONE);
-
-  return true;
 }
 
-
-void ADiffViewPens::Dispose()
+ADiffViewPens::~ADiffViewPens()
 {
-  if(m_pScreen == NULL)
-  {
-    return;
-  }
-
-  if(m_pScreen->ViewPort.ColorMap == NULL)
-  {
-    return;
-  }
-
-  ReleasePen(m_pScreen->ViewPort.ColorMap, m_RedPen);
-  ReleasePen(m_pScreen->ViewPort.ColorMap, m_YellowPen);
-  ReleasePen(m_pScreen->ViewPort.ColorMap, m_GreenPen);
-  ReleasePen(m_pScreen->ViewPort.ColorMap, m_GrayPen);
+  ReleasePen(m_ScreenBase.IntuiScreen()->ViewPort.ColorMap, m_RedPen);
+  ReleasePen(m_ScreenBase.IntuiScreen()->ViewPort.ColorMap, m_YellowPen);
+  ReleasePen(m_ScreenBase.IntuiScreen()->ViewPort.ColorMap, m_GreenPen);
+  ReleasePen(m_ScreenBase.IntuiScreen()->ViewPort.ColorMap, m_GrayPen);
 }
 
 
 LONG ADiffViewPens::Background() const
 {
-  if(m_pDrawInfo == NULL)
-  {
-    return 0;
-  }
-
-  return m_pDrawInfo->dri_Pens[BACKGROUNDPEN];
+  return m_ScreenBase.IntuiDrawInfo()->dri_Pens[BACKGROUNDPEN];
 }
 
 
 LONG ADiffViewPens::Text()  const
 {
-  if(m_pDrawInfo == NULL)
-  {
-    return 0;
-  }
-
-  return m_pDrawInfo->dri_Pens[TEXTPEN];
+  return m_ScreenBase.IntuiDrawInfo()->dri_Pens[TEXTPEN];
 }
 
 
 LONG ADiffViewPens::HighlightedText()  const
 {
-  if(m_pDrawInfo == NULL)
-  {
-    return 0;
-  }
-
-  return m_pDrawInfo->dri_Pens[HIGHLIGHTTEXTPEN];
+  return m_ScreenBase.IntuiDrawInfo()->dri_Pens[HIGHLIGHTTEXTPEN];
 }
 
 
 LONG ADiffViewPens::Fill()  const
 {
-  if(m_pDrawInfo == NULL)
-  {
-    return 0;
-  }
-
-  return m_pDrawInfo->dri_Pens[FILLPEN];
+  return m_ScreenBase.IntuiDrawInfo()->dri_Pens[FILLPEN];
 }
 
 

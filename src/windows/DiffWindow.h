@@ -6,9 +6,10 @@
 #include <exec/ports.h>
 #include <intuition/screens.h>
 
-#include "OpenScreenBase.h"
+#include "ADiffViewPens.h"
 #include "DiffDocument.h"
 #include "DiffLine.h"
+#include "OpenScreenBase.h"
 #include "ScrollbarWindow.h"
 
 /**
@@ -21,6 +22,7 @@ class DiffWindow : public ScrollbarWindow
 {
 public:
   DiffWindow(ScreenBase& screen,
+             const ADiffViewPens& pens,
              struct MsgPort* pIdcmpMsgPort,
              MenuBase* pMenu);
 
@@ -126,6 +128,7 @@ public:
   void NavigateToPrevDiff();
 
 private:
+  const ADiffViewPens& m_Pens;
   DiffDocument* m_pDocument;
   char m_EmptyChar;
 

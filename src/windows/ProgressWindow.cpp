@@ -17,10 +17,12 @@
 
 
 ProgressWindow::ProgressWindow(ScreenBase& screen,
+                               const ADiffViewPens& pens,
                                struct MsgPort* pIdcmpMsgPort,
                                bool& isCancelRequested,
                                MenuBase* pMenu)
   : WindowBase(screen, pIdcmpMsgPort, pMenu),
+    m_Pens(pens),
     m_IsCancelRequested(isCancelRequested),
     m_NewGadget(),
     m_pGadtoolsContext(NULL),
@@ -143,7 +145,7 @@ bool ProgressWindow::Open(InitialPosition initialPos)
 
   // Fill the structured background
   SetDrMd(m_pWindow->RPort, JAM1);
-  SetAPen(m_pWindow->RPort, m_Screen.Pens().HighlightedText());
+  SetAPen(m_pWindow->RPort,m_Pens.HighlightedText());
   RectFill(m_pWindow->RPort, 
            pScreen->WBorLeft,
            pScreen->WBorTop + pScreen->BarHeight - 1,
@@ -154,7 +156,7 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   m_pWindow->RPort->AreaPtrn = NULL;
 
   // Draw the outer gray area and bevel box
-  SetAPen(m_pWindow->RPort, m_Screen.Pens().Background());
+  SetAPen(m_pWindow->RPort,m_Pens.Background());
   RectFill(m_pWindow->RPort, 
            m_OuterRect.Left(),
            m_OuterRect.Top(),
@@ -181,7 +183,7 @@ bool ProgressWindow::Open(InitialPosition initialPos)
                TAG_DONE);
 
   // Drawing the '0%' and '100%' texts
-  SetAPen(m_pWindow->RPort, m_Screen.Pens().Text());
+  SetAPen(m_pWindow->RPort,m_Pens.Text());
 
   Move(m_pWindow->RPort,
        (m_OuterRect.Left() + m_ProgressRect.Left()) / 2 - m_TextZeroWidth / 2,
@@ -270,7 +272,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   }
 
   // Set color to <blue> for painting the progress bar
-  SetAPen(m_pWindow->RPort, m_Screen.Pens().Fill());
+  SetAPen(m_pWindow->RPort,m_Pens.Fill());
 
   // Fill the progress bar area
   RectFill(m_pWindow->RPort,
@@ -281,7 +283,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
 
   // Set color to <background> for painting the grey background of the
   // yet uncovered area of the progress bar
-  SetAPen(m_pWindow->RPort, m_Screen.Pens().Background());
+  SetAPen(m_pWindow->RPort,m_Pens.Background());
 
   // NOTE: The following condition is a workaround because std::string
   // curently has no != overload

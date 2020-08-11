@@ -5,8 +5,9 @@
 
 #include <exec/ports.h>
 
-#include "Rect.h"
+#include "ADiffViewPens.h"
 #include "OpenScreenBase.h"
+#include "Rect.h"
 #include "WindowBase.h"
 
 /**
@@ -19,6 +20,7 @@ class ProgressWindow : public WindowBase
 {
 public:
   ProgressWindow(ScreenBase& screen,
+                 const ADiffViewPens& pens,
                  struct MsgPort* pIdcmpMsgPort,
                  bool& isCancelRequested,
                  MenuBase* pMenu);
@@ -55,6 +57,8 @@ public:
 
 
 private:
+  const ADiffViewPens& m_Pens;
+
   /**
    * IDs to help to interpret the events of this window's Gadtools
    * gadgets

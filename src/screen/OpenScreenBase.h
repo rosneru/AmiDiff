@@ -5,7 +5,6 @@
 #include <intuition/intuition.h>
 #include <intuition/screens.h>
 
-#include "ADiffViewPens.h"
 #include "ADiffViewSettings.h"
 
 /**
@@ -46,11 +45,6 @@ public:
   APTR GadtoolsVisualInfo();
 
   /**
-   * Returns the pens to be used for drawing
-   */
-  const ADiffViewPens& Pens() const;
-
-  /**
    * Returns the number of windows currently open on this screen.
    */
   size_t NumOpenWindows() const;
@@ -76,7 +70,6 @@ protected:
   struct DrawInfo* m_pDrawInfo;
   struct TextFont* m_pTextFont;
 
-  ADiffViewPens m_Pens;
   const ADiffViewSettings& m_Settings;
 
   size_t m_NumWindowsOpen;

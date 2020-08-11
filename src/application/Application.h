@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "ADiffViewArgs.h"
+#include "ADiffViewPens.h"
 #include "ADiffViewPorts.h"
 #include "ADiffViewSettings.h"
 #include "MenuFilesWindow.h"
@@ -57,6 +58,7 @@ private:
   bool m_IsAppWindow;
   bool m_IsAppIcon;
 
+  ADiffViewPens m_Pens;
   MenuFilesWindow m_FilesWindowMenu;
   MenuDiffWindow m_DiffWindowMenu;
   ADiffViewPorts m_Ports;

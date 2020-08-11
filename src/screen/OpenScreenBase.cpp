@@ -10,7 +10,6 @@ extern struct IntuitionBase* IntuitionBase;
 ScreenBase::ScreenBase(const ADiffViewSettings& settings)
   : m_pIntuiScreen(NULL),
     m_pDrawInfo(NULL),
-    m_Pens(m_pIntuiScreen, m_pDrawInfo, settings),
     m_Settings(settings),
     m_NumWindowsOpen(0),
     m_pVisualInfo(NULL)
@@ -46,11 +45,6 @@ struct TextAttr* ScreenBase::IntuiTextAttr()
 APTR ScreenBase::GadtoolsVisualInfo()
 {
   return m_pVisualInfo;
-}
-
-const ADiffViewPens& ScreenBase::Pens() const
-{
-  return m_Pens;
 }
 
 size_t ScreenBase::NumOpenWindows() const
