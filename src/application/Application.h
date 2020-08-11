@@ -51,7 +51,6 @@ private:
   std::string m_LeftFilePath;
   std::string m_RightFilePath;
 
-
   bool m_IsCancelRequested;
   bool m_IsExitRequested;
   bool m_IsExitAllowed;
