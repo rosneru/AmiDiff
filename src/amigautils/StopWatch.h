@@ -24,7 +24,7 @@ public:
   /**
    * Destroys the the stopwatch and disposed all opened resources
    */
-  ~StopWatch();
+  virtual ~StopWatch();
 
   /**
    * Starts or re-starts the stop watch.
