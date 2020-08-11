@@ -137,7 +137,7 @@ private:
   /**
    * This is the algorithm to find the Shortest Middle Snake (SMS)
    */
-  Pair sms(long lowerA, long upperA, long lowerB, long upperB);
+  int64_t sms(long lowerA, long upperA, long lowerB, long upperB);
 
 
   /**

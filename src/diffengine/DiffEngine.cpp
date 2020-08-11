@@ -250,15 +250,17 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
   }
   else
   {
-    Pair smsrd = sms(lowerA, upperA, lowerB, upperB);
-    lcs(lowerA, smsrd.Left(), lowerB, smsrd.Top());
+    int64_t smsrd = sms(lowerA, upperA, lowerB, upperB);
+    int32_t left = (smsrd & 0xffffffff00000000) >> 32;
+    int32_t top = smsrd & 0xffffffff;
+    lcs(lowerA, left, lowerB, top);
 
     if(m_IsCancelRequested)
     {
       throw "User abort";
     }
 
-    lcs(smsrd.Left(), upperA, smsrd.Top(), upperB);
+    lcs(left, upperA, top, upperB);
 
     if(m_IsCancelRequested)
     {
@@ -268,9 +270,9 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 }
 
 
-Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
+int64_t DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
 {
-  Pair result;
+  int64_t result;
 
   // the k-line to start the forward search
   long downK = lowerA - lowerB;
@@ -334,8 +336,11 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
       {
         if (m_pUpVector[upOffset + k] <= m_pDownVector[downOffset + k])
         {
-          result.Set(m_pDownVector[downOffset + k],
-                  m_pDownVector[downOffset + k] - k);
+          // Return two long values as one 'long long' / int64 value
+          // with the first result value taking the left 32 bits of the
+          // result and the right reult value taking the right 32 bits.
+          result = (((int64_t)m_pDownVector[downOffset + k]) << 32)
+                 + (m_pDownVector[downOffset + k] - k);
 
           return result;
         }
@@ -379,8 +384,11 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
       {
         if (m_pUpVector[upOffset + k] <= m_pDownVector[downOffset + k])
         {
-          result.Set(m_pDownVector[downOffset + k],
-                  m_pDownVector[downOffset + k] - k);
+          // Return two long values as one 'long long' / int64 value
+          // with the first result value taking the left 32 bits of the
+          // result and the right reult value taking the right 32 bits.
+          result = (((int64_t)m_pDownVector[downOffset + k]) << 32)
+                 + m_pDownVector[downOffset + k] - k;
 
           return result;
         }
@@ -389,8 +397,7 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
   }
 
   // The algorithm should never come here
-  Pair resultInvalid;
-  return resultInvalid;
+  return 0;
 }
 
 
