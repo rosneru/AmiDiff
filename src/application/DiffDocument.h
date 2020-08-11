@@ -1,7 +1,7 @@
 #ifndef DIFF_DOCUMENT_H
 #define DIFF_DOCUMENT_H
 
-#include <vector>
+#include <list>
 #include <string>
 
 #include "DiffInputFileAmiga.h"
@@ -65,14 +65,15 @@ private:
   DiffInputFileAmiga m_RightSrcFile;
   DiffOutputFileAmiga m_LeftDiffFile;
   DiffOutputFileAmiga m_RightDiffFile;
-  std::vector<size_t> m_DiffIndices;
-  size_t m_DiffIndicesIdx;
+
+  std::list<size_t> m_DiffIndices;
+
   DiffEngine m_DiffEngine;
 
+  std::list<size_t>::iterator m_DiffIndicesIterator;
+
   bool m_LineNumbersEnabled;
-
   long m_DiffTime;
-
   size_t m_MaxLineLength;
 };
 

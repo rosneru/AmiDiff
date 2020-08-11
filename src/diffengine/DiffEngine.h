@@ -1,7 +1,7 @@
 #ifndef DIFF_ENGINE_H
 #define DIFF_ENGINE_H
 
-#include <vector>
+#include <list>
 
 #include "Pair.h"
 #include "DiffLine.h"
@@ -72,7 +72,7 @@ public:
              ProgressReporter& progress,
              const char* pProgressDescription,
              bool& isCancelRequested,
-             std::vector<size_t>& diffIndices);
+             std::list<size_t>& diffIndices);
 
   virtual ~DiffEngine();
 
@@ -83,7 +83,7 @@ public:
   long NumDeleted() const;
 
 protected:
-  std::vector<size_t>& m_DiffIndices;
+  std::list<size_t>& m_DiffIndices;
 
 private:
   DiffInputFileBase& m_AIn;

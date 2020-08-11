@@ -1,6 +1,6 @@
-
 #include <clib/exec_protos.h>
 #include <exec/memory.h>
+
 #include "DiffDocument.h"
 #include "DiffEngine.h"
 
@@ -24,8 +24,6 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
                    lineNumbersEnabled),
     m_LeftDiffFile(m_LeftSrcFile, m_Pool.Header()),
     m_RightDiffFile(m_RightSrcFile, m_Pool.Header()),
-    m_DiffIndices(),
-    m_DiffIndicesIdx(0),
     m_DiffEngine(m_LeftSrcFile,
                  m_RightSrcFile,
                  m_LeftDiffFile,
@@ -34,6 +32,7 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
                  "Comparing the files",
                  isCancelRequested,
                  m_DiffIndices),
+    m_DiffIndicesIterator(m_DiffIndices.begin()),
     m_LineNumbersEnabled(lineNumbersEnabled),
     m_DiffTime(0),
     m_MaxLineLength(0)
@@ -131,56 +130,44 @@ size_t DiffDocument::NumDifferences() const
 
 size_t DiffDocument::FirstDiffIndex() 
 {
-
-  m_DiffIndicesIdx = m_DiffIndices.front();
-  return m_DiffIndices[m_DiffIndicesIdx];
+  m_DiffIndicesIterator = m_DiffIndices.begin();
+  return (*m_DiffIndicesIterator);
 }
 
 size_t DiffDocument::LastDiffIndex() 
 {
-  if(m_DiffIndices.size() == 0)
-  {
-    return 0;
-  }
+  // Get past-to-last item
+  m_DiffIndicesIterator = m_DiffIndices.end();
 
-  m_DiffIndicesIdx = m_DiffIndices.back();
-  return m_DiffIndices[m_DiffIndicesIdx];
+  // BAck to last valid item
+  m_DiffIndicesIterator--;
+  return (*m_DiffIndicesIterator);
 }
 
 size_t DiffDocument::NextDiffIndex() 
 {
-  if(m_DiffIndices.size() == 0)
+  m_DiffIndicesIterator++;
+
+  if(m_DiffIndicesIterator == m_DiffIndices.end())
   {
-    return 0;
+    // Avoid overflow: back to last valid item
+    m_DiffIndicesIterator--;
   }
 
-  if(m_DiffIndicesIdx > (m_DiffIndices.size() - 1))
-  {
-    return m_DiffIndices.back();
-  }
-
-  m_DiffIndicesIdx++;
-  return m_DiffIndices[m_DiffIndicesIdx];
+  return (*m_DiffIndicesIterator);
 }
 
 size_t DiffDocument::PrevDiffIndex() 
 {
-  if(m_DiffIndices.size() == 0)
+  if(m_DiffIndicesIterator != m_DiffIndices.begin())
   {
-    return 0;
+    // Only if not already the first item
+    m_DiffIndicesIterator--;
   }
-
-  if(m_DiffIndicesIdx < 1)
-  {
-    return m_DiffIndices.front();
-  }
-
-  m_DiffIndicesIdx--;
-  return m_DiffIndices[m_DiffIndicesIdx];
+  return (*m_DiffIndicesIterator);
 }
 
 bool DiffDocument::LineNumbersEnabled() const
 {
   return m_LineNumbersEnabled;
-
 }

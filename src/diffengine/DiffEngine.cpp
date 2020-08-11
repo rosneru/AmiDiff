@@ -9,7 +9,7 @@ DiffEngine::DiffEngine(DiffInputFileBase& aIn,
                        ProgressReporter& progress,
                        const char* pProgressDescription,
                        bool& isCancelRequested,
-                       std::vector<size_t>& diffIndices)
+                       std::list<size_t>& diffIndices)
   : m_DiffIndices(diffIndices),
     m_AIn(aIn),
     m_BIn(bIn),
