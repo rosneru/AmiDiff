@@ -44,15 +44,12 @@ public:
   long Pick(bool bKeepStartPoint = false);
 
 private:
-  ULONG m_ClocksPerSecond;
   struct MsgPort* m_pMsgPort;
   struct timerequest* m_pTimeRequest;
-  bool m_bInitialized;
+
+  ULONG m_ClocksPerSecond;
   struct EClockVal m_StartClock;
   struct EClockVal m_StopClock;
-
-  void initTimerDevice();
-  void freeTimerDevice();
 };
 
 #endif
