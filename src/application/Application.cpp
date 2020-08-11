@@ -93,7 +93,6 @@ Application::Application(ScreenBase& screen,
   // Create a MessagePort for Workbench app messages if needed
   if(m_IsAppWindow || m_IsAppIcon)
   {
-
     if(m_IsAppWindow)
     {
       // FilesWindow should be an AppWindow
@@ -106,12 +105,12 @@ Application::Application(ScreenBase& screen,
       if(m_Icon != NULL)
       {
         m_pAppIcon = AddAppIcon(0L,
-                             0L,
-                             (UBYTE*)"ADiffView",
-                             m_Ports.Workbench(),
-                             0,
-                             m_Icon,
-                             TAG_DONE);
+                                0L,
+                                (UBYTE*)"ADiffView",
+                                m_Ports.Workbench(),
+                                0,
+                                m_Icon,
+                                TAG_DONE);
       }
     }
   }
@@ -156,11 +155,12 @@ Application::~Application()
     m_Icon = NULL;
   }
 
-  // Ensure that all windows are closed before deleting the message
-  // ports
-  m_DiffWindow.Close();
-  m_FilesWindow.Close();
-  m_ProgressWindow.Close();
+  // Ensure that all windows are closed
+  std::vector<WindowBase*>::iterator it;
+  for(it = m_AllWindows.begin(); it != m_AllWindows.end(); it++)
+  {
+    (*it)->Close();
+  }
 }
 
 
@@ -304,20 +304,14 @@ void Application::handleIdcmpMessages()
       return;
     }
 
-    //
     // All other idcmp messages are handled in the appropriate window
-    //
-    if(pMsgWindow == m_DiffWindow.IntuiWindow())
+    std::vector<WindowBase*>::iterator it;
+    for(it = m_AllWindows.begin(); it != m_AllWindows.end(); it++)
     {
-      m_DiffWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
-    }
-    else if(pMsgWindow == m_FilesWindow.IntuiWindow())
-    {
-      m_FilesWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
-    }
-    else if(pMsgWindow == m_ProgressWindow.IntuiWindow())
-    {
-      m_ProgressWindow.HandleIdcmp(msgClass, msgCode, msgIAddress);
+      if(pMsgWindow == (*it)->IntuiWindow())
+      {
+        (*it)->HandleIdcmp(msgClass, msgCode, msgIAddress);
+      }
     }
   }
 }
