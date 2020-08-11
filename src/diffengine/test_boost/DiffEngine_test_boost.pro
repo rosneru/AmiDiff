@@ -9,7 +9,8 @@ QMAKE_CXXFLAGS += -std=c++11 -Wall -Wconversion -Wextra -pedantic #-Weffc++
 LIBS += -lncurses \
         -lboost_unit_test_framework \
 
-INCLUDEPATH +=  ../ 
+INCLUDEPATH +=  .. / 
+                ../model \
 
 
 SOURCES += \
@@ -22,7 +23,7 @@ SOURCES += \
     ../DiffOutputFileBase.cpp \
     ../DiffOutputFileLinux.cpp \
     ../DiffLine.cpp \
-    ../Pair.cpp
+    ../../model/Pair.cpp
 
 
 HEADERS += \
@@ -34,4 +35,4 @@ HEADERS += \
     ../DiffOutputFileBase.h \
     ../DiffOutputFileLinux.h \
     ../DiffLine.h \
-    ../Pair.h 
+    ../../model/Pair.h 

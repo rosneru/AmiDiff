@@ -3,7 +3,6 @@
 
 #include <list>
 
-#include "Pair.h"
 #include "DiffLine.h"
 #include "DiffInputFileBase.h"
 #include "DiffOutputFileBase.h"

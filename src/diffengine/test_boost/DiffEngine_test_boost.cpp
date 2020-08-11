@@ -15,7 +15,7 @@
 #include <boost/test/framework.hpp>
 
 #include <string>
-#include <vector>
+#include <list>
 
 #include "DiffInputFileLinux.h"
 #include "DiffOutputFileLinux.h"
@@ -81,7 +81,7 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
   try
   {
     bool cancelRequested = false;
-    std::vector<size_t> m_DiffIndices;
+    std::list<size_t> m_DiffIndices;
 
     DiffInputFileLinux srcA(cancelRequested, 
                             "testfiles/testcase_02_left.txt",
@@ -145,6 +145,15 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
     BOOST_CHECK_EQUAL(diffB.GetLineText(9), "GGGG");
     BOOST_CHECK_EQUAL(diffB.GetLineState(9), DiffLine::Normal);
 
+    // This test has 2 difference blocks of lines added to the right side
+    BOOST_CHECK_EQUAL(diffEngine.NumAdded(), 2);
+    BOOST_CHECK_EQUAL(m_DiffIndices.size(), 2);
+
+    // Now verify that the two difference blocks start at the line 
+    // indexes 2 and 7
+    std::list<size_t>::iterator it = m_DiffIndices.begin();
+    BOOST_CHECK_EQUAL((*it++), 2);
+    BOOST_CHECK_EQUAL((*it), 7);
   }
   catch(const char* pError)
   {
@@ -244,7 +253,7 @@ BOOST_AUTO_TEST_CASE( testcase_03_simple )
   {
     bool cancelRequested = false;
     bool diffOk = false;
-    std::vector<size_t> m_DiffIndices;
+    std::list<size_t> m_DiffIndices;
 
     DiffInputFileLinux srcA(cancelRequested, 
                             "testfiles/testcase_03_FB101-02-Simple_left.txt",
@@ -327,7 +336,7 @@ BOOST_AUTO_TEST_CASE( testcase_03_var2 )
   {
     bool cancelRequested = false;
     bool diffOk = false;
-    std::vector<size_t> m_DiffIndices;
+    std::list<size_t> m_DiffIndices;
 
     DiffInputFileLinux srcA(cancelRequested, 
                             "testfiles/testcase_03_var2_left.txt",
@@ -989,7 +998,7 @@ BOOST_AUTO_TEST_CASE( testcase_crash )
   {
     bool cancelRequested = false;
     bool diffOk = false;
-    std::vector<size_t> m_DiffIndices;
+    std::list<size_t> m_DiffIndices;
 
     DiffInputFileLinux srcA(cancelRequested, 
                             "CMakeLists.txt",
@@ -1004,10 +1013,10 @@ BOOST_AUTO_TEST_CASE( testcase_crash )
     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
                           "Comparing...", cancelRequested, m_DiffIndices);
 
-    printf("Left file:\n");
-    printFile(diffA);
-    printf("\nRight file:\n");
-    printFile(diffB);
+    // printf("Left file:\n");
+    // printFile(diffA);
+    // printf("\nRight file:\n");
+    // printFile(diffB);
 
     BOOST_CHECK_EQUAL(diffEngine.NumDifferences(), 7);
     BOOST_CHECK_EQUAL(diffEngine.NumAdded(), 5);
