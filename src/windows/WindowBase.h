@@ -34,6 +34,30 @@ public:
                 ///> the four last parameters of SetInitialPosition
   };
 
+
+  /**
+   * Creates a new window object
+   *
+   * @param pScreenBase
+   * Screen on which the window will occur at opening time
+   *
+   * @param pIdcmpMsgPort
+   * Message port which is used for this window. Can be shared
+   * with other windows.
+   *
+   * @param numOpenWindows
+   * Reference to a counter variable. Will be increased at each
+   * successful opening and decreased at each closing of a window.
+   *
+   */
+  WindowBase(ScreenBase& screen, 
+             struct MsgPort* pIdcmpMsgPort,
+             MenuBase* pMenu);
+
+
+  virtual ~WindowBase();
+
+
   /**
    * IMPORTENT: Resizable childs should override this and re-paint their
    * contents according the new size.
@@ -188,29 +212,6 @@ protected:
   MenuBase* m_pMenu;
   struct TextFont* m_pTextFont;
   std::string m_Title;
-
-
-  /**
-   * Creates a new window object
-   *
-   * @param pScreenBase
-   * Screen on which the window will occur at opening time
-   *
-   * @param pIdcmpMsgPort
-   * Message port which is used for this window. Can be shared
-   * with other windows.
-   *
-   * @param numOpenWindows
-   * Reference to a counter variable. Will be increased at each
-   * successful opening and decreased at each closing of a window.
-   *
-   */
-  WindowBase(ScreenBase& screen, 
-             struct MsgPort* pIdcmpMsgPort,
-             MenuBase* pMenu);
-
-
-  virtual ~WindowBase();
 
 
   /**

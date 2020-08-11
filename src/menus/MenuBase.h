@@ -16,7 +16,7 @@
 class MenuBase
 {
 public:
-  ~MenuBase();
+  virtual ~MenuBase();
 
   /**
    * Creating the menu and its layout depending on the layout of the

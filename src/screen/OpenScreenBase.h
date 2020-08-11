@@ -22,7 +22,7 @@ class ScreenBase
 {
 public:
   ScreenBase(const ADiffViewSettings& settings);
-  virtual ~ScreenBase() = 0; // Make it abstract.
+  virtual ~ScreenBase();
 
   /**
    * Returns the intuition screen structure or NULL if screen is not open
@@ -50,6 +50,9 @@ public:
    */
   const ADiffViewPens& Pens() const;
 
+  /**
+   * Returns the number of windows currently open on this screen.
+   */
   size_t NumOpenWindows() const;
 
   void IncreaseNumOpenWindows();
@@ -61,8 +64,10 @@ public:
   void ToFront() const;
 
   /**
-   * Returns true if the screen is in a Hires mode which means it has
-   * non-square pixels.
+   * Returns true if the screen is in a Hires mode which probably means
+   * it has non-square pixels.
+   * 
+   * NOTE: If the screen is interlaced the pixels are square, 'though.
    */
   bool IsHiresMode() const;
 

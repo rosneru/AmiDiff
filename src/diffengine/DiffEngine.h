@@ -74,7 +74,7 @@ public:
              bool& isCancelRequested,
              std::vector<size_t>& diffIndices);
 
-  ~DiffEngine();
+  virtual ~DiffEngine();
 
   long NumDifferences() const;
 

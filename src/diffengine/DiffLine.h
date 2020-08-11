@@ -43,7 +43,7 @@ public:
            const char* pFormattedLineNumber);
 
 
-  ~DiffLine();
+  virtual ~DiffLine();
 
   /**
    * Returns the text of the diff line

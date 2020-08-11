@@ -13,7 +13,7 @@ class Pair
 public:
   Pair(long left, long top);
   Pair();
-  ~Pair();
+  virtual ~Pair();
 
   long Left() const;
   long Top() const;

@@ -19,7 +19,7 @@ public:
                 struct DrawInfo*& pDrawInfo,
                 const ADiffViewSettings& settings);
 
-  ~ADiffViewPens();
+  virtual ~ADiffViewPens();
 
   /**
    * Create the color pens needed by ADiffView.
