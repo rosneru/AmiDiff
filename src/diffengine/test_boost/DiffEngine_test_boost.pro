@@ -9,7 +9,7 @@ QMAKE_CXXFLAGS += -std=c++11 -Wall -Wconversion -Wextra -pedantic #-Weffc++
 LIBS += -lncurses \
         -lboost_unit_test_framework \
 
-INCLUDEPATH +=  .. / 
+INCLUDEPATH +=  .. \
                 ../../model \
 
 
