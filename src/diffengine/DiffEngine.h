@@ -6,7 +6,7 @@
 #include "DiffLine.h"
 #include "DiffInputFileBase.h"
 #include "DiffOutputFileBase.h"
-
+#include "Pair.h"
 #include "ProgressReporter.h"
 
 /**
@@ -136,7 +136,7 @@ private:
   /**
    * This is the algorithm to find the Shortest Middle Snake (SMS)
    */
-  int64_t sms(long lowerA, long upperA, long lowerB, long upperB);
+  Pair sms(long lowerA, long upperA, long lowerB, long upperB);
 
 
   /**

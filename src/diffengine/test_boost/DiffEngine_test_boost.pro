@@ -10,7 +10,7 @@ LIBS += -lncurses \
         -lboost_unit_test_framework \
 
 INCLUDEPATH +=  .. / 
-                ../model \
+                ../../model \
 
 
 SOURCES += \
@@ -35,4 +35,4 @@ HEADERS += \
     ../DiffOutputFileBase.h \
     ../DiffOutputFileLinux.h \
     ../DiffLine.h \
-    ../../model/Pair.h 
+    ../../model/Pair.h
