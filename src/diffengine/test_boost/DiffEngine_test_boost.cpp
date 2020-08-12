@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
 
     // Now verify that the two difference blocks start at the line 
     // indexes 2 and 7
-    std::list<size_t>::iterator it;
+    std::list<size_t>::iterator it = m_DiffIndices.begin();
     BOOST_CHECK_EQUAL((*it++), 2);
     BOOST_CHECK_EQUAL((*it), 7);
   }

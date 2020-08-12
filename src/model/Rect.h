@@ -16,8 +16,9 @@ public:
   Rect(long left, long top, long right, long bottom);
   Rect(long left, long top);
 
-  void Set(long left, long top, long right, long bottom);
-  void SetWidthHeight(long width, long height);
+  virtual void Set(long left, long top, long right, long bottom);
+  virtual void SetLeftTop(long left, long top);
+  virtual void SetWidthHeight(long width, long height);
 
   bool HasSize() const;
   size_t Area() const;

@@ -41,6 +41,12 @@ void Rect::Set(long left, long top, long right, long bottom)
   m_WordWidth = (((right - left) + 15) & -16) >> 4;
 }
 
+void Rect::SetLeftTop(long left, long top)
+{
+  m_Left = left;
+  m_Top = top;
+}
+
 void Rect::SetWidthHeight(long width, long height)
 {
   m_Right = m_Left + width;

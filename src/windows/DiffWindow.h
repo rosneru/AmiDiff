@@ -9,6 +9,7 @@
 #include "ADiffViewPens.h"
 #include "DiffDocument.h"
 #include "DiffLine.h"
+#include "DiffWindowTextArea.h"
 #include "OpenScreenBase.h"
 #include "ScrollbarWindow.h"
 
@@ -146,20 +147,8 @@ private:
   ULONG m_IndentX;  ///> X-distance of the text areas to window borders
   ULONG m_IndentY;  ///> Y-distance of the text areas to window borders
 
-  ULONG m_TextArea1Left;      ///> X-position of the 1st text area
-  ULONG m_TextArea2Left;      ///> X-position of the 2nd text area
-  ULONG m_TextAreasTop;       ///> Y-position of the text areas
-  ULONG m_TextAreasWidth;     ///> Width of each text area
-  ULONG m_TextAreasHeight;    ///> Height of each of the text areas
-
-  LONG m_ScrollArea1XMinHScroll;
-  LONG m_ScrollArea1XMinVScroll;
-  LONG m_ScrollArea1XMax;
-  LONG m_ScrollArea2XMinHScroll;
-  LONG m_ScrollArea2XMinVScroll;
-  LONG m_ScrollArea2XMax;
-  LONG m_ScrollAreasYMin;
-  LONG m_ScrollAreasYMax;
+  DiffWindowTextArea m_TextArea1;
+  DiffWindowTextArea m_TextArea2;
 
   char m_ChangedText[20];
   char m_AddedText[20];

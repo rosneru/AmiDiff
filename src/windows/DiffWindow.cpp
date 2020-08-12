@@ -41,19 +41,8 @@ DiffWindow::DiffWindow(ScreenBase& screen,
     m_NumLines(0),
     m_IndentX(5),
     m_IndentY(0),
-    m_TextArea1Left(0),
-    m_TextArea2Left(0),
-    m_TextAreasTop(0),
-    m_TextAreasWidth(0),
-    m_TextAreasHeight(0),
-    m_ScrollArea1XMinHScroll(0),
-    m_ScrollArea1XMinVScroll(0),
-    m_ScrollArea1XMax(0),
-    m_ScrollArea2XMinHScroll(0),
-    m_ScrollArea2XMinVScroll(0),
-    m_ScrollArea2XMax(0),
-    m_ScrollAreasYMin(0),
-    m_ScrollAreasYMax(0)
+    m_TextArea1(m_LineNumsWidth_pix),
+    m_TextArea2(m_LineNumsWidth_pix)
 {
   // If parent window already defined gadgets, we store the last of
   // these gadgeds and the count of defined gadgets. They are needed
@@ -159,8 +148,7 @@ bool DiffWindow::Open(InitialPosition initialPos)
   // shortly before opening, so the Open() call is done afterwards.
   //
   m_IndentY = 2 *  m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
-  m_TextArea1Left = m_IndentX;
-  m_TextAreasTop = m_IndentY;
+  m_TextArea1.SetLeftTop(m_IndentX, m_IndentY);
 
   m_TextAttr.ta_Name = m_Screen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
   m_TextAttr.ta_YSize = m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
@@ -403,14 +391,16 @@ void DiffWindow::XChangedHandler(size_t newX)
 
   // Clear both text areas completely
   EraseRect(m_pWindow->RPort,
-    m_TextArea1Left + 2, m_TextAreasTop + 2,
-    m_TextArea1Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+            m_TextArea1.Left() + 2, 
+            m_TextArea1.Top() + 2,
+            m_TextArea1.Right() - 3,
+            m_TextArea1.Bottom() - 3);
 
   EraseRect(m_pWindow->RPort,
-    m_TextArea2Left + 2, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+            m_TextArea2.Left() + 2, 
+            m_TextArea2.Top() + 2,
+            m_TextArea2.Right() - 3,
+            m_TextArea2.Bottom() - 3);
 
   paintDocuments(false);
 
@@ -460,16 +450,17 @@ void DiffWindow::YChangedHandler(size_t newY)
   //
   m_Y = newY;
 
-  // Clear both text areas completely
   EraseRect(m_pWindow->RPort,
-    m_TextArea1Left + 2, m_TextAreasTop + 2,
-    m_TextArea1Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+            m_TextArea1.Left() + 2, 
+            m_TextArea1.Top() + 2,
+            m_TextArea1.Right() - 3,
+            m_TextArea1.Bottom() - 3);
 
   EraseRect(m_pWindow->RPort,
-    m_TextArea2Left + 2, m_TextAreasTop + 2,
-    m_TextArea2Left + m_TextAreasWidth - 3,
-    m_TextAreasTop + m_TextAreasHeight - 3);
+            m_TextArea2.Left() + 2, 
+            m_TextArea2.Top() + 2,
+            m_TextArea2.Right() - 3,
+            m_TextArea2.Bottom() - 3);
 
   paintDocuments(false);
 }
@@ -564,19 +555,19 @@ void DiffWindow::createGadgets()
   struct NewGadget newGadget;
   newGadget.ng_TextAttr   = m_Screen.IntuiTextAttr();
   newGadget.ng_VisualInfo = m_Screen.GadtoolsVisualInfo();
-  newGadget.ng_LeftEdge   = m_TextArea1Left;
-  newGadget.ng_TopEdge    = m_TextAreasTop - m_FontHeight - 4;
+  newGadget.ng_LeftEdge   = m_TextArea1.Left();
+  newGadget.ng_TopEdge    = m_TextArea1.Top() - m_FontHeight - 4;
   newGadget.ng_Height     = m_FontHeight + 2;
   newGadget.ng_Flags      = PLACETEXT_RIGHT | NG_HIGHLABEL;
   newGadget.ng_GadgetText = NULL;
 
-  if(m_TextAreasWidth == 0)
+  if(m_TextArea1.Width() == 0)
   {
     newGadget.ng_Width    = 120; // Some random default
   }
   else
   {
-    newGadget.ng_Width    = m_TextAreasWidth;
+    newGadget.ng_Width    = m_TextArea1.Width();
   }
 
   const char* pFileName = NULL;
@@ -597,9 +588,9 @@ void DiffWindow::createGadgets()
                                    GTTX_Text, pFileName,
                                    TAG_DONE);
 
-  if(m_TextArea2Left > 0)
+  if(m_TextArea2.Left() > 0)
   {
-    newGadget.ng_LeftEdge = m_TextArea2Left;
+    newGadget.ng_LeftEdge = m_TextArea2.Left();
   }
   else
   {
@@ -649,13 +640,14 @@ void DiffWindow::calcSizes()
   // (Re-)calculate some values that may have be changed by re-sizing
   ScrollbarWindow::calcSizes();
 
-  m_TextAreasWidth = m_InnerWindowRight - m_TextArea1Left - m_IndentX;
-  m_TextAreasWidth /= 2;
+  long textAreasWidth = m_InnerWindowRight - m_TextArea1.Left() - m_IndentX;
+  textAreasWidth /= 2;
 
   // Pre-calc text areas heigt. Will later be limited to int multiples.
-  m_TextAreasHeight = m_InnerWindowBottom - m_TextAreasTop - m_IndentY;
+  long textAreasHeight = m_InnerWindowBottom - m_TextArea1.Top() - m_IndentY;
 
-  m_TextArea2Left = m_TextArea1Left + m_TextAreasWidth;
+  m_TextArea2.SetLeftTop(m_TextArea1.Left() + textAreasWidth, 
+                         m_TextArea1.Top());
 
   if((m_FontHeight_pix == 0) || (m_FontWidth_pix == 0))
   {
@@ -663,13 +655,13 @@ void DiffWindow::calcSizes()
   }
 
   // Calculate how many lines fit into each text area
-  m_MaxTextAreaLines = (m_TextAreasHeight - 4) /  m_FontHeight_pix;
+  m_MaxTextAreaLines = (textAreasHeight - 4) /  m_FontHeight_pix;
 
   // Limit text areas heigt to int multiples.
-  m_TextAreasHeight = m_MaxTextAreaLines * m_FontHeight_pix + 3;
+  textAreasHeight = m_MaxTextAreaLines * m_FontHeight_pix + 3;
 
   // Calculate how many chars fit on each line in each text area
-  m_MaxTextAreaChars = (m_TextAreasWidth - 7 - m_LineNumsWidth_pix)
+  m_MaxTextAreaChars = (textAreasWidth - 7 - m_LineNumsWidth_pix)
                      / m_FontWidth_pix;
 
   if(m_pDocument != NULL)
@@ -685,22 +677,15 @@ void DiffWindow::calcSizes()
   // Define the dimensions for the scroll areas
   // NOTE: The XMin values depend on if the scroll is done horizontally
   //       or vertically. On vertical scroll the line numbers are
-  //       scrolled, too. On horizontal scroll, they're not.
+  //       scrolled too. On horizontal scroll, they're not.
   //
   LONG textAreasTextWidth_pix = m_MaxTextAreaChars * m_FontWidth_pix;
   textAreasTextWidth_pix += m_LineNumsWidth_pix;
 
-  m_ScrollArea1XMinHScroll = m_TextArea1Left + m_LineNumsWidth_pix + 3;
-  m_ScrollArea1XMinVScroll = m_TextArea1Left + 3;
-  m_ScrollArea1XMax = m_TextArea1Left + textAreasTextWidth_pix + 2;
-
-  m_ScrollArea2XMinHScroll = m_TextArea2Left + m_LineNumsWidth_pix + 3;
-  m_ScrollArea2XMinVScroll = m_TextArea2Left + 3;
-  m_ScrollArea2XMax = m_TextArea2Left + textAreasTextWidth_pix + 2;
-
-  m_ScrollAreasYMin = m_TextAreasTop + 1;
-  m_ScrollAreasYMax = m_TextAreasTop + m_TextAreasHeight - 3;
-
+  // Set the width and heigtht lof the text areas. Internally the
+  // HScroll and VScroll areas are also set.
+  m_TextArea1.SetWidthHeight(textAreasTextWidth_pix, textAreasHeight);
+  m_TextArea2.SetWidthHeight(textAreasTextWidth_pix, textAreasHeight);
 }
 
 
@@ -720,7 +705,7 @@ void DiffWindow::resizeGadgets()
            0,
            0,
            m_InnerWindowRight,
-           m_TextAreasTop - 3);
+           m_TextArea1.Top() - 3);
 
   // Create the gadgets anew (with the new positions and size)
   createGadgets();
@@ -814,8 +799,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
     // Move rastport cursor to start of left line numbers block
     ::Move(&m_RPortLineNum,
-           m_TextArea1Left + indent + 2,
-           topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
+           m_TextArea1.Left() + indent + 2,
+           topEdge + m_TextArea1.Top() + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     const char* pLineNum = pLeftLine->LineNum();
@@ -825,8 +810,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 
     // Move rastport cursor to start of right line numbers block
     ::Move(&m_RPortLineNum,
-           m_TextArea2Left + indent + 2,
-           topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
+           m_TextArea2.Left() + indent + 2,
+           topEdge + m_TextArea1.Top() + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     pLineNum = pRightLine->LineNum();
@@ -845,8 +830,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   {
     // Move rastport cursor to start of left line
     ::Move(pRPort,
-          m_TextArea1Left + indent + m_LineNumsWidth_pix + 3,
-          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
+          m_TextArea1.Left() + indent + m_LineNumsWidth_pix + 3,
+          topEdge + m_TextArea1.Top() + m_FontBaseline_pix + 1);
 
     // Print left line
     Text(pRPort,
@@ -864,8 +849,8 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
   {
     // Move rastport cursor to start of right line
     ::Move(pRPort,
-          m_TextArea2Left  + indent + m_LineNumsWidth_pix + 3,
-          topEdge + m_TextAreasTop + m_FontBaseline_pix + 1);
+          m_TextArea2.Left()  + indent + m_LineNumsWidth_pix + 3,
+          topEdge + m_TextArea1.Top() + m_FontBaseline_pix + 1);
 
     // Print the right line
     Text(pRPort,
@@ -879,19 +864,19 @@ void DiffWindow::paintWindowDecoration()
 {
   // Create borders for the two text areas
   DrawBevelBox(m_pWindow->RPort,
-               m_TextArea1Left,
-               m_TextAreasTop,
-               m_TextAreasWidth,
-               m_TextAreasHeight,
+               m_TextArea1.Left(),
+               m_TextArea1.Top(),
+               m_TextArea1.Width(),
+               m_TextArea1.Height(),
                GT_VisualInfo, m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
   DrawBevelBox(m_pWindow->RPort,
-               m_TextArea2Left,
-               m_TextAreasTop,
-               m_TextAreasWidth,
-               m_TextAreasHeight,
+               m_TextArea2.Left(),
+               m_TextArea2.Top(),
+               m_TextArea2.Width(),
+               m_TextArea2.Height(),
                GT_VisualInfo, m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
@@ -905,12 +890,12 @@ void DiffWindow::paintStatusBar()
     return;
   }
 
-  int top = m_TextAreasTop + m_TextAreasHeight + m_InnerWindowBottom;
+  int top = m_TextArea1.Top() + m_TextArea1.Height() + m_InnerWindowBottom;
   top /= 2;
   top -= m_Screen.IntuiDrawInfo()->dri_Font->tf_Baseline;
   top++;
 
-  int left = m_TextArea1Left + 2;
+  int left = m_TextArea1.Left() + 2;
 
   // Clear the status bar area
   RectFill(&m_RPortAPenBackgr,
@@ -1039,18 +1024,18 @@ size_t DiffWindow::scrollRight(size_t numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  -numChars * m_FontWidth_pix, // n * width
                  0,
-                 m_ScrollArea1XMinHScroll,
-                 m_ScrollAreasYMin,
-                 m_ScrollArea1XMax,
-                 m_ScrollAreasYMax);
+                 m_TextArea1.HScroll().Left(),
+                 m_TextArea1.HScroll().Top(),
+                 m_TextArea1.HScroll().Right(),
+                 m_TextArea1.HScroll().Bottom());
 
   ScrollRasterBF(m_pWindow->RPort,
                  -numChars * m_FontWidth_pix,  // n * width
                  0,
-                 m_ScrollArea2XMinHScroll,
-                 m_TextAreasTop + 1,
-                 m_ScrollArea2XMax,
-                 m_ScrollAreasYMax);
+                 m_TextArea1.HScroll().Left(),
+                 m_TextArea1.Top() + 1,
+                 m_TextArea1.HScroll().Right(),
+                 m_TextArea1.HScroll().Bottom());
 
   // fill the gap with the previous chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
@@ -1116,18 +1101,18 @@ size_t DiffWindow::scrollLeft(size_t numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
                  0,
-                 m_ScrollArea1XMinHScroll,
-                 m_ScrollAreasYMin,
-                 m_ScrollArea1XMax,
-                 m_ScrollAreasYMax);
+                 m_TextArea1.HScroll().Left(),
+                 m_TextArea1.HScroll().Top(),
+                 m_TextArea1.HScroll().Right(),
+                 m_TextArea1.HScroll().Bottom());
 
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
                  0,
-                 m_ScrollArea2XMinHScroll,
-                 m_ScrollAreasYMin,
-                 m_ScrollArea2XMax,
-                 m_ScrollAreasYMax);
+                 m_TextArea1.HScroll().Left(),
+                 m_TextArea1.HScroll().Top(),
+                 m_TextArea1.HScroll().Right(),
+                 m_TextArea1.HScroll().Bottom());
 
   // Fill the gap with the following chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
@@ -1180,18 +1165,18 @@ size_t DiffWindow::scrollDown(size_t numLines)
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
-                 m_ScrollArea1XMinVScroll,
-                 m_ScrollAreasYMin,
-                 m_ScrollArea1XMax,
-                 m_ScrollAreasYMax);
+                 m_TextArea1.VScroll().Left(),
+                 m_TextArea1.HScroll().Top(),
+                 m_TextArea1.HScroll().Right(),
+                 m_TextArea1.HScroll().Bottom());
 
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
-                 m_ScrollArea2XMinVScroll,
-                 m_ScrollAreasYMin,
-                 m_ScrollArea2XMax,
-                 m_ScrollAreasYMax);
+                 m_TextArea2.VScroll().Left(),
+                 m_TextArea2.HScroll().Top(),
+                 m_TextArea2.HScroll().Right(),
+                 m_TextArea2.HScroll().Bottom());
 
   // Fill the gap with the previous text lines
   for(size_t i = 0; i < numLines; i++)
@@ -1249,18 +1234,18 @@ size_t DiffWindow::scrollUp(size_t numLines)
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  numLines * m_FontHeight_pix,
-                 m_ScrollArea1XMinVScroll,
-                 m_ScrollAreasYMin,
-                 m_ScrollArea1XMax,
-                 m_ScrollAreasYMax);
+                 m_TextArea1.VScroll().Left(),
+                 m_TextArea1.HScroll().Top(),
+                 m_TextArea1.HScroll().Right(),
+                 m_TextArea1.HScroll().Bottom());
 
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  numLines * m_FontHeight_pix,
-                 m_ScrollArea2XMinVScroll,
-                 m_ScrollAreasYMin,
-                 m_ScrollArea2XMax,
-                 m_ScrollAreasYMax);
+                 m_TextArea2.VScroll().Left(),
+                 m_TextArea1.HScroll().Top(),
+                 m_TextArea1.HScroll().Right(),
+                 m_TextArea1.HScroll().Bottom());
 
   for(size_t i = 0; i < numLines; i++)
   {
