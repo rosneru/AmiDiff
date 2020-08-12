@@ -113,6 +113,7 @@ Storm Shell Project (Dependencies)
 File
 1 "amigautils/MemoryPool.cpp"
 "amigautils/MemoryPool.cpp"
+"amigautils/MemoryPool.h"
 Storm Shell Project (Dependencies)
 "objects_debug/MemoryPool.o" "objects_debug/MemoryPool.debug"
 ""
@@ -127,6 +128,7 @@ Storm Shell Project (Dependencies)
 File
 1 "amigautils/StopWatch.cpp"
 "amigautils/StopWatch.cpp"
+"amigautils/StopWatch.h"
 Storm Shell Project (Dependencies)
 "objects_debug/StopWatch.o" "objects_debug/StopWatch.debug"
 ""
@@ -143,7 +145,6 @@ File
 1 "application/ADiffViewPens.cpp"
 "application/ADiffViewPens.cpp"
 "application/ADiffViewPens.h"
-"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ADiffViewPens.o" "objects_debug/ADiffViewPens.debug"
 ""
@@ -169,7 +170,6 @@ File
 "application/Application.h"
 "application/ADiffViewArgs.h"
 "application/ADiffViewPorts.h"
-"application/ADiffViewSettings.h"
 "commands/CmdOpenWindow.h"
 "application/DiffDocument.h"
 "diffengine/DiffInputFileBase.h"
@@ -179,6 +179,7 @@ File
 "application/DiffWorkerProgressReporter.h"
 "worker/WorkerStartupMsg.h"
 "windows/ScrollbarWindow.h"
+"application/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/Application.o" "objects_debug/Application.debug"
 ""
@@ -208,7 +209,6 @@ File
 "diffengine/DiffOutputFileBase.h"
 "application/DiffWorkerProgressReporter.h"
 "worker/WorkerStartupMsg.h"
-"application/ADiffViewSettings.h"
 "windows/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWorker.o" "objects_debug/DiffWorker.debug"
@@ -242,7 +242,6 @@ File
 "diffengine/DiffOutputFileBase.h"
 "application/DiffWorkerProgressReporter.h"
 "worker/WorkerStartupMsg.h"
-"application/ADiffViewSettings.h"
 "windows/ScrollbarWindow.h"
 Storm Shell Project (Dependencies)
 "objects_debug/CmdDiff.o" "objects_debug/CmdDiff.debug"
@@ -407,6 +406,7 @@ File
 "application/DiffWorkerProgressReporter.h"
 "worker/WorkerStartupMsg.h"
 "windows/ScrollbarWindow.h"
+"application/ADiffViewPens.h"
 Storm Shell Project (Dependencies)
 "objects_debug/main.o" "objects_debug/main.debug"
 ""
@@ -415,7 +415,6 @@ File
 1 "menus/MenuBase.cpp"
 "menus/MenuBase.cpp"
 "menus/MenuBase.h"
-"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/MenuBase.o" "objects_debug/MenuBase.debug"
 ""
@@ -459,7 +458,6 @@ File
 "screen/OpenClonedWorkbenchScreen.cpp"
 "screen/OpenClonedWorkbenchScreen.h"
 "screen/OpenScreenBase.h"
-"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/OpenClonedWorkbenchScreen.o" "objects_debug/OpenClonedWorkbenchScreen.debug"
 ""
@@ -469,7 +467,6 @@ File
 "screen/OpenJoinedPublicScreen.cpp"
 "screen/OpenJoinedPublicScreen.h"
 "screen/OpenScreenBase.h"
-"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/OpenJoinedPublicScreen.o" "objects_debug/OpenJoinedPublicScreen.debug"
 ""
@@ -478,7 +475,6 @@ File
 1 "screen/OpenScreenBase.cpp"
 "screen/OpenScreenBase.cpp"
 "screen/OpenScreenBase.h"
-"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/OpenScreenBase.o" "objects_debug/OpenScreenBase.debug"
 ""
@@ -493,7 +489,6 @@ File
 "diffengine/DiffOutputFileBase.h"
 "windows/ScrollbarWindow.h"
 "windows/WindowBase.h"
-"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/DiffWindow.o" "objects_debug/DiffWindow.debug"
 ""
@@ -512,7 +507,6 @@ File
 "windows/ProgressWindow.cpp"
 "windows/ProgressWindow.h"
 "windows/WindowBase.h"
-"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ProgressWindow.o" "objects_debug/ProgressWindow.debug"
 ""
@@ -522,7 +516,6 @@ File
 "windows/ScrollbarWindow.cpp"
 "windows/ScrollbarWindow.h"
 "windows/WindowBase.h"
-"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/ScrollbarWindow.o" "objects_debug/ScrollbarWindow.debug"
 ""
@@ -531,7 +524,6 @@ File
 1 "windows/WindowBase.cpp"
 "windows/WindowBase.cpp"
 "windows/WindowBase.h"
-"application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "objects_debug/WindowBase.o" "objects_debug/WindowBase.debug"
 ""
