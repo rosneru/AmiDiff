@@ -32,7 +32,7 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
                  "Comparing the files",
                  isCancelRequested,
                  m_DiffIndices),
-    m_DiffIndicesIterator(m_DiffIndices.begin()),
+    m_DiffIndicesIterator(m_DiffIndices.end()),
     m_LineNumbersEnabled(lineNumbersEnabled),
     m_DiffTime(0),
     m_MaxLineLength(0)
@@ -128,30 +128,23 @@ size_t DiffDocument::NumDifferences() const
   return m_DiffEngine.NumDifferences();
 }
 
-size_t DiffDocument::FirstDiffIndex() 
-{
-  m_DiffIndicesIterator = m_DiffIndices.begin();
-  return (*m_DiffIndicesIterator);
-}
-
-size_t DiffDocument::LastDiffIndex() 
-{
-  // Get past-to-last item
-  m_DiffIndicesIterator = m_DiffIndices.end();
-
-  // BAck to last valid item
-  m_DiffIndicesIterator--;
-  return (*m_DiffIndicesIterator);
-}
-
 size_t DiffDocument::NextDiffIndex() 
 {
-  m_DiffIndicesIterator++;
-
   if(m_DiffIndicesIterator == m_DiffIndices.end())
   {
-    // Avoid overflow: back to last valid item
-    m_DiffIndicesIterator--;
+    // Iterator points to the end. This only is true directly after
+    // construction of DiffDocument. Set it to the first item.
+    m_DiffIndicesIterator = m_DiffIndices.begin();
+  }
+  else
+  {
+    m_DiffIndicesIterator++;
+
+    if(m_DiffIndicesIterator == m_DiffIndices.end())
+    {
+      // Avoid overflow: back to last valid item
+      m_DiffIndicesIterator--;
+    }
   }
 
   return (*m_DiffIndicesIterator);
@@ -159,11 +152,18 @@ size_t DiffDocument::NextDiffIndex()
 
 size_t DiffDocument::PrevDiffIndex() 
 {
-  if(m_DiffIndicesIterator != m_DiffIndices.begin())
+  if(m_DiffIndicesIterator == m_DiffIndices.end())
+  {
+    // Iterator points to the end. This only is true directly after
+    // construction of DiffDocument. Set it to the first item.
+    m_DiffIndicesIterator = m_DiffIndices.begin();
+  }
+  else if(m_DiffIndicesIterator != m_DiffIndices.begin())
   {
     // Only if not already the first item
     m_DiffIndicesIterator--;
   }
+
   return (*m_DiffIndicesIterator);
 }
 

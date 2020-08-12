@@ -28,7 +28,6 @@ DiffWindow::DiffWindow(ScreenBase& screen,
     m_pGadtoolsContext(NULL),
     m_pGadTxtLeftFile(NULL),
     m_pGadTxtRightFile(NULL),
-    m_bNoNavigationDone(true),
     m_NumDifferences(0),
     m_LineNumsWidth_chars(0),
     m_LineNumsWidth_pix(0),
@@ -232,7 +231,6 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
           "%zu Deleted",
           pDiffDocument->NumDeleted());
 
-  m_bNoNavigationDone = true;
   m_X = 0;
   m_Y = 0;
 
@@ -291,6 +289,79 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   setYScrollPotSize(m_MaxTextAreaLines, m_NumLines);
 
   return true;
+}
+
+
+void DiffWindow::NavigateToNextDiff()
+{
+  // // Calculate the yLimit (max y allowed for scrolling) enables to
+  // // determine if the last page already is displayed.
+  // size_t yLimit = m_NumLines - m_MaxTextAreaLines;
+  // bool isAlreadyLastPage = false;
+  // if((yLimit > 0) && (m_Y >= yLimit))
+  // {
+  //   isAlreadyLastPage = true;
+  //   return;
+  // }
+
+  size_t idx = m_pDocument->NextDiffIndex();
+
+  // Scroll y to next diff
+  YChangedHandler(idx);
+
+  // Set scrollbar to new y position
+  setYScrollTop(m_Y);
+}
+
+
+void DiffWindow::NavigateToPrevDiff()
+{
+  // // Calculating the yLimit (max y pos for scrolling)
+  // size_t yLimit = m_NumLines - m_MaxTextAreaLines;
+
+  size_t idx = m_pDocument->PrevDiffIndex();
+
+  // Scroll y to prev diff
+  YChangedHandler(idx);
+
+  // Set scrollbar to new y position
+  setYScrollTop(m_Y);
+}
+
+
+void DiffWindow::HandleIdcmp(ULONG msgClass,
+                             UWORD msgCode,
+                             APTR pItemAddress)
+{
+  ScrollbarWindow::HandleIdcmp(msgClass, msgCode, pItemAddress);
+
+  switch (msgClass)
+  {
+    case IDCMP_GADGETUP:
+    {
+      struct Gadget* pGadget = (struct Gadget*) pItemAddress;
+      handleGadgetEvent(pGadget);
+      break;
+    }
+
+    case IDCMP_VANILLAKEY:
+    {
+      handleVanillaKey(msgCode);
+      break;
+    }
+
+    case IDCMP_NEWSIZE:
+    {
+      Resized();
+      break;
+    }
+
+    case IDCMP_CLOSEWINDOW:
+    {
+      Close();
+      break;
+    }
+  }
 }
 
 
@@ -460,92 +531,6 @@ void DiffWindow::YDecrease(size_t numLines,
 }
 
 
-void DiffWindow::NavigateToNextDiff()
-{
-  // Calculating the yLimit (max y allowed for scrolling) enables to
-  // determine if we're already on the last page
-  size_t yLimit = m_NumLines - m_MaxTextAreaLines;
-  bool bAlreadyOnLastPage = false;
-  if((yLimit > 0) && (m_Y >= yLimit))
-  {
-    bAlreadyOnLastPage = true;
-  }
-
-  size_t idx = 0;
-  if(m_bNoNavigationDone == true)
-  {
-    m_bNoNavigationDone = false;
-    idx = m_pDocument->FirstDiffIndex();
-  }
-  else if(bAlreadyOnLastPage == true)
-  {
-    // When already on last page don't navigate through all the diffs
-    // that maybe there. Instead jump to the first diff.
-    idx = m_pDocument->FirstDiffIndex();
-  }
-  else
-  {
-    idx = m_pDocument->NextDiffIndex();
-  }
-
-  // Scroll y to next diff
-  YChangedHandler(idx);
-
-  // Set scrollbar to new y position
-  setYScrollTop(m_Y);
-}
-
-
-void DiffWindow::NavigateToPrevDiff()
-{
-  // Calculating the yLimit (max y pos for scrolling)
-  size_t yLimit = m_NumLines - m_MaxTextAreaLines;
-
-  size_t idx = 0;
-
-  if(m_bNoNavigationDone == true)
-  {
-    m_bNoNavigationDone = false;
-    idx = m_pDocument->LastDiffIndex();
-  }
-  else
-  {
-    idx = m_pDocument->PrevDiffIndex();
-
-    if(idx != 0)
-    {
-      while(idx > yLimit)
-      {
-        idx = m_pDocument->PrevDiffIndex();
-      }
-
-    }
-    else
-    {
-      // There is no prev diff. Jump to the last one.
-      idx = m_pDocument->LastDiffIndex();
-
-      // We want to select the upmost diff on the last page. So we
-      // rewind from last diff by calling GetPrev until the diff idx
-      // is less than yLimit. This is the first diff that isn't on that
-      //  page anymore, so we call GetNext().
-      while(idx > yLimit)
-      {
-        idx = m_pDocument->PrevDiffIndex();
-      }
-
-      idx = m_pDocument->NextDiffIndex();
-    }
-  }
-
-  // Scroll y to prev diff
-  YChangedHandler(idx);
-
-  // Set scrollbar to new y position
-  setYScrollTop(m_Y);
-}
-
-
 void DiffWindow::createGadgets()
 {
   bool bFirstCall = (m_pGadtoolsContext == NULL);
@@ -640,41 +625,6 @@ void DiffWindow::createGadgets()
                                     TAG_DONE);
 }
 
-
-void DiffWindow::HandleIdcmp(ULONG msgClass,
-                             UWORD msgCode,
-                             APTR pItemAddress)
-{
-  ScrollbarWindow::HandleIdcmp(msgClass, msgCode, pItemAddress);
-
-  switch (msgClass)
-  {
-    case IDCMP_GADGETUP:
-    {
-      struct Gadget* pGadget = (struct Gadget*) pItemAddress;
-      handleGadgetEvent(pGadget);
-      break;
-    }
-
-    case IDCMP_VANILLAKEY:
-    {
-      handleVanillaKey(msgCode);
-      break;
-    }
-
-    case IDCMP_NEWSIZE:
-    {
-      Resized();
-      break;
-    }
-
-    case IDCMP_CLOSEWINDOW:
-    {
-      Close();
-      break;
-    }
-  }
-}
 
 
 void DiffWindow::handleGadgetEvent(struct Gadget* pGadget)

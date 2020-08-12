@@ -50,8 +50,6 @@ public:
 
   size_t NumDifferences() const;
 
-  size_t FirstDiffIndex();
-  size_t LastDiffIndex();
   size_t NextDiffIndex();
   size_t PrevDiffIndex();
 

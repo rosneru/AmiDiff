@@ -68,19 +68,12 @@ public:
   virtual void Resized();
 
   /**
-   * Base class method for opening the window. Derived classes should
-   * call this in their Open() method.
+   * Open the window.
    *
-   * Sets the menu strip to the window if one had been provided.
+   * NOTE: Derived classes must call this in their Open() method.
    *
-   * If there's given a non-NULL pointer to a menu items user data,
-   * this menu item will be disabled at window opening.
-   *
-   * @param pUserDataMenuItemToDisable
-   * A pointer to an user data field of a menu item which is associated
-   * with this window. If the menu item is found by the given user data
-   * it will be disabled at window opening time and enabled when the
-   * window is closed. Provide NULL if no menu item should be disabled.
+   * Attaches a menu strip to the window if one had been provided with
+   * SetMenu.
    *
    * @returns
    * When ok: true, false if opening fails
@@ -88,16 +81,13 @@ public:
   virtual bool Open(InitialPosition initialPos = IP_Center);
 
   /**
-   * Closes the window.
+   * Close the window.
    */
   void Close();
 
   /**
-   * Abstract method. Forces inheriting classes to handle the given
-   * IDCMP event.
-   *
-   * @returns
-   * If this event was handled: true; if it was not handled: false.
+   * Abstract method. Must be implemeted in derived classes to handle
+   * the given IDCMP event.
    */
   virtual void HandleIdcmp(ULONG msgClass,
                            UWORD msgCode,

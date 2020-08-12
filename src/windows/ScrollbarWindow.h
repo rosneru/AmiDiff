@@ -33,10 +33,7 @@ public:
   virtual bool Open(InitialPosition initialPos = WindowBase::IP_Center);
 
   /**
-   * Handles given IDCMP event.
-   *
-   * @returns
-   * If this event was handled: true; if it was not handled: false..
+   * Implemented abstract method of base class WindowBase.
    */
   virtual void HandleIdcmp(ULONG msgClass,
                            UWORD msgCode,
@@ -47,18 +44,17 @@ public:
    * of the window. It is called from the handleIDCMP method of this
    * class.
    *
-   * Child classes must implement it and therin should perform the
-   * scrolling to the new x-position.
+   * Derived classes must implement the method and scroll the content to
+   * the given x-position.
    */
   virtual void XChangedHandler(size_t newX) = 0;
 
   /**
-   * This handles the y-changes triggered by the vertical scrollbar
-   * of the window. It is called from the handleIDCMP method of this
-   * class.
+   * This handles the y-changes triggered by the vertical scrollbar of
+   * the window. Is called by the method HandleIDCMP() of this class.
    *
-   * Child classes must implement it and therin should perform the
-   * scrolling to the new y-position.
+   * Derived classes must implement the method and scroll the content to
+   * the given y-position.
    */
   virtual void YChangedHandler(size_t newY) = 0;
 
@@ -67,15 +63,14 @@ public:
    * cursor-right-key or the right-arrow-gadget. It is called from the
    * handleIDCMP method of this class.
    *
-   * Child classes must implement it and therein should perform the
-   * scrolling to x+1.
+   * Derived classes must implement the method and perform the scrolling
+   * to x+numChars.
    *
-   * @param numChars
-   * Amount to increase the x-position by
+   * @param numChars Amount to increase the x-position by
    *
-   * @param bTriggeredByScrollPot
-   * If the call is triggered by moving the scrollbar pot: true
-   * If the call is triggered by other sources: false
+   * @param bTriggeredByScrollPot If the call is triggered by moving the
+   * scrollbar pot: true If the call is triggered by other sources:
+   * false
    */
   virtual void XIncrease(size_t numChars,
                          bool bTriggeredByScrollPot = false) = 0;
@@ -85,8 +80,8 @@ public:
    * cursor-left-key or the left-arrow-gadget. It is called from the
    * handleIDCMP method of this class.
    *
-   * Child classes must implement it and therein should perform the
-   * scrolling to x-1.
+   * Derived classes must implement the method and perform the scrolling
+   * to x-numChars.
    *
    * @param numChars
    * Amount to decrease the x-position by
@@ -103,17 +98,17 @@ public:
    * cursor-down-key or the down-arrow-gadget. It is called from the
    * handleIDCMP method of this class.
    *
-   * Child classes must implement it and therein should perform the
-   * scrolling to y+1.
+   * Derived classes must implement the method and perform the scrolling
+   * to y+numLines.
    *
-   * @param numChars
+   * @param numLines
    * Amount to increase the y-position by
    *
    * @param bTriggeredByScrollPot
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  virtual void YIncrease(size_t numChars,
+  virtual void YIncrease(size_t numLines,
                          bool bTriggeredByScrollPot = false) = 0;
 
   /**
@@ -121,17 +116,17 @@ public:
    * cursor-up-key or the up-arrow-gadget. It is called from the
    * handleIDCMP method of this class.
    *
-   * Child classes must implement it and therein should perform the
-   * scrolling to y-1.
+   * Derived classes must implement the method and perform the scrolling
+   * to y-numLines.
    *
-   * @param numChars
+   * @param numLines
    * Amount to decrease the y-position by
    *
    * @param bTriggeredByScrollPot
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  virtual void YDecrease(size_t numChars,
+  virtual void YDecrease(size_t numLines,
                          bool bTriggeredByScrollPot = false) = 0;
 
 protected:

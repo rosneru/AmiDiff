@@ -53,79 +53,53 @@ public:
 
 
   /**
-   * Handles given IDCMP event.
-   *
-   * @returns
-   * If this event was handled: true; if it was not handled: false..
+   * Navigate to the next difference.
+   */
+  void NavigateToNextDiff();
+
+  /**
+   * Navigate to the previous difference.
+   */
+  void NavigateToPrevDiff();
+
+  /**
+   * Extends method of base class ScrollbarWindow.
    */
   virtual void HandleIdcmp(ULONG msgClass,
                            UWORD msgCode,
                            APTR pItemAddress);
 
+
   /**
-   * This handles the x-changes triggered by the horizontal scrollbar of
-   * the window. It is called from the handleIDCMP() method of
-   * ScrollbarWindow.
+   * Implemented abstract method of base class ScrollbarWindow.
    */
   void XChangedHandler(size_t newX);
 
   /**
-   * This handles the y-changes triggered by the vertical scrollbar of
-   * the window. It is called from the handleIDCMP() method of
-   * ScrollbarWindow.
+   * Implemented abstract method of base class ScrollbarWindow.
    */
   void YChangedHandler(size_t newY);
 
   /**
-   * Increases the X position of the text by the given amount and
-   * performs a scrolling as needed.
-   *
-   * @param numChars Amount to increase the x-position by
-   *
-   * @param bTriggeredByScrollPot If the call is triggered by moving the
-   * scrollbar pot: true If the call is triggered by other sources:
-   * false
+   * Implemented abstract method of base class ScrollbarWindow.
    */
   void XIncrease(size_t numChars, bool bTriggeredByScrollPot);
 
   /**
-   * Decreases the X position of the text by the given amount and
-   * performs a scrolling as needed.
-   *
-   * @param numChars Amount to decrease the x-position by
-   *
-   * @param bTriggeredByScrollPot If the call is triggered by moving the
-   * scrollbar pot: true If the call is triggered by other sources:
-   * false
+   * Implemented abstract method of base class ScrollbarWindow.
    */
   void XDecrease(size_t numChars, bool bTriggeredByScrollPot);
 
   /**
-   * Increases the Y position of the text by the given amount and
-   * performs a scrolling as needed.
-   *
-   * @param numLines Amount to increase the y-position by
-   *
-   * @param bTriggeredByScrollPot If the call is triggered by moving the
-   * scrollbar pot: true If the call is triggered by other sources:
-   * false
+   * Implemented abstract method of base class ScrollbarWindow.
    */
   void YIncrease(size_t numLines, bool bTriggeredByScrollPot);
 
   /**
-   * Decreases the Y position of the text by the given amount and
-   * performs a scrolling as needed.
-   *
-   * @param numLines Amount to decrease the y-position by
-   *
-   * @param bTriggeredByScrollPot If the call is triggered by moving the
-   * scrollbar pot: true If the call is triggered by other sources:
-   * false
+   * Implemented abstract method of base class ScrollbarWindow.
    */
   void YDecrease(size_t numLines, bool bTriggeredByScrollPot);
 
-  void NavigateToNextDiff();
-  void NavigateToPrevDiff();
 
 private:
   const ADiffViewPens& m_Pens;
@@ -144,7 +118,6 @@ private:
   struct Gadget* m_pGadTxtLeftFile;
   struct Gadget* m_pGadTxtRightFile;
 
-  bool m_bNoNavigationDone;
   long m_NumDifferences;      ///> Number of differences
 
   UWORD m_LineNumsWidth_chars;
