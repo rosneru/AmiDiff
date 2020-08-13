@@ -684,8 +684,8 @@ void DiffWindow::calcSizes()
 
   // Set the width and heigtht lof the text areas. Internally the
   // HScroll and VScroll areas are also set.
-  m_TextArea1.SetWidthHeight(textAreasTextWidth_pix, textAreasHeight);
-  m_TextArea2.SetWidthHeight(textAreasTextWidth_pix, textAreasHeight);
+  m_TextArea1.SetWidthHeightScroll(textAreasWidth, textAreasHeight, textAreasTextWidth_pix);
+  m_TextArea2.SetWidthHeightScroll(textAreasWidth, textAreasHeight, textAreasTextWidth_pix);
 }
 
 
@@ -811,7 +811,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     // Move rastport cursor to start of right line numbers block
     ::Move(&m_RPortLineNum,
            m_TextArea2.Left() + indent + 2,
-           topEdge + m_TextArea1.Top() + m_FontBaseline_pix + 1);
+           topEdge + m_TextArea2.Top() + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     pLineNum = pRightLine->LineNum();
@@ -850,7 +850,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     // Move rastport cursor to start of right line
     ::Move(pRPort,
           m_TextArea2.Left()  + indent + m_LineNumsWidth_pix + 3,
-          topEdge + m_TextArea1.Top() + m_FontBaseline_pix + 1);
+          topEdge + m_TextArea2.Top() + m_FontBaseline_pix + 1);
 
     // Print the right line
     Text(pRPort,
@@ -1032,10 +1032,10 @@ size_t DiffWindow::scrollRight(size_t numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  -numChars * m_FontWidth_pix,  // n * width
                  0,
-                 m_TextArea1.HScroll().Left(),
-                 m_TextArea1.Top() + 1,
-                 m_TextArea1.HScroll().Right(),
-                 m_TextArea1.HScroll().Bottom());
+                 m_TextArea2.HScroll().Left(),
+                 m_TextArea2.HScroll().Top() + 1,
+                 m_TextArea2.HScroll().Right(),
+                 m_TextArea2.HScroll().Bottom());
 
   // fill the gap with the previous chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
@@ -1109,10 +1109,10 @@ size_t DiffWindow::scrollLeft(size_t numChars)
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
                  0,
-                 m_TextArea1.HScroll().Left(),
-                 m_TextArea1.HScroll().Top(),
-                 m_TextArea1.HScroll().Right(),
-                 m_TextArea1.HScroll().Bottom());
+                 m_TextArea2.HScroll().Left(),
+                 m_TextArea2.HScroll().Top(),
+                 m_TextArea2.HScroll().Right(),
+                 m_TextArea2.HScroll().Bottom());
 
   // Fill the gap with the following chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
@@ -1166,17 +1166,17 @@ size_t DiffWindow::scrollDown(size_t numLines)
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
                  m_TextArea1.VScroll().Left(),
-                 m_TextArea1.HScroll().Top(),
-                 m_TextArea1.HScroll().Right(),
-                 m_TextArea1.HScroll().Bottom());
+                 m_TextArea1.VScroll().Top(),
+                 m_TextArea1.VScroll().Right(),
+                 m_TextArea1.VScroll().Bottom());
 
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
                  m_TextArea2.VScroll().Left(),
-                 m_TextArea2.HScroll().Top(),
-                 m_TextArea2.HScroll().Right(),
-                 m_TextArea2.HScroll().Bottom());
+                 m_TextArea2.VScroll().Top(),
+                 m_TextArea2.VScroll().Right(),
+                 m_TextArea2.VScroll().Bottom());
 
   // Fill the gap with the previous text lines
   for(size_t i = 0; i < numLines; i++)
@@ -1235,17 +1235,17 @@ size_t DiffWindow::scrollUp(size_t numLines)
                  0,
                  numLines * m_FontHeight_pix,
                  m_TextArea1.VScroll().Left(),
-                 m_TextArea1.HScroll().Top(),
-                 m_TextArea1.HScroll().Right(),
-                 m_TextArea1.HScroll().Bottom());
+                 m_TextArea1.VScroll().Top(),
+                 m_TextArea1.VScroll().Right(),
+                 m_TextArea1.VScroll().Bottom());
 
   ScrollRasterBF(m_pWindow->RPort,
                  0,
                  numLines * m_FontHeight_pix,
                  m_TextArea2.VScroll().Left(),
-                 m_TextArea1.HScroll().Top(),
-                 m_TextArea1.HScroll().Right(),
-                 m_TextArea1.HScroll().Bottom());
+                 m_TextArea2.VScroll().Top(),
+                 m_TextArea2.VScroll().Right(),
+                 m_TextArea2.VScroll().Bottom());
 
   for(size_t i = 0; i < numLines; i++)
   {

@@ -47,7 +47,7 @@ void Rect::SetLeftTop(long left, long top)
   m_Top = top;
 }
 
-void Rect::SetWidthHeight(long width, long height)
+void Rect::SetWidthHeightScroll(long width, long height)
 {
   m_Right = m_Left + width;
   m_Bottom = m_Top + height;

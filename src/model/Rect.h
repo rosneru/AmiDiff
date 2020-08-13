@@ -18,7 +18,7 @@ public:
 
   virtual void Set(long left, long top, long right, long bottom);
   virtual void SetLeftTop(long left, long top);
-  virtual void SetWidthHeight(long width, long height);
+  virtual void SetWidthHeightScroll(long width, long height);
 
   bool HasSize() const;
   size_t Area() const;
