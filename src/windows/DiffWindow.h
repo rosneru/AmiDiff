@@ -9,6 +9,7 @@
 #include "ADiffViewPens.h"
 #include "DiffDocument.h"
 #include "DiffLine.h"
+#include "DiffWindowRastports.h"
 #include "DiffWindowTextArea.h"
 #include "OpenScreenBase.h"
 #include "ScrollbarWindow.h"
@@ -104,15 +105,10 @@ public:
 
 private:
   const ADiffViewPens& m_Pens;
+
+  DiffWindowRastports* m_pRPorts;
   DiffDocument* m_pDocument;
   char m_EmptyChar;
-
-  struct RastPort m_RPortAPenBackgr;
-  struct RastPort m_RPortLineNum;
-  struct RastPort m_RPortTextDefault;
-  struct RastPort m_RPortTextRedBG;
-  struct RastPort m_RPortTextGreenBG;
-  struct RastPort m_RPortTextYellowBG;
 
   struct Gadget* m_pLastParentGadget;
   struct Gadget* m_pGadtoolsContext;

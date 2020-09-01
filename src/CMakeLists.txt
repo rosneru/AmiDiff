@@ -49,6 +49,7 @@ add_executable (ADiffView
                 screen/OpenJoinedPublicScreen.cpp
                 screen/OpenScreenBase.cpp
                 windows/DiffWindow.cpp
+                windows/DiffWindowRastports.cpp
                 windows/DiffWindowTextArea.cpp
                 windows/FilesWindow.cpp
                 windows/ProgressWindow.cpp

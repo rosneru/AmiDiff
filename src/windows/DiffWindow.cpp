@@ -22,6 +22,7 @@ DiffWindow::DiffWindow(ScreenBase& screen,
                        MenuBase* pMenu)
   : ScrollbarWindow(screen, pIdcmpMsgPort, pMenu),
     m_Pens(pens),
+    m_pRPorts(NULL),
     m_pDocument(NULL),
     m_EmptyChar('\0'),
     m_pLastParentGadget(NULL),
@@ -72,6 +73,12 @@ DiffWindow::DiffWindow(ScreenBase& screen,
 DiffWindow::~DiffWindow()
 {
   Close();
+
+  if(m_pRPorts != NULL)
+  {
+    delete m_pRPorts;
+    m_pRPorts = NULL;
+  }
 
   if(m_pGadtoolsContext != NULL)
   {
@@ -126,7 +133,6 @@ void DiffWindow::Resized()
 
   // Paint the window decoration
   paintWindowDecoration();
-
 }
 
 
@@ -140,6 +146,14 @@ bool DiffWindow::Open(InitialPosition initialPos)
     return false;
   }
 
+  if(m_pRPorts != NULL)
+  {
+    delete m_pRPorts;
+    m_pRPorts = NULL;
+  }
+
+  SetAPen(m_pWindow->RPort, m_Pens.Text());
+  m_pRPorts = new DiffWindowRastports(m_pWindow, m_Pens);
   m_pDocument = NULL;
 
   //
@@ -155,25 +169,6 @@ bool DiffWindow::Open(InitialPosition initialPos)
   m_TextAttr.ta_Style = m_Screen.IntuiDrawInfo()->dri_Font->tf_Style;
   m_TextAttr.ta_Flags = m_Screen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
-  SetAPen(m_pWindow->RPort, m_Pens.Text());
-
-  m_RPortAPenBackgr = *m_pWindow->RPort;
-  SetAPen(&m_RPortAPenBackgr, m_Pens.Background());
-
-  m_RPortLineNum = *m_pWindow->RPort;
-  SetBPen(&m_RPortLineNum, m_Pens.Gray());
-
-  m_RPortTextDefault = *m_pWindow->RPort;
-  SetBPen(&m_RPortTextDefault, m_Pens.Background());
-
-  m_RPortTextRedBG = *m_pWindow->RPort;
-  SetBPen(&m_RPortTextRedBG, m_Pens.Red());
-
-  m_RPortTextGreenBG = *m_pWindow->RPort;
-  SetBPen(&m_RPortTextGreenBG, m_Pens.Green());
-
-  m_RPortTextYellowBG = *m_pWindow->RPort;
-  SetBPen(&m_RPortTextYellowBG, m_Pens.Yellow());
 
   // Calculate some sizes which are only calculatable with window
   // already open
@@ -701,7 +696,7 @@ void DiffWindow::resizeGadgets()
   RemoveGList(m_pWindow, m_pGadtoolsContext, -1);
 
   // Clear the area on which the new gadgets will be drawn
-  RectFill(&m_RPortAPenBackgr,
+  RectFill(m_pRPorts->APenBackgr(),
            0,
            0,
            m_InnerWindowRight,
@@ -798,7 +793,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     //
 
     // Move rastport cursor to start of left line numbers block
-    ::Move(&m_RPortLineNum,
+    ::Move(m_pRPorts->LineNum(),
            m_TextArea1.Left() + indent + 2,
            topEdge + m_TextArea1.Top() + m_FontBaseline_pix + 1);
 
@@ -806,10 +801,10 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     const char* pLineNum = pLeftLine->LineNum();
 
     // Print left line's original line number
-    Text(&m_RPortLineNum, pLineNum, m_LineNumsWidth_chars);
+    Text(m_pRPorts->LineNum(), pLineNum, m_LineNumsWidth_chars);
 
     // Move rastport cursor to start of right line numbers block
-    ::Move(&m_RPortLineNum,
+    ::Move(m_pRPorts->LineNum(),
            m_TextArea2.Left() + indent + 2,
            topEdge + m_TextArea2.Top() + m_FontBaseline_pix + 1);
 
@@ -817,7 +812,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     pLineNum = pRightLine->LineNum();
 
     // Print right line's original line number
-    Text(&m_RPortLineNum, pLineNum, m_LineNumsWidth_chars);
+    Text(m_pRPorts->LineNum(), pLineNum, m_LineNumsWidth_chars);
   }
 
   // Getting the RastPort for the left line to draw in. This depends on
@@ -898,7 +893,7 @@ void DiffWindow::paintStatusBar()
   int left = m_TextArea1.Left() + 2;
 
   // Clear the status bar area
-  RectFill(&m_RPortAPenBackgr,
+  RectFill(m_pRPorts->APenBackgr(),
            0,
            top,
            m_InnerWindowRight,
@@ -974,19 +969,19 @@ RastPort* DiffWindow::diffStateToRastPort(DiffLine::LineState state)
 {
   if(state == DiffLine::Added)
   {
-    return &m_RPortTextGreenBG;
+    return m_pRPorts->TextGreenBG();
   }
   else if(state== DiffLine::Changed)
   {
-    return &m_RPortTextYellowBG;
+    return m_pRPorts->TextYellowBG();
   }
   else if(state == DiffLine::Deleted)
   {
-    return &m_RPortTextRedBG;
+    return m_pRPorts->TextRedBG();
   }
   else
   {
-    return &m_RPortTextDefault;
+    return m_pRPorts->TextDefault();
   }
 }
 
