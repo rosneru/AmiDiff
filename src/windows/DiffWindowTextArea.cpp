@@ -17,11 +17,11 @@ DiffWindowTextArea::~DiffWindowTextArea()
 
 void DiffWindowTextArea::Clear()
 {
-  EraseRect(m_pRPorts->APenBackgr(),
-            Left() + 2, 
-            Top() + 2,
-            Right() - 3,
-            Bottom() - 3);
+  // EraseRect(m_pRPorts->LineNum(),
+  //           Left() + 2, 
+  //           Top() + 2,
+  //           Right() - 3,
+  //           Bottom() - 3);
 }
 
 void DiffWindowTextArea::SetWidthHeightScroll(long width, 

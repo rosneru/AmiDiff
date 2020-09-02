@@ -388,18 +388,6 @@ void DiffWindow::XChangedHandler(size_t newX)
   m_TextArea1.Clear();
   m_TextArea2.Clear();
 
-  EraseRect(m_pWindow->RPort,
-            m_TextArea1.Left() + 2, 
-            m_TextArea1.Top() + 2,
-            m_TextArea1.Right() - 3,
-            m_TextArea1.Bottom() - 3);
-
-  EraseRect(m_pWindow->RPort,
-            m_TextArea2.Left() + 2, 
-            m_TextArea2.Top() + 2,
-            m_TextArea2.Right() - 3,
-            m_TextArea2.Bottom() - 3);
-
   paintDocuments(false);
 
 }
