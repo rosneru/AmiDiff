@@ -42,8 +42,8 @@ DiffWindow::DiffWindow(ScreenBase& screen,
     m_NumLines(0),
     m_IndentX(5),
     m_IndentY(0),
-    m_TextArea1(m_LineNumsWidth_pix),
-    m_TextArea2(m_LineNumsWidth_pix)
+    m_TextArea1(m_pRPorts, m_LineNumsWidth_pix),
+    m_TextArea2(m_pRPorts, m_LineNumsWidth_pix)
 {
   // If parent window already defined gadgets, we store the last of
   // these gadgeds and the count of defined gadgets. They are needed
@@ -385,6 +385,9 @@ void DiffWindow::XChangedHandler(size_t newX)
   m_X = newX;
 
   // Clear both text areas completely
+  m_TextArea1.Clear();
+  m_TextArea2.Clear();
+
   EraseRect(m_pWindow->RPort,
             m_TextArea1.Left() + 2, 
             m_TextArea1.Top() + 2,

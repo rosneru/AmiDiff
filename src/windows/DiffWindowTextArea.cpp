@@ -1,7 +1,11 @@
+#include <clib/graphics_protos.h>
+
 #include "DiffWindowTextArea.h"
 
-DiffWindowTextArea::DiffWindowTextArea(const UWORD& lineNumbersWidth_pix)
-  : m_LineNumbersWidth_pix(lineNumbersWidth_pix)
+DiffWindowTextArea::DiffWindowTextArea(DiffWindowRastports*& pRPorts, 
+                                       const UWORD& lineNumbersWidth_pix)
+  : m_pRPorts(pRPorts),
+    m_LineNumbersWidth_pix(lineNumbersWidth_pix)
 {
 
 }
@@ -11,11 +15,20 @@ DiffWindowTextArea::~DiffWindowTextArea()
 
 }
 
+void DiffWindowTextArea::Clear()
+{
+  EraseRect(m_pRPorts->APenBackgr(),
+            Left() + 2, 
+            Top() + 2,
+            Right() - 3,
+            Bottom() - 3);
+}
+
 void DiffWindowTextArea::SetWidthHeightScroll(long width, 
                                               long height, 
                                               long maxTextWidth_pix)
 {
-  Rect::SetWidthHeightScroll(width, height);
+  Rect::SetWidthHeight(width, height);
 
   //
   // Define the dimensions for the scroll areas
