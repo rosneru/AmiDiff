@@ -1003,9 +1003,6 @@ size_t DiffWindow::scrollRight(size_t numChars)
   }
 
 
-  // Set background color before scrolling TODO remove
-  SetBPen(m_pWindow->RPort, m_Pens.Background());
-
   // Move each text area right by n * the height of one text line
   ScrollRasterBF(m_pWindow->RPort,
                  -numChars * m_FontWidth_pix, // n * width
@@ -1080,9 +1077,6 @@ size_t DiffWindow::scrollLeft(size_t numChars)
     numChars = m_pDocument->MaxLineLength() - (m_X + m_MaxTextAreaChars);
   }
 
-  // Set background color before scrolling TODO remove
-  SetBPen(m_pWindow->RPort, m_Pens.Background());
-
   // Move each text area left by n * the width of one char
   ScrollRasterBF(m_pWindow->RPort,
                  numChars * m_FontWidth_pix,
@@ -1143,9 +1137,6 @@ size_t DiffWindow::scrollDown(size_t numLines)
     // Limit the scrolling to only scroll only as many lines as necessary
     numLines = m_Y;
   }
-
-  // Set background color before scrolling TODO remove
-  SetBPen(m_pWindow->RPort, m_Pens.Background());
 
   // Move each text area downward by n * the height of one text line
   ScrollRasterBF(m_pWindow->RPort,
@@ -1211,10 +1202,6 @@ size_t DiffWindow::scrollUp(size_t numLines)
     // Limit the scrolling to only scroll only as many lines as necessary
     numLines = m_NumLines - (m_Y + m_MaxTextAreaLines);
   }
-
-
-  // Set background color before scrolling TODO remove
-  SetBPen(m_pWindow->RPort, m_Pens.Background());
 
   // Move each text area upward by n * the height of one text line
   ScrollRasterBF(m_pWindow->RPort,
