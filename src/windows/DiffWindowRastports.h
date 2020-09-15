@@ -21,6 +21,7 @@ public:
 
   virtual ~DiffWindowRastports();
 
+  struct RastPort* Window();
   struct RastPort* APenBackgr();
   struct RastPort* LineNum();
   struct RastPort* TextDefault();
@@ -29,6 +30,7 @@ public:
   struct RastPort* TextYellowBG();
 
 private:
+  struct RastPort m_RPortWindow;
   struct RastPort m_RPortAPenBackgr;
   struct RastPort m_RPortLineNum;
   struct RastPort m_RPortTextDefault;

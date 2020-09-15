@@ -113,7 +113,7 @@ void DiffWindow::Resized()
   calcSizes();
 
   // Clear the window completely
-  SetRast(m_pWindow->RPort, m_Pens.Background());
+  SetRast(m_pRPorts->Window(), m_Pens.Background());
 
   // Resize gadgets to fit into new window size
   resizeGadgets();
@@ -152,7 +152,7 @@ bool DiffWindow::Open(InitialPosition initialPos)
     m_pRPorts = NULL;
   }
 
-  SetAPen(m_pWindow->RPort, m_Pens.Text());
+  SetAPen(m_pRPorts->Window(), m_Pens.Text());
   m_pRPorts = new DiffWindowRastports(m_pWindow, m_Pens);
   m_pDocument = NULL;
 
@@ -223,7 +223,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   }
 
   // Clear the window completely
-  SetRast(m_pWindow->RPort, m_Pens.Background());
+  SetRast(m_pRPorts->Window(), m_Pens.Background());
 
   // Display the document file names in the gadgets
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
@@ -436,13 +436,13 @@ void DiffWindow::YChangedHandler(size_t newY)
   //
   m_Y = newY;
 
-  EraseRect(m_pWindow->RPort,
+  EraseRect(m_pRPorts->Window(),
             m_TextArea1.Left() + 2, 
             m_TextArea1.Top() + 2,
             m_TextArea1.Right() - 3,
             m_TextArea1.Bottom() - 3);
 
-  EraseRect(m_pWindow->RPort,
+  EraseRect(m_pRPorts->Window(),
             m_TextArea2.Left() + 2, 
             m_TextArea2.Top() + 2,
             m_TextArea2.Right() - 3,
@@ -849,7 +849,7 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
 void DiffWindow::paintWindowDecoration()
 {
   // Create borders for the two text areas
-  DrawBevelBox(m_pWindow->RPort,
+  DrawBevelBox(m_pRPorts->Window(),
                m_TextArea1.Left(),
                m_TextArea1.Top(),
                m_TextArea1.Width(),
@@ -858,7 +858,7 @@ void DiffWindow::paintWindowDecoration()
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
-  DrawBevelBox(m_pWindow->RPort,
+  DrawBevelBox(m_pRPorts->Window(),
                m_TextArea2.Left(),
                m_TextArea2.Top(),
                m_TextArea2.Width(),
@@ -901,25 +901,25 @@ void DiffWindow::paintStatusBar()
   intuiText.TopEdge   = top;
   intuiText.LeftEdge  = left;
   intuiText.IText = (UBYTE*) m_StatusBarText;
-  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+  PrintIText(m_pRPorts->Window(), &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText);
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_Pens.Green();
   intuiText.IText = (UBYTE*) m_AddedText;
-  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+  PrintIText(m_pRPorts->Window(), &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_Pens.Yellow();
   intuiText.IText = (UBYTE*) m_ChangedText;
-  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+  PrintIText(m_pRPorts->Window(), &intuiText, 0, 0);
 
   left += IntuiTextLength(&intuiText) + 5;
   intuiText.LeftEdge = left;
   intuiText.BackPen = m_Pens.Red();
   intuiText.IText = (UBYTE*) m_DeletedText;
-  PrintIText(m_pWindow->RPort, &intuiText, 0, 0);
+  PrintIText(m_pRPorts->Window(), &intuiText, 0, 0);
 }
 
 
@@ -1004,7 +1004,7 @@ size_t DiffWindow::scrollRight(size_t numChars)
 
 
   // Move each text area right by n * the height of one text line
-  ScrollRasterBF(m_pWindow->RPort,
+  ScrollRasterBF(m_pRPorts->Window(),
                  -numChars * m_FontWidth_pix, // n * width
                  0,
                  m_TextArea1.HScroll().Left(),
@@ -1012,7 +1012,7 @@ size_t DiffWindow::scrollRight(size_t numChars)
                  m_TextArea1.HScroll().Right(),
                  m_TextArea1.HScroll().Bottom());
 
-  ScrollRasterBF(m_pWindow->RPort,
+  ScrollRasterBF(m_pRPorts->Window(),
                  -numChars * m_FontWidth_pix,  // n * width
                  0,
                  m_TextArea2.HScroll().Left(),
@@ -1078,7 +1078,7 @@ size_t DiffWindow::scrollLeft(size_t numChars)
   }
 
   // Move each text area left by n * the width of one char
-  ScrollRasterBF(m_pWindow->RPort,
+  ScrollRasterBF(m_pRPorts->Window(),
                  numChars * m_FontWidth_pix,
                  0,
                  m_TextArea1.HScroll().Left(),
@@ -1086,7 +1086,7 @@ size_t DiffWindow::scrollLeft(size_t numChars)
                  m_TextArea1.HScroll().Right(),
                  m_TextArea1.HScroll().Bottom());
 
-  ScrollRasterBF(m_pWindow->RPort,
+  ScrollRasterBF(m_pRPorts->Window(),
                  numChars * m_FontWidth_pix,
                  0,
                  m_TextArea2.HScroll().Left(),
@@ -1139,7 +1139,7 @@ size_t DiffWindow::scrollDown(size_t numLines)
   }
 
   // Move each text area downward by n * the height of one text line
-  ScrollRasterBF(m_pWindow->RPort,
+  ScrollRasterBF(m_pRPorts->Window(),
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
                  m_TextArea1.VScroll().Left(),
@@ -1147,7 +1147,7 @@ size_t DiffWindow::scrollDown(size_t numLines)
                  m_TextArea1.VScroll().Right(),
                  m_TextArea1.VScroll().Bottom());
 
-  ScrollRasterBF(m_pWindow->RPort,
+  ScrollRasterBF(m_pRPorts->Window(),
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
                  m_TextArea2.VScroll().Left(),
@@ -1204,7 +1204,7 @@ size_t DiffWindow::scrollUp(size_t numLines)
   }
 
   // Move each text area upward by n * the height of one text line
-  ScrollRasterBF(m_pWindow->RPort,
+  ScrollRasterBF(m_pRPorts->Window(),
                  0,
                  numLines * m_FontHeight_pix,
                  m_TextArea1.VScroll().Left(),
@@ -1212,7 +1212,7 @@ size_t DiffWindow::scrollUp(size_t numLines)
                  m_TextArea1.VScroll().Right(),
                  m_TextArea1.VScroll().Bottom());
 
-  ScrollRasterBF(m_pWindow->RPort,
+  ScrollRasterBF(m_pRPorts->Window(),
                  0,
                  numLines * m_FontHeight_pix,
                  m_TextArea2.VScroll().Left(),
