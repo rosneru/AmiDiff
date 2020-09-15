@@ -152,7 +152,6 @@ bool DiffWindow::Open(InitialPosition initialPos)
     m_pRPorts = NULL;
   }
 
-  SetAPen(m_pRPorts->Window(), m_Pens.Text());
   m_pRPorts = new DiffWindowRastports(m_pWindow, m_Pens);
   m_pDocument = NULL;
 

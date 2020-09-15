@@ -5,6 +5,8 @@
 DiffWindowRastports::DiffWindowRastports(struct Window* pIntuiWindow,
                                          const ADiffViewPens& pens)
 {
+  SetAPen(pIntuiWindow->RPort, pens.Text());
+
   m_RPortWindow = *pIntuiWindow->RPort;
 
   m_RPortAPenBackgr = *pIntuiWindow->RPort;
