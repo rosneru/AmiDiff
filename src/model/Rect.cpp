@@ -55,8 +55,8 @@ void Rect::SetLeftTop(unsigned long left, unsigned long top)
 
 void Rect::SetWidthHeight(unsigned long width, unsigned long height)
 {
-  m_Right = m_Left + width;
-  m_Bottom = m_Top + height;
+  m_Right = m_Left + width - 1;
+  m_Bottom = m_Top + height - 1;
   m_WordWidth = ((width + 15) & -16) >> 4;
 }
 
@@ -97,12 +97,12 @@ unsigned long Rect::Bottom() const
 unsigned long Rect::Height() const
 {
 
-  return m_Bottom - m_Top;
+  return m_Bottom - m_Top + 1;
 }
 
 unsigned long Rect::Width() const
 {
-  return m_Right - m_Left;
+  return m_Right - m_Left + 1;
 }
 
 unsigned long Rect::WordWidth() const
