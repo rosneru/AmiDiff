@@ -13,13 +13,20 @@ class Rect
 {
 public:
   Rect();
-  Rect(long left, long top, long right, long bottom);
-  Rect(long left, long top);
+  Rect(unsigned long left, 
+       unsigned long top, 
+       unsigned long right, 
+       unsigned long bottom);
+
+  Rect(unsigned long left, unsigned long top);
 
   /**
    * Sets the rectangle to the given position.
    */
-  void Set(long left, long top, long right, long bottom);
+  void Set(unsigned long left, 
+           unsigned long top, 
+           unsigned long right, 
+           unsigned long bottom);
 
   /**
    * Sets the left top edge of the rectangle to the new position.
@@ -28,7 +35,7 @@ public:
    * so the width and height of the rectangle will be different after
    * this call.
    */
-  void SetLeftTop(long left, long top);
+  void SetLeftTop(unsigned long left, unsigned long top);
 
   /**
    * Sets the width and height of the rectangle to the given sizes.
@@ -36,27 +43,27 @@ public:
    * NOTE: The right bottom edge of the rectangle is changed by this
    * operation. The left top edge is not changed.
    */
-  void SetWidthHeight(long width, long height);
+  void SetWidthHeight(unsigned long width, unsigned long height);
 
   bool HasSize() const;
-  size_t Area() const;
+  unsigned long Area() const;
 
-  long Left() const;
-  long Right() const;
-  long Top() const;
-  long Bottom() const;
+  unsigned long Left() const;
+  unsigned long Right() const;
+  unsigned long Top() const;
+  unsigned long Bottom() const;
   
-  size_t Height() const;
-  size_t Width() const;
-  size_t WordWidth() const;
+  unsigned long Height() const;
+  unsigned long Width() const;
+  unsigned long WordWidth() const;
 
 private:
-  long m_Left;
-  long m_Top;
-  long m_Right;
-  long m_Bottom;
+  unsigned long m_Left;
+  unsigned long m_Top;
+  unsigned long m_Right;
+  unsigned long m_Bottom;
 
-  long m_WordWidth;
+  unsigned long m_WordWidth;
 };
 
 #endif

@@ -10,7 +10,10 @@ Rect::Rect()
 
 }
 
-Rect::Rect(long left, long top, long right, long bottom)
+Rect::Rect(unsigned long left, 
+           unsigned long top, 
+           unsigned long right, 
+           unsigned long bottom)
   : m_Left(left),
     m_Top(top),
     m_Right(right),
@@ -21,7 +24,7 @@ Rect::Rect(long left, long top, long right, long bottom)
 }
 
 
-Rect::Rect(long left, long top)
+Rect::Rect(unsigned long left, unsigned long top)
   : m_Left(left),
     m_Top(top),
     m_Right(left),
@@ -31,7 +34,10 @@ Rect::Rect(long left, long top)
 
 }
 
-void Rect::Set(long left, long top, long right, long bottom)
+void Rect::Set(unsigned long left, 
+               unsigned long top, 
+               unsigned long right, 
+               unsigned long bottom)
 {
   m_Left = left;
   m_Top = top;
@@ -41,13 +47,13 @@ void Rect::Set(long left, long top, long right, long bottom)
   m_WordWidth = (((right - left) + 15) & -16) >> 4;
 }
 
-void Rect::SetLeftTop(long left, long top)
+void Rect::SetLeftTop(unsigned long left, unsigned long top)
 {
   m_Left = left;
   m_Top = top;
 }
 
-void Rect::SetWidthHeight(long width, long height)
+void Rect::SetWidthHeight(unsigned long width, unsigned long height)
 {
   m_Right = m_Left + width;
   m_Bottom = m_Top + height;
@@ -60,46 +66,46 @@ bool Rect::HasSize() const
 }
 
 
-size_t Rect::Area() const
+unsigned long Rect::Area() const
 {
   return Width() * Height();
 }
 
-long Rect::Left() const
+unsigned long Rect::Left() const
 {
   return m_Left;
 }
 
 
-long Rect::Right() const
+unsigned long Rect::Right() const
 {
   return m_Right;
 }
 
 
-long Rect::Top() const
+unsigned long Rect::Top() const
 {
   return m_Top;
 }
 
 
-long Rect::Bottom() const
+unsigned long Rect::Bottom() const
 {
   return m_Bottom;
 }
 
-size_t Rect::Height() const
+unsigned long Rect::Height() const
 {
 
   return m_Bottom - m_Top;
 }
 
-size_t Rect::Width() const
+unsigned long Rect::Width() const
 {
   return m_Right - m_Left;
 }
 
-size_t Rect::WordWidth() const
+unsigned long Rect::WordWidth() const
 {
   return m_WordWidth; 
 }
