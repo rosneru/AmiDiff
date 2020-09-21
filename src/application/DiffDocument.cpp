@@ -123,6 +123,19 @@ const DiffLine* DiffDocument::RightLine(size_t index) const
   return m_RightDiffFile.GetLine(index);
 }
 
+
+const DiffOutputFileBase& DiffDocument::LeftDiffFile() const
+{
+  return m_LeftDiffFile;
+}
+
+
+const DiffOutputFileBase& DiffDocument::RightDiffFile() const
+{
+    return m_RightDiffFile;
+}
+
+
 size_t DiffDocument::NumDifferences() const
 {
   return m_DiffEngine.NumDifferences();

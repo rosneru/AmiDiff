@@ -124,22 +124,6 @@ private:
   UWORD m_FontHeight_pix;   ///> Height of the rastport text font
   UWORD m_FontBaseline_pix; ///> Baseline (from top) of the rastport text font
 
-  ULONG m_X;        ///> Index of leftmost char in displayed lines
-                    ///> Is > 0 when text is horizontally scrolled
-
-  ULONG m_Y;        ///> Index of topmost displayed line in document
-                    ///> Is > 0 when text is vertically scrolled
-
-  ULONG m_MaxTextAreaChars;   ///> Max fitting chars in each text area
-                              ///> Depending on font and text area size
-
-  ULONG m_MaxTextAreaLines;   ///> Max fitting lines in each text area
-                              ///> Depending on font and window size
-
-  ULONG m_NumLines;           ///> Number of lines (as it's a diff view
-                              ///> this should be equal for both files)
-
-
   ULONG m_IndentX;  ///> X-distance of the text areas to window borders
   ULONG m_IndentY;  ///> Y-distance of the text areas to window borders
 
@@ -176,28 +160,6 @@ private:
    */
   void resizeGadgets();
 
-  /**
-   * Displays the left and right diff file inside the main text area.
-   * The file is displayed starting from current text position m_Y as
-   * first line at the very top of the text area.
-   *
-   * @param fromStart When true: Before printing the documents the line
-   * and column indices m_X and m_Y are reset to 0. So the document will
-   * be displayed from start. When false: Printing starts at current
-   * position m_Y.
-   */
-  void paintDocuments(bool bFromStart = true);
-
-  /**
-   * Prints the given line (pLeftLine and pRightLine) at given
-   * y-position topEdge.
-   */
-  void paintLine(const DiffLine* pLeftLine,
-                 const DiffLine* pRightLine,
-                 WORD topEdge,
-                 bool bHorizontallyScrolled = false,
-                 int startIndex = -1,
-                 int count = 0);
 
   /**
    * Paints the basic window content: the 2 BevelBoxes for the original
@@ -227,50 +189,6 @@ private:
    * state to be printed in.
    */
   RastPort* diffStateToRastPort(DiffLine::LineState state);
-
-  /**
-   * Scrolls the text in both text areas left by numChars chars and
-   * fills the gap at right with the following chars
-   *
-   * NOTE: Does *not* change the current left line position m_X!
-   *
-   * @returns Number of lines scrolled. Can be smaller than expected
-   * when last char of longest line is displayed.
-   */
-  size_t scrollLeft(size_t numChars);
-
-  /**
-   * Scrolls the text in both text areas right by numChars chars and
-   * fills the gap at left with the previous chars
-   *
-   * NOTE: Does *not* change the current top line position m_X!
-   *
-   * @returns Number of lines scrolled. Can be smaller than expected
-   * when first char of text reached.
-   */
-  size_t scrollRight(size_t numChars);
-
-  /**
-   * Scrolls the text in both text areas down by numLines lines and
-   * fills the gap at top with the previous lines
-   *
-   * NOTE: Does *not* change the current top line position m_Y!
-   *
-   * @returns Number of lines scrolled. Can be smaller than expected
-   * when start of text reached.
-   */
-  size_t scrollDown(size_t numLines);
-
-  /**
-   * Scrolls the text in both text areas up by numLines lines and fills
-   * the gap at bottom with the next lines.
-   *
-   * NOTE: Does *not* change the current top line position m_Y!
-   *
-   * @returns Number of lines scrolled. Can be smaller than expected
-   * when end of text reached.
-   */
-  size_t scrollUp(size_t numLines);
 };
 
 

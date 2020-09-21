@@ -48,6 +48,9 @@ public:
   const DiffLine* LeftLine(size_t index) const;
   const DiffLine* RightLine(size_t index) const;
 
+  const DiffOutputFileBase& LeftDiffFile() const;
+  const DiffOutputFileBase& RightDiffFile() const;
+
   size_t NumDifferences() const;
 
   size_t NextDiffIndex();
@@ -75,4 +78,4 @@ private:
   size_t m_MaxLineLength;
 };
 
-#endif // DIFF_DOCUMENT_H
+#endif
