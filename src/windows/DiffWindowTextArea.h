@@ -14,7 +14,8 @@
 class DiffWindowTextArea : public Rect
 {
 public:
-  DiffWindowTextArea(DiffWindowRastports*& pRPorts);
+  DiffWindowTextArea(DiffWindowRastports*& pRPorts,
+                     struct TextFont* pTextFont);
 
   virtual ~DiffWindowTextArea();
 
@@ -27,10 +28,9 @@ public:
   /**
    * Set the document and paint initially.
    * 
-   * FIXME: Move this to the constructor
+   * FIXME: Move this to the constructor of DiffWindowTextArea
    */
-  void SetDocument(const DiffOutputFileBase* pDiffFile, 
-                   struct TextFont* pTextFont,
+  void SetDocument(const DiffOutputFileBase* pDiffFile,
                    ULONG maxNumChars,
                    bool lineNumbersEnabled);
 

@@ -491,6 +491,8 @@ File
 "src/diffengine/DiffOutputFileBase.h"
 "src/windows/ScrollbarWindow.h"
 "src/windows/WindowBase.h"
+"src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowTextArea.h"
 Storm Shell Project (Dependencies)
 "build-stromc/DiffWindow.o" "build-stromc/DiffWindow.debug"
 ""

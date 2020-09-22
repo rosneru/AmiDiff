@@ -120,8 +120,8 @@ private:
   ULONG m_IndentX;  ///> X-distance of the text areas to window borders
   ULONG m_IndentY;  ///> Y-distance of the text areas to window borders
 
-  DiffWindowTextArea m_TextArea1;
-  DiffWindowTextArea m_TextArea2;
+  DiffWindowTextArea* m_pTextArea1;
+  DiffWindowTextArea* m_pTextArea2;
 
   char m_ChangedText[20];
   char m_AddedText[20];

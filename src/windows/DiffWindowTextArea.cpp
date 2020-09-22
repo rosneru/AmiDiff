@@ -5,7 +5,8 @@
 
 #include "DiffWindowTextArea.h"
 
-DiffWindowTextArea::DiffWindowTextArea(DiffWindowRastports*& pRPorts)
+DiffWindowTextArea::DiffWindowTextArea(DiffWindowRastports*& pRPorts,
+                                       struct TextFont* pTextFont)
   : m_pRPorts(pRPorts),
     m_pDiffFile(NULL),
     m_LineNumbersWidth_pix(0),
@@ -17,9 +18,9 @@ DiffWindowTextArea::DiffWindowTextArea(DiffWindowRastports*& pRPorts)
     m_Y(0),
     m_LineNumsWidth_chars(0),
     m_LineNumsWidth_pix(0),
-    m_FontWidth_pix(0),
-    m_FontHeight_pix(0),
-    m_FontBaseline_pix(0)
+    m_FontWidth_pix(pTextFont->tf_XSize),
+    m_FontHeight_pix(pTextFont->tf_YSize),
+    m_FontBaseline_pix(pTextFont->tf_Baseline)
 
 {
 
@@ -52,7 +53,6 @@ ULONG DiffWindowTextArea::NumVisibleLines() const
 }
 
 void DiffWindowTextArea::SetDocument(const DiffOutputFileBase* pDiffFile, 
-                                     struct TextFont* pTextFont,
                                      ULONG maxNumChars,
                                      bool lineNumbersEnabled)
 {
@@ -62,10 +62,6 @@ void DiffWindowTextArea::SetDocument(const DiffOutputFileBase* pDiffFile,
   m_LineNumbersEnabled = lineNumbersEnabled;
   m_X = 0;
   m_Y = 0;
-
-  m_FontWidth_pix = pTextFont->tf_XSize;
-  m_FontHeight_pix = pTextFont->tf_YSize;
-  m_FontBaseline_pix = pTextFont->tf_Baseline;
 
   if(lineNumbersEnabled)
   {
