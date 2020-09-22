@@ -11,7 +11,7 @@ SET(CMAKE_CXX_FLAGS_RELEASE "-noixemul -Wall -Os -s -D LINUX")
 
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <OBJECTS>  -o <TARGET>")
 
-add_executable (ADiffView
+add_executable (ADiffView_gcc
                 amigautils/AmigaFile.cpp
                 amigautils/MemoryPool.cpp
                 amigautils/MessageBox.cpp
@@ -60,7 +60,7 @@ add_executable (ADiffView
                 main.cpp)
 
 
-target_include_directories (ADiffView PUBLIC
+target_include_directories (ADiffView_gcc PUBLIC
                             amigautils
                             application
                             commands
@@ -72,7 +72,7 @@ target_include_directories (ADiffView PUBLIC
                             worker
                             .)
 
-add_custom_command(TARGET ADiffView
+add_custom_command(TARGET ADiffView_gcc
                    POST_BUILD
-                   COMMAND cp ADiffView ${CMAKE_CURRENT_SOURCE_DIR}/..
-                   DEPENDS ADiffView)
+                   COMMAND cp ADiffView_gcc ${CMAKE_CURRENT_SOURCE_DIR}/..
+                   DEPENDS ADiffView_gcc)
