@@ -160,7 +160,6 @@ bool DiffWindow::Open(InitialPosition initialPos)
   // shortly before opening, so the Open() call is done afterwards.
   //
   m_IndentY = 2 *  m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
-  m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
 
   m_TextAttr.ta_Name = m_Screen.IntuiDrawInfo()->dri_Font->tf_Message.mn_Node.ln_Name;
   m_TextAttr.ta_YSize = m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
@@ -538,6 +537,13 @@ void DiffWindow::calcSizes()
 
   // Pre-calc text areas heigt. Will later be limited to int multiples.
   long textAreasHeight = m_InnerWindowBottom - m_pTextArea1->Top() - m_IndentY;
+
+  if((m_pTextArea1 == NULL) || (m_pTextArea2 == NULL))
+  {
+    return;
+  }
+
+  m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
 
   m_pTextArea2->SetLeftTop(m_pTextArea1->Left() + textAreasWidth, 
                          m_pTextArea1->Top());
