@@ -243,6 +243,8 @@ File
 "src/application/DiffWorkerProgressReporter.h"
 "src/worker/WorkerStartupMsg.h"
 "src/windows/ScrollbarWindow.h"
+"src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowTextArea.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdDiff.o" "build-stromc/CmdDiff.debug"
 ""
@@ -491,6 +493,25 @@ File
 "src/windows/WindowBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/DiffWindow.o" "build-stromc/DiffWindow.debug"
+""
+1 1
+File
+1 "src/windows/DiffWindowRastports.cpp"
+"src/windows/DiffWindowRastports.cpp"
+"src/windows/DiffWindowRastports.h"
+Storm Shell Project (Dependencies)
+"build-stromc/DiffWindowRastports.o" "build-stromc/DiffWindowRastports.debug"
+""
+1 1
+File
+1 "src/windows/DiffWindowTextArea.cpp"
+"src/windows/DiffWindowTextArea.cpp"
+"src/windows/DiffWindowTextArea.h"
+"src/diffengine/DiffInputFileBase.h"
+"src/diffengine/DiffFileBase.h"
+"src/windows/DiffWindowRastports.h"
+Storm Shell Project (Dependencies)
+"build-stromc/DiffWindowTextArea.o" "build-stromc/DiffWindowTextArea.debug"
 ""
 1 1
 File
@@ -827,6 +848,20 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowRastports.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "src/windows/DiffWindowTextArea.h"
+"src/windows/DiffWindowTextArea.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "src/windows/FilesWindow.h"
 "src/windows/FilesWindow.h"
 Storm Shell Project (Dependencies)
@@ -888,6 +923,7 @@ Section
 7
 File
 10 "ADiffView"
+"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""
