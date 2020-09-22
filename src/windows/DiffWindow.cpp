@@ -30,15 +30,10 @@ DiffWindow::DiffWindow(ScreenBase& screen,
     m_pGadTxtLeftFile(NULL),
     m_pGadTxtRightFile(NULL),
     m_NumDifferences(0),
-    m_LineNumsWidth_chars(0),
-    m_LineNumsWidth_pix(0),
-    m_FontWidth_pix(m_pTextFont->tf_XSize),
-    m_FontHeight_pix(m_pTextFont->tf_YSize),
-    m_FontBaseline_pix(m_pTextFont->tf_Baseline)
     m_IndentX(5),
     m_IndentY(0),
-    m_TextArea1(m_pRPorts, m_LineNumsWidth_pix),
-    m_TextArea2(m_pRPorts, m_LineNumsWidth_pix)
+    m_TextArea1(m_pRPorts),
+    m_TextArea2(m_pRPorts)
 {
   // If parent window already defined gadgets, we store the last of
   // these gadgeds and the count of defined gadgets. They are needed
@@ -115,12 +110,9 @@ void DiffWindow::Resized()
 
   if(m_pDocument != NULL)
   {
-    // Paint the document names
-    //paintDocumentNames();
-    // Now done in resizeGadgets()->createGadgets()
-
     // Paint the content of the two documents
-    paintDocuments(false);
+    m_TextArea1.paintDocuments(false);
+    m_TextArea2.paintDocuments(false);
   }
 
   // Paint the status bar
@@ -233,33 +225,34 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   // Ensure that the gadgets are re-drawn
   RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
 
-  if(pDiffDocument->LineNumbersEnabled())
-  {
-    const DiffLine* pLine = m_pDocument->LeftLine(0);
-    const char* pLineNum = pLine->LineNum();
-
-    m_LineNumsWidth_chars = strlen(pLineNum);
-    m_LineNumsWidth_pix = m_LineNumsWidth_chars * m_FontWidth_pix;
-  }
-
   calcSizes();
 
   // Paint the window decoration
   paintWindowDecoration();
 
-  // Display the first [1; m_MaxTextAreaLines] lines of the files
+  // Set document content to the text areas
+  
   // TODO Change to new TextArea1()
-  m_TextArea1.SetDocument(&pDiffDocument->LeftDiffFile());
-  m_TextArea2.SetDocument(&pDiffDocument->RightDiffFile());
+  m_TextArea1.SetDocument(&pDiffDocument->LeftDiffFile(), 
+                          m_pTextFont, 
+                          pDiffDocument->MaxLineLength(),
+                          pDiffDocument->LineNumbersEnabled());
+
+  m_TextArea2.SetDocument(&pDiffDocument->RightDiffFile(), 
+                          m_pTextFont, 
+                          pDiffDocument->MaxLineLength(),
+                          pDiffDocument->LineNumbersEnabled());
 
   // Paint the status bar
   paintStatusBar();
 
-  setXScrollPotSize(m_MaxTextAreaChars, m_pDocument->MaxLineLength());
+  setXScrollPotSize(m_TextArea1.NumVisibleChars(), 
+                    m_pDocument->MaxLineLength());
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  setYScrollPotSize(m_MaxTextAreaLines, m_NumLines);
+  setYScrollPotSize(m_TextArea1.NumVisibleLines(), 
+                    m_pDocument->NumLines());
 
   return true;
 }
@@ -267,38 +260,25 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
 void DiffWindow::NavigateToNextDiff()
 {
-  // // Calculate the yLimit (max y allowed for scrolling) enables to
-  // // determine if the last page already is displayed.
-  // size_t yLimit = m_NumLines - m_MaxTextAreaLines;
-  // bool isAlreadyLastPage = false;
-  // if((yLimit > 0) && (m_Y >= yLimit))
-  // {
-  //   isAlreadyLastPage = true;
-  //   return;
-  // }
-
   size_t idx = m_pDocument->NextDiffIndex();
 
   // Scroll y to next diff
   YChangedHandler(idx);
 
   // Set scrollbar to new y position
-  setYScrollTop(m_Y);
+  setYScrollTop(m_TextArea1.Y());
 }
 
 
 void DiffWindow::NavigateToPrevDiff()
 {
-  // // Calculating the yLimit (max y pos for scrolling)
-  // size_t yLimit = m_NumLines - m_MaxTextAreaLines;
-
   size_t idx = m_pDocument->PrevDiffIndex();
 
   // Scroll y to prev diff
   YChangedHandler(idx);
 
   // Set scrollbar to new y position
-  setYScrollTop(m_Y);
+  setYScrollTop(m_TextArea1.Y());
 }
 
 
@@ -340,28 +320,29 @@ void DiffWindow::HandleIdcmp(ULONG msgClass,
 
 void DiffWindow::XChangedHandler(size_t newX)
 {
-  m_TextArea1.ScrollToLeftColumn(newX);
-  m_TextArea2.ScrollToLeftColumn(newX);
+  m_TextArea1.ScrollLeftToColumn(newX);
+  m_TextArea2.ScrollLeftToColumn(newX);
 }
 
 
 void DiffWindow::YChangedHandler(size_t newY)
 {
-  m_TextArea1.ScrollToTopRow(newY);
-  m_TextArea2.ScrollToTopRow(newY);
+  m_TextArea1.ScrollTopToRow(newY);
+  m_TextArea2.ScrollTopToRow(newY);
 }
 
 
 void DiffWindow::XIncrease(size_t numChars,
                            bool bTriggeredByScrollPot)
 {
-  m_X += scrollLeft(numChars);
+  m_TextArea1.scrollLeft(numChars);
+  m_TextArea2.scrollLeft(numChars);
 
   if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollLeft(m_X);
+    setXScrollLeft(m_TextArea1.X());
   }
 }
 
@@ -369,13 +350,14 @@ void DiffWindow::XIncrease(size_t numChars,
 void DiffWindow::XDecrease(size_t numChars,
                            bool bTriggeredByScrollPot)
 {
-  m_X -= scrollRight(numChars);
+  m_TextArea1.scrollRight(numChars);
+  m_TextArea2.scrollRight(numChars);
 
   if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollLeft(m_X);
+    setXScrollLeft(m_TextArea1.X());
   }
 }
 
@@ -383,13 +365,14 @@ void DiffWindow::XDecrease(size_t numChars,
 void DiffWindow::YIncrease(size_t numLines,
                            bool bTriggeredByScrollPot)
 {
-  m_Y += scrollUp(numLines);
+  m_TextArea1.scrollUp(numLines);
+  m_TextArea2.scrollUp(numLines);
 
   if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setYScrollTop(m_Y);
+    setYScrollTop(m_TextArea1.Y());
   }
 }
 
@@ -397,13 +380,14 @@ void DiffWindow::YIncrease(size_t numLines,
 void DiffWindow::YDecrease(size_t numLines,
                            bool bTriggeredByScrollPot)
 {
-  m_Y -= scrollDown(numLines);
+  m_TextArea1.scrollDown(numLines);
+  m_TextArea2.scrollDown(numLines);
 
   if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setYScrollTop(m_Y);
+    setYScrollTop(m_TextArea1.Y());
   }
 }
 
@@ -535,43 +519,26 @@ void DiffWindow::calcSizes()
   m_TextArea2.SetLeftTop(m_TextArea1.Left() + textAreasWidth, 
                          m_TextArea1.Top());
 
-  if((m_FontHeight_pix == 0) || (m_FontWidth_pix == 0))
+
+  // Set the dimension of the text areas
+  m_TextArea1.SetSizes(textAreasWidth, 
+                       textAreasHeight);
+
+  m_TextArea2.SetSizes(textAreasWidth, 
+                       textAreasHeight);
+
+  if(m_pDocument == NULL)
   {
     return;
   }
 
-  // Calculate how many lines fit into each text area
-  m_MaxTextAreaLines = (textAreasHeight - 4) /  m_FontHeight_pix;
-
-  // Limit text areas heigt to int multiples.
-  textAreasHeight = m_MaxTextAreaLines * m_FontHeight_pix + 3;
-
-  // Calculate how many chars fit on each line in each text area
-  m_MaxTextAreaChars = (textAreasWidth - 7 - m_LineNumsWidth_pix)
-                     / m_FontWidth_pix;
-
-  if(m_pDocument != NULL)
-  {
-    // Set x-scroll-gadget's pot size in relation of new window size
-    setXScrollPotSize(m_MaxTextAreaChars, m_pDocument->MaxLineLength());
-  }
+  // Set x-scroll-gadget's pot size in relation of new window size
+  setXScrollPotSize(m_TextArea1.NumVisibleChars(), 
+                    m_pDocument->MaxLineLength());
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_MaxTextAreaLines, m_NumLines);
-
-  //
-  // Define the dimensions for the scroll areas
-  // NOTE: The XMin values depend on if the scroll is done horizontally
-  //       or vertically. On vertical scroll the line numbers are
-  //       scrolled too. On horizontal scroll, they're not.
-  //
-  LONG textAreasTextWidth_pix = m_MaxTextAreaChars * m_FontWidth_pix;
-  textAreasTextWidth_pix += m_LineNumsWidth_pix;
-
-  // Set the width and heigtht lof the text areas. Internally the
-  // HScroll and VScroll areas are also set.
-  m_TextArea1.SetWidthHeightScroll(textAreasWidth, textAreasHeight, textAreasTextWidth_pix);
-  m_TextArea2.SetWidthHeightScroll(textAreasWidth, textAreasHeight, textAreasTextWidth_pix);
+  setYScrollPotSize(m_TextArea1.NumVisibleLines(), 
+                    m_pDocument->NumLines());
 }
 
 
@@ -695,58 +662,4 @@ void DiffWindow::paintStatusBar()
   intuiText.BackPen = m_Pens.Red();
   intuiText.IText = (UBYTE*) m_DeletedText;
   PrintIText(m_pRPorts->Window(), &intuiText, 0, 0);
-}
-
-
-LONG DiffWindow::calcNumPrintChars(const DiffLine* pDiffLine,
-                                     int count,
-                                     int startIndex)
-{
-  LONG numCharsToPrint = 0;
-
-  if(count > 0)
-  {
-    numCharsToPrint = count;
-  }
-  else
-  {
-    // Determine how many characters would be print theoretically
-    numCharsToPrint = pDiffLine->NumChars() - m_X;
-  }
-
-  if(numCharsToPrint > m_MaxTextAreaChars)
-  {
-    // Limit the number of printed chars to fit into the text area
-    numCharsToPrint = m_MaxTextAreaChars;
-  }
-
-  if((startIndex > -1) &&
-     (numCharsToPrint + startIndex > pDiffLine->NumChars()))
-  {
-    // Limit the number of printed chars to line length
-    numCharsToPrint = pDiffLine->NumChars() - startIndex;
-  }
-
-  return numCharsToPrint;
-}
-
-
-RastPort* DiffWindow::diffStateToRastPort(DiffLine::LineState state)
-{
-  if(state == DiffLine::Added)
-  {
-    return m_pRPorts->TextGreenBG();
-  }
-  else if(state== DiffLine::Changed)
-  {
-    return m_pRPorts->TextYellowBG();
-  }
-  else if(state == DiffLine::Deleted)
-  {
-    return m_pRPorts->TextRedBG();
-  }
-  else
-  {
-    return m_pRPorts->TextDefault();
-  }
 }

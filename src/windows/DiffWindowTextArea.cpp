@@ -1,19 +1,25 @@
 #include <clib/graphics_protos.h>
 
 #include <math.h>
+#include <string.h>
 
 #include "DiffWindowTextArea.h"
 
-DiffWindowTextArea::DiffWindowTextArea(DiffWindowRastports*& pRPorts, 
-                                       const UWORD& lineNumbersWidth_pix)
+DiffWindowTextArea::DiffWindowTextArea(DiffWindowRastports*& pRPorts)
   : m_pRPorts(pRPorts),
     m_pDiffFile(NULL),
-    m_LineNumbersWidth_pix(lineNumbersWidth_pix),
+    m_LineNumbersWidth_pix(0),
     m_NumLines(0),
+    m_MaxNumChars(0),
     m_MaxTextAreaChars(0),
     m_MaxTextAreaLines(0),
     m_X(0),
-    m_Y(0)
+    m_Y(0),
+    m_LineNumsWidth_chars(0),
+    m_LineNumsWidth_pix(0),
+    m_FontWidth_pix(0),
+    m_FontHeight_pix(0),
+    m_FontBaseline_pix(0)
 
 {
 
@@ -25,21 +31,99 @@ DiffWindowTextArea::~DiffWindowTextArea()
 }
 
 
-void DiffWindowTextArea::SetDocument(const DiffOutputFileBase* pDiffFile)
+ULONG DiffWindowTextArea::X() const
+{
+  return m_X;
+}
+
+ULONG DiffWindowTextArea::Y() const
+{
+  return m_Y;
+}
+
+ULONG DiffWindowTextArea::NumVisibleChars() const
+{
+  return m_MaxTextAreaChars;
+}
+
+ULONG DiffWindowTextArea::NumVisibleLines() const
+{
+  return m_MaxTextAreaLines;
+}
+
+void DiffWindowTextArea::SetDocument(const DiffOutputFileBase* pDiffFile, 
+                                     struct TextFont* pTextFont,
+                                     ULONG maxNumChars,
+                                     bool lineNumbersEnabled)
 {
   m_pDiffFile = pDiffFile;
   m_NumLines = pDiffFile->NumLines();
+  m_MaxNumChars = maxNumChars;
+  m_LineNumbersEnabled = lineNumbersEnabled;
   m_X = 0;
   m_Y = 0;
+
+  m_FontWidth_pix = pTextFont->tf_XSize;
+  m_FontHeight_pix = pTextFont->tf_YSize;
+  m_FontBaseline_pix = pTextFont->tf_Baseline;
+
+  if(lineNumbersEnabled)
+  {
+    const DiffLine* pLine = pDiffFile->GetLine(0);
+    const char* pLineNum = pLine->LineNum();
+
+    m_LineNumsWidth_chars = strlen(pLineNum);
+    m_LineNumsWidth_pix = m_LineNumsWidth_chars * m_FontWidth_pix;
+  }
+
 
   paintDocuments(true);
 }
 
 
-void DiffWindowTextArea::ScrollToTopRow(size_t rowId)
+void DiffWindowTextArea::SetSizes(ULONG width, 
+                                  ULONG height)
+{
+  m_MaxTextAreaLines = (height - 4) /  m_FontHeight_pix;;
+
+  // Limit heigt to int multiples.
+  height = m_MaxTextAreaLines * m_FontHeight_pix + 3;
+ 
+  // Calculate how many chars fit on each line in each text area
+  m_MaxTextAreaChars = (width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix;
+
+  ULONG textAreasTextWidth_pix = m_MaxTextAreaChars * m_FontWidth_pix;
+  textAreasTextWidth_pix += m_LineNumsWidth_pix;
+
+  Rect::SetWidthHeight(width, height);
+
+  //
+  // Define two the scrolling areas. Note that there are two different 
+  // scroll rects used because:
+  //   The 'Left' values depend on if the scroll is done horizontally or
+  //   vertically. On vertical scroll the block containing line numbers 
+  //   is scrolled too. On horizontal scroll, it is not.
+  //
+
+  LONG maxTextWidth_pix = m_MaxTextAreaChars * m_FontWidth_pix;
+  maxTextWidth_pix += m_LineNumsWidth_pix;
+
+  m_HScrollRect.Set(Left() + m_LineNumbersWidth_pix + 3,
+                    Top() + 1,
+                    Left() + maxTextWidth_pix + 2,
+                    Top() + Height() - 3);
+
+  m_VScrollRect.Set(Left() + 3,
+                    Top() + 1,
+                    Left() + maxTextWidth_pix + 2,
+                    Top() + Height() - 3);
+}
+
+
+void DiffWindowTextArea::ScrollTopToRow(size_t rowId)
 {
   // Prevent to scroll below the last line
-  long yLimit = m_NumLines - m_MaxTextAreaLines;
+  ULONG yLimit = m_NumLines - m_MaxTextAreaLines;
   if((yLimit > 0) && ( rowId > yLimit))
   {
      rowId = yLimit;
@@ -89,7 +173,7 @@ void DiffWindowTextArea::ScrollToTopRow(size_t rowId)
 }
 
 
-void DiffWindowTextArea::ScrollToLeftColumn(size_t columId)
+void DiffWindowTextArea::ScrollLeftToColumn(size_t columId)
 {
   long delta = columId - m_X;
   if(delta == 0)
@@ -141,30 +225,6 @@ void DiffWindowTextArea::Clear()
   //           Bottom() - 3);
 }
 
-void DiffWindowTextArea::SetWidthHeightScroll(long width, 
-                                              long height, 
-                                              long maxTextWidth_pix)
-{
-  Rect::SetWidthHeight(width, height);
-
-  //
-  // Define the dimensions for the scroll areas
-  // NOTE: The 'Left' values depend on if the scroll is done 
-  //       horizontally or vertically. On vertical scroll the line 
-  //       numbers are scrolled too. On horizontal scroll, they're not.
-  //
-  m_HScrollRect.Set(Left() + m_LineNumbersWidth_pix + 3,
-                    Top() + 1,
-                    Left() + maxTextWidth_pix + 2,
-                    Top() + Height() - 3);
-
-  m_VScrollRect.Set(Left() + 3,
-                    Top() + 1,
-                    Left() + maxTextWidth_pix + 2,
-                    Top() + Height() - 3);
-}
-
-
 const Rect& DiffWindowTextArea::HScroll()
 {
   return m_HScrollRect;
@@ -207,32 +267,22 @@ size_t DiffWindowTextArea::scrollRight(size_t numChars)
   ScrollRasterBF(m_pRPorts->Window(),
                  -numChars * m_FontWidth_pix, // n * width
                  0,
-                 m_TextArea1.HScroll().Left(),
-                 m_TextArea1.HScroll().Top(),
-                 m_TextArea1.HScroll().Right(),
-                 m_TextArea1.HScroll().Bottom());
+                 m_HScrollRect.Left(),
+                 m_HScrollRect.Top(),
+                 m_HScrollRect.Right(),
+                 m_HScrollRect.Bottom());
 
-  ScrollRasterBF(m_pRPorts->Window(),
-                 -numChars * m_FontWidth_pix,  // n * width
-                 0,
-                 m_TextArea2.HScroll().Left(),
-                 m_TextArea2.HScroll().Top() + 1,
-                 m_TextArea2.HScroll().Right(),
-                 m_TextArea2.HScroll().Bottom());
 
   // fill the gap with the previous chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
-    const DiffLine* pLeftLine = m_pDocument->LeftLine(i);
-    const DiffLine* pRightLine = m_pDocument->RightLine(i);
-
-    if(pLeftLine == NULL || pRightLine == NULL)
+    const DiffLine* pLine = m_pDiffFile->GetLine(i);
+    if(pLine == NULL)
     {
       break;
     }
 
-    paintLine(pLeftLine,
-              pRightLine,
+    paintLine(pLine,
               (i - m_Y) * m_FontHeight_pix,
               true,
               m_X - numChars,
@@ -257,56 +307,46 @@ size_t DiffWindowTextArea::scrollLeft(size_t numChars)
     numChars = m_MaxTextAreaChars;
   }
 
-  if(m_pDocument->MaxLineLength() < m_MaxTextAreaChars)
+  if(m_MaxNumChars < m_MaxTextAreaChars)
   {
     // Do not move the scroll area left if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_X + m_MaxTextAreaChars) == m_pDocument->MaxLineLength())
+  if((m_X + m_MaxTextAreaChars) == m_MaxNumChars)
   {
     // Do not move the scroll area left if text already at rightmost
     // position
     return 0;
   }
 
-  if((m_X + m_MaxTextAreaChars + numChars) > m_pDocument->MaxLineLength())
+  if((m_X + m_MaxTextAreaChars + numChars) > m_MaxNumChars)
   {
     // Limit the scrolling to only scroll only as many chars as necessary
-    numChars = m_pDocument->MaxLineLength() - (m_X + m_MaxTextAreaChars);
+    numChars = m_MaxNumChars - (m_X + m_MaxTextAreaChars);
   }
 
   // Move each text area left by n * the width of one char
   ScrollRasterBF(m_pRPorts->Window(),
                  numChars * m_FontWidth_pix,
                  0,
-                 m_TextArea1.HScroll().Left(),
-                 m_TextArea1.HScroll().Top(),
-                 m_TextArea1.HScroll().Right(),
-                 m_TextArea1.HScroll().Bottom());
-
-  ScrollRasterBF(m_pRPorts->Window(),
-                 numChars * m_FontWidth_pix,
-                 0,
-                 m_TextArea2.HScroll().Left(),
-                 m_TextArea2.HScroll().Top(),
-                 m_TextArea2.HScroll().Right(),
-                 m_TextArea2.HScroll().Bottom());
+                 m_HScrollRect.Left(),
+                 m_HScrollRect.Top(),
+                 m_HScrollRect.Right(),
+                 m_HScrollRect.Bottom());
 
   // Fill the gap with the following chars
   for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
   {
-    const DiffLine* pLeftLine = m_pDocument->LeftLine(i);
-    const DiffLine* pRightLine = m_pDocument->RightLine(i);
+    const DiffLine* pLine = m_pDiffFile->GetLine(i);
 
-    if(pLeftLine == NULL || pRightLine == NULL)
+    if(pLine == NULL)
     {
       break;
     }
 
-    paintLine(pLeftLine,
-              pRightLine,
+    paintLine(pLine,
               (i - m_Y)  * m_FontHeight_pix,
               true,
               m_X + m_MaxTextAreaChars,
@@ -342,34 +382,23 @@ size_t DiffWindowTextArea::scrollDown(size_t numLines)
   ScrollRasterBF(m_pRPorts->Window(),
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
-                 m_TextArea1.VScroll().Left(),
-                 m_TextArea1.VScroll().Top(),
-                 m_TextArea1.VScroll().Right(),
-                 m_TextArea1.VScroll().Bottom());
-
-  ScrollRasterBF(m_pRPorts->Window(),
-                 0,
-                 -numLines * m_FontHeight_pix,  // n * height
-                 m_TextArea2.VScroll().Left(),
-                 m_TextArea2.VScroll().Top(),
-                 m_TextArea2.VScroll().Right(),
-                 m_TextArea2.VScroll().Bottom());
+                 m_VScrollRect.Left(),
+                 m_VScrollRect.Top(),
+                 m_VScrollRect.Right(),
+                 m_VScrollRect.Bottom());
 
   // Fill the gap with the previous text lines
   for(size_t i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y - numLines + i;
-    const DiffLine* pLeftLine = m_pDocument->LeftLine(lineIndex);
-    const DiffLine* pRightLine = m_pDocument->RightLine(lineIndex);
+    const DiffLine* pLeftLine = m_pDiffFile->GetLine(lineIndex);
 
-    if(pLeftLine == NULL || pRightLine == NULL)
+    if(pLeftLine == NULL)
     {
       break;
     }
 
-    paintLine(pLeftLine,
-              pRightLine,
-              i * m_FontHeight_pix);
+    paintLine(pLeftLine, i * m_FontHeight_pix);
   }
 
   return numLines;
@@ -407,33 +436,22 @@ size_t DiffWindowTextArea::scrollUp(size_t numLines)
   ScrollRasterBF(m_pRPorts->Window(),
                  0,
                  numLines * m_FontHeight_pix,
-                 m_TextArea1.VScroll().Left(),
-                 m_TextArea1.VScroll().Top(),
-                 m_TextArea1.VScroll().Right(),
-                 m_TextArea1.VScroll().Bottom());
-
-  ScrollRasterBF(m_pRPorts->Window(),
-                 0,
-                 numLines * m_FontHeight_pix,
-                 m_TextArea2.VScroll().Left(),
-                 m_TextArea2.VScroll().Top(),
-                 m_TextArea2.VScroll().Right(),
-                 m_TextArea2.VScroll().Bottom());
+                 m_VScrollRect.Left(),
+                 m_VScrollRect.Top(),
+                 m_VScrollRect.Right(),
+                 m_VScrollRect.Bottom());
 
   for(size_t i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y + m_MaxTextAreaLines + i;
-    const DiffLine* pLeftLine = m_pDocument->LeftLine(lineIndex);
-    const DiffLine* pRightLine = m_pDocument->RightLine(lineIndex);
-
-    if(pLeftLine == NULL || pRightLine == NULL)
+    const DiffLine* pLine = m_pDiffFile->GetLine(lineIndex);
+    if(pLine == NULL)
     {
       break;
     }
 
     int paintLineIndex = m_MaxTextAreaLines - numLines + i;
-    paintLine(pLeftLine,
-              pRightLine,
+    paintLine(pLine,
               paintLineIndex * m_FontHeight_pix);
   }
 
@@ -442,9 +460,9 @@ size_t DiffWindowTextArea::scrollUp(size_t numLines)
 
 
 
-void DiffWindow::paintDocuments(bool bFromStart)
+void DiffWindowTextArea::paintDocuments(bool bFromStart)
 {
-  if(m_pDocument == NULL)
+  if(m_pDiffFile == NULL)
   {
     return;
   }
@@ -462,25 +480,22 @@ void DiffWindow::paintDocuments(bool bFromStart)
       break;
     }
 
-    const DiffLine* pLeftLine = m_pDocument->LeftLine(i);
-    const DiffLine* pRightLine = m_pDocument->RightLine(i);
-
-    if(pLeftLine == NULL || pRightLine == NULL)
+    const DiffLine* pLine = m_pDiffFile->GetLine(i);
+    if(pLine == NULL)
     {
       break;
     }
 
-    paintLine(pLeftLine, pRightLine, (i - m_Y) * m_FontHeight_pix);
+    paintLine(pLine, (i - m_Y) * m_FontHeight_pix);
   }
 }
 
 
-void DiffWindow::paintLine(const DiffLine* pLeftLine,
-                           const DiffLine* pRightLine,
-                           WORD topEdge,
-                           bool bHorizontallyScrolled,
-                           int startIndex,
-                           int count)
+void DiffWindowTextArea::paintLine(const DiffLine* pLine,
+                                   WORD topEdge,
+                                   bool bHorizontallyScrolled,
+                                   int startIndex,
+                                   int count)
 {
   size_t indent = 0;
 
@@ -498,70 +513,96 @@ void DiffWindow::paintLine(const DiffLine* pLeftLine,
     indent = (m_MaxTextAreaChars - count) * m_FontWidth_pix;
   }
 
-  if(!bHorizontallyScrolled && m_pDocument->LineNumbersEnabled())
+  if(!bHorizontallyScrolled && m_LineNumbersEnabled)
   {
     //
     // Print the line numbers in left and right
     //
 
-    // Move rastport cursor to start of left line numbers block
+    // Move rastport cursor to start of line numbers block
     ::Move(m_pRPorts->LineNum(),
-           m_TextArea1.Left() + indent + 2,
-           topEdge + m_TextArea1.Top() + m_FontBaseline_pix + 1);
+           Left() + indent + 2,
+           topEdge + Top() + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
-    const char* pLineNum = pLeftLine->LineNum();
+    const char* pLineNum = pLine->LineNum();
 
-    // Print left line's original line number
-    Text(m_pRPorts->LineNum(), pLineNum, m_LineNumsWidth_chars);
-
-    // Move rastport cursor to start of right line numbers block
-    ::Move(m_pRPorts->LineNum(),
-           m_TextArea2.Left() + indent + 2,
-           topEdge + m_TextArea2.Top() + m_FontBaseline_pix + 1);
-
-    // Get the text or set to empty spaces when there is none
-    pLineNum = pRightLine->LineNum();
-
-    // Print right line's original line number
+    // Print line's original line number
     Text(m_pRPorts->LineNum(), pLineNum, m_LineNumsWidth_chars);
   }
 
-  // Getting the RastPort for the left line to draw in. This depends on
+  // Getting the RastPort for the line to draw in. This depends on
   // the line background color which itself depends on the diff state
   // of the line.
-  RastPort* pRPort = diffStateToRastPort(pLeftLine->State());
+  RastPort* pRPort = diffStateToRastPort(pLine->State());
 
-  long numCharsToPrint = calcNumPrintChars(pLeftLine, count, startIndex);
-  if(numCharsToPrint > 0)
+  long numCharsToPrint = calcNumPrintChars(pLine, count, startIndex);
+  if(numCharsToPrint <= 0)
   {
-    // Move rastport cursor to start of left line
-    ::Move(pRPort,
-          m_TextArea1.Left() + indent + m_LineNumsWidth_pix + 3,
-          topEdge + m_TextArea1.Top() + m_FontBaseline_pix + 1);
-
-    // Print left line
-    Text(pRPort,
-         pLeftLine->Text() + startIndex,
-         numCharsToPrint);
+    return;
   }
 
-  // Getting the RastPort for the right line to draw in. This depends
-  // on the line background color which itself depends on the diff
-  // state of the line.
-  pRPort = diffStateToRastPort(pRightLine->State());
+  // Move rastport cursor to start of line
+  ::Move(pRPort,
+        Left() + indent + m_LineNumsWidth_pix + 3,
+        topEdge + Top() + m_FontBaseline_pix + 1);
 
-  numCharsToPrint = calcNumPrintChars(pRightLine, count, startIndex);
-  if(numCharsToPrint > 0)
+  // Print line
+  Text(pRPort,
+        pLine->Text() + startIndex,
+        numCharsToPrint);
+}
+
+
+ULONG DiffWindowTextArea::calcNumPrintChars(const DiffLine* pDiffLine,
+                                            int count,
+                                            int startIndex)
+{
+  ULONG numCharsToPrint = 0;
+
+  if(count > 0)
   {
-    // Move rastport cursor to start of right line
-    ::Move(pRPort,
-          m_TextArea2.Left()  + indent + m_LineNumsWidth_pix + 3,
-          topEdge + m_TextArea2.Top() + m_FontBaseline_pix + 1);
+    numCharsToPrint = count;
+  }
+  else
+  {
+    // Determine how many characters would be print theoretically
+    numCharsToPrint = pDiffLine->NumChars() - m_X;
+  }
 
-    // Print the right line
-    Text(pRPort,
-         pRightLine->Text() + startIndex,
-         numCharsToPrint);
+  if(numCharsToPrint > m_MaxTextAreaChars)
+  {
+    // Limit the number of printed chars to fit into the text area
+    numCharsToPrint = m_MaxTextAreaChars;
+  }
+
+  if((startIndex > -1) &&
+     (numCharsToPrint + startIndex > pDiffLine->NumChars()))
+  {
+    // Limit the number of printed chars to line length
+    numCharsToPrint = pDiffLine->NumChars() - startIndex;
+  }
+
+  return numCharsToPrint;
+}
+
+
+RastPort* DiffWindowTextArea::diffStateToRastPort(DiffLine::LineState state)
+{
+  if(state == DiffLine::Added)
+  {
+    return m_pRPorts->TextGreenBG();
+  }
+  else if(state== DiffLine::Changed)
+  {
+    return m_pRPorts->TextYellowBG();
+  }
+  else if(state == DiffLine::Deleted)
+  {
+    return m_pRPorts->TextRedBG();
+  }
+  else
+  {
+    return m_pRPorts->TextDefault();
   }
 }

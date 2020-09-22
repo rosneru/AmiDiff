@@ -43,7 +43,8 @@ public:
   size_t NumDeleted() const;
 
   size_t NumLines() const;
-  size_t MaxLineLength();
+
+  size_t MaxLineLength() const;
 
   const DiffLine* LeftLine(size_t index) const;
   const DiffLine* RightLine(size_t index) const;

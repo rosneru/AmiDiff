@@ -117,13 +117,6 @@ private:
 
   long m_NumDifferences;      ///> Number of differences
 
-  UWORD m_LineNumsWidth_chars;
-  UWORD m_LineNumsWidth_pix;
-
-  UWORD m_FontWidth_pix;    ///> Width of the rastport text font
-  UWORD m_FontHeight_pix;   ///> Height of the rastport text font
-  UWORD m_FontBaseline_pix; ///> Baseline (from top) of the rastport text font
-
   ULONG m_IndentX;  ///> X-distance of the text areas to window borders
   ULONG m_IndentY;  ///> Y-distance of the text areas to window borders
 
@@ -174,21 +167,6 @@ private:
    * below the two text areas
    */
   void paintStatusBar();
-
-  /**
-   * Calculates how many chars of given DiffLine must be print 
-   * considering the current scroll position m_X, the current width of
-   * the text area and the startIndex.
-   */
-  LONG calcNumPrintChars(const DiffLine* pDiffLine, 
-                         int count,
-                         int startIndex);
-
-  /**
-   * Returns the appropriate rastport for a DiffLine with given
-   * state to be printed in.
-   */
-  RastPort* diffStateToRastPort(DiffLine::LineState state);
 };
 
 

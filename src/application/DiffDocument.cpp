@@ -40,6 +40,25 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
   m_LeftFileName = pLeftFilePath;
   m_RightFileName = pRightFilePath;  
   m_DiffTime = stopWatch.Pick();
+
+  // Determine the maximum number of chars which either can be found is
+  // in the left or in the right file
+
+  for(size_t i = 0; i < m_LeftDiffFile.NumLines(); i++)
+  {
+    if(m_LeftDiffFile.GetLine(i)->NumChars() > m_MaxLineLength)
+    {
+      m_MaxLineLength = m_LeftDiffFile.GetLine(i)->NumChars();
+    }
+  }
+
+  for(size_t i = 0; i < m_RightDiffFile.NumLines(); i++)
+  {
+    if(m_RightDiffFile.GetLine(i)->NumChars() > m_MaxLineLength)
+    {
+      m_MaxLineLength = m_RightDiffFile.GetLine(i)->NumChars();
+    }
+  }
 }
 
 DiffDocument::~DiffDocument()
@@ -85,29 +104,8 @@ size_t DiffDocument::NumLines() const
   return m_LeftDiffFile.NumLines();
 }
 
-size_t DiffDocument::MaxLineLength()
+size_t DiffDocument::MaxLineLength() const
 {
-  if(m_MaxLineLength > 0)
-  {
-    return m_MaxLineLength;
-  }
-
-  for(size_t i = 0; i < m_LeftDiffFile.NumLines(); i++)
-  {
-    if(m_LeftDiffFile.GetLine(i)->NumChars() > m_MaxLineLength)
-    {
-      m_MaxLineLength = m_LeftDiffFile.GetLine(i)->NumChars();
-    }
-  }
-
-  for(size_t i = 0; i < m_RightDiffFile.NumLines(); i++)
-  {
-    if(m_RightDiffFile.GetLine(i)->NumChars() > m_MaxLineLength)
-    {
-      m_MaxLineLength = m_RightDiffFile.GetLine(i)->NumChars();
-    }
-  }
-
   return m_MaxLineLength;
 }
 
