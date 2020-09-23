@@ -92,11 +92,9 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
 
   WORD barHeight = pIntuiScreen->WBorTop + fontHeight + 2;
 
-
   WORD top = barHeight + vSpace;
   WORD left = pIntuiScreen->WBorLeft + hSpace;
   WORD right = m_Width - pIntuiScreen->WBorRight - hSpace;
-
 
   WORD btnSelectWidth = TextLength(&pIntuiScreen->RastPort, "...", 3) 
                       + btnExtraHSpace;
@@ -148,7 +146,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_Width      = stringGadWidth;
   newGadget.ng_Height     = btnsHeight;
   newGadget.ng_GadgetText = NULL;
-  newGadget.ng_GadgetID   = GID_LeftFileString;
+  newGadget.ng_GadgetID   = GID_StrLeftFile;
   newGadget.ng_Flags      = 0;
 
   m_pGadStrLeftFile = CreateGadget(STRING_KIND,
@@ -161,7 +159,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_LeftEdge   = btnSelectLeft;
   newGadget.ng_Width      = btnSelectWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
-  newGadget.ng_GadgetID   = GID_LeftFileButton;
+  newGadget.ng_GadgetID   = GID_BtnLeftFile;
   newGadget.ng_Flags      = 0;
 
   m_pGadBtnSelectLeft = CreateGadget(BUTTON_KIND,
@@ -192,7 +190,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_Width      = stringGadWidth;
   newGadget.ng_Height     = btnsHeight;
   newGadget.ng_GadgetText = NULL;
-  newGadget.ng_GadgetID   = GID_RightFileString;
+  newGadget.ng_GadgetID   = GID_StrRightFile;
   newGadget.ng_Flags      = 0;
 
   m_pGadStrRightFile = CreateGadget(STRING_KIND,
@@ -205,7 +203,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_LeftEdge   = btnSelectLeft;
   newGadget.ng_Width      = btnSelectWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
-  newGadget.ng_GadgetID   = GID_RightFileButton;
+  newGadget.ng_GadgetID   = GID_BtnRightFile;
   newGadget.ng_Flags      = 0;
 
   m_pGadBtnSelectRight = CreateGadget(BUTTON_KIND,
@@ -220,7 +218,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
   newGadget.ng_Width      = btnsWidth;
   newGadget.ng_GadgetText = (UBYTE*) "_Compare";
-  newGadget.ng_GadgetID   = GID_DiffButton;
+  newGadget.ng_GadgetID   = GID_BtnDiff;
 
   m_pGadBtnDiff = CreateGadget(BUTTON_KIND,
                                m_pGadBtnSelectRight,
@@ -231,7 +229,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   // Creating the Swap button
   newGadget.ng_LeftEdge   = (m_Width - hSpace) / 2 - btnsWidth;
   newGadget.ng_GadgetText = (UBYTE*) "_Swap";
-  newGadget.ng_GadgetID   = GID_SwapButton;
+  newGadget.ng_GadgetID   = GID_BtnSwap;
 
   m_pGadBtnSwap = CreateGadget(BUTTON_KIND,
                                m_pGadBtnDiff,
@@ -242,7 +240,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   // Creating the Clear button
   newGadget.ng_LeftEdge   += btnsWidth + hSpace;
   newGadget.ng_GadgetText = (UBYTE*) "Cl_ear";
-  newGadget.ng_GadgetID   = GID_ClearButton;
+  newGadget.ng_GadgetID   = GID_BtnClear;
 
   m_pGadBtnClear = CreateGadget(BUTTON_KIND,
                                 m_pGadBtnSwap,
@@ -254,7 +252,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   // Creating the Cancel button
   newGadget.ng_LeftEdge   = right - btnsWidth;
   newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
-  newGadget.ng_GadgetID   = GID_CancelButton;
+  newGadget.ng_GadgetID   = GID_BtnCancel;
 
   m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
                                  m_pGadBtnClear,
@@ -425,32 +423,32 @@ void FilesWindow::handleGadgetEvent(struct Gadget* pGadget)
 
   switch(pGadget->GadgetID)
   {
-    case GID_LeftFileString:
-    case GID_RightFileString:
+    case GID_StrLeftFile:
+    case GID_StrRightFile:
       checkEnableButtons();
       break;
 
-    case GID_LeftFileButton:  // Select left file
+    case GID_BtnLeftFile:  // Select left file
       selectLeftFile();
       break;
 
-    case GID_RightFileButton: // Select right file
+    case GID_BtnRightFile: // Select right file
       selectRightFile();
       break;
 
-    case GID_SwapButton:      // Swap left and right file
+    case GID_BtnSwap:      // Swap left and right file
       swapFiles();
       break;
 
-    case GID_ClearButton:     // Clear the string gadgets
+    case GID_BtnClear:     // Clear the string gadgets
       clear();
       break;
 
-    case GID_DiffButton:      // Compare the files and display the diff
+    case GID_BtnDiff:      // Compare the files and display the diff
       compare();
       break;
 
-    case GID_CancelButton:
+    case GID_BtnCancel:
       m_CmdCloseFilesWindow.Execute(NULL);
       break;
   }

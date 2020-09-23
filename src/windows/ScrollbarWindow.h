@@ -142,7 +142,7 @@ protected:
   /**
    * Setting a new top position to the x-scrollbar pot.
    */
-  void setXScrollLeft(int left);
+  void setXScrollTop(int left);
 
 
   /**
@@ -189,20 +189,22 @@ private:
     GID_ArrowRight,
   };
 
-  ULONG m_SizeImageWidth;
-  ULONG m_SizeImgHeight;
+  ULONG m_SizeGadWidth;
+  ULONG m_SizeGadHeight;
 
-  struct Image* m_pLeftArrowImage;    ///> h-scrollbar left button image
-  struct Image* m_pRightArrowImage;   ///> h-scrollbar right button image
-  struct Image* m_pUpArrowImage;      ///> v-scrollbar up button image
-  struct Image* m_pDownArrowImage;    ///> v-scrollbar down button image
+  struct Image* m_pImgLeftArrow;      ///> h-scrollbar left button image
+  struct Image* m_pImgRightArrow;     ///> h-scrollbar right button image
+  struct Image* m_pImgUpArrow;        ///> v-scrollbar up button image
+  struct Image* m_pImgDownArrow;      ///> v-scrollbar down button image
 
-  struct Gadget* m_pXPropGadget;      ///> horizontal scrollbar
-  struct Gadget* m_pYPropGadget;      ///> vertical scrollbar
-  struct Gadget* m_pLeftArrowButton;  ///> h-scrollbar left button
-  struct Gadget* m_pRightArrowButton; ///> h-scrollbar right button
-  struct Gadget* m_pUpArrowButton;    ///> v-scrollbar up button
-  struct Gadget* m_pDownArrowButton;  ///> v-scrollbar down button
+  struct Gadget* m_pGadPropX;         ///> horizontal scrollbar
+  struct Gadget* m_pGadPropY;         ///> vertical scrollbar
+  struct Gadget* m_pGadBtnLeftArrow;  ///> h-scrollbar left button
+  struct Gadget* m_pGadBtnRightArrow; ///> h-scrollbar right button
+  struct Gadget* m_pGadBtnUpArrow;    ///> v-scrollbar up button
+  struct Gadget* m_pGadBtnDownArrow;  ///> v-scrollbar down button
+
+  void cleanup();
 
   /**
    * Browses through all IDCMP_IDCMPUPDATE messages for the given

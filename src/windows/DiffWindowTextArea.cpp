@@ -34,8 +34,6 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase* pDiffFile,
     m_LineNumsWidth_chars = strlen(pLineNum);
     m_LineNumsWidth_pix = m_LineNumsWidth_chars * m_FontWidth_pix;
   }
-
-  paintDiffFile(true);
 }
 
 DiffWindowTextArea::~DiffWindowTextArea()
@@ -49,15 +47,18 @@ ULONG DiffWindowTextArea::X() const
   return m_X;
 }
 
+
 ULONG DiffWindowTextArea::Y() const
 {
   return m_Y;
 }
 
+
 ULONG DiffWindowTextArea::MaxVisibleChars() const
 {
   return m_MaxVisibleChars;
 }
+
 
 ULONG DiffWindowTextArea::MaxVisibleLines() const
 {
@@ -149,7 +150,7 @@ void DiffWindowTextArea::ScrollTopToRow(size_t rowId)
             Right() - 3,
             Bottom() - 3);
 
-  paintDiffFile(false);
+  PrintFile(false);
 }
 
 
@@ -192,7 +193,7 @@ void DiffWindowTextArea::ScrollLeftToColumn(size_t columId)
   // Clear ext area completely
   Clear();
 
-  paintDiffFile(false);
+  PrintFile(false);
 }
 
 
@@ -251,7 +252,7 @@ size_t DiffWindowTextArea::scrollRight(size_t numChars)
       break;
     }
 
-    paintLine(pLine,
+    printLine(pLine,
               (i - m_Y) * m_FontHeight_pix,
               true,
               m_X - numChars,
@@ -315,7 +316,7 @@ size_t DiffWindowTextArea::scrollLeft(size_t numChars)
       break;
     }
 
-    paintLine(pLine,
+    printLine(pLine,
               (i - m_Y)  * m_FontHeight_pix,
               true,
               m_X + m_MaxVisibleChars,
@@ -367,7 +368,7 @@ size_t DiffWindowTextArea::scrollDown(size_t numLines)
       break;
     }
 
-    paintLine(pLeftLine, i * m_FontHeight_pix);
+    printLine(pLeftLine, i * m_FontHeight_pix);
   }
 
   return numLines;
@@ -420,7 +421,7 @@ size_t DiffWindowTextArea::scrollUp(size_t numLines)
     }
 
     int paintLineIndex = m_MaxVisibleLines - numLines + i;
-    paintLine(pLine,
+    printLine(pLine,
               paintLineIndex * m_FontHeight_pix);
   }
 
@@ -428,8 +429,7 @@ size_t DiffWindowTextArea::scrollUp(size_t numLines)
 }
 
 
-
-void DiffWindowTextArea::paintDiffFile(bool bFromStart)
+void DiffWindowTextArea::PrintFile(bool bFromStart)
 {
   if(m_pDiffFile == NULL)
   {
@@ -455,12 +455,12 @@ void DiffWindowTextArea::paintDiffFile(bool bFromStart)
       break;
     }
 
-    paintLine(pLine, (i - m_Y) * m_FontHeight_pix);
+    printLine(pLine, (i - m_Y) * m_FontHeight_pix);
   }
 }
 
 
-void DiffWindowTextArea::paintLine(const DiffLine* pLine,
+void DiffWindowTextArea::printLine(const DiffLine* pLine,
                                    WORD topEdge,
                                    bool bHorizontallyScrolled,
                                    int startIndex,

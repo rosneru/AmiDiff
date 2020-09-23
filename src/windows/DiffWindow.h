@@ -119,8 +119,8 @@ private:
 
   ULONG m_IndentX;  ///> X-distance of the text areas to window borders
   ULONG m_IndentY;  ///> Y-distance of the text areas to window borders
-  ULONG textAreasWidth;
-  ULONG textAreasHeight;
+  ULONG m_TextAreasWidth;
+  ULONG m_TextAreasHeight;
 
   DiffWindowTextArea* m_pTextArea1;
   DiffWindowTextArea* m_pTextArea2;
@@ -139,8 +139,9 @@ private:
   void handleGadgetEvent(struct Gadget* pGadget);
   void handleVanillaKey(UWORD code);
 
+  void cleanup();
 
-  void createGadgets();
+  bool createGadgets();
 
   /**
    * Calculates some inner window sizes which is needed after window

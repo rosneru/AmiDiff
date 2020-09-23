@@ -15,10 +15,10 @@ class DiffWindowTextArea : public Rect
 {
 public:
   DiffWindowTextArea(const DiffOutputFileBase* pDiffFile, 
-                                       DiffWindowRastports*& pRPorts,
-                                       struct TextFont* pTextFont,
-                                       bool lineNumbersEnabled,
-                                       ULONG maxNumChars);
+                     DiffWindowRastports*& pRPorts,
+                     struct TextFont* pTextFont,
+                     bool lineNumbersEnabled,
+                     ULONG maxNumChars);
 
   virtual ~DiffWindowTextArea();
 
@@ -82,16 +82,12 @@ public:
   size_t scrollUp(size_t numLines);
 
   /**
-   * Display the diff file inside the main text area. The file is
-   * displayed starting from current text position m_Y as first line at
-   * the very top of the text area.
+   * Print the diff file in the text area.
    *
-   * @param fromStart When true: Before printing the line and column
-   * indices m_X and m_Y are reset to 0. So the document will be
-   * displayed from start. When false: Printing starts at current
-   * position m_Y.
+   * @param fromStart When true: Prints the document from start. When
+   * false: Printing starts at current position m_Y.
    */
-  void paintDiffFile(bool bFromStart = true);
+  void PrintFile(bool bFromStart = true);
 
 
   /**
@@ -133,16 +129,16 @@ private:
   Rect m_VScrollRect;         ///> Area to be used for vertical scroll
 
   /**
-   * Prints the given line at given y-position topEdge.
+   * Print the given line at given y-position topEdge.
    */
-  void paintLine(const DiffLine* pLeftLine,
+  void printLine(const DiffLine* pLeftLine,
                  WORD topEdge,
                  bool bHorizontallyScrolled = false,
                  int startIndex = -1,
                  int count = 0);
 
   /**
-   * Calculates how many chars of given DiffLine must be print 
+   * Calculate how many chars of given DiffLine must be print 
    * considering the current scroll position m_X, the current width of
    * the text area and the startIndex.
    */

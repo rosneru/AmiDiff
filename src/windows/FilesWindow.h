@@ -79,14 +79,14 @@ private:
    */
   enum GadgetId
   {
-    GID_LeftFileString,
-    GID_RightFileString,
-    GID_LeftFileButton,
-    GID_RightFileButton,
-    GID_DiffButton,
-    GID_SwapButton,
-    GID_ClearButton,
-    GID_CancelButton,
+    GID_StrLeftFile,
+    GID_StrRightFile,
+    GID_BtnLeftFile,
+    GID_BtnRightFile,
+    GID_BtnDiff,
+    GID_BtnSwap,
+    GID_BtnClear,
+    GID_BtnCancel,
   };
 
   struct Gadget* m_pGadtoolsContext;

@@ -17,32 +17,35 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
   : WindowBase(screen, pIdcmpMsgPort, pMenu),
     m_InnerWindowRight(0),
     m_InnerWindowBottom(0),
-    m_SizeImageWidth(18),
-    m_SizeImgHeight(10),
-    m_pLeftArrowImage(NULL),
-    m_pRightArrowImage(NULL),
-    m_pUpArrowImage(NULL),
-    m_pDownArrowImage(NULL),
-    m_pXPropGadget(NULL),
-    m_pYPropGadget(NULL),
-    m_pLeftArrowButton(NULL),
-    m_pRightArrowButton(NULL),
-    m_pUpArrowButton(NULL),
-    m_pDownArrowButton(NULL)
+    m_SizeGadWidth(18),
+    m_SizeGadHeight(10),
+    m_pImgLeftArrow(NULL),
+    m_pImgRightArrow(NULL),
+    m_pImgUpArrow(NULL),
+    m_pImgDownArrow(NULL),
+    m_pGadPropX(NULL),
+    m_pGadPropY(NULL),
+    m_pGadBtnLeftArrow(NULL),
+    m_pGadBtnRightArrow(NULL),
+    m_pGadBtnUpArrow(NULL),
+    m_pGadBtnDownArrow(NULL)
 {
+  const char* pErrMsg = "ScrollbarWindow: Failed to create NewObj().";
+
   //
-  // Setting up scroll bars and gadgets for the window. They will be
+  // Create scroll bars and gadgets for the window. They will be
   // attached to the window at opening time
   //
-  ULONG imageWidth = 0;   // to successfully store the other images widths
-  ULONG imgHeight = 0;  // to successfully store the other images heights
+  ULONG width = 0;
+  ULONG height = 0;
 
   // Getting the width and height of the current system size gadget
-  struct Image* pSizeImage = createImageObj(
-    SIZEIMAGE, m_SizeImageWidth, m_SizeImgHeight);
+  struct Image* pSizeImage = createImageObj(SIZEIMAGE, 
+                                            m_SizeGadWidth, 
+                                            m_SizeGadHeight);
 
-  // the size image is only needed for getting its width and height so
-  // it can be disposed right now
+  // As the size image is only needed for getting the width and height 
+  // of the size gadget it can be disposed right now
   if(pSizeImage != NULL)
   {
     DisposeObject(pSizeImage);
@@ -50,55 +53,75 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
   }
 
   // Create the arrow down image and getting its width and height
-  m_pDownArrowImage = createImageObj(DOWNIMAGE, imageWidth, imgHeight);
+  m_pImgDownArrow = createImageObj(DOWNIMAGE, width, height);
+  if(m_pImgDownArrow == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Create the arrow down gadget
-  m_pDownArrowButton = (struct Gadget*)
+  m_pGadBtnDownArrow = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
               GA_ID, GID_ArrowDown,
-              GA_RelRight, -imageWidth+1,
-              GA_RelBottom, -m_SizeImgHeight-imgHeight+1,
-              GA_Width, imageWidth,
-              GA_Height, imgHeight,
+              GA_RelRight, -width+1,
+              GA_RelBottom, -m_SizeGadHeight-height+1,
+              GA_Width, width,
+              GA_Height, height,
               GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
-              GA_Image, m_pDownArrowImage,
+              GA_Image, m_pImgDownArrow,
               ICA_TARGET, ICTARGET_IDCMP,
               TAG_DONE, NULL);
+  if(m_pGadBtnDownArrow == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Create the arrow up image and getting its width and height
-  m_pUpArrowImage = createImageObj(UPIMAGE, imageWidth, imgHeight);
+  m_pImgUpArrow = createImageObj(UPIMAGE, width, height);
+  if(m_pImgUpArrow == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Create the arrow down gadget
-  m_pUpArrowButton = (struct Gadget*)
+  m_pGadBtnUpArrow = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
-              GA_Previous, m_pDownArrowButton,
+              GA_Previous, m_pGadBtnDownArrow,
               GA_ID, GID_ArrowUp,
-              GA_RelRight, -imageWidth+1,
-              GA_RelBottom, -m_SizeImgHeight-imgHeight-imgHeight+1,
-              GA_Width, imageWidth,
-              GA_Height, imgHeight,
+              GA_RelRight, -width+1,
+              GA_RelBottom, -m_SizeGadHeight-height-height+1,
+              GA_Width, width,
+              GA_Height, height,
               GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
-              GA_Image, m_pUpArrowImage,
+              GA_Image, m_pImgUpArrow,
               ICA_TARGET, ICTARGET_IDCMP,
               TAG_DONE, NULL);
+  if(m_pGadBtnUpArrow == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Create the vertical proportional gadget / slider
   BYTE barHeight = m_Screen.IntuiScreen()->BarHeight;
   BYTE wborTop = m_Screen.IntuiScreen()->WBorTop;
   BYTE wborBottom = m_Screen.IntuiScreen()->WBorBottom;
 
-	m_pYPropGadget = (struct Gadget*)
+	m_pGadPropY = (struct Gadget*)
     NewObject(NULL, PROPGCLASS,
-              GA_Previous, m_pUpArrowButton,
+              GA_Previous, m_pGadBtnUpArrow,
               GA_ID, GID_PropY,
-              GA_RelRight, -m_SizeImageWidth+4,
+              GA_RelRight, -m_SizeGadWidth+4,
               GA_Top, barHeight + 2,
-              GA_Width, m_SizeImageWidth-6,
-              GA_RelHeight, - m_SizeImgHeight - imgHeight - imgHeight
+              GA_Width, m_SizeGadWidth-6,
+              GA_RelHeight, - m_SizeGadHeight - height - height
                             - barHeight - wborTop - wborBottom,
               GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
@@ -113,58 +136,78 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
               TAG_DONE, NULL);
 
   // Create the arrow left image and getting its width and height
-  m_pRightArrowImage = createImageObj(RIGHTIMAGE,
-                                      imageWidth,
-                                      imgHeight);
-
+  m_pImgRightArrow = createImageObj(RIGHTIMAGE,
+                                      width,
+                                      height);
+  if(m_pImgRightArrow == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
+  
   // Create the arrow right gadget
-  m_pRightArrowButton = (struct Gadget*)
+  m_pGadBtnRightArrow = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
-              GA_Previous, m_pYPropGadget,
+              GA_Previous, m_pGadPropY,
               GA_ID, GID_ArrowRight,
-              GA_RelRight, -m_SizeImageWidth-imageWidth+1,
-              GA_RelBottom, -imgHeight+1,
-              GA_Width, imageWidth,
-              GA_Height, imgHeight,
+              GA_RelRight, -m_SizeGadWidth-width+1,
+              GA_RelBottom, -height+1,
+              GA_Width, width,
+              GA_Height, height,
               GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
-              GA_Image, m_pRightArrowImage,
+              GA_Image, m_pImgRightArrow,
               ICA_TARGET, ICTARGET_IDCMP,
               TAG_DONE, NULL);
+  if(m_pGadBtnRightArrow == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Create the arrow left image and getting its width and height
-  m_pLeftArrowImage = createImageObj(LEFTIMAGE, imageWidth, imgHeight);
+  m_pImgLeftArrow = createImageObj(LEFTIMAGE, width, height);
+  if(m_pImgLeftArrow == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Create the arrow left gadget
-  m_pLeftArrowButton = (struct Gadget*)
+  m_pGadBtnLeftArrow = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
-              GA_Previous, m_pRightArrowButton,
+              GA_Previous, m_pGadBtnRightArrow,
               GA_ID, GID_ArrowLeft,
-              GA_RelRight, -m_SizeImageWidth-imageWidth-imageWidth+1,
-              GA_RelBottom, -imgHeight+1,
-              GA_Width, imageWidth,
-              GA_Height, imgHeight,
+              GA_RelRight, -m_SizeGadWidth-width-width+1,
+              GA_RelBottom, -height+1,
+              GA_Width, width,
+              GA_Height, height,
               GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
-              GA_Image, m_pLeftArrowImage,
+              GA_Image, m_pImgLeftArrow,
               ICA_TARGET, ICTARGET_IDCMP,
               TAG_DONE, NULL);
+  if(m_pGadBtnLeftArrow == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Create the horizontal proportional gadget / slider
   BYTE wborLeft = m_Screen.IntuiScreen()->WBorLeft;
   BYTE wborRight = m_Screen.IntuiScreen()->WBorRight;
 
-  m_pXPropGadget = (struct Gadget*)
+  m_pGadPropX = (struct Gadget*)
     NewObject(NULL, PROPGCLASS,
-              GA_Previous, m_pLeftArrowButton,
+              GA_Previous, m_pGadBtnLeftArrow,
               GA_ID, GID_PropX,
               GA_Left, m_Screen.IntuiScreen()->WBorLeft,
-              GA_RelBottom, -m_SizeImgHeight+3,
-              GA_RelWidth, - m_SizeImageWidth - imageWidth - imageWidth
+              GA_RelBottom, -m_SizeGadHeight+3,
+              GA_RelWidth, - m_SizeGadWidth - width - width
                            - wborLeft - wborRight,
-              GA_Height, m_SizeImgHeight-4,
+              GA_Height, m_SizeGadHeight-4,
               GA_DrawInfo, m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
@@ -176,6 +219,11 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
               PGA_Visible, 100,
               ICA_TARGET, ICTARGET_IDCMP,
               TAG_DONE, NULL);
+  if(m_pGadPropX == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Set the default title
   SetTitle("ScrollbarWindow");
@@ -186,72 +234,13 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
            IDCMP_IDCMPUPDATE);    // Inform about BOOPSI gadget updates
 
   // Setting the first gadget of the gadet list for the window
-  setFirstGadget(m_pDownArrowButton);
+  setFirstGadget(m_pGadBtnDownArrow);
 }
 
 ScrollbarWindow::~ScrollbarWindow()
 {
-  if(m_pLeftArrowButton != NULL)
-  {
-    DisposeObject(m_pLeftArrowButton);
-    m_pLeftArrowButton = NULL;
-  }
-
-  if(m_pLeftArrowImage != NULL)
-  {
-    DisposeObject(m_pLeftArrowImage);
-    m_pLeftArrowImage = NULL;
-  }
-
-  if(m_pRightArrowButton != NULL)
-  {
-    DisposeObject(m_pRightArrowButton);
-    m_pRightArrowButton = NULL;
-  }
-
-  if(m_pRightArrowImage != NULL)
-  {
-    DisposeObject(m_pRightArrowImage);
-    m_pRightArrowImage = NULL;
-  }
-
-  if(m_pXPropGadget != NULL)
-  {
-    DisposeObject(m_pXPropGadget);
-    m_pXPropGadget = NULL;
-  }
-
-  if(m_pDownArrowButton != NULL)
-  {
-    DisposeObject(m_pDownArrowButton);
-    m_pDownArrowButton = NULL;
-  }
-
-  if(m_pDownArrowImage != NULL)
-  {
-    DisposeObject(m_pDownArrowImage);
-    m_pDownArrowImage = NULL;
-  }
-
-  if(m_pUpArrowButton != NULL)
-  {
-    DisposeObject(m_pUpArrowButton);
-    m_pUpArrowButton = NULL;
-  }
-
-  if(m_pUpArrowImage != NULL)
-  {
-    DisposeObject(m_pUpArrowImage);
-    m_pUpArrowImage = NULL;
-  }
-
-  if(m_pYPropGadget != NULL)
-  {
-    DisposeObject(m_pYPropGadget);
-    m_pYPropGadget = NULL;
-  }
+  cleanup();
 }
-
 
 
 bool ScrollbarWindow::Open(InitialPosition initialPos)
@@ -372,20 +361,20 @@ void ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
 
 void ScrollbarWindow::calcSizes()
 {
-  // (Re-)calculate some values that may have be changed by re-sizing
+  // Calculate the inner window dimensions
   m_InnerWindowRight = m_pWindow->Width
-    - m_Screen.IntuiScreen()->WBorLeft
-    - m_SizeImageWidth;
+                     - m_Screen.IntuiScreen()->WBorLeft
+                     - m_SizeGadWidth;
 
   m_InnerWindowBottom = m_pWindow->Height
-    - m_Screen.IntuiScreen()->BarHeight
-    - m_SizeImgHeight;
+                      - m_Screen.IntuiScreen()->BarHeight
+                      - m_SizeGadHeight;
 }
 
 
-void ScrollbarWindow::setXScrollLeft(int left)
+void ScrollbarWindow::setXScrollTop(int left)
 {
-  if(m_pXPropGadget == NULL)
+  if(m_pGadPropX == NULL)
   {
     return;
   }
@@ -395,7 +384,7 @@ void ScrollbarWindow::setXScrollLeft(int left)
     return;
   }
 
-  SetGadgetAttrs(m_pXPropGadget, m_pWindow, NULL,
+  SetGadgetAttrs(m_pGadPropX, m_pWindow, NULL,
                  PGA_Top, left,
                  TAG_DONE);
 }
@@ -403,7 +392,7 @@ void ScrollbarWindow::setXScrollLeft(int left)
 
 void ScrollbarWindow::setYScrollTop(int top)
 {
-  if(m_pYPropGadget == NULL)
+  if(m_pGadPropY == NULL)
   {
     return;
   }
@@ -413,7 +402,7 @@ void ScrollbarWindow::setYScrollTop(int top)
     return;
   }
 
-  SetGadgetAttrs(m_pYPropGadget, m_pWindow, NULL,
+  SetGadgetAttrs(m_pGadPropY, m_pWindow, NULL,
                  PGA_Top, top,
                  TAG_DONE);
 }
@@ -422,7 +411,7 @@ void ScrollbarWindow::setYScrollTop(int top)
 void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars,
                                         int totalChars)
 {
-  if(m_pXPropGadget == NULL)
+  if(m_pGadPropX == NULL)
   {
     return;
   }
@@ -433,7 +422,7 @@ void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars,
   }
 
   // Set the size of x-scrollbar "potentiometer"
-  SetGadgetAttrs(m_pXPropGadget,
+  SetGadgetAttrs(m_pGadPropX,
                  m_pWindow,
                  NULL,
                  PGA_Total, totalChars,
@@ -442,10 +431,11 @@ void ScrollbarWindow::setXScrollPotSize(int maxVisibleChars,
 
 }
 
+
 void ScrollbarWindow::setYScrollPotSize(int maxVisibleLines,
                                         int totalLines)
 {
-  if(m_pYPropGadget == NULL)
+  if(m_pGadPropY == NULL)
   {
     return;
   }
@@ -456,13 +446,77 @@ void ScrollbarWindow::setYScrollPotSize(int maxVisibleLines,
   }
 
   // Set the size of y-scrollbar "potentiometer"
-  SetGadgetAttrs(m_pYPropGadget,
+  SetGadgetAttrs(m_pGadPropY,
                  m_pWindow,
                  NULL,
                  PGA_Total, totalLines,
                  PGA_Visible, maxVisibleLines,
                  TAG_DONE);
 
+}
+
+
+void ScrollbarWindow::cleanup()
+{
+  if(m_pGadBtnLeftArrow != NULL)
+  {
+    DisposeObject(m_pGadBtnLeftArrow);
+    m_pGadBtnLeftArrow = NULL;
+  }
+
+  if(m_pImgLeftArrow != NULL)
+  {
+    DisposeObject(m_pImgLeftArrow);
+    m_pImgLeftArrow = NULL;
+  }
+
+  if(m_pGadBtnRightArrow != NULL)
+  {
+    DisposeObject(m_pGadBtnRightArrow);
+    m_pGadBtnRightArrow = NULL;
+  }
+
+  if(m_pImgRightArrow != NULL)
+  {
+    DisposeObject(m_pImgRightArrow);
+    m_pImgRightArrow = NULL;
+  }
+
+  if(m_pGadPropX != NULL)
+  {
+    DisposeObject(m_pGadPropX);
+    m_pGadPropX = NULL;
+  }
+
+  if(m_pGadBtnDownArrow != NULL)
+  {
+    DisposeObject(m_pGadBtnDownArrow);
+    m_pGadBtnDownArrow = NULL;
+  }
+
+  if(m_pImgDownArrow != NULL)
+  {
+    DisposeObject(m_pImgDownArrow);
+    m_pImgDownArrow = NULL;
+  }
+
+  if(m_pGadBtnUpArrow != NULL)
+  {
+    DisposeObject(m_pGadBtnUpArrow);
+    m_pGadBtnUpArrow = NULL;
+  }
+
+  if(m_pImgUpArrow != NULL)
+  {
+    DisposeObject(m_pImgUpArrow);
+    m_pImgUpArrow = NULL;
+  }
+
+  if(m_pGadPropY != NULL)
+  {
+    DisposeObject(m_pGadPropY);
+    m_pGadPropY = NULL;
+  }
 }
 
 

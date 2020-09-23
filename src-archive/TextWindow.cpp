@@ -190,7 +190,7 @@ void TextWindow::XIncrease(size_t p_IncreaseBy,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollLeft(m_X);
+    setXScrollTop(m_X);
   }
 }
 
@@ -203,7 +203,7 @@ void TextWindow::XDecrease(size_t p_DecreaseBy,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollLeft(m_X);
+    setXScrollTop(m_X);
   }
 }
 

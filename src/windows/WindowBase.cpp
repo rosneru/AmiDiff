@@ -387,12 +387,13 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId,
                                          ULONG& width,
                                          ULONG& height)
 {
-  struct Image* pImage = (struct Image*) NewObject(
-      NULL, SYSICLASS,
-      SYSIA_Which, sysImageId,
-      SYSIA_Size, SYSISIZE_MEDRES,
-      SYSIA_DrawInfo, m_Screen.IntuiDrawInfo(),
-      TAG_DONE);
+  struct Image* pImage;
+  pImage = (struct Image*) NewObject(NULL, 
+                                     SYSICLASS,
+                                     SYSIA_Which, sysImageId,
+                                     SYSIA_Size, SYSISIZE_MEDRES,
+                                     SYSIA_DrawInfo, m_Screen.IntuiDrawInfo(),
+                                     TAG_DONE);
 
   if(pImage != NULL)
   {

@@ -32,8 +32,8 @@ DiffWindow::DiffWindow(ScreenBase& screen,
     m_NumDifferences(0),
     m_IndentX(5),
     m_IndentY(0),
-    textAreasWidth(0),
-    textAreasHeight(0),
+    m_TextAreasWidth(0),
+    m_TextAreasHeight(0),
     m_pTextArea1(NULL),
     m_pTextArea2(NULL)
 {
@@ -44,7 +44,11 @@ DiffWindow::DiffWindow(ScreenBase& screen,
   m_pLastParentGadget = getLastGadget();
 
   // Create this window's gadgets
-  createGadgets();
+  if(createGadgets() == false)
+  {
+    cleanup();
+    throw "DiffWindow: Failed to create gadgets.";
+  }
 
   // Set the default title
   SetTitle("DiffWindow");
@@ -64,34 +68,7 @@ DiffWindow::DiffWindow(ScreenBase& screen,
 
 DiffWindow::~DiffWindow()
 {
-  if(m_pTextArea1 != NULL)
-  {
-    delete m_pTextArea1;
-    m_pTextArea1 = NULL;
-  }
-
-  if(m_pTextArea2 != NULL)
-  {
-    delete m_pTextArea2;
-    m_pTextArea2 = NULL;
-  }
-
-  Close();
-
-  if(m_pRPorts != NULL)
-  {
-    delete m_pRPorts;
-    m_pRPorts = NULL;
-  }
-
-  if(m_pGadtoolsContext != NULL)
-  {
-    FreeGadgets(m_pGadtoolsContext);
-    m_pGadtoolsContext = NULL;
-  }
-
-  m_pGadTxtLeftFile = NULL;
-  m_pGadTxtRightFile = NULL;
+  cleanup();
 }
 
 
@@ -130,15 +107,16 @@ void DiffWindow::Resized()
 
   // Set location and size of the left text area
   m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
-  m_pTextArea1->SetWidthHeight(textAreasWidth, textAreasHeight);
+  m_pTextArea1->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
 
   // Set location and size of the right text area
-  m_pTextArea2->SetLeftTop(m_IndentX + textAreasWidth, m_IndentY);
-  m_pTextArea2->SetWidthHeight(textAreasWidth, textAreasHeight);
+  m_pTextArea2->SetLeftTop(m_IndentX + m_TextAreasWidth, m_IndentY);
+  m_pTextArea2->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
 
-  // Paint the content of the two documents
-  m_pTextArea1->paintDiffFile(false);
-  m_pTextArea2->paintDiffFile(false);
+  // Paint the content of the two documents (from current y-position, 
+  //not from start)
+  m_pTextArea1->PrintFile(false);
+  m_pTextArea2->PrintFile(false);
 
   if(m_pDocument == NULL)
   {
@@ -295,11 +273,15 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
   // Set location and size of the left text area
   m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
-  m_pTextArea1->SetWidthHeight(textAreasWidth, textAreasHeight);
+  m_pTextArea1->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
 
   // Set location and size of the right text area
-  m_pTextArea2->SetLeftTop(m_IndentX + textAreasWidth, m_IndentY);
-  m_pTextArea2->SetWidthHeight(textAreasWidth, textAreasHeight);
+  m_pTextArea2->SetLeftTop(m_IndentX + m_TextAreasWidth, m_IndentY);
+  m_pTextArea2->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
+
+  // Paint the content of the two documents (from start)
+  m_pTextArea1->PrintFile(true);
+  m_pTextArea2->PrintFile(true);
 
   // Paint the status bar
   paintStatusBar();
@@ -400,7 +382,7 @@ void DiffWindow::XIncrease(size_t numChars,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollLeft(m_pTextArea1->X());
+    setXScrollTop(m_pTextArea1->X());
   }
 }
 
@@ -415,7 +397,7 @@ void DiffWindow::XDecrease(size_t numChars,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollLeft(m_pTextArea1->X());
+    setXScrollTop(m_pTextArea1->X());
   }
 }
 
@@ -450,64 +432,95 @@ void DiffWindow::YDecrease(size_t numLines,
 }
 
 
-void DiffWindow::createGadgets()
+void DiffWindow::cleanup()
 {
-  bool bFirstCall = (m_pGadtoolsContext == NULL);
+  if(m_pTextArea1 != NULL)
+  {
+    delete m_pTextArea1;
+    m_pTextArea1 = NULL;
+  }
+
+  if(m_pTextArea2 != NULL)
+  {
+    delete m_pTextArea2;
+    m_pTextArea2 = NULL;
+  }
+
+  Close();
+
+  if(m_pRPorts != NULL)
+  {
+    delete m_pRPorts;
+    m_pRPorts = NULL;
+  }
+
+  if(m_pGadtoolsContext != NULL)
+  {
+    FreeGadgets(m_pGadtoolsContext);
+    m_pGadtoolsContext = NULL;
+  }
+
+  m_pGadTxtLeftFile = NULL;
+  m_pGadTxtRightFile = NULL;
+}
+
+
+bool DiffWindow::createGadgets()
+{
+  WORD fontHeight =  m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
+
+  // Default location and sizes for the two string gadgets
+  WORD gadWidth = m_TextAreasWidth;
+  WORD gadHeight = fontHeight + 2;
+  WORD gadTop = m_IndentY;
+  WORD gad1Left = m_IndentX;
+  WORD gad2Left = m_IndentX + 5;
+
+  // If the text areas already exist overwrite the defaults with the actual
+  if((m_pTextArea1 != NULL) && (m_pTextArea2 == NULL))
+  {
+    gadWidth = m_pTextArea1->Width();
+    gadTop = m_pTextArea1->Top() - fontHeight - 4;
+    gad1Left = m_pTextArea1->Left();
+    gad2Left = m_pTextArea2->Left();
+  }
+
 
   struct Gadget* pFakeGad = NULL;
   pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
   if(pFakeGad == NULL)
   {
-    return;
+    return false;
   }
 
-  if(bFirstCall)
+  if(m_pGadtoolsContext == NULL)
   {
-    // When this method is called for the first time, the created
-    // GadTools context either is set as first gadget or, if parent
-    // already contains gadgets, it is linked as successor of parents
-    // last gadget.
-
+    // This is the first call of createGadgets() in this session
     if(m_pLastParentGadget == NULL)
     {
+      // Parent has no gadgets created: Set this context as first gadget
       setFirstGadget(m_pGadtoolsContext);
     }
     else
     {
+      // Parent contains already gadgets: link this context as successor
+      // of parents last gadget
       m_pLastParentGadget->NextGadget = m_pGadtoolsContext;
     }
   }
 
-  WORD m_FontHeight =  m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
-
   struct NewGadget newGadget;
   newGadget.ng_TextAttr   = m_Screen.IntuiTextAttr();
   newGadget.ng_VisualInfo = m_Screen.GadtoolsVisualInfo();
-  newGadget.ng_LeftEdge   = m_pTextArea1->Left();
-  newGadget.ng_TopEdge    = m_pTextArea1->Top() - m_FontHeight - 4;
-  newGadget.ng_Height     = m_FontHeight + 2;
+  newGadget.ng_LeftEdge   = gad1Left;
+  newGadget.ng_TopEdge    = gadTop;
+  newGadget.ng_Width      = gadWidth;
+  newGadget.ng_Height     = gadHeight;
   newGadget.ng_Flags      = PLACETEXT_RIGHT | NG_HIGHLABEL;
   newGadget.ng_GadgetText = NULL;
 
-  if(m_pTextArea1->Width() == 0)
-  {
-    newGadget.ng_Width    = 120; // Some random default
-  }
-  else
-  {
-    newGadget.ng_Width    = m_pTextArea1->Width();
-  }
-
-  const char* pFileName = NULL;
-  if(m_pDocument != NULL)
-  {
-    pFileName = m_pDocument->RightFileName();
-  }
-  else
-  {
-    pFileName = &m_EmptyChar;
-  }
-
+  const char* pFileName = (m_pDocument == NULL) ? &m_EmptyChar 
+                                                : m_pDocument->LeftFileName();
 
   m_pGadTxtLeftFile = CreateGadget(TEXT_KIND,
                                    pFakeGad,
@@ -515,26 +528,14 @@ void DiffWindow::createGadgets()
                                    GTTX_Border, TRUE,
                                    GTTX_Text, pFileName,
                                    TAG_DONE);
-
-  if(m_pTextArea2->Left() > 0)
+  if(m_pGadTxtLeftFile == NULL)
   {
-    newGadget.ng_LeftEdge = m_pTextArea2->Left();
-  }
-  else
-  {
-    newGadget.ng_LeftEdge += newGadget.ng_Width + 5;
+    return false;
   }
 
-  pFileName = NULL;
-  if(m_pDocument != NULL)
-  {
-    pFileName = m_pDocument->RightFileName();
-  }
-  else
-  {
-    pFileName = &m_EmptyChar;
-  }
-
+  newGadget.ng_LeftEdge = gad2Left;
+  pFileName = (m_pDocument == NULL) ? &m_EmptyChar 
+                                    : m_pDocument->RightFileName();
 
   m_pGadTxtRightFile = CreateGadget(TEXT_KIND,
                                     m_pGadTxtLeftFile,
@@ -542,8 +543,13 @@ void DiffWindow::createGadgets()
                                     GTTX_Border, TRUE,
                                     GTTX_Text, pFileName,
                                     TAG_DONE);
-}
+  if(m_pGadTxtRightFile == NULL)
+  {
+    return false;
+  }
 
+  return true;
+}
 
 
 void DiffWindow::handleGadgetEvent(struct Gadget* pGadget)
@@ -553,26 +559,27 @@ void DiffWindow::handleGadgetEvent(struct Gadget* pGadget)
     return;
   }
 
-  // TODO
+  // Currently nothing to handle
 }
 
 
 void DiffWindow::handleVanillaKey(UWORD code)
 {
-  // TODO
+  // Currently nothing to handle
 }
 
 
 void DiffWindow::calcSizes()
 {
-  // (Re-)calculate some values that may have be changed by re-sizing
+  // Calculate the current m_InnerWindowRight and m_InnerWindowBottom
   ScrollbarWindow::calcSizes();
 
-  textAreasWidth = m_InnerWindowRight - m_IndentX - m_IndentX;
-  textAreasWidth /= 2;
+  // Calculate the 
+  m_TextAreasWidth = m_InnerWindowRight - m_IndentX - m_IndentX;
+  m_TextAreasWidth /= 2;
 
   // Pre-calc text areas heigt. Will later be limited to int multiples.
-  textAreasHeight = m_InnerWindowBottom - m_IndentY - m_IndentY;
+  m_TextAreasHeight = m_InnerWindowBottom - m_IndentY - m_IndentY;
 }
 
 
