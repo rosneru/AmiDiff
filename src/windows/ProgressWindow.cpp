@@ -89,16 +89,6 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
 
   m_Height = m_NewGadget.ng_TopEdge + m_NewGadget.ng_Height + yOffset + pScr->WBorBottom;
 
-  // Create the stop gadget
-  m_pGadBtnStop = CreateGadget(BUTTON_KIND,
-                               m_pGadtoolsContext, &m_NewGadget,
-                               TAG_DONE);
-  if(m_pGadBtnStop == NULL)
-  {
-    cleanup();
-    throw pErrMsg;
-  }
-
   // Setting window title
   SetTitle("Progress window");
 
@@ -215,6 +205,17 @@ bool ProgressWindow::Open(InitialPosition initialPos)
        m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
   
   Text(m_pWindow->RPort, m_pTextHundred, strlen(m_pTextHundred));
+
+  // Create the stop gadget
+  m_pGadBtnStop = CreateGadget(BUTTON_KIND,
+                               m_pGadtoolsContext, &m_NewGadget,
+                               TAG_DONE);
+  if(m_pGadBtnStop == NULL)
+  {
+    return false;
+  }
+
+  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
 
   return true;
 }
