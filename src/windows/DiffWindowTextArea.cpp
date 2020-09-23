@@ -5,7 +5,7 @@
 
 #include "DiffWindowTextArea.h"
 
-DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase* pDiffFile, 
+DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase* pDiffFile,
                                        DiffWindowRastports*& pRPorts,
                                        struct TextFont* pTextFont,
                                        bool lineNumbersEnabled,
@@ -66,7 +66,7 @@ ULONG DiffWindowTextArea::MaxVisibleLines() const
 }
 
 
-void DiffWindowTextArea::SetWidthHeight(unsigned long width, 
+void DiffWindowTextArea::SetWidthHeight(unsigned long width,
                                         unsigned long height)
 {
 
@@ -79,10 +79,10 @@ void DiffWindowTextArea::SetWidthHeight(unsigned long width,
   Rect::SetWidthHeight(width, height);
 
   //
-  // Define two the scrolling areas. Note that there are two different 
+  // Define two the scrolling areas. Note that there are two different
   // scroll rects used because:
   //   The 'Left' values depend on if the scroll is done horizontally or
-  //   vertically. On vertical scroll the block containing line numbers 
+  //   vertically. On vertical scroll the block containing line numbers
   //   is scrolled too. On horizontal scroll, it is not.
   //
 
@@ -104,7 +104,7 @@ void DiffWindowTextArea::SetWidthHeight(unsigned long width,
 void DiffWindowTextArea::Clear()
 {
   // EraseRect(m_pRPorts->LineNum(),
-  //           Left() + 2, 
+  //           Left() + 2,
   //           Top() + 2,
   //           Right() - 3,
   //           Bottom() - 3);
@@ -156,7 +156,7 @@ void DiffWindowTextArea::ScrollTopToRow(ULONG rowId)
   m_Y =  rowId;
 
   EraseRect(m_pRPorts->Window(),
-            Left() + 2, 
+            Left() + 2,
             Top() + 2,
             Right() - 3,
             Bottom() - 3);
@@ -268,7 +268,7 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
 
   }
 
-  m_X -= numChars;
+  m_X += numChars;
   return numChars;
 }
 
@@ -326,7 +326,7 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
 
   }
 
-  m_X += numChars;
+  m_X -= numChars;
   return numChars;
 }
 

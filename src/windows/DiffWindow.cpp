@@ -92,7 +92,7 @@ void DiffWindow::Resized()
 
   // Clear the window completely
   SetRast(m_pRPorts->Window(), m_Pens.Background());
-  
+
   // Calculate some values which have to calculated after window
   // opening and after resizing
   calcSizes();
@@ -113,7 +113,7 @@ void DiffWindow::Resized()
   m_pTextArea2->SetLeftTop(m_IndentX + m_TextAreasWidth, m_IndentY);
   m_pTextArea2->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
 
-  // Paint the content of the two documents (from current y-position, 
+  // Paint the content of the two documents (from current y-position,
   //not from start)
   m_pTextArea1->Draw(false);
   m_pTextArea2->Draw(false);
@@ -124,11 +124,11 @@ void DiffWindow::Resized()
   }
 
   // Set x-scroll-gadget's pot size in relation of new window size
-  setXScrollPotSize(m_pTextArea1->MaxVisibleChars(), 
+  setXScrollPotSize(m_pTextArea1->MaxVisibleChars(),
                     m_pDocument->MaxLineLength());
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_pTextArea1->MaxVisibleLines(), 
+  setYScrollPotSize(m_pTextArea1->MaxVisibleLines(),
                     m_pDocument->NumLines());
 
 
@@ -243,9 +243,6 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
   calcSizes();
 
-  // Paint the window decoration
-  paintWindowDecoration();
-
   // Remove diff text areas if still existing
   if(m_pTextArea1 != NULL)
   {
@@ -259,15 +256,15 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
     m_pTextArea2 = NULL;
   }
 
-  m_pTextArea1 = new DiffWindowTextArea(&pDiffDocument->LeftDiffFile(), 
-                                        m_pRPorts, 
-                                        m_pTextFont, 
+  m_pTextArea1 = new DiffWindowTextArea(&pDiffDocument->LeftDiffFile(),
+                                        m_pRPorts,
+                                        m_pTextFont,
                                         pDiffDocument->LineNumbersEnabled(),
                                         pDiffDocument->MaxLineLength());
 
-  m_pTextArea2 = new DiffWindowTextArea(&pDiffDocument->RightDiffFile(), 
-                                        m_pRPorts, 
-                                        m_pTextFont, 
+  m_pTextArea2 = new DiffWindowTextArea(&pDiffDocument->RightDiffFile(),
+                                        m_pRPorts,
+                                        m_pTextFont,
                                         pDiffDocument->LineNumbersEnabled(),
                                         pDiffDocument->MaxLineLength());
 
@@ -283,15 +280,18 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   m_pTextArea1->Draw(true);
   m_pTextArea2->Draw(true);
 
+  // Paint the window decoration
+  paintWindowDecoration();
+
   // Paint the status bar
   paintStatusBar();
 
   // Set x-scroll-gadget's pot size in relation of new window size
-  setXScrollPotSize(m_pTextArea1->MaxVisibleChars(), 
+  setXScrollPotSize(m_pTextArea1->MaxVisibleChars(),
                     m_pDocument->MaxLineLength());
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_pTextArea1->MaxVisibleLines(), 
+  setYScrollPotSize(m_pTextArea1->MaxVisibleLines(),
                     m_pDocument->NumLines());
 
   return true;
@@ -472,9 +472,9 @@ bool DiffWindow::createGadgets()
   // Default location and sizes for the two string gadgets
   WORD gadWidth = m_TextAreasWidth;
   WORD gadHeight = fontHeight + 2;
-  WORD gadTop = m_IndentY;
+  WORD gadTop = m_IndentY - fontHeight - 4;
   WORD gad1Left = m_IndentX;
-  WORD gad2Left = m_IndentX + 5;
+  WORD gad2Left = m_IndentX + gadWidth;
 
   // If the text areas already exist overwrite the defaults with the actual
   if((m_pTextArea1 != NULL) && (m_pTextArea2 == NULL))
@@ -519,7 +519,7 @@ bool DiffWindow::createGadgets()
   newGadget.ng_Flags      = PLACETEXT_RIGHT | NG_HIGHLABEL;
   newGadget.ng_GadgetText = NULL;
 
-  const char* pFileName = (m_pDocument == NULL) ? &m_EmptyChar 
+  const char* pFileName = (m_pDocument == NULL) ? &m_EmptyChar
                                                 : m_pDocument->LeftFileName();
 
   m_pGadTxtLeftFile = CreateGadget(TEXT_KIND,
@@ -534,7 +534,7 @@ bool DiffWindow::createGadgets()
   }
 
   newGadget.ng_LeftEdge = gad2Left;
-  pFileName = (m_pDocument == NULL) ? &m_EmptyChar 
+  pFileName = (m_pDocument == NULL) ? &m_EmptyChar
                                     : m_pDocument->RightFileName();
 
   m_pGadTxtRightFile = CreateGadget(TEXT_KIND,
@@ -574,7 +574,7 @@ void DiffWindow::calcSizes()
   // Calculate the current m_InnerWindowRight and m_InnerWindowBottom
   ScrollbarWindow::calcSizes();
 
-  // Calculate the 
+  // Calculate the
   m_TextAreasWidth = m_InnerWindowRight - m_IndentX - m_IndentX;
   m_TextAreasWidth /= 2;
 

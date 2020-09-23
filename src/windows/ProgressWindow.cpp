@@ -56,7 +56,7 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
 
   m_ProgressRect.Set(m_OuterRect.Left() + m_TextZeroWidth + 2 * xOffset,
                      m_OuterRect.Top() + m_pTextFont->tf_YSize,
-                     m_OuterRect.Right() - m_TextHundredWidth - 2 * xOffset, 
+                     m_OuterRect.Right() - m_TextHundredWidth - 2 * xOffset,
                      m_OuterRect.Top() + 2 * m_pTextFont->tf_YSize);
 
   //
@@ -155,7 +155,7 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   // Fill the structured background
   SetDrMd(m_pWindow->RPort, JAM1);
   SetAPen(m_pWindow->RPort, m_Pens.HighlightedText());
-  RectFill(m_pWindow->RPort, 
+  RectFill(m_pWindow->RPort,
            pScreen->WBorLeft,
            pScreen->WBorTop + pScreen->BarHeight - 1,
            m_pWindow->Width - pScreen->WBorRight - 1,
@@ -166,7 +166,7 @@ bool ProgressWindow::Open(InitialPosition initialPos)
 
   // Draw the outer gray area and bevel box
   SetAPen(m_pWindow->RPort, m_Pens.Background());
-  RectFill(m_pWindow->RPort, 
+  RectFill(m_pWindow->RPort,
            m_OuterRect.Left(),
            m_OuterRect.Top(),
            m_OuterRect.Right() - 1,
@@ -197,16 +197,17 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   Move(m_pWindow->RPort,
        (m_OuterRect.Left() + m_ProgressRect.Left()) / 2 - m_TextZeroWidth / 2,
        m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
-  
+
   Text(m_pWindow->RPort, m_pTextZero, strlen(m_pTextZero));
 
   Move(m_pWindow->RPort,
        (m_OuterRect.Right() + m_ProgressRect.Right()) / 2 - m_TextHundredWidth / 2,
        m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
-  
+
   Text(m_pWindow->RPort, m_pTextHundred, strlen(m_pTextHundred));
 
-  // Create the stop gadget
+  // Create the stop gadget. This is done here and not in the
+  // constructor because it has to sit above the structure background.
   m_pGadBtnStop = CreateGadget(BUTTON_KIND,
                                m_pGadtoolsContext, &m_NewGadget,
                                TAG_DONE);
