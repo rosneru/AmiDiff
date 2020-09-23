@@ -27,16 +27,18 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
     m_NewGadget(),
     m_pGadtoolsContext(NULL),
     m_pGadBtnStop(NULL),
-    m_TextZero("0%"),
-    m_TextHundred("100%")
+    m_pTextZero("0%"),
+    m_pTextHundred("100%")
 {
+  const char* pErrMsg = "ProgressWindow: Failed to create gadgets.";
 
   m_Width = 230;
+  ULONG buttonWidth = 60;
+
+  ULONG xOffset = 6;
+  ULONG yOffset = 6;
 
   struct Screen* pScr = m_Screen.IntuiScreen();
-
-  size_t xOffset = 6;
-  size_t yOffset = 6;
   if(m_Screen.IsHiresMode())
   {
     // When in hires mode the pixels are none-square. They are twice
@@ -49,8 +51,8 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
                   m_Width - pScr->WBorRight - 1 - xOffset,
                   pScr->WBorTop + pScr->BarHeight + yOffset + 3 * m_pTextFont->tf_YSize);
 
-  m_TextZeroWidth = TextLength(&pScr->RastPort, m_TextZero.c_str(), 2);
-  m_TextHundredWidth = TextLength(&pScr->RastPort, m_TextHundred.c_str(), 4);
+  m_TextZeroWidth = TextLength(&pScr->RastPort, m_pTextZero, 2);
+  m_TextHundredWidth = TextLength(&pScr->RastPort, m_pTextHundred, 4);
 
   m_ProgressRect.Set(m_OuterRect.Left() + m_TextZeroWidth + 2 * xOffset,
                      m_OuterRect.Top() + m_pTextFont->tf_YSize,
@@ -65,10 +67,9 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
   m_pGadtoolsContext = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
   if(m_pGadtoolsContext == NULL)
   {
-    return;
+    cleanup();
+    throw pErrMsg;
   }
-
-  size_t buttonWidth = 60;
 
   // Setting the first gadget of the gadet list for the window
   setFirstGadget(m_pGadtoolsContext);
@@ -77,7 +78,7 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
   m_NewGadget.ng_TextAttr   = m_Screen.IntuiTextAttr();
   m_NewGadget.ng_VisualInfo = m_Screen.GadtoolsVisualInfo();
 
-  // Creating the string gadget to display the progress description
+  // Creating the 'Stop' button gadget
   m_NewGadget.ng_LeftEdge   = m_Width / 2 - buttonWidth / 2;
   m_NewGadget.ng_TopEdge    = m_OuterRect.Bottom() + yOffset;
   m_NewGadget.ng_Width      = buttonWidth;
@@ -87,6 +88,16 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
   m_NewGadget.ng_Flags      = 0;
 
   m_Height = m_NewGadget.ng_TopEdge + m_NewGadget.ng_Height + yOffset + pScr->WBorBottom;
+
+  // Create the stop gadget
+  m_pGadBtnStop = CreateGadget(BUTTON_KIND,
+                               m_pGadtoolsContext, &m_NewGadget,
+                               TAG_DONE);
+  if(m_pGadBtnStop == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Setting window title
   SetTitle("Progress window");
@@ -104,7 +115,14 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
            IDCMP_GADGETUP);       // Get msg when gadgets changed
 }
 
+
 ProgressWindow::~ProgressWindow()
+{
+  cleanup();
+}
+
+
+void ProgressWindow::cleanup()
 {
   Close();
 
@@ -115,9 +133,6 @@ ProgressWindow::~ProgressWindow()
     m_pGadBtnStop = NULL;
   }
 }
-
-
-
 
 
 void ProgressWindow::Refresh()
@@ -134,6 +149,10 @@ bool ProgressWindow::Open(InitialPosition initialPos)
     return false;
   }
 
+  // Enable the Stop button in case it has been disabled
+  GT_SetGadgetAttrs(m_pGadBtnStop, IntuiWindow(), NULL,
+                    GA_Disabled, FALSE,
+                    TAG_DONE);
 
   // Set the windows rastport to fill with a pattern for the structured
   // background
@@ -145,18 +164,18 @@ bool ProgressWindow::Open(InitialPosition initialPos)
 
   // Fill the structured background
   SetDrMd(m_pWindow->RPort, JAM1);
-  SetAPen(m_pWindow->RPort,m_Pens.HighlightedText());
+  SetAPen(m_pWindow->RPort, m_Pens.HighlightedText());
   RectFill(m_pWindow->RPort, 
            pScreen->WBorLeft,
            pScreen->WBorTop + pScreen->BarHeight - 1,
            m_pWindow->Width - pScreen->WBorRight - 1,
            m_pWindow->Height - pScreen->WBorBottom - 1);
 
-  // Re-set the windows RastPort to fill without a pattern
+  // Now set the windows RastPort to fill without a pattern
   m_pWindow->RPort->AreaPtrn = NULL;
 
   // Draw the outer gray area and bevel box
-  SetAPen(m_pWindow->RPort,m_Pens.Background());
+  SetAPen(m_pWindow->RPort, m_Pens.Background());
   RectFill(m_pWindow->RPort, 
            m_OuterRect.Left(),
            m_OuterRect.Top(),
@@ -182,27 +201,20 @@ bool ProgressWindow::Open(InitialPosition initialPos)
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
-  // Drawing the '0%' and '100%' texts
+  // Draw the '0%' and '100%' texts
   SetAPen(m_pWindow->RPort,m_Pens.Text());
 
   Move(m_pWindow->RPort,
        (m_OuterRect.Left() + m_ProgressRect.Left()) / 2 - m_TextZeroWidth / 2,
        m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
   
-  Text(m_pWindow->RPort, m_TextZero.c_str(), m_TextZero.length());
+  Text(m_pWindow->RPort, m_pTextZero, strlen(m_pTextZero));
 
   Move(m_pWindow->RPort,
        (m_OuterRect.Right() + m_ProgressRect.Right()) / 2 - m_TextHundredWidth / 2,
        m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
   
-  Text(m_pWindow->RPort, m_TextHundred.c_str(), m_TextHundred.length());
-
-  // Create the stop gadget
-  m_pGadBtnStop = CreateGadget(BUTTON_KIND,
-                               m_pGadtoolsContext, &m_NewGadget,
-                               TAG_DONE);
-
-  RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
+  Text(m_pWindow->RPort, m_pTextHundred, strlen(m_pTextHundred));
 
   return true;
 }
@@ -222,17 +234,13 @@ void ProgressWindow::HandleIdcmp(ULONG msgClass,
     case IDCMP_GADGETUP:
     {
       struct Gadget* pGadget = (struct Gadget*) pItemAddress;
-      if(pGadget->GadgetID == GID_BtnStop)
+      switch(pGadget->GadgetID)
       {
-        // Set the flag which will stop background process as soon as
-        // possible
-        m_IsCancelRequested = true;
-
-        // Disable the Cancel button
-        GT_SetGadgetAttrs(m_pGadBtnStop, IntuiWindow(), NULL,
-          GA_Disabled, TRUE,
-          TAG_DONE);
+        case GID_BtnStop:
+          stopBtnPressed();
+          break;
       }
+
       break;
     }
 
@@ -295,4 +303,17 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
     // Update the description in window title
     SetWindowTitles(m_pWindow, m_ProgressDescr.c_str(), (STRPTR)~0);
   }
+}
+
+
+void ProgressWindow::stopBtnPressed()
+{
+  // Set the flag which will stop background process as soon as
+  // possible
+  m_IsCancelRequested = true;
+
+  // Disable the Stop button
+  GT_SetGadgetAttrs(m_pGadBtnStop, IntuiWindow(), NULL,
+                    GA_Disabled, TRUE,
+                    TAG_DONE);
 }
