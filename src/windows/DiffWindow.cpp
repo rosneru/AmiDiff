@@ -32,6 +32,8 @@ DiffWindow::DiffWindow(ScreenBase& screen,
     m_NumDifferences(0),
     m_IndentX(5),
     m_IndentY(0),
+    textAreasWidth(0),
+    textAreasHeight(0),
     m_pTextArea1(NULL),
     m_pTextArea2(NULL)
 {
@@ -100,6 +102,7 @@ void DiffWindow::Resized()
     return;
   }
 
+  // TODO check if this test and m_Widht/Height assignment can be removed.
   if(m_pWindow->Width == m_Width &&
      m_pWindow->Height == m_Height)
   {
@@ -110,22 +113,46 @@ void DiffWindow::Resized()
   m_Width = m_pWindow->Width;
   m_Height = m_pWindow->Height;
 
+  // Clear the window completely
+  SetRast(m_pRPorts->Window(), m_Pens.Background());
+  
   // Calculate some values which have to calculated after window
   // opening and after resizing
   calcSizes();
 
-  // Clear the window completely
-  SetRast(m_pRPorts->Window(), m_Pens.Background());
-
   // Resize gadgets to fit into new window size
   resizeGadgets();
 
-  if(m_pDocument != NULL)
+  if((m_pTextArea1 == NULL) || (m_pTextArea2 == NULL))
   {
-    // Paint the content of the two documents
-    m_pTextArea1->paintDocuments(false);
-    m_pTextArea2->paintDocuments(false);
+    return;
   }
+
+  // Set location and size of the left text area
+  m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
+  m_pTextArea1->SetWidthHeight(textAreasWidth, textAreasHeight);
+
+  // Set location and size of the right text area
+  m_pTextArea2->SetLeftTop(m_IndentX + textAreasWidth, m_IndentY);
+  m_pTextArea2->SetWidthHeight(textAreasWidth, textAreasHeight);
+
+  // Paint the content of the two documents
+  m_pTextArea1->paintDiffFile(false);
+  m_pTextArea2->paintDiffFile(false);
+
+  if(m_pDocument == NULL)
+  {
+    return;
+  }
+
+  // Set x-scroll-gadget's pot size in relation of new window size
+  setXScrollPotSize(m_pTextArea1->MaxVisibleChars(), 
+                    m_pDocument->MaxLineLength());
+
+  // Set y-scroll-gadget's pot size in relation of new window size
+  setYScrollPotSize(m_pTextArea1->MaxVisibleLines(), 
+                    m_pDocument->NumLines());
+
 
   // Paint the status bar
   paintStatusBar();
@@ -219,18 +246,6 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   // Clear the window completely
   SetRast(m_pRPorts->Window(), m_Pens.Background());
 
-  if(m_pTextArea1 != NULL)
-  {
-    delete m_pTextArea1;
-    m_pTextArea1 = NULL;
-  }
-
-  if(m_pTextArea2 != NULL)
-  {
-    delete m_pTextArea2;
-    m_pTextArea2 = NULL;
-  }
-
   // Display the document file names in the gadgets
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                     m_pWindow,
@@ -250,30 +265,51 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
   calcSizes();
 
-  m_pTextArea1 = new DiffWindowTextArea(m_pRPorts, m_pTextFont);
-  m_pTextArea2 = new DiffWindowTextArea(m_pRPorts, m_pTextFont);
-
   // Paint the window decoration
   paintWindowDecoration();
 
-  // Set document content to the text areas
-  m_pTextArea1->SetDocument(&pDiffDocument->LeftDiffFile(), 
-                          pDiffDocument->MaxLineLength(),
-                          pDiffDocument->LineNumbersEnabled());
+  // Remove diff text areas if still existing
+  if(m_pTextArea1 != NULL)
+  {
+    delete m_pTextArea1;
+    m_pTextArea1 = NULL;
+  }
 
-  m_pTextArea2->SetDocument(&pDiffDocument->RightDiffFile(), 
-                          pDiffDocument->MaxLineLength(),
-                          pDiffDocument->LineNumbersEnabled());
+  if(m_pTextArea2 != NULL)
+  {
+    delete m_pTextArea2;
+    m_pTextArea2 = NULL;
+  }
+
+  m_pTextArea1 = new DiffWindowTextArea(&pDiffDocument->LeftDiffFile(), 
+                                        m_pRPorts, 
+                                        m_pTextFont, 
+                                        pDiffDocument->LineNumbersEnabled(),
+                                        pDiffDocument->MaxLineLength());
+
+  m_pTextArea2 = new DiffWindowTextArea(&pDiffDocument->RightDiffFile(), 
+                                        m_pRPorts, 
+                                        m_pTextFont, 
+                                        pDiffDocument->LineNumbersEnabled(),
+                                        pDiffDocument->MaxLineLength());
+
+  // Set location and size of the left text area
+  m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
+  m_pTextArea1->SetWidthHeight(textAreasWidth, textAreasHeight);
+
+  // Set location and size of the right text area
+  m_pTextArea2->SetLeftTop(m_IndentX + textAreasWidth, m_IndentY);
+  m_pTextArea2->SetWidthHeight(textAreasWidth, textAreasHeight);
 
   // Paint the status bar
   paintStatusBar();
 
-  setXScrollPotSize(m_pTextArea1->NumVisibleChars(), 
+  // Set x-scroll-gadget's pot size in relation of new window size
+  setXScrollPotSize(m_pTextArea1->MaxVisibleChars(), 
                     m_pDocument->MaxLineLength());
 
-  // Set scroll gadgets pot size dependent on window size and the number
-  // of lines in opened file
-  setYScrollPotSize(m_pTextArea1->NumVisibleLines(), 
+  // Set y-scroll-gadget's pot size in relation of new window size
+  setYScrollPotSize(m_pTextArea1->MaxVisibleLines(), 
                     m_pDocument->NumLines());
 
   return true;
@@ -532,42 +568,11 @@ void DiffWindow::calcSizes()
   // (Re-)calculate some values that may have be changed by re-sizing
   ScrollbarWindow::calcSizes();
 
-  long textAreasWidth = m_InnerWindowRight - m_pTextArea1->Left() - m_IndentX;
+  textAreasWidth = m_InnerWindowRight - m_IndentX - m_IndentX;
   textAreasWidth /= 2;
 
   // Pre-calc text areas heigt. Will later be limited to int multiples.
-  long textAreasHeight = m_InnerWindowBottom - m_pTextArea1->Top() - m_IndentY;
-
-  if((m_pTextArea1 == NULL) || (m_pTextArea2 == NULL))
-  {
-    return;
-  }
-
-  m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
-
-  m_pTextArea2->SetLeftTop(m_pTextArea1->Left() + textAreasWidth, 
-                         m_pTextArea1->Top());
-
-
-  // Set the dimension of the text areas
-  m_pTextArea1->SetSizes(textAreasWidth, 
-                       textAreasHeight);
-
-  m_pTextArea2->SetSizes(textAreasWidth, 
-                       textAreasHeight);
-
-  if(m_pDocument == NULL)
-  {
-    return;
-  }
-
-  // Set x-scroll-gadget's pot size in relation of new window size
-  setXScrollPotSize(m_pTextArea1->NumVisibleChars(), 
-                    m_pDocument->MaxLineLength());
-
-  // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_pTextArea1->NumVisibleLines(), 
-                    m_pDocument->NumLines());
+  textAreasHeight = m_InnerWindowBottom - m_IndentY - m_IndentY;
 }
 
 
@@ -589,31 +594,30 @@ void DiffWindow::resizeGadgets()
            m_InnerWindowRight,
            m_pTextArea1->Top() - 3);
 
-  // Create the gadgets anew (with the new positions and size)
+  // Re-create the gadgets with new position and size
   createGadgets();
 
   AddGList(m_pWindow, m_pGadtoolsContext, (UWORD)~0, -1, NULL);
   RefreshGList(m_pGadtoolsContext, m_pWindow, NULL, -1);
   FreeGadgets(pOldContext);
 
-  if(m_pDocument != NULL)
+  if(m_pDocument == NULL)
   {
-    // Display the document file names in the gadgets
-    GT_SetGadgetAttrs(m_pGadTxtLeftFile,
-                      m_pWindow,
-                      NULL,
-                      GTTX_Text, m_pDocument->LeftFileName(),
-                      TAG_DONE);
+    return;
   }
 
-  if(m_pDocument != NULL)
-  {
-    GT_SetGadgetAttrs(m_pGadTxtRightFile,
-                      m_pWindow,
-                      NULL,
-                      GTTX_Text, m_pDocument->RightFileName(),
-                      TAG_DONE);
-  }
+  // Display the document file names in the gadgets
+  GT_SetGadgetAttrs(m_pGadTxtLeftFile,
+                    m_pWindow,
+                    NULL,
+                    GTTX_Text, m_pDocument->LeftFileName(),
+                    TAG_DONE);
+
+  GT_SetGadgetAttrs(m_pGadTxtRightFile,
+                    m_pWindow,
+                    NULL,
+                    GTTX_Text, m_pDocument->RightFileName(),
+                    TAG_DONE);
 }
 
 

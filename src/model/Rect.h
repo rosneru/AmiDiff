@@ -43,7 +43,7 @@ public:
    * NOTE: The right bottom edge of the rectangle is changed by this
    * operation. The left top edge is not changed.
    */
-  void SetWidthHeight(unsigned long width, unsigned long height);
+  virtual void SetWidthHeight(unsigned long width, unsigned long height);
 
   bool HasSize() const;
   unsigned long Area() const;

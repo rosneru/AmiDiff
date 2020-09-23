@@ -5,25 +5,37 @@
 
 #include "DiffWindowTextArea.h"
 
-DiffWindowTextArea::DiffWindowTextArea(DiffWindowRastports*& pRPorts,
-                                       struct TextFont* pTextFont)
-  : m_pRPorts(pRPorts),
-    m_pDiffFile(NULL),
-    m_LineNumbersWidth_pix(0),
-    m_NumLines(0),
-    m_MaxNumChars(0),
-    m_MaxTextAreaChars(0),
-    m_MaxTextAreaLines(0),
+DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase* pDiffFile, 
+                                       DiffWindowRastports*& pRPorts,
+                                       struct TextFont* pTextFont,
+                                       bool lineNumbersEnabled,
+                                       ULONG maxNumChars)
+  : m_pDiffFile(pDiffFile),
+    m_pRPorts(pRPorts),
+    m_LineNumbersEnabled(lineNumbersEnabled),
+    m_MaxNumChars(maxNumChars),
+    m_NumLines(pDiffFile->NumLines()),
+    m_FontWidth_pix(pTextFont->tf_XSize),
+    m_FontHeight_pix(pTextFont->tf_YSize),
+    m_FontBaseline_pix(pTextFont->tf_Baseline),
+    m_MaxVisibleChars(0),
+    m_MaxVisibleLines(0),
     m_X(0),
     m_Y(0),
     m_LineNumsWidth_chars(0),
-    m_LineNumsWidth_pix(0),
-    m_FontWidth_pix(pTextFont->tf_XSize),
-    m_FontHeight_pix(pTextFont->tf_YSize),
-    m_FontBaseline_pix(pTextFont->tf_Baseline)
+    m_LineNumsWidth_pix(0)
 
 {
+  if(lineNumbersEnabled)
+  {
+    const DiffLine* pLine = pDiffFile->GetLine(0);
+    const char* pLineNum = pLine->LineNum();
 
+    m_LineNumsWidth_chars = strlen(pLineNum);
+    m_LineNumsWidth_pix = m_LineNumsWidth_chars * m_FontWidth_pix;
+  }
+
+  paintDiffFile(true);
 }
 
 DiffWindowTextArea::~DiffWindowTextArea()
@@ -42,54 +54,26 @@ ULONG DiffWindowTextArea::Y() const
   return m_Y;
 }
 
-ULONG DiffWindowTextArea::NumVisibleChars() const
+ULONG DiffWindowTextArea::MaxVisibleChars() const
 {
-  return m_MaxTextAreaChars;
+  return m_MaxVisibleChars;
 }
 
-ULONG DiffWindowTextArea::NumVisibleLines() const
+ULONG DiffWindowTextArea::MaxVisibleLines() const
 {
-  return m_MaxTextAreaLines;
-}
-
-void DiffWindowTextArea::SetDocument(const DiffOutputFileBase* pDiffFile, 
-                                     ULONG maxNumChars,
-                                     bool lineNumbersEnabled)
-{
-  m_pDiffFile = pDiffFile;
-  m_NumLines = pDiffFile->NumLines();
-  m_MaxNumChars = maxNumChars;
-  m_LineNumbersEnabled = lineNumbersEnabled;
-  m_X = 0;
-  m_Y = 0;
-
-  if(lineNumbersEnabled)
-  {
-    const DiffLine* pLine = pDiffFile->GetLine(0);
-    const char* pLineNum = pLine->LineNum();
-
-    m_LineNumsWidth_chars = strlen(pLineNum);
-    m_LineNumsWidth_pix = m_LineNumsWidth_chars * m_FontWidth_pix;
-  }
-
-
-  paintDocuments(true);
+  return m_MaxVisibleLines;
 }
 
 
-void DiffWindowTextArea::SetSizes(ULONG width, 
-                                  ULONG height)
+void DiffWindowTextArea::SetWidthHeight(unsigned long width, 
+                                        unsigned long height)
 {
-  m_MaxTextAreaLines = (height - 4) /  m_FontHeight_pix;;
 
-  // Limit heigt to int multiples.
-  height = m_MaxTextAreaLines * m_FontHeight_pix + 3;
- 
-  // Calculate how many chars fit on each line in each text area
-  m_MaxTextAreaChars = (width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix;
+  m_MaxVisibleLines = (height - 4) /  m_FontHeight_pix;
+  m_MaxVisibleChars = (width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix;
 
-  ULONG textAreasTextWidth_pix = m_MaxTextAreaChars * m_FontWidth_pix;
-  textAreasTextWidth_pix += m_LineNumsWidth_pix;
+  // Limit height to int multiples
+  height = m_MaxVisibleLines * m_FontHeight_pix + 3;
 
   Rect::SetWidthHeight(width, height);
 
@@ -101,10 +85,10 @@ void DiffWindowTextArea::SetSizes(ULONG width,
   //   is scrolled too. On horizontal scroll, it is not.
   //
 
-  LONG maxTextWidth_pix = m_MaxTextAreaChars * m_FontWidth_pix;
+  ULONG maxTextWidth_pix = m_MaxVisibleChars * m_FontWidth_pix;
   maxTextWidth_pix += m_LineNumsWidth_pix;
 
-  m_HScrollRect.Set(Left() + m_LineNumbersWidth_pix + 3,
+  m_HScrollRect.Set(Left() + m_LineNumsWidth_pix + 3,
                     Top() + 1,
                     Left() + maxTextWidth_pix + 2,
                     Top() + Height() - 3);
@@ -119,7 +103,7 @@ void DiffWindowTextArea::SetSizes(ULONG width,
 void DiffWindowTextArea::ScrollTopToRow(size_t rowId)
 {
   // Prevent to scroll below the last line
-  ULONG yLimit = m_NumLines - m_MaxTextAreaLines;
+  ULONG yLimit = m_NumLines - m_MaxVisibleLines;
   if((yLimit > 0) && ( rowId > yLimit))
   {
      rowId = yLimit;
@@ -133,7 +117,7 @@ void DiffWindowTextArea::ScrollTopToRow(size_t rowId)
 
   int deltaAbs = abs(delta);
 
-  int deltaLimit = m_MaxTextAreaLines - 2;
+  int deltaLimit = m_MaxVisibleLines - 2;
   //int deltaLimit = 10;
 
   //
@@ -165,7 +149,7 @@ void DiffWindowTextArea::ScrollTopToRow(size_t rowId)
             Right() - 3,
             Bottom() - 3);
 
-  paintDocuments(false);
+  paintDiffFile(false);
 }
 
 
@@ -208,7 +192,7 @@ void DiffWindowTextArea::ScrollLeftToColumn(size_t columId)
   // Clear ext area completely
   Clear();
 
-  paintDocuments(false);
+  paintDiffFile(false);
 }
 
 
@@ -220,17 +204,6 @@ void DiffWindowTextArea::Clear()
   //           Right() - 3,
   //           Bottom() - 3);
 }
-
-const Rect& DiffWindowTextArea::HScroll()
-{
-  return m_HScrollRect;
-}
-
-const Rect& DiffWindowTextArea::VScroll()
-{
-  return m_VScrollRect;
-}
-
 
 
 size_t DiffWindowTextArea::scrollRight(size_t numChars)
@@ -253,9 +226,9 @@ size_t DiffWindowTextArea::scrollRight(size_t numChars)
     numChars = m_X;
   }
 
-  if(numChars > m_MaxTextAreaChars)
+  if(numChars > m_MaxVisibleChars)
   {
-    numChars = m_MaxTextAreaChars;
+    numChars = m_MaxVisibleChars;
   }
 
 
@@ -270,7 +243,7 @@ size_t DiffWindowTextArea::scrollRight(size_t numChars)
 
 
   // fill the gap with the previous chars
-  for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
+  for(unsigned long i = m_Y; i < m_Y + m_MaxVisibleLines; i++)
   {
     const DiffLine* pLine = m_pDiffFile->GetLine(i);
     if(pLine == NULL)
@@ -298,29 +271,29 @@ size_t DiffWindowTextArea::scrollLeft(size_t numChars)
     return 0;
   }
 
-  if(numChars > m_MaxTextAreaChars)
+  if(numChars > m_MaxVisibleChars)
   {
-    numChars = m_MaxTextAreaChars;
+    numChars = m_MaxVisibleChars;
   }
 
-  if(m_MaxNumChars < m_MaxTextAreaChars)
+  if(m_MaxNumChars < m_MaxVisibleChars)
   {
     // Do not move the scroll area left if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_X + m_MaxTextAreaChars) == m_MaxNumChars)
+  if((m_X + m_MaxVisibleChars) == m_MaxNumChars)
   {
     // Do not move the scroll area left if text already at rightmost
     // position
     return 0;
   }
 
-  if((m_X + m_MaxTextAreaChars + numChars) > m_MaxNumChars)
+  if((m_X + m_MaxVisibleChars + numChars) > m_MaxNumChars)
   {
     // Limit the scrolling to only scroll only as many chars as necessary
-    numChars = m_MaxNumChars - (m_X + m_MaxTextAreaChars);
+    numChars = m_MaxNumChars - (m_X + m_MaxVisibleChars);
   }
 
   // Move each text area left by n * the width of one char
@@ -333,7 +306,7 @@ size_t DiffWindowTextArea::scrollLeft(size_t numChars)
                  m_HScrollRect.Bottom());
 
   // Fill the gap with the following chars
-  for(unsigned long i = m_Y; i < m_Y + m_MaxTextAreaLines; i++)
+  for(unsigned long i = m_Y; i < m_Y + m_MaxVisibleLines; i++)
   {
     const DiffLine* pLine = m_pDiffFile->GetLine(i);
 
@@ -345,7 +318,7 @@ size_t DiffWindowTextArea::scrollLeft(size_t numChars)
     paintLine(pLine,
               (i - m_Y)  * m_FontHeight_pix,
               true,
-              m_X + m_MaxTextAreaChars,
+              m_X + m_MaxVisibleChars,
               -numChars);
 
   }
@@ -409,23 +382,23 @@ size_t DiffWindowTextArea::scrollUp(size_t numLines)
     return 0;
   }
 
-  if(m_NumLines < m_MaxTextAreaLines)
+  if(m_NumLines < m_MaxVisibleLines)
   {
     // Do not move the scroll area upward if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_Y + m_MaxTextAreaLines) == m_NumLines)
+  if((m_Y + m_MaxVisibleLines) == m_NumLines)
   {
     // Do not move the scroll area upward if text already at bottom
     return 0;
   }
 
-  if((m_Y + m_MaxTextAreaLines + numLines) > m_NumLines)
+  if((m_Y + m_MaxVisibleLines + numLines) > m_NumLines)
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    numLines = m_NumLines - (m_Y + m_MaxTextAreaLines);
+    numLines = m_NumLines - (m_Y + m_MaxVisibleLines);
   }
 
   // Move each text area upward by n * the height of one text line
@@ -439,14 +412,14 @@ size_t DiffWindowTextArea::scrollUp(size_t numLines)
 
   for(size_t i = 0; i < numLines; i++)
   {
-    int lineIndex = m_Y + m_MaxTextAreaLines + i;
+    int lineIndex = m_Y + m_MaxVisibleLines + i;
     const DiffLine* pLine = m_pDiffFile->GetLine(lineIndex);
     if(pLine == NULL)
     {
       break;
     }
 
-    int paintLineIndex = m_MaxTextAreaLines - numLines + i;
+    int paintLineIndex = m_MaxVisibleLines - numLines + i;
     paintLine(pLine,
               paintLineIndex * m_FontHeight_pix);
   }
@@ -456,7 +429,7 @@ size_t DiffWindowTextArea::scrollUp(size_t numLines)
 
 
 
-void DiffWindowTextArea::paintDocuments(bool bFromStart)
+void DiffWindowTextArea::paintDiffFile(bool bFromStart)
 {
   if(m_pDiffFile == NULL)
   {
@@ -469,7 +442,7 @@ void DiffWindowTextArea::paintDocuments(bool bFromStart)
     m_Y = 0;
   }
 
-  for(size_t i = m_Y; (i - m_Y) < m_MaxTextAreaLines; i++)
+  for(size_t i = m_Y; (i - m_Y) < m_MaxVisibleLines; i++)
   {
     if(i >= m_NumLines)
     {
@@ -506,7 +479,7 @@ void DiffWindowTextArea::paintLine(const DiffLine* pLine,
     // right-adjusted. So here an indent for the text is calculated
     // and numChars is made positive to get used below.
     count = -count;
-    indent = (m_MaxTextAreaChars - count) * m_FontWidth_pix;
+    indent = (m_MaxVisibleChars - count) * m_FontWidth_pix;
   }
 
   if(!bHorizontallyScrolled && m_LineNumbersEnabled)
@@ -566,10 +539,10 @@ ULONG DiffWindowTextArea::calcNumPrintChars(const DiffLine* pDiffLine,
     numCharsToPrint = pDiffLine->NumChars() - m_X;
   }
 
-  if(numCharsToPrint > m_MaxTextAreaChars)
+  if(numCharsToPrint > m_MaxVisibleChars)
   {
     // Limit the number of printed chars to fit into the text area
-    numCharsToPrint = m_MaxTextAreaChars;
+    numCharsToPrint = m_MaxVisibleChars;
   }
 
   if((startIndex > -1) &&

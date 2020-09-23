@@ -119,6 +119,8 @@ private:
 
   ULONG m_IndentX;  ///> X-distance of the text areas to window borders
   ULONG m_IndentY;  ///> Y-distance of the text areas to window borders
+  ULONG textAreasWidth;
+  ULONG textAreasHeight;
 
   DiffWindowTextArea* m_pTextArea1;
   DiffWindowTextArea* m_pTextArea2;
@@ -147,7 +149,7 @@ private:
   void calcSizes();
 
   /**
-   * Resizes the gadgets. Should be called after the window size has
+   * Resize the gadgets. Should be called after the window size has
    * changed. As gadget-resizing or re-positioning is not supported with
    * Gadtools, the gadgets are re-created completely.
    */
@@ -155,7 +157,7 @@ private:
 
 
   /**
-   * Paints the basic window content: the 2 BevelBoxes for the original
+   * Paint the basic window content: the 2 BevelBoxes for the original
    * (left) and changed (right) diff file, the Document names and the
    * state bar at the bottom.
    */
@@ -163,7 +165,7 @@ private:
 
 
   /**
-   * Displays a status bar with statistical information and a legend
+   * Display a status bar with statistical information and a legend
    * below the two text areas
    */
   void paintStatusBar();

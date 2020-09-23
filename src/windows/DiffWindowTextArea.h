@@ -14,38 +14,31 @@
 class DiffWindowTextArea : public Rect
 {
 public:
-  DiffWindowTextArea(DiffWindowRastports*& pRPorts,
-                     struct TextFont* pTextFont);
+  DiffWindowTextArea(const DiffOutputFileBase* pDiffFile, 
+                                       DiffWindowRastports*& pRPorts,
+                                       struct TextFont* pTextFont,
+                                       bool lineNumbersEnabled,
+                                       ULONG maxNumChars);
 
   virtual ~DiffWindowTextArea();
 
   ULONG X() const;
   ULONG Y() const;
 
-  ULONG NumVisibleChars() const;
-  ULONG NumVisibleLines() const;
-
-  /**
-   * Set the document and paint initially.
-   * 
-   * FIXME: Move this to the constructor of DiffWindowTextArea
-   */
-  void SetDocument(const DiffOutputFileBase* pDiffFile,
-                   ULONG maxNumChars,
-                   bool lineNumbersEnabled);
+  ULONG MaxVisibleChars() const;
+  ULONG MaxVisibleLines() const;
 
   /**
    * Set the dimensions of this text area.
    */
-  void SetSizes(ULONG width, 
-                ULONG height);
+  void SetWidthHeight(unsigned long width, unsigned long height);
 
 
   void ScrollTopToRow(size_t rowId);
   void ScrollLeftToColumn(size_t columId);
 
   /**
-   * Scrolls the text left by numChars chars and fills the gap at right
+   * Scroll the text left by numChars chars and fills the gap at right
    * with the following chars
    *
    * NOTE: Does *not* change the current left line position m_X!
@@ -56,7 +49,7 @@ public:
   size_t scrollLeft(size_t numChars);
 
   /**
-   * Scrolls the text right by numChars chars and fills the gap at left
+   * Scroll the text right by numChars chars and fills the gap at left
    * with the previous chars
    *
    * NOTE: Does *not* change the current top line position m_X!
@@ -67,7 +60,7 @@ public:
   size_t scrollRight(size_t numChars);
 
   /**
-   * Scrolls the text down by numLines lines and fills the gap at top
+   * Scroll the text down by numLines lines and fills the gap at top
    * with the previous lines
    *
    * NOTE: Does *not* change the current top line position m_Y!
@@ -78,7 +71,7 @@ public:
   size_t scrollDown(size_t numLines);
 
   /**
-   * Scrolls the text up by numLines lines and fills the gap at bottom
+   * Scroll the text up by numLines lines and fills the gap at bottom
    * with the next lines.
    *
    * NOTE: Does *not* change the current top line position m_Y!
@@ -89,16 +82,16 @@ public:
   size_t scrollUp(size_t numLines);
 
   /**
-   * Displays the diff file inside the main text area. The file is
+   * Display the diff file inside the main text area. The file is
    * displayed starting from current text position m_Y as first line at
    * the very top of the text area.
    *
-   * @param fromStart When true: Before printing the documents the line
-   * and column indices m_X and m_Y are reset to 0. So the document will
-   * be displayed from start. When false: Printing starts at current
+   * @param fromStart When true: Before printing the line and column
+   * indices m_X and m_Y are reset to 0. So the document will be
+   * displayed from start. When false: Printing starts at current
    * position m_Y.
    */
-  void paintDocuments(bool bFromStart = true);
+  void paintDiffFile(bool bFromStart = true);
 
 
   /**
@@ -106,35 +99,26 @@ public:
    */
   void Clear();
 
-  /**
-   * Returns the rect of the scrolling area for horizontal scrolling.
-   */
-  const Rect& HScroll();
-
-  /**
-   * Returns the rect of the scrolling area for vertical scrolling.
-   */
-  const Rect& VScroll();
 
 private:
-  DiffWindowRastports*& m_pRPorts;
   const DiffOutputFileBase* m_pDiffFile;
-  const UWORD& m_LineNumbersWidth_pix;
-  Rect m_HScrollRect;
-  Rect m_VScrollRect;
-
+  DiffWindowRastports*& m_pRPorts;
   bool m_LineNumbersEnabled;
+  ULONG m_MaxNumChars;
 
   ULONG m_NumLines;           ///> Number of lines (as it's a diff view
                               ///> this should be equal for both files)
 
-  ULONG m_MaxNumChars;
+  UWORD m_FontWidth_pix;    ///> Width of the rastport text font
+  UWORD m_FontHeight_pix;   ///> Height of the rastport text font
+  UWORD m_FontBaseline_pix; ///> Baseline (from top) of the rastport text font
 
-  ULONG m_MaxTextAreaChars;   ///> Max fitting chars in each text area
-                              ///> Depending on font and text area size
 
-  ULONG m_MaxTextAreaLines;   ///> Max fitting lines in each text area
-                              ///> Depending on font and window size
+  ULONG m_MaxVisibleChars;  ///> Max number of chars that fits into 
+                            ///> the text area at current size
+
+  ULONG m_MaxVisibleLines;  ///> Max number of lines that fits into 
+                            ///> the text area at current size
 
   ULONG m_X;        ///> Index of leftmost char in displayed lines
                     ///> Is > 0 when text is horizontally scrolled
@@ -145,9 +129,8 @@ private:
   UWORD m_LineNumsWidth_chars;
   UWORD m_LineNumsWidth_pix;
 
-  UWORD m_FontWidth_pix;    ///> Width of the rastport text font
-  UWORD m_FontHeight_pix;   ///> Height of the rastport text font
-  UWORD m_FontBaseline_pix; ///> Baseline (from top) of the rastport text font
+  Rect m_HScrollRect;         ///> Area to be used for horizontal scroll
+  Rect m_VScrollRect;         ///> Area to be used for vertical scroll
 
   /**
    * Prints the given line at given y-position topEdge.
