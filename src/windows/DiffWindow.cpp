@@ -115,8 +115,8 @@ void DiffWindow::Resized()
 
   // Paint the content of the two documents (from current y-position, 
   //not from start)
-  m_pTextArea1->PrintFile(false);
-  m_pTextArea2->PrintFile(false);
+  m_pTextArea1->Draw(false);
+  m_pTextArea2->Draw(false);
 
   if(m_pDocument == NULL)
   {
@@ -280,8 +280,8 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   m_pTextArea2->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from start)
-  m_pTextArea1->PrintFile(true);
-  m_pTextArea2->PrintFile(true);
+  m_pTextArea1->Draw(true);
+  m_pTextArea2->Draw(true);
 
   // Paint the status bar
   paintStatusBar();
@@ -375,8 +375,8 @@ void DiffWindow::YChangedHandler(size_t newY)
 void DiffWindow::XIncrease(size_t numChars,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->scrollLeft(numChars);
-  m_pTextArea2->scrollLeft(numChars);
+  m_pTextArea1->ScrollLeft(numChars);
+  m_pTextArea2->ScrollLeft(numChars);
 
   if(!bTriggeredByScrollPot)
   {
@@ -390,8 +390,8 @@ void DiffWindow::XIncrease(size_t numChars,
 void DiffWindow::XDecrease(size_t numChars,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->scrollRight(numChars);
-  m_pTextArea2->scrollRight(numChars);
+  m_pTextArea1->ScrollRight(numChars);
+  m_pTextArea2->ScrollRight(numChars);
 
   if(!bTriggeredByScrollPot)
   {
@@ -405,8 +405,8 @@ void DiffWindow::XDecrease(size_t numChars,
 void DiffWindow::YIncrease(size_t numLines,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->scrollUp(numLines);
-  m_pTextArea2->scrollUp(numLines);
+  m_pTextArea1->ScrollUp(numLines);
+  m_pTextArea2->ScrollUp(numLines);
 
   if(!bTriggeredByScrollPot)
   {
@@ -420,8 +420,8 @@ void DiffWindow::YIncrease(size_t numLines,
 void DiffWindow::YDecrease(size_t numLines,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->scrollDown(numLines);
-  m_pTextArea2->scrollDown(numLines);
+  m_pTextArea1->ScrollDown(numLines);
+  m_pTextArea2->ScrollDown(numLines);
 
   if(!bTriggeredByScrollPot)
   {

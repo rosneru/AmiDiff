@@ -33,61 +33,62 @@ public:
    */
   void SetWidthHeight(unsigned long width, unsigned long height);
 
+  /**
+   * Scroll the text up or down to diplay the given (by rowId) line on
+   * firts position top.
+   */
+  void ScrollTopToRow(ULONG rowId);
 
-  void ScrollTopToRow(size_t rowId);
-  void ScrollLeftToColumn(size_t columId);
+  /**
+   * Scroll the text left or right to diplay the given (by column) line
+   * on first position left.
+   */
+  void ScrollLeftToColumn(ULONG columId);
 
   /**
    * Scroll the text left by numChars chars and fills the gap at right
    * with the following chars
    *
-   * NOTE: Does *not* change the current left line position m_X!
-   *
    * @returns Number of lines scrolled. Can be smaller than expected
    * when last char of longest line is displayed.
    */
-  size_t scrollLeft(size_t numChars);
+  ULONG ScrollLeft(ULONG numChars);
 
   /**
    * Scroll the text right by numChars chars and fills the gap at left
    * with the previous chars
    *
-   * NOTE: Does *not* change the current top line position m_X!
-   *
    * @returns Number of lines scrolled. Can be smaller than expected
    * when first char of text reached.
    */
-  size_t scrollRight(size_t numChars);
-
-  /**
-   * Scroll the text down by numLines lines and fills the gap at top
-   * with the previous lines
-   *
-   * NOTE: Does *not* change the current top line position m_Y!
-   *
-   * @returns Number of lines scrolled. Can be smaller than expected
-   * when start of text reached.
-   */
-  size_t scrollDown(size_t numLines);
+  ULONG ScrollRight(ULONG numChars);
 
   /**
    * Scroll the text up by numLines lines and fills the gap at bottom
    * with the next lines.
    *
-   * NOTE: Does *not* change the current top line position m_Y!
-   *
    * @returns Number of lines scrolled. Can be smaller than expected
    * when end of text reached.
    */
-  size_t scrollUp(size_t numLines);
+  ULONG ScrollUp(ULONG numLines);
 
   /**
-   * Print the diff file in the text area.
+   * Scroll the text down by numLines lines and fills the gap at top
+   * with the previous lines
+   *
+   * @returns Number of lines scrolled. Can be smaller than expected
+   * when start of text reached.
+   */
+  ULONG ScrollDown(ULONG numLines);
+
+
+  /**
+   * Draws the diff file in the text area.
    *
    * @param fromStart When true: Prints the document from start. When
    * false: Printing starts at current position m_Y.
    */
-  void PrintFile(bool bFromStart = true);
+  void Draw(bool bFromStart = true);
 
 
   /**
@@ -129,13 +130,13 @@ private:
   Rect m_VScrollRect;         ///> Area to be used for vertical scroll
 
   /**
-   * Print the given line at given y-position topEdge.
+   * Print the given diff line at given y-position topEdge.
    */
-  void printLine(const DiffLine* pLeftLine,
-                 WORD topEdge,
-                 bool bHorizontallyScrolled = false,
-                 int startIndex = -1,
-                 int count = 0);
+  void drawDiffLine(const DiffLine* pLeftLine,
+                    WORD topEdge,
+                    bool bHorizontallyScrolled = false,
+                    int startIndex = -1,
+                    int count = 0);
 
   /**
    * Calculate how many chars of given DiffLine must be print 
