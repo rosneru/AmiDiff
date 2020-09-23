@@ -602,6 +602,7 @@ void DiffWindow::resizeGadgets()
            m_pTextArea1->Top() - 3);
 
   // Re-create the gadgets with new position and size
+  // TODO handle failure.
   createGadgets();
 
   AddGList(m_pWindow, m_pGadtoolsContext, (UWORD)~0, -1, NULL);

@@ -116,6 +116,7 @@ private:
   void compare();
   void clear();
 
+  void cleanup();
 
   /**
    * Enables or disables the 'Diff' and 'Swap' buttons depending on

@@ -30,7 +30,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
     m_pGadBtnUpArrow(NULL),
     m_pGadBtnDownArrow(NULL)
 {
-  const char* pErrMsg = "ScrollbarWindow: Failed to create NewObj().";
+  const char* pErrMsg = "ScrollbarWindow: NewObj() failed.";
 
   //
   // Create scroll bars and gadgets for the window. They will be

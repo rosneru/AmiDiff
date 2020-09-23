@@ -45,6 +45,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     m_pGadBtnClear(NULL),
     m_pGadBtnCancel(NULL)
 {
+  const char* pErrMsg = "FilesWindow: Failed to create gadgets.";
   //
   // Calculate some basic values
   //
@@ -104,7 +105,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
 
   //
-  // Setting up the gadgets
+  // Set up the gadgets
   //
 
   // Create a place for GadTools context data
@@ -112,7 +113,8 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   pFakeGad = (struct Gadget*) CreateContext(&m_pGadtoolsContext);
   if(pFakeGad == NULL)
   {
-    return;
+    cleanup();
+    throw pErrMsg;
   }
 
   // Setting the first gadget of the gadet list for the window
@@ -136,6 +138,11 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                              &newGadget,
                                              GT_Underscore, '_',
                                              TAG_DONE);
+  if(pLabelGadget == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Row 2 contains a string gadget and selection button for the
   // filename of the left file
@@ -154,6 +161,11 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                    &newGadget,
                                    GTST_MaxChars, m_MaxPathLength,
                                    TAG_DONE);
+  if(m_pGadStrLeftFile == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Creating the Select button
   newGadget.ng_LeftEdge   = btnSelectLeft;
@@ -166,6 +178,11 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                      m_pGadStrLeftFile,
                                      &newGadget,
                                      TAG_DONE);
+  if(m_pGadBtnSelectLeft == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Row 3  contains a label
   newGadget.ng_LeftEdge   = left + 2;
@@ -180,6 +197,11 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                               &newGadget,
                               GT_Underscore, '_',
                               TAG_DONE);
+  if(pLabelGadget == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Row 4 contains a string gadget and selection button for the
   // filename of the right file
@@ -198,6 +220,11 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                     &newGadget,
                                     GTST_MaxChars, m_MaxPathLength,
                                     TAG_DONE);
+  if(m_pGadStrRightFile == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Creating the Select button
   newGadget.ng_LeftEdge   = btnSelectLeft;
@@ -225,6 +252,11 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                &newGadget,
                                GT_Underscore, '_',
                                TAG_DONE);
+  if(m_pGadBtnDiff == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Creating the Swap button
   newGadget.ng_LeftEdge   = (m_Width - hSpace) / 2 - btnsWidth;
@@ -236,6 +268,11 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                &newGadget,
                                GT_Underscore, '_',
                                TAG_DONE);
+  if(m_pGadBtnSwap == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Creating the Clear button
   newGadget.ng_LeftEdge   += btnsWidth + hSpace;
@@ -247,7 +284,11 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                 &newGadget,
                                 GT_Underscore, '_',
                                 TAG_DONE);
-
+  if(m_pGadBtnClear == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Creating the Cancel button
   newGadget.ng_LeftEdge   = right - btnsWidth;
@@ -259,6 +300,11 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                  &newGadget,
                                  GT_Underscore, '_',
                                  TAG_DONE);
+  if(m_pGadBtnCancel == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
@@ -283,19 +329,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
 
 FilesWindow::~FilesWindow()
 {
-  if(m_pGadtoolsContext != NULL)
-  {
-    FreeGadgets(m_pGadtoolsContext);
-  }
-
-  m_pGadtoolsContext = NULL;
-  m_pGadStrLeftFile = NULL;
-  m_pGadStrRightFile = NULL;
-  m_pGadBtnSelectLeft = NULL;
-  m_pGadBtnSelectRight = NULL;
-  m_pGadBtnDiff = NULL;
-  m_pGadBtnSwap = NULL;
-  m_pGadBtnCancel = NULL;
+  cleanup();
 }
 
 
@@ -669,6 +703,23 @@ void FilesWindow::clear()
   setStringGadgetText(m_pGadStrRightFile, "");
 }
 
+
+void FilesWindow::cleanup()
+{
+  if(m_pGadtoolsContext != NULL)
+  {
+    FreeGadgets(m_pGadtoolsContext);
+  }
+
+  m_pGadtoolsContext = NULL;
+  m_pGadStrLeftFile = NULL;
+  m_pGadStrRightFile = NULL;
+  m_pGadBtnSelectLeft = NULL;
+  m_pGadBtnSelectRight = NULL;
+  m_pGadBtnDiff = NULL;
+  m_pGadBtnSwap = NULL;
+  m_pGadBtnCancel = NULL;
+}
 
 void FilesWindow::checkEnableButtons()
 {
