@@ -623,6 +623,11 @@ void DiffWindow::resizeGadgets()
 
 void DiffWindow::paintWindowDecoration()
 {
+  if((m_pTextArea1 == NULL) || (m_pTextArea2 == NULL))
+  {
+    return;
+  }
+
   // Create borders for the two text areas
   DrawBevelBox(m_pRPorts->Window(),
                m_pTextArea1->Left(),
@@ -646,7 +651,7 @@ void DiffWindow::paintWindowDecoration()
 
 void DiffWindow::paintStatusBar()
 {
-  if(!IsOpen())
+  if(!IsOpen() || (m_pTextArea1 == NULL))
   {
     return;
   }
