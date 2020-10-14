@@ -5,8 +5,8 @@ set(CROSS_COMPILE m68k-amigaos-)
 
 SET(CMAKE_CXX_COMPILER m68k-amigaos-g++)
 
-SET(CMAKE_CXX_FLAGS_DEBUG "-noixemul -Wall -O0 -g -Wl,--amiga-debug-hunk -ldebug -D LINUX")
-SET(CMAKE_CXX_FLAGS_RELEASE "-noixemul -Wall -Os -s -D LINUX")
+SET(CMAKE_CXX_FLAGS_DEBUG "-noixemul -m68020 -Wall -O0 -g -Wl,--amiga-debug-hunk -ldebug -D LINUX")
+SET(CMAKE_CXX_FLAGS_RELEASE "-noixemul -m68020 -Wall -Os -s -D LINUX")
 
 
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <OBJECTS>  -o <TARGET>")

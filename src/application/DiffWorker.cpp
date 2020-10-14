@@ -115,6 +115,13 @@ bool DiffWorker::Diff()
     m_IsExitAllowed = true;
     return false;
   }
+  catch (std::bad_alloc & exception) 
+  { 
+    if(!m_IsCancelRequested)
+    {
+      request.Show(exception.what(), "Ok");
+    }
+  } 
 
   m_DiffWindow.Open(WindowBase::IP_Fill);
   m_DiffWindow.SetContent(m_pDiffDocument);

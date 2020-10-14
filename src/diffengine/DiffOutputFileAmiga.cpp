@@ -35,7 +35,7 @@ long DiffOutputFileAmiga::AddLine(const char* pText,
 
   if(pDiffLine == NULL)
   {
-    return -1;
+   throw "Not enough memory to create DiffLine.";
   }
 
   // The next line is called 'replacement new'. It creates an object
