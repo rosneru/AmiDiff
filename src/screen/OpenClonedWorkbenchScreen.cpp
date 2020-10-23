@@ -1,5 +1,11 @@
-#include <clib/intuition_protos.h>
-#include <clib/gadtools_protos.h>
+#ifdef __clang__
+  #include <clib/gadtools_protos.h>
+  #include <clib/intuition_protos.h>
+#else
+  #include <proto/gadtools.h>
+  #include <proto/intuition.h>
+#endif
+
 #include "OpenClonedWorkbenchScreen.h"
 
 OpenClonedWorkbenchScreen::OpenClonedWorkbenchScreen(const ADiffViewSettings& settings,
@@ -18,10 +24,10 @@ OpenClonedWorkbenchScreen::OpenClonedWorkbenchScreen(const ADiffViewSettings& se
   m_pIntuiScreen = OpenScreenTags(NULL,
                                   SA_LikeWorkbench, TRUE,
                                   SA_Type, CUSTOMSCREEN,
-                                  SA_Depth, m_Depth,
+                                  SA_Depth, (ULONG)m_Depth,
                                   SA_SharePens,TRUE,
-                                  SA_Title, m_pTitle,
-                                  SA_Colors32, m_Settings.GetColorArray(),
+                                  SA_Title, (ULONG)m_pTitle,
+                                  SA_Colors32, (ULONG)m_Settings.GetColorArray(),
                                   TAG_DONE);
 
   if(m_pIntuiScreen == NULL)

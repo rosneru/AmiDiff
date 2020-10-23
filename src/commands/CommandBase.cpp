@@ -1,4 +1,9 @@
-#include <clib/intuition_protos.h>
+#ifdef __clang__
+  #include <clib/intuition_protos.h>
+#else
+  #include <proto/intuition.h>
+#endif
+
 #include "CommandBase.h"
 
 std::vector<WindowBase*>* CommandBase::m_pAllWindowsArray(NULL);

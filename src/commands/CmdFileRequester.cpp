@@ -1,12 +1,28 @@
-#include <string.h>
-#include <clib/asl_protos.h>
 #include <clib/alib_protos.h>
-#include <clib/dos_protos.h>
-#include <clib/exec_protos.h>
-#include <clib/gadtools_protos.h>
+
+#ifdef __clang__
+  #include <clib/asl_protos.h>
+  #include <clib/dos_protos.h>
+  #include <clib/exec_protos.h>
+  #include <clib/gadtools_protos.h>
+#else
+  #include <proto/asl.h>
+  #include <proto/dos.h>
+  #include <proto/exec.h>
+  #include <proto/gadtools.h>
+
+  #ifdef Execute
+    #undef Execute
+  #endif
+#endif
+
 #include <exec/memory.h>
 #include <libraries/asl.h>
+
+#include <string.h>
+
 #include "CmdFileRequester.h"
+
 
 
 CmdFileRequester::CmdFileRequester(std::vector<WindowBase*>* pAllWindowsVector,
@@ -105,7 +121,7 @@ void CmdFileRequester::selectFile(struct Window* pActiveWindow)
                         ASLFR_InitialFile, (ULONG) initialFile.c_str(),
                         ASLFR_Window, (ULONG) pActiveWindow,
                         ASLFR_RejectIcons, TRUE,
-                        ASLFR_IntuiMsgFunc, &aslHook,
+                        ASLFR_IntuiMsgFunc, (ULONG)&aslHook,
                         TAG_DONE);
 
   if(pFileRequest == NULL)

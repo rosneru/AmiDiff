@@ -6,6 +6,9 @@
 #include "MenuBase.h"
 #include "CommandBase.h"
 
+#ifdef Execute
+  #undef Execute
+#endif
 
 /**
  * This command opens a file requester, letting the user select a file.

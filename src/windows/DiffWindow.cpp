@@ -1,17 +1,27 @@
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#ifdef __clang__
+  #include <clib/dos_protos.h>
+  #include <clib/gadtools_protos.h>
+  #include <clib/graphics_protos.h>
+  #include <clib/intuition_protos.h>
+  #include <clib/utility_protos.h>
+#else
+  #include <proto/dos.h>
+  #include <proto/gadtools.h>
+  #include <proto/graphics.h>
+  #include <proto/intuition.h>
+  #include <proto/utility.h>
+#endif
 
-#include <clib/dos_protos.h>
-#include <clib/gadtools_protos.h>
-#include <clib/graphics_protos.h>
-#include <clib/intuition_protos.h>
-#include <clib/utility_protos.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
 #include <intuition/icclass.h>
 #include <libraries/gadtools.h>
+
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "DiffWindow.h"
 
 
@@ -80,8 +90,8 @@ void DiffWindow::Resized()
   }
 
   // TODO check if this test and m_Widht/Height assignment can be removed.
-  if(m_pWindow->Width == m_Width &&
-     m_pWindow->Height == m_Height)
+  if(((ULONG)m_pWindow->Width) == m_Width &&
+     ((ULONG)m_pWindow->Height) == m_Height)
   {
     // nothing changed
     return;
@@ -115,8 +125,8 @@ void DiffWindow::Resized()
 
   // Paint the content of the two documents (from current y-position,
   //not from start)
-  m_pTextArea1->Draw(false);
-  m_pTextArea2->Draw(false);
+  m_pTextArea1->PrintLines(false);
+  m_pTextArea2->PrintLines(false);
 
   if(m_pDocument == NULL)
   {
@@ -228,13 +238,13 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, m_pDocument->LeftFileName(),
+                    GTTX_Text, (ULONG)m_pDocument->LeftFileName(),
                     TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadTxtRightFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, m_pDocument->RightFileName(),
+                    GTTX_Text, (ULONG)m_pDocument->RightFileName(),
                     TAG_DONE);
 
 
@@ -277,8 +287,8 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   m_pTextArea2->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from start)
-  m_pTextArea1->Draw(true);
-  m_pTextArea2->Draw(true);
+  m_pTextArea1->PrintLines(true);
+  m_pTextArea2->PrintLines(true);
 
   // Paint the window decoration
   paintWindowDecoration();
@@ -526,7 +536,7 @@ bool DiffWindow::createGadgets()
                                    pFakeGad,
                                    &newGadget,
                                    GTTX_Border, TRUE,
-                                   GTTX_Text, pFileName,
+                                   GTTX_Text, (ULONG)pFileName,
                                    TAG_DONE);
   if(m_pGadTxtLeftFile == NULL)
   {
@@ -541,7 +551,7 @@ bool DiffWindow::createGadgets()
                                     m_pGadTxtLeftFile,
                                     &newGadget,
                                     GTTX_Border, TRUE,
-                                    GTTX_Text, pFileName,
+                                    GTTX_Text, (ULONG)pFileName,
                                     TAG_DONE);
   if(m_pGadTxtRightFile == NULL)
   {
@@ -618,13 +628,13 @@ void DiffWindow::resizeGadgets()
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, m_pDocument->LeftFileName(),
+                    GTTX_Text, (ULONG)m_pDocument->LeftFileName(),
                     TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadTxtRightFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, m_pDocument->RightFileName(),
+                    GTTX_Text, (ULONG)m_pDocument->RightFileName(),
                     TAG_DONE);
 }
 
@@ -642,7 +652,7 @@ void DiffWindow::paintWindowDecoration()
                m_pTextArea1->Top(),
                m_pTextArea1->Width(),
                m_pTextArea1->Height(),
-               GT_VisualInfo, m_Screen.GadtoolsVisualInfo(),
+               GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
@@ -651,7 +661,7 @@ void DiffWindow::paintWindowDecoration()
                m_pTextArea2->Top(),
                m_pTextArea2->Width(),
                m_pTextArea2->Height(),
-               GT_VisualInfo, m_Screen.GadtoolsVisualInfo(),
+               GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 }
@@ -680,7 +690,7 @@ void DiffWindow::paintStatusBar()
 
 
   struct IntuiText intuiText;
-  intuiText.FrontPen  = m_Pens.Text();
+  intuiText.FrontPen  = m_Pens.NormalText();
   intuiText.BackPen   = m_Pens.Background();
   intuiText.DrawMode  = JAM2;
   intuiText.ITextFont = &m_TextAttr;

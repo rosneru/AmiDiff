@@ -32,7 +32,7 @@ DiffLine::~DiffLine()
 {
 }
 
-const char* DiffLine::Text() const
+const char* DiffLine::Txt() const
 {
   return m_Text;
 }

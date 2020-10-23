@@ -6,6 +6,10 @@
 #include <vector>
 #include "WindowBase.h"
 
+#ifdef Execute
+  #undef Execute
+#endif
+
 /**
  * Base class of all commands. Is an abstract class because of the
  * abstract Execute() method.

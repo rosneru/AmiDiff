@@ -1,4 +1,9 @@
-#include <clib/exec_protos.h>
+#ifdef __clang__
+  #include <clib/exec_protos.h>
+#else
+  #include <proto/exec.h>
+#endif
+
 #include "ADiffViewPorts.h"
 
 

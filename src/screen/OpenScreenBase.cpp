@@ -1,8 +1,16 @@
-#include <clib/gadtools_protos.h>
-#include <clib/graphics_protos.h>
-#include <clib/intuition_protos.h>
+#ifdef __clang__
+  #include <clib/gadtools_protos.h>
+  #include <clib/graphics_protos.h>
+  #include <clib/intuition_protos.h>
+#else
+  #include <proto/gadtools.h>
+  #include <proto/graphics.h>
+  #include <proto/intuition.h>
+#endif
+
 #include <graphics/text.h>
 #include <intuition/intuitionbase.h>
+
 #include "OpenScreenBase.h"
 
 extern struct IntuitionBase* IntuitionBase;

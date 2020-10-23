@@ -1,7 +1,13 @@
+#ifdef __clang__
+  #include <clib/dos_protos.h>
+  #include <clib/exec_protos.h>
+#else
+  #include <proto/dos.h>
+  #include <proto/exec.h>
+#endif
+
 #include <dos/dosextens.h>
 #include <dos/dostags.h>
-#include <clib/exec_protos.h>
-#include <clib/dos_protos.h>
 
 #include "WorkerBase.h"
 #include "ProgressMessage.h"
@@ -34,8 +40,8 @@ bool WorkerBase::Run()
   }
 
   // Create the background process
-  m_pBackgrProcess = CreateNewProcTags(NP_Name, "WorkerBase",
-                                       NP_Entry, &startup,
+  m_pBackgrProcess = CreateNewProcTags(NP_Name, (ULONG)"WorkerBase",
+                                       NP_Entry, (ULONG)&startup,
                                        NP_StackSize, 30000,
                                        TAG_DONE);
 

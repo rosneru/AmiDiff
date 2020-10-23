@@ -19,7 +19,7 @@ public:
   virtual ~ADiffViewPens();
 
   LONG Background() const;
-  LONG Text() const;
+  LONG NormalText() const;
   LONG HighlightedText() const;
   LONG Fill() const;
 

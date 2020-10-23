@@ -10,6 +10,14 @@
 #include "MenuBase.h"
 #include "OpenScreenBase.h"
 
+#ifdef Open
+  #undef Open
+#endif
+
+#ifdef Close
+  #undef Close
+#endif
+
 /**
  * Abstract base class for all other windows
  *
@@ -194,10 +202,10 @@ protected:
   struct Window* m_pWindow;
   bool m_bBorderless;
 
-  LONG m_Left;
-  LONG m_Top;
-  LONG m_Width;
-  LONG m_Height;
+  ULONG m_Left;
+  ULONG m_Top;
+  ULONG m_Width;
+  ULONG m_Height;
 
   MenuBase* m_pMenu;
   struct TextFont* m_pTextFont;

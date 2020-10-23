@@ -1,13 +1,17 @@
-#include <string.h>
-#include <stdio.h>
+#ifdef __clang__
+  #include <clib/dos_protos.h>
+  #include <clib/exec_protos.h>
+  #include <clib/gadtools_protos.h>
+  #include <clib/graphics_protos.h>
+  #include <clib/intuition_protos.h>
+#else
+  #include <proto/dos.h>
+  #include <proto/exec.h>
+  #include <proto/gadtools.h>
+  #include <proto/graphics.h>
+  #include <proto/intuition.h>
+#endif
 
-#include <vector>
-
-#include <clib/dos_protos.h>
-#include <clib/exec_protos.h>
-#include <clib/gadtools_protos.h>
-#include <clib/graphics_protos.h>
-#include <clib/intuition_protos.h>
 #include <exec/memory.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
@@ -15,6 +19,10 @@
 #include <intuition/icclass.h>
 #include <libraries/gadtools.h>
 #include <workbench/startup.h>
+
+#include <string.h>
+#include <stdio.h>
+#include <vector>
 
 #include "FilesWindow.h"
 
@@ -81,10 +89,10 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   m_Width = (WORD)pIntuiScreen->Width / 2;
 
   // But it must be at least as wide as needed
-  LONG neededWidth = numBottomButtons * btnsWidth 
-                   + (numBottomButtons + 1) * hSpace 
-                   + pIntuiScreen->WBorLeft 
-                   + pIntuiScreen->WBorRight;
+  ULONG neededWidth = numBottomButtons * btnsWidth 
+                    + (numBottomButtons + 1) * hSpace 
+                    + pIntuiScreen->WBorLeft 
+                    + pIntuiScreen->WBorRight;
 
   if(m_Width < neededWidth)
   {
@@ -510,7 +518,7 @@ void FilesWindow::handleVanillaKey(UWORD code)
       long disabled;
       long numProcessed;
       numProcessed  = GT_GetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
-                                        GA_Disabled, &disabled,
+                                        GA_Disabled, (ULONG)&disabled,
                                         TAG_DONE);
 
       if((numProcessed != 1) || (disabled == 1))
@@ -530,7 +538,7 @@ void FilesWindow::handleVanillaKey(UWORD code)
       long disabled;
       long numProcessed;
       numProcessed  = GT_GetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
-                                        GA_Disabled, &disabled,
+                                        GA_Disabled, (ULONG)&disabled,
                                         TAG_DONE);
 
       if((numProcessed != 1) || (disabled == 1))
@@ -550,7 +558,7 @@ void FilesWindow::handleVanillaKey(UWORD code)
       long disabled;
       long numProcessed;
       numProcessed  = GT_GetGadgetAttrs(m_pGadBtnClear, m_pWindow, NULL,
-                                        GA_Disabled, &disabled,
+                                        GA_Disabled, (ULONG)&disabled,
                                         TAG_DONE);
 
       if((numProcessed != 1) || (disabled == 1))
@@ -788,7 +796,7 @@ void FilesWindow::setStringGadgetText(struct Gadget* pGadget,
   }
 
   GT_SetGadgetAttrs(pGadget, m_pWindow, NULL,
-                    GTST_String, pText,
+                    GTST_String, (ULONG)pText,
                     TAG_DONE);
 }
 
@@ -803,7 +811,7 @@ STRPTR FilesWindow::getStringGadgetText(struct Gadget* pGadget)
   long numProcessed;
 
   numProcessed  = GT_GetGadgetAttrs(pGadget, m_pWindow, NULL,
-                                    GTST_String, &pTextPointerStorage,
+                                    GTST_String, (ULONG)&pTextPointerStorage,
                                     TAG_DONE);
   if(numProcessed != 1)
   {

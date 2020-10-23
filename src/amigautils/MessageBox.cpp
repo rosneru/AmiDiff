@@ -1,4 +1,9 @@
-#include <clib/intuition_protos.h>
+#ifdef __clang__
+  #include <clib/intuition_protos.h>
+#else
+  #include <proto/intuition.h>
+#endif
+
 #include "MessageBox.h"
 
 MessageBox::MessageBox(struct Window* pWindow)

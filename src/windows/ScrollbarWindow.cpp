@@ -1,14 +1,24 @@
-#include <string.h>
+#ifdef __clang__
+  #include <clib/dos_protos.h>
+  #include <clib/exec_protos.h>
+  #include <clib/graphics_protos.h>
+  #include <clib/intuition_protos.h>
+  #include <clib/utility_protos.h>
+#else
+  #include <proto/dos.h>
+  #include <proto/exec.h>
+  #include <proto/graphics.h>
+  #include <proto/intuition.h>
+  #include <proto/utility.h>
+#endif
 
-#include <clib/dos_protos.h>
-#include <clib/exec_protos.h>
-#include <clib/graphics_protos.h>
-#include <clib/intuition_protos.h>
-#include <clib/utility_protos.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
 #include <intuition/icclass.h>
+
+#include <string.h>
+
 #include "ScrollbarWindow.h"
 
 ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
@@ -68,12 +78,12 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
               GA_RelBottom, -m_SizeGadHeight-height+1,
               GA_Width, width,
               GA_Height, height,
-              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
+              GA_DrawInfo, (ULONG)m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
-              GA_Image, m_pImgDownArrow,
+              GA_Image, (ULONG)m_pImgDownArrow,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_DONE, NULL);
+              TAG_DONE, 0);
   if(m_pGadBtnDownArrow == NULL)
   {
     cleanup();
@@ -91,18 +101,18 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
   // Create the arrow down gadget
   m_pGadBtnUpArrow = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
-              GA_Previous, m_pGadBtnDownArrow,
+              GA_Previous, (ULONG)m_pGadBtnDownArrow,
               GA_ID, GID_ArrowUp,
               GA_RelRight, -width+1,
               GA_RelBottom, -m_SizeGadHeight-height-height+1,
               GA_Width, width,
               GA_Height, height,
-              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
+              GA_DrawInfo, (ULONG)m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
-              GA_Image, m_pImgUpArrow,
+              GA_Image, (ULONG)m_pImgUpArrow,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_DONE, NULL);
+              TAG_DONE, 0);
   if(m_pGadBtnUpArrow == NULL)
   {
     cleanup();
@@ -110,20 +120,20 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
   }
 
   // Create the vertical proportional gadget / slider
-  BYTE barHeight = m_Screen.IntuiScreen()->BarHeight;
-  BYTE wborTop = m_Screen.IntuiScreen()->WBorTop;
-  BYTE wborBottom = m_Screen.IntuiScreen()->WBorBottom;
+  ULONG barHeight = m_Screen.IntuiScreen()->BarHeight;
+  ULONG wborTop = m_Screen.IntuiScreen()->WBorTop;
+  ULONG wborBottom = m_Screen.IntuiScreen()->WBorBottom;
 
 	m_pGadPropY = (struct Gadget*)
     NewObject(NULL, PROPGCLASS,
-              GA_Previous, m_pGadBtnUpArrow,
+              GA_Previous, (ULONG)m_pGadBtnUpArrow,
               GA_ID, GID_PropY,
               GA_RelRight, -m_SizeGadWidth+4,
               GA_Top, barHeight + 2,
               GA_Width, m_SizeGadWidth-6,
               GA_RelHeight, - m_SizeGadHeight - height - height
                             - barHeight - wborTop - wborBottom,
-              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
+              GA_DrawInfo, (ULONG)m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_RightBorder, TRUE,
               PGA_Freedom, FREEVERT,
@@ -133,7 +143,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
               PGA_Top, 0, // TODO remove??
               PGA_Visible, 100,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_DONE, NULL);
+              TAG_DONE, 0);
 
   // Create the arrow left image and getting its width and height
   m_pImgRightArrow = createImageObj(RIGHTIMAGE,
@@ -148,18 +158,18 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
   // Create the arrow right gadget
   m_pGadBtnRightArrow = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
-              GA_Previous, m_pGadPropY,
+              GA_Previous, (ULONG)m_pGadPropY,
               GA_ID, GID_ArrowRight,
               GA_RelRight, -m_SizeGadWidth-width+1,
               GA_RelBottom, -height+1,
               GA_Width, width,
               GA_Height, height,
-              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
+              GA_DrawInfo, (ULONG)m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
-              GA_Image, m_pImgRightArrow,
+              GA_Image, (ULONG)m_pImgRightArrow,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_DONE, NULL);
+              TAG_DONE, 0);
   if(m_pGadBtnRightArrow == NULL)
   {
     cleanup();
@@ -177,18 +187,18 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
   // Create the arrow left gadget
   m_pGadBtnLeftArrow = (struct Gadget*)
     NewObject(NULL, BUTTONGCLASS,
-              GA_Previous, m_pGadBtnRightArrow,
+              GA_Previous, (ULONG)m_pGadBtnRightArrow,
               GA_ID, GID_ArrowLeft,
               GA_RelRight, -m_SizeGadWidth-width-width+1,
               GA_RelBottom, -height+1,
               GA_Width, width,
               GA_Height, height,
-              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
+              GA_DrawInfo, (ULONG)m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
-              GA_Image, m_pImgLeftArrow,
+              GA_Image, (ULONG)m_pImgLeftArrow,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_DONE, NULL);
+              TAG_DONE, 0);
   if(m_pGadBtnLeftArrow == NULL)
   {
     cleanup();
@@ -201,14 +211,14 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
 
   m_pGadPropX = (struct Gadget*)
     NewObject(NULL, PROPGCLASS,
-              GA_Previous, m_pGadBtnLeftArrow,
+              GA_Previous, (ULONG)m_pGadBtnLeftArrow,
               GA_ID, GID_PropX,
-              GA_Left, m_Screen.IntuiScreen()->WBorLeft,
+              GA_Left, (ULONG)m_Screen.IntuiScreen()->WBorLeft,
               GA_RelBottom, -m_SizeGadHeight+3,
               GA_RelWidth, - m_SizeGadWidth - width - width
                            - wborLeft - wborRight,
               GA_Height, m_SizeGadHeight-4,
-              GA_DrawInfo, m_Screen.IntuiDrawInfo(),
+              GA_DrawInfo, (ULONG)m_Screen.IntuiDrawInfo(),
               GA_GZZGadget, TRUE,
               GA_BottomBorder, TRUE,
               PGA_Freedom, FREEHORIZ,
@@ -218,7 +228,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
               //PGA_Left, 0,  // TODO remove??
               PGA_Visible, 100,
               ICA_TARGET, ICTARGET_IDCMP,
-              TAG_DONE, NULL);
+              TAG_DONE, 0);
   if(m_pGadPropX == NULL)
   {
     cleanup();

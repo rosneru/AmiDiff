@@ -1,11 +1,18 @@
-#include <string.h>
+#ifdef __clang__
+  #include <clib/exec_protos.h>
+  #include <clib/intuition_protos.h>
+  #include <clib/wb_protos.h>
+#else
+  #include <proto/exec.h>
+  #include <proto/intuition.h>
+  #include <proto/wb.h>
+#endif
 
-#include <clib/exec_protos.h>
-#include <clib/intuition_protos.h>
-#include <clib/wb_protos.h>
 #include <graphics/gfxbase.h>
 #include <intuition/intuition.h>
 #include <intuition/imageclass.h>
+
+#include <string.h>
 
 #include "WindowBase.h"
 
@@ -129,7 +136,7 @@ bool WindowBase::Open(InitialPosition initialPos)
                              WA_Height, m_Height,
                              WA_Title, (ULONG) m_Title.c_str(),
                              WA_Activate, TRUE,
-                             WA_PubScreen, (UBYTE*) m_Screen.IntuiScreen(),
+                             WA_PubScreen, (ULONG) m_Screen.IntuiScreen(),
                              WA_Flags, m_WindowFlags,
                              WA_MinWidth, 230,
                              WA_MinHeight, 64,
@@ -137,7 +144,7 @@ bool WindowBase::Open(InitialPosition initialPos)
                              WA_MaxHeight, ~0,
                              WA_NewLookMenus, TRUE,
                              WA_Borderless, m_bBorderless,
-                             WA_Gadgets, m_pFirstGadget,
+                             WA_Gadgets, (ULONG)m_pFirstGadget,
                              TAG_DONE);
 
   if(!IsOpen())
@@ -161,7 +168,7 @@ bool WindowBase::Open(InitialPosition initialPos)
                                 0,
                                 m_pWindow,
                                 m_pAppWindowPort,
-                                TAG_DONE, NULL);
+                                TAG_DONE, 0);
   }
 
   if(m_pMenu == NULL)
@@ -392,7 +399,7 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId,
                                      SYSICLASS,
                                      SYSIA_Which, sysImageId,
                                      SYSIA_Size, SYSISIZE_MEDRES,
-                                     SYSIA_DrawInfo, m_Screen.IntuiDrawInfo(),
+                                     SYSIA_DrawInfo, (ULONG)m_Screen.IntuiDrawInfo(),
                                      TAG_DONE);
 
   if(pImage != NULL)

@@ -1,4 +1,8 @@
-#include <clib/graphics_protos.h>
+#ifdef __clang__
+  #include <clib/graphics_protos.h>
+#else
+  #include <proto/graphics.h>
+#endif
 
 #include "ADiffViewPens.h"
 
@@ -63,7 +67,7 @@ LONG ADiffViewPens::Background() const
 }
 
 
-LONG ADiffViewPens::Text()  const
+LONG ADiffViewPens::NormalText()  const
 {
   return m_ScreenBase.IntuiDrawInfo()->dri_Pens[TEXTPEN];
 }

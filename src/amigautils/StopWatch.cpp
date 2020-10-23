@@ -1,4 +1,10 @@
-#include <clib/exec_protos.h>
+#ifdef __clang__
+  #include <clib/exec_protos.h>
+#else
+  #include <proto/exec.h>
+#endif
+
+
 #include "StopWatch.h"
 
 // Base address of timer device; has to be global

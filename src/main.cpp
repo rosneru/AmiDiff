@@ -35,19 +35,25 @@
 
 #define INTUI_V36_NAMES_ONLY
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#include <string>
+#ifdef __clang__
+  #include <clib/dos_protos.h>
+  #include <clib/exec_protos.h>
+#else
+  #include <proto/dos.h>
+  #include <proto/exec.h>
+#endif
 
 #include <dos/dos.h>
 #include <exec/types.h>
 #include <exec/libraries.h>
 #include <intuition/intuitionbase.h>
-#include <clib/dos_protos.h>
-#include <clib/exec_protos.h>
 #include <workbench/startup.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <string>
 
 #include "ADiffViewArgs.h"
 #include "ADiffViewSettings.h"

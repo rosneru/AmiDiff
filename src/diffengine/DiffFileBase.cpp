@@ -31,7 +31,7 @@ const char* DiffFileBase::GetLineText(size_t idx) const
     return &m_EmptyText;
   }
 
-  return GetLine(idx)->Text();
+  return GetLine(idx)->Txt();
 }
 
 

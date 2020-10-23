@@ -1,16 +1,24 @@
-#include <string.h>
-#include <stdio.h>
+#ifdef __clang__
+  #include <clib/dos_protos.h>
+  #include <clib/gadtools_protos.h>
+  #include <clib/graphics_protos.h>
+  #include <clib/intuition_protos.h>
+#else
+  #include <proto/dos.h>
+  #include <proto/gadtools.h>
+  #include <proto/graphics.h>
+  #include <proto/intuition.h>
+#endif
 
-#include <clib/dos_protos.h>
-#include <clib/gadtools_protos.h>
-#include <clib/graphics_protos.h>
-#include <clib/intuition_protos.h>
 #include <graphics/rastport.h>
 #include <intuition/intuition.h>
 #include <intuition/gadgetclass.h>
 #include <intuition/imageclass.h>
 #include <intuition/icclass.h>
 #include <libraries/gadtools.h>
+
+#include <string.h>
+#include <stdio.h>
 
 #include "ProgressMessage.h"
 #include "ProgressWindow.h"
@@ -177,7 +185,7 @@ bool ProgressWindow::Open(InitialPosition initialPos)
                m_OuterRect.Top(),
                m_OuterRect.Width(),
                m_OuterRect.Height(),
-               GT_VisualInfo, m_Screen.GadtoolsVisualInfo(),
+               GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
@@ -187,12 +195,12 @@ bool ProgressWindow::Open(InitialPosition initialPos)
                m_ProgressRect.Top() - 1,
                m_ProgressRect.Width() + 4,
                m_ProgressRect.Height() + 3,
-               GT_VisualInfo, m_Screen.GadtoolsVisualInfo(),
+               GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
   // Draw the '0%' and '100%' texts
-  SetAPen(m_pWindow->RPort,m_Pens.Text());
+  SetAPen(m_pWindow->RPort,m_Pens.NormalText());
 
   Move(m_pWindow->RPort,
        (m_OuterRect.Left() + m_ProgressRect.Left()) / 2 - m_TextZeroWidth / 2,

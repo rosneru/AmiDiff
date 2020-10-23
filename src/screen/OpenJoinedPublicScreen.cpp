@@ -1,5 +1,10 @@
-#include <clib/intuition_protos.h>
-#include <clib/gadtools_protos.h>
+#ifdef __clang__
+  #include <clib/gadtools_protos.h>
+  #include <clib/intuition_protos.h>
+#else
+  #include <proto/gadtools.h>
+  #include <proto/intuition.h>
+#endif
 
 #include "OpenJoinedPublicScreen.h"
 

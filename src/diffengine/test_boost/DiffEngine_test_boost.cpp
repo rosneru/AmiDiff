@@ -55,7 +55,7 @@ void printFile(DiffFileBase& file)
         break;
       }
 
-      printf("%s: %s %s\n", pLine->LineNum(), pLineState, pLine->Text());
+      printf("%s: %s %s\n", pLine->LineNum(), pLineState, pLine->Txt());
     }
 }
 

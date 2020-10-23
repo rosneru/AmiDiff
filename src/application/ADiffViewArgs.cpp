@@ -1,9 +1,16 @@
+#ifdef __clang__
+  #include <clib/dos_protos.h>
+  #include <clib/exec_protos.h>
+  #include <clib/icon_protos.h>
+#else
+  #include <proto/dos.h>
+  #include <proto/exec.h>
+  #include <proto/icon.h>
+#endif
+
 #include <dos/dos.h>
 #include <exec/types.h>
 #include <exec/libraries.h>
-#include <clib/dos_protos.h>
-#include <clib/exec_protos.h>
-#include <clib/icon_protos.h>
 #include <workbench/startup.h>
 #include <workbench/workbench.h>
 

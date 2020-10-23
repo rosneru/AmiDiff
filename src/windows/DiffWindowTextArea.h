@@ -88,7 +88,7 @@ public:
    * @param fromStart When true: Prints the document from start. When
    * false: Printing starts at current position m_Y.
    */
-  void Draw(bool bFromStart = true);
+  void PrintLines(bool bFromStart = true);
 
 
   /**

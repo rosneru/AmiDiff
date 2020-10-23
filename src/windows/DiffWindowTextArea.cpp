@@ -1,4 +1,8 @@
-#include <clib/graphics_protos.h>
+#ifdef __clang__
+  #include <clib/graphics_protos.h>
+#else
+  #include <proto/graphics.h>
+#endif
 
 #include <math.h>
 #include <string.h>
@@ -161,7 +165,7 @@ void DiffWindowTextArea::ScrollTopToRow(ULONG rowId)
             Right() - 3,
             Bottom() - 3);
 
-  Draw(false);
+  PrintLines(false);
 }
 
 
@@ -204,7 +208,7 @@ void DiffWindowTextArea::ScrollLeftToColumn(ULONG columId)
   // Clear ext area completely
   Clear();
 
-  Draw(false);
+  PrintLines(false);
 }
 
 
@@ -434,7 +438,7 @@ ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
 }
 
 
-void DiffWindowTextArea::Draw(bool bFromStart)
+void DiffWindowTextArea::PrintLines(bool bFromStart)
 {
   if(m_pDiffFile == NULL)
   {
@@ -494,9 +498,9 @@ void DiffWindowTextArea::drawDiffLine(const DiffLine* pLine,
     //
 
     // Move rastport cursor to start of line numbers block
-    ::Move(m_pRPorts->LineNum(),
-           Left() + indent + 2,
-           topEdge + Top() + m_FontBaseline_pix + 1);
+    Move(m_pRPorts->LineNum(),
+        Left() + indent + 2,
+        topEdge + Top() + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     const char* pLineNum = pLine->LineNum();
@@ -517,13 +521,13 @@ void DiffWindowTextArea::drawDiffLine(const DiffLine* pLine,
   }
 
   // Move rastport cursor to start of line
-  ::Move(pRPort,
-        Left() + indent + m_LineNumsWidth_pix + 3,
-        topEdge + Top() + m_FontBaseline_pix + 1);
+  Move(pRPort,
+       Left() + indent + m_LineNumsWidth_pix + 3,
+       topEdge + Top() + m_FontBaseline_pix + 1);
 
   // Print line
   Text(pRPort,
-        pLine->Text() + startIndex,
+        pLine->Txt() + startIndex,
         numCharsToPrint);
 }
 

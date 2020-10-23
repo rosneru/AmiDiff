@@ -132,8 +132,8 @@ void DiffEngine::createDiffFiles()
       DiffLine* pA = m_AIn.GetLine(lineA++);
       DiffLine* pB = m_BIn.GetLine(lineB++);
 
-      m_AOut.AddLine(pA->Text(), DiffLine::Normal, pA->LineNum());
-      m_pBOut.AddLine(pB->Text(), DiffLine::Normal, pB->LineNum());
+      m_AOut.AddLine(pA->Txt(), DiffLine::Normal, pA->LineNum());
+      m_pBOut.AddLine(pB->Txt(), DiffLine::Normal, pB->LineNum());
     }
 
     //
@@ -148,8 +148,8 @@ void DiffEngine::createDiffFiles()
       DiffLine* pA = m_AIn.GetLine(lineA++);
       DiffLine* pB = m_BIn.GetLine(lineB++);
 
-      long idx = m_AOut.AddLine(pA->Text(), DiffLine::Changed, pA->LineNum());
-      m_pBOut.AddLine(pB->Text(), DiffLine::Changed, pB->LineNum());
+      long idx = m_AOut.AddLine(pA->Txt(), DiffLine::Changed, pA->LineNum());
+      m_pBOut.AddLine(pB->Txt(), DiffLine::Changed, pB->LineNum());
 
       if(!bBlockAlreadyAdded)
       {
@@ -165,7 +165,7 @@ void DiffEngine::createDiffFiles()
        && (lineB >= m_BIn.NumLines() || (m_AIn.GetLineState(lineA) != DiffLine::Normal)))
     {
       DiffLine* pA = m_AIn.GetLine(lineA++);
-      long idx = m_AOut.AddLine(pA->Text(), DiffLine::Deleted, pA->LineNum());
+      long idx = m_AOut.AddLine(pA->Txt(), DiffLine::Deleted, pA->LineNum());
       m_pBOut.AddBlankLine();
 
       if(!bBlockAlreadyAdded)
@@ -183,7 +183,7 @@ void DiffEngine::createDiffFiles()
     {
       DiffLine* pB = m_BIn.GetLine(lineB++);
       m_AOut.AddBlankLine();
-      long idx = m_pBOut.AddLine(pB->Text(), DiffLine::Added, pB->LineNum());
+      long idx = m_pBOut.AddLine(pB->Txt(), DiffLine::Added, pB->LineNum());
 
       if(!bBlockAlreadyAdded)
       {

@@ -48,7 +48,7 @@ public:
   /**
    * Returns the text of the diff line
    */
-  const char* Text() const;
+  const char* Txt() const;
 
   /**
    * Returns true if this line's text and line number are only flat

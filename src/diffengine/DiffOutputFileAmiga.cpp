@@ -4,10 +4,15 @@
   #include <new.h> // Needed for 'replacement new', see below.
 #endif
 
-#include <string.h>
+#ifdef __clang__
+  #include <clib/dos_protos.h>
+  #include <clib/exec_protos.h>
+#else
+  #include <proto/dos.h>
+  #include <proto/exec.h>
+#endif
 
-#include <clib/dos_protos.h>
-#include <clib/exec_protos.h>
+#include <string.h>
 
 
 #include "DiffOutputFileAmiga.h"

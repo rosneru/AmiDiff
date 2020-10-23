@@ -1,11 +1,16 @@
-#include <clib/graphics_protos.h>
+#ifdef __clang__
+  #include <clib/graphics_protos.h>
+#else
+  #include <proto/graphics.h>
+#endif
+
 #include "DiffWindowRastports.h"
 
 
 DiffWindowRastports::DiffWindowRastports(struct Window* pIntuiWindow,
                                          const ADiffViewPens& pens)
 {
-  SetAPen(pIntuiWindow->RPort, pens.Text());
+  SetAPen(pIntuiWindow->RPort, pens.NormalText());
 
   m_RPortWindow = *pIntuiWindow->RPort;
 

@@ -1,7 +1,10 @@
+#ifdef __clang__
+  #include <clib/exec_protos.h>
+#else
+  #include <proto/exec.h>
+#endif
 
 #include <stddef.h>
-
-#include <clib/exec_protos.h>
 
 #include "ProgressMessage.h"
 #include "ProgressReporter.h"

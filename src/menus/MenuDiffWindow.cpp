@@ -1,4 +1,8 @@
-#include <clib/gadtools_protos.h>
+#ifdef __clang__
+  #include <clib/gadtools_protos.h>
+#else
+  #include <proto/gadtools.h>
+#endif
 
 #include "MenuDiffWindow.h"
 

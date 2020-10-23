@@ -1,10 +1,18 @@
-#include <stdio.h>
+#ifdef __clang__
+  #include <clib/gadtools_protos.h>
+  #include <clib/icon_protos.h>
+  #include <clib/intuition_protos.h>
+  #include <clib/wb_protos.h>
+#else
+  #include <proto/gadtools.h>
+  #include <proto/icon.h>
+  #include <proto/intuition.h>
+  #include <proto/wb.h>
+#endif
 
 #include <libraries/gadtools.h>
-#include <clib/gadtools_protos.h>
-#include <clib/icon_protos.h>
-#include <clib/intuition_protos.h>
-#include <clib/wb_protos.h>
+
+#include <stdio.h>
 
 #include "ADiffView_rev.h"
 #include "CommandBase.h"

@@ -1,7 +1,15 @@
-#include <clib/exec_protos.h>
-#include <clib/gadtools_protos.h>
-#include <clib/intuition_protos.h>
+#ifdef __clang__
+  #include <clib/exec_protos.h>
+  #include <clib/gadtools_protos.h>
+  #include <clib/intuition_protos.h>
+#else
+  #include <proto/exec.h>
+  #include <proto/gadtools.h>
+  #include <proto/intuition.h>
+#endif
+
 #include <intuition/intuition.h>
+
 #include "CmdRequester.h"
 
 
