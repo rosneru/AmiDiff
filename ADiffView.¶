@@ -106,6 +106,7 @@ Section
 File
 1 "src/amigautils/AmigaFile.cpp"
 "src/amigautils/AmigaFile.cpp"
+"src/amigautils/AmigaFile.h"
 Storm Shell Project (Dependencies)
 "build-stromc/AmigaFile.o" "build-stromc/AmigaFile.debug"
 ""
@@ -121,6 +122,7 @@ Storm Shell Project (Dependencies)
 File
 1 "src/amigautils/MessageBox.cpp"
 "src/amigautils/MessageBox.cpp"
+"src/amigautils/MessageBox.h"
 Storm Shell Project (Dependencies)
 "build-stromc/MessageBox.o" "build-stromc/MessageBox.debug"
 ""
@@ -152,6 +154,7 @@ Storm Shell Project (Dependencies)
 File
 1 "src/application/ADiffViewPorts.cpp"
 "src/application/ADiffViewPorts.cpp"
+"src/application/ADiffViewPorts.h"
 Storm Shell Project (Dependencies)
 "build-stromc/ADiffViewPorts.o" "build-stromc/ADiffViewPorts.debug"
 ""
@@ -159,6 +162,7 @@ Storm Shell Project (Dependencies)
 File
 1 "src/application/ADiffViewSettings.cpp"
 "src/application/ADiffViewSettings.cpp"
+"src/application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "build-stromc/ADiffViewSettings.o" "build-stromc/ADiffViewSettings.debug"
 ""
@@ -229,6 +233,9 @@ Storm Shell Project (Dependencies)
 File
 1 "src/commands/CmdCloseWindow.cpp"
 "src/commands/CmdCloseWindow.cpp"
+"src/commands/CmdCloseWindow.h"
+"src/commands/CmdOpenWindow.h"
+"src/commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdCloseWindow.o" "build-stromc/CmdCloseWindow.debug"
 ""
@@ -256,6 +263,8 @@ Storm Shell Project (Dependencies)
 File
 1 "src/commands/CmdFileRequester.cpp"
 "src/commands/CmdFileRequester.cpp"
+"src/commands/CmdFileRequester.h"
+"src/commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdFileRequester.o" "build-stromc/CmdFileRequester.debug"
 ""
@@ -263,6 +272,16 @@ Storm Shell Project (Dependencies)
 File
 1 "src/commands/CmdNavNextDiff.cpp"
 "src/commands/CmdNavNextDiff.cpp"
+"src/commands/CmdNavNextDiff.h"
+"src/diffengine/DiffInputFileBase.h"
+"src/diffengine/DiffFileBase.h"
+"src/diffengine/DiffLine.h"
+"src/diffengine/DiffOutputFileBase.h"
+"src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowTextArea.h"
+"src/windows/ScrollbarWindow.h"
+"src/windows/WindowBase.h"
+"src/commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdNavNextDiff.o" "build-stromc/CmdNavNextDiff.debug"
 ""
@@ -270,6 +289,16 @@ Storm Shell Project (Dependencies)
 File
 1 "src/commands/CmdNavPrevDiff.cpp"
 "src/commands/CmdNavPrevDiff.cpp"
+"src/commands/CmdNavPrevDiff.h"
+"src/diffengine/DiffInputFileBase.h"
+"src/diffengine/DiffFileBase.h"
+"src/diffengine/DiffLine.h"
+"src/diffengine/DiffOutputFileBase.h"
+"src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowTextArea.h"
+"src/windows/ScrollbarWindow.h"
+"src/windows/WindowBase.h"
+"src/commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdNavPrevDiff.o" "build-stromc/CmdNavPrevDiff.debug"
 ""
@@ -277,6 +306,8 @@ Storm Shell Project (Dependencies)
 File
 1 "src/commands/CmdOpenWindow.cpp"
 "src/commands/CmdOpenWindow.cpp"
+"src/commands/CmdOpenWindow.h"
+"src/commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdOpenWindow.o" "build-stromc/CmdOpenWindow.debug"
 ""
@@ -284,6 +315,8 @@ Storm Shell Project (Dependencies)
 File
 1 "src/commands/CmdQuit.cpp"
 "src/commands/CmdQuit.cpp"
+"src/commands/CmdQuit.h"
+"src/commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdQuit.o" "build-stromc/CmdQuit.debug"
 ""
@@ -291,6 +324,8 @@ Storm Shell Project (Dependencies)
 File
 1 "src/commands/CmdRequester.cpp"
 "src/commands/CmdRequester.cpp"
+"src/commands/CmdRequester.h"
+"src/commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdRequester.o" "build-stromc/CmdRequester.debug"
 ""
@@ -299,7 +334,6 @@ File
 1 "src/commands/CommandBase.cpp"
 "src/commands/CommandBase.cpp"
 "src/commands/CommandBase.h"
-"src/application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CommandBase.o" "build-stromc/CommandBase.debug"
 ""
@@ -360,6 +394,7 @@ Storm Shell Project (Dependencies)
 File
 1 "src/diffengine/DiffLine.cpp"
 "src/diffengine/DiffLine.cpp"
+"src/diffengine/DiffLine.h"
 Storm Shell Project (Dependencies)
 "build-stromc/DiffLine.o" "build-stromc/DiffLine.debug"
 ""
@@ -431,7 +466,6 @@ File
 1 "src/menus/MenuDiffWindow.cpp"
 "src/menus/MenuDiffWindow.cpp"
 "src/menus/MenuDiffWindow.h"
-"src/application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "build-stromc/MenuDiffWindow.o" "build-stromc/MenuDiffWindow.debug"
 ""
@@ -440,7 +474,6 @@ File
 1 "src/menus/MenuFilesWindow.cpp"
 "src/menus/MenuFilesWindow.cpp"
 "src/menus/MenuFilesWindow.h"
-"src/application/ADiffViewSettings.h"
 Storm Shell Project (Dependencies)
 "build-stromc/MenuFilesWindow.o" "build-stromc/MenuFilesWindow.debug"
 ""
@@ -559,6 +592,8 @@ Storm Shell Project (Dependencies)
 File
 1 "src/worker/ProgressReporter.cpp"
 "src/worker/ProgressReporter.cpp"
+"src/worker/ProgressMessage.h"
+"src/worker/ProgressReporter.h"
 Storm Shell Project (Dependencies)
 "build-stromc/ProgressReporter.o" "build-stromc/ProgressReporter.debug"
 ""
@@ -566,6 +601,9 @@ Storm Shell Project (Dependencies)
 File
 1 "src/worker/WorkerBase.cpp"
 "src/worker/WorkerBase.cpp"
+"src/worker/WorkerBase.h"
+"src/worker/WorkerStartupMsg.h"
+"src/worker/ProgressMessage.h"
 Storm Shell Project (Dependencies)
 "build-stromc/WorkerBase.o" "build-stromc/WorkerBase.debug"
 ""
