@@ -33,8 +33,7 @@ DiffInputFileAmiga::DiffInputFileAmiga(APTR pPoolHeader,
 
   // Get file size and read whole file
   size_t fileBytes = m_File.ByteSize();
-  m_pFileBuffer = static_cast<char*>(AllocVec(fileBytes + 1,
-                                              MEMF_ANY|MEMF_PUBLIC));
+  m_pFileBuffer = static_cast<char*>(AllocPooled(pPoolHeader, fileBytes + 1));
   if(m_pFileBuffer == NULL)
   {
     throw "Failed to allocate memory for file buffer.";
