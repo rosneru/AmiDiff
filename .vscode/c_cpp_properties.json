@@ -17,7 +17,7 @@
                 "${workspaceFolder}/src/windows",
                 "${workspaceFolder}/src/worker"
             ],
-            "defines": ["LINUX", "__clang__"],
+            "defines": ["__clang__"],
             "compilerPath": "/opt/amiga/bin/m68k-amigaos-gcc",
             "cStandard": "c99",
             "cppStandard": "c++98",

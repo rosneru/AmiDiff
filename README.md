@@ -27,13 +27,9 @@ The Makefile to build this project must be created with cmake:
 - create a directory *build* next to the *src* directory
 - enter this directory
 
-To prepare cmake release build type from within this directory
+Now create the makefile with:
 
-    cmake -DCMAKE_BUILD_TYPE=Release ..
-
-Or to prepare a debug build
-
-    cmake -DCMAKE_BUILD_TYPE=Debug ..
+    cmake ..
 
 After cmake is finsihed the project can be build by simply typing 
     

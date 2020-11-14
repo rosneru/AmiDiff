@@ -1,8 +1,4 @@
-#ifdef LINUX
-  #include <new>
-#else
-  #include <new.h> // Needed for 'replacement new', see below.
-#endif
+#include <new>  // Needed for 'replacement new', see below.
 
 #ifdef __clang__
   #include <clib/dos_protos.h>

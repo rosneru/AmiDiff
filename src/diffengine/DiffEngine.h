@@ -97,8 +97,6 @@ private:
   long m_NumDeletedA;
   long m_NumChanged;
 
-
-
   long m_Max;
   std::vector<long> m_pDownVector;
   std::vector<long> m_pUpVector;
