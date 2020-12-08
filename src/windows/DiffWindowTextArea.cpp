@@ -165,7 +165,7 @@ void DiffWindowTextArea::ScrollTopToRow(ULONG rowId)
             Right() - 3,
             Bottom() - 3);
 
-  PrintLines(false);
+  PrintPage();
 }
 
 
@@ -205,10 +205,10 @@ void DiffWindowTextArea::ScrollLeftToColumn(ULONG columId)
   //
   m_X = columId;
 
-  // Clear ext area completely
+  // Clear text area completely
   Clear();
 
-  PrintLines(false);
+  PrintPage();
 }
 
 
@@ -438,17 +438,20 @@ ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
 }
 
 
-void DiffWindowTextArea::PrintLines(bool bFromStart)
+void DiffWindowTextArea::PrintPageAt(ULONG left, ULONG top)
+{
+  m_X = left;
+  m_Y = top;
+
+  PrintPage();
+}
+
+
+void DiffWindowTextArea::PrintPage()
 {
   if(m_pDiffFile == NULL)
   {
     return;
-  }
-
-  if(bFromStart == true)
-  {
-    m_X = 0;
-    m_Y = 0;
   }
 
   for(ULONG i = m_Y; (i - m_Y) < m_MaxVisibleLines; i++)

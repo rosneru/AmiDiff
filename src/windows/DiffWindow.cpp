@@ -125,8 +125,8 @@ void DiffWindow::Resized()
 
   // Paint the content of the two documents (from current y-position,
   //not from start)
-  m_pTextArea1->PrintLines(false);
-  m_pTextArea2->PrintLines(false);
+  m_pTextArea1->PrintPage();
+  m_pTextArea2->PrintPage();
 
   if(m_pDocument == NULL)
   {
@@ -287,8 +287,8 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   m_pTextArea2->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from start)
-  m_pTextArea1->PrintLines(true);
-  m_pTextArea2->PrintLines(true);
+  m_pTextArea1->PrintPageAt(0, 0);
+  m_pTextArea2->PrintPageAt(0, 0);
 
   // Paint the window decoration
   paintWindowDecoration();

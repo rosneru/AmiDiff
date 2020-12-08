@@ -81,14 +81,15 @@ public:
    */
   ULONG ScrollDown(ULONG numLines);
 
+  /**
+   * Print the diff file content in the text area at given position.
+   */
+  void PrintPageAt(ULONG left, ULONG top);
 
   /**
-   * Draws the diff file in the text area.
-   *
-   * @param fromStart When true: Prints the document from start. When
-   * false: Printing starts at current position m_Y.
+   * Print the diff file content in the text area.
    */
-  void PrintLines(bool bFromStart = true);
+  void PrintPage();
 
 
   /**
