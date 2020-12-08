@@ -264,11 +264,11 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
       break;
     }
 
-    drawDiffLine(pLine,
-              (i - m_Y)  * m_FontHeight_pix,
-              true,
-              m_X + m_MaxVisibleChars,
-              -numChars);
+    printDiffLine(pLine,
+                  (i - m_Y)  * m_FontHeight_pix,
+                  true,
+                  m_X + m_MaxVisibleChars,
+                  -numChars);
 
   }
 
@@ -322,11 +322,11 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
       break;
     }
 
-    drawDiffLine(pLine,
-              (i - m_Y) * m_FontHeight_pix,
-              true,
-              m_X - numChars,
-              numChars);
+    printDiffLine(pLine,
+                  (i - m_Y) * m_FontHeight_pix,
+                  true,
+                  m_X - numChars,
+                  numChars);
 
   }
 
@@ -381,8 +381,7 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
     }
 
     int paintLineIndex = m_MaxVisibleLines - numLines + i;
-    drawDiffLine(pLine,
-              paintLineIndex * m_FontHeight_pix);
+    printDiffLine(pLine, paintLineIndex * m_FontHeight_pix);
   }
 
   m_Y += numLines;
@@ -430,7 +429,7 @@ ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
       break;
     }
 
-    drawDiffLine(pLeftLine, i * m_FontHeight_pix);
+    printDiffLine(pLeftLine, i * m_FontHeight_pix);
   }
 
   m_Y -= numLines;
@@ -467,16 +466,16 @@ void DiffWindowTextArea::PrintPage()
       break;
     }
 
-    drawDiffLine(pLine, (i - m_Y) * m_FontHeight_pix);
+    printDiffLine(pLine, (i - m_Y) * m_FontHeight_pix);
   }
 }
 
 
-void DiffWindowTextArea::drawDiffLine(const DiffLine* pLine,
-                                   WORD topEdge,
-                                   bool bHorizontallyScrolled,
-                                   int startIndex,
-                                   int count)
+void DiffWindowTextArea::printDiffLine(const DiffLine* pLine,
+                                       WORD topEdge,
+                                       bool bHorizontallyScrolled,
+                                       int startIndex,
+                                       int count)
 {
   ULONG indent = 0;
 

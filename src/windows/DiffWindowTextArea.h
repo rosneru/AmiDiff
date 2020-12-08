@@ -133,7 +133,7 @@ private:
   /**
    * Print the given diff line at given y-position topEdge.
    */
-  void drawDiffLine(const DiffLine* pLeftLine,
+  void printDiffLine(const DiffLine* pLeftLine,
                     WORD topEdge,
                     bool bHorizontallyScrolled = false,
                     int startIndex = -1,
