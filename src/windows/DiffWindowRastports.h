@@ -25,6 +25,7 @@ public:
   struct RastPort* APenBackgr();
   struct RastPort* LineNum();
   struct RastPort* TextDefault();
+  struct RastPort* TextSelected();
   struct RastPort* TextRedBG();
   struct RastPort* TextGreenBG();
   struct RastPort* TextYellowBG();
@@ -34,6 +35,7 @@ private:
   struct RastPort m_RPortAPenBackgr;
   struct RastPort m_RPortLineNum;
   struct RastPort m_RPortTextDefault;
+  struct RastPort m_RPortTextSelected;
   struct RastPort m_RPortTextRedBG;
   struct RastPort m_RPortTextGreenBG;
   struct RastPort m_RPortTextYellowBG;

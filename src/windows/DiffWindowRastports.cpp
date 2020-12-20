@@ -23,6 +23,10 @@ DiffWindowRastports::DiffWindowRastports(struct Window* pIntuiWindow,
   m_RPortTextDefault = *pIntuiWindow->RPort;
   SetBPen(&m_RPortTextDefault, pens.Background());
 
+  m_RPortTextSelected = *pIntuiWindow->RPort;
+  SetAPen(&m_RPortTextSelected, pens.HighlightedText());
+  SetBPen(&m_RPortTextSelected, pens.NormalText());
+
   m_RPortTextRedBG = *pIntuiWindow->RPort;
   SetBPen(&m_RPortTextRedBG, pens.Red());
 
@@ -57,6 +61,11 @@ struct RastPort* DiffWindowRastports::LineNum()
 struct RastPort* DiffWindowRastports::TextDefault()
 {
   return &m_RPortTextDefault;
+}
+
+struct RastPort* DiffWindowRastports::TextSelected()
+{
+  return &m_RPortTextSelected;
 }
 
 struct RastPort* DiffWindowRastports::TextRedBG()

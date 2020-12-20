@@ -278,6 +278,8 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
                                         pDiffDocument->LineNumbersEnabled(),
                                         pDiffDocument->MaxLineLength());
 
+  m_pTextArea1->SetSelectedText(2, 2, 6, 16);
+
   // Set location and size of the left text area
   m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
   m_pTextArea1->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);

@@ -43,7 +43,11 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase* pDiffFile,
 
 DiffWindowTextArea::~DiffWindowTextArea()
 {
-
+  if(m_pSelectedTxt != NULL)
+  {
+    delete m_pSelectedTxt;
+    m_pSelectedTxt = NULL;
+  }
 }
 
 
