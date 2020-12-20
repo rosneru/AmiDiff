@@ -18,6 +18,7 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase* pDiffFile,
     m_pRPorts(pRPorts),
     m_LineNumbersEnabled(lineNumbersEnabled),
     m_MaxNumChars(maxNumChars),
+    m_pSelectedTxt(NULL),
     m_NumLines(pDiffFile->NumLines()),
     m_FontWidth_pix(pTextFont->tf_XSize),
     m_FontHeight_pix(pTextFont->tf_YSize),
@@ -114,6 +115,19 @@ void DiffWindowTextArea::Clear()
   //           Bottom() - 3);
 }
 
+
+void DiffWindowTextArea::SetSelectedText(ULONG fromLine, 
+                                         ULONG toLine, 
+                                         ULONG fromColumn, 
+                                         ULONG toColumn)
+{
+  if(m_pSelectedTxt != NULL)
+  {
+    delete m_pSelectedTxt;
+  }
+
+  m_pSelectedTxt = new SelectedTextItem(fromLine, toLine, fromColumn, toColumn);
+}
 
 
 void DiffWindowTextArea::ScrollTopToRow(ULONG rowId)

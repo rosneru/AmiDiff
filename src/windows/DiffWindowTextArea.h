@@ -7,9 +7,13 @@
 
 #include "DiffLine.h"
 #include "DiffOutputFileBase.h"
-
 #include "DiffWindowRastports.h"
 #include "Rect.h"
+#include "SelectedTextItem.h"
+
+
+#include <vector>
+
 
 class DiffWindowTextArea : public Rect
 {
@@ -97,12 +101,18 @@ public:
    */
   void Clear();
 
+  /**
+   * Set the selected text
+   */
+  void SetSelectedText(ULONG fromLine, ULONG toLine, ULONG fromColumn, ULONG toColumn);
+
 
 private:
   const DiffOutputFileBase* m_pDiffFile;
   DiffWindowRastports*& m_pRPorts;
   bool m_LineNumbersEnabled;
   ULONG m_MaxNumChars;
+  SelectedTextItem* m_pSelectedTxt;
 
   ULONG m_NumLines;           ///> Number of lines (as it's a diff view
                               ///> this should be equal for both files)
