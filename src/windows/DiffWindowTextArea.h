@@ -9,7 +9,7 @@
 #include "DiffOutputFileBase.h"
 #include "DiffWindowRastports.h"
 #include "Rect.h"
-#include "TextSelectionItem.h"
+#include "TextSelection.h"
 
 
 #include <vector>
@@ -104,7 +104,7 @@ public:
   /**
    * Set the selected text
    */
-  void SetSelectedText(ULONG fromLine, ULONG toLine, ULONG fromColumn, ULONG toColumn);
+  void AddSelectedText(ULONG fromLine, ULONG toLine, ULONG fromColumn, ULONG toColumn);
 
 
 private:
@@ -112,7 +112,7 @@ private:
   DiffWindowRastports*& m_pRPorts;
   bool m_LineNumbersEnabled;
   ULONG m_MaxNumChars;
-  TextSelectionItem* m_pSelectedTxt;
+  TextSelection m_TextSelection;
 
   ULONG m_NumLines;           ///> Number of lines (as it's a diff view
                               ///> this should be equal for both files)

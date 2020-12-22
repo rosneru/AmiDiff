@@ -18,7 +18,6 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase* pDiffFile,
     m_pRPorts(pRPorts),
     m_LineNumbersEnabled(lineNumbersEnabled),
     m_MaxNumChars(maxNumChars),
-    m_pSelectedTxt(NULL),
     m_NumLines(pDiffFile->NumLines()),
     m_FontWidth_pix(pTextFont->tf_XSize),
     m_FontHeight_pix(pTextFont->tf_YSize),
@@ -43,11 +42,7 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase* pDiffFile,
 
 DiffWindowTextArea::~DiffWindowTextArea()
 {
-  if(m_pSelectedTxt != NULL)
-  {
-    delete m_pSelectedTxt;
-    m_pSelectedTxt = NULL;
-  }
+
 }
 
 
@@ -120,17 +115,12 @@ void DiffWindowTextArea::Clear()
 }
 
 
-void DiffWindowTextArea::SetSelectedText(ULONG fromLine, 
+void DiffWindowTextArea::AddSelectedText(ULONG fromLine, 
                                          ULONG toLine, 
                                          ULONG fromColumn, 
                                          ULONG toColumn)
 {
-  if(m_pSelectedTxt != NULL)
-  {
-    delete m_pSelectedTxt;
-  }
-
-  m_pSelectedTxt = new TextSelectionItem(fromLine, toLine, fromColumn, toColumn);
+  m_TextSelection.Add(fromLine, toLine, fromColumn, toColumn);
 }
 
 
