@@ -1,6 +1,6 @@
-#include "SelectedTextItem.h"
+#include "TextSelectionItem.h"
 
-SelectedTextItem::SelectedTextItem(ULONG fromLine, 
+TextSelectionItem::TextSelectionItem(ULONG fromLine, 
                                    ULONG toLine, 
                                    ULONG fromColumn, 
                                    ULONG toColumn)
@@ -12,22 +12,22 @@ SelectedTextItem::SelectedTextItem(ULONG fromLine,
 
 }
 
-ULONG SelectedTextItem::FromLine() const
+ULONG TextSelectionItem::FromLine() const
 {
   return m_FromLine;
 }
 
-ULONG SelectedTextItem::ToLine() const
+ULONG TextSelectionItem::ToLine() const
 {
   return m_ToLine;
 }
 
-ULONG SelectedTextItem::FromColumn() const
+ULONG TextSelectionItem::FromColumn() const
 {
   return m_FromColumn;
 }
 
-ULONG SelectedTextItem::ToColumn() const
+ULONG TextSelectionItem::ToColumn() const
 {
   return m_ToColumn;
 }

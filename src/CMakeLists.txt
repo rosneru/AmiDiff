@@ -43,7 +43,8 @@ add_executable (ADiffView_gcc
                 menus/MenuDiffWindow.cpp
                 model/Pair.cpp
                 model/Rect.cpp
-                model/SelectedTextItem.cpp
+                model/TextSelection.cpp
+                model/TextSelectionItem.cpp
                 screen/OpenClonedWorkbenchScreen.cpp
                 screen/OpenJoinedPublicScreen.cpp
                 screen/OpenScreenBase.cpp

@@ -1,15 +1,15 @@
-#ifndef SELECTED_TEXT_ITEM_H
-#define SELECTED_TEXT_ITEM_H
+#ifndef TEXT_SELECTION_ITEM_H
+#define TEXT_SELECTION_ITEM_H
 
 #include <exec/types.h>
 
-class SelectedTextItem
+class TextSelectionItem
 {
 public:
-  SelectedTextItem(ULONG fromLine, 
-                   ULONG toLine, 
-                   ULONG fromColumn, 
-                   ULONG toColumn);
+  TextSelectionItem(ULONG fromLine, 
+                    ULONG toLine, 
+                    ULONG fromColumn, 
+                    ULONG toColumn);
 
   ULONG FromLine() const;
   ULONG ToLine() const;

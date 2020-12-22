@@ -130,7 +130,7 @@ void DiffWindowTextArea::SetSelectedText(ULONG fromLine,
     delete m_pSelectedTxt;
   }
 
-  m_pSelectedTxt = new SelectedTextItem(fromLine, toLine, fromColumn, toColumn);
+  m_pSelectedTxt = new TextSelectionItem(fromLine, toLine, fromColumn, toColumn);
 }
 
 
