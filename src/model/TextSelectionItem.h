@@ -3,6 +3,12 @@
 
 #include <exec/types.h>
 
+/**
+ * Represents a block of selected text.
+ *
+ * @author Uwe Rosner
+ * @date 20/12/2020
+ */
 class TextSelectionItem
 {
 public:

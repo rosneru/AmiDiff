@@ -5,6 +5,13 @@
 
 #include "TextSelectionItem.h"
 
+/**
+ * Represents multiple blocks of selected text and exposes related
+ * methods.
+ *
+ * @author Uwe Rosner
+ * @date 22/12/2020
+ */
 class TextSelection
 {
 public:
