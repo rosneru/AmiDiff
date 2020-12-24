@@ -122,11 +122,11 @@ private:
   UWORD m_FontBaseline_pix; ///> Baseline (from top) of the rastport text font
 
 
-  ULONG m_MaxVisibleChars;  ///> Max number of chars that fits into 
-                            ///> the text area at current size
+  ULONG m_AreaCharWidth;  ///> Max number of chars that fits into 
+                          ///> the text area at current size
 
-  ULONG m_MaxVisibleLines;  ///> Max number of lines that fits into 
-                            ///> the text area at current size
+  ULONG m_AreaLineHeight; ///> Max number of lines that fits into 
+                          ///> the text area at current size
 
   ULONG m_X;        ///> Index of leftmost char in displayed lines
                     ///> Is > 0 when text is horizontally scrolled
@@ -147,7 +147,7 @@ private:
                     WORD topEdge,
                     bool bHorizontallyScrolled = false,
                     int startIndex = -1,
-                    int count = 0);
+                    int numChars = 0);
 
   /**
    * Calculate how many chars of given DiffLine must be print 
