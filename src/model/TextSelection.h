@@ -17,7 +17,7 @@ class TextSelection
 public:
   TextSelection();
   virtual ~TextSelection();
-  void Add(ULONG fromLine, ULONG toLine, ULONG fromColumn, ULONG toColumn);
+  void Add(unsigned long fromLine, unsigned long toLine, unsigned long fromColumn, unsigned long toColumn);
 
 private:
   std::vector<TextSelectionItem*> m_Selections;

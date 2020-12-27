@@ -23,7 +23,9 @@ SOURCES += \
     ../DiffOutputFileBase.cpp \
     ../DiffOutputFileLinux.cpp \
     ../DiffLine.cpp \
-    ../../model/Pair.cpp
+    ../../model/Pair.cpp \
+    ../../model/TextSelection.cpp \
+    ../../model/TextSelectionItem.cpp \
 
 
 HEADERS += \
@@ -35,4 +37,6 @@ HEADERS += \
     ../DiffOutputFileBase.h \
     ../DiffOutputFileLinux.h \
     ../DiffLine.h \
-    ../../model/Pair.h
+    ../../model/Pair.h \
+    ../../model/TextSelection.h \
+    ../../model/TextSelectionItem.h \

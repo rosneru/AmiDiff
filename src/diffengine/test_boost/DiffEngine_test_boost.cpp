@@ -22,6 +22,8 @@
 #include "DiffEngine.h"
 #include "DiffLine.h"
 #include "ProgressReporter.h"
+#include "TextSelection.h"
+#include "TextSelectionItem.h"
 
 ProgressReporter progress;
 
@@ -935,6 +937,11 @@ BOOST_AUTO_TEST_CASE( DiffTest_31_Marking )
 
     BOOST_CHECK_EQUAL(diffA.NumLines(), 6);
     BOOST_CHECK_EQUAL(diffB.NumLines(), 6);
+
+    TextSelection selection;
+    selection.Add(1, 1, 2, 7);
+    selection.Add(5, 5, 4, 5);
+    selection.Add(5, 5, 12, 14);
 
   }
   catch(const char* pError)

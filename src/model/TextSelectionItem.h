@@ -1,8 +1,6 @@
 #ifndef TEXT_SELECTION_ITEM_H
 #define TEXT_SELECTION_ITEM_H
 
-#include <exec/types.h>
-
 /**
  * Represents a block of selected text.
  *
@@ -12,21 +10,21 @@
 class TextSelectionItem
 {
 public:
-  TextSelectionItem(ULONG fromLine, 
-                    ULONG toLine, 
-                    ULONG fromColumn, 
-                    ULONG toColumn);
+  TextSelectionItem(unsigned long fromLine, 
+                    unsigned long toLine, 
+                    unsigned long fromColumn, 
+                    unsigned long toColumn);
 
-  ULONG FromLine() const;
-  ULONG ToLine() const;
-  ULONG FromColumn() const;
-  ULONG ToColumn() const;
+  unsigned long FromLine() const;
+  unsigned long ToLine() const;
+  unsigned long FromColumn() const;
+  unsigned long ToColumn() const;
 
 private:
-  ULONG m_FromLine;
-  ULONG m_ToLine;
-  ULONG m_FromColumn;
-  ULONG m_ToColumn;
+  unsigned long m_FromLine;
+  unsigned long m_ToLine;
+  unsigned long m_FromColumn;
+  unsigned long m_ToColumn;
 
 };
 

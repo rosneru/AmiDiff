@@ -14,10 +14,10 @@ TextSelection::~TextSelection()
 }
 
 
-void TextSelection::Add(ULONG fromLine, 
-                        ULONG toLine, 
-                        ULONG fromColumn, 
-                        ULONG toColumn)
+void TextSelection::Add(unsigned long fromLine, 
+                        unsigned long toLine, 
+                        unsigned long fromColumn, 
+                        unsigned long toColumn)
 {
   TextSelectionItem* pSelection = new TextSelectionItem(fromLine, 
                                                         toLine, 
