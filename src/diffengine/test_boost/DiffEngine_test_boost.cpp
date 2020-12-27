@@ -908,6 +908,47 @@ size_t PrevDiffIndex(std::list<size_t> m_DiffIndices,
 // }
 
 
+/**
+ * testcase_31
+ *
+ * Testing the text select / marking ability
+ */
+BOOST_AUTO_TEST_CASE( DiffTest_31_Marking )
+{
+  try
+  {
+    bool cancelRequested = false;
+    std::list<size_t> m_DiffIndices;
+
+    DiffInputFileLinux srcA(cancelRequested, 
+                            "testfiles/testcase_31_marking_left.txt",
+                            true);
+
+    DiffInputFileLinux srcB(cancelRequested, 
+                            "testfiles/testcase_31_marking_right.txt",
+                            true);
+
+    DiffOutputFileLinux diffA(srcA);
+    DiffOutputFileLinux diffB(srcB);
+    DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
+                          "Comparing...", cancelRequested, m_DiffIndices);
+
+    BOOST_CHECK_EQUAL(diffA.NumLines(), 6);
+    BOOST_CHECK_EQUAL(diffB.NumLines(), 6);
+
+  }
+  catch(const char* pError)
+  {
+    auto locationBoost = boost::unit_test::framework::current_test_case().p_name;
+    std::string location(locationBoost);
+    printf("Exception in test %s: %s\n", 
+           location.c_str(),
+           pError);
+  }
+}
+
+
+
 BOOST_AUTO_TEST_CASE( testcase_crash )
 {
   try
