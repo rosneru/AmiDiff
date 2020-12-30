@@ -22,8 +22,6 @@ public:
 
   DiffLine* operator[](unsigned long index) const;
 
-  void SetLineState(size_t idx, DiffLine::LineState state);
-
 
 protected:
   std::vector<DiffLine*> m_Lines;

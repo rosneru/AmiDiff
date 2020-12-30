@@ -419,8 +419,8 @@ void DiffEngine::optimize(DiffFileBase& diffFile)
     if((endPos < dataLength)
      && (diffFile[startPos]->Token() == diffFile[endPos]->Token()))
     {
-      diffFile.SetLineState(endPos, diffFile[startPos]->State());
-      diffFile.SetLineState(startPos, DiffLine::Normal);
+      diffFile[endPos]->SetState(diffFile[startPos]->State());
+      diffFile[startPos]->SetState(DiffLine::Normal);
     }
     else
     {

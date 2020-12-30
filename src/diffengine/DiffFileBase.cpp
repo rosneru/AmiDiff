@@ -24,18 +24,6 @@ DiffLine* DiffFileBase::operator[](unsigned long index) const
 }
 
 
-void DiffFileBase::SetLineState(size_t idx, DiffLine::LineState state)
-{
-  DiffLine* pDiffLine = (*this)[idx];
-  if(pDiffLine == NULL)
-  {
-    // TODO Maybe change method to type bool and return false
-    return;
-  }
-
-  pDiffLine->SetState(state);
-}
-
 size_t DiffFileBase::numDigits(size_t number)
 {
   size_t digits = 1;
