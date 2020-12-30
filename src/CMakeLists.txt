@@ -43,11 +43,11 @@ add_executable (ADiffView_gcc
                 menus/MenuDiffWindow.cpp
                 model/Pair.cpp
                 model/Rect.cpp
-                model/TextSelection.cpp
-                model/TextSelectionItem.cpp
                 screen/OpenClonedWorkbenchScreen.cpp
                 screen/OpenJoinedPublicScreen.cpp
                 screen/OpenScreenBase.cpp
+                textselect/TextSelection.cpp
+                textselect/TextSelectionItem.cpp
                 windows/DiffWindow.cpp
                 windows/DiffWindowRastports.cpp
                 windows/DiffWindowTextArea.cpp
@@ -68,6 +68,7 @@ target_include_directories (ADiffView_gcc PUBLIC
                             menus
                             model
                             screen
+                            textselect
                             windows
                             worker
                             .)

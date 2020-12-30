@@ -11,6 +11,7 @@ LIBS += -lncurses \
 
 INCLUDEPATH +=  .. \
                 ../../model \
+                ../../textselect \
 
 
 SOURCES += \
@@ -24,8 +25,8 @@ SOURCES += \
     ../DiffOutputFileLinux.cpp \
     ../DiffLine.cpp \
     ../../model/Pair.cpp \
-    ../../model/TextSelection.cpp \
-    ../../model/TextSelectionItem.cpp \
+    ../../textselect/TextSelection.cpp \
+    ../../textselect/TextSelectionItem.cpp \
 
 
 HEADERS += \
@@ -38,5 +39,5 @@ HEADERS += \
     ../DiffOutputFileLinux.h \
     ../DiffLine.h \
     ../../model/Pair.h \
-    ../../model/TextSelection.h \
-    ../../model/TextSelectionItem.h \
+    ../../textselect/TextSelection.h \
+    ../../textselect/TextSelectionItem.h \
