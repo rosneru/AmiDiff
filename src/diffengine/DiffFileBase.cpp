@@ -24,47 +24,6 @@ DiffLine* DiffFileBase::operator[](unsigned long index) const
 }
 
 
-
-const char* DiffFileBase::GetLineNum(size_t idx) const
-{
-  if(idx >= m_Lines.size())
-  {
-    return &m_EmptyText;
-  }
-
-  const char* pLineNum = (*this)[idx]->LineNum();
-  if(pLineNum == NULL)
-  {
-    return &m_EmptyText;
-  }
-
-  return pLineNum;
-}
-
-
-unsigned long DiffFileBase::GetLineToken(size_t idx) const
-{
-  DiffLine* pLine = (*this)[idx];
-  if(pLine == NULL)
-  {
-    return 0;
-  }
-
-  return (*this)[idx]->Token();
-}
-
-
-DiffLine::LineState DiffFileBase::GetLineState(size_t idx) const
-{
-  if(idx >= m_Lines.size())
-  {
-    return DiffLine::Undefined;
-  }
-
-  return (*this)[idx]->State();
-}
-
-
 void DiffFileBase::SetLineState(size_t idx, DiffLine::LineState state)
 {
   DiffLine* pDiffLine = (*this)[idx];

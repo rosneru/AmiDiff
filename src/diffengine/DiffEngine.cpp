@@ -125,9 +125,9 @@ void DiffEngine::createDiffFiles()
     // Handle the equal lines
     //
     while( (lineA < m_AIn.NumLines())
-     && (m_AIn.GetLineState(lineA) == DiffLine::Normal)
+     && (m_AIn[lineA]->State() == DiffLine::Normal)
      && (lineB < m_BIn.NumLines())
-     && (m_BIn.GetLineState(lineB) == DiffLine::Normal))
+     && (m_BIn[lineB]->State() == DiffLine::Normal))
     {
       DiffLine* pA = m_AIn[lineA++];
       DiffLine* pB = m_BIn[lineB++];
@@ -142,8 +142,8 @@ void DiffEngine::createDiffFiles()
     bool bBlockAlreadyAdded = false;
     while((lineA < m_AIn.NumLines())
       && (lineB < m_BIn.NumLines())
-      && (m_AIn.GetLineState(lineA) != DiffLine::Normal)
-      && (m_BIn.GetLineState(lineB) != DiffLine::Normal))
+      && (m_AIn[lineA]->State() != DiffLine::Normal)
+      && (m_BIn[lineB]->State() != DiffLine::Normal))
     {
       DiffLine* pA = m_AIn[lineA++];
       DiffLine* pB = m_BIn[lineB++];
@@ -162,7 +162,7 @@ void DiffEngine::createDiffFiles()
 
     bBlockAlreadyAdded = false;
     while((lineA < m_AIn.NumLines())
-       && (lineB >= m_BIn.NumLines() || (m_AIn.GetLineState(lineA) != DiffLine::Normal)))
+       && (lineB >= m_BIn.NumLines() || (m_AIn[lineA]->State() != DiffLine::Normal)))
     {
       DiffLine* pA = m_AIn[lineA++];
       long idx = m_AOut.AddLine(pA->Txt(), DiffLine::Deleted, pA->LineNum());
@@ -179,7 +179,7 @@ void DiffEngine::createDiffFiles()
 
     bBlockAlreadyAdded = false;
     while((lineB < m_BIn.NumLines())
-      && (lineA >= m_AIn.NumLines() || (m_BIn.GetLineState(lineB) != DiffLine::Normal)))
+      && (lineA >= m_AIn.NumLines() || (m_BIn[lineB]->State() != DiffLine::Normal)))
     {
       DiffLine* pB = m_BIn[lineB++];
       m_AOut.AddBlankLine();
@@ -403,7 +403,7 @@ void DiffEngine::optimize(DiffFileBase& diffFile)
   while(startPos < diffFile.NumLines())
   {
     while((startPos < dataLength)
-       && (diffFile.GetLineState(startPos) == DiffLine::Normal))  // normal
+       && (diffFile[startPos]->State() == DiffLine::Normal))  // normal
     {
       startPos++;
     }
@@ -411,7 +411,7 @@ void DiffEngine::optimize(DiffFileBase& diffFile)
     endPos = startPos;
 
     while((endPos < dataLength)
-      && (diffFile.GetLineState(startPos) != DiffLine::Normal)) // modified
+      && (diffFile[startPos]->State() != DiffLine::Normal)) // modified
     {
       endPos++;
     }
