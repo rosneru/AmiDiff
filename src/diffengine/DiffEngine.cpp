@@ -129,8 +129,8 @@ void DiffEngine::createDiffFiles()
      && (lineB < m_BIn.NumLines())
      && (m_BIn.GetLineState(lineB) == DiffLine::Normal))
     {
-      DiffLine* pA = m_AIn.GetLine(lineA++);
-      DiffLine* pB = m_BIn.GetLine(lineB++);
+      DiffLine* pA = m_AIn[lineA++];
+      DiffLine* pB = m_BIn[lineB++];
 
       m_AOut.AddLine(pA->Txt(), DiffLine::Normal, pA->LineNum());
       m_pBOut.AddLine(pB->Txt(), DiffLine::Normal, pB->LineNum());
@@ -145,8 +145,8 @@ void DiffEngine::createDiffFiles()
       && (m_AIn.GetLineState(lineA) != DiffLine::Normal)
       && (m_BIn.GetLineState(lineB) != DiffLine::Normal))
     {
-      DiffLine* pA = m_AIn.GetLine(lineA++);
-      DiffLine* pB = m_BIn.GetLine(lineB++);
+      DiffLine* pA = m_AIn[lineA++];
+      DiffLine* pB = m_BIn[lineB++];
 
       long idx = m_AOut.AddLine(pA->Txt(), DiffLine::Changed, pA->LineNum());
       m_pBOut.AddLine(pB->Txt(), DiffLine::Changed, pB->LineNum());
@@ -164,7 +164,7 @@ void DiffEngine::createDiffFiles()
     while((lineA < m_AIn.NumLines())
        && (lineB >= m_BIn.NumLines() || (m_AIn.GetLineState(lineA) != DiffLine::Normal)))
     {
-      DiffLine* pA = m_AIn.GetLine(lineA++);
+      DiffLine* pA = m_AIn[lineA++];
       long idx = m_AOut.AddLine(pA->Txt(), DiffLine::Deleted, pA->LineNum());
       m_pBOut.AddBlankLine();
 
@@ -181,7 +181,7 @@ void DiffEngine::createDiffFiles()
     while((lineB < m_BIn.NumLines())
       && (lineA >= m_AIn.NumLines() || (m_BIn.GetLineState(lineB) != DiffLine::Normal)))
     {
-      DiffLine* pB = m_BIn.GetLine(lineB++);
+      DiffLine* pB = m_BIn[lineB++];
       m_AOut.AddBlankLine();
       long idx = m_pBOut.AddLine(pB->Txt(), DiffLine::Added, pB->LineNum());
 
@@ -218,7 +218,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 
   // Fast walkthrough equal lines at the start
   while((lowerA < upperA) && (lowerB < upperB)
-     && (m_AIn.GetLine(lowerA)->Token() == m_BIn.GetLine(lowerB)->Token()))
+     && (m_AIn[lowerA]->Token() == m_BIn[lowerB]->Token()))
   {
     lowerA++;
     lowerB++;
@@ -226,7 +226,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 
   // Fast walkthrough equal lines at the end
   while((lowerA < upperA) && (lowerB < upperB)
-     && (m_AIn.GetLine(upperA - 1)->Token() == m_BIn.GetLine(upperB - 1)->Token()))
+     && (m_AIn[upperA - 1]->Token() == m_BIn[upperB - 1]->Token()))
   {
     --upperA;
     --upperB;
@@ -236,7 +236,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
   {
     while(lowerB < upperB)
     {
-      m_BIn.GetLine(lowerB++)->SetState(DiffLine::Added);
+      m_BIn[lowerB++]->SetState(DiffLine::Added);
       m_NumInsertedB++;
     }
   }
@@ -244,7 +244,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
   {
     while(lowerA < upperA)
     {
-      m_AIn.GetLine(lowerA++)->SetState(DiffLine::Deleted);
+      m_AIn[lowerA++]->SetState(DiffLine::Deleted);
       m_NumDeletedA++;
     }
   }
@@ -320,8 +320,8 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
 
       // find the end of the furthest reaching forward D-path in diagonal k.
       while ((x < upperA) && (y < upperB)
-          && (m_AIn.GetLine(x)->Token() == m_BIn.GetLine(y)->Token()))
-          //&& (m_A.GetLine(x)->Text() == m_B.GetLine(y)->Text()))
+          && (m_AIn[x]->Token() == m_BIn[y]->Token()))
+          //&& (m_A[x]->Text() == m_B[y]->Text()))
       {
         x++;
         y++;
@@ -364,8 +364,8 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
       y = x - k;
 
       while ((x > lowerA) && (y > lowerB)
-          && (m_AIn.GetLine(x - 1)->Token() == m_BIn.GetLine(y - 1)->Token()))
-          //&& (m_A.GetLine(x - 1)->Text() == m_B.GetLine(y - 1)->Text()))
+          && (m_AIn[x - 1]->Token() == m_BIn[y - 1]->Token()))
+          //&& (m_A[x - 1]->Text() == m_B[y - 1]->Text()))
       {
         // diagonal
         x--;
@@ -417,9 +417,9 @@ void DiffEngine::optimize(DiffFileBase& diffFile)
     }
 
     if((endPos < dataLength)
-     && (diffFile.GetLine(startPos)->Token() == diffFile.GetLine(endPos)->Token()))
+     && (diffFile[startPos]->Token() == diffFile[endPos]->Token()))
     {
-      diffFile.SetLineState(endPos, diffFile.GetLine(startPos)->State());
+      diffFile.SetLineState(endPos, diffFile[startPos]->State());
       diffFile.SetLineState(startPos, DiffLine::Normal);
     }
     else

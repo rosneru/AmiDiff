@@ -13,26 +13,16 @@ size_t DiffFileBase::NumLines() const
 }
 
 
-DiffLine* DiffFileBase::GetLine(size_t idx) const
+DiffLine* DiffFileBase::operator[](unsigned long index) const
 {
-  if(idx >= m_Lines.size())
+  if(index >= m_Lines.size())
   {
     return NULL;
   }
 
-  return m_Lines[idx];
+  return m_Lines[index];
 }
 
-
-const char* DiffFileBase::GetLineText(size_t idx) const
-{
-  if(idx >= m_Lines.size())
-  {
-    return &m_EmptyText;
-  }
-
-  return GetLine(idx)->Txt();
-}
 
 
 const char* DiffFileBase::GetLineNum(size_t idx) const
@@ -42,7 +32,7 @@ const char* DiffFileBase::GetLineNum(size_t idx) const
     return &m_EmptyText;
   }
 
-  const char* pLineNum = GetLine(idx)->LineNum();
+  const char* pLineNum = (*this)[idx]->LineNum();
   if(pLineNum == NULL)
   {
     return &m_EmptyText;
@@ -54,13 +44,13 @@ const char* DiffFileBase::GetLineNum(size_t idx) const
 
 unsigned long DiffFileBase::GetLineToken(size_t idx) const
 {
-  DiffLine* pLine = GetLine(idx);
+  DiffLine* pLine = (*this)[idx];
   if(pLine == NULL)
   {
     return 0;
   }
 
-  return GetLine(idx)->Token();
+  return (*this)[idx]->Token();
 }
 
 
@@ -71,13 +61,13 @@ DiffLine::LineState DiffFileBase::GetLineState(size_t idx) const
     return DiffLine::Undefined;
   }
 
-  return GetLine(idx)->State();
+  return (*this)[idx]->State();
 }
 
 
 void DiffFileBase::SetLineState(size_t idx, DiffLine::LineState state)
 {
-  DiffLine* pDiffLine = GetLine(idx);
+  DiffLine* pDiffLine = (*this)[idx];
   if(pDiffLine == NULL)
   {
     // TODO Maybe change method to type bool and return false

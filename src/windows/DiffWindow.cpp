@@ -266,13 +266,13 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
     m_pTextArea2 = NULL;
   }
 
-  m_pTextArea1 = new DiffWindowTextArea(&pDiffDocument->LeftDiffFile(),
+  m_pTextArea1 = new DiffWindowTextArea(pDiffDocument->LeftDiffFile(),
                                         m_pRPorts,
                                         m_pTextFont,
                                         pDiffDocument->LineNumbersEnabled(),
                                         pDiffDocument->MaxLineLength());
 
-  m_pTextArea2 = new DiffWindowTextArea(&pDiffDocument->RightDiffFile(),
+  m_pTextArea2 = new DiffWindowTextArea(pDiffDocument->RightDiffFile(),
                                         m_pRPorts,
                                         m_pTextFont,
                                         pDiffDocument->LineNumbersEnabled(),

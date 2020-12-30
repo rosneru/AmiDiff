@@ -18,7 +18,7 @@
 class DiffWindowTextArea : public Rect
 {
 public:
-  DiffWindowTextArea(const DiffOutputFileBase* pDiffFile, 
+  DiffWindowTextArea(const DiffOutputFileBase& diffFile, 
                      DiffWindowRastports*& pRPorts,
                      struct TextFont* pTextFont,
                      bool lineNumbersEnabled,
@@ -108,7 +108,7 @@ public:
 
 
 private:
-  const DiffOutputFileBase* m_pDiffFile;
+  const DiffOutputFileBase& m_DiffFile;
   DiffWindowRastports*& m_pRPorts;
   bool m_LineNumbersEnabled;
   ULONG m_MaxNumChars;

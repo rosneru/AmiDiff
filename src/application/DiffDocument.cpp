@@ -51,17 +51,17 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
 
   for(size_t i = 0; i < m_LeftDiffFile.NumLines(); i++)
   {
-    if(m_LeftDiffFile.GetLine(i)->NumChars() > m_MaxLineLength)
+    if(m_LeftDiffFile[i]->NumChars() > m_MaxLineLength)
     {
-      m_MaxLineLength = m_LeftDiffFile.GetLine(i)->NumChars();
+      m_MaxLineLength = m_LeftDiffFile[i]->NumChars();
     }
   }
 
   for(size_t i = 0; i < m_RightDiffFile.NumLines(); i++)
   {
-    if(m_RightDiffFile.GetLine(i)->NumChars() > m_MaxLineLength)
+    if(m_RightDiffFile[i]->NumChars() > m_MaxLineLength)
     {
-      m_MaxLineLength = m_RightDiffFile.GetLine(i)->NumChars();
+      m_MaxLineLength = m_RightDiffFile[i]->NumChars();
     }
   }
 }
@@ -117,13 +117,13 @@ size_t DiffDocument::MaxLineLength() const
 
 const DiffLine* DiffDocument::LeftLine(size_t index) const
 {
-  return m_LeftDiffFile.GetLine(index);
+  return m_LeftDiffFile[index];
 }
 
 
 const DiffLine* DiffDocument::RightLine(size_t index) const
 {
-  return m_RightDiffFile.GetLine(index);
+  return m_RightDiffFile[index];
 }
 
 

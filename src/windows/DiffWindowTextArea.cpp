@@ -9,16 +9,16 @@
 
 #include "DiffWindowTextArea.h"
 
-DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase* pDiffFile,
+DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
                                        DiffWindowRastports*& pRPorts,
                                        struct TextFont* pTextFont,
                                        bool lineNumbersEnabled,
                                        ULONG maxNumChars)
-  : m_pDiffFile(pDiffFile),
+  : m_DiffFile(diffFile),
     m_pRPorts(pRPorts),
     m_LineNumbersEnabled(lineNumbersEnabled),
     m_MaxNumChars(maxNumChars),
-    m_NumLines(pDiffFile->NumLines()),
+    m_NumLines(diffFile.NumLines()),
     m_FontWidth_pix(pTextFont->tf_XSize),
     m_FontHeight_pix(pTextFont->tf_YSize),
     m_FontBaseline_pix(pTextFont->tf_Baseline),
@@ -31,7 +31,7 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase* pDiffFile,
 {
   if(lineNumbersEnabled)
   {
-    const DiffLine* pLine = pDiffFile->GetLine(0);
+    const DiffLine* pLine = diffFile[0];
     const char* pLineNum = pLine->LineNum();
 
     m_LineNumsWidth_chars = strlen(pLineNum);
@@ -265,7 +265,7 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
   // Fill the gap with the following chars
   for(unsigned long i = m_Y; i < m_Y + m_AreaLineHeight; i++)
   {
-    const DiffLine* pLine = m_pDiffFile->GetLine(i);
+    const DiffLine* pLine = m_DiffFile[i];
 
     if(pLine == NULL)
     {
@@ -324,7 +324,7 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
   // fill the gap with the previous chars
   for(unsigned long i = m_Y; i < m_Y + m_AreaLineHeight; i++)
   {
-    const DiffLine* pLine = m_pDiffFile->GetLine(i);
+    const DiffLine* pLine = m_DiffFile[i];
     if(pLine == NULL)
     {
       break;
@@ -382,7 +382,7 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
   for(ULONG i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y + m_AreaLineHeight + i;
-    const DiffLine* pLine = m_pDiffFile->GetLine(lineIndex);
+    const DiffLine* pLine = m_DiffFile[lineIndex];
     if(pLine == NULL)
     {
       break;
@@ -430,7 +430,7 @@ ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
   for(ULONG i = 0; i < numLines; i++)
   {
     int lineIndex = m_Y - numLines + i;
-    const DiffLine* pLeftLine = m_pDiffFile->GetLine(lineIndex);
+    const DiffLine* pLeftLine = m_DiffFile[lineIndex];
 
     if(pLeftLine == NULL)
     {
@@ -456,11 +456,6 @@ void DiffWindowTextArea::PrintPageAt(ULONG left, ULONG top)
 
 void DiffWindowTextArea::PrintPage()
 {
-  if(m_pDiffFile == NULL)
-  {
-    return;
-  }
-
   for(ULONG i = m_Y; (i - m_Y) < m_AreaLineHeight; i++)
   {
     if(i >= m_NumLines)
@@ -468,7 +463,7 @@ void DiffWindowTextArea::PrintPage()
       break;
     }
 
-    const DiffLine* pLine = m_pDiffFile->GetLine(i);
+    const DiffLine* pLine = m_DiffFile[i];
     if(pLine == NULL)
     {
       break;

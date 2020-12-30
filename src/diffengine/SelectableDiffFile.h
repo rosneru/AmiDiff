@@ -16,9 +16,9 @@ class SelectableDiffFile
 public:
   SelectableDiffFile(DiffFileBase& diffFile);
 
-  DiffLine* operator[](unsigned long index);
+  DiffLine* operator[](unsigned long index) const;
 
-  unsigned long getNumLines();
+  unsigned long getNumLines() const;
 
   void addSelection(unsigned long fromLine, 
                     unsigned long toLine, 

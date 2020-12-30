@@ -6,17 +6,17 @@ SelectableDiffFile::SelectableDiffFile(DiffFileBase& diffFile)
 
 }
 
-DiffLine* SelectableDiffFile::operator[](unsigned long index)
+DiffLine* SelectableDiffFile::operator[](unsigned long index) const
 {
   if(index >= m_DiffFile.NumLines())
   {
     return NULL;
   }
 
-  return m_DiffFile.GetLine(index);
+  return m_DiffFile[index];
 }
 
-unsigned long SelectableDiffFile::getNumLines()
+unsigned long SelectableDiffFile::getNumLines() const
 {
   return m_DiffFile.NumLines();
 }
