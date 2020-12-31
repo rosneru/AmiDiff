@@ -38,6 +38,7 @@ add_executable (ADiffView_gcc
                 diffengine/DiffOutputFileAmiga.cpp
                 diffengine/DiffOutputFileBase.cpp
                 diffengine/DiffLine.cpp
+                diffengine/SelectableDiffFile.cpp
                 menus/MenuBase.cpp
                 menus/MenuFilesWindow.cpp
                 menus/MenuDiffWindow.cpp

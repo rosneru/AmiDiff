@@ -14,9 +14,9 @@
 class SelectableDiffFile
 {
 public:
-  SelectableDiffFile(DiffFileBase& diffFile);
+  SelectableDiffFile(const DiffFileBase& diffFile);
 
-  DiffLine* operator[](unsigned long index) const;
+  const DiffLine* operator[](unsigned long index) const;
 
   unsigned long getNumLines() const;
 
@@ -26,7 +26,7 @@ public:
                     unsigned long toColumn);
 
 private:
-  DiffFileBase& m_DiffFile;
+  const DiffFileBase& m_DiffFile;
   TextSelection m_TextSelection;
 };
 

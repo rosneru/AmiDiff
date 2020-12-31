@@ -13,7 +13,7 @@ size_t DiffFileBase::NumLines() const
 }
 
 
-DiffLine* DiffFileBase::operator[](unsigned long index) const
+const DiffLine* DiffFileBase::operator[](unsigned long index) const
 {
   if(index >= m_Lines.size())
   {
@@ -23,6 +23,15 @@ DiffLine* DiffFileBase::operator[](unsigned long index) const
   return m_Lines[index];
 }
 
+DiffLine* DiffFileBase::operator[](unsigned long index)
+{
+  if(index >= m_Lines.size())
+  {
+    return NULL;
+  }
+
+  return m_Lines[index];
+}
 
 size_t DiffFileBase::numDigits(size_t number)
 {

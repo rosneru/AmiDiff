@@ -129,8 +129,8 @@ void DiffEngine::createDiffFiles()
      && (lineB < m_BIn.NumLines())
      && (m_BIn[lineB]->State() == DiffLine::Normal))
     {
-      DiffLine* pA = m_AIn[lineA++];
-      DiffLine* pB = m_BIn[lineB++];
+      const DiffLine* pA = m_AIn[lineA++];
+      const DiffLine* pB = m_BIn[lineB++];
 
       m_AOut.AddLine(pA->Txt(), DiffLine::Normal, pA->LineNum());
       m_pBOut.AddLine(pB->Txt(), DiffLine::Normal, pB->LineNum());
@@ -145,8 +145,8 @@ void DiffEngine::createDiffFiles()
       && (m_AIn[lineA]->State() != DiffLine::Normal)
       && (m_BIn[lineB]->State() != DiffLine::Normal))
     {
-      DiffLine* pA = m_AIn[lineA++];
-      DiffLine* pB = m_BIn[lineB++];
+      const DiffLine* pA = m_AIn[lineA++];
+      const DiffLine* pB = m_BIn[lineB++];
 
       long idx = m_AOut.AddLine(pA->Txt(), DiffLine::Changed, pA->LineNum());
       m_pBOut.AddLine(pB->Txt(), DiffLine::Changed, pB->LineNum());
@@ -164,7 +164,7 @@ void DiffEngine::createDiffFiles()
     while((lineA < m_AIn.NumLines())
        && (lineB >= m_BIn.NumLines() || (m_AIn[lineA]->State() != DiffLine::Normal)))
     {
-      DiffLine* pA = m_AIn[lineA++];
+      const DiffLine* pA = m_AIn[lineA++];
       long idx = m_AOut.AddLine(pA->Txt(), DiffLine::Deleted, pA->LineNum());
       m_pBOut.AddBlankLine();
 
@@ -181,7 +181,7 @@ void DiffEngine::createDiffFiles()
     while((lineB < m_BIn.NumLines())
       && (lineA >= m_AIn.NumLines() || (m_BIn[lineB]->State() != DiffLine::Normal)))
     {
-      DiffLine* pB = m_BIn[lineB++];
+      const DiffLine* pB = m_BIn[lineB++];
       m_AOut.AddBlankLine();
       long idx = m_pBOut.AddLine(pB->Txt(), DiffLine::Added, pB->LineNum());
 

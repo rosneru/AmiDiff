@@ -1,12 +1,12 @@
 #include "SelectableDiffFile.h"
 
-SelectableDiffFile::SelectableDiffFile(DiffFileBase& diffFile)
+SelectableDiffFile::SelectableDiffFile(const DiffFileBase& diffFile)
   : m_DiffFile(diffFile)
 {
 
 }
 
-DiffLine* SelectableDiffFile::operator[](unsigned long index) const
+const DiffLine* SelectableDiffFile::operator[](unsigned long index) const
 {
   if(index >= m_DiffFile.NumLines())
   {

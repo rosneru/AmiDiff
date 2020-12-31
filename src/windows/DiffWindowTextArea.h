@@ -5,10 +5,11 @@
 #include <graphics/text.h>
 #include <intuition/intuition.h>
 
-#include "DiffLine.h"
 #include "DiffOutputFileBase.h"
+#include "DiffLine.h"
 #include "DiffWindowRastports.h"
 #include "Rect.h"
+#include "SelectableDiffFile.h"
 #include "TextSelection.h"
 
 
@@ -108,7 +109,7 @@ public:
 
 
 private:
-  const DiffOutputFileBase& m_DiffFile;
+  SelectableDiffFile m_DiffFile;
   DiffWindowRastports*& m_pRPorts;
   bool m_LineNumbersEnabled;
   ULONG m_MaxNumChars;

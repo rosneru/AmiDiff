@@ -20,7 +20,8 @@ public:
 
   size_t NumLines() const;
 
-  DiffLine* operator[](unsigned long index) const;
+  const DiffLine* operator[](unsigned long index) const;
+  DiffLine* operator[](unsigned long index);
 
 
 protected:
