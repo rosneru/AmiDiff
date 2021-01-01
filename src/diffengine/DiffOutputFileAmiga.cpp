@@ -28,7 +28,7 @@ DiffOutputFileAmiga::~DiffOutputFileAmiga()
 }
 
 
-long DiffOutputFileAmiga::AddLine(const char* pText,
+long DiffOutputFileAmiga::addLine(const char* pText,
                                   DiffLine::LineState lineState,
                                   const char* pFormattedLineNumber)
 {

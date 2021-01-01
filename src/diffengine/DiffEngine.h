@@ -75,11 +75,11 @@ public:
 
   virtual ~DiffEngine();
 
-  long NumDifferences() const;
+  long getNumDifferences() const;
 
-  long NumAdded() const;
-  long NumChanged() const;
-  long NumDeleted() const;
+  long getNumAdded() const;
+  long getNumChanged() const;
+  long getNumDeleted() const;
 
 protected:
   std::list<size_t>& m_DiffIndices;

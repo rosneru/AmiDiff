@@ -20,7 +20,7 @@ DiffOutputFileLinux::~DiffOutputFileLinux()
 }
 
 
-long DiffOutputFileLinux::AddLine(const char* pText,
+long DiffOutputFileLinux::addLine(const char* pText,
                                   DiffLine::LineState lineState,
                                   const char* pFormattedLineNumber)
 {

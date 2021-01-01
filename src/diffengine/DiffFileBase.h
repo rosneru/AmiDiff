@@ -18,7 +18,7 @@ class DiffFileBase
 public:
   DiffFileBase();
 
-  size_t NumLines() const;
+  size_t getNumLines() const;
 
   const DiffLine* operator[](unsigned long index) const;
   DiffLine* operator[](unsigned long index);

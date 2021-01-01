@@ -63,11 +63,11 @@ DiffInputFileLinux::DiffInputFileLinux(bool& isCancelRequested,
 
   if(lineNumbersEnabled)
   {
-    int digits = numDigits(NumLines());
-    size_t lineNumberBufSize = (digits + 2) * NumLines();
+    int digits = numDigits(getNumLines());
+    size_t lineNumberBufSize = (digits + 2) * getNumLines();
     m_pLineNumberBuffer = new char[lineNumberBufSize];
 
-    collectLineNumbers(NumLines());
+    collectLineNumbers(getNumLines());
   }
 }
 
@@ -98,7 +98,7 @@ void DiffInputFileLinux::collectLineNumbers(size_t maxNumLines)
 {
   int digits = numDigits(maxNumLines);
 
-  for(size_t i = 0; i < NumLines(); i++)
+  for(size_t i = 0; i < getNumLines(); i++)
   {
     size_t bufIdx = i * (digits + 2);
     char* pLineNumber = m_pLineNumberBuffer + bufIdx;

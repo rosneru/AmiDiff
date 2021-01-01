@@ -30,7 +30,7 @@ ProgressReporter progress;
 void printFile(DiffFileBase& file)
 {
     const char* pStates[] = {"[   ]", "[ADD]", "[CHN]", "[DEL]", "[???]"};
-    for(size_t i = 0; i < file.NumLines(); i++)
+    for(size_t i = 0; i < file.getNumLines(); i++)
     {
       const char* pLineState;
       DiffLine* pLine = file.GetLine(i);
@@ -148,7 +148,7 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
     BOOST_CHECK_EQUAL(diffB.GetLineState(9), DiffLine::Normal);
 
     // This test has 2 difference blocks of lines added to the right side
-    BOOST_CHECK_EQUAL(diffEngine.NumAdded(), 2);
+    BOOST_CHECK_EQUAL(diffEngine.getNumAdded(), 2);
     BOOST_CHECK_EQUAL(m_DiffIndices.size(), 2);
 
     // Now verify that the two difference blocks start at the line 
@@ -831,7 +831,7 @@ size_t PrevDiffIndex(std::list<size_t> m_DiffIndices,
 //     BOOST_CHECK_EQUAL(diffA.GetLineNum(12), "     ");
 //     BOOST_CHECK_EQUAL(diffB.GetLineNum(12), "  13 ");
 
-//     long numDiff = diffEngine.NumDifferences();
+//     long numDiff = diffEngine.getNumDifferences();
 
 //     // Testing if the list with the diff start indexes
 //     // contains 11 'difference blocks' as showed with Kompare
@@ -981,10 +981,10 @@ BOOST_AUTO_TEST_CASE( testcase_crash )
     // printf("\nRight file:\n");
     // printFile(diffB);
 
-    BOOST_CHECK_EQUAL(diffEngine.NumDifferences(), 7);
-    BOOST_CHECK_EQUAL(diffEngine.NumAdded(), 5);
-    BOOST_CHECK_EQUAL(diffEngine.NumDeleted(), 0);
-    BOOST_CHECK_EQUAL(diffEngine.NumChanged(), 2);
+    BOOST_CHECK_EQUAL(diffEngine.getNumDifferences(), 7);
+    BOOST_CHECK_EQUAL(diffEngine.getNumAdded(), 5);
+    BOOST_CHECK_EQUAL(diffEngine.getNumDeleted(), 0);
+    BOOST_CHECK_EQUAL(diffEngine.getNumChanged(), 2);
 
     BOOST_CHECK_EQUAL(diffA.NumLines(), 36);
     // BOOST_CHECK_EQUAL(diffA.GetLineText(0), "");

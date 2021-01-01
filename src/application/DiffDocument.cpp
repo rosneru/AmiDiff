@@ -49,7 +49,7 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
   // Determine the maximum number of chars which either can be found is
   // in the left or in the right file
 
-  for(size_t i = 0; i < m_LeftDiffFile.NumLines(); i++)
+  for(size_t i = 0; i < m_LeftDiffFile.getNumLines(); i++)
   {
     if(m_LeftDiffFile[i]->getNumChars() > m_MaxLineLength)
     {
@@ -57,7 +57,7 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
     }
   }
 
-  for(size_t i = 0; i < m_RightDiffFile.NumLines(); i++)
+  for(size_t i = 0; i < m_RightDiffFile.getNumLines(); i++)
   {
     if(m_RightDiffFile[i]->getNumChars() > m_MaxLineLength)
     {
@@ -88,17 +88,17 @@ long DiffDocument::DiffTime() const
 
 size_t DiffDocument::NumAdded() const
 {
-  return m_DiffEngine.NumAdded();
+  return m_DiffEngine.getNumAdded();
 }
 
 size_t DiffDocument::NumChanged() const
 {
-  return m_DiffEngine.NumChanged();
+  return m_DiffEngine.getNumChanged();
 }
 
 size_t DiffDocument::NumDeleted() const
 {
-  return m_DiffEngine.NumDeleted();
+  return m_DiffEngine.getNumDeleted();
 }
 
 
@@ -106,7 +106,7 @@ size_t DiffDocument::NumLines() const
 {
 
   // Note: Right diff file should have the same number of lines
-  return m_LeftDiffFile.NumLines();
+  return m_LeftDiffFile.getNumLines();
 }
 
 size_t DiffDocument::MaxLineLength() const
@@ -139,9 +139,9 @@ const DiffOutputFileBase& DiffDocument::RightDiffFile() const
 }
 
 
-size_t DiffDocument::NumDifferences() const
+size_t DiffDocument::getNumDifferences() const
 {
-  return m_DiffEngine.NumDifferences();
+  return m_DiffEngine.getNumDifferences();
 }
 
 size_t DiffDocument::NextDiffIndex() 

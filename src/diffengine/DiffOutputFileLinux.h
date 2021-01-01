@@ -16,7 +16,7 @@ public:
   DiffOutputFileLinux(const DiffInputFileBase& diffInputFile);
   virtual ~DiffOutputFileLinux();
 
-  long AddLine(const char* pText,
+  long addLine(const char* pText,
                DiffLine::LineState lineState, 
                const char* pFormattedLineNumber);
 

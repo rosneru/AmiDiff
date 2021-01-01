@@ -99,7 +99,7 @@ bool DiffWorker::Diff()
                                        m_Progress,
                                        m_bShowLineNumbers);
 
-    if(m_pDiffDocument->NumDifferences() < 1)
+    if(m_pDiffDocument->getNumDifferences() < 1)
     {
       throw "No differences found: the files are equal.";
     }

@@ -7,7 +7,7 @@ DiffFileBase::DiffFileBase()
 }
 
 
-size_t DiffFileBase::NumLines() const
+size_t DiffFileBase::getNumLines() const
 {
   return m_Lines.size();
 }

@@ -8,7 +8,7 @@ SelectableDiffFile::SelectableDiffFile(const DiffFileBase& diffFile)
 
 const DiffLine* SelectableDiffFile::operator[](unsigned long index) const
 {
-  if(index >= m_DiffFile.NumLines())
+  if(index >= m_DiffFile.getNumLines())
   {
     return NULL;
   }
@@ -18,7 +18,7 @@ const DiffLine* SelectableDiffFile::operator[](unsigned long index) const
 
 unsigned long SelectableDiffFile::getNumLines() const
 {
-  return m_DiffFile.NumLines();
+  return m_DiffFile.getNumLines();
 }
 
 void SelectableDiffFile::addSelection(unsigned long fromLine, 

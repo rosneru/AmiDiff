@@ -2,7 +2,7 @@
 
   DiffOutputFileBase::DiffOutputFileBase(const DiffInputFileBase& diffInputFile)
     : m_pEmptyLine(""),
-      m_EmptyLineNumber(numDigits(diffInputFile.NumLines()) + 1, ' ')
+      m_EmptyLineNumber(numDigits(diffInputFile.getNumLines()) + 1, ' ')
   {
 
   }
@@ -13,7 +13,7 @@ DiffOutputFileBase::~DiffOutputFileBase()
 }
 
 
-void DiffOutputFileBase::AddBlankLine()
+void DiffOutputFileBase::addEmptyLine()
 {
-  AddLine(m_pEmptyLine, DiffLine::Normal, m_EmptyLineNumber.c_str());
+  addLine(m_pEmptyLine, DiffLine::Normal, m_EmptyLineNumber.c_str());
 }

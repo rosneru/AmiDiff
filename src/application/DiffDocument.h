@@ -52,7 +52,7 @@ public:
   const DiffOutputFileBase& LeftDiffFile() const;
   const DiffOutputFileBase& RightDiffFile() const;
 
-  size_t NumDifferences() const;
+  size_t getNumDifferences() const;
 
   size_t NextDiffIndex();
   size_t PrevDiffIndex();

@@ -16,12 +16,12 @@ public:
    * 
    * Returns the index where the line was inserted or -1 on error.
    */
-  virtual long AddLine(const char* pText, 
+  virtual long addLine(const char* pText, 
                        DiffLine::LineState lineState,
                        const char* pFormattedLineNumber) = 0;
 
 
-  void AddBlankLine();
+  void addEmptyLine();
 
 private:
   const char* m_pEmptyLine;

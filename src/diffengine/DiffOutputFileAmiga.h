@@ -26,7 +26,7 @@ public:
    * 
    * Returns the index where the line was inserted or -1 on error.
    */
-  long AddLine(const char* pText,
+  long addLine(const char* pText,
                  DiffLine::LineState lineState, 
                  const char* pFormattedLineNumber);
 
