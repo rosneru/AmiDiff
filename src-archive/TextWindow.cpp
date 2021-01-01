@@ -130,7 +130,7 @@ bool TextWindow::SetContent(TextDocument* p_pTextDocument)
 
   // Set scroll gadgets pot size dependent on window size and the number
   // of lines in opened file
-  setYScrollPotSize(m_MaxWinLines, m_pDocument->NumLines());
+  setYScrollPotSize(m_MaxWinLines, m_pDocument->getNumLines());
 
   return true;
 }
@@ -346,7 +346,7 @@ void TextWindow::paintDocument(bool p_bStartFromTop)
 
   for(int i = m_Y; (i - m_Y) < m_MaxWinLines; i++)
   {
-    if(i >= m_pDocument->NumLines())
+    if(i >= m_pDocument->getNumLines())
     {
       break;
     }
@@ -428,7 +428,7 @@ size_t TextWindow::scrollNCharsLeft(int p_ScrollNumCharsLeft)
     return 0;
   }
 
-  if((m_X + m_MaxWinChars) == m_pDocument->NumLines())
+  if((m_X + m_MaxWinChars) == m_pDocument->getNumLines())
   {
     // Do not move the scroll area left if text already at rightmost position
     return 0;
@@ -524,23 +524,23 @@ size_t TextWindow::scrollNLinesUp(int p_ScrollUpNumLinesUp)
     return 0;
   }
 
-  if(m_pDocument->NumLines() < m_MaxWinLines)
+  if(m_pDocument->getNumLines() < m_MaxWinLines)
   {
     // Do not move the scroll area upward if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_Y + m_MaxWinLines) == m_pDocument->NumLines())
+  if((m_Y + m_MaxWinLines) == m_pDocument->getNumLines())
   {
     // Do not move the scroll area upward if text already at bottom
     return 0;
   }
 
-  if((m_Y + m_MaxWinLines + p_ScrollUpNumLinesUp) > m_pDocument->NumLines())
+  if((m_Y + m_MaxWinLines + p_ScrollUpNumLinesUp) > m_pDocument->getNumLines())
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    p_ScrollUpNumLinesUp = m_pDocument->NumLines() - (m_Y + m_MaxWinLines);
+    p_ScrollUpNumLinesUp = m_pDocument->getNumLines() - (m_Y + m_MaxWinLines);
   }
 
   // Move text area upward by n * the height of one text line

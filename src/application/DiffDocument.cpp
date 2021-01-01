@@ -46,9 +46,8 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
   m_RightFileName = pRightFilePath;  
   m_DiffTime = stopWatch.Pick();
 
-  // Determine the maximum number of chars which either can be found is
-  // in the left or in the right file
-
+  // Determine the max. line length in chars. Can either be found in the
+  // left or in the right file.
   for(size_t i = 0; i < m_LeftDiffFile.getNumLines(); i++)
   {
     if(m_LeftDiffFile[i]->getNumChars() > m_MaxLineLength)
@@ -71,19 +70,24 @@ DiffDocument::~DiffDocument()
 
 }
 
-const char* DiffDocument::LeftFileName() const
+const char* DiffDocument::getLeftFileName() const
 {
   return m_LeftFileName.c_str();
 }
 
-const char* DiffDocument::RightFileName() const
+const char* DiffDocument::getRightFileName() const
 {
   return m_RightFileName.c_str();
 }
 
-long DiffDocument::DiffTime() const
+long DiffDocument::getElapsedDiffTime() const
 {
   return m_DiffTime;
+}
+
+size_t DiffDocument::getNumDifferences() const
+{
+  return m_DiffEngine.getNumDifferences();
 }
 
 size_t DiffDocument::NumAdded() const
@@ -102,49 +106,32 @@ size_t DiffDocument::NumDeleted() const
 }
 
 
-size_t DiffDocument::NumLines() const
+size_t DiffDocument::getNumLines() const
 {
 
   // Note: Right diff file should have the same number of lines
   return m_LeftDiffFile.getNumLines();
 }
 
-size_t DiffDocument::MaxLineLength() const
+size_t DiffDocument::getMaxLineLength() const
 {
   return m_MaxLineLength;
 }
 
 
-const DiffLine* DiffDocument::LeftLine(size_t index) const
-{
-  return m_LeftDiffFile[index];
-}
-
-
-const DiffLine* DiffDocument::RightLine(size_t index) const
-{
-  return m_RightDiffFile[index];
-}
-
-
-const DiffOutputFileBase& DiffDocument::LeftDiffFile() const
+const DiffOutputFileBase& DiffDocument::getLeftDiffFile() const
 {
   return m_LeftDiffFile;
 }
 
 
-const DiffOutputFileBase& DiffDocument::RightDiffFile() const
+const DiffOutputFileBase& DiffDocument::getRightDiffFile() const
 {
     return m_RightDiffFile;
 }
 
 
-size_t DiffDocument::getNumDifferences() const
-{
-  return m_DiffEngine.getNumDifferences();
-}
-
-size_t DiffDocument::NextDiffIndex() 
+size_t DiffDocument::getNextDiffLineId()
 {
   if(m_DiffIndicesIterator == m_DiffIndices.end())
   {
@@ -166,7 +153,7 @@ size_t DiffDocument::NextDiffIndex()
   return (*m_DiffIndicesIterator);
 }
 
-size_t DiffDocument::PrevDiffIndex() 
+size_t DiffDocument::getPrevDiffLineId() 
 {
   if(m_DiffIndicesIterator == m_DiffIndices.end())
   {
@@ -183,7 +170,7 @@ size_t DiffDocument::PrevDiffIndex()
   return (*m_DiffIndicesIterator);
 }
 
-bool DiffDocument::LineNumbersEnabled() const
+bool DiffDocument::areLineNumbersEnabled() const
 {
   return m_LineNumbersEnabled;
 }

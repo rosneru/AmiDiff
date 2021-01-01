@@ -135,11 +135,11 @@ void DiffWindow::Resized()
 
   // Set x-scroll-gadget's pot size in relation of new window size
   setXScrollPotSize(m_pTextArea1->MaxVisibleChars(),
-                    m_pDocument->MaxLineLength());
+                    m_pDocument->getMaxLineLength());
 
   // Set y-scroll-gadget's pot size in relation of new window size
   setYScrollPotSize(m_pTextArea1->MaxVisibleLines(),
-                    m_pDocument->NumLines());
+                    m_pDocument->getNumLines());
 
 
   // Paint the status bar
@@ -211,7 +211,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
   sprintf(m_StatusBarText,
           "Diff performed in %ld s. Total changes: %ld   |   ",
-          pDiffDocument->DiffTime(),
+          pDiffDocument->getElapsedDiffTime(),
           m_NumDifferences);
 
   sprintf(m_AddedText,
@@ -238,13 +238,13 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, (ULONG)m_pDocument->LeftFileName(),
+                    GTTX_Text, (ULONG)m_pDocument->getLeftFileName(),
                     TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadTxtRightFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, (ULONG)m_pDocument->RightFileName(),
+                    GTTX_Text, (ULONG)m_pDocument->getRightFileName(),
                     TAG_DONE);
 
 
@@ -266,17 +266,17 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
     m_pTextArea2 = NULL;
   }
 
-  m_pTextArea1 = new DiffWindowTextArea(pDiffDocument->LeftDiffFile(),
+  m_pTextArea1 = new DiffWindowTextArea(pDiffDocument->getLeftDiffFile(),
                                         m_pRPorts,
                                         m_pTextFont,
-                                        pDiffDocument->LineNumbersEnabled(),
-                                        pDiffDocument->MaxLineLength());
+                                        pDiffDocument->areLineNumbersEnabled(),
+                                        pDiffDocument->getMaxLineLength());
 
-  m_pTextArea2 = new DiffWindowTextArea(pDiffDocument->RightDiffFile(),
+  m_pTextArea2 = new DiffWindowTextArea(pDiffDocument->getRightDiffFile(),
                                         m_pRPorts,
                                         m_pTextFont,
-                                        pDiffDocument->LineNumbersEnabled(),
-                                        pDiffDocument->MaxLineLength());
+                                        pDiffDocument->areLineNumbersEnabled(),
+                                        pDiffDocument->getMaxLineLength());
 
   m_pTextArea1->AddSelectedText(2, 2, 6, 16);
 
@@ -300,11 +300,11 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
   // Set x-scroll-gadget's pot size in relation of new window size
   setXScrollPotSize(m_pTextArea1->MaxVisibleChars(),
-                    m_pDocument->MaxLineLength());
+                    m_pDocument->getMaxLineLength());
 
   // Set y-scroll-gadget's pot size in relation of new window size
   setYScrollPotSize(m_pTextArea1->MaxVisibleLines(),
-                    m_pDocument->NumLines());
+                    m_pDocument->getNumLines());
 
   return true;
 }
@@ -312,7 +312,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
 void DiffWindow::NavigateToNextDiff()
 {
-  size_t idx = m_pDocument->NextDiffIndex();
+  size_t idx = m_pDocument->getNextDiffLineId();
 
   // Scroll y to next diff
   YChangedHandler(idx);
@@ -324,7 +324,7 @@ void DiffWindow::NavigateToNextDiff()
 
 void DiffWindow::NavigateToPrevDiff()
 {
-  size_t idx = m_pDocument->PrevDiffIndex();
+  size_t idx = m_pDocument->getPrevDiffLineId();
 
   // Scroll y to prev diff
   YChangedHandler(idx);
@@ -532,7 +532,7 @@ bool DiffWindow::createGadgets()
   newGadget.ng_GadgetText = NULL;
 
   const char* pFileName = (m_pDocument == NULL) ? &m_EmptyChar
-                                                : m_pDocument->LeftFileName();
+                                                : m_pDocument->getLeftFileName();
 
   m_pGadTxtLeftFile = CreateGadget(TEXT_KIND,
                                    pFakeGad,
@@ -547,7 +547,7 @@ bool DiffWindow::createGadgets()
 
   newGadget.ng_LeftEdge = gad2Left;
   pFileName = (m_pDocument == NULL) ? &m_EmptyChar
-                                    : m_pDocument->RightFileName();
+                                    : m_pDocument->getRightFileName();
 
   m_pGadTxtRightFile = CreateGadget(TEXT_KIND,
                                     m_pGadTxtLeftFile,
@@ -630,13 +630,13 @@ void DiffWindow::resizeGadgets()
   GT_SetGadgetAttrs(m_pGadTxtLeftFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, (ULONG)m_pDocument->LeftFileName(),
+                    GTTX_Text, (ULONG)m_pDocument->getLeftFileName(),
                     TAG_DONE);
 
   GT_SetGadgetAttrs(m_pGadTxtRightFile,
                     m_pWindow,
                     NULL,
-                    GTTX_Text, (ULONG)m_pDocument->RightFileName(),
+                    GTTX_Text, (ULONG)m_pDocument->getRightFileName(),
                     TAG_DONE);
 }
 

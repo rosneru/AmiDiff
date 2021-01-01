@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
     // printf("\nRight file:\n");
     // printFile(diffB);
 
-    BOOST_CHECK_EQUAL(diffA.NumLines(), 10);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 10);
     BOOST_CHECK_EQUAL(diffA.GetLineText(0), "AAAA");
     BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLineText(1), "BBBB");
@@ -125,7 +125,7 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
     BOOST_CHECK_EQUAL(diffA.GetLineText(9), "GGGG");
     BOOST_CHECK_EQUAL(diffA.GetLineState(9), DiffLine::Normal);
 
-    BOOST_CHECK_EQUAL(diffB.NumLines(), 10);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 10);
     BOOST_CHECK_EQUAL(diffB.GetLineText(0), "AAAA");
     BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffB.GetLineText(1), "BBBB");
@@ -204,7 +204,7 @@ BOOST_AUTO_TEST_CASE( testcase_03_simple )
     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
                           "Comparing...", cancelRequested, m_DiffIndices);
 
-    BOOST_CHECK_EQUAL(diffA.NumLines(), 7);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 7);
     BOOST_CHECK_EQUAL(diffA.GetLineText(0), "AAAA");
     BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLineNum(0), "1 ");
@@ -229,7 +229,7 @@ BOOST_AUTO_TEST_CASE( testcase_03_simple )
 
 
 
-    BOOST_CHECK_EQUAL(diffB.NumLines(), 7);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 7);
     BOOST_CHECK_EQUAL(diffB.GetLineText(0), "AAAA");
     BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffB.GetLineNum(0), "1 ");
@@ -286,7 +286,7 @@ BOOST_AUTO_TEST_CASE( testcase_03_var2 )
     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
                           "Comparing...", cancelRequested, m_DiffIndices);
 
-    BOOST_CHECK_EQUAL(diffA.NumLines(), 8);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 8);
     BOOST_CHECK_EQUAL(diffA.GetLineText(0), "AAAA");
     BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLineNum(0), "1 ");
@@ -312,7 +312,7 @@ BOOST_AUTO_TEST_CASE( testcase_03_var2 )
     BOOST_CHECK_EQUAL(diffA.GetLineState(7), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLineNum(7), "7 ");
 
-    BOOST_CHECK_EQUAL(diffB.NumLines(), 8);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 8);
     BOOST_CHECK_EQUAL(diffB.GetLineText(0), "AAAA");
     BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffB.GetLineNum(0), "1 ");
@@ -382,7 +382,7 @@ BOOST_AUTO_TEST_CASE( testcase_04 )
     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
                           "Comparing...", cancelRequested, m_DiffIndices);
 
-    BOOST_CHECK_EQUAL(diffA.NumLines(), 4);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 4);
     BOOST_CHECK_EQUAL(diffA.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLineText(1), "Line 2");
@@ -392,7 +392,7 @@ BOOST_AUTO_TEST_CASE( testcase_04 )
     BOOST_CHECK_EQUAL(diffA.GetLineText(3), "Line 4");
     BOOST_CHECK_EQUAL(diffA.GetLineState(3), DiffLine::Normal);
 
-    BOOST_CHECK_EQUAL(diffB.NumLines(), 4);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 4);
     BOOST_CHECK_EQUAL(diffB.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffB.GetLineText(1), "Line 2");
@@ -447,7 +447,7 @@ BOOST_AUTO_TEST_CASE( testcase_05 )
     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
                           "Comparing...", cancelRequested, m_DiffIndices);
 
-    BOOST_CHECK_EQUAL(diffA.NumLines(), 4);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 4);
     BOOST_CHECK_EQUAL(diffA.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLineText(1), "");
@@ -457,7 +457,7 @@ BOOST_AUTO_TEST_CASE( testcase_05 )
     BOOST_CHECK_EQUAL(diffA.GetLineText(3), "Line 4");
     BOOST_CHECK_EQUAL(diffA.GetLineState(3), DiffLine::Normal);
 
-    BOOST_CHECK_EQUAL(diffB.NumLines(), 4);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 4);
     BOOST_CHECK_EQUAL(diffB.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffB.GetLineText(1), "Line 2");
@@ -515,7 +515,7 @@ BOOST_AUTO_TEST_CASE( DiffTest_06_Mixed )
     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
                           "Comparing...", cancelRequested, m_DiffIndices);
 
-    BOOST_CHECK_EQUAL(diffA.NumLines(), 12);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 12);
     BOOST_CHECK_EQUAL(diffA.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLine(0)->getLineNumText(), "1 ");
@@ -553,7 +553,7 @@ BOOST_AUTO_TEST_CASE( DiffTest_06_Mixed )
     BOOST_CHECK_EQUAL(diffA.GetLineState(11), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLineNum(11), "9 ");
 
-    BOOST_CHECK_EQUAL(diffB.NumLines(), 12);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 12);
     BOOST_CHECK_EQUAL(diffB.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffB.GetLineNum(0), "1 ");
@@ -641,7 +641,7 @@ BOOST_AUTO_TEST_CASE( testcase_12_endless_loop )
     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
                           "Comparing...", cancelRequested, m_DiffIndices);
 
-    BOOST_CHECK_EQUAL(diffA.NumLines(), 5);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 5);
     BOOST_CHECK_EQUAL(diffA.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLineText(1), "Line 2");
@@ -654,7 +654,7 @@ BOOST_AUTO_TEST_CASE( testcase_12_endless_loop )
     BOOST_CHECK_EQUAL(diffA.GetLineState(4), DiffLine::Normal);
 
 
-    BOOST_CHECK_EQUAL(diffB.NumLines(), 5);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 5);
     BOOST_CHECK_EQUAL(diffB.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffB.GetLineText(1), "Line 2");
@@ -715,7 +715,7 @@ BOOST_AUTO_TEST_CASE( testcase_12a )
     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
                           "Comparing...", cancelRequested, m_DiffIndices);
 
-    BOOST_CHECK_EQUAL(diffA.NumLines(), 6);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 6);
     BOOST_CHECK_EQUAL(diffA.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLineText(1), "Line 2");
@@ -729,7 +729,7 @@ BOOST_AUTO_TEST_CASE( testcase_12a )
     BOOST_CHECK_EQUAL(diffA.GetLineText(5), "Line 5");
     BOOST_CHECK_EQUAL(diffA.GetLineState(5), DiffLine::Normal);
 
-    BOOST_CHECK_EQUAL(diffB.NumLines(), 6);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 6);
     BOOST_CHECK_EQUAL(diffB.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffB.GetLineText(1), "Line 2");
@@ -754,7 +754,7 @@ BOOST_AUTO_TEST_CASE( testcase_12a )
 }
 
 
-size_t NextDiffIndex(std::list<size_t> m_DiffIndices, 
+size_t getNextDiffLineId(std::list<size_t> m_DiffIndices, 
                      std::list<size_t>::iterator m_DiffIndicesIterator) 
 {
   if(m_DiffIndicesIterator == m_DiffIndices.end())
@@ -777,7 +777,7 @@ size_t NextDiffIndex(std::list<size_t> m_DiffIndices,
   return (*m_DiffIndicesIterator);
 }
 
-size_t PrevDiffIndex(std::list<size_t> m_DiffIndices, 
+size_t getPrevDiffLineId(std::list<size_t> m_DiffIndices, 
                      std::list<size_t>::iterator m_DiffIndicesIterator) 
 {
   if(m_DiffIndicesIterator == m_DiffIndices.end())
@@ -856,7 +856,7 @@ size_t PrevDiffIndex(std::list<size_t> m_DiffIndices,
 //       DiffLine::Changed,
 //     };
 
-//     size_t pIdx = NextDiffIndex(m_DiffIndices, m_DiffIndicesIterator);
+//     size_t pIdx = getNextDiffLineId(m_DiffIndices, m_DiffIndicesIterator);
 //     int counter = 0;
 //     do
 //     {
@@ -894,7 +894,7 @@ size_t PrevDiffIndex(std::list<size_t> m_DiffIndices,
 //         }
 //       }
 
-//       pIdx = NextDiffIndex(m_DiffIndices, m_DiffIndicesIterator);
+//       pIdx = getNextDiffLineId(m_DiffIndices, m_DiffIndicesIterator);
 //       counter++;
 //     }
 //     while(pIdx != NULL);
@@ -935,8 +935,8 @@ BOOST_AUTO_TEST_CASE( DiffTest_31_Marking )
     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
                           "Comparing...", cancelRequested, m_DiffIndices);
 
-    BOOST_CHECK_EQUAL(diffA.NumLines(), 6);
-    BOOST_CHECK_EQUAL(diffB.NumLines(), 6);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 6);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 6);
 
     TextSelection selection;
     selection.Add(1, 1, 2, 7);
@@ -986,7 +986,7 @@ BOOST_AUTO_TEST_CASE( testcase_crash )
     BOOST_CHECK_EQUAL(diffEngine.getNumDeleted(), 0);
     BOOST_CHECK_EQUAL(diffEngine.getNumChanged(), 2);
 
-    BOOST_CHECK_EQUAL(diffA.NumLines(), 36);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 36);
     // BOOST_CHECK_EQUAL(diffA.GetLineText(0), "");
     // BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
     // BOOST_CHECK_EQUAL(diffA.GetLineNum(0), "");
@@ -1014,7 +1014,7 @@ BOOST_AUTO_TEST_CASE( testcase_crash )
     // BOOST_CHECK_EQUAL(diffA.GetLineState(7), DiffLine::Normal);
     // BOOST_CHECK_EQUAL(diffA.GetLineNum(7), "7 ");
 
-    BOOST_CHECK_EQUAL(diffB.NumLines(), 36);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 36);
     // BOOST_CHECK_EQUAL(diffB.GetLineText(0), "AAAA");
     // BOOST_CHECK_EQUAL(diffB.GetLineState(0), DiffLine::Normal);
     // BOOST_CHECK_EQUAL(diffB.GetLineNum(0), "1 ");

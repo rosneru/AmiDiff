@@ -34,35 +34,32 @@ public:
 
   virtual ~DiffDocument();
 
-  const char* LeftFileName() const;
-  const char* RightFileName() const;
+  const char* getLeftFileName() const;
+  const char* getRightFileName() const;
   
-  long DiffTime() const;
+  long getElapsedDiffTime() const;
+
+  size_t getNumDifferences() const;
   size_t NumAdded() const;
   size_t NumChanged() const;
   size_t NumDeleted() const;
 
-  size_t NumLines() const;
+  size_t getNumLines() const;
 
-  size_t MaxLineLength() const;
+  size_t getMaxLineLength() const;
 
-  const DiffLine* LeftLine(size_t index) const;
-  const DiffLine* RightLine(size_t index) const;
+  const DiffOutputFileBase& getLeftDiffFile() const;
+  const DiffOutputFileBase& getRightDiffFile() const;
 
-  const DiffOutputFileBase& LeftDiffFile() const;
-  const DiffOutputFileBase& RightDiffFile() const;
+  size_t getNextDiffLineId();
+  size_t getPrevDiffLineId();
 
-  size_t getNumDifferences() const;
-
-  size_t NextDiffIndex();
-  size_t PrevDiffIndex();
-
-  bool LineNumbersEnabled() const;
+  bool areLineNumbersEnabled() const;
 
 private:
   std::string m_LeftFileName;
   std::string m_RightFileName;
-  MemoryPool m_Pool; // Ensure Pool is created before the DiffFiles.
+  MemoryPool m_Pool; // Ensure the pool is created before the DiffFiles
   DiffInputFileAmiga m_LeftSrcFile;
   DiffInputFileAmiga m_RightSrcFile;
   DiffOutputFileAmiga m_LeftDiffFile;
