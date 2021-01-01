@@ -144,11 +144,11 @@ private:
   /**
    * Print the given diff line at given y-position topEdge.
    */
-  void printDiffLine(const DiffLine* pLeftLine,
-                    WORD topEdge,
-                    bool bHorizontallyScrolled = false,
-                    int startIndex = -1,
-                    int numChars = 0);
+  void printDiffLine(ULONG lineId,
+                     WORD topEdge,
+                     bool bHorizontallyScrolled = false,
+                     int startIndex = -1,
+                     int numChars = 0);
 
   /**
    * Calculate how many chars of given DiffLine must be print 

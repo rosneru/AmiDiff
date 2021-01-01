@@ -263,17 +263,10 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
                  m_HScrollRect.Bottom());
 
   // Fill the gap with the following chars
-  for(unsigned long i = m_Y; i < m_Y + m_AreaLineHeight; i++)
+  for(ULONG lineId = m_Y; lineId < m_Y + m_AreaLineHeight; lineId++)
   {
-    const DiffLine* pLine = m_DiffFile[i];
-
-    if(pLine == NULL)
-    {
-      break;
-    }
-
-    printDiffLine(pLine,
-                  (i - m_Y)  * m_FontHeight_pix,
+    printDiffLine(lineId,
+                  (lineId - m_Y)  * m_FontHeight_pix,
                   true,
                   m_X + m_AreaCharWidth,
                   -numChars);
@@ -322,16 +315,10 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
 
 
   // fill the gap with the previous chars
-  for(unsigned long i = m_Y; i < m_Y + m_AreaLineHeight; i++)
+  for(ULONG lineId = m_Y; lineId < m_Y + m_AreaLineHeight; lineId++)
   {
-    const DiffLine* pLine = m_DiffFile[i];
-    if(pLine == NULL)
-    {
-      break;
-    }
-
-    printDiffLine(pLine,
-                  (i - m_Y) * m_FontHeight_pix,
+    printDiffLine(lineId,
+                  (lineId - m_Y) * m_FontHeight_pix,
                   true,
                   m_X - numChars,
                   numChars);
@@ -381,15 +368,9 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
 
   for(ULONG i = 0; i < numLines; i++)
   {
-    int lineIndex = m_Y + m_AreaLineHeight + i;
-    const DiffLine* pLine = m_DiffFile[lineIndex];
-    if(pLine == NULL)
-    {
-      break;
-    }
-
-    int paintLineIndex = m_AreaLineHeight - numLines + i;
-    printDiffLine(pLine, paintLineIndex * m_FontHeight_pix);
+    ULONG lineId = m_Y + m_AreaLineHeight + i;
+    WORD topEdge = m_AreaLineHeight - numLines + i;
+    printDiffLine(lineId, topEdge * m_FontHeight_pix);
   }
 
   m_Y += numLines;
@@ -429,15 +410,8 @@ ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
   // Fill the gap with the previous text lines
   for(ULONG i = 0; i < numLines; i++)
   {
-    int lineIndex = m_Y - numLines + i;
-    const DiffLine* pLeftLine = m_DiffFile[lineIndex];
-
-    if(pLeftLine == NULL)
-    {
-      break;
-    }
-
-    printDiffLine(pLeftLine, i * m_FontHeight_pix);
+    int lineId = m_Y - numLines + i;
+    printDiffLine(lineId, i * m_FontHeight_pix);
   }
 
   m_Y -= numLines;
@@ -456,37 +430,36 @@ void DiffWindowTextArea::PrintPageAt(ULONG left, ULONG top)
 
 void DiffWindowTextArea::PrintPage()
 {
-  for(ULONG i = m_Y; (i - m_Y) < m_AreaLineHeight; i++)
+  for(ULONG lineId = m_Y; (lineId - m_Y) < m_AreaLineHeight; lineId++)
   {
-    if(i >= m_NumLines)
+    if(lineId >= m_NumLines)
     {
       break;
     }
 
-    const DiffLine* pLine = m_DiffFile[i];
-    if(pLine == NULL)
-    {
-      break;
-    }
-
-    printDiffLine(pLine, (i - m_Y) * m_FontHeight_pix);
+    printDiffLine(lineId, (lineId - m_Y) * m_FontHeight_pix);
   }
 }
 
 
-void DiffWindowTextArea::printDiffLine(const DiffLine* pLine,
+void DiffWindowTextArea::printDiffLine(ULONG lineId,
                                        WORD topEdge,
                                        bool bHorizontallyScrolled,
                                        int startIndex,
                                        int numChars)
 {
-  ULONG indent = 0;
+  const DiffLine* pLine = m_DiffFile[lineId];
+  if(pLine == NULL)
+  {
+    return;
+  }
 
   if(startIndex < 0)
   {
     startIndex = m_X;
   }
 
+  ULONG indent = 0;
   if(numChars < 0)
   {
     // A negative number means that only the given number of chars is 
