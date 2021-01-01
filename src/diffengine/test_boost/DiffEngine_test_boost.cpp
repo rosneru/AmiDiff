@@ -22,8 +22,7 @@
 #include "DiffEngine.h"
 #include "DiffLine.h"
 #include "ProgressReporter.h"
-#include "TextSelection.h"
-#include "TextSelectionItem.h"
+#include "SelectableDiffFile.h"
 
 ProgressReporter progress;
 
@@ -911,11 +910,13 @@ size_t getPrevDiffLineId(std::list<size_t> m_DiffIndices,
 
 
 /**
- * testcase_31
+ * testcase_32
  *
- * Testing the text select / marking ability
+ * Test the methods SelectableDiffFile::getNumNormalChars() and
+ * getNumMarkedChars() according the algorithm developed in Excel sheet
+ * 'ADiffView - selected text and scrolling.xlsx'
  */
-BOOST_AUTO_TEST_CASE( DiffTest_31_Marking )
+BOOST_AUTO_TEST_CASE( DiffTest_32_NumChars )
 {
   try
   {
@@ -923,11 +924,11 @@ BOOST_AUTO_TEST_CASE( DiffTest_31_Marking )
     std::list<size_t> m_DiffIndices;
 
     DiffInputFileLinux srcA(cancelRequested, 
-                            "testfiles/testcase_31_marking_left.txt",
+                            "testfiles/testcase_32_numChars_left.txt",
                             true);
 
     DiffInputFileLinux srcB(cancelRequested, 
-                            "testfiles/testcase_31_marking_right.txt",
+                            "testfiles/testcase_32_numChars_right.txt",
                             true);
 
     DiffOutputFileLinux diffA(srcA);
@@ -935,13 +936,35 @@ BOOST_AUTO_TEST_CASE( DiffTest_31_Marking )
     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
                           "Comparing...", cancelRequested, m_DiffIndices);
 
-    BOOST_CHECK_EQUAL(diffA.getNumLines(), 6);
-    BOOST_CHECK_EQUAL(diffB.getNumLines(), 6);
+    BOOST_CHECK_EQUAL(diffA.getNumLines(), 2);
+    BOOST_CHECK_EQUAL(diffB.getNumLines(), 2);
 
-    TextSelection selection;
-    selection.Add(1, 1, 2, 7);
-    selection.Add(5, 5, 4, 5);
-    selection.Add(5, 5, 12, 14);
+    SelectableDiffFile diffASelectable(diffA);
+    diffASelectable.addSelection(0, 0, 7, 14);
+    diffASelectable.addSelection(0, 0, 26, 28);
+
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 0), 7);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumMarkedChars(0, 7), 8);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 15), 11);
+
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 5), 2);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumMarkedChars(0, 7), 8);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 15), 11);
+
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 7), 0);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumMarkedChars(0, 7), 8);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 15), 11);
+
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 10), 0);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumMarkedChars(0, 10), 5);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 15), 11);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumMarkedChars(0, 26), 3);
+
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 16), 10);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumMarkedChars(0, 26), 3);
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 29), 22);
+
+    BOOST_CHECK_EQUAL(diffASelectable.getNumNormalChars(0, 30), 21);
 
   }
   catch(const char* pError)

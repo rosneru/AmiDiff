@@ -28,3 +28,16 @@ void SelectableDiffFile::addSelection(unsigned long fromLine,
 {
   m_TextSelection.Add(fromLine, toLine, fromColumn, toColumn);
 }
+
+
+unsigned long SelectableDiffFile::getNumNormalChars(unsigned long lineId, 
+                                                    unsigned long fromCharId)
+{
+  return 0;
+}
+
+unsigned long SelectableDiffFile::getNumMarkedChars(unsigned long lineId, 
+                                                    unsigned long fromCharId)
+{
+  return 0;
+}

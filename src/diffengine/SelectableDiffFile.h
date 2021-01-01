@@ -25,6 +25,11 @@ public:
                     unsigned long fromColumn, 
                     unsigned long toColumn);
 
+  unsigned long getNumNormalChars(unsigned long lineId, 
+                                  unsigned long fromCharId);
+
+  unsigned long getNumMarkedChars(unsigned long lineId, 
+                                  unsigned long fromCharId);
 private:
   const DiffFileBase& m_DiffFile;
   TextSelection m_TextSelection;
