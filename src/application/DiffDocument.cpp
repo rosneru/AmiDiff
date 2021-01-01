@@ -90,17 +90,17 @@ size_t DiffDocument::getNumDifferences() const
   return m_DiffEngine.getNumDifferences();
 }
 
-size_t DiffDocument::NumAdded() const
+size_t DiffDocument::getNumAdded() const
 {
   return m_DiffEngine.getNumAdded();
 }
 
-size_t DiffDocument::NumChanged() const
+size_t DiffDocument::getNumChanged() const
 {
   return m_DiffEngine.getNumChanged();
 }
 
-size_t DiffDocument::NumDeleted() const
+size_t DiffDocument::getNumDeleted() const
 {
   return m_DiffEngine.getNumDeleted();
 }

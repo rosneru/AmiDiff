@@ -40,9 +40,9 @@ public:
   long getElapsedDiffTime() const;
 
   size_t getNumDifferences() const;
-  size_t NumAdded() const;
-  size_t NumChanged() const;
-  size_t NumDeleted() const;
+  size_t getNumAdded() const;
+  size_t getNumChanged() const;
+  size_t getNumDeleted() const;
 
   size_t getNumLines() const;
 

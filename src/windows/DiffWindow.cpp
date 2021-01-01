@@ -205,9 +205,9 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
   m_pDocument = pDiffDocument;
 
-  m_NumDifferences = pDiffDocument->NumAdded()
-                   + pDiffDocument->NumChanged()
-                   + pDiffDocument->NumDeleted();
+  m_NumDifferences = pDiffDocument->getNumAdded()
+                   + pDiffDocument->getNumChanged()
+                   + pDiffDocument->getNumDeleted();
 
   sprintf(m_StatusBarText,
           "Diff performed in %ld s. Total changes: %ld   |   ",
@@ -216,15 +216,15 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
   sprintf(m_AddedText,
           "%zu Added",
-          pDiffDocument->NumAdded());
+          pDiffDocument->getNumAdded());
 
   sprintf(m_ChangedText,
           "%zu Changed",
-          pDiffDocument->NumChanged());
+          pDiffDocument->getNumChanged());
 
   sprintf(m_DeletedText,
           "%zu Deleted",
-          pDiffDocument->NumDeleted());
+          pDiffDocument->getNumDeleted());
 
   if(!IsOpen())
   {
