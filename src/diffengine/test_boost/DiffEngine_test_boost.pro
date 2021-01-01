@@ -24,6 +24,7 @@ SOURCES += \
     ../DiffOutputFileBase.cpp \
     ../DiffOutputFileLinux.cpp \
     ../DiffLine.cpp \
+    ../SelectableDiffFile.cpp \
     ../../model/Pair.cpp \
     ../../textselect/TextSelection.cpp \
     ../../textselect/TextSelectionItem.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     ../DiffOutputFileBase.h \
     ../DiffOutputFileLinux.h \
     ../DiffLine.h \
+    ../SelectableDiffFile.h \
     ../../model/Pair.h \
     ../../textselect/TextSelection.h \
     ../../textselect/TextSelectionItem.h \
