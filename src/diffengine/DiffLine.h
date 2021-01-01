@@ -40,7 +40,7 @@ public:
    */
   DiffLine(const char* pText,
            LineState state,
-           const char* pFormattedLineNumber);
+           const char* pLineNumberText);
 
 
   virtual ~DiffLine();
@@ -48,28 +48,23 @@ public:
   /**
    * Returns the text of the diff line
    */
-  const char* Txt() const;
+  const char* getText() const;
 
-  /**
-   * Returns true if this line's text and line number are only flat
-   * copied (pointers to) from another DiffLine
-   */
-  bool IsLinked() const;
 
   /**
    * Returns the line length in number of chars.
    */
-  size_t NumChars() const;
+  size_t getNumChars() const;
 
   /**
    * Return the state of the this line
    */
-  LineState State() const;
+  LineState getState() const;
 
   /**
    * Set the state of this line.
    */
-  void SetState(LineState state);
+  void setState(LineState state);
 
   /**
    * Return the LineNumber as a digit-formatted text.
@@ -80,24 +75,24 @@ public:
    * Returns NULL if collecting the line numbers was't enabled in the
    * corresponding src DiffFile before PreProcess().
    */
-  const char* LineNum() const;
+  const char* getLineNumText() const;
 
   /**
    *  Set the digit-formatted number for this line.
    */
-  void SetLineNum(const char* pLineNum);
-
+  void setLineNumText(const char* pLineNum);
 
   /**
-   * Returns the token which is asociated with this line
+   * Returns the token which has been calculated as a numerical
+   * representation of this lines text context
    */
-  unsigned long Token() const;
+  unsigned long getToken() const;
 
 protected:
   const char* m_Text;
   const size_t m_TextLength;
   LineState m_State;
-  const char* m_pFormattedLineNumber;
+  const char* m_pLineNumberText;
   unsigned long m_Token;
   bool m_bIsLinked;
 };

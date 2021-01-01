@@ -32,7 +32,7 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
   if(lineNumbersEnabled)
   {
     const DiffLine* pLine = diffFile[0];
-    const char* pLineNum = pLine->LineNum();
+    const char* pLineNum = pLine->getLineNumText();
 
     m_LineNumsWidth_chars = strlen(pLineNum);
     m_LineNumsWidth_pix = m_LineNumsWidth_chars * m_FontWidth_pix;
@@ -107,7 +107,7 @@ void DiffWindowTextArea::SetWidthHeight(unsigned long width,
 
 void DiffWindowTextArea::Clear()
 {
-  // EraseRect(m_pRPorts->LineNum(),
+  // EraseRect(m_pRPorts->getLineNumText(),
   //           Left() + 2,
   //           Top() + 2,
   //           Right() - 3,
@@ -476,21 +476,21 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
     //
 
     // Move rastport cursor to start of line numbers block
-    Move(m_pRPorts->LineNum(),
+    Move(m_pRPorts->getLineNumText(),
         Left() + indent + 2,
         topEdge + Top() + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
-    const char* pLineNum = pLine->LineNum();
+    const char* pLineNum = pLine->getLineNumText();
 
     // Print line's original line number
-    Text(m_pRPorts->LineNum(), pLineNum, m_LineNumsWidth_chars);
+    Text(m_pRPorts->getLineNumText(), pLineNum, m_LineNumsWidth_chars);
   }
 
   // Getting the RastPort for the line to draw in. This depends on
   // the line background color which itself depends on the diff state
   // of the line.
-  RastPort* pRPort = diffStateToRastPort(pLine->State());
+  RastPort* pRPort = diffStateToRastPort(pLine->getState());
 
   long numCharsToPrint = calcNumPrintChars(pLine, numChars, startIndex);
   if(numCharsToPrint <= 0)
@@ -505,7 +505,7 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
 
   // Print line
   Text(pRPort,
-       pLine->Txt() + startIndex,
+       pLine->getText() + startIndex,
        numCharsToPrint);
 }
 
@@ -523,7 +523,7 @@ ULONG DiffWindowTextArea::calcNumPrintChars(const DiffLine* pDiffLine,
   else
   {
     // Determine how many characters would be print theoretically
-    numCharsToPrint = pDiffLine->NumChars() - m_X;
+    numCharsToPrint = pDiffLine->getNumChars() - m_X;
   }
 
   if(numCharsToPrint > m_AreaCharWidth)
@@ -533,10 +533,10 @@ ULONG DiffWindowTextArea::calcNumPrintChars(const DiffLine* pDiffLine,
   }
 
   if((startIndex > -1) &&
-     (numCharsToPrint + startIndex > pDiffLine->NumChars()))
+     (numCharsToPrint + startIndex > pDiffLine->getNumChars()))
   {
     // Limit the number of printed chars to line length
-    numCharsToPrint = pDiffLine->NumChars() - startIndex;
+    numCharsToPrint = pDiffLine->getNumChars() - startIndex;
   }
 
   return numCharsToPrint;

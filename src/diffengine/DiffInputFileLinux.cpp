@@ -106,6 +106,6 @@ void DiffInputFileLinux::collectLineNumbers(size_t maxNumLines)
     sprintf(pLineNumber, "%*d ", digits, (i + 1));
 
     DiffLine* pLine = GetLine(i);
-    pLine->SetLineNum(pLineNumber);
+    pLine->setLineNumText(pLineNumber);
   }
 }

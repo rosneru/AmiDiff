@@ -123,7 +123,7 @@ void DiffInputFileAmiga::collectLineNumbers(size_t maxNumLines)
     sprintf(pLineNumber, "%*d ", digits, (i + 1));
 
     DiffLine* pLine = (*this)[i];
-    pLine->SetLineNum(pLineNumber);
+    pLine->setLineNumText(pLineNumber);
 
     if(m_IsCancelRequested == true)
     {

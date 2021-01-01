@@ -34,7 +34,7 @@ void printFile(DiffFileBase& file)
     {
       const char* pLineState;
       DiffLine* pLine = file.GetLine(i);
-      switch (pLine->State())
+      switch (pLine->getState())
       {
       case DiffLine::Normal:
         pLineState = pStates[0];
@@ -57,7 +57,7 @@ void printFile(DiffFileBase& file)
         break;
       }
 
-      printf("%s: %s %s\n", pLine->LineNum(), pLineState, pLine->Txt());
+      printf("%s: %s %s\n", pLine->getLineNumText(), pLineState, pLine->getText());
     }
 }
 
@@ -518,7 +518,7 @@ BOOST_AUTO_TEST_CASE( DiffTest_06_Mixed )
     BOOST_CHECK_EQUAL(diffA.NumLines(), 12);
     BOOST_CHECK_EQUAL(diffA.GetLineText(0), "Line 1");
     BOOST_CHECK_EQUAL(diffA.GetLineState(0), DiffLine::Normal);
-    BOOST_CHECK_EQUAL(diffA.GetLine(0)->LineNum(), "1 ");
+    BOOST_CHECK_EQUAL(diffA.GetLine(0)->getLineNumText(), "1 ");
     BOOST_CHECK_EQUAL(diffA.GetLineText(1), "");
     BOOST_CHECK_EQUAL(diffA.GetLineState(1), DiffLine::Normal);
     BOOST_CHECK_EQUAL(diffA.GetLineNum(1), "  ");

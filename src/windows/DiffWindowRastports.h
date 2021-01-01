@@ -23,7 +23,7 @@ public:
 
   struct RastPort* Window();
   struct RastPort* APenBackgr();
-  struct RastPort* LineNum();
+  struct RastPort* getLineNumText();
   struct RastPort* TextDefault();
   struct RastPort* TextSelected();
   struct RastPort* TextRedBG();

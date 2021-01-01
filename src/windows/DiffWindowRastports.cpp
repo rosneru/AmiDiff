@@ -53,7 +53,7 @@ struct RastPort* DiffWindowRastports::APenBackgr()
   return &m_RPortAPenBackgr;
 }
 
-struct RastPort* DiffWindowRastports::LineNum()
+struct RastPort* DiffWindowRastports::getLineNumText()
 {
   return &m_RPortLineNum;
 }

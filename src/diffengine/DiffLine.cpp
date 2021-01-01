@@ -5,7 +5,7 @@ DiffLine::DiffLine(const char* pText)
   : m_Text(pText),
     m_TextLength(strlen(pText)),
     m_State(Normal),
-    m_pFormattedLineNumber(NULL),
+    m_pLineNumberText(NULL),
     m_Token(0),
     m_bIsLinked(false)
 {
@@ -18,11 +18,11 @@ DiffLine::DiffLine(const char* pText)
 
 DiffLine::DiffLine(const char* pText,
                    LineState state,
-                   const char* pFormattedLineNumber)
+                   const char* pLineNumberText)
   : m_Text(pText),
     m_TextLength(strlen(pText)),
     m_State(state),
-    m_pFormattedLineNumber(pFormattedLineNumber),
+    m_pLineNumberText(pLineNumberText),
     m_Token(0),
     m_bIsLinked(true)
 {
@@ -32,42 +32,37 @@ DiffLine::~DiffLine()
 {
 }
 
-const char* DiffLine::Txt() const
+const char* DiffLine::getText() const
 {
   return m_Text;
 }
 
-bool DiffLine::IsLinked() const
-{
-  return m_bIsLinked;
-}
-
-size_t DiffLine::NumChars() const
+size_t DiffLine::getNumChars() const
 {
   return m_TextLength;
 }
 
-DiffLine::LineState DiffLine::State() const
+DiffLine::LineState DiffLine::getState() const
 {
   return m_State;
 }
 
-const char*DiffLine::LineNum() const
+const char*DiffLine::getLineNumText() const
 {
-  return m_pFormattedLineNumber;
+  return m_pLineNumberText;
 }
 
-void DiffLine::SetLineNum(const char* pFormattedLineNum)
+void DiffLine::setLineNumText(const char* pFormattedLineNum)
 {
-  m_pFormattedLineNumber = pFormattedLineNum;
+  m_pLineNumberText = pFormattedLineNum;
 }
 
-void DiffLine::SetState(DiffLine::LineState state)
+void DiffLine::setState(DiffLine::LineState state)
 {
   m_State = state;
 }
 
-unsigned long DiffLine::Token() const
+unsigned long DiffLine::getToken() const
 {
   return m_Token;
 }

@@ -125,15 +125,15 @@ void DiffEngine::createDiffFiles()
     // Handle the equal lines
     //
     while( (lineA < m_AIn.NumLines())
-     && (m_AIn[lineA]->State() == DiffLine::Normal)
+     && (m_AIn[lineA]->getState() == DiffLine::Normal)
      && (lineB < m_BIn.NumLines())
-     && (m_BIn[lineB]->State() == DiffLine::Normal))
+     && (m_BIn[lineB]->getState() == DiffLine::Normal))
     {
       const DiffLine* pA = m_AIn[lineA++];
       const DiffLine* pB = m_BIn[lineB++];
 
-      m_AOut.AddLine(pA->Txt(), DiffLine::Normal, pA->LineNum());
-      m_pBOut.AddLine(pB->Txt(), DiffLine::Normal, pB->LineNum());
+      m_AOut.AddLine(pA->getText(), DiffLine::Normal, pA->getLineNumText());
+      m_pBOut.AddLine(pB->getText(), DiffLine::Normal, pB->getLineNumText());
     }
 
     //
@@ -142,14 +142,14 @@ void DiffEngine::createDiffFiles()
     bool bBlockAlreadyAdded = false;
     while((lineA < m_AIn.NumLines())
       && (lineB < m_BIn.NumLines())
-      && (m_AIn[lineA]->State() != DiffLine::Normal)
-      && (m_BIn[lineB]->State() != DiffLine::Normal))
+      && (m_AIn[lineA]->getState() != DiffLine::Normal)
+      && (m_BIn[lineB]->getState() != DiffLine::Normal))
     {
       const DiffLine* pA = m_AIn[lineA++];
       const DiffLine* pB = m_BIn[lineB++];
 
-      long idx = m_AOut.AddLine(pA->Txt(), DiffLine::Changed, pA->LineNum());
-      m_pBOut.AddLine(pB->Txt(), DiffLine::Changed, pB->LineNum());
+      long idx = m_AOut.AddLine(pA->getText(), DiffLine::Changed, pA->getLineNumText());
+      m_pBOut.AddLine(pB->getText(), DiffLine::Changed, pB->getLineNumText());
 
       if(!bBlockAlreadyAdded)
       {
@@ -162,10 +162,10 @@ void DiffEngine::createDiffFiles()
 
     bBlockAlreadyAdded = false;
     while((lineA < m_AIn.NumLines())
-       && (lineB >= m_BIn.NumLines() || (m_AIn[lineA]->State() != DiffLine::Normal)))
+       && (lineB >= m_BIn.NumLines() || (m_AIn[lineA]->getState() != DiffLine::Normal)))
     {
       const DiffLine* pA = m_AIn[lineA++];
-      long idx = m_AOut.AddLine(pA->Txt(), DiffLine::Deleted, pA->LineNum());
+      long idx = m_AOut.AddLine(pA->getText(), DiffLine::Deleted, pA->getLineNumText());
       m_pBOut.AddBlankLine();
 
       if(!bBlockAlreadyAdded)
@@ -179,11 +179,11 @@ void DiffEngine::createDiffFiles()
 
     bBlockAlreadyAdded = false;
     while((lineB < m_BIn.NumLines())
-      && (lineA >= m_AIn.NumLines() || (m_BIn[lineB]->State() != DiffLine::Normal)))
+      && (lineA >= m_AIn.NumLines() || (m_BIn[lineB]->getState() != DiffLine::Normal)))
     {
       const DiffLine* pB = m_BIn[lineB++];
       m_AOut.AddBlankLine();
-      long idx = m_pBOut.AddLine(pB->Txt(), DiffLine::Added, pB->LineNum());
+      long idx = m_pBOut.AddLine(pB->getText(), DiffLine::Added, pB->getLineNumText());
 
       if(!bBlockAlreadyAdded)
       {
@@ -218,7 +218,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 
   // Fast walkthrough equal lines at the start
   while((lowerA < upperA) && (lowerB < upperB)
-     && (m_AIn[lowerA]->Token() == m_BIn[lowerB]->Token()))
+     && (m_AIn[lowerA]->getToken() == m_BIn[lowerB]->getToken()))
   {
     lowerA++;
     lowerB++;
@@ -226,7 +226,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
 
   // Fast walkthrough equal lines at the end
   while((lowerA < upperA) && (lowerB < upperB)
-     && (m_AIn[upperA - 1]->Token() == m_BIn[upperB - 1]->Token()))
+     && (m_AIn[upperA - 1]->getToken() == m_BIn[upperB - 1]->getToken()))
   {
     --upperA;
     --upperB;
@@ -236,7 +236,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
   {
     while(lowerB < upperB)
     {
-      m_BIn[lowerB++]->SetState(DiffLine::Added);
+      m_BIn[lowerB++]->setState(DiffLine::Added);
       m_NumInsertedB++;
     }
   }
@@ -244,7 +244,7 @@ void DiffEngine::lcs(long lowerA, long upperA, long lowerB, long upperB)
   {
     while(lowerA < upperA)
     {
-      m_AIn[lowerA++]->SetState(DiffLine::Deleted);
+      m_AIn[lowerA++]->setState(DiffLine::Deleted);
       m_NumDeletedA++;
     }
   }
@@ -320,7 +320,7 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
 
       // find the end of the furthest reaching forward D-path in diagonal k.
       while ((x < upperA) && (y < upperB)
-          && (m_AIn[x]->Token() == m_BIn[y]->Token()))
+          && (m_AIn[x]->getToken() == m_BIn[y]->getToken()))
           //&& (m_A[x]->Text() == m_B[y]->Text()))
       {
         x++;
@@ -364,7 +364,7 @@ Pair DiffEngine::sms(long lowerA, long upperA, long lowerB, long upperB)
       y = x - k;
 
       while ((x > lowerA) && (y > lowerB)
-          && (m_AIn[x - 1]->Token() == m_BIn[y - 1]->Token()))
+          && (m_AIn[x - 1]->getToken() == m_BIn[y - 1]->getToken()))
           //&& (m_A[x - 1]->Text() == m_B[y - 1]->Text()))
       {
         // diagonal
@@ -403,7 +403,7 @@ void DiffEngine::optimize(DiffFileBase& diffFile)
   while(startPos < diffFile.NumLines())
   {
     while((startPos < dataLength)
-       && (diffFile[startPos]->State() == DiffLine::Normal))  // normal
+       && (diffFile[startPos]->getState() == DiffLine::Normal))  // normal
     {
       startPos++;
     }
@@ -411,16 +411,16 @@ void DiffEngine::optimize(DiffFileBase& diffFile)
     endPos = startPos;
 
     while((endPos < dataLength)
-      && (diffFile[startPos]->State() != DiffLine::Normal)) // modified
+      && (diffFile[startPos]->getState() != DiffLine::Normal)) // modified
     {
       endPos++;
     }
 
     if((endPos < dataLength)
-     && (diffFile[startPos]->Token() == diffFile[endPos]->Token()))
+     && (diffFile[startPos]->getToken() == diffFile[endPos]->getToken()))
     {
-      diffFile[endPos]->SetState(diffFile[startPos]->State());
-      diffFile[startPos]->SetState(DiffLine::Normal);
+      diffFile[endPos]->setState(diffFile[startPos]->getState());
+      diffFile[startPos]->setState(DiffLine::Normal);
     }
     else
     {
