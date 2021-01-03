@@ -24,6 +24,8 @@ public:
 
 private:
   std::vector<TextSelectionLine*> m_SelectedLines;
+
+  TextSelectionLine* findSelectionLine(unsigned long lineId);
 };
 
 #endif

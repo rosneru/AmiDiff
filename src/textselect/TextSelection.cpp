@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "TextSelection.h"
 
 TextSelection::TextSelection()
@@ -18,11 +19,18 @@ void TextSelection::add(unsigned long lineId,
                         unsigned long fromColumn, 
                         unsigned long toColumn)
 {
-  TextSelectionLine* pSelection = new TextSelectionLine(lineId, 
-                                                        fromColumn, 
-                                                        toColumn);
+  TextSelectionLine* pSelectionLine = findSelectionLine(lineId);
+  if(pSelectionLine != NULL)
+  {
+    pSelectionLine->addBlock(fromColumn, toColumn);
+  }
+  else
+  {
+    pSelectionLine = new TextSelectionLine(lineId, fromColumn, toColumn);
+    m_SelectedLines.push_back(pSelectionLine);
 
-  m_SelectedLines.push_back(pSelection);
+    // TODO sort m_SelectedLines by lineId
+  }
 }
 
 
@@ -48,4 +56,23 @@ unsigned long TextSelection::getNumMarkedChars(unsigned long lineId,
   }
 
   return 0;
+}
+
+TextSelectionLine* TextSelection::findSelectionLine(unsigned long lineId)
+{
+  std::vector<TextSelectionLine*>::iterator it;
+  for(it = m_SelectedLines.begin(); it != m_SelectedLines.end(); it++)
+  {
+    if((*it)->getLineId() > lineId)
+    {
+      return NULL;
+    }
+
+    if((*it)->getLineId() == lineId)
+    {
+      return *it;
+    }
+  }
+
+  return NULL;
 }
