@@ -25,10 +25,10 @@ unsigned long TextSelectionBlock::getNumMarkedChars(unsigned long columnId)
     return 0;
   }
 
-  if(columnId >= m_ToColumn)
+  if(columnId > m_ToColumn)
   {
     return 0;
   }
 
-  return m_ToColumn - columnId;
+  return m_ToColumn - columnId + 1;
 }

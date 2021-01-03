@@ -914,29 +914,65 @@ size_t getPrevDiffLineId(std::list<size_t> m_DiffIndices,
 /**
  * test_TextSelectionItem
  *
- * Test the methods SelectableDiffFile::getNumMarkedChars() of
- * TextSelectionLine
+ * Test the method TextSelection::getNumMarkedChars().
+ * 
+ * See Excel sheet Excel sheet 
+ *   'ADiffView - selected text and scrolling.xlsx
+ * for a visual of this test.
  */
 BOOST_AUTO_TEST_CASE( test_TextSelection )
 {
   try
   {
     TextSelection selection;
+    
     selection.add(1, 4, 14);
     selection.add(2, 0, 9);
     selection.add(3, 0, 3);
+
+    selection.add(5, 3, 5);
+    selection.add(5, 10, 13);
+
 
     BOOST_CHECK_EQUAL(selection.getNumMarkedChars(0, 0), 0);
     
     BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 0), 0);
     BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 1), 0);
-    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 2), 6);
-    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 3), 5);
-    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 4), 4);
-    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 5), 3);
-    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 6), 2);
-    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 7), 1);
-    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 8), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 2), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 3), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 4), 11);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 5), 10);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 6), 9);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 13), 2);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 14), 1);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 15), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(1, 16), 0);
+
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(2, 0), 10);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(2, 9), 1);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(2, 10), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(2, 11), 0);
+
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(3, 0), 4);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(3, 3), 1);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(3, 4), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(3, 5), 0);
+
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(4, 0), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(4, 10), 0);
+
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 0), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 3), 3);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 4), 2);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 5), 1);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 6), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 7), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 10), 4);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 11), 3);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 12), 2);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 13), 1);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 14), 0);
+    BOOST_CHECK_EQUAL(selection.getNumMarkedChars(5, 15), 0);
   }
   catch(const char* pError)
   {
