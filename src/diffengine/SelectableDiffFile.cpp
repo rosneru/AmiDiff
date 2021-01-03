@@ -21,23 +21,22 @@ unsigned long SelectableDiffFile::getNumLines() const
   return m_DiffFile.getNumLines();
 }
 
-void SelectableDiffFile::addSelection(unsigned long fromLine, 
-                                      unsigned long toLine, 
+void SelectableDiffFile::addSelection(unsigned long lineId, 
                                       unsigned long fromColumn, 
                                       unsigned long toColumn)
 {
-  m_TextSelection.Add(fromLine, toLine, fromColumn, toColumn);
+  m_TextSelection.add(lineId, fromColumn, toColumn);
 }
 
 
 unsigned long SelectableDiffFile::getNumNormalChars(unsigned long lineId, 
-                                                    unsigned long fromCharId)
+                                                    unsigned long columnId)
 {
   return 0;
 }
 
 unsigned long SelectableDiffFile::getNumMarkedChars(unsigned long lineId, 
-                                                    unsigned long fromCharId)
+                                                    unsigned long columnId)
 {
   return 0;
 }

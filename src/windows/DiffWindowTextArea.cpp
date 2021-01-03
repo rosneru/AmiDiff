@@ -120,7 +120,7 @@ void DiffWindowTextArea::AddSelectedText(ULONG fromLine,
                                          ULONG fromColumn, 
                                          ULONG toColumn)
 {
-  m_TextSelection.Add(fromLine, toLine, fromColumn, toColumn);
+  m_TextSelection.add(fromLine, toLine, fromColumn, toColumn);
 }
 
 

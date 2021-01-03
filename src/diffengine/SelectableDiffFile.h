@@ -20,19 +20,20 @@ public:
 
   unsigned long getNumLines() const;
 
-  void addSelection(unsigned long fromLine, 
-                    unsigned long toLine, 
+  void addSelection(unsigned long lineId, 
                     unsigned long fromColumn, 
                     unsigned long toColumn);
 
   unsigned long getNumNormalChars(unsigned long lineId, 
-                                  unsigned long fromCharId);
+                                  unsigned long columnId);
 
   unsigned long getNumMarkedChars(unsigned long lineId, 
-                                  unsigned long fromCharId);
+                                  unsigned long columnId);
 private:
   const DiffFileBase& m_DiffFile;
   TextSelection m_TextSelection;
+
+
 };
 
 #endif

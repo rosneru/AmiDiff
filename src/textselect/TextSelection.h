@@ -2,8 +2,7 @@
 #define TEXT_SELECTION_H
 
 #include <vector>
-
-#include "TextSelectionItem.h"
+#include "TextSelectionLine.h"
 
 /**
  * Represents multiple blocks of selected text and exposes related
@@ -17,13 +16,14 @@ class TextSelection
 public:
   TextSelection();
   virtual ~TextSelection();
-  void Add(unsigned long fromLine, 
-           unsigned long toLine, 
+  void add(unsigned long lineId, 
            unsigned long fromColumn, 
            unsigned long toColumn);
 
+  unsigned long getNumMarkedChars(unsigned long lineId, unsigned long columnId);
+
 private:
-  std::vector<TextSelectionItem*> m_Selections;
+  std::vector<TextSelectionLine*> m_SelectedLines;
 };
 
 #endif
