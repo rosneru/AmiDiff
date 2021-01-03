@@ -105,7 +105,7 @@ public:
   /**
    * Set the selected text
    */
-  void AddSelectedText(ULONG fromLine, ULONG toLine, ULONG fromColumn, ULONG toColumn);
+  void AddSelectedText(ULONG lineId, ULONG fromColumn, ULONG toColumn);
 
 
 private:

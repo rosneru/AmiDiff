@@ -27,7 +27,7 @@ SOURCES += \
     ../SelectableDiffFile.cpp \
     ../../model/Pair.cpp \
     ../../textselect/TextSelection.cpp \
-    ../../textselect/TextSelectionBlock.cpp \
+    ../../textselect/TextSelectionRange.cpp \
     ../../textselect/TextSelectionLine.cpp \
 
 
@@ -43,5 +43,5 @@ HEADERS += \
     ../SelectableDiffFile.h \
     ../../model/Pair.h \
     ../../textselect/TextSelection.h \
-    ../../textselect/TextSelectionBlock.h \
+    ../../textselect/TextSelectionRange.h \
     ../../textselect/TextSelectionLine.h \

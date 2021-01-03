@@ -1,6 +1,6 @@
-#include "TextSelectionBlock.h"
+#include "TextSelectionRange.h"
 
-TextSelectionBlock::TextSelectionBlock(unsigned long fromColumn,
+TextSelectionRange::TextSelectionRange(unsigned long fromColumn,
                                        unsigned long toColumn)
   : m_FromColumn(fromColumn),
     m_ToColumn(toColumn)
@@ -8,17 +8,17 @@ TextSelectionBlock::TextSelectionBlock(unsigned long fromColumn,
 
 }
 
-unsigned long TextSelectionBlock::getFromColumn() const
+unsigned long TextSelectionRange::getFromColumn() const
 {
   return m_FromColumn;
 }
 
-unsigned long TextSelectionBlock::getToColumn() const
+unsigned long TextSelectionRange::getToColumn() const
 {
   return m_ToColumn;
 }
 
-unsigned long TextSelectionBlock::getNumMarkedChars(unsigned long columnId)
+unsigned long TextSelectionRange::getNumMarkedChars(unsigned long columnId)
 {
   if(columnId < m_FromColumn)
   {

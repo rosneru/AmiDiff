@@ -2,10 +2,10 @@
 #define TEXT_SELECTION_LINE_H
 
 #include <vector>
-#include "TextSelectionBlock.h"
+#include "TextSelectionRange.h"
 
 /**
- * Represents a line with zero, one one or more blocks of selected text.
+ * A line with some ranges of selected text.
  *
  * @author Uwe Rosner
  * @date 20/12/2020
@@ -26,7 +26,7 @@ public:
   unsigned long getNumMarkedChars(unsigned long columnId);
 
 private:
-  std::vector<TextSelectionBlock*> m_SelectedBlocks;
+  std::vector<TextSelectionRange*> m_SelectedBlocks;
   unsigned long m_LineId;
 };
 

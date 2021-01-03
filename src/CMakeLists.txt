@@ -48,7 +48,7 @@ add_executable (ADiffView_gcc
                 screen/OpenJoinedPublicScreen.cpp
                 screen/OpenScreenBase.cpp
                 textselect/TextSelection.cpp
-                textselect/TextSelectionBlock.cpp
+                textselect/TextSelectionRange.cpp
                 textselect/TextSelectionLine.cpp
                 windows/DiffWindow.cpp
                 windows/DiffWindowRastports.cpp

@@ -5,8 +5,7 @@
 #include "TextSelectionLine.h"
 
 /**
- * Represents multiple blocks of selected text and exposes related
- * methods.
+ * A collection of lines which contain selected ranges of text.
  *
  * @author Uwe Rosner
  * @date 22/12/2020

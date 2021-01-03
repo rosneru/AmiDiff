@@ -115,12 +115,11 @@ void DiffWindowTextArea::Clear()
 }
 
 
-void DiffWindowTextArea::AddSelectedText(ULONG fromLine, 
-                                         ULONG toLine, 
+void DiffWindowTextArea::AddSelectedText(ULONG lineId, 
                                          ULONG fromColumn, 
                                          ULONG toColumn)
 {
-  m_TextSelection.add(fromLine, toLine, fromColumn, toColumn);
+  m_TextSelection.add(lineId, fromColumn, toColumn);
 }
 
 

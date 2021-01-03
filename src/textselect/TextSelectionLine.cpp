@@ -10,7 +10,7 @@ TextSelectionLine::TextSelectionLine(unsigned long lineId,
 
 TextSelectionLine::~TextSelectionLine()
 {
-  std::vector<TextSelectionBlock*>::iterator it;
+  std::vector<TextSelectionRange*>::iterator it;
   for(it = m_SelectedBlocks.begin(); it != m_SelectedBlocks.end(); it++)
   {
     delete *it;
@@ -20,7 +20,7 @@ TextSelectionLine::~TextSelectionLine()
 void TextSelectionLine::addBlock(unsigned long fromColumn, 
                                  unsigned long toColumn)
 {
-  TextSelectionBlock* pBlock = new TextSelectionBlock(fromColumn, toColumn);
+  TextSelectionRange* pBlock = new TextSelectionRange(fromColumn, toColumn);
   m_SelectedBlocks.push_back(pBlock);
 }
 
@@ -31,7 +31,7 @@ unsigned long TextSelectionLine::getLineId() const
 
 unsigned long TextSelectionLine::getNumMarkedChars(unsigned long columnId)
 {
-  std::vector<TextSelectionBlock*>::iterator it;
+  std::vector<TextSelectionRange*>::iterator it;
   for(it = m_SelectedBlocks.begin(); it != m_SelectedBlocks.end(); it++)
   {
     unsigned long numMarkedChars = (*it)->getNumMarkedChars(columnId);

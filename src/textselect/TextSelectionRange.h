@@ -2,15 +2,15 @@
 #define TEXT_SELECTION_BLOCK_H
 
 /**
- * Represents a block selected text (on a line).
+ * A range of selected text on a line.
  *
  * @author Uwe Rosner
  * @date 03/01/2021
  */
-class TextSelectionBlock
+class TextSelectionRange
 {
 public:
-  TextSelectionBlock(unsigned long fromColumn, 
+  TextSelectionRange(unsigned long fromColumn, 
                      unsigned long toColumn);
 
   unsigned long getFromColumn() const;
