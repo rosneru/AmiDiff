@@ -42,6 +42,7 @@ unsigned long TextSelection::getNumMarkedChars(unsigned long lineId,
   {
     if((*it)->getLineId() > lineId)
     {
+      // TODO This only works when m_SelectedLines is sorted by lineId
       return 0;
     }
 
@@ -57,6 +58,29 @@ unsigned long TextSelection::getNumMarkedChars(unsigned long lineId,
 
   return 0;
 }
+
+
+long TextSelection::getNextSelectionStart(unsigned long lineId, 
+                                          unsigned long columnId)
+{
+  std::vector<TextSelectionLine*>::iterator it;
+  for(it = m_SelectedLines.begin(); it != m_SelectedLines.end(); it++)
+  {
+    if((*it)->getLineId() > lineId)
+    {
+      // TODO This only works when m_SelectedLines is sorted by lineId
+      return 0;
+    }
+
+    if((*it)->getLineId() == lineId)
+    {
+      return (*it)->getNextSelectionStart(columnId);
+    }
+  }
+
+  return 0;
+}
+
 
 TextSelectionLine* TextSelection::findSelectionLine(unsigned long lineId)
 {

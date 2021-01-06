@@ -33,7 +33,6 @@ private:
   const DiffFileBase& m_DiffFile;
   TextSelection m_TextSelection;
 
-
 };
 
 #endif

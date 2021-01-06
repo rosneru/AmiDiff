@@ -21,6 +21,12 @@ public:
 
   unsigned long getNumMarkedChars(unsigned long lineId, unsigned long columnId);
 
+  /**
+   * Returns the columnId of the next selection start after given column
+   * on given line. If there is no next selection start -1 is returned.
+   */
+  long getNextSelectionStart(unsigned long lineId, unsigned long columnId);
+
 private:
   std::vector<TextSelectionLine*> m_SelectedLines;
 

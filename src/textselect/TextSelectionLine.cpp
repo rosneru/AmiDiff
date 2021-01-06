@@ -22,6 +22,10 @@ void TextSelectionLine::addBlock(unsigned long fromColumn,
 {
   TextSelectionRange* pBlock = new TextSelectionRange(fromColumn, toColumn);
   m_SelectedBlocks.push_back(pBlock);
+
+  // TODO check if adding this block can be achived by increasing an existing one
+
+  // TODO ensure that m_SelectedBlocks is sorted by fromColumn
 }
 
 unsigned long TextSelectionLine::getLineId() const
@@ -42,4 +46,19 @@ unsigned long TextSelectionLine::getNumMarkedChars(unsigned long columnId)
   }
 
   return 0;
+}
+
+long TextSelectionLine::getNextSelectionStart(unsigned long columnId)
+{
+  std::vector<TextSelectionRange*>::iterator it;
+  for(it = m_SelectedBlocks.begin(); it != m_SelectedBlocks.end(); it++)
+  {
+    unsigned long fromColumn = (*it)->getFromColumn();
+    if(fromColumn >= columnId)
+    {
+      return fromColumn;
+    }
+  }
+
+  return -1;
 }
