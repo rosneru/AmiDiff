@@ -18,7 +18,7 @@ unsigned long TextSelectionRange::getToColumn() const
   return m_ToColumn;
 }
 
-unsigned long TextSelectionRange::getNumMarkedChars(unsigned long columnId)
+long TextSelectionRange::getNumMarkedChars(unsigned long columnId)
 {
   if(columnId < m_FromColumn)
   {

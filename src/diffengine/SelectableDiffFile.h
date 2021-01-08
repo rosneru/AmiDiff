@@ -29,7 +29,7 @@ public:
 
 private:
   const DiffFileBase& m_DiffFile;
-  TextSelection m_TextSelection;
+  TextSelection m_Selection;
 
 };
 

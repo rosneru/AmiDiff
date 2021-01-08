@@ -33,12 +33,12 @@ unsigned long TextSelectionLine::getLineId() const
   return m_LineId;
 }
 
-unsigned long TextSelectionLine::getNumMarkedChars(unsigned long columnId)
+long TextSelectionLine::getNumMarkedChars(unsigned long columnId)
 {
   std::vector<TextSelectionRange*>::iterator it;
   for(it = m_SelectedBlocks.begin(); it != m_SelectedBlocks.end(); it++)
   {
-    unsigned long numMarkedChars = (*it)->getNumMarkedChars(columnId);
+    long numMarkedChars = (*it)->getNumMarkedChars(columnId);
     if(numMarkedChars > 0)
     {
       return numMarkedChars;

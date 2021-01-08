@@ -34,8 +34,8 @@ void TextSelection::add(unsigned long lineId,
 }
 
 
-unsigned long TextSelection::getNumMarkedChars(unsigned long lineId, 
-                                               unsigned long columnId)
+long TextSelection::getNumMarkedChars(unsigned long lineId, 
+                                      unsigned long columnId)
 {
   std::vector<TextSelectionLine*>::iterator it;
   for(it = m_SelectedLines.begin(); it != m_SelectedLines.end(); it++)
@@ -48,7 +48,7 @@ unsigned long TextSelection::getNumMarkedChars(unsigned long lineId,
 
     if((*it)->getLineId() == lineId)
     {
-      unsigned long numMarkedChars = (*it)->getNumMarkedChars(columnId);
+      long numMarkedChars = (*it)->getNumMarkedChars(columnId);
       if(numMarkedChars > 0)
       {
         return numMarkedChars;

@@ -16,7 +16,7 @@ public:
   unsigned long getFromColumn() const;
   unsigned long getToColumn() const;
 
-  unsigned long getNumMarkedChars(unsigned long columnId);
+  long getNumMarkedChars(unsigned long columnId);
 
 private:
   unsigned long m_FromColumn;

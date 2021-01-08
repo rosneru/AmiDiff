@@ -19,7 +19,7 @@ public:
            unsigned long fromColumn, 
            unsigned long toColumn);
 
-  unsigned long getNumMarkedChars(unsigned long lineId, unsigned long columnId);
+  long getNumMarkedChars(unsigned long lineId, unsigned long columnId);
 
   /**
    * Returns the columnId of the next selection start after given column

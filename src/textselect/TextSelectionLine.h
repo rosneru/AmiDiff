@@ -23,7 +23,7 @@ public:
 
   unsigned long getLineId() const;
 
-  unsigned long getNumMarkedChars(unsigned long columnId);
+  long getNumMarkedChars(unsigned long columnId);
 
   /**
    * Returns the columnId of the next selection start after given

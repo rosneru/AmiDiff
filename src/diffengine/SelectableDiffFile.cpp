@@ -25,7 +25,7 @@ void SelectableDiffFile::addSelection(unsigned long lineId,
                                       unsigned long fromColumn, 
                                       unsigned long toColumn)
 {
-  m_TextSelection.add(lineId, fromColumn, toColumn);
+  m_Selection.add(lineId, fromColumn, toColumn);
 }
 
 
@@ -42,28 +42,24 @@ long SelectableDiffFile::getNumNormalChars(unsigned long lineId,
     return 0;
   }
 
-  unsigned long numMarkedChars = m_TextSelection.getNumMarkedChars(lineId, 
-                                                                   columnId);
-
-  long nextSelectionStart = m_TextSelection.getNextSelectionStart(lineId, 
-                                                                  columnId);
-
+  long numMarkedChars = m_Selection.getNumMarkedChars(lineId, columnId);
   if(numMarkedChars > 0)
   {
     return 0;
   }
 
-  if(nextSelectionStart > 0)
+  long nextSelStart = m_Selection.getNextSelectionStart(lineId, columnId);
+  if(nextSelStart > 0)
   {
-    return nextSelectionStart - columnId;
+    return nextSelStart - columnId;
   }
   
-  return columnId > m_DiffFile[lineId]->getNumChars() - columnId;
+  return m_DiffFile[lineId]->getNumChars() - columnId;
 }
 
 
 long SelectableDiffFile::getNumMarkedChars(unsigned long lineId, 
                                            unsigned long columnId)
 {
-  return m_TextSelection.getNumMarkedChars(lineId, columnId);
+  return m_Selection.getNumMarkedChars(lineId, columnId);
 }
