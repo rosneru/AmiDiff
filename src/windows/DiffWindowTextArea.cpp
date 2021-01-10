@@ -471,7 +471,7 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
   if(!bHorizontallyScrolled && m_LineNumbersEnabled)
   {
     //
-    // Print the line numbers in left and right
+    // Print the line numbers
     //
 
     // Move rastport cursor to start of line numbers block
@@ -486,26 +486,48 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
     Text(m_pRPorts->getLineNumText(), pLineNum, m_LineNumsWidth_chars);
   }
 
-  // Getting the RastPort for the line to draw in. This depends on
-  // the line background color which itself depends on the diff state
-  // of the line.
-  RastPort* pRPort = diffStateToRastPort(pLine->getState());
+  RastPort* pRPort;
+  long currentColumn = 0;
+  long n = 0;
 
-  long numCharsToPrint = calcNumPrintChars(pLine, numChars, startIndex);
-  if(numCharsToPrint <= 0)
+  do
   {
-    return;
-  }
+    if((n = m_DiffFile.getNumMarkedChars(lineId, currentColumn)) > 0)
+    {
+      // Get the RastPort for the line to draw. Depends on the diff state
+      // of the line.
+      pRPort = diffStateToRastPort(pLine->getState());
+    }
+    else if ((n = m_DiffFile.getNumMarkedChars(lineId, currentColumn)) > 0)
+    {
+      pRPort = m_pRPorts->TextSelected();
+    }
+    else
+    {
+      return;
+    }
 
-  // Move rastport cursor to start of line
-  Move(pRPort,
-       Left() + indent + m_LineNumsWidth_pix + 3,
-       topEdge + Top() + m_FontBaseline_pix + 1);
+    // Move rastport cursor to start of line
+    Move(pRPort,
+        Left() + indent + m_LineNumsWidth_pix + 3,
+        topEdge + Top() + m_FontBaseline_pix + 1);
 
-  // Print line
-  Text(pRPort,
-       pLine->getText() + startIndex,
-       numCharsToPrint);
+    // Print line
+    Text(pRPort,
+         pLine->getText() + startIndex,
+         n);
+
+    currentColumn += n;
+  } 
+  while (n > 0); 
+
+  // long numCharsToPrint = calcNumPrintChars(pLine, numChars, startIndex);
+  // if(numCharsToPrint <= 0)
+  // {
+  //   return;
+  // }
+
+
 }
 
 
