@@ -119,7 +119,7 @@ void DiffWindowTextArea::AddSelectedText(ULONG lineId,
                                          ULONG fromColumn, 
                                          ULONG toColumn)
 {
-  m_TextSelection.add(lineId, fromColumn, toColumn);
+  m_DiffFile.addSelection(lineId, fromColumn, toColumn);
 }
 
 
@@ -440,7 +440,7 @@ void DiffWindowTextArea::PrintPage()
   }
 }
 
-
+#include <stdio.h>
 void DiffWindowTextArea::printDiffLine(ULONG lineId,
                                        WORD topEdge,
                                        bool bHorizontallyScrolled,
@@ -450,8 +450,10 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
   const DiffLine* pLine = m_DiffFile[lineId];
   if(pLine == NULL)
   {
+    printf("RETURNING because 'pLine == NULL'\n");
     return;
   }
+
 
   if(startIndex < 0)
   {
@@ -492,29 +494,34 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
 
   do
   {
-    if((n = m_DiffFile.getNumMarkedChars(lineId, currentColumn)) > 0)
+    if((n = m_DiffFile.getNumNormalChars(lineId, currentColumn)) > 0)
     {
       // Get the RastPort for the line to draw. Depends on the diff state
       // of the line.
+      // printf("SET RPORT to 'DIFF COLOR' for line %d ", lineId);
       pRPort = diffStateToRastPort(pLine->getState());
     }
     else if ((n = m_DiffFile.getNumMarkedChars(lineId, currentColumn)) > 0)
     {
+      // printf("SET RPORT to 'SELECTED TEXT' for line %d ", lineId);
       pRPort = m_pRPorts->TextSelected();
     }
     else
     {
+      // printf("RETURNING from line %d because no marked / normal chars anymore.\n");
       return;
     }
 
+    // printf(" and PRINT %d chars.\n", n);
+
     // Move rastport cursor to start of line
     Move(pRPort,
-        Left() + indent + m_LineNumsWidth_pix + 3,
+        Left() + indent + m_FontWidth_pix * currentColumn + m_LineNumsWidth_pix + 3,
         topEdge + Top() + m_FontBaseline_pix + 1);
 
     // Print line
     Text(pRPort,
-         pLine->getText() + startIndex,
+         pLine->getText() + startIndex + currentColumn,
          n);
 
     currentColumn += n;

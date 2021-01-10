@@ -10,8 +10,6 @@
 #include "DiffWindowRastports.h"
 #include "Rect.h"
 #include "SelectableDiffFile.h"
-#include "TextSelection.h"
-
 
 #include <vector>
 
@@ -113,7 +111,6 @@ private:
   DiffWindowRastports*& m_pRPorts;
   bool m_LineNumbersEnabled;
   ULONG m_MaxNumChars;
-  TextSelection m_TextSelection;
 
   ULONG m_NumLines;           ///> Number of lines (as it's a diff view
                               ///> this should be equal for both files)
