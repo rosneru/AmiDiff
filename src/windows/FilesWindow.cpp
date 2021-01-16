@@ -59,7 +59,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   //
   struct Screen* pIntuiScreen = m_Screen.IntuiScreen();
   UWORD fontHeight = m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
-  
+
   // Default button dimensions
   WORD btnsWidth = 70;
   WORD btnsHeight = fontHeight + 6;
@@ -78,7 +78,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   for(size_t i = 0; i < numBottomButtons; i++)
   {
     const char* pTxt = btnTexts[i];
-    WORD txtWidth = TextLength(&pIntuiScreen->RastPort, pTxt, strlen(pTxt));    
+    WORD txtWidth = TextLength(&pIntuiScreen->RastPort, pTxt, strlen(pTxt));
     if(txtWidth > (btnsWidth - btnExtraHSpace))
     {
       btnsWidth = txtWidth + btnExtraHSpace;
@@ -89,9 +89,9 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   m_Width = (WORD)pIntuiScreen->Width / 2;
 
   // But it must be at least as wide as needed
-  ULONG neededWidth = numBottomButtons * btnsWidth 
-                    + (numBottomButtons + 1) * hSpace 
-                    + pIntuiScreen->WBorLeft 
+  ULONG neededWidth = numBottomButtons * btnsWidth
+                    + (numBottomButtons + 1) * hSpace
+                    + pIntuiScreen->WBorLeft
                     + pIntuiScreen->WBorRight;
 
   if(m_Width < neededWidth)
@@ -105,7 +105,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   WORD left = pIntuiScreen->WBorLeft + hSpace;
   WORD right = m_Width - pIntuiScreen->WBorRight - hSpace;
 
-  WORD btnSelectWidth = TextLength(&pIntuiScreen->RastPort, "...", 3) 
+  WORD btnSelectWidth = TextLength(&pIntuiScreen->RastPort, "...", 3)
                       + btnExtraHSpace;
 
   WORD btnSelectLeft = right - btnSelectWidth;
@@ -597,7 +597,7 @@ void FilesWindow::selectLeftFile()
     // Left file path is empty, so use the path of the right file for
     // pre-selection (regardless if that also is empty)
     m_CmdSelectLeftFile.SetInitialFilePath(pRightStrGadgetText);
-    
+
     // Do not use the file name 'though
     m_CmdSelectLeftFile.SetPreselectPathOnly(true);
   }
@@ -606,7 +606,7 @@ void FilesWindow::selectLeftFile()
     m_CmdSelectLeftFile.SetInitialFilePath(pLeftStrGadgetText);
     m_CmdSelectLeftFile.SetPreselectPathOnly(false);
   }
-  
+
   m_CmdSelectLeftFile.Execute(m_pWindow);
 
   if(m_CmdSelectLeftFile.SelectedFile().length() == 0)
@@ -615,9 +615,9 @@ void FilesWindow::selectLeftFile()
     return;
   }
 
-  setStringGadgetText(m_pGadStrLeftFile, 
+  setStringGadgetText(m_pGadStrLeftFile,
                       m_CmdSelectLeftFile.SelectedFile().c_str());
-  
+
   checkEnableButtons();
 }
 
@@ -640,7 +640,7 @@ void FilesWindow::selectRightFile()
     // Right file path is empty, so use the path of the left file for
     // pre-selection (regardless if that also is empty)
     m_CmdSelectRightFile.SetInitialFilePath(pLeftStrGadgetText);
-    
+
     // Do not use the file name 'though
     m_CmdSelectRightFile.SetPreselectPathOnly(true);
   }
@@ -658,7 +658,7 @@ void FilesWindow::selectRightFile()
     return;
   }
 
-  setStringGadgetText(m_pGadStrRightFile, 
+  setStringGadgetText(m_pGadStrRightFile,
                       m_CmdSelectRightFile.SelectedFile().c_str());
 
   checkEnableButtons();
@@ -709,6 +709,7 @@ void FilesWindow::clear()
 {
   setStringGadgetText(m_pGadStrLeftFile, "");
   setStringGadgetText(m_pGadStrRightFile, "");
+  checkEnableButtons();
 }
 
 
