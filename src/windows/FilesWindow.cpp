@@ -252,7 +252,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_LeftEdge   = left;
   newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
   newGadget.ng_Width      = btnsWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "_Compare";
+  newGadget.ng_GadgetText = (UBYTE*) "Compare";
   newGadget.ng_GadgetID   = GID_BtnDiff;
 
   m_pGadBtnDiff = CreateGadget(BUTTON_KIND,
@@ -300,7 +300,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
 
   // Creating the Cancel button
   newGadget.ng_LeftEdge   = right - btnsWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "_Cancel";
+  newGadget.ng_GadgetText = (UBYTE*) "Cancel";
   newGadget.ng_GadgetID   = GID_BtnCancel;
 
   m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
@@ -531,26 +531,6 @@ void FilesWindow::handleVanillaKey(UWORD code)
       break;
     }
 
-    case 'c': // Compare the files and display the diff
-    case 'C':
-    {
-      // Allow only if Diff button is enabled
-      long disabled;
-      long numProcessed;
-      numProcessed  = GT_GetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
-                                        GA_Disabled, (ULONG)&disabled,
-                                        TAG_DONE);
-
-      if((numProcessed != 1) || (disabled == 1))
-      {
-        return;
-      }
-
-      // Button is enabled, perform its action
-      compare();
-      break;
-    }
-
     case 'e': // Clear the string gadgets
     case 'E':
     {
@@ -571,8 +551,26 @@ void FilesWindow::handleVanillaKey(UWORD code)
       break;
     }
 
+    case 0xD:// <RETURN> Compare the files and display the diff
+    {
+      // Allow only if Diff button is enabled
+      long disabled;
+      long numProcessed;
+      numProcessed  = GT_GetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
+                                        GA_Disabled, (ULONG)&disabled,
+                                        TAG_DONE);
 
-    case 0x1b: // Esc key
+      if((numProcessed != 1) || (disabled == 1))
+      {
+        return;
+      }
+
+      // Button is enabled, perform its action
+      compare();
+      break;
+    }
+
+    case 0x1B: // <ESC> Cancel
       m_CmdCloseFilesWindow.Execute(NULL);
       break;
 
