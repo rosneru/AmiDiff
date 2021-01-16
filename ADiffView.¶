@@ -19,6 +19,8 @@ C/C++ Environment
 0
 "src/screen"
 0
+"src/textselect"
+0
 "src/windows"
 0
 "src/worker"
@@ -186,6 +188,8 @@ File
 "src/application/ADiffViewPens.h"
 "src/windows/DiffWindowRastports.h"
 "src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
 Storm Shell Project (Dependencies)
 "build-stromc/Application.o" "build-stromc/Application.debug"
 ""
@@ -218,6 +222,8 @@ File
 "src/windows/ScrollbarWindow.h"
 "src/windows/DiffWindowRastports.h"
 "src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
 Storm Shell Project (Dependencies)
 "build-stromc/DiffWorker.o" "build-stromc/DiffWorker.debug"
 ""
@@ -256,6 +262,8 @@ File
 "src/windows/ScrollbarWindow.h"
 "src/windows/DiffWindowRastports.h"
 "src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdDiff.o" "build-stromc/CmdDiff.debug"
 ""
@@ -282,6 +290,8 @@ File
 "src/windows/ScrollbarWindow.h"
 "src/windows/WindowBase.h"
 "src/commands/CommandBase.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdNavNextDiff.o" "build-stromc/CmdNavNextDiff.debug"
 ""
@@ -299,6 +309,8 @@ File
 "src/windows/ScrollbarWindow.h"
 "src/windows/WindowBase.h"
 "src/commands/CommandBase.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdNavPrevDiff.o" "build-stromc/CmdNavPrevDiff.debug"
 ""
@@ -435,6 +447,18 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "src/diffengine/SelectableDiffFile.cpp"
+"src/diffengine/SelectableDiffFile.cpp"
+"src/diffengine/SelectableDiffFile.h"
+"src/diffengine/DiffFileBase.h"
+"src/diffengine/DiffLine.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
+Storm Shell Project (Dependencies)
+"build-stromc/SelectableDiffFile.o" "build-stromc/SelectableDiffFile.debug"
+""
+1 1
+File
 1 "src/main.cpp"
 "src/main.cpp"
 "src/application/ADiffViewPorts.h"
@@ -450,6 +474,8 @@ File
 "src/application/ADiffViewPens.h"
 "src/windows/DiffWindowRastports.h"
 "src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
 Storm Shell Project (Dependencies)
 "build-stromc/main.o" "build-stromc/main.debug"
 ""
@@ -521,6 +547,33 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "src/textselect/TextSelection.cpp"
+"src/textselect/TextSelection.cpp"
+"src/textselect/TextSelection.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
+Storm Shell Project (Dependencies)
+"build-stromc/TextSelection.o" "build-stromc/TextSelection.debug"
+""
+1 1
+File
+1 "src/textselect/TextSelectionLine.cpp"
+"src/textselect/TextSelectionLine.cpp"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
+Storm Shell Project (Dependencies)
+"build-stromc/TextSelectionLine.o" "build-stromc/TextSelectionLine.debug"
+""
+1 1
+File
+1 "src/textselect/TextSelectionRange.cpp"
+"src/textselect/TextSelectionRange.cpp"
+"src/textselect/TextSelectionRange.h"
+Storm Shell Project (Dependencies)
+"build-stromc/TextSelectionRange.o" "build-stromc/TextSelectionRange.debug"
+""
+1 1
+File
 1 "src/windows/DiffWindow.cpp"
 "src/windows/DiffWindow.cpp"
 "src/windows/DiffWindow.h"
@@ -532,6 +585,8 @@ File
 "src/windows/WindowBase.h"
 "src/windows/DiffWindowRastports.h"
 "src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
 Storm Shell Project (Dependencies)
 "build-stromc/DiffWindow.o" "build-stromc/DiffWindow.debug"
 ""
@@ -551,6 +606,9 @@ File
 "src/diffengine/DiffInputFileBase.h"
 "src/diffengine/DiffFileBase.h"
 "src/windows/DiffWindowRastports.h"
+"src/diffengine/DiffLine.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
 Storm Shell Project (Dependencies)
 "build-stromc/DiffWindowTextArea.o" "build-stromc/DiffWindowTextArea.debug"
 ""
@@ -830,6 +888,13 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "src/diffengine/SelectableDiffFile.h"
+"src/diffengine/SelectableDiffFile.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "src/menus/MenuBase.h"
 "src/menus/MenuBase.h"
 Storm Shell Project (Dependencies)
@@ -881,6 +946,27 @@ Storm Shell Project (Dependencies)
 File
 2 "src/screen/OpenScreenBase.h"
 "src/screen/OpenScreenBase.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "src/textselect/TextSelection.h"
+"src/textselect/TextSelection.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionLine.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "src/textselect/TextSelectionRange.h"
+"src/textselect/TextSelectionRange.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
