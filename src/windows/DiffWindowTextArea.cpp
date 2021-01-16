@@ -17,13 +17,12 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
   : m_DiffFile(diffFile),
     m_pRPorts(pRPorts),
     m_LineNumbersEnabled(lineNumbersEnabled),
-    m_MaxNumChars(maxNumChars),
-    m_NumLines(diffFile.getNumLines()),
+    m_LongestLineChars(maxNumChars),
     m_FontWidth_pix(pTextFont->tf_XSize),
     m_FontHeight_pix(pTextFont->tf_YSize),
     m_FontBaseline_pix(pTextFont->tf_Baseline),
-    m_AreaCharWidth(0),
-    m_AreaLineHeight(0),
+    m_AreaMaxChars(0),
+    m_AreaMaxLines(0),
     m_X(0),
     m_Y(0),
     m_LineNumsWidth_chars(0),
@@ -60,29 +59,30 @@ ULONG DiffWindowTextArea::Y() const
 
 ULONG DiffWindowTextArea::MaxVisibleChars() const
 {
-  return m_AreaCharWidth;
+  return m_AreaMaxChars;
 }
 
 
 ULONG DiffWindowTextArea::MaxVisibleLines() const
 {
-  return m_AreaLineHeight;
+  return m_AreaMaxLines;
 }
 
 #include <stdio.h>
 
-void DiffWindowTextArea::SetWidthHeight(unsigned long width,
-                                        unsigned long height)
+void DiffWindowTextArea::SetSize(ULONG width, ULONG height)
 {
 
-  m_AreaLineHeight = (height - 4) /  m_FontHeight_pix;
-  m_AreaCharWidth = (width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix;
+  printf("m_AreaMaxChars %lu => %lu\n", m_AreaMaxChars, ((width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix));
+  m_AreaMaxLines = (height - 4) /  m_FontHeight_pix;
+  m_AreaMaxChars = (width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix;
+
 
   // Limit height to int multiples
-  height = m_AreaLineHeight * m_FontHeight_pix + 3;
+  height = m_AreaMaxLines * m_FontHeight_pix + 3;
 
-  printf("Set width %lu -> %lu, height %lu -> %lu\n", Width(), width, Height(), height);
-  Rect::SetWidthHeight(width, height);
+  //printf("Set width %lu -> %lu, height %lu -> %lu\n", Width(), width, Height(), height);
+  Rect::SetSize(width, height);
 
   //
   // Define two the scrolling areas. Note that there are two different
@@ -92,7 +92,7 @@ void DiffWindowTextArea::SetWidthHeight(unsigned long width,
   //   is scrolled too. On horizontal scroll, it is not.
   //
 
-  ULONG maxTextWidth_pix = m_AreaCharWidth * m_FontWidth_pix;
+  ULONG maxTextWidth_pix = m_AreaMaxChars * m_FontWidth_pix;
   maxTextWidth_pix += m_LineNumsWidth_pix;
 
   m_HScrollRect.Set(Left() + m_LineNumsWidth_pix + 3,
@@ -114,6 +114,7 @@ void DiffWindowTextArea::Clear()
   //           Top() + 2,
   //           Right() - 3,
   //           Bottom() - 3);
+
 }
 
 
@@ -128,7 +129,7 @@ void DiffWindowTextArea::AddSelectedText(ULONG lineId,
 void DiffWindowTextArea::ScrollTopToRow(ULONG rowId)
 {
   // Prevent to scroll below the last line
-  ULONG yLimit = m_NumLines - m_AreaLineHeight;
+  ULONG yLimit = m_DiffFile.getNumLines() - m_AreaMaxLines;
   if((yLimit > 0) && ( rowId > yLimit))
   {
      rowId = yLimit;
@@ -142,7 +143,7 @@ void DiffWindowTextArea::ScrollTopToRow(ULONG rowId)
 
   int deltaAbs = abs(delta);
 
-  int deltaLimit = m_AreaLineHeight - 2;
+  int deltaLimit = m_AreaMaxLines - 2;
   //int deltaLimit = 10;
 
   //
@@ -229,29 +230,29 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
     return 0;
   }
 
-  if(numChars > m_AreaCharWidth)
+  if(numChars > m_AreaMaxChars)
   {
-    numChars = m_AreaCharWidth;
+    numChars = m_AreaMaxChars;
   }
 
-  if(m_MaxNumChars < m_AreaCharWidth)
+  if(m_LongestLineChars < m_AreaMaxChars)
   {
     // Do not move the scroll area left if all the text fits into
     // the window
     return 0;
   }
 
-  if((m_X + m_AreaCharWidth) == m_MaxNumChars)
+  if((m_X + m_AreaMaxChars) == m_LongestLineChars)
   {
     // Do not move the scroll area left if text already at rightmost
     // position
     return 0;
   }
 
-  if((m_X + m_AreaCharWidth + numChars) > m_MaxNumChars)
+  if((m_X + m_AreaMaxChars + numChars) > m_LongestLineChars)
   {
     // Limit the scrolling to only scroll only as many chars as necessary
-    numChars = m_MaxNumChars - (m_X + m_AreaCharWidth);
+    numChars = m_LongestLineChars - (m_X + m_AreaMaxChars);
   }
 
   // Move each text area left by n * the width of one char
@@ -264,12 +265,12 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
                  m_HScrollRect.Bottom());
 
   // Fill the gap with the following chars
-  for(ULONG lineId = m_Y; lineId < m_Y + m_AreaLineHeight; lineId++)
+  for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
     printDiffLine(lineId,
                   (lineId - m_Y)  * m_FontHeight_pix,
                   true,
-                  m_X + m_AreaCharWidth,
+                  m_X + m_AreaMaxChars,
                   -numChars);
 
   }
@@ -299,9 +300,9 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
     numChars = m_X;
   }
 
-  if(numChars > m_AreaCharWidth)
+  if(numChars > m_AreaMaxChars)
   {
-    numChars = m_AreaCharWidth;
+    numChars = m_AreaMaxChars;
   }
 
 
@@ -316,7 +317,7 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
 
 
   // fill the gap with the previous chars
-  for(ULONG lineId = m_Y; lineId < m_Y + m_AreaLineHeight; lineId++)
+  for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
     printDiffLine(lineId,
                   (lineId - m_Y) * m_FontHeight_pix,
@@ -339,23 +340,22 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
     return 0;
   }
 
-  if(m_NumLines < m_AreaLineHeight)
+  if(m_DiffFile.getNumLines() < m_AreaMaxLines)
   {
-    // Do not move the scroll area upward if all the text fits into
-    // the window
+    // All text fits into the window. Dont't scroll.
     return 0;
   }
 
-  if((m_Y + m_AreaLineHeight) == m_NumLines)
+  if((m_Y + m_AreaMaxLines) == m_DiffFile.getNumLines())
   {
-    // Do not move the scroll area upward if text already at bottom
+    // Already scrolled to bottom. Don't scroll.
     return 0;
   }
 
-  if((m_Y + m_AreaLineHeight + numLines) > m_NumLines)
+  if((m_Y + m_AreaMaxLines + numLines) > m_DiffFile.getNumLines())
   {
     // Limit the scrolling to only scroll only as many lines as necessary
-    numLines = m_NumLines - (m_Y + m_AreaLineHeight);
+    numLines = m_DiffFile.getNumLines() - (m_Y + m_AreaMaxLines);
   }
 
   // Move each text area upward by n * the height of one text line
@@ -369,8 +369,8 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
 
   for(ULONG i = 0; i < numLines; i++)
   {
-    ULONG lineId = m_Y + m_AreaLineHeight + i;
-    WORD topEdge = m_AreaLineHeight - numLines + i;
+    ULONG lineId = m_Y + m_AreaMaxLines + i;
+    WORD topEdge = m_AreaMaxLines - numLines + i;
     printDiffLine(lineId, topEdge * m_FontHeight_pix);
   }
 
@@ -425,19 +425,15 @@ void DiffWindowTextArea::PrintPageAt(ULONG left, ULONG top)
   m_X = left;
   m_Y = top;
 
+
   PrintPage();
 }
 
 
 void DiffWindowTextArea::PrintPage()
 {
-  for(ULONG lineId = m_Y; (lineId - m_Y) < m_AreaLineHeight; lineId++)
+  for(ULONG lineId = m_Y; (lineId - m_Y) < m_DiffFile.getNumLines(); lineId++)
   {
-    if(lineId >= m_NumLines)
-    {
-      break;
-    }
-
     printDiffLine(lineId, (lineId - m_Y) * m_FontHeight_pix);
   }
 }
@@ -452,7 +448,7 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
   const DiffLine* pLine = m_DiffFile[lineId];
   if(pLine == NULL)
   {
-    printf("RETURNING because 'pLine == NULL'\n");
+    //printf("RETURNING because '(pLine = m_DiffFile[%lu]) == NULL'\n", lineId);
     return;
   }
 
@@ -469,7 +465,7 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
     // inserted, counted from the right. So an indent for the text is
     // calculated and numChars is made positive to get used below.
     numChars = -numChars;
-    indent = (m_AreaCharWidth - numChars) * m_FontWidth_pix;
+    indent = (m_AreaMaxChars - numChars) * m_FontWidth_pix;
   }
 
   if(!bHorizontallyScrolled && m_LineNumbersEnabled)
@@ -480,8 +476,8 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
 
     // Move rastport cursor to start of line numbers block
     Move(m_pRPorts->getLineNumText(),
-        Left() + indent + 2,
-        topEdge + Top() + m_FontBaseline_pix + 1);
+         Left() + indent + 2,
+         topEdge + Top() + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     const char* pLineNum = pLine->getLineNumText();
@@ -491,8 +487,8 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
   }
 
   RastPort* pRPort;
-  long currentColumn = 0;
-  long n = 0;
+  ULONG currentColumn = 0;
+  ULONG n = 0;
 
   do
   {
@@ -518,10 +514,15 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
 
     // Move rastport cursor to start of line
     Move(pRPort,
-        Left() + indent + m_FontWidth_pix * currentColumn + m_LineNumsWidth_pix + 3,
-        topEdge + Top() + m_FontBaseline_pix + 1);
+         Left() + indent + m_FontWidth_pix * currentColumn + m_LineNumsWidth_pix + 3,
+         topEdge + Top() + m_FontBaseline_pix + 1);
 
     // Print line
+    if(currentColumn + n > m_AreaMaxChars)
+    {
+      n = m_AreaMaxChars - currentColumn;
+    }
+
     Text(pRPort,
          pLine->getText() + startIndex + currentColumn,
          n);
@@ -529,14 +530,6 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
     currentColumn += n;
   } 
   while (n > 0); 
-
-  // long numCharsToPrint = calcNumPrintChars(pLine, numChars, startIndex);
-  // if(numCharsToPrint <= 0)
-  // {
-  //   return;
-  // }
-
-
 }
 
 
@@ -556,10 +549,10 @@ ULONG DiffWindowTextArea::calcNumPrintChars(const DiffLine* pDiffLine,
     numCharsToPrint = pDiffLine->getNumChars() - m_X;
   }
 
-  if(numCharsToPrint > m_AreaCharWidth)
+  if(numCharsToPrint > m_AreaMaxChars)
   {
     // Limit the number of printed chars to fit into the text area
-    numCharsToPrint = m_AreaCharWidth;
+    numCharsToPrint = m_AreaMaxChars;
   }
 
   if((startIndex > -1) &&

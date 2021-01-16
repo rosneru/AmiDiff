@@ -53,7 +53,7 @@ void Rect::SetLeftTop(unsigned long left, unsigned long top)
   m_Top = top;
 }
 
-void Rect::SetWidthHeight(unsigned long width, unsigned long height)
+void Rect::SetSize(unsigned long width, unsigned long height)
 {
   m_Right = m_Left + width - 1;
   m_Bottom = m_Top + height - 1;

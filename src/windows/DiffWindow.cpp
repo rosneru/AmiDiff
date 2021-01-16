@@ -117,11 +117,11 @@ void DiffWindow::Resized()
 
   // Set location and size of the left text area
   m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
-  m_pTextArea1->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
+  m_pTextArea1->SetSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Set location and size of the right text area
   m_pTextArea2->SetLeftTop(m_IndentX + m_TextAreasWidth, m_IndentY);
-  m_pTextArea2->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
+  m_pTextArea2->SetSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from current y-position,
   //not from start)
@@ -283,11 +283,11 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
   // Set location and size of the left text area
   m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
-  m_pTextArea1->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
+  m_pTextArea1->SetSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Set location and size of the right text area
   m_pTextArea2->SetLeftTop(m_IndentX + m_TextAreasWidth, m_IndentY);
-  m_pTextArea2->SetWidthHeight(m_TextAreasWidth, m_TextAreasHeight);
+  m_pTextArea2->SetSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from start)
   m_pTextArea1->PrintPageAt(0, 0);

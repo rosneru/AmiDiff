@@ -34,7 +34,7 @@ public:
   /**
    * Set the dimensions of this text area.
    */
-  void SetWidthHeight(unsigned long width, unsigned long height);
+  void SetSize(ULONG width, ULONG height);
 
   /**
    * Scroll the text up or down to diplay the given (by rowId) line on
@@ -110,33 +110,24 @@ private:
   SelectableDiffFile m_DiffFile;
   DiffWindowRastports*& m_pRPorts;
   bool m_LineNumbersEnabled;
-  ULONG m_MaxNumChars;
-
-  ULONG m_NumLines;           ///> Number of lines (as it's a diff view
-                              ///> this should be equal for both files)
+  ULONG m_LongestLineChars; ///> Number of chars of the longest line of DiffFile.
 
   UWORD m_FontWidth_pix;    ///> Width of the rastport text font
   UWORD m_FontHeight_pix;   ///> Height of the rastport text font
   UWORD m_FontBaseline_pix; ///> Baseline (from top) of the rastport text font
 
 
-  ULONG m_AreaCharWidth;  ///> Max number of chars that fits into 
-                          ///> the text area at current size
+  ULONG m_AreaMaxChars; ///> Max number of chars that fits in at current size
+  ULONG m_AreaMaxLines; ///> Max number of lines that fits in at current size
 
-  ULONG m_AreaLineHeight; ///> Max number of lines that fits into 
-                          ///> the text area at current size
-
-  ULONG m_X;        ///> Index of leftmost char in displayed lines
-                    ///> Is > 0 when text is horizontally scrolled
-
-  ULONG m_Y;        ///> Index of topmost displayed line in document
-                    ///> Is > 0 when text is vertically scrolled
+  ULONG m_X;  ///> Position of left text column in display (> 0 when x scroll)
+  ULONG m_Y;  ///> Position of top line in display (> 0 when y scroll)
 
   UWORD m_LineNumsWidth_chars;
   UWORD m_LineNumsWidth_pix;
 
-  Rect m_HScrollRect;         ///> Area to be used for horizontal scroll
-  Rect m_VScrollRect;         ///> Area to be used for vertical scroll
+  Rect m_HScrollRect;     ///> Horizontal scroll region
+  Rect m_VScrollRect;     ///> Vertical scroll region
 
   /**
    * Print the given diff line at given y-position topEdge.
