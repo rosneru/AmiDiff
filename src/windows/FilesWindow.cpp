@@ -71,7 +71,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   WORD vSpace = 10;
 
   // Check if needed to and adjust btnsWidth according to font and the
-  // width of the buttons in the bottom row
+  // width of the four buttons in the bottom row
   const char* btnTexts[]  = {"Compare", "Swap", "Clear", "Cancel"};
   size_t numBottomButtons = sizeof(btnTexts) / (sizeof btnTexts[0]);
 
@@ -125,13 +125,15 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Setting the first gadget of the gadet list for the window
+  // Set the first gadget of the gadet list for the window
   setFirstGadget(m_pGadtoolsContext);
 
   // Declare the basic gadget structure
   struct NewGadget newGadget;
 
-  // Row 1  contains  a label
+  //
+  // Row 1:  contains  a label
+  //
   newGadget.ng_TextAttr   = m_Screen.IntuiTextAttr();
   newGadget.ng_VisualInfo = m_Screen.GadtoolsVisualInfo();
   newGadget.ng_LeftEdge   = left + 2;
@@ -152,10 +154,12 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Row 2 contains a string gadget and selection button for the
+  //
+  // Row 2: contains a string gadget and selection button for the
   // filename of the left file
+  //
 
-  // Creating the string gadget
+  // Create the string gadget
   newGadget.ng_LeftEdge   = left;
   newGadget.ng_TopEdge    += fontHeight + 2;
   newGadget.ng_Width      = stringGadWidth;
@@ -175,7 +179,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Creating the Select button
+  // Create the Select button
   newGadget.ng_LeftEdge   = btnSelectLeft;
   newGadget.ng_Width      = btnSelectWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
@@ -192,7 +196,9 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Row 3  contains a label
+  //
+  // Row 3:  contains a label
+  //
   newGadget.ng_LeftEdge   = left + 2;
   newGadget.ng_TopEdge    += btnsHeight + vSpace;
   newGadget.ng_Width      = stringGadWidth;
@@ -211,10 +217,12 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Row 4 contains a string gadget and selection button for the
+  //
+  // Row 4: contains a string gadget and selection button for the
   // filename of the right file
+  //
 
-  // Creating the string gadget
+  // Create the string gadget
   newGadget.ng_LeftEdge   = left;
   newGadget.ng_TopEdge    += fontHeight + 2;
   newGadget.ng_Width      = stringGadWidth;
@@ -234,7 +242,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Creating the Select button
+  // Create the Select button
   newGadget.ng_LeftEdge   = btnSelectLeft;
   newGadget.ng_Width      = btnSelectWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
@@ -246,7 +254,20 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                       &newGadget,
                                       TAG_DONE);
 
-  // Row 5 conatins the buttons Diff, Swap and Cancel
+  //
+  // Row 5: conatins the buttons Compare, Swap, Clear and Cancel
+  //
+
+  // Calculate the 'field width' of each of the four bottom buttons
+  // 1) Calculate the free / uncovered area between all 4 buttons
+  ULONG bottomBtnsDistances = m_Width - pIntuiScreen->WBorLeft
+                                      - pIntuiScreen->WBorRight
+                                      - 2 * hSpace
+                                      - 4 * btnsWidth;
+
+  // 2) Between 4 buttons there are 3 free areas
+  bottomBtnsDistances /= 3;
+
 
   // Creating the Diff button
   newGadget.ng_LeftEdge   = left;
@@ -267,7 +288,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   }
 
   // Creating the Swap button
-  newGadget.ng_LeftEdge   = (m_Width - hSpace) / 2 - btnsWidth;
+  newGadget.ng_LeftEdge   += btnsWidth + bottomBtnsDistances;
   newGadget.ng_GadgetText = (UBYTE*) "_Swap";
   newGadget.ng_GadgetID   = GID_BtnSwap;
 
@@ -282,8 +303,8 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Creating the Clear button
-  newGadget.ng_LeftEdge   += btnsWidth + hSpace;
+  // Create the Clear button
+  newGadget.ng_LeftEdge   += btnsWidth + bottomBtnsDistances;
   newGadget.ng_GadgetText = (UBYTE*) "Cl_ear";
   newGadget.ng_GadgetID   = GID_BtnClear;
 
@@ -299,7 +320,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   }
 
   // Creating the Cancel button
-  newGadget.ng_LeftEdge   = right - btnsWidth;
+  newGadget.ng_LeftEdge   += btnsWidth + bottomBtnsDistances;
   newGadget.ng_GadgetText = (UBYTE*) "Cancel";
   newGadget.ng_GadgetID   = GID_BtnCancel;
 

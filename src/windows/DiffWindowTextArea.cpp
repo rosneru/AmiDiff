@@ -69,6 +69,7 @@ ULONG DiffWindowTextArea::MaxVisibleLines() const
   return m_AreaLineHeight;
 }
 
+#include <stdio.h>
 
 void DiffWindowTextArea::SetWidthHeight(unsigned long width,
                                         unsigned long height)
@@ -80,6 +81,7 @@ void DiffWindowTextArea::SetWidthHeight(unsigned long width,
   // Limit height to int multiples
   height = m_AreaLineHeight * m_FontHeight_pix + 3;
 
+  printf("Set width %lu -> %lu, height %lu -> %lu\n", Width(), width, Height(), height);
   Rect::SetWidthHeight(width, height);
 
   //
@@ -440,7 +442,7 @@ void DiffWindowTextArea::PrintPage()
   }
 }
 
-#include <stdio.h>
+
 void DiffWindowTextArea::printDiffLine(ULONG lineId,
                                        WORD topEdge,
                                        bool bHorizontallyScrolled,
