@@ -24,8 +24,8 @@ DiffWindowRastports::DiffWindowRastports(struct Window* pIntuiWindow,
   SetBPen(&m_RPortTextDefault, pens.Background());
 
   m_RPortTextSelected = *pIntuiWindow->RPort;
-  SetAPen(&m_RPortTextSelected, pens.HighlightedText());
-  SetBPen(&m_RPortTextSelected, pens.NormalText());
+  SetAPen(&m_RPortTextSelected, pens.NormalText());
+  SetBPen(&m_RPortTextSelected, pens.HighlightedText());
 
   m_RPortTextRedBG = *pIntuiWindow->RPort;
   SetBPen(&m_RPortTextRedBG, pens.Red());
