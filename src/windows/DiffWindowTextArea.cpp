@@ -75,7 +75,6 @@ void DiffWindowTextArea::SetSize(ULONG width, ULONG height)
   m_AreaMaxLines = (height - 4) /  m_FontHeight_pix;
   m_AreaMaxChars = (width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix;
 
-
   // Limit height to int multiples
   height = m_AreaMaxLines * m_FontHeight_pix + 3;
 
@@ -329,21 +328,15 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
     return 0;
   }
 
-  if(m_DiffFile.getNumLines() < m_AreaMaxLines)
+  if(m_DiffFile.getNumLines() <= m_AreaMaxLines)
   {
     // All text fits into the window. Dont't scroll.
     return 0;
   }
 
-  if((m_Y + m_AreaMaxLines) == m_DiffFile.getNumLines())
+  if((m_Y + numLines) > m_DiffFile.getNumLines())
   {
-    // Already scrolled to bottom. Don't scroll.
-    return 0;
-  }
-
-  if((m_Y + m_AreaMaxLines + numLines) > m_DiffFile.getNumLines())
-  {
-    // Limit the scrolling to only scroll only as many lines as necessary
+    // Limit the scrolling to not exceed number of lines in file
     numLines = m_DiffFile.getNumLines() - (m_Y + m_AreaMaxLines);
   }
 
@@ -358,12 +351,12 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
 
   for(ULONG i = 0; i < numLines; i++)
   {
-    ULONG lineId = m_Y + m_AreaMaxLines + i;
+    ULONG lineId = m_Y + m_AreaMaxLines;
     // WORD topEdge = m_AreaMaxLines - numLines + i;
     printDiffLine(lineId);
+    m_Y++;
   }
 
-  m_Y += numLines;
   return numLines;
 }
 
@@ -402,9 +395,9 @@ ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
   {
     int lineId = m_Y - numLines + i;
     printDiffLine(lineId);
+    m_Y--;
   }
 
-  m_Y -= numLines;
   return numLines;
 }
 
@@ -423,6 +416,11 @@ void DiffWindowTextArea::PrintPage()
 {
   for(ULONG lineId = m_Y; (lineId - m_Y) < m_DiffFile.getNumLines(); lineId++)
   {
+    if((m_Y + lineId) >= m_AreaMaxLines)
+    {
+      break;
+    }
+
     printDiffLine(lineId);
   }
 }
@@ -437,17 +435,6 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId)
     return;
   }
 
-  ULONG indent = 0;
-  // if(numCharsLimit < 0)
-  // {
-  //   // A negative number means that only the given number of chars is 
-  //   // inserted, counted from the right. So an indent for the text is
-  //   // calculated and numChars is made positive to get used below.
-  //   numCharsLimit = -numCharsLimit;
-  //   currentColumn = m_AreaMaxChars - numCharsLimit;
-  //   indent = (m_AreaMaxChars - numCharsLimit) * m_FontWidth_pix;
-  // }
-
   if(m_X < 1 && m_LineNumbersEnabled)
   {
     //
@@ -456,8 +443,8 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId)
 
     // Move rastport cursor to start of line numbers block
     Move(m_pRPorts->getLineNumText(),
-         Left() + indent + 2,
-         Top() + m_FontHeight_pix * lineId + m_FontBaseline_pix + 1);
+         Left() + 2,
+         Top() + m_FontHeight_pix * (lineId - m_Y) + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     const char* pLineNum = pLine->getLineNumText();
@@ -494,8 +481,8 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId)
 
     // Move rastport cursor to start of line
     Move(pRPort,
-         Left() + indent + m_FontWidth_pix * currentColumn + m_LineNumsWidth_pix + 3,
-         Top() + m_FontHeight_pix * lineId + m_FontBaseline_pix + 1);
+         Left() + m_FontWidth_pix * currentColumn + m_LineNumsWidth_pix + 3,
+         Top() + m_FontHeight_pix * (lineId - m_Y) + m_FontBaseline_pix + 1);
 
     // Print line
     if(currentColumn + numChars > m_AreaMaxChars)
