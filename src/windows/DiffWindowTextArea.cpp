@@ -72,8 +72,6 @@ ULONG DiffWindowTextArea::MaxVisibleLines() const
 
 void DiffWindowTextArea::SetSize(ULONG width, ULONG height)
 {
-
-  printf("m_AreaMaxChars %lu => %lu\n", m_AreaMaxChars, ((width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix));
   m_AreaMaxLines = (height - 4) /  m_FontHeight_pix;
   m_AreaMaxChars = (width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix;
 
@@ -255,7 +253,7 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
     numChars = m_LongestLineChars - (m_X + m_AreaMaxChars);
   }
 
-  // Move each text area left by n * the width of one char
+  // Move text area content left by n * the width of one char
   ScrollRasterBF(m_pRPorts->Window(),
                  numChars * m_FontWidth_pix,
                  0,
@@ -267,12 +265,7 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
   // Fill the gap with the following chars
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
-    printDiffLine(lineId,
-                  (lineId - m_Y)  * m_FontHeight_pix,
-                  true,
-                  m_X + m_AreaMaxChars,
-                  -numChars);
-
+    printDiffLine(lineId);
   }
 
   m_X += numChars;
@@ -306,7 +299,7 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
   }
 
 
-  // Move each text area right by n * the height of one text line
+  // Move text area content right by n * the height of one text line
   ScrollRasterBF(m_pRPorts->Window(),
                  -numChars * m_FontWidth_pix, // n * width
                  0,
@@ -319,11 +312,7 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
   // fill the gap with the previous chars
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
-    printDiffLine(lineId,
-                  (lineId - m_Y) * m_FontHeight_pix,
-                  true,
-                  m_X - numChars,
-                  numChars);
+    printDiffLine(lineId);
 
   }
 
@@ -370,8 +359,8 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
   for(ULONG i = 0; i < numLines; i++)
   {
     ULONG lineId = m_Y + m_AreaMaxLines + i;
-    WORD topEdge = m_AreaMaxLines - numLines + i;
-    printDiffLine(lineId, topEdge * m_FontHeight_pix);
+    // WORD topEdge = m_AreaMaxLines - numLines + i;
+    printDiffLine(lineId);
   }
 
   m_Y += numLines;
@@ -412,7 +401,7 @@ ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
   for(ULONG i = 0; i < numLines; i++)
   {
     int lineId = m_Y - numLines + i;
-    printDiffLine(lineId, i * m_FontHeight_pix);
+    printDiffLine(lineId);
   }
 
   m_Y -= numLines;
@@ -434,16 +423,12 @@ void DiffWindowTextArea::PrintPage()
 {
   for(ULONG lineId = m_Y; (lineId - m_Y) < m_DiffFile.getNumLines(); lineId++)
   {
-    printDiffLine(lineId, (lineId - m_Y) * m_FontHeight_pix);
+    printDiffLine(lineId);
   }
 }
 
 
-void DiffWindowTextArea::printDiffLine(ULONG lineId,
-                                       WORD topEdge,
-                                       bool bHorizontallyScrolled,
-                                       int startIndex,
-                                       int numChars)
+void DiffWindowTextArea::printDiffLine(ULONG lineId)
 {
   const DiffLine* pLine = m_DiffFile[lineId];
   if(pLine == NULL)
@@ -452,23 +437,18 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
     return;
   }
 
-
-  if(startIndex < 0)
-  {
-    startIndex = m_X;
-  }
-
   ULONG indent = 0;
-  if(numChars < 0)
-  {
-    // A negative number means that only the given number of chars is 
-    // inserted, counted from the right. So an indent for the text is
-    // calculated and numChars is made positive to get used below.
-    numChars = -numChars;
-    indent = (m_AreaMaxChars - numChars) * m_FontWidth_pix;
-  }
+  // if(numCharsLimit < 0)
+  // {
+  //   // A negative number means that only the given number of chars is 
+  //   // inserted, counted from the right. So an indent for the text is
+  //   // calculated and numChars is made positive to get used below.
+  //   numCharsLimit = -numCharsLimit;
+  //   currentColumn = m_AreaMaxChars - numCharsLimit;
+  //   indent = (m_AreaMaxChars - numCharsLimit) * m_FontWidth_pix;
+  // }
 
-  if(!bHorizontallyScrolled && m_LineNumbersEnabled)
+  if(m_X < 1 && m_LineNumbersEnabled)
   {
     //
     // Print the line numbers
@@ -477,7 +457,7 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
     // Move rastport cursor to start of line numbers block
     Move(m_pRPorts->getLineNumText(),
          Left() + indent + 2,
-         topEdge + Top() + m_FontBaseline_pix + 1);
+         Top() + m_FontHeight_pix * lineId + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     const char* pLineNum = pLine->getLineNumText();
@@ -487,19 +467,19 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
   }
 
   RastPort* pRPort;
-  ULONG currentColumn = 0;
-  ULONG n = 0;
+  ULONG numChars = 0;
+  ULONG currentColumn = m_X;
 
   do
   {
-    if((n = m_DiffFile.getNumNormalChars(lineId, currentColumn)) > 0)
+    if((numChars = m_DiffFile.getNumNormalChars(lineId, currentColumn)) > 0)
     {
       // Get the RastPort for the line to draw. Depends on the diff state
       // of the line.
       // printf("SET RPORT to 'DIFF COLOR' for line %d ", lineId);
       pRPort = diffStateToRastPort(pLine->getState());
     }
-    else if ((n = m_DiffFile.getNumMarkedChars(lineId, currentColumn)) > 0)
+    else if ((numChars = m_DiffFile.getNumMarkedChars(lineId, currentColumn)) > 0)
     {
       // printf("SET RPORT to 'SELECTED TEXT' for line %d ", lineId);
       pRPort = m_pRPorts->TextSelected();
@@ -515,21 +495,21 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
     // Move rastport cursor to start of line
     Move(pRPort,
          Left() + indent + m_FontWidth_pix * currentColumn + m_LineNumsWidth_pix + 3,
-         topEdge + Top() + m_FontBaseline_pix + 1);
+         Top() + m_FontHeight_pix * lineId + m_FontBaseline_pix + 1);
 
     // Print line
-    if(currentColumn + n > m_AreaMaxChars)
+    if(currentColumn + numChars > m_AreaMaxChars)
     {
-      n = m_AreaMaxChars - currentColumn;
+      numChars = m_AreaMaxChars - currentColumn;
     }
 
     Text(pRPort,
-         pLine->getText() + startIndex + currentColumn,
-         n);
+         pLine->getText() + currentColumn,
+         numChars);
 
-    currentColumn += n;
+    currentColumn += numChars;
   } 
-  while (n > 0); 
+  while (numChars > 0); 
 }
 
 
