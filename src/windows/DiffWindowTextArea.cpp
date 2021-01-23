@@ -68,7 +68,6 @@ ULONG DiffWindowTextArea::MaxVisibleLines() const
   return m_AreaMaxLines;
 }
 
-#include <stdio.h>
 
 void DiffWindowTextArea::SetSize(ULONG width, ULONG height)
 {
@@ -78,7 +77,6 @@ void DiffWindowTextArea::SetSize(ULONG width, ULONG height)
   // Limit height to int multiples
   height = m_AreaMaxLines * m_FontHeight_pix + 3;
 
-  //printf("Set width %lu -> %lu, height %lu -> %lu\n", Width(), width, Height(), height);
   Rect::SetSize(width, height);
 
   //
@@ -265,7 +263,7 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
     WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
-    printDiffLine(lineId, lineTopEdge);
+    printDiffLine(lineId, lineTopEdge, -numChars);
   }
 
   m_X += numChars;
@@ -313,7 +311,7 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
     WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
-    printDiffLine(lineId, lineTopEdge);
+    printDiffLine(lineId, lineTopEdge, numChars);
   }
 
   m_X -= numChars;
@@ -432,12 +430,11 @@ void DiffWindowTextArea::PrintPage()
 }
 
 
-void DiffWindowTextArea::printDiffLine(ULONG lineId, WORD lineTop)
+void DiffWindowTextArea::printDiffLine(ULONG lineId, long lineTop, long onlyNumChars)
 {
   const DiffLine* pLine = m_DiffFile[lineId];
   if(pLine == NULL)
   {
-    //printf("RETURNING because '(pLine = m_DiffFile[%lu]) == NULL'\n", lineId);
     return;
   }
 
@@ -460,49 +457,78 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId, WORD lineTop)
   }
 
   RastPort* pRPort;
-  ULONG numChars = 0;
-  ULONG currentColumn = m_X;
+  long numCharsToPrint = 0;
+  long sumPrintedChars = 0;
+
+  ULONG currentTextColumn;
+  ULONG currentDisplayColumn;
+
+  if(onlyNumChars < 0)
+  {
+    // Only display the right 'onlyNumChars' chars of the line's visible text
+    onlyNumChars = -onlyNumChars;
+
+    currentTextColumn = m_AreaMaxChars + m_X;
+    currentDisplayColumn = m_AreaMaxChars - onlyNumChars;
+  }
+  else if(onlyNumChars > 0)
+  {
+    // Only display the left 'onlyNumChars' chars of the line's visible text
+    currentTextColumn = m_X - onlyNumChars;
+    currentDisplayColumn = 0;
+  }
+  else
+  {
+    // Default, no scrolling
+    currentTextColumn = m_X;
+    currentDisplayColumn = currentTextColumn;
+  }
 
   do
   {
-    if((numChars = m_DiffFile.getNumNormalChars(lineId, currentColumn)) > 0)
+    if((numCharsToPrint = m_DiffFile.getNumNormalChars(lineId, currentTextColumn)) > 0)
     {
       // Get the RastPort for the line to draw. Depends on the diff state
       // of the line.
-      // printf("SET RPORT to 'DIFF COLOR' for line %d ", lineId);
       pRPort = diffStateToRastPort(pLine->getState());
     }
-    else if ((numChars = m_DiffFile.getNumMarkedChars(lineId, currentColumn)) > 0)
+    else if ((numCharsToPrint = m_DiffFile.getNumMarkedChars(lineId, currentTextColumn)) > 0)
     {
-      // printf("SET RPORT to 'SELECTED TEXT' for line %d ", lineId);
       pRPort = m_pRPorts->TextSelected();
     }
     else
     {
-      // printf("RETURNING from line %d because no marked / normal chars anymore.\n");
       return;
     }
 
-    // printf(" and PRINT %d chars.\n", n);
-
     // Move rastport cursor to start of line
     Move(pRPort,
-         m_HScrollRect.Left() + m_FontWidth_pix * currentColumn,
+         m_HScrollRect.Left() + m_FontWidth_pix * currentDisplayColumn,
          Top() + lineTop + m_FontBaseline_pix + 1);
 
     // Print line
-    if(currentColumn + numChars > m_AreaMaxChars)
+    if(currentDisplayColumn + numCharsToPrint > m_AreaMaxChars)
     {
-      numChars = m_AreaMaxChars - currentColumn;
+      numCharsToPrint = m_AreaMaxChars - currentDisplayColumn;
+    }
+
+    if(onlyNumChars > 0)
+    {
+      if(sumPrintedChars + numCharsToPrint > onlyNumChars)
+      {
+        numCharsToPrint = onlyNumChars - sumPrintedChars;
+      }
     }
 
     Text(pRPort,
-         pLine->getText() + currentColumn,
-         numChars);
+         pLine->getText() + currentTextColumn,
+         numCharsToPrint);
 
-    currentColumn += numChars;
+    currentTextColumn += numCharsToPrint;
+    currentDisplayColumn += numCharsToPrint;
+    sumPrintedChars += numCharsToPrint;
   } 
-  while (numChars > 0); 
+  while (numCharsToPrint > 0); 
 }
 
 
