@@ -132,7 +132,7 @@ private:
   /**
    * Print the given diff line at given y-position topEdge.
    */
-  void printDiffLine(ULONG lineId, WORD lineTop = 0);
+  void printDiffLine(ULONG lineId, WORD lineTop);
 
   /**
    * Calculate how many chars of given DiffLine must be print 

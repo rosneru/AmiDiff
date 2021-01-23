@@ -264,7 +264,8 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
   // Fill the gap with the following chars
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
-    printDiffLine(lineId);
+    WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
+    printDiffLine(lineId, lineTopEdge);
   }
 
   m_X += numChars;
@@ -311,8 +312,8 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
   // fill the gap with the previous chars
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
-    printDiffLine(lineId);
-
+    WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
+    printDiffLine(lineId, lineTopEdge);
   }
 
   m_X -= numChars;
