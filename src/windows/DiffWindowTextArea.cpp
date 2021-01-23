@@ -463,6 +463,8 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId, long lineTop, long onlyNumC
   ULONG currentTextColumn;
   ULONG currentDisplayColumn;
 
+  bool hasNumCharsBeenLimited = false;
+
   if(onlyNumChars < 0)
   {
     // Only display the right 'onlyNumChars' chars of the line's visible text
@@ -510,6 +512,7 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId, long lineTop, long onlyNumC
     if(currentDisplayColumn + numCharsToPrint > m_AreaMaxChars)
     {
       numCharsToPrint = m_AreaMaxChars - currentDisplayColumn;
+      hasNumCharsBeenLimited = true;
     }
 
     if(onlyNumChars > 0)
@@ -517,12 +520,18 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId, long lineTop, long onlyNumC
       if(sumPrintedChars + numCharsToPrint > onlyNumChars)
       {
         numCharsToPrint = onlyNumChars - sumPrintedChars;
+        hasNumCharsBeenLimited = true;
       }
     }
 
     Text(pRPort,
          pLine->getText() + currentTextColumn,
          numCharsToPrint);
+
+    if(hasNumCharsBeenLimited)
+    {
+      return;
+    }
 
     currentTextColumn += numCharsToPrint;
     currentDisplayColumn += numCharsToPrint;
