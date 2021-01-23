@@ -16,7 +16,7 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
                                        ULONG maxNumChars)
   : m_DiffFile(diffFile),
     m_pRPorts(pRPorts),
-    m_LineNumbersEnabled(lineNumbersEnabled),
+    m_AreLineNumbersEnabled(lineNumbersEnabled),
     m_LongestLineChars(maxNumChars),
     m_FontWidth_pix(pTextFont->tf_XSize),
     m_FontHeight_pix(pTextFont->tf_YSize),
@@ -263,7 +263,7 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
     WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
-    printDiffLine(lineId, lineTopEdge, -numChars);
+    printDiffLine(lineId, false, lineTopEdge, -numChars);
   }
 
   m_X += numChars;
@@ -311,7 +311,7 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
     WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
-    printDiffLine(lineId, lineTopEdge, numChars);
+    printDiffLine(lineId, false, lineTopEdge, numChars);
   }
 
   m_X -= numChars;
@@ -353,7 +353,7 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
   {
     ULONG lineId = m_Y + m_AreaMaxLines + i;
     WORD lineTopEdge = (m_AreaMaxLines - numLines + i) * m_FontHeight_pix;
-    printDiffLine(lineId, lineTopEdge);
+    printDiffLine(lineId, true, lineTopEdge);
   }
 
   m_Y += numLines;
@@ -396,7 +396,7 @@ ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
   {
     ULONG lineId = m_Y - numLines + i;
     WORD lineTopEdge = i * m_FontHeight_pix;
-    printDiffLine(lineId, lineTopEdge);
+    printDiffLine(lineId, true, lineTopEdge);
   }
   
   m_Y -= numLines;
@@ -410,27 +410,24 @@ void DiffWindowTextArea::PrintPageAt(ULONG left, ULONG top)
   m_X = left;
   m_Y = top;
 
-
   PrintPage();
 }
 
 
 void DiffWindowTextArea::PrintPage()
 {
-  for(ULONG lineId = m_Y; (lineId - m_Y) < m_DiffFile.getNumLines(); lineId++)
+  for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
-    if((m_Y + lineId) >= m_AreaMaxLines)
-    {
-      break;
-    }
-
-    WORD topEdge = (lineId - m_Y) * m_FontHeight_pix;
-    printDiffLine(lineId, topEdge);
+    WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
+    printDiffLine(lineId, true, lineTopEdge);
   }
 }
 
 
-void DiffWindowTextArea::printDiffLine(ULONG lineId, long lineTop, long onlyNumChars)
+void DiffWindowTextArea::printDiffLine(ULONG lineId, 
+                                       bool doDisplayLineNumbers, 
+                                       long lineTop, 
+                                       long numCharLimit)
 {
   const DiffLine* pLine = m_DiffFile[lineId];
   if(pLine == NULL)
@@ -438,12 +435,11 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId, long lineTop, long onlyNumC
     return;
   }
 
-  if(m_X < 1 && m_LineNumbersEnabled)
+  //
+  // Print the line numbers
+  //
+  if(doDisplayLineNumbers && m_AreLineNumbersEnabled)
   {
-    //
-    // Print the line numbers
-    //
-
     // Move rastport cursor to start of line numbers block
     Move(m_pRPorts->getLineNumText(),
          m_VScrollRect.Left(),
@@ -456,38 +452,40 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId, long lineTop, long onlyNumC
     Text(m_pRPorts->getLineNumText(), pLineNum, m_LineNumsWidth_chars);
   }
 
-  RastPort* pRPort;
-  long numCharsToPrint = 0;
-  long sumPrintedChars = 0;
+
 
   ULONG currentTextColumn;
   ULONG currentDisplayColumn;
 
-  bool hasNumCharsBeenLimited = false;
-
-  if(onlyNumChars < 0)
+  if(numCharLimit < 0)
   {
     // Only display the right 'onlyNumChars' chars of the line's visible text
-    onlyNumChars = -onlyNumChars;
+    numCharLimit = -numCharLimit;
 
     currentTextColumn = m_AreaMaxChars + m_X;
-    currentDisplayColumn = m_AreaMaxChars - onlyNumChars;
+    currentDisplayColumn = m_AreaMaxChars - numCharLimit;
   }
-  else if(onlyNumChars > 0)
+  else if(numCharLimit > 0)
   {
     // Only display the left 'onlyNumChars' chars of the line's visible text
-    currentTextColumn = m_X - onlyNumChars;
+    currentTextColumn = m_X - numCharLimit;
     currentDisplayColumn = 0;
   }
   else
   {
     // Default, no scrolling
     currentTextColumn = m_X;
-    currentDisplayColumn = currentTextColumn;
+    currentDisplayColumn = 0;
   }
+
+  long numCharsToPrint = 0;
 
   do
   {
+    long sumPrintedChars = 0;
+    bool hasNumCharsBeenLimited = false;
+    RastPort* pRPort;
+
     if((numCharsToPrint = m_DiffFile.getNumNormalChars(lineId, currentTextColumn)) > 0)
     {
       // Get the RastPort for the line to draw. Depends on the diff state
@@ -515,11 +513,11 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId, long lineTop, long onlyNumC
       hasNumCharsBeenLimited = true;
     }
 
-    if(onlyNumChars > 0)
+    if(numCharLimit > 0)
     {
-      if(sumPrintedChars + numCharsToPrint > onlyNumChars)
+      if(sumPrintedChars + numCharsToPrint > numCharLimit)
       {
-        numCharsToPrint = onlyNumChars - sumPrintedChars;
+        numCharsToPrint = numCharLimit - sumPrintedChars;
         hasNumCharsBeenLimited = true;
       }
     }
@@ -530,6 +528,8 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId, long lineTop, long onlyNumC
 
     if(hasNumCharsBeenLimited)
     {
+      // Nothing more to print as number of chars to print had already
+      // been limited
       return;
     }
 

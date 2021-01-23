@@ -109,7 +109,7 @@ public:
 private:
   SelectableDiffFile m_DiffFile;
   DiffWindowRastports*& m_pRPorts;
-  bool m_LineNumbersEnabled;
+  bool m_AreLineNumbersEnabled;
   ULONG m_LongestLineChars; ///> Number of chars of the longest line of DiffFile.
 
   UWORD m_FontWidth_pix;    ///> Width of the rastport text font
@@ -130,9 +130,18 @@ private:
   Rect m_VScrollRect;     ///> Vertical scroll region
 
   /**
-   * Print the given diff line at given y-position topEdge.
+   * Print a diff line.
+   * @param lineTop TopEdge y-position in pixels for the line
+   *
+   * @param numCharLimit When set to a value > 0 max. up to (according
+   * to scroll m_X) numCharLimit chars are printed to the left of the
+   * display area. When < 0, max. up to numCharLimit chars are printed
+   * to the right of the display area.
    */
-  void printDiffLine(ULONG lineId, long lineTop, long onlyNumChars = 0);
+  void printDiffLine(ULONG lineId, 
+                     bool doDisplayLineNumbers, 
+                     long lineTop, 
+                     long numCharLimit = 0);
 
   /**
    * Calculate how many chars of given DiffLine must be print 
