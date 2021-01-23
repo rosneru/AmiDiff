@@ -334,10 +334,10 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
     return 0;
   }
 
-  if((m_Y + numLines) > m_DiffFile.getNumLines())
+  if((m_Y + m_AreaMaxLines + numLines) > m_DiffFile.getNumLines())
   {
     // Limit the scrolling to not exceed number of lines in file
-    numLines = m_DiffFile.getNumLines() - (m_Y + m_AreaMaxLines);
+    numLines = m_DiffFile.getNumLines() - m_Y - m_AreaMaxLines;
   }
 
   // Move each text area upward by n * the height of one text line
@@ -349,13 +349,15 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
                  m_VScrollRect.Right(),
                  m_VScrollRect.Bottom());
 
+  // Fill the now empty lines at the bottom with the next lines 
   for(ULONG i = 0; i < numLines; i++)
   {
-    ULONG lineId = m_Y + m_AreaMaxLines;
-    // WORD topEdge = m_AreaMaxLines - numLines + i;
-    printDiffLine(lineId);
-    m_Y++;
+    ULONG lineId = m_Y + m_AreaMaxLines + i;
+    WORD lineTopEdge = (m_AreaMaxLines - numLines + i) * m_FontHeight_pix;
+    printDiffLine(lineId, lineTopEdge);
   }
+
+  m_Y += numLines;
 
   return numLines;
 }
@@ -390,13 +392,15 @@ ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
                  m_VScrollRect.Right(),
                  m_VScrollRect.Bottom());
 
-  // Fill the gap with the previous text lines
+  // Fill the now empty lines at the top with the previous text lines
   for(ULONG i = 0; i < numLines; i++)
   {
-    int lineId = m_Y - numLines + i;
-    printDiffLine(lineId);
-    m_Y--;
+    ULONG lineId = m_Y - numLines + i;
+    WORD lineTopEdge = i * m_FontHeight_pix;
+    printDiffLine(lineId, lineTopEdge);
   }
+  
+  m_Y -= numLines;
 
   return numLines;
 }
@@ -421,12 +425,13 @@ void DiffWindowTextArea::PrintPage()
       break;
     }
 
-    printDiffLine(lineId);
+    WORD topEdge = (lineId - m_Y) * m_FontHeight_pix;
+    printDiffLine(lineId, topEdge);
   }
 }
 
 
-void DiffWindowTextArea::printDiffLine(ULONG lineId)
+void DiffWindowTextArea::printDiffLine(ULONG lineId, WORD lineTop)
 {
   const DiffLine* pLine = m_DiffFile[lineId];
   if(pLine == NULL)
@@ -443,8 +448,8 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId)
 
     // Move rastport cursor to start of line numbers block
     Move(m_pRPorts->getLineNumText(),
-         Left() + 2,
-         Top() + m_FontHeight_pix * (lineId - m_Y) + m_FontBaseline_pix + 1);
+         m_VScrollRect.Left(),
+         Top() + lineTop + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     const char* pLineNum = pLine->getLineNumText();
@@ -481,8 +486,8 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId)
 
     // Move rastport cursor to start of line
     Move(pRPort,
-         Left() + m_FontWidth_pix * currentColumn + m_LineNumsWidth_pix + 3,
-         Top() + m_FontHeight_pix * (lineId - m_Y) + m_FontBaseline_pix + 1);
+         m_HScrollRect.Left() + m_FontWidth_pix * currentColumn,
+         Top() + lineTop + m_FontBaseline_pix + 1);
 
     // Print line
     if(currentColumn + numChars > m_AreaMaxChars)
