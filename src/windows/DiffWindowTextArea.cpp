@@ -102,17 +102,6 @@ void DiffWindowTextArea::SetSize(ULONG width, ULONG height)
 }
 
 
-void DiffWindowTextArea::Clear()
-{
-  // EraseRect(m_pRPorts->getLineNumText(),
-  //           Left() + 2,
-  //           Top() + 2,
-  //           Right() - 3,
-  //           Bottom() - 3);
-
-}
-
-
 void DiffWindowTextArea::AddSelectedText(ULONG lineId, 
                                          ULONG fromColumn, 
                                          ULONG toColumn)
@@ -165,10 +154,10 @@ void DiffWindowTextArea::ScrollTopToRow(ULONG rowId)
   m_Y =  rowId;
 
   EraseRect(m_pRPorts->Window(),
-            Left() + 2,
-            Top() + 2,
-            Right() - 3,
-            Bottom() - 3);
+            m_VScrollRect.Left(),
+            m_VScrollRect.Top(),
+            m_VScrollRect.Right(),
+            m_VScrollRect.Bottom());
 
   PrintPage();
 }
@@ -210,10 +199,14 @@ void DiffWindowTextArea::ScrollLeftToColumn(ULONG columId)
   //
   m_X = columId;
 
-  // Clear text area completely
-  Clear();
+  // Clear the area except the line numbers area
+  EraseRect(m_pRPorts->Window(),
+            m_HScrollRect.Left(),
+            m_HScrollRect.Top(),
+            m_HScrollRect.Right(),
+            m_HScrollRect.Bottom());
 
-  PrintPage();
+  PrintPage(true);
 }
 
 
@@ -414,12 +407,12 @@ void DiffWindowTextArea::PrintPageAt(ULONG left, ULONG top)
 }
 
 
-void DiffWindowTextArea::PrintPage()
+void DiffWindowTextArea::PrintPage(bool dontPrintLineNumbers)
 {
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
     WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
-    printDiffLine(lineId, true, lineTopEdge);
+    printDiffLine(lineId, !dontPrintLineNumbers, lineTopEdge);
   }
 }
 

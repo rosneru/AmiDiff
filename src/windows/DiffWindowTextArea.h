@@ -92,13 +92,8 @@ public:
   /**
    * Print the diff file content in the text area.
    */
-  void PrintPage();
+  void PrintPage(bool dontPrintLineNumbers = false);
 
-
-  /**
-   * Clear text area completely
-   */
-  void Clear();
 
   /**
    * Set the selected text
