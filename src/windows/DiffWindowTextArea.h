@@ -101,7 +101,7 @@ public:
 
 
   /**
-   * Adds a text selection to the DiffFile which is displayed in this
+   * Adds a text selection to the DiffFile which is displayed in this 
    * text area.
    * 
    * @param lineId Id of the line the selection is added
