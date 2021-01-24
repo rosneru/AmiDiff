@@ -23,10 +23,9 @@ CHANGES
 2.0 (xx.xx.2021)
 - When running on a custom or public screen other than Workbench, 
   an AppIcon is displayed on the Workbench. Double clicking on it brings
-  the ADiffView screen to front. The AppIcon allows drag'n'drop of files
-  to insert their names into the open files window on an empty file
-  place Also added the (tooltype / cli) option NOAPPICON to disable the
-  AppIcon.
+  ADiffView to front. The AppIcon allows drag'n'drop of files to insert
+  their names into the open files window on an empty file place. AppIcon
+  can be disabled with the (tooltype / cli) option NOAPPICON.
 - Optimized reading of the input files. Now each file is read as a whole
   and no unnecessary string copying is done anymore. Improved overall
   speed.
@@ -34,7 +33,7 @@ CHANGES
   exceptions and some STL - cleaner code and more coding fun for me.
   Comes at the cost of a bigger binary (70k => 190k even before new
   features were implemented). The use of exceptions also drops MC68000
-  compatibility, so at least an 68020 CPU is needed now.
+  compatibility, so at least a 68020 CPU is needed now.
 
 1.2 (01.01.2020)
 - Fixed a bug introduced in version 1.1 which produced Enforcer hits in 
