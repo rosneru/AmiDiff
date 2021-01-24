@@ -119,7 +119,7 @@ bool DiffWorker::Diff()
     m_IsExitAllowed = true;
     return false;
   }
-  catch (std::bad_alloc & exception) 
+  catch (std::bad_alloc& exception) 
   { 
     if(!m_IsCancelRequested)
     {
