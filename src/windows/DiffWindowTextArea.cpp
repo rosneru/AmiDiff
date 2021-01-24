@@ -326,6 +326,11 @@ ULONG DiffWindowTextArea::scrollUp(ULONG numLines)
     return 0;
   }
 
+  if(numLines > m_AreaMaxLines)
+  {
+    numLines = m_AreaMaxLines;
+  }
+
   if((m_Y + m_AreaMaxLines + numLines) > m_DiffFile.getNumLines())
   {
     // Limit the scrolling to not exceed number of lines in file
@@ -369,10 +374,9 @@ ULONG DiffWindowTextArea::scrollDown(ULONG numLines)
     return 0;
   }
 
-  if(numLines > m_Y)
+  if(numLines > m_AreaMaxLines)
   {
-    // Limit the scrolling to only scroll only as many lines as necessary
-    numLines = m_Y;
+    numLines = m_AreaMaxLines;
   }
 
   // Move each text area downward by n * the height of one text line
