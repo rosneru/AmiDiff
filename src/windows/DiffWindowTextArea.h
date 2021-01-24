@@ -25,11 +25,11 @@ public:
 
   virtual ~DiffWindowTextArea();
 
-  ULONG X() const;
-  ULONG Y() const;
+  ULONG getX() const;
+  ULONG getY() const;
 
-  ULONG MaxVisibleChars() const;
-  ULONG MaxVisibleLines() const;
+  ULONG getMaxVisibleChars() const;
+  ULONG getMaxVisibleLines() const;
 
   /**
    * Set the dimensions of this text area.

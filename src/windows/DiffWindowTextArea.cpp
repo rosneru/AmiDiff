@@ -45,25 +45,25 @@ DiffWindowTextArea::~DiffWindowTextArea()
 }
 
 
-ULONG DiffWindowTextArea::X() const
+ULONG DiffWindowTextArea::getX() const
 {
   return m_X;
 }
 
 
-ULONG DiffWindowTextArea::Y() const
+ULONG DiffWindowTextArea::getY() const
 {
   return m_Y;
 }
 
 
-ULONG DiffWindowTextArea::MaxVisibleChars() const
+ULONG DiffWindowTextArea::getMaxVisibleChars() const
 {
   return m_AreaMaxChars;
 }
 
 
-ULONG DiffWindowTextArea::MaxVisibleLines() const
+ULONG DiffWindowTextArea::getMaxVisibleLines() const
 {
   return m_AreaMaxLines;
 }

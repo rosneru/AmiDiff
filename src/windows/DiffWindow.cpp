@@ -134,11 +134,11 @@ void DiffWindow::Resized()
   }
 
   // Set x-scroll-gadget's pot size in relation of new window size
-  setXScrollPotSize(m_pTextArea1->MaxVisibleChars(),
+  setXScrollPotSize(m_pTextArea1->getMaxVisibleChars(),
                     m_pDocument->getMaxLineLength());
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_pTextArea1->MaxVisibleLines(),
+  setYScrollPotSize(m_pTextArea1->getMaxVisibleLines(),
                     m_pDocument->getNumLines());
 
 
@@ -300,11 +300,11 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   paintStatusBar();
 
   // Set x-scroll-gadget's pot size in relation of new window size
-  setXScrollPotSize(m_pTextArea1->MaxVisibleChars(),
+  setXScrollPotSize(m_pTextArea1->getMaxVisibleChars(),
                     m_pDocument->getMaxLineLength());
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_pTextArea1->MaxVisibleLines(),
+  setYScrollPotSize(m_pTextArea1->getMaxVisibleLines(),
                     m_pDocument->getNumLines());
 
   return true;
@@ -319,7 +319,7 @@ void DiffWindow::NavigateToNextDiff()
   YChangedHandler(idx);
 
   // Set scrollbar to new y position
-  setYScrollTop(m_pTextArea1->Y());
+  setYScrollTop(m_pTextArea1->getY());
 }
 
 
@@ -331,7 +331,7 @@ void DiffWindow::NavigateToPrevDiff()
   YChangedHandler(idx);
 
   // Set scrollbar to new y position
-  setYScrollTop(m_pTextArea1->Y());
+  setYScrollTop(m_pTextArea1->getY());
 }
 
 
@@ -395,7 +395,7 @@ void DiffWindow::XIncrease(size_t numChars,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollTop(m_pTextArea1->X());
+    setXScrollTop(m_pTextArea1->getX());
   }
 }
 
@@ -410,7 +410,7 @@ void DiffWindow::XDecrease(size_t numChars,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollTop(m_pTextArea1->X());
+    setXScrollTop(m_pTextArea1->getX());
   }
 }
 
@@ -425,7 +425,7 @@ void DiffWindow::YIncrease(size_t numLines,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setYScrollTop(m_pTextArea1->Y());
+    setYScrollTop(m_pTextArea1->getY());
   }
 }
 
@@ -440,7 +440,7 @@ void DiffWindow::YDecrease(size_t numLines,
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setYScrollTop(m_pTextArea1->Y());
+    setYScrollTop(m_pTextArea1->getY());
   }
 }
 
