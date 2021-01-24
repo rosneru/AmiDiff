@@ -160,6 +160,7 @@ bool DiffWindow::Open(InitialPosition initialPos)
     return false;
   }
 
+
   if(m_pRPorts != NULL)
   {
     delete m_pRPorts;
@@ -185,9 +186,6 @@ bool DiffWindow::Open(InitialPosition initialPos)
   // Calculate some sizes which are only calculatable with window
   // already open
   calcSizes();
-
-  // With the calculated sizes the gadgets must be re-sized/positioned
-  resizeGadgets();
 
   // Paint the window decoration
   paintWindowDecoration();
@@ -292,6 +290,9 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   // Paint the content of the two documents (from start)
   m_pTextArea1->printPageAt(0, 0);
   m_pTextArea2->printPageAt(0, 0);
+
+  // With the calculated sizes the gadgets must be re-sized/positioned
+  resizeGadgets();
 
   // Paint the window decoration
   paintWindowDecoration();
@@ -598,11 +599,20 @@ void DiffWindow::calcSizes()
 
 void DiffWindow::resizeGadgets()
 {
+  if(m_pGadtoolsContext == NULL)
+  {
+    // No gadgets created
+    return;
+  }
+
   // Save a copy of the soon to be obsolete GadgTools context
   struct Gadget* pOldContext = m_pGadtoolsContext;
 
   // Detach this windows gadgets from the ones defined in parent window
-  m_pLastParentGadget->NextGadget = NULL;
+  if(m_pLastParentGadget != NULL)
+  {
+    m_pLastParentGadget->NextGadget = NULL;
+  }
 
   // Remove these gadgets from the windows gadget list
   RemoveGList(m_pWindow, m_pGadtoolsContext, -1);
