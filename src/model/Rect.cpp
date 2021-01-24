@@ -34,7 +34,7 @@ Rect::Rect(unsigned long left, unsigned long top)
 
 }
 
-void Rect::Set(unsigned long left, 
+void Rect::set(unsigned long left, 
                unsigned long top, 
                unsigned long right, 
                unsigned long bottom)
@@ -47,65 +47,65 @@ void Rect::Set(unsigned long left,
   m_WordWidth = (((right - left) + 15) & -16) >> 4;
 }
 
-void Rect::SetLeftTop(unsigned long left, unsigned long top)
+void Rect::setPosition(unsigned long left, unsigned long top)
 {
   m_Left = left;
   m_Top = top;
 }
 
-void Rect::SetSize(unsigned long width, unsigned long height)
+void Rect::setSize(unsigned long width, unsigned long height)
 {
   m_Right = m_Left + width - 1;
   m_Bottom = m_Top + height - 1;
   m_WordWidth = ((width + 15) & -16) >> 4;
 }
 
-bool Rect::HasSize() const
+bool Rect::hasSize() const
 {
   return (m_Left != m_Right) && (m_Top != m_Bottom);
 }
 
 
-unsigned long Rect::Area() const
+unsigned long Rect::getArea() const
 {
-  return Width() * Height();
+  return getWidth() * getHeight();
 }
 
-unsigned long Rect::Left() const
+unsigned long Rect::getLeft() const
 {
   return m_Left;
 }
 
 
-unsigned long Rect::Right() const
+unsigned long Rect::getRight() const
 {
   return m_Right;
 }
 
 
-unsigned long Rect::Top() const
+unsigned long Rect::getTop() const
 {
   return m_Top;
 }
 
 
-unsigned long Rect::Bottom() const
+unsigned long Rect::getBottom() const
 {
   return m_Bottom;
 }
 
-unsigned long Rect::Height() const
+unsigned long Rect::getHeight() const
 {
 
   return m_Bottom - m_Top + 1;
 }
 
-unsigned long Rect::Width() const
+unsigned long Rect::getWidth() const
 {
   return m_Right - m_Left + 1;
 }
 
-unsigned long Rect::WordWidth() const
+unsigned long Rect::getWordWidth() const
 {
   return m_WordWidth; 
 }

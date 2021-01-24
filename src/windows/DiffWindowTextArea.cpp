@@ -77,7 +77,7 @@ void DiffWindowTextArea::setSize(ULONG width, ULONG height)
   // Limit height to int multiples
   height = m_AreaMaxLines * m_FontHeight_pix + 3;
 
-  Rect::SetSize(width, height);
+  Rect::setSize(width, height);
 
   //
   // Define two the scrolling areas. Note that there are two different
@@ -90,15 +90,15 @@ void DiffWindowTextArea::setSize(ULONG width, ULONG height)
   ULONG maxTextWidth_pix = m_AreaMaxChars * m_FontWidth_pix;
   maxTextWidth_pix += m_LineNumsWidth_pix;
 
-  m_HScrollRect.Set(Left() + m_LineNumsWidth_pix + 3,
-                    Top() + 1,
-                    Left() + maxTextWidth_pix + 2,
-                    Top() + Height() - 3);
+  m_HScrollRect.set(getLeft() + m_LineNumsWidth_pix + 3,
+                    getTop() + 1,
+                    getLeft() + maxTextWidth_pix + 2,
+                    getTop() + getHeight() - 3);
 
-  m_VScrollRect.Set(Left() + 3,
-                    Top() + 1,
-                    Left() + maxTextWidth_pix + 2,
-                    Top() + Height() - 3);
+  m_VScrollRect.set(getLeft() + 3,
+                    getTop() + 1,
+                    getLeft() + maxTextWidth_pix + 2,
+                    getTop() + getHeight() - 3);
 }
 
 
@@ -154,10 +154,10 @@ void DiffWindowTextArea::scrollTopToRow(ULONG rowId)
   m_Y =  rowId;
 
   EraseRect(m_pRPorts->Window(),
-            m_VScrollRect.Left(),
-            m_VScrollRect.Top(),
-            m_VScrollRect.Right(),
-            m_VScrollRect.Bottom());
+            m_VScrollRect.getLeft(),
+            m_VScrollRect.getTop(),
+            m_VScrollRect.getRight(),
+            m_VScrollRect.getBottom());
 
   printPage();
 }
@@ -201,10 +201,10 @@ void DiffWindowTextArea::scrollLeftToColumn(ULONG columId)
 
   // Clear the area except the line numbers area
   EraseRect(m_pRPorts->Window(),
-            m_HScrollRect.Left(),
-            m_HScrollRect.Top(),
-            m_HScrollRect.Right(),
-            m_HScrollRect.Bottom());
+            m_HScrollRect.getLeft(),
+            m_HScrollRect.getTop(),
+            m_HScrollRect.getRight(),
+            m_HScrollRect.getBottom());
 
   printPage(true);
 }
@@ -247,10 +247,10 @@ ULONG DiffWindowTextArea::scrollLeft(ULONG numChars)
   ScrollRasterBF(m_pRPorts->Window(),
                  numChars * m_FontWidth_pix,
                  0,
-                 m_HScrollRect.Left(),
-                 m_HScrollRect.Top(),
-                 m_HScrollRect.Right(),
-                 m_HScrollRect.Bottom());
+                 m_HScrollRect.getLeft(),
+                 m_HScrollRect.getTop(),
+                 m_HScrollRect.getRight(),
+                 m_HScrollRect.getBottom());
 
   // Fill the gap with the following chars
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
@@ -294,10 +294,10 @@ ULONG DiffWindowTextArea::scrollRight(ULONG numChars)
   ScrollRasterBF(m_pRPorts->Window(),
                  -numChars * m_FontWidth_pix, // n * width
                  0,
-                 m_HScrollRect.Left(),
-                 m_HScrollRect.Top(),
-                 m_HScrollRect.Right(),
-                 m_HScrollRect.Bottom());
+                 m_HScrollRect.getLeft(),
+                 m_HScrollRect.getTop(),
+                 m_HScrollRect.getRight(),
+                 m_HScrollRect.getBottom());
 
 
   // fill the gap with the previous chars
@@ -336,10 +336,10 @@ ULONG DiffWindowTextArea::scrollUp(ULONG numLines)
   ScrollRasterBF(m_pRPorts->Window(),
                  0,
                  numLines * m_FontHeight_pix,
-                 m_VScrollRect.Left(),
-                 m_VScrollRect.Top(),
-                 m_VScrollRect.Right(),
-                 m_VScrollRect.Bottom());
+                 m_VScrollRect.getLeft(),
+                 m_VScrollRect.getTop(),
+                 m_VScrollRect.getRight(),
+                 m_VScrollRect.getBottom());
 
   // Fill the now empty lines at the bottom with the next lines 
   for(ULONG i = 0; i < numLines; i++)
@@ -379,10 +379,10 @@ ULONG DiffWindowTextArea::scrollDown(ULONG numLines)
   ScrollRasterBF(m_pRPorts->Window(),
                  0,
                  -numLines * m_FontHeight_pix,  // n * height
-                 m_VScrollRect.Left(),
-                 m_VScrollRect.Top(),
-                 m_VScrollRect.Right(),
-                 m_VScrollRect.Bottom());
+                 m_VScrollRect.getLeft(),
+                 m_VScrollRect.getTop(),
+                 m_VScrollRect.getRight(),
+                 m_VScrollRect.getBottom());
 
   // Fill the now empty lines at the top with the previous text lines
   for(ULONG i = 0; i < numLines; i++)
@@ -435,8 +435,8 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
   {
     // Move rastport cursor to start of line numbers block
     Move(m_pRPorts->getLineNumText(),
-         m_VScrollRect.Left(),
-         Top() + lineTop + m_FontBaseline_pix + 1);
+         m_VScrollRect.getLeft(),
+         getTop() + lineTop + m_FontBaseline_pix + 1);
 
     // Get the text or set to empty spaces when there is none
     const char* pLineNum = pLine->getLineNumText();
@@ -496,8 +496,8 @@ void DiffWindowTextArea::printDiffLine(ULONG lineId,
 
     // Move rastport cursor to start of line
     Move(pRPort,
-         m_HScrollRect.Left() + m_FontWidth_pix * currentDisplayColumn,
-         Top() + lineTop + m_FontBaseline_pix + 1);
+         m_HScrollRect.getLeft() + m_FontWidth_pix * currentDisplayColumn,
+         getTop() + lineTop + m_FontBaseline_pix + 1);
 
     // Print line
     if(currentDisplayColumn + numCharsToPrint > m_AreaMaxChars)

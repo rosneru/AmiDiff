@@ -54,7 +54,7 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
     yOffset /= 2;
   }
 
-  m_OuterRect.Set(pScr->WBorLeft + xOffset,
+  m_OuterRect.set(pScr->WBorLeft + xOffset,
                   pScr->WBorTop + pScr->BarHeight + yOffset,
                   m_Width - pScr->WBorRight - 1 - xOffset,
                   pScr->WBorTop + pScr->BarHeight + yOffset + 3 * m_pTextFont->tf_YSize);
@@ -62,10 +62,10 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
   m_TextZeroWidth = TextLength(&pScr->RastPort, m_pTextZero, 2);
   m_TextHundredWidth = TextLength(&pScr->RastPort, m_pTextHundred, 4);
 
-  m_ProgressRect.Set(m_OuterRect.Left() + m_TextZeroWidth + 2 * xOffset,
-                     m_OuterRect.Top() + m_pTextFont->tf_YSize,
-                     m_OuterRect.Right() - m_TextHundredWidth - 2 * xOffset,
-                     m_OuterRect.Top() + 2 * m_pTextFont->tf_YSize);
+  m_ProgressRect.set(m_OuterRect.getLeft() + m_TextZeroWidth + 2 * xOffset,
+                     m_OuterRect.getTop() + m_pTextFont->tf_YSize,
+                     m_OuterRect.getRight() - m_TextHundredWidth - 2 * xOffset,
+                     m_OuterRect.getTop() + 2 * m_pTextFont->tf_YSize);
 
   //
   // Setting up the gadgets
@@ -88,7 +88,7 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
 
   // Creating the 'Stop' button gadget
   m_NewGadget.ng_LeftEdge   = m_Width / 2 - buttonWidth / 2;
-  m_NewGadget.ng_TopEdge    = m_OuterRect.Bottom() + yOffset;
+  m_NewGadget.ng_TopEdge    = m_OuterRect.getBottom() + yOffset;
   m_NewGadget.ng_Width      = buttonWidth;
   m_NewGadget.ng_Height     = m_pTextFont->tf_YSize + 2 * yOffset;
   m_NewGadget.ng_GadgetID   = GID_BtnStop;
@@ -175,26 +175,26 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   // Draw the outer gray area and bevel box
   SetAPen(m_pWindow->RPort, m_Pens.Background());
   RectFill(m_pWindow->RPort,
-           m_OuterRect.Left(),
-           m_OuterRect.Top(),
-           m_OuterRect.Right() - 1,
-           m_OuterRect.Bottom() - 1);
+           m_OuterRect.getLeft(),
+           m_OuterRect.getTop(),
+           m_OuterRect.getRight() - 1,
+           m_OuterRect.getBottom() - 1);
 
   DrawBevelBox(m_pWindow->RPort,
-               m_OuterRect.Left(),
-               m_OuterRect.Top(),
-               m_OuterRect.Width(),
-               m_OuterRect.Height(),
+               m_OuterRect.getLeft(),
+               m_OuterRect.getTop(),
+               m_OuterRect.getWidth(),
+               m_OuterRect.getHeight(),
                GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
   // Draw a bevel box around the area where the progress bar will be
   DrawBevelBox(m_pWindow->RPort,
-               m_ProgressRect.Left() - 2,
-               m_ProgressRect.Top() - 1,
-               m_ProgressRect.Width() + 4,
-               m_ProgressRect.Height() + 3,
+               m_ProgressRect.getLeft() - 2,
+               m_ProgressRect.getTop() - 1,
+               m_ProgressRect.getWidth() + 4,
+               m_ProgressRect.getHeight() + 3,
                GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
@@ -203,14 +203,14 @@ bool ProgressWindow::Open(InitialPosition initialPos)
   SetAPen(m_pWindow->RPort,m_Pens.NormalText());
 
   Move(m_pWindow->RPort,
-       (m_OuterRect.Left() + m_ProgressRect.Left()) / 2 - m_TextZeroWidth / 2,
-       m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
+       (m_OuterRect.getLeft() + m_ProgressRect.getLeft()) / 2 - m_TextZeroWidth / 2,
+       m_ProgressRect.getTop() + m_pTextFont->tf_Baseline + 1);
 
   Text(m_pWindow->RPort, m_pTextZero, strlen(m_pTextZero));
 
   Move(m_pWindow->RPort,
-       (m_OuterRect.Right() + m_ProgressRect.Right()) / 2 - m_TextHundredWidth / 2,
-       m_ProgressRect.Top() + m_pTextFont->tf_Baseline + 1);
+       (m_OuterRect.getRight() + m_ProgressRect.getRight()) / 2 - m_TextHundredWidth / 2,
+       m_ProgressRect.getTop() + m_pTextFont->tf_Baseline + 1);
 
   Text(m_pWindow->RPort, m_pTextHundred, strlen(m_pTextHundred));
 
@@ -286,7 +286,7 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
   int progrWidth = 1;
   if(pProgrMsg->progress > 0)
   {
-    progrWidth = (m_ProgressRect.Width() - 2) * pProgrMsg->progress / 100;
+    progrWidth = (m_ProgressRect.getWidth() - 2) * pProgrMsg->progress / 100;
   }
 
   // Set color to <blue> for painting the progress bar
@@ -294,10 +294,10 @@ void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
 
   // Fill the progress bar area
   RectFill(m_pWindow->RPort,
-           m_ProgressRect.Left(),
-           m_ProgressRect.Top(),
-           m_ProgressRect.Left() + progrWidth,
-           m_ProgressRect.Bottom());
+           m_ProgressRect.getLeft(),
+           m_ProgressRect.getTop(),
+           m_ProgressRect.getLeft() + progrWidth,
+           m_ProgressRect.getBottom());
 
   // Set color to <background> for painting the grey background of the
   // yet uncovered area of the progress bar

@@ -116,11 +116,11 @@ void DiffWindow::Resized()
   }
 
   // Set location and size of the left text area
-  m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
+  m_pTextArea1->setPosition(m_IndentX, m_IndentY);
   m_pTextArea1->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Set location and size of the right text area
-  m_pTextArea2->SetLeftTop(m_IndentX + m_TextAreasWidth, m_IndentY);
+  m_pTextArea2->setPosition(m_IndentX + m_TextAreasWidth, m_IndentY);
   m_pTextArea2->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from current y-position,
@@ -282,11 +282,11 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   m_pTextArea1->addSelection(2, 8, 10);
 
   // Set location and size of the left text area
-  m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
+  m_pTextArea1->setPosition(m_IndentX, m_IndentY);
   m_pTextArea1->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Set location and size of the right text area
-  m_pTextArea2->SetLeftTop(m_IndentX + m_TextAreasWidth, m_IndentY);
+  m_pTextArea2->setPosition(m_IndentX + m_TextAreasWidth, m_IndentY);
   m_pTextArea2->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from start)
@@ -492,10 +492,10 @@ bool DiffWindow::createGadgets()
   // If the text areas already exist overwrite the defaults with the actual
   if((m_pTextArea1 != NULL) && (m_pTextArea2 == NULL))
   {
-    gadWidth = m_pTextArea1->Width();
-    gadTop = m_pTextArea1->Top() - fontHeight - 4;
-    gad1Left = m_pTextArea1->Left();
-    gad2Left = m_pTextArea2->Left();
+    gadWidth = m_pTextArea1->getWidth();
+    gadTop = m_pTextArea1->getTop() - fontHeight - 4;
+    gad1Left = m_pTextArea1->getLeft();
+    gad2Left = m_pTextArea2->getLeft();
   }
 
 
@@ -612,7 +612,7 @@ void DiffWindow::resizeGadgets()
            0,
            0,
            m_InnerWindowRight,
-           m_pTextArea1->Top() - 3);
+           m_pTextArea1->getTop() - 3);
 
   // Re-create the gadgets with new position and size
   // TODO handle failure.
@@ -651,19 +651,19 @@ void DiffWindow::paintWindowDecoration()
 
   // Create borders for the two text areas
   DrawBevelBox(m_pRPorts->Window(),
-               m_pTextArea1->Left(),
-               m_pTextArea1->Top(),
-               m_pTextArea1->Width(),
-               m_pTextArea1->Height(),
+               m_pTextArea1->getLeft(),
+               m_pTextArea1->getTop(),
+               m_pTextArea1->getWidth(),
+               m_pTextArea1->getHeight(),
                GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
   DrawBevelBox(m_pRPorts->Window(),
-               m_pTextArea2->Left(),
-               m_pTextArea2->Top(),
-               m_pTextArea2->Width(),
-               m_pTextArea2->Height(),
+               m_pTextArea2->getLeft(),
+               m_pTextArea2->getTop(),
+               m_pTextArea2->getWidth(),
+               m_pTextArea2->getHeight(),
                GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
@@ -677,12 +677,12 @@ void DiffWindow::paintStatusBar()
     return;
   }
 
-  int top = m_pTextArea1->Top() + m_pTextArea1->Height() + m_InnerWindowBottom;
+  int top = m_pTextArea1->getTop() + m_pTextArea1->getHeight() + m_InnerWindowBottom;
   top /= 2;
   top -= m_Screen.IntuiDrawInfo()->dri_Font->tf_Baseline;
   top++;
 
-  int left = m_pTextArea1->Left() + 2;
+  int left = m_pTextArea1->getLeft() + 2;
 
   // Clear the status bar area
   RectFill(m_pRPorts->APenBackgr(),

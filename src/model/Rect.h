@@ -23,7 +23,7 @@ public:
   /**
    * Sets the rectangle to the given position.
    */
-  void Set(unsigned long left, 
+  void set(unsigned long left, 
            unsigned long top, 
            unsigned long right, 
            unsigned long bottom);
@@ -35,7 +35,7 @@ public:
    * so the width and height of the rectangle will be different after
    * this call.
    */
-  void SetLeftTop(unsigned long left, unsigned long top);
+  void setPosition(unsigned long left, unsigned long top);
 
   /**
    * Sets the width and height of the rectangle to the given sizes.
@@ -43,19 +43,19 @@ public:
    * NOTE: The right bottom edge of the rectangle is changed by this
    * operation. The left top edge is not changed.
    */
-  virtual void SetSize(unsigned long width, unsigned long height);
+  virtual void setSize(unsigned long width, unsigned long height);
 
-  bool HasSize() const;
-  unsigned long Area() const;
+  bool hasSize() const;
+  unsigned long getArea() const;
 
-  unsigned long Left() const;
-  unsigned long Right() const;
-  unsigned long Top() const;
-  unsigned long Bottom() const;
+  unsigned long getLeft() const;
+  unsigned long getRight() const;
+  unsigned long getTop() const;
+  unsigned long getBottom() const;
   
-  unsigned long Height() const;
-  unsigned long Width() const;
-  unsigned long WordWidth() const;
+  unsigned long getHeight() const;
+  unsigned long getWidth() const;
+  unsigned long getWordWidth() const;
 
 private:
   unsigned long m_Left;
