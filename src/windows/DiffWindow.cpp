@@ -117,16 +117,16 @@ void DiffWindow::Resized()
 
   // Set location and size of the left text area
   m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
-  m_pTextArea1->SetSize(m_TextAreasWidth, m_TextAreasHeight);
+  m_pTextArea1->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Set location and size of the right text area
   m_pTextArea2->SetLeftTop(m_IndentX + m_TextAreasWidth, m_IndentY);
-  m_pTextArea2->SetSize(m_TextAreasWidth, m_TextAreasHeight);
+  m_pTextArea2->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from current y-position,
   //not from start)
-  m_pTextArea1->PrintPage();
-  m_pTextArea2->PrintPage();
+  m_pTextArea1->printPage();
+  m_pTextArea2->printPage();
 
   if(m_pDocument == NULL)
   {
@@ -278,20 +278,20 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
                                         pDiffDocument->areLineNumbersEnabled(),
                                         pDiffDocument->getMaxLineLength());
 
-  m_pTextArea1->AddSelectedText(1, 2, 7);
-  m_pTextArea1->AddSelectedText(2, 8, 10);
+  m_pTextArea1->addSelection(1, 2, 7);
+  m_pTextArea1->addSelection(2, 8, 10);
 
   // Set location and size of the left text area
   m_pTextArea1->SetLeftTop(m_IndentX, m_IndentY);
-  m_pTextArea1->SetSize(m_TextAreasWidth, m_TextAreasHeight);
+  m_pTextArea1->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Set location and size of the right text area
   m_pTextArea2->SetLeftTop(m_IndentX + m_TextAreasWidth, m_IndentY);
-  m_pTextArea2->SetSize(m_TextAreasWidth, m_TextAreasHeight);
+  m_pTextArea2->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from start)
-  m_pTextArea1->PrintPageAt(0, 0);
-  m_pTextArea2->PrintPageAt(0, 0);
+  m_pTextArea1->printPageAt(0, 0);
+  m_pTextArea2->printPageAt(0, 0);
 
   // Paint the window decoration
   paintWindowDecoration();
@@ -373,23 +373,23 @@ void DiffWindow::HandleIdcmp(ULONG msgClass,
 
 void DiffWindow::XChangedHandler(size_t newX)
 {
-  m_pTextArea1->ScrollLeftToColumn(newX);
-  m_pTextArea2->ScrollLeftToColumn(newX);
+  m_pTextArea1->scrollLeftToColumn(newX);
+  m_pTextArea2->scrollLeftToColumn(newX);
 }
 
 
 void DiffWindow::YChangedHandler(size_t newY)
 {
-  m_pTextArea1->ScrollTopToRow(newY);
-  m_pTextArea2->ScrollTopToRow(newY);
+  m_pTextArea1->scrollTopToRow(newY);
+  m_pTextArea2->scrollTopToRow(newY);
 }
 
 
 void DiffWindow::XIncrease(size_t numChars,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->ScrollLeft(numChars);
-  m_pTextArea2->ScrollLeft(numChars);
+  m_pTextArea1->scrollLeft(numChars);
+  m_pTextArea2->scrollLeft(numChars);
 
   if(!bTriggeredByScrollPot)
   {
@@ -403,8 +403,8 @@ void DiffWindow::XIncrease(size_t numChars,
 void DiffWindow::XDecrease(size_t numChars,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->ScrollRight(numChars);
-  m_pTextArea2->ScrollRight(numChars);
+  m_pTextArea1->scrollRight(numChars);
+  m_pTextArea2->scrollRight(numChars);
 
   if(!bTriggeredByScrollPot)
   {
@@ -418,8 +418,8 @@ void DiffWindow::XDecrease(size_t numChars,
 void DiffWindow::YIncrease(size_t numLines,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->ScrollUp(numLines);
-  m_pTextArea2->ScrollUp(numLines);
+  m_pTextArea1->scrollUp(numLines);
+  m_pTextArea2->scrollUp(numLines);
 
   if(!bTriggeredByScrollPot)
   {
@@ -433,8 +433,8 @@ void DiffWindow::YIncrease(size_t numLines,
 void DiffWindow::YDecrease(size_t numLines,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->ScrollDown(numLines);
-  m_pTextArea2->ScrollDown(numLines);
+  m_pTextArea1->scrollDown(numLines);
+  m_pTextArea2->scrollDown(numLines);
 
   if(!bTriggeredByScrollPot)
   {

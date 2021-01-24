@@ -34,19 +34,19 @@ public:
   /**
    * Set the dimensions of this text area.
    */
-  void SetSize(ULONG width, ULONG height);
+  void setSize(ULONG width, ULONG height);
 
   /**
    * Scroll the text up or down to diplay the given (by rowId) line on
    * firts position top.
    */
-  void ScrollTopToRow(ULONG rowId);
+  void scrollTopToRow(ULONG rowId);
 
   /**
    * Scroll the text left or right to diplay the given (by column) line
    * on first position left.
    */
-  void ScrollLeftToColumn(ULONG columId);
+  void scrollLeftToColumn(ULONG columId);
 
   /**
    * Scroll the text left by numChars chars and fills the gap at right
@@ -55,7 +55,7 @@ public:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when last char of longest line is displayed.
    */
-  ULONG ScrollLeft(ULONG numChars);
+  ULONG scrollLeft(ULONG numChars);
 
   /**
    * Scroll the text right by numChars chars and fills the gap at left
@@ -64,7 +64,7 @@ public:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when first char of text reached.
    */
-  ULONG ScrollRight(ULONG numChars);
+  ULONG scrollRight(ULONG numChars);
 
   /**
    * Scroll the text up by numLines lines and fills the gap at bottom
@@ -73,7 +73,7 @@ public:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when end of text reached.
    */
-  ULONG ScrollUp(ULONG numLines);
+  ULONG scrollUp(ULONG numLines);
 
   /**
    * Scroll the text down by numLines lines and fills the gap at top
@@ -82,23 +82,33 @@ public:
    * @returns Number of lines scrolled. Can be smaller than expected
    * when start of text reached.
    */
-  ULONG ScrollDown(ULONG numLines);
+  ULONG scrollDown(ULONG numLines);
 
   /**
-   * Print the diff file content in the text area at given position.
+   * Print the diff file content in the text area at given position. The
+   * content is scrolled until the desired posion is visible.
    */
-  void PrintPageAt(ULONG left, ULONG top);
+  void printPageAt(ULONG left, ULONG top);
 
   /**
    * Print the diff file content in the text area.
+   *
+   * @param dontPrintLineNumbers Per default the line numbers are
+   * printed. When this optional parameter is set to true they are not
+   * printed.
    */
-  void PrintPage(bool dontPrintLineNumbers = false);
+  void printPage(bool dontPrintLineNumbers = false);
 
 
   /**
-   * Set the selected text
+   * Adds a text selection to the DiffFile which is displayed in this
+   * text area.
+   * 
+   * @param lineId Id of the line the selection is added
+   * @param fromColumn Id of the column on which the selection starts
+   * @param toColumn Id of the column on which the selection ends
    */
-  void AddSelectedText(ULONG lineId, ULONG fromColumn, ULONG toColumn);
+  void addSelection(ULONG lineId, ULONG fromColumn, ULONG toColumn);
 
 
 private:

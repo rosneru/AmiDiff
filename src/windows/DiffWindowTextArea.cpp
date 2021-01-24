@@ -69,7 +69,7 @@ ULONG DiffWindowTextArea::MaxVisibleLines() const
 }
 
 
-void DiffWindowTextArea::SetSize(ULONG width, ULONG height)
+void DiffWindowTextArea::setSize(ULONG width, ULONG height)
 {
   m_AreaMaxLines = (height - 4) /  m_FontHeight_pix;
   m_AreaMaxChars = (width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix;
@@ -102,7 +102,7 @@ void DiffWindowTextArea::SetSize(ULONG width, ULONG height)
 }
 
 
-void DiffWindowTextArea::AddSelectedText(ULONG lineId, 
+void DiffWindowTextArea::addSelection(ULONG lineId, 
                                          ULONG fromColumn, 
                                          ULONG toColumn)
 {
@@ -110,7 +110,7 @@ void DiffWindowTextArea::AddSelectedText(ULONG lineId,
 }
 
 
-void DiffWindowTextArea::ScrollTopToRow(ULONG rowId)
+void DiffWindowTextArea::scrollTopToRow(ULONG rowId)
 {
   // Prevent to scroll below the last line
   ULONG yLimit = m_DiffFile.getNumLines() - m_AreaMaxLines;
@@ -137,11 +137,11 @@ void DiffWindowTextArea::ScrollTopToRow(ULONG rowId)
   {
     if(delta > 0)
     {
-      ScrollUp(deltaAbs);
+      scrollUp(deltaAbs);
     }
     else if(delta < 0)
     {
-      ScrollDown(deltaAbs);
+      scrollDown(deltaAbs);
     }
 
     return;
@@ -159,11 +159,11 @@ void DiffWindowTextArea::ScrollTopToRow(ULONG rowId)
             m_VScrollRect.Right(),
             m_VScrollRect.Bottom());
 
-  PrintPage();
+  printPage();
 }
 
 
-void DiffWindowTextArea::ScrollLeftToColumn(ULONG columId)
+void DiffWindowTextArea::scrollLeftToColumn(ULONG columId)
 {
   long delta = columId - m_X;
   if(delta == 0)
@@ -183,11 +183,11 @@ void DiffWindowTextArea::ScrollLeftToColumn(ULONG columId)
   {
     if(delta > 0)
     {
-      ScrollLeft(deltaAbs);
+      scrollLeft(deltaAbs);
     }
     else if(delta < 0)
     {
-      ScrollRight(deltaAbs);
+      scrollRight(deltaAbs);
     }
 
     return;
@@ -206,11 +206,11 @@ void DiffWindowTextArea::ScrollLeftToColumn(ULONG columId)
             m_HScrollRect.Right(),
             m_HScrollRect.Bottom());
 
-  PrintPage(true);
+  printPage(true);
 }
 
 
-ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
+ULONG DiffWindowTextArea::scrollLeft(ULONG numChars)
 {
   if(numChars < 1)
   {
@@ -264,7 +264,7 @@ ULONG DiffWindowTextArea::ScrollLeft(ULONG numChars)
 }
 
 
-ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
+ULONG DiffWindowTextArea::scrollRight(ULONG numChars)
 {
   if(numChars < 1)
   {
@@ -312,7 +312,7 @@ ULONG DiffWindowTextArea::ScrollRight(ULONG numChars)
 }
 
 
-ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
+ULONG DiffWindowTextArea::scrollUp(ULONG numLines)
 {
   if(numLines < 1)
   {
@@ -355,7 +355,7 @@ ULONG DiffWindowTextArea::ScrollUp(ULONG numLines)
 }
 
 
-ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
+ULONG DiffWindowTextArea::scrollDown(ULONG numLines)
 {
   if(numLines < 1)
   {
@@ -398,16 +398,16 @@ ULONG DiffWindowTextArea::ScrollDown(ULONG numLines)
 }
 
 
-void DiffWindowTextArea::PrintPageAt(ULONG left, ULONG top)
+void DiffWindowTextArea::printPageAt(ULONG left, ULONG top)
 {
   m_X = left;
   m_Y = top;
 
-  PrintPage();
+  printPage();
 }
 
 
-void DiffWindowTextArea::PrintPage(bool dontPrintLineNumbers)
+void DiffWindowTextArea::printPage(bool dontPrintLineNumbers)
 {
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
