@@ -796,119 +796,120 @@ size_t getPrevDiffLineId(std::list<size_t> m_DiffIndices,
   return (*m_DiffIndicesIterator);
 }
 
-// /**
-//  * testcase_24_1500_numbers
-//  *
-//  * 11 changes in two textfiles with about 1500 lines each.
-//  * Used to test the navigation between diffs.
-//  */
-// BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
-// {
-//   try
-//   {
-//     bool cancelRequested = false;
-//     std::list<size_t> m_DiffIndices;
+/**
+ * testcase_24_1500_numbers
+ *
+ * 11 changes in two textfiles with about 1500 lines each.
+ * Used to test the navigation between diffs.
+ */
+BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
+{
+  try
+  {
+    bool cancelRequested = false;
+    std::list<size_t> m_DiffIndices;
 
-//     DiffInputFileLinux srcA(cancelRequested, 
-//                             "testfiles/testcase_24_1500_numbers_left.txt",
-//                             true);
+    DiffInputFileLinux srcA(cancelRequested, 
+                            "testfiles/testcase_24_1500_numbers_left.txt",
+                            true);
 
-//     DiffInputFileLinux srcB(cancelRequested, 
-//                             "testfiles/testcase_24_1500_numbers_right.txt",
-//                             true);
+    DiffInputFileLinux srcB(cancelRequested, 
+                            "testfiles/testcase_24_1500_numbers_right.txt",
+                            true);
 
-//     DiffOutputFileLinux diffA(srcA);
-//     DiffOutputFileLinux diffB(srcB);
-//     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
-//                           "Comparing...", 
-//                           cancelRequested, 
-//                           m_DiffIndices);
+    DiffOutputFileLinux diffA(srcA);
+    DiffOutputFileLinux diffB(srcB);
+    DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
+                          "Comparing...", 
+                          cancelRequested, 
+                          m_DiffIndices);
 
-//     std::list<size_t>::iterator m_DiffIndicesIterator = m_DiffIndices.end();
+    std::list<size_t>::iterator m_DiffIndicesIterator = m_DiffIndices.end();
 
-//     // Checking the justification of the line numbers
-//     BOOST_CHECK_EQUAL(diffA[0]->getLineNumText(), "   1 ");
-//     BOOST_CHECK_EQUAL(diffB[0]->getLineNumText(), "   1 ");
-//     BOOST_CHECK_EQUAL(diffA[12]->getLineNumText(), "     ");
-//     BOOST_CHECK_EQUAL(diffB[12]->getLineNumText(), "  13 ");
+    // Checking the justification of the line numbers
+    BOOST_CHECK_EQUAL(diffA[0]->getLineNumText(), "   1 ");
+    BOOST_CHECK_EQUAL(diffB[0]->getLineNumText(), "   1 ");
+    BOOST_CHECK_EQUAL(diffA[12]->getLineNumText(), "     ");
+    BOOST_CHECK_EQUAL(diffB[12]->getLineNumText(), "  13 ");
 
-//     long numDiff = diffEngine.getNumDifferences();
+    long numDiff = diffEngine.getNumDifferences();
 
-//     // Testing if the list with the diff start indexes
-//     // contains 11 'difference blocks' as showed with Kompare
-//     BOOST_CHECK_EQUAL(m_DiffIndices.size(), 11);
-//     BOOST_CHECK_EQUAL(m_DiffIndices.size(), numDiff);
+    // Testing if the list with the diff start indexes
+    // contains 11 'difference blocks' as showed with Kompare
+    BOOST_CHECK_EQUAL(m_DiffIndices.size(), 11);
+    BOOST_CHECK_EQUAL(m_DiffIndices.size(), numDiff);
 
-//     // Testing the 'States' of DiffLines by the indexes in the list.
-//     // They should be in the order (checked with Kompare)
-//     // ADD, CHN, DEL, CHN, CHN, CHN, CHN, ADD, DEL, CHN, CHN
-//     DiffLine::LineState states[] =
-//     {
-//       DiffLine::Added,
-//       DiffLine::Changed,
-//       DiffLine::Deleted,
-//       DiffLine::Changed,
-//       DiffLine::Changed,
-//       DiffLine::Changed,
-//       DiffLine::Changed,
-//       DiffLine::Added,
-//       DiffLine::Deleted,
-//       DiffLine::Changed,
-//       DiffLine::Changed,
-//     };
+    // Testing the 'States' of DiffLines by the indexes in the list.
+    // They should be in the order (checked with Linux tool 'Kompare')
+    // ADD, CHN, DEL, CHN, CHN, CHN, CHN, ADD, DEL, CHN, CHN
+    DiffLine::LineState states[] =
+    {
+      DiffLine::Added,
+      DiffLine::Changed,
+      DiffLine::Deleted,
+      DiffLine::Changed,
+      DiffLine::Changed,
+      DiffLine::Changed,
+      DiffLine::Changed,
+      DiffLine::Added,
+      DiffLine::Deleted,
+      DiffLine::Changed,
+      DiffLine::Changed,
+    };
 
-//     size_t pIdx = getNextDiffLineId(m_DiffIndices, m_DiffIndicesIterator);
-//     int counter = 0;
-//     do
-//     {
-//       if(counter >= (sizeof states / sizeof states[0]))
-//       {
-//         // Don't exceed the array
-//         break;
-//       }
+    size_t pIdx = getNextDiffLineId(m_DiffIndices, m_DiffIndicesIterator);
+    int iDiff = 0;
 
-//       DiffLine::LineState stateNominal = states[counter];
+    do
+    {
+      if(iDiff >= (sizeof states / sizeof states[0]))
+      {
+        // Don't exceed the array
+        break;
+      }
 
-//       switch(stateNominal)
-//       {
-//         case DiffLine::LineState::Deleted:
-//         {
-//           DiffLine::LineState stateA = diffA.GetLineState(pIdx);
-//           BOOST_CHECK_EQUAL(stateA, DiffLine::Deleted);
-//           break;
-//         }
+      DiffLine::LineState stateNominal = states[iDiff];
 
-//         case DiffLine::LineState::Added:
-//         {
-//           DiffLine::LineState stateB = diffB.GetLineState(pIdx);
-//           BOOST_CHECK_EQUAL(stateB, DiffLine::Added);
-//           break;
-//         }
+      switch(stateNominal)
+      {
+        case DiffLine::LineState::Deleted:
+        {
+          DiffLine::LineState stateA = diffA[pIdx]->getState();
+          BOOST_CHECK_EQUAL(stateA, DiffLine::Deleted);
+          break;
+        }
 
-//         case DiffLine::LineState::Changed:
-//         {
-//           DiffLine::LineState stateA = diffA.GetLineState(pIdx);
-//           DiffLine::LineState stateB = diffB.GetLineState(pIdx);
-//           BOOST_CHECK_EQUAL(stateA, DiffLine::Changed);
-//           BOOST_CHECK_EQUAL(stateB, DiffLine::Changed);
-//           break;
-//         }
-//       }
+        case DiffLine::LineState::Added:
+        {
+          DiffLine::LineState stateB = diffB[pIdx]->getState();
+          BOOST_CHECK_EQUAL(stateB, DiffLine::Added);
+          break;
+        }
 
-//       pIdx = getNextDiffLineId(m_DiffIndices, m_DiffIndicesIterator);
-//       counter++;
-//     }
-//     while(pIdx != NULL);
-//   }
-//   catch(const char* pError)
-//   {
-//     auto locationBoost = boost::unit_test::framework::current_test_case().p_name;
-//     std::string location(locationBoost);
-//     printf("Exception in test %s: %s\n", 
-//            location.c_str(),
-//            pError);
-//   }
-// }
+        case DiffLine::LineState::Changed:
+        {
+          DiffLine::LineState stateA = diffA[pIdx]->getState();
+          DiffLine::LineState stateB = diffB[pIdx]->getState();
+          BOOST_CHECK_EQUAL(stateA, DiffLine::Changed);
+          BOOST_CHECK_EQUAL(stateB, DiffLine::Changed);
+          break;
+        }
+      }
+
+      pIdx = getNextDiffLineId(m_DiffIndices, m_DiffIndicesIterator);
+      iDiff++;
+    }
+    while(pIdx != NULL);
+  }
+  catch(const char* pError)
+  {
+    auto locationBoost = boost::unit_test::framework::current_test_case().p_name;
+    std::string location(locationBoost);
+    printf("Exception in test %s: %s\n", 
+           location.c_str(),
+           pError);
+  }
+}
 
 
 /**
