@@ -756,7 +756,7 @@ BOOST_AUTO_TEST_CASE( testcase_12a )
 
 
 size_t getNextDiffLineId(std::list<size_t> m_DiffIndices, 
-                         std::list<size_t>::iterator m_DiffIndicesIterator) 
+                         std::list<size_t>::iterator& m_DiffIndicesIterator) 
 {
   if(m_DiffIndicesIterator == m_DiffIndices.end())
   {
@@ -779,7 +779,7 @@ size_t getNextDiffLineId(std::list<size_t> m_DiffIndices,
 }
 
 size_t getPrevDiffLineId(std::list<size_t> m_DiffIndices, 
-                     std::list<size_t>::iterator m_DiffIndicesIterator) 
+                         std::list<size_t>::iterator& m_DiffIndicesIterator) 
 {
   if(m_DiffIndicesIterator == m_DiffIndices.end())
   {
