@@ -40,8 +40,8 @@ Application::Application(ScreenBase& screen,
     m_DiffWindowMenu(&m_CmdOpenFilesWindow, 
                      &m_CmdAboutRequester, 
                      &m_CmdQuit,
-                     &m_CmdNavNextDiff,
-                     &m_CmdNavPrevDiff),
+                     &m_CmdNavPrevDiff,
+                     &m_CmdNavNextDiff),
     m_DiffWorker(m_LeftFilePath,
                  m_RightFilePath,
                  m_DiffWindow,
@@ -90,7 +90,7 @@ Application::Application(ScreenBase& screen,
   m_AboutMsg = VERSTAG + 7;   // Skip the first 7 chars of pVersTag
                               // which is only "\0$VER: "
   m_AboutMsg += "\n\n";
-  m_AboutMsg += "Copyright(c) 2020 Uwe Rosner (u.rosner@ymail.com)";
+  m_AboutMsg += "Copyright(c) 2021 Uwe Rosner (u.rosner@ymail.com)";
   m_AboutMsg += "\n\n";
   m_AboutMsg += "This release of ADiffView may be freely distributed.\n";
   m_AboutMsg += "It may not be comercially distributed without the\n";
