@@ -56,7 +56,7 @@ Application::Application(ScreenBase& screen,
                  m_Pens,
                  m_Ports.Idcmp(),
                  &m_DiffWindowMenu),
-    m_FilesWindow(m_AllWindows,
+    m_FilesWindow(m_AllWindowsList,
                   screen,
                   m_Ports.Idcmp(),
                   m_LeftFilePath,
@@ -69,13 +69,13 @@ Application::Application(ScreenBase& screen,
                      m_Ports.Idcmp(),
                      m_IsCancelRequested,
                      NULL),
-    m_CmdDiff(&m_AllWindows, m_DiffWorker),
-    m_CmdNavNextDiff(&m_AllWindows, m_DiffWindow),
-    m_CmdNavPrevDiff(&m_AllWindows, m_DiffWindow),
-    m_CmdQuit(&m_AllWindows, m_IsExitAllowed, m_IsExitRequested),
-    m_CmdOpenFilesWindow(&m_AllWindows, m_FilesWindow),
-    m_CmdCloseFilesWindow(&m_AllWindows, m_CmdOpenFilesWindow, m_FilesWindow),
-    m_CmdAboutRequester(&m_AllWindows, m_AboutMsg, "About", "Ok"),
+    m_CmdDiff(&m_AllWindowsList, m_DiffWorker),
+    m_CmdNavNextDiff(&m_AllWindowsList, m_DiffWindow),
+    m_CmdNavPrevDiff(&m_AllWindowsList, m_DiffWindow),
+    m_CmdQuit(&m_AllWindowsList, m_IsExitAllowed, m_IsExitRequested),
+    m_CmdOpenFilesWindow(&m_AllWindowsList, m_FilesWindow),
+    m_CmdCloseFilesWindow(&m_AllWindowsList, m_CmdOpenFilesWindow, m_FilesWindow),
+    m_CmdAboutRequester(&m_AllWindowsList, m_AboutMsg, "About", "Ok"),
     m_Icon(NULL),
     m_pAppIcon(NULL)
 {
@@ -97,9 +97,9 @@ Application::Application(ScreenBase& screen,
   m_AboutMsg += "explicit permission of the author.\n";
 
   // Add all windows to the array
-  m_AllWindows.push_back(&m_DiffWindow);
-  m_AllWindows.push_back(&m_FilesWindow);
-  m_AllWindows.push_back(&m_ProgressWindow);
+  m_AllWindowsList.push_back(&m_DiffWindow);
+  m_AllWindowsList.push_back(&m_FilesWindow);
+  m_AllWindowsList.push_back(&m_ProgressWindow);
 
   // Create a MessagePort for Workbench app messages if needed
   if(m_IsAppWindow || m_IsAppIcon)
@@ -168,7 +168,7 @@ Application::~Application()
 
   // Ensure that all windows are closed
   std::vector<WindowBase*>::iterator it;
-  for(it = m_AllWindows.begin(); it != m_AllWindows.end(); it++)
+  for(it = m_AllWindowsList.begin(); it != m_AllWindowsList.end(); it++)
   {
     (*it)->Close();
   }
@@ -317,7 +317,7 @@ void Application::handleIdcmpMessages()
 
     // All other idcmp messages are handled in the appropriate window
     std::vector<WindowBase*>::iterator it;
-    for(it = m_AllWindows.begin(); it != m_AllWindows.end(); it++)
+    for(it = m_AllWindowsList.begin(); it != m_AllWindowsList.end(); it++)
     {
       if(pMsgWindow == (*it)->IntuiWindow())
       {

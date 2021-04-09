@@ -74,7 +74,7 @@ private:
   CmdRequester m_CmdAboutRequester;
   std::string m_AboutMsg;
 
-  std::vector<WindowBase*> m_AllWindows;
+  std::vector<WindowBase*> m_AllWindowsList;
 
   struct DiskObject* m_Icon;
   struct AppIcon* m_pAppIcon;
