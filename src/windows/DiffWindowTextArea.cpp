@@ -57,6 +57,17 @@ ULONG DiffWindowTextArea::getY() const
 }
 
 
+bool DiffWindowTextArea::isScrolledToTop() const
+{
+  return m_Y < 1;
+}
+
+bool DiffWindowTextArea::isScrolledToBottom() const
+{
+  return (m_Y + m_AreaMaxChars) >= m_DiffFile.getNumLines();
+}
+
+
 ULONG DiffWindowTextArea::getMaxVisibleChars() const
 {
   return m_AreaMaxChars;

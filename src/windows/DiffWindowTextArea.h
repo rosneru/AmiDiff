@@ -28,6 +28,9 @@ public:
   ULONG getX() const;
   ULONG getY() const;
 
+  bool isScrolledToTop() const;
+  bool isScrolledToBottom() const;
+
   ULONG getMaxVisibleChars() const;
   ULONG getMaxVisibleLines() const;
 
@@ -38,7 +41,7 @@ public:
 
   /**
    * Scroll the text up or down to diplay the given (by rowId) line on
-   * firts position top.
+   * first position top.
    */
   void scrollTopToRow(ULONG rowId);
 

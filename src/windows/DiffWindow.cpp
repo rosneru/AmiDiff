@@ -314,6 +314,13 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
 void DiffWindow::NavigateToNextDiff()
 {
+  if(m_pTextArea1->isScrolledToBottom())
+  {
+    // Can't scroll down anymore; all diffs below should already be
+    // visible.
+    return;
+  }
+
   size_t idx = m_pDocument->getNextDiffLineId();
 
   // Scroll y to next diff
@@ -326,6 +333,13 @@ void DiffWindow::NavigateToNextDiff()
 
 void DiffWindow::NavigateToPrevDiff()
 {
+    if(m_pTextArea1->isScrolledToTop())
+  {
+    // Can't scroll up anymore; all diffs above should already be
+    // visible.
+    return;
+  }
+
   size_t idx = m_pDocument->getPrevDiffLineId();
 
   // Scroll y to prev diff
