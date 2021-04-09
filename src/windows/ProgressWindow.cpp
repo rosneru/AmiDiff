@@ -194,7 +194,7 @@ bool ProgressWindow::Open(InitialPosition initialPos)
                m_ProgressRect.getLeft() - 2,
                m_ProgressRect.getTop() - 1,
                m_ProgressRect.getWidth() + 4,
-               m_ProgressRect.getHeight() + 3,
+               m_ProgressRect.getHeight() + 2,
                GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
