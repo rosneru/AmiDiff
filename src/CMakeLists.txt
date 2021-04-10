@@ -47,6 +47,8 @@ add_executable (ADiffView_gcc
                 screen/OpenClonedWorkbenchScreen.cpp
                 screen/OpenJoinedPublicScreen.cpp
                 screen/OpenScreenBase.cpp
+                textsearch/DiffFileSearchEngine.cpp
+                textsearch/DiffFileSearchResult.cpp
                 textselect/TextSelection.cpp
                 textselect/TextSelectionRange.cpp
                 textselect/TextSelectionLine.cpp
