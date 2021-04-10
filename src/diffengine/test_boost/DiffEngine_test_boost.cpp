@@ -165,6 +165,9 @@ BOOST_AUTO_TEST_CASE( testcase_02 )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
 
@@ -260,6 +263,9 @@ BOOST_AUTO_TEST_CASE( testcase_03_simple )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
   
 
@@ -346,6 +352,9 @@ BOOST_AUTO_TEST_CASE( testcase_03_var2 )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
 
@@ -410,6 +419,9 @@ BOOST_AUTO_TEST_CASE( testcase_04 )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
 
@@ -476,6 +488,9 @@ BOOST_AUTO_TEST_CASE( testcase_05 )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
 
@@ -600,6 +615,9 @@ BOOST_AUTO_TEST_CASE( DiffTest_06_Mixed )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
 
@@ -674,6 +692,9 @@ BOOST_AUTO_TEST_CASE( testcase_12_endless_loop )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
 
@@ -751,6 +772,9 @@ BOOST_AUTO_TEST_CASE( testcase_12a )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
 
@@ -857,7 +881,7 @@ BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
       DiffLine::Changed,
     };
 
-    size_t pIdx = getNextDiffLineId(m_DiffIndices, m_DiffIndicesIterator);
+    size_t idx = getNextDiffLineId(m_DiffIndices, m_DiffIndicesIterator);
     int iDiff = 0;
 
     do
@@ -874,32 +898,32 @@ BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
       {
         case DiffLine::LineState::Deleted:
         {
-          DiffLine::LineState stateA = diffA[pIdx]->getState();
+          DiffLine::LineState stateA = diffA[idx]->getState();
           BOOST_CHECK_EQUAL(stateA, DiffLine::Deleted);
           break;
         }
 
         case DiffLine::LineState::Added:
         {
-          DiffLine::LineState stateB = diffB[pIdx]->getState();
+          DiffLine::LineState stateB = diffB[idx]->getState();
           BOOST_CHECK_EQUAL(stateB, DiffLine::Added);
           break;
         }
 
         case DiffLine::LineState::Changed:
         {
-          DiffLine::LineState stateA = diffA[pIdx]->getState();
-          DiffLine::LineState stateB = diffB[pIdx]->getState();
+          DiffLine::LineState stateA = diffA[idx]->getState();
+          DiffLine::LineState stateB = diffB[idx]->getState();
           BOOST_CHECK_EQUAL(stateA, DiffLine::Changed);
           BOOST_CHECK_EQUAL(stateB, DiffLine::Changed);
           break;
         }
       }
 
-      pIdx = getNextDiffLineId(m_DiffIndices, m_DiffIndicesIterator);
+      idx = getNextDiffLineId(m_DiffIndices, m_DiffIndicesIterator);
       iDiff++;
     }
-    while(pIdx != NULL);
+    while(idx != 0);
   }
   catch(const char* pError)
   {
@@ -908,6 +932,9 @@ BOOST_AUTO_TEST_CASE( testcase_24_1500_numbers )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
 
@@ -982,6 +1009,9 @@ BOOST_AUTO_TEST_CASE( test_TextSelection )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
 
@@ -1051,6 +1081,9 @@ BOOST_AUTO_TEST_CASE( test_32_SelectableDiffFile )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
 
@@ -1147,5 +1180,48 @@ BOOST_AUTO_TEST_CASE( testcase_crash )
     printf("Exception in test %s: %s\n", 
            location.c_str(),
            pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
+  }
+}
+
+
+BOOST_AUTO_TEST_CASE( testcase_explore_search_algorithm )
+{
+  try
+  {
+    bool cancelRequested = false;
+    std::list<size_t> m_DiffIndices;
+
+    DiffInputFileLinux srcA(cancelRequested, 
+                            "testfiles/testcase_23_RealLifeApp-left.cs",
+                            true);
+
+    DiffInputFileLinux srcB(cancelRequested, 
+                            "testfiles/testcase_23_RealLifeApp-right.cs",
+                            true);
+
+    DiffOutputFileLinux diffA(srcA);
+    DiffOutputFileLinux diffB(srcB);
+    DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
+                          "Comparing...", cancelRequested, m_DiffIndices);
+
+
+    size_t numDifferences = diffEngine.getNumDifferences();
+    BOOST_CHECK_EQUAL(numDifferences, 9);
+
+
+  }
+  catch(const char* pError)
+  {
+    auto locationBoost = boost::unit_test::framework::current_test_case().p_name;
+    std::string location(locationBoost);
+    printf("Exception in test %s: %s\n", 
+           location.c_str(),
+           pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
   }
 }
