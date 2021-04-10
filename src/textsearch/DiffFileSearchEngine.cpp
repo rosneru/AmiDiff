@@ -23,7 +23,7 @@ DiffFileSearchResult* DiffFileSearchEngine::findFirst(const char* pStrToSearch)
   for(size_t lineId = 0; lineId < m_LeftFile.getNumLines(); lineId++)
   {
     // Try to find pStrToSearch in left file
-    char* pFoundAt = strstr(m_LeftFile[lineId]->getText(), pStrToSearch);
+    const char* pFoundAt = strstr(m_LeftFile[lineId]->getText(), pStrToSearch);
     if(pFoundAt != NULL)
     {
       size_t charId = pFoundAt - m_LeftFile[lineId]->getText();

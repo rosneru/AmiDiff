@@ -22,9 +22,13 @@
 #include "DiffEngine.h"
 #include "DiffLine.h"
 #include "ProgressReporter.h"
+
 #include "SelectableDiffFile.h"
 #include "TextSelection.h"
 #include "TextSelectionLine.h"
+
+#include "DiffFileSearchEngine.h"
+#include "DiffFileSearchResult.h"
 
 ProgressReporter progress;
 
@@ -1210,6 +1214,15 @@ BOOST_AUTO_TEST_CASE( testcase_explore_search_algorithm )
 
     size_t numDifferences = diffEngine.getNumDifferences();
     BOOST_CHECK_EQUAL(numDifferences, 9);
+
+    const char* pSearchFor = "Software";
+    DiffFileSearchEngine searchEngine(diffA, diffB);
+    DiffFileSearchResult* pSearchResult = searchEngine.findFirst("Software");
+    
+    BOOST_CHECK(pSearchResult != NULL);
+    BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 53);
+    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 113);
 
 
   }

@@ -11,6 +11,7 @@ LIBS += -lncurses \
 
 INCLUDEPATH +=  .. \
                 ../../model \
+                ../../textsearch \
                 ../../textselect \
 
 
@@ -26,6 +27,8 @@ SOURCES += \
     ../DiffLine.cpp \
     ../SelectableDiffFile.cpp \
     ../../model/Pair.cpp \
+    ../../textsearch/DiffFileSearchEngine.cpp \
+    ../../textsearch/DiffFileSearchResult.cpp \
     ../../textselect/TextSelection.cpp \
     ../../textselect/TextSelectionRange.cpp \
     ../../textselect/TextSelectionLine.cpp \
@@ -42,6 +45,8 @@ HEADERS += \
     ../DiffLine.h \
     ../SelectableDiffFile.h \
     ../../model/Pair.h \
+    ../../textsearch/DiffFileSearchEngine.h \
+    ../../textsearch/DiffFileSearchResult.h \
     ../../textselect/TextSelection.h \
     ../../textselect/TextSelectionRange.h \
     ../../textselect/TextSelectionLine.h \
