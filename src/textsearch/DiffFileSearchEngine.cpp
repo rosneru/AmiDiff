@@ -20,6 +20,12 @@ DiffFileSearchEngine::~DiffFileSearchEngine()
   }
 }
 
+
+size_t DiffFileSearchEngine::getNumResults()
+{
+  return m_Results.size();
+}
+
 DiffFileSearchResult* DiffFileSearchEngine::getFirstResult()
 {
   if(m_Results.size() < 1)

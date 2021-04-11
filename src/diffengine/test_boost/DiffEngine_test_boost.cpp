@@ -1217,9 +1217,12 @@ BOOST_AUTO_TEST_CASE( testcase_explore_search_algorithm )
 
     const char* pSearchFor = "Software";
     DiffFileSearchEngine searchEngine(diffA, diffB, "Software");
+
+    BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 3);
+
     DiffFileSearchResult* pSearchResult = searchEngine.getFirstResult();
-    
     BOOST_CHECK(pSearchResult != NULL);
+    
     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
     BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 53);
     BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 113);

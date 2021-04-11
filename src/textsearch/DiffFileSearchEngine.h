@@ -21,6 +21,7 @@ public:
                        const char* pSearchString);
   virtual ~DiffFileSearchEngine();
 
+  size_t getNumResults();
   DiffFileSearchResult* getFirstResult();
   DiffFileSearchResult* getNextResult();
 
