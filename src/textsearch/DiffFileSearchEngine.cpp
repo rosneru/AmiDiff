@@ -8,7 +8,7 @@ DiffFileSearchEngine::DiffFileSearchEngine(const DiffFileBase& leftFile,
     m_RightFile(rightFile),
     m_SearchString(pSearchString)
 {
-
+  search();
 }
 
 DiffFileSearchEngine::~DiffFileSearchEngine()
@@ -57,7 +57,7 @@ void DiffFileSearchEngine::search()
                                          charId);
       m_Results.push_back(pResult);
 
-      pFoundAt = strstr(pFoundAt, m_SearchString.c_str());
+      pFoundAt = strstr(pFoundAt + 1, m_SearchString.c_str());
     } 
   }
 }

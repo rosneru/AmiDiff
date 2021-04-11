@@ -1216,8 +1216,8 @@ BOOST_AUTO_TEST_CASE( testcase_explore_search_algorithm )
     BOOST_CHECK_EQUAL(numDifferences, 9);
 
     const char* pSearchFor = "Software";
-    DiffFileSearchEngine searchEngine(diffA, diffB);
-    DiffFileSearchResult* pSearchResult = searchEngine.findFirst("Software");
+    DiffFileSearchEngine searchEngine(diffA, diffB, "Software");
+    DiffFileSearchResult* pSearchResult = searchEngine.getFirstResult();
     
     BOOST_CHECK(pSearchResult != NULL);
     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
