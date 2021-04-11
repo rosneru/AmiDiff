@@ -19,6 +19,7 @@
 #include "ADiffViewSettings.h"
 #include "MenuFilesWindow.h"
 #include "MenuDiffWindow.h"
+#include "MenuSearchWindow.h"
 #include "OpenClonedWorkbenchScreen.h"
 #include "OpenJoinedPublicScreen.h"
 #include "CmdRequester.h"
@@ -28,10 +29,11 @@
 #include "CmdNavNextDiff.h"
 #include "CmdNavPrevDiff.h"
 #include "CmdQuit.h"
+#include "DiffWindow.h"
 #include "DiffWorker.h"
 #include "FilesWindow.h"
 #include "ProgressWindow.h"
-#include "DiffWindow.h"
+#include "SearchWindow.h"
 
 class Application
 {
@@ -58,18 +60,21 @@ private:
   bool m_IsAppIcon;
 
   ADiffViewPens m_Pens;
-  MenuFilesWindow m_FilesWindowMenu;
   MenuDiffWindow m_DiffWindowMenu;
+  MenuFilesWindow m_FilesWindowMenu;
+  MenuSearchWindow m_SearchWindowMenu;
   ADiffViewPorts m_Ports;
   DiffWorker m_DiffWorker;
   DiffWindow m_DiffWindow;
   FilesWindow m_FilesWindow;
   ProgressWindow m_ProgressWindow;
+  SearchWindow m_SearchWindow;
   CmdDiff m_CmdDiff;
   CmdNavNextDiff m_CmdNavNextDiff;
   CmdNavPrevDiff m_CmdNavPrevDiff;
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpenFilesWindow;
+  CmdOpenWindow m_CmdOpenSearchWindow;
   CmdCloseWindow m_CmdCloseFilesWindow;
   CmdRequester m_CmdAboutRequester;
   std::string m_AboutMsg;

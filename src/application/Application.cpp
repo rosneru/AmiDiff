@@ -34,14 +34,20 @@ Application::Application(ScreenBase& screen,
     m_IsAppWindow(m_Args.PubScreenName() == "Workbench"),
     m_IsAppIcon(!m_IsAppWindow && !m_Args.NoAppIcon()),
     m_Pens(screen, settings),
-    m_FilesWindowMenu(&m_CmdOpenFilesWindow, 
-                      &m_CmdAboutRequester, 
-                      &m_CmdQuit),
     m_DiffWindowMenu(&m_CmdOpenFilesWindow, 
                      &m_CmdAboutRequester, 
                      &m_CmdQuit,
                      &m_CmdNavPrevDiff,
-                     &m_CmdNavNextDiff),
+                     &m_CmdNavNextDiff,
+                     &m_CmdOpenSearchWindow),
+    m_FilesWindowMenu(&m_CmdOpenFilesWindow, 
+                      &m_CmdAboutRequester, 
+                      &m_CmdQuit),
+    m_SearchWindowMenu(&m_CmdOpenFilesWindow, 
+                       &m_CmdAboutRequester, 
+                       &m_CmdQuit,
+                       &m_CmdNavPrevDiff,
+                       &m_CmdNavNextDiff),
     m_DiffWorker(m_LeftFilePath,
                  m_RightFilePath,
                  m_DiffWindow,
@@ -69,11 +75,20 @@ Application::Application(ScreenBase& screen,
                      m_Ports.Idcmp(),
                      m_IsCancelRequested,
                      NULL),
+    m_SearchWindow(m_AllWindowsList,
+                   screen,
+                   m_Ports.Idcmp(),
+                   m_LeftFilePath,
+                   m_RightFilePath,
+                   m_CmdDiff,
+                   m_CmdCloseFilesWindow,
+                   &m_FilesWindowMenu),
     m_CmdDiff(&m_AllWindowsList, m_DiffWorker),
     m_CmdNavNextDiff(&m_AllWindowsList, m_DiffWindow),
     m_CmdNavPrevDiff(&m_AllWindowsList, m_DiffWindow),
     m_CmdQuit(&m_AllWindowsList, m_IsExitAllowed, m_IsExitRequested),
     m_CmdOpenFilesWindow(&m_AllWindowsList, m_FilesWindow),
+    m_CmdOpenSearchWindow(&m_AllWindowsList, m_SearchWindow),
     m_CmdCloseFilesWindow(&m_AllWindowsList, m_CmdOpenFilesWindow, m_FilesWindow),
     m_CmdAboutRequester(&m_AllWindowsList, m_AboutMsg, "About", "Ok"),
     m_Icon(NULL),
@@ -100,6 +115,7 @@ Application::Application(ScreenBase& screen,
   m_AllWindowsList.push_back(&m_DiffWindow);
   m_AllWindowsList.push_back(&m_FilesWindow);
   m_AllWindowsList.push_back(&m_ProgressWindow);
+  m_AllWindowsList.push_back(&m_SearchWindow);
 
   // Create a MessagePort for Workbench app messages if needed
   if(m_IsAppWindow || m_IsAppIcon)
@@ -129,6 +145,7 @@ Application::Application(ScreenBase& screen,
 
   m_FilesWindow.SetMenu(&m_FilesWindowMenu);
   m_DiffWindow.SetMenu(&m_DiffWindowMenu);
+  m_SearchWindow.SetMenu(&m_SearchWindowMenu);
 
   if((m_LeftFilePath.length() > 0) &&
      (m_RightFilePath.length() > 0) &&

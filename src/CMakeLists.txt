@@ -42,6 +42,7 @@ add_executable (ADiffView_gcc
                 menus/MenuBase.cpp
                 menus/MenuFilesWindow.cpp
                 menus/MenuDiffWindow.cpp
+                menus/MenuSearchWindow.cpp
                 model/Pair.cpp
                 model/Rect.cpp
                 screen/OpenClonedWorkbenchScreen.cpp
@@ -57,6 +58,7 @@ add_executable (ADiffView_gcc
                 windows/DiffWindowTextArea.cpp
                 windows/FilesWindow.cpp
                 windows/ProgressWindow.cpp
+                windows/SearchWindow.cpp
                 windows/ScrollbarWindow.cpp
                 windows/WindowBase.cpp
                 worker/ProgressReporter.cpp
