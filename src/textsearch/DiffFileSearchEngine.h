@@ -1,6 +1,9 @@
 #ifndef DIFF_FILE_SEARCH_ENGINE_H
 #define DIFF_FILE_SEARCH_ENGINE_H
 
+#include <string>
+#include <vector>
+
 #include "DiffFileBase.h"
 #include "DiffFileSearchResult.h"
 
@@ -13,17 +16,22 @@
 class DiffFileSearchEngine
 {
 public:
-  DiffFileSearchEngine(const DiffFileBase& leftFile, const DiffFileBase& rightFile);
+  DiffFileSearchEngine(const DiffFileBase& leftFile, 
+                       const DiffFileBase& rightFile, 
+                       const char* pSearchString);
   virtual ~DiffFileSearchEngine();
 
-  DiffFileSearchResult* findFirst(const char* pStrToSearch);
-  DiffFileSearchResult* findNext(const char* pStrToSearch);
+  DiffFileSearchResult* getFirstResult();
+  DiffFileSearchResult* getNextResult();
 
 private:
   const DiffFileBase& m_LeftFile;
   const DiffFileBase& m_RightFile;
-  DiffFileSearchResult* m_pSearchResult;
-  const char* m_pStrToSearch;
+  std::string m_SearchString;
+  std::vector<DiffFileSearchResult*> m_Results;
+
+  void search();
+
 
 };
 

@@ -1,67 +1,63 @@
 #include <string.h>
 #include "DiffFileSearchEngine.h"
 
-DiffFileSearchEngine::DiffFileSearchEngine(const DiffFileBase& leftFile, const DiffFileBase& rightFile)
+DiffFileSearchEngine::DiffFileSearchEngine(const DiffFileBase& leftFile, 
+                       const DiffFileBase& rightFile, 
+                       const char* pSearchString)
   : m_LeftFile(leftFile),
     m_RightFile(rightFile),
-    m_pSearchResult(NULL)
+    m_SearchString(pSearchString)
 {
 
 }
 
 DiffFileSearchEngine::~DiffFileSearchEngine()
 {
-  if(m_pSearchResult != NULL)
+  std::vector<DiffFileSearchResult*>::iterator it;
+  for(it = m_Results.begin(); it != m_Results.end(); it++)
   {
-    delete m_pSearchResult;
-    m_pSearchResult = NULL;
+    delete *it;
   }
 }
 
-DiffFileSearchResult* DiffFileSearchEngine::findFirst(const char* pStrToSearch)
+DiffFileSearchResult* DiffFileSearchEngine::getFirstResult()
 {
+  if(m_Results.size() < 1)
+  {
+    // Search string not found
+    return NULL;
+  }
+
+  std::vector<DiffFileSearchResult*>::iterator it = m_Results.begin();
+  return *it;
+}
+
+DiffFileSearchResult* DiffFileSearchEngine::getNextResult()
+{
+  return NULL;
+}
+
+
+
+void DiffFileSearchEngine::search()
+{
+  DiffFileSearchResult* pResult;
   for(size_t lineId = 0; lineId < m_LeftFile.getNumLines(); lineId++)
   {
+    const char* pSearchStart = m_LeftFile[lineId]->getText();
+
     // Try to find pStrToSearch in left file
-    const char* pFoundAt = strstr(m_LeftFile[lineId]->getText(), pStrToSearch);
-    if(pFoundAt != NULL)
+    const char* pFoundAt = strstr(pSearchStart, m_SearchString.c_str());
+    while (pFoundAt != NULL)
     {
       size_t charId = pFoundAt - m_LeftFile[lineId]->getText();
 
-      if(m_pSearchResult != NULL)
-      {
-        delete m_pSearchResult;
-      }
+      pResult = new DiffFileSearchResult(DiffFileSearchResult::LeftFile,
+                                         lineId,
+                                         charId);
+      m_Results.push_back(pResult);
 
-      m_pSearchResult = new DiffFileSearchResult(DiffFileSearchResult::LeftFile,
-                                                 lineId,
-                                                 charId);
-      return m_pSearchResult;
-    }
-
-    pFoundAt = strstr(m_RightFile[lineId]->getText(), pStrToSearch);
-    if(pFoundAt != NULL)
-    {
-      size_t charId = pFoundAt - m_RightFile[lineId]->getText();
-
-
-      if(m_pSearchResult != NULL)
-      {
-        delete m_pSearchResult;
-      }
-
-      m_pSearchResult = new DiffFileSearchResult(DiffFileSearchResult::RightFile,
-                                                 lineId,
-                                                 charId);
-      return m_pSearchResult;
-    }
+      pFoundAt = strstr(pFoundAt, m_SearchString.c_str());
+    } 
   }
-
-  // Not found
-  return NULL;
-}
-
-DiffFileSearchResult* DiffFileSearchEngine::findNext(const char* pStrToSearch)
-{
-  return NULL;
 }
