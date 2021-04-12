@@ -19,7 +19,6 @@
 #include "ADiffViewSettings.h"
 #include "MenuFilesWindow.h"
 #include "MenuDiffWindow.h"
-#include "MenuSearchWindow.h"
 #include "OpenClonedWorkbenchScreen.h"
 #include "OpenJoinedPublicScreen.h"
 #include "CmdRequester.h"
@@ -62,7 +61,6 @@ private:
   ADiffViewPens m_Pens;
   MenuDiffWindow m_DiffWindowMenu;
   MenuFilesWindow m_FilesWindowMenu;
-  MenuSearchWindow m_SearchWindowMenu;
   ADiffViewPorts m_Ports;
   DiffWorker m_DiffWorker;
   DiffWindow m_DiffWindow;

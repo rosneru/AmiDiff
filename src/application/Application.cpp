@@ -43,11 +43,6 @@ Application::Application(ScreenBase& screen,
     m_FilesWindowMenu(&m_CmdOpenFilesWindow, 
                       &m_CmdAboutRequester, 
                       &m_CmdQuit),
-    m_SearchWindowMenu(&m_CmdOpenFilesWindow, 
-                       &m_CmdAboutRequester, 
-                       &m_CmdQuit,
-                       &m_CmdNavPrevDiff,
-                       &m_CmdNavNextDiff),
     m_DiffWorker(m_LeftFilePath,
                  m_RightFilePath,
                  m_DiffWindow,
@@ -145,7 +140,6 @@ Application::Application(ScreenBase& screen,
 
   m_FilesWindow.SetMenu(&m_FilesWindowMenu);
   m_DiffWindow.SetMenu(&m_DiffWindowMenu);
-  m_SearchWindow.SetMenu(&m_SearchWindowMenu);
 
   if((m_LeftFilePath.length() > 0) &&
      (m_RightFilePath.length() > 0) &&

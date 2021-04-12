@@ -42,7 +42,6 @@ add_executable (ADiffView_gcc
                 menus/MenuBase.cpp
                 menus/MenuFilesWindow.cpp
                 menus/MenuDiffWindow.cpp
-                menus/MenuSearchWindow.cpp
                 model/Pair.cpp
                 model/Rect.cpp
                 screen/OpenClonedWorkbenchScreen.cpp
