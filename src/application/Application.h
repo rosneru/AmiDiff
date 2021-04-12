@@ -21,13 +21,14 @@
 #include "MenuDiffWindow.h"
 #include "OpenClonedWorkbenchScreen.h"
 #include "OpenJoinedPublicScreen.h"
-#include "CmdRequester.h"
 #include "CmdCloseWindow.h"
-#include "CmdOpenWindow.h"
 #include "CmdDiff.h"
 #include "CmdNavNextDiff.h"
 #include "CmdNavPrevDiff.h"
+#include "CmdOpenWindow.h"
 #include "CmdQuit.h"
+#include "CmdRequester.h"
+#include "CmdSearch.h"
 #include "DiffWindow.h"
 #include "DiffWorker.h"
 #include "FilesWindow.h"
@@ -72,9 +73,11 @@ private:
   CmdNavPrevDiff m_CmdNavPrevDiff;
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpenFilesWindow;
-  CmdOpenWindow m_CmdOpenSearchWindow;
   CmdCloseWindow m_CmdCloseFilesWindow;
+  CmdOpenWindow m_CmdOpenSearchWindow;
+  CmdCloseWindow m_CmdCloseSearchWindow;
   CmdRequester m_CmdAboutRequester;
+  CmdSearch m_CmdSearch;
   std::string m_AboutMsg;
 
   std::vector<WindowBase*> m_AllWindowsList;

@@ -547,6 +547,24 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "src/textsearch/DiffFileSearchEngine.cpp"
+"src/textsearch/DiffFileSearchEngine.cpp"
+"src/textsearch/DiffFileSearchEngine.h"
+"src/diffengine/DiffLine.h"
+"src/textsearch/DiffFileSearchResult.h"
+Storm Shell Project (Dependencies)
+"build-stromc/DiffFileSearchEngine.o" "build-stromc/DiffFileSearchEngine.debug"
+""
+1 1
+File
+1 "src/textsearch/DiffFileSearchResult.cpp"
+"src/textsearch/DiffFileSearchResult.cpp"
+"src/textsearch/DiffFileSearchResult.h"
+Storm Shell Project (Dependencies)
+"build-stromc/DiffFileSearchResult.o" "build-stromc/DiffFileSearchResult.debug"
+""
+1 1
+File
 1 "src/textselect/TextSelection.cpp"
 "src/textselect/TextSelection.cpp"
 "src/textselect/TextSelection.h"
@@ -637,6 +655,14 @@ File
 "src/windows/WindowBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/ScrollbarWindow.o" "build-stromc/ScrollbarWindow.debug"
+""
+1 1
+File
+1 "src/windows/SearchWindow.cpp"
+"src/windows/SearchWindow.cpp"
+"src/windows/SearchWindow.h"
+Storm Shell Project (Dependencies)
+"build-stromc/SearchWindow.o" "build-stromc/SearchWindow.debug"
 ""
 1 1
 File
@@ -951,6 +977,20 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "src/textsearch/DiffFileSearchEngine.h"
+"src/textsearch/DiffFileSearchEngine.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "src/textsearch/DiffFileSearchResult.h"
+"src/textsearch/DiffFileSearchResult.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "src/textselect/TextSelection.h"
 "src/textselect/TextSelection.h"
 Storm Shell Project (Dependencies)
@@ -1009,6 +1049,13 @@ Storm Shell Project (Dependencies)
 File
 2 "src/windows/ScrollbarWindow.h"
 "src/windows/ScrollbarWindow.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "src/windows/SearchWindow.h"
+"src/windows/SearchWindow.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

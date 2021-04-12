@@ -26,11 +26,8 @@ public:
   SearchWindow(std::vector<WindowBase*>& windowArray,
               ScreenBase& screen,
               struct MsgPort* pIdcmpMsgPort,
-              std::string& leftFilePath,
-              std::string& rightFilePath,
-              CommandBase& cmdDiff,
-              CommandBase& cmdCloseFilesWindow,
-              MenuBase* pMenu);
+              CommandBase& cmdSearch,
+              CommandBase& cmdCloseSearchWindow);
 
   virtual ~SearchWindow();
 
@@ -61,11 +58,8 @@ public:
   void HandleAppMessage(struct AppMessage* pAppMsg);
 
 private:
-  std::string& m_LeftFilePath;
-  std::string& m_RightFilePath;
-
-  CommandBase& m_CmdDiff;
-  CommandBase& m_CmdCloseFilesWindow;
+  CommandBase& m_CmdSearch;
+  CommandBase& m_CmdCloseSearchWindow;
 
   CmdFileRequester m_CmdSelectLeftFile;
   CmdFileRequester m_CmdSelectRightFile;

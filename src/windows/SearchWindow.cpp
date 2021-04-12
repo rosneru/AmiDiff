@@ -30,16 +30,11 @@
 SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
                          ScreenBase& screen,
                          struct MsgPort* pIdcmpMsgPort,
-                         std::string& leftFilePath,
-                         std::string& rightFilePath,
-                         CommandBase& cmdDiff,
-                         CommandBase& cmdCloseFilesWindow,
-                         MenuBase* pMenu)
-  : WindowBase(screen, pIdcmpMsgPort, pMenu),
-    m_LeftFilePath(leftFilePath),
-    m_RightFilePath(rightFilePath),
-    m_CmdDiff(cmdDiff),
-    m_CmdCloseFilesWindow(cmdCloseFilesWindow),
+                         CommandBase& cmdSearch,
+                         CommandBase& cmdCloseSearchWindow)
+  : WindowBase(screen, pIdcmpMsgPort, NULL),
+    m_CmdSearch(cmdSearch),
+    m_CmdCloseSearchWindow(cmdCloseSearchWindow),
     m_CmdSelectLeftFile(&windowArray, "Select left (original) file"),
     m_CmdSelectRightFile(&windowArray, "Select right (changed) file"),
     m_MaxPathLength(1024),
@@ -340,7 +335,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
 
   // Setting window title
-  SetTitle("Open the files to diff");
+  SetTitle("Search for text");
 
   // Setting the window flags
   addFlags(WFLG_CLOSEGADGET |     // Add a close gadget
@@ -375,9 +370,6 @@ bool SearchWindow::Open(InitialPosition initialPos)
   {
     return false;
   }
-
-  setStringGadgetText(m_pGadStrLeftFile, m_LeftFilePath.c_str());
-  setStringGadgetText(m_pGadStrRightFile, m_RightFilePath.c_str());
 
   // Enable or disable the 'Diff' and 'Swap' buttons depending on some
   // conditions
@@ -415,7 +407,7 @@ void SearchWindow::HandleIdcmp(ULONG msgClass,
 
     case IDCMP_CLOSEWINDOW:
     {
-      m_CmdCloseFilesWindow.Execute(NULL);
+      m_CmdCloseSearchWindow.Execute(NULL);
       break;
     }
 
@@ -512,7 +504,7 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
       break;
 
     case GID_BtnCancel:
-      m_CmdCloseFilesWindow.Execute(NULL);
+      m_CmdCloseSearchWindow.Execute(NULL);
       break;
   }
 }
@@ -592,7 +584,7 @@ void SearchWindow::handleVanillaKey(UWORD code)
     }
 
     case 0x1B: // <ESC> Cancel
-      m_CmdCloseFilesWindow.Execute(NULL);
+      m_CmdCloseSearchWindow.Execute(NULL);
       break;
 
   }
@@ -716,11 +708,8 @@ void SearchWindow::compare()
     return;
   }
 
-  m_LeftFilePath = pLeftStrGadgetText;
-  m_RightFilePath = pRightStrGadgetText;
-
   // Perform the diff
-  m_CmdDiff.Execute(NULL);
+  m_CmdSearch.Execute(NULL);
 }
 
 
