@@ -1,6 +1,7 @@
 #ifndef CMD_SEARCH_H
 #define CMD_SEARCH_H
 
+#include <string>
 #include "CommandBase.h"
 
 /**
@@ -18,8 +19,11 @@ public:
 
   virtual void Execute(struct Window* pActiveWindow);
 
-private:
+  const char* getSearchText();
+  void setSearchText(const char* pSearchText);
 
+private:
+  std::string m_SearchText;
 };
 
 #endif

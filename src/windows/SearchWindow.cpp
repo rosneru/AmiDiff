@@ -35,18 +35,12 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   : WindowBase(screen, pIdcmpMsgPort, NULL),
     m_CmdSearch(cmdSearch),
     m_CmdCloseSearchWindow(cmdCloseSearchWindow),
-    m_CmdSelectLeftFile(&windowArray, "Select left (original) file"),
-    m_CmdSelectRightFile(&windowArray, "Select right (changed) file"),
     m_MaxPathLength(1024),
     m_pGadtoolsContext(NULL),
-    m_pGadStrLeftFile(NULL),
-    m_pGadStrRightFile(NULL),
-    m_pGadBtnSelectLeft(NULL),
-    m_pGadBtnSelectRight(NULL),
-    m_pGadBtnDiff(NULL),
-    m_pGadBtnSwap(NULL),
-    m_pGadBtnClear(NULL),
-    m_pGadBtnCancel(NULL)
+    m_pGadStrSearchText(NULL),
+    m_pGadCycLocation(NULL),
+    m_pGadCbxIgnoreCase(NULL),
+    m_pGadBtnFind(NULL)
 {
   const char* pErrMsg = "SearchWindow: Failed to create gadgets.";
   //
@@ -63,7 +57,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   const int btnExtraHSpace = 8;
 
   WORD hSpace = 10;
-  WORD vSpace = 10;
+  WORD vSpace = 4;
 
   // Check if needed to and adjust btnsWidth according to font and the
   // width of the four buttons in the bottom row
@@ -105,7 +99,9 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
 
   WORD btnSelectLeft = right - btnSelectWidth;
 
-  WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
+  // WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
+  WORD labelWidth = 90;
+  WORD stringGadWidth = right - left - labelWidth;
 
   //
   // Set up the gadgets
@@ -127,15 +123,15 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   struct NewGadget newGadget;
 
   //
-  // Row 1:  contains  a label
+  // Row 1:  contains the text box for search text input
   //
   newGadget.ng_TextAttr   = m_Screen.IntuiTextAttr();
   newGadget.ng_VisualInfo = m_Screen.GadtoolsVisualInfo();
-  newGadget.ng_LeftEdge   = left + 2;
+  newGadget.ng_LeftEdge   = left;
   newGadget.ng_TopEdge    = top;
-  newGadget.ng_Width      = stringGadWidth;
-  newGadget.ng_Height     = fontHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "_Left file";
+  newGadget.ng_Width      = 80; // stringGadgetWidth
+  newGadget.ng_Height     = btnsHeight;
+  newGadget.ng_GadgetText = (UBYTE*) "_Search for";
   newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
   struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
@@ -149,43 +145,37 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  //
-  // Row 2: contains a string gadget and selection button for the
-  // filename of the left file
-  //
-
   // Create the string gadget
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += fontHeight + 2;
+  newGadget.ng_LeftEdge   += labelWidth;
   newGadget.ng_Width      = stringGadWidth;
   newGadget.ng_Height     = btnsHeight;
   newGadget.ng_GadgetText = NULL;
-  newGadget.ng_GadgetID   = GID_StrLeftFile;
+  newGadget.ng_GadgetID   = GID_StrSearchText;
   newGadget.ng_Flags      = 0;
 
-  m_pGadStrLeftFile = CreateGadget(STRING_KIND,
+  m_pGadStrSearchText = CreateGadget(STRING_KIND,
                                    pLabelGadget,
                                    &newGadget,
                                    GTST_MaxChars, m_MaxPathLength,
                                    TAG_DONE);
-  if(m_pGadStrLeftFile == NULL)
+  if(m_pGadStrSearchText == NULL)
   {
     cleanup();
     throw pErrMsg;
   }
-
+/*
   // Create the Select button
   newGadget.ng_LeftEdge   = btnSelectLeft;
   newGadget.ng_Width      = btnSelectWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
-  newGadget.ng_GadgetID   = GID_BtnLeftFile;
+  newGadget.ng_GadgetID   = GID_CycLocation;
   newGadget.ng_Flags      = 0;
 
-  m_pGadBtnSelectLeft = CreateGadget(BUTTON_KIND,
-                                     m_pGadStrLeftFile,
+  m_pGadCycLocation = CreateGadget(BUTTON_KIND,
+                                     m_pGadStrSearchText,
                                      &newGadget,
                                      TAG_DONE);
-  if(m_pGadBtnSelectLeft == NULL)
+  if(m_pGadCycLocation == NULL)
   {
     cleanup();
     throw pErrMsg;
@@ -202,7 +192,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
   pLabelGadget = CreateGadget(TEXT_KIND,
-                              m_pGadBtnSelectLeft,
+                              m_pGadCycLocation,
                               &newGadget,
                               GT_Underscore, '_',
                               TAG_DONE);
@@ -241,10 +231,10 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_LeftEdge   = btnSelectLeft;
   newGadget.ng_Width      = btnSelectWidth;
   newGadget.ng_GadgetText = (UBYTE*) "...";
-  newGadget.ng_GadgetID   = GID_BtnRightFile;
+  newGadget.ng_GadgetID   = GID_CbxIgnoreCase;
   newGadget.ng_Flags      = 0;
 
-  m_pGadBtnSelectRight = CreateGadget(BUTTON_KIND,
+  m_pGadCbxIgnoreCase = CreateGadget(BUTTON_KIND,
                                       m_pGadStrRightFile,
                                       &newGadget,
                                       TAG_DONE);
@@ -269,14 +259,14 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
   newGadget.ng_Width      = btnsWidth;
   newGadget.ng_GadgetText = (UBYTE*) "Compare";
-  newGadget.ng_GadgetID   = GID_BtnDiff;
+  newGadget.ng_GadgetID   = GID_BtnFind;
 
-  m_pGadBtnDiff = CreateGadget(BUTTON_KIND,
-                               m_pGadBtnSelectRight,
+  m_pGadBtnFind = CreateGadget(BUTTON_KIND,
+                               m_pGadCbxIgnoreCase,
                                &newGadget,
                                GT_Underscore, '_',
                                TAG_DONE);
-  if(m_pGadBtnDiff == NULL)
+  if(m_pGadBtnFind == NULL)
   {
     cleanup();
     throw pErrMsg;
@@ -288,7 +278,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_GadgetID   = GID_BtnSwap;
 
   m_pGadBtnSwap = CreateGadget(BUTTON_KIND,
-                               m_pGadBtnDiff,
+                               m_pGadBtnFind,
                                &newGadget,
                                GT_Underscore, '_',
                                TAG_DONE);
@@ -329,6 +319,8 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     cleanup();
     throw pErrMsg;
   }
+
+  */
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
@@ -420,55 +412,6 @@ void SearchWindow::HandleIdcmp(ULONG msgClass,
 }
 
 
-void SearchWindow::HandleAppMessage(struct AppMessage* pAppMsg)
-{
-  if(!IsOpen())
-  {
-    return;
-  }
-
-  // Alloc temporary buf memory
-  int bufLen = 2048;  // TODO How to get rid of this fixed maximum?
-  STRPTR pBuf = (STRPTR) AllocVec(bufLen, MEMF_ANY);
-  if(pBuf == NULL)
-  {
-    return;
-  }
-
-  struct WBArg* pWbArg = pAppMsg->am_ArgList;
-  struct Gadget* pStrGadget = NULL;
-
-  int i = 0;
-  while((pStrGadget = getFirstEmptyStringGadget()) != NULL)
-  {
-    if(i > 1)
-    {
-      // Max 2 args can be received, as there are only 2 string gadgets
-      break;
-    }
-
-    if(i >= pAppMsg->am_NumArgs)
-    {
-      // No more WbArgs
-      break;
-    }
-
-    if(NameFromLock(pWbArg[i].wa_Lock, pBuf, bufLen) != 0)
-    {
-      if(AddPart(pBuf,(STRPTR) pWbArg[i].wa_Name, bufLen))
-      {
-        setStringGadgetText(pStrGadget, pBuf);
-      }
-    }
-
-    i++;
-  }
-
-  FreeVec(pBuf);
-  checkEnableButtons();
-}
-
-
 void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 {
   if(pGadget == NULL)
@@ -478,33 +421,20 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
   switch(pGadget->GadgetID)
   {
-    case GID_StrLeftFile:
-    case GID_StrRightFile:
+    case GID_StrSearchText:
       checkEnableButtons();
       break;
 
-    case GID_BtnLeftFile:  // Select left file
+    case GID_CycLocation:  // Select left file
       selectLeftFile();
       break;
 
-    case GID_BtnRightFile: // Select right file
-      selectRightFile();
+    case GID_CbxIgnoreCase: // Select right file
+      
       break;
 
-    case GID_BtnSwap:      // Swap left and right file
-      swapFiles();
-      break;
-
-    case GID_BtnClear:     // Clear the string gadgets
-      clear();
-      break;
-
-    case GID_BtnDiff:      // Compare the files and display the diff
-      compare();
-      break;
-
-    case GID_BtnCancel:
-      m_CmdCloseSearchWindow.Execute(NULL);
+    case GID_BtnFind:      // Compare the files and display the diff
+      find();
       break;
   }
 }
@@ -519,18 +449,12 @@ void SearchWindow::handleVanillaKey(UWORD code)
       selectLeftFile();
       break;
 
-    case 'r': // Select right file
-    case 'R':
-      selectRightFile();
-      break;
-
-    case 's': // Swap left and right file
-    case 'S':
+    case 0xD:// <RETURN> Search
     {
-      // Allow only if Swap button is enabled
+      // Allow only if Find button is enabled
       long disabled;
       long numProcessed;
-      numProcessed  = GT_GetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
+      numProcessed  = GT_GetGadgetAttrs(m_pGadBtnFind, m_pWindow, NULL,
                                         GA_Disabled, (ULONG)&disabled,
                                         TAG_DONE);
 
@@ -540,46 +464,7 @@ void SearchWindow::handleVanillaKey(UWORD code)
       }
 
       // Button is enabled, perform its action
-      swapFiles();
-      break;
-    }
-
-    case 'e': // Clear the string gadgets
-    case 'E':
-    {
-      // Allow only if Clear button is enabled
-      long disabled;
-      long numProcessed;
-      numProcessed  = GT_GetGadgetAttrs(m_pGadBtnClear, m_pWindow, NULL,
-                                        GA_Disabled, (ULONG)&disabled,
-                                        TAG_DONE);
-
-      if((numProcessed != 1) || (disabled == 1))
-      {
-        return;
-      }
-
-      // Button is enabled, perform its action
-      clear();
-      break;
-    }
-
-    case 0xD:// <RETURN> Compare the files and display the diff
-    {
-      // Allow only if Diff button is enabled
-      long disabled;
-      long numProcessed;
-      numProcessed  = GT_GetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
-                                        GA_Disabled, (ULONG)&disabled,
-                                        TAG_DONE);
-
-      if((numProcessed != 1) || (disabled == 1))
-      {
-        return;
-      }
-
-      // Button is enabled, perform its action
-      compare();
+      find();
       break;
     }
 
@@ -594,116 +479,32 @@ void SearchWindow::handleVanillaKey(UWORD code)
 void SearchWindow::selectLeftFile()
 {
   // Read latest string gadgets contents before continue
-  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
-  STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
+  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrSearchText);
 
-  if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
-  {
-    checkEnableButtons();
-    return;
-  }
+  // if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
+  // {
+  //   checkEnableButtons();
+  //   return;
+  // }
 
-  if(strlen(pLeftStrGadgetText) == 0)
-  {
-    // Left file path is empty, so use the path of the right file for
-    // pre-selection (regardless if that also is empty)
-    m_CmdSelectLeftFile.SetInitialFilePath(pRightStrGadgetText);
-
-    // Do not use the file name 'though
-    m_CmdSelectLeftFile.SetPreselectPathOnly(true);
-  }
-  else
-  {
-    m_CmdSelectLeftFile.SetInitialFilePath(pLeftStrGadgetText);
-    m_CmdSelectLeftFile.SetPreselectPathOnly(false);
-  }
-
-  m_CmdSelectLeftFile.Execute(m_pWindow);
-
-  if(m_CmdSelectLeftFile.SelectedFile().length() == 0)
-  {
-    checkEnableButtons();
-    return;
-  }
-
-  setStringGadgetText(m_pGadStrLeftFile,
-                      m_CmdSelectLeftFile.SelectedFile().c_str());
+  // setStringGadgetText(m_pGadStrSearchText,
+  //                     m_CmdSelectLeftFile.SelectedFile().c_str());
 
   checkEnableButtons();
 }
 
 
-void SearchWindow::selectRightFile()
+
+void SearchWindow::find()
 {
-
-  // Read latest string gadgets contents before continue
-  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
-  STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
-
-  if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
-  {
-    checkEnableButtons();
-    return;
-  }
-
-  if(strlen(pRightStrGadgetText) == 0)
-  {
-    // Right file path is empty, so use the path of the left file for
-    // pre-selection (regardless if that also is empty)
-    m_CmdSelectRightFile.SetInitialFilePath(pLeftStrGadgetText);
-
-    // Do not use the file name 'though
-    m_CmdSelectRightFile.SetPreselectPathOnly(true);
-  }
-  else
-  {
-    m_CmdSelectRightFile.SetInitialFilePath(pRightStrGadgetText);
-    m_CmdSelectRightFile.SetPreselectPathOnly(false);
-  }
-
-  m_CmdSelectRightFile.Execute(m_pWindow);
-
-  if(m_CmdSelectRightFile.SelectedFile().length() == 0)
-  {
-    checkEnableButtons();
-    return;
-  }
-
-  setStringGadgetText(m_pGadStrRightFile,
-                      m_CmdSelectRightFile.SelectedFile().c_str());
-
-  checkEnableButtons();
-}
-
-
-void SearchWindow::swapFiles()
-{
-  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
-  STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
-
-  if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
+  if(!IsOpen() || (m_pGadBtnFind == NULL))
   {
     return;
   }
 
-  std::string formerLeftFilePath = pLeftStrGadgetText;
+  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrSearchText);
 
-  setStringGadgetText(m_pGadStrLeftFile, pRightStrGadgetText);
-  setStringGadgetText(m_pGadStrRightFile, formerLeftFilePath.c_str());
-}
-
-
-void SearchWindow::compare()
-{
-  if(!IsOpen() || (m_pGadBtnDiff == NULL) || (m_pGadBtnSwap == NULL))
-  {
-    return;
-  }
-
-  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
-  STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
-
-  if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
+  if(pLeftStrGadgetText == NULL)
   {
     return;
   }
@@ -712,13 +513,6 @@ void SearchWindow::compare()
   m_CmdSearch.Execute(NULL);
 }
 
-
-void SearchWindow::clear()
-{
-  setStringGadgetText(m_pGadStrLeftFile, "");
-  setStringGadgetText(m_pGadStrRightFile, "");
-  checkEnableButtons();
-}
 
 
 void SearchWindow::cleanup()
@@ -729,68 +523,37 @@ void SearchWindow::cleanup()
   }
 
   m_pGadtoolsContext = NULL;
-  m_pGadStrLeftFile = NULL;
-  m_pGadStrRightFile = NULL;
-  m_pGadBtnSelectLeft = NULL;
-  m_pGadBtnSelectRight = NULL;
-  m_pGadBtnDiff = NULL;
-  m_pGadBtnSwap = NULL;
-  m_pGadBtnCancel = NULL;
+  m_pGadStrSearchText = NULL;
+  m_pGadCycLocation = NULL;
+  m_pGadCbxIgnoreCase = NULL;
+  m_pGadBtnFind = NULL;
 }
 
 void SearchWindow::checkEnableButtons()
 {
-  if(!IsOpen() || (m_pGadBtnDiff == NULL) || (m_pGadBtnSwap == NULL))
+  if(!IsOpen() || (m_pGadBtnFind == NULL))
   {
     return;
   }
 
-  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
-  STRPTR pRightStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
+  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrSearchText);
 
-  if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
+  if(pLeftStrGadgetText == NULL)
   {
     return;
   }
 
-  if((strlen(pLeftStrGadgetText)) > 0
-   &&(strlen(pRightStrGadgetText)) > 0)
+  if(strlen(pLeftStrGadgetText) > 0)
   {
-    // Enable "Diff" button
-    GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
+    // Enable "Find" button
+    GT_SetGadgetAttrs(m_pGadBtnFind, m_pWindow, NULL,
                       GA_Disabled, FALSE,
                       TAG_DONE);
   }
   else
   {
-    // Disable "Diff" button
-    GT_SetGadgetAttrs(m_pGadBtnDiff, m_pWindow, NULL,
-                      GA_Disabled, TRUE,
-                      TAG_DONE);
-  }
-
-  if((strlen(pLeftStrGadgetText)) > 0
-   ||(strlen(pRightStrGadgetText)) > 0)
-  {
-    // Enable "Swap" button
-    GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
-                      GA_Disabled, FALSE,
-                      TAG_DONE);
-
-    // Enable "Clear" button
-    GT_SetGadgetAttrs(m_pGadBtnClear, m_pWindow, NULL,
-                      GA_Disabled, FALSE,
-                      TAG_DONE);
-  }
-  else
-  {
-    // Disable "Swap" button
-    GT_SetGadgetAttrs(m_pGadBtnSwap, m_pWindow, NULL,
-                      GA_Disabled, TRUE,
-                      TAG_DONE);
-
-    // Disable "Clear" button
-    GT_SetGadgetAttrs(m_pGadBtnClear, m_pWindow, NULL,
+    // Disable "Find" button
+    GT_SetGadgetAttrs(m_pGadBtnFind, m_pWindow, NULL,
                       GA_Disabled, TRUE,
                       TAG_DONE);
   }
@@ -828,22 +591,4 @@ STRPTR SearchWindow::getStringGadgetText(struct Gadget* pGadget)
   }
 
   return (STRPTR)pTextPointerStorage;
-}
-
-
-struct Gadget* SearchWindow::getFirstEmptyStringGadget()
-{
-  STRPTR pStrGadgetText = getStringGadgetText(m_pGadStrLeftFile);
-  if((pStrGadgetText == NULL) || (strlen(pStrGadgetText) == 0))
-  {
-    return m_pGadStrLeftFile;
-  }
-
-  pStrGadgetText = getStringGadgetText(m_pGadStrRightFile);
-  if((pStrGadgetText == NULL) || (strlen(pStrGadgetText) == 0))
-  {
-    return m_pGadStrRightFile;
-  }
-
-  return NULL;
 }

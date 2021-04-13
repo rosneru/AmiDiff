@@ -49,20 +49,10 @@ public:
    */
   void HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddress);
 
-  /**
-   * Handles the given progress event.
-   *
-   * Prints the current pDescription text of given pProgrMsg and
-   * draws a progress bar representing the actual percentual value.
-   */
-  void HandleAppMessage(struct AppMessage* pAppMsg);
 
 private:
   CommandBase& m_CmdSearch;
   CommandBase& m_CmdCloseSearchWindow;
-
-  CmdFileRequester m_CmdSelectLeftFile;
-  CmdFileRequester m_CmdSelectRightFile;
 
   const ULONG m_MaxPathLength;
 
@@ -72,25 +62,17 @@ private:
    */
   enum GadgetId
   {
-    GID_StrLeftFile,
-    GID_StrRightFile,
-    GID_BtnLeftFile,
-    GID_BtnRightFile,
-    GID_BtnDiff,
-    GID_BtnSwap,
-    GID_BtnClear,
-    GID_BtnCancel,
+    GID_StrSearchText,
+    GID_CycLocation,
+    GID_CbxIgnoreCase,
+    GID_BtnFind,
   };
 
   struct Gadget* m_pGadtoolsContext;
-  struct Gadget* m_pGadStrLeftFile;
-  struct Gadget* m_pGadStrRightFile;
-  struct Gadget* m_pGadBtnSelectLeft;
-  struct Gadget* m_pGadBtnSelectRight;
-  struct Gadget* m_pGadBtnDiff;
-  struct Gadget* m_pGadBtnSwap;
-  struct Gadget* m_pGadBtnClear;
-  struct Gadget* m_pGadBtnCancel;
+  struct Gadget* m_pGadStrSearchText;
+  struct Gadget* m_pGadCycLocation;
+  struct Gadget* m_pGadCbxIgnoreCase;
+  struct Gadget* m_pGadBtnFind;
 
   //
   // The next two are called from HandleIDCMP() to get that method not
@@ -104,16 +86,12 @@ private:
   // mapped to the butons and keys.
   //
   void selectLeftFile();
-  void selectRightFile();
-  void swapFiles();
-  void compare();
-  void clear();
+  void find();
 
   void cleanup();
 
   /**
-   * Enables or disables the 'Diff' and 'Swap' buttons depending on
-   * some conditions.
+   * Enables or disables the 'FInd' button depending on some conditions.
    */
   void checkEnableButtons();
 
@@ -132,14 +110,6 @@ private:
    */
   STRPTR getStringGadgetText(struct Gadget* pGadget);
 
-  /**
-   * Returns the first string gadget of
-   *   {m_pGadStrLeftFile, m_pGadStrRightFile}
-   * which contains currently no text.
-   *
-   * Returns NULL if both string gadgets contain text
-   */
-  struct Gadget* getFirstEmptyStringGadget();
 };
 
 
