@@ -1,0 +1,9 @@
+So, how can can the search be tested?
+
+Maybe this little test test file is the solution.
+
+Some lines only apply in the left side
+
+And some in the right.
+
+right RIGHT Right
