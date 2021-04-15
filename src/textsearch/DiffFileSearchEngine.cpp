@@ -91,10 +91,9 @@ void DiffFileSearchEngine::find()
     while ((pFoundAtPos = strstr(pSearchStart, m_SearchString.c_str())) != NULL)
     {
       size_t charId = pFoundAtPos - m_RightFile[lineId]->getText();
-      pResult = new DiffFileSearchResult(DiffFileSearchResult::LeftFile, lineId, charId);
+      pResult = new DiffFileSearchResult(DiffFileSearchResult::RightFile, lineId, charId);
       m_Results.push_back(pResult);
       pSearchStart = pFoundAtPos + 1;
     }
   }
 }
-
