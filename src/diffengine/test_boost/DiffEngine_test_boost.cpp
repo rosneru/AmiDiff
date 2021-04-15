@@ -1218,7 +1218,7 @@ BOOST_AUTO_TEST_CASE( testcase_explore_search_algorithm )
     const char* pSearchFor = "Software";
     DiffFileSearchEngine searchEngine(diffA, diffB, "Software");
 
-    BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 3);
+    BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 6);
 
     DiffFileSearchResult* pSearchResult = searchEngine.getNextResult();
     BOOST_CHECK(pSearchResult != NULL);
@@ -1269,7 +1269,7 @@ BOOST_AUTO_TEST_CASE( testcase_dig_into_search_algorithm )
 
     DiffFileSearchEngine searchEngine(diffA, diffB, "test");
 
-    BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 1);
+    BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 4);
 
     DiffFileSearchResult* pSearchResult = searchEngine.getNextResult();
     BOOST_CHECK(pSearchResult != NULL);
@@ -1277,12 +1277,23 @@ BOOST_AUTO_TEST_CASE( testcase_dig_into_search_algorithm )
     BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 2);
     BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 18);
 
-    pSearchResult = searchEngine.getNextResult();
+
+    DiffFileSearchEngine searchEngine2(diffA, diffB, "can");
+
+    BOOST_CHECK_EQUAL(searchEngine2.getNumResults(), 4);
+
+    pSearchResult = searchEngine2.getNextResult();
+    BOOST_CHECK(pSearchResult != NULL);
+    BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 0);
+    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 8);
+
+    pSearchResult = searchEngine2.getNextResult();
     BOOST_CHECK(pSearchResult != NULL);
 
     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
-    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 2);
-    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 18);
+    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 0);
+    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 12);
   }
   catch(const char* pError)
   {

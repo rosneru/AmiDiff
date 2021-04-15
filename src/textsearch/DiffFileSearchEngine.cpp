@@ -6,8 +6,7 @@ DiffFileSearchEngine::DiffFileSearchEngine(const DiffFileBase& leftFile,
                        const char* pSearchString)
   : m_LeftFile(leftFile),
     m_RightFile(rightFile),
-    m_SearchString(pSearchString),
-    m_ResultsIterator(m_Results.end())
+    m_SearchString(pSearchString)
 {
   find();
   m_ResultsIterator = m_Results.end();
@@ -72,22 +71,30 @@ DiffFileSearchResult* DiffFileSearchEngine::getNextResult()
 void DiffFileSearchEngine::find()
 {
   DiffFileSearchResult* pResult;
+  const char* pFoundAtPos;
+  const char* pSearchStart;
+
   for(size_t lineId = 0; lineId < m_LeftFile.getNumLines(); lineId++)
   {
-    const char* pSearchStart = m_LeftFile[lineId]->getText();
-
-    // Try to find pStrToSearch in left file
-    const char* pFoundAt = strstr(pSearchStart, m_SearchString.c_str());
-    while (pFoundAt != NULL)
+    // Try to find pStrToSearch in line of left file
+    pSearchStart = m_LeftFile[lineId]->getText();
+    while ((pFoundAtPos = strstr(pSearchStart, m_SearchString.c_str())) != NULL)
     {
-      size_t charId = pFoundAt - m_LeftFile[lineId]->getText();
-
-      pResult = new DiffFileSearchResult(DiffFileSearchResult::LeftFile,
-                                         lineId,
-                                         charId);
+      size_t charId = pFoundAtPos - m_LeftFile[lineId]->getText();
+      pResult = new DiffFileSearchResult(DiffFileSearchResult::LeftFile, lineId, charId);
       m_Results.push_back(pResult);
+      pSearchStart = pFoundAtPos + 1;
+    }
 
-      pFoundAt = strstr(pFoundAt + 1, m_SearchString.c_str());
-    } 
+    // Try to find pStrToSearch in line of right file
+    pSearchStart = m_RightFile[lineId]->getText();
+    while ((pFoundAtPos = strstr(pSearchStart, m_SearchString.c_str())) != NULL)
+    {
+      size_t charId = pFoundAtPos - m_RightFile[lineId]->getText();
+      pResult = new DiffFileSearchResult(DiffFileSearchResult::LeftFile, lineId, charId);
+      m_Results.push_back(pResult);
+      pSearchStart = pFoundAtPos + 1;
+    }
   }
 }
+

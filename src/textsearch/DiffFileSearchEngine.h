@@ -33,7 +33,7 @@ private:
   std::vector<DiffFileSearchResult*>::iterator m_ResultsIterator;
 
   void find();
-
+  
 
 };
 
