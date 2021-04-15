@@ -50,7 +50,6 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   UWORD fontHeight = m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
 
   // Default button dimensions
-  WORD btnsWidth = 70;
   WORD btnsHeight = fontHeight + 6;
 
   // Extra space by which a button must be wider than its text to look good
@@ -69,11 +68,20 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   WORD left = pIntuiScreen->WBorLeft + hSpace;
   WORD right = m_Width - pIntuiScreen->WBorRight - hSpace;
 
-  WORD btnSelectWidth = TextLength(&pIntuiScreen->RastPort, "...", 3)
-                      + btnExtraHSpace;
+  // Set the labelWidth to the longest label text
+  WORD labelWidth = 0;
+  const char* labelTexts[]  = {"Search for", "Location"};
+  for(size_t i = 0; i < sizeof(labelTexts) / (sizeof labelTexts[0]); i++)
+  {
+    const char* pTxt = labelTexts[i];
+    WORD txtWidth = TextLength(&pIntuiScreen->RastPort, pTxt, strlen(pTxt));
+    if(txtWidth > labelWidth)
+    {
+      labelWidth = txtWidth;
+    }
+  }
 
-  // WORD stringGadWidth = right - left - hSpace / 2 - btnSelectWidth;
-  WORD labelWidth = 90;
+  labelWidth += hSpace;
   WORD stringGadWidth = right - left - labelWidth;
 
   //
@@ -96,46 +104,56 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   struct NewGadget newGadget;
 
   //
-  // Row 1:  contains the text box for search text input
+  // Row 1: contains the text box for search text input
   //
-  newGadget.ng_TextAttr   = m_Screen.IntuiTextAttr();
-  newGadget.ng_VisualInfo = m_Screen.GadtoolsVisualInfo();
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    = top;
-  newGadget.ng_Width      = 80; // stringGadgetWidth
-  newGadget.ng_Height     = btnsHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "_Search for";
-  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
-
-  struct Gadget* pLabelGadget = CreateGadget(TEXT_KIND,
-                                             pFakeGad,
-                                             &newGadget,
-                                             GT_Underscore, '_',
-                                             TAG_DONE);
-  if(pLabelGadget == NULL)
-  {
-    cleanup();
-    throw pErrMsg;
-  }
+  // newGadget.ng_LeftEdge   = left;
+  // newGadget.ng_Width      = 80; // stringGadgetWidth
+  // newGadget.ng_Height     = btnsHeight;
+  // newGadget.ng_GadgetText = (UBYTE*) "_Search for";
+  // newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
 
   // Create the string gadget
-  newGadget.ng_LeftEdge   += labelWidth;
+  newGadget.ng_TextAttr   = m_Screen.IntuiTextAttr();
+  newGadget.ng_VisualInfo = m_Screen.GadtoolsVisualInfo();
+  newGadget.ng_Flags      = NG_HIGHLABEL;
+  newGadget.ng_LeftEdge   = labelWidth;
+  newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = stringGadWidth;
   newGadget.ng_Height     = btnsHeight;
-  newGadget.ng_GadgetText = NULL;
+  newGadget.ng_GadgetText = (UBYTE*) "_Search for";
   newGadget.ng_GadgetID   = GID_StrSearchText;
-  newGadget.ng_Flags      = 0;
 
   m_pGadStrSearchText = CreateGadget(STRING_KIND,
-                                   pLabelGadget,
+                                   pFakeGad,
                                    &newGadget,
                                    GTST_MaxChars, m_MaxPathLength,
+                                   GT_Underscore, '_',
                                    TAG_DONE);
   if(m_pGadStrSearchText == NULL)
   {
     cleanup();
     throw pErrMsg;
   }
+
+  newGadget.ng_TopEdge    += btnsHeight + vSpace;
+  newGadget.ng_Width      /= 2;
+  newGadget.ng_GadgetText = (UBYTE*) "_Location";
+  newGadget.ng_GadgetID   = GID_CycLocation;
+
+  STRPTR cycLabels[] = {"Both files", "Left file", "Right file", NULL};
+  m_pGadCycLocation = CreateGadget(CYCLE_KIND,
+                                   m_pGadStrSearchText,
+                                   &newGadget,
+                                   GT_Underscore, '_',
+                                   GTCY_Labels, (ULONG)cycLabels,
+                                   TAG_DONE);
+
+  if(m_pGadCycLocation == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
+
 /*
   // Create the Select button
   newGadget.ng_LeftEdge   = btnSelectLeft;
