@@ -1188,4 +1188,6 @@ namespace RealLifeApp.Print
 
 
   }
+  
+  // Use this added line to measure the search performance
 }
