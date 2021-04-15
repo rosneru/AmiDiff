@@ -1220,7 +1220,7 @@ BOOST_AUTO_TEST_CASE( testcase_explore_search_algorithm )
 
     BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 3);
 
-    DiffFileSearchResult* pSearchResult = searchEngine.getFirstResult();
+    DiffFileSearchResult* pSearchResult = searchEngine.getNextResult();
     BOOST_CHECK(pSearchResult != NULL);
     
     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
@@ -1269,16 +1269,20 @@ BOOST_AUTO_TEST_CASE( testcase_dig_into_search_algorithm )
 
     DiffFileSearchEngine searchEngine(diffA, diffB, "test");
 
-    BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 2);
+    BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 1);
 
-    DiffFileSearchResult* pSearchResult = searchEngine.getFirstResult();
+    DiffFileSearchResult* pSearchResult = searchEngine.getNextResult();
     BOOST_CHECK(pSearchResult != NULL);
-    
     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
-    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 0);
-    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 30);
+    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 2);
+    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 18);
 
+    pSearchResult = searchEngine.getNextResult();
+    BOOST_CHECK(pSearchResult != NULL);
 
+    BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 2);
+    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 18);
   }
   catch(const char* pError)
   {

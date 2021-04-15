@@ -6,9 +6,11 @@ DiffFileSearchEngine::DiffFileSearchEngine(const DiffFileBase& leftFile,
                        const char* pSearchString)
   : m_LeftFile(leftFile),
     m_RightFile(rightFile),
-    m_SearchString(pSearchString)
+    m_SearchString(pSearchString),
+    m_ResultsIterator(m_Results.end())
 {
-  search();
+  find();
+  m_ResultsIterator = m_Results.end();
 }
 
 DiffFileSearchEngine::~DiffFileSearchEngine()
@@ -26,26 +28,48 @@ size_t DiffFileSearchEngine::getNumResults()
   return m_Results.size();
 }
 
-DiffFileSearchResult* DiffFileSearchEngine::getFirstResult()
+DiffFileSearchResult* DiffFileSearchEngine::getPrevResult()
 {
-  if(m_Results.size() < 1)
+  if(m_ResultsIterator == m_Results.end())
   {
-    // Search string not found
-    return NULL;
+    // Iterator points to the end. This only is true directly after the
+    // creation of the SearchEngine. Set it to the first item.
+    m_ResultsIterator = m_Results.begin();
+  }
+  else if(m_ResultsIterator != m_Results.begin())
+  {
+    // Only if not already the first item
+    m_ResultsIterator--;
   }
 
-  std::vector<DiffFileSearchResult*>::iterator it = m_Results.begin();
-  return *it;
+  return (*m_ResultsIterator);
 }
 
 DiffFileSearchResult* DiffFileSearchEngine::getNextResult()
 {
-  return NULL;
+  if(m_ResultsIterator == m_Results.end())
+  {
+    // Iterator points to the end. This only is true directly after the
+    // creation of the SearchEngine. Set it to the first item.
+    m_ResultsIterator = m_Results.begin();
+  }
+  else
+  {
+    m_ResultsIterator++;
+
+    if(m_ResultsIterator == m_Results.end())
+    {
+      // Avoid overflow: back to last valid item
+      m_ResultsIterator--;
+    }
+  }
+
+    return (*m_ResultsIterator);
 }
 
 
 
-void DiffFileSearchEngine::search()
+void DiffFileSearchEngine::find()
 {
   DiffFileSearchResult* pResult;
   for(size_t lineId = 0; lineId < m_LeftFile.getNumLines(); lineId++)

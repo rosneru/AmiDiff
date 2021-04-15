@@ -22,7 +22,7 @@ public:
   virtual ~DiffFileSearchEngine();
 
   size_t getNumResults();
-  DiffFileSearchResult* getFirstResult();
+  DiffFileSearchResult* getPrevResult();
   DiffFileSearchResult* getNextResult();
 
 private:
@@ -30,8 +30,9 @@ private:
   const DiffFileBase& m_RightFile;
   std::string m_SearchString;
   std::vector<DiffFileSearchResult*> m_Results;
+  std::vector<DiffFileSearchResult*>::iterator m_ResultsIterator;
 
-  void search();
+  void find();
 
 
 };

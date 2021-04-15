@@ -1,4 +1,4 @@
-So, how can can the search be tested?
+So, how can can the search function be verified?
 
 Maybe this little test file is the solution.
 
