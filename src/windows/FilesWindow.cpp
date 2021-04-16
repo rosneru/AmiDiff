@@ -70,20 +70,12 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   WORD hSpace = 10;
   WORD vSpace = 10;
 
-  // Check if needed to and adjust btnsWidth according to font and the
-  // width of the four buttons in the bottom row
+  // Set the same width for all of the bottom buttons row according to
+  // the longest button text
   const char* btnTexts[]  = {"Compare", "Swap", "Clear", "Cancel"};
   size_t numBottomButtons = sizeof(btnTexts) / (sizeof btnTexts[0]);
-
-  for(size_t i = 0; i < numBottomButtons; i++)
-  {
-    const char* pTxt = btnTexts[i];
-    WORD txtWidth = TextLength(&pIntuiScreen->RastPort, pTxt, strlen(pTxt));
-    if(txtWidth > (btnsWidth - btnExtraHSpace))
-    {
-      btnsWidth = txtWidth + btnExtraHSpace;
-    }
-  }
+  btnsWidth = maxArrayTextLength(btnTexts, numBottomButtons);
+  btnsWidth += btnExtraHSpace;
 
   // as default the window's width should be half of the screen's width
   m_Width = (WORD)pIntuiScreen->Width / 2;

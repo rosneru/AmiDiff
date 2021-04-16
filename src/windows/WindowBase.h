@@ -211,6 +211,13 @@ protected:
   struct TextFont* m_pTextFont;
   std::string m_Title;
 
+  /**
+   * Measures the text length of all texts in the given array. Returns
+   * the longest text lenght in pixels.
+   * 
+   * The measured value depends of the font which is set to the screen.
+   */
+  size_t maxArrayTextLength(const char** ppArrayOfTexts, size_t arrayNumItems);
 
   /**
    * *Or*ing the given window flags to the existing ones.
@@ -298,7 +305,6 @@ private:
   struct MsgPort* m_pAppWindowPort;
   struct AppWindow* m_pAppWindow;
   ULONG m_AppWindowId;
-
 
   /**
    * Use this method to close any windows that share an IDCMP port

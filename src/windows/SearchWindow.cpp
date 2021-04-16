@@ -71,18 +71,15 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   // Set the labelWidth to the longest label text
   WORD labelWidth = 0;
   const char* labelTexts[]  = {"Search for", "Location"};
-  for(size_t i = 0; i < sizeof(labelTexts) / (sizeof labelTexts[0]); i++)
-  {
-    const char* pTxt = labelTexts[i];
-    WORD txtWidth = TextLength(&pIntuiScreen->RastPort, pTxt, strlen(pTxt));
-    if(txtWidth > labelWidth)
-    {
-      labelWidth = txtWidth;
-    }
-  }
+  size_t arraySize = sizeof(labelTexts) / (sizeof labelTexts[0]);
+  labelWidth = maxArrayTextLength(labelTexts, arraySize);
 
   labelWidth += hSpace;
   WORD stringGadWidth = right - left - labelWidth;
+
+  arraySize = sizeof(m_GadCycLocationLabels) / sizeof(m_GadCycLocationLabels[0]);
+  WORD cycWidth = maxArrayTextLength(m_GadCycLocationLabels, arraySize);
+  cycWidth += 24;
 
   //
   // Set up the gadgets
@@ -136,7 +133,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   }
 
   newGadget.ng_TopEdge    += btnsHeight + vSpace;
-  newGadget.ng_Width      /= 2;
+  newGadget.ng_Width      = cycWidth;
   newGadget.ng_GadgetText = (UBYTE*) "_Location";
   newGadget.ng_GadgetID   = GID_CycLocation;
 
@@ -317,7 +314,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
 
   // Setting window title
-  SetTitle("Search for text");
+  SetTitle("Find text");
 
   // Setting the window flags
   addFlags(WFLG_CLOSEGADGET |     // Add a close gadget

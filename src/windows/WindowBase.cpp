@@ -1,9 +1,11 @@
 #ifdef __clang__
   #include <clib/exec_protos.h>
+  #include <clib/graphics_protos.h>
   #include <clib/intuition_protos.h>
   #include <clib/wb_protos.h>
 #else
   #include <proto/exec.h>
+  #include <proto/graphics.h>
   #include <proto/intuition.h>
   #include <proto/wb.h>
 #endif
@@ -336,6 +338,31 @@ MenuBase* WindowBase::Menu()
 {
   return m_pMenu;
 }
+
+
+size_t WindowBase::maxArrayTextLength(const char** ppArrayOfTexts, 
+                                      size_t arrayNumItems)
+{
+  Screen* pIntuiSCreen = m_Screen.IntuiScreen();
+  if(pIntuiSCreen == NULL)
+  {
+    return 0;
+  }
+
+  size_t maxLenght = 0;
+  for(size_t i = 0; i < arrayNumItems; i++)
+  {
+    const char* pTxt = ppArrayOfTexts[i];
+    WORD txtWidth = TextLength(&pIntuiSCreen->RastPort, pTxt, strlen(pTxt));
+    if(txtWidth > maxLenght)
+    {
+      maxLenght = txtWidth;
+    }
+  }
+
+  return maxLenght;
+}
+
 
 
 void WindowBase::addFlags(ULONG flags)
