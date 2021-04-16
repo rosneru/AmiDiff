@@ -343,8 +343,8 @@ MenuBase* WindowBase::Menu()
 size_t WindowBase::maxArrayTextLength(const char** ppArrayOfTexts, 
                                       size_t arrayNumItems)
 {
-  Screen* pIntuiSCreen = m_Screen.IntuiScreen();
-  if(pIntuiSCreen == NULL)
+  Screen* pIntuiScreen = m_Screen.IntuiScreen();
+  if(pIntuiScreen == NULL)
   {
     return 0;
   }
@@ -353,10 +353,13 @@ size_t WindowBase::maxArrayTextLength(const char** ppArrayOfTexts,
   for(size_t i = 0; i < arrayNumItems; i++)
   {
     const char* pTxt = ppArrayOfTexts[i];
-    WORD txtWidth = TextLength(&pIntuiSCreen->RastPort, pTxt, strlen(pTxt));
-    if(txtWidth > maxLenght)
+    if(pTxt != NULL)
     {
-      maxLenght = txtWidth;
+      size_t txtWidth = TextLength(&pIntuiScreen->RastPort, pTxt, strlen(pTxt));
+      if(txtWidth > maxLenght)
+      {
+        maxLenght = txtWidth;
+      }
     }
   }
 
