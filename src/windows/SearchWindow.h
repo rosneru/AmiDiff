@@ -56,6 +56,8 @@ private:
 
   const ULONG m_MaxPathLength;
 
+  STRPTR m_GadCycLocationLabels[4] = {"Both files", "Left file", "Right file", NULL};
+
   /**
    * IDs to help to interpret the events of this window's Gadtools
    * gadgets.

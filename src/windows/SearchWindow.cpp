@@ -140,12 +140,11 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_GadgetText = (UBYTE*) "_Location";
   newGadget.ng_GadgetID   = GID_CycLocation;
 
-  STRPTR cycLabels[] = {"Both files", "Left file", "Right file", NULL};
   m_pGadCycLocation = CreateGadget(CYCLE_KIND,
                                    m_pGadStrSearchText,
                                    &newGadget,
                                    GT_Underscore, '_',
-                                   GTCY_Labels, (ULONG)cycLabels,
+                                   GTCY_Labels, (ULONG)m_GadCycLocationLabels,
                                    TAG_DONE);
 
   if(m_pGadCycLocation == NULL)
@@ -417,7 +416,6 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
       break;
 
     case GID_CycLocation:  // Select left file
-      selectLeftFile();
       break;
 
     case GID_CbxIgnoreCase: // Select right file
