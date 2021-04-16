@@ -27,6 +27,13 @@
 #include "SearchWindow.h"
 
 
+  /**
+   * Array of string constants for 'Location' cycle gadget
+   */
+  const char* g_GadCycLocationLabels [4] = {"Both files", "Left file", "Right file", NULL};
+
+
+
 SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
                          ScreenBase& screen,
                          struct MsgPort* pIdcmpMsgPort,
@@ -52,34 +59,34 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   // Default button dimensions
   WORD btnsHeight = fontHeight + 6;
 
-  // Extra space by which a button must be wider than its text to look good
-  const int btnExtraHSpace = 8;
-
   WORD hSpace = 10;
-  WORD vSpace = 4;
+  WORD vSpace = 6;
 
 
   // as default the window's width should be half of the screen's width
   m_Width = (WORD)pIntuiScreen->Width / 2;
+  if(m_Width < 400)
+  {
+    //  but at least 400
+    m_Width = 400;
+  }
 
   WORD barHeight = pIntuiScreen->WBorTop + fontHeight + 2;
 
   WORD top = barHeight + vSpace;
   WORD left = pIntuiScreen->WBorLeft + hSpace;
-  WORD right = m_Width - pIntuiScreen->WBorRight - hSpace;
+  WORD right = m_Width - pIntuiScreen->WBorRight - hSpace - hSpace;
 
   // Set the labelWidth to the longest label text
-  WORD labelWidth = 0;
-  const char* labelTexts[]  = {"Search for", "Location"};
+  const char* labelTexts[]  = {"Search for", "Location", "Ignore case"};
   size_t arraySize = sizeof(labelTexts) / (sizeof labelTexts[0]);
-  labelWidth = maxArrayTextLength(labelTexts, arraySize);
+  WORD labelsWidth = maxArrayTextLength(labelTexts, arraySize);
 
-  labelWidth += hSpace;
-  WORD stringGadWidth = right - left - labelWidth;
+  WORD contentWidth = right - left - labelsWidth;
 
-  arraySize = sizeof(m_GadCycLocationLabels) / sizeof(m_GadCycLocationLabels[0]);
-  WORD cycWidth = maxArrayTextLength(m_GadCycLocationLabels, arraySize);
-  cycWidth += 24;
+  arraySize = sizeof(g_GadCycLocationLabels) / sizeof(g_GadCycLocationLabels[0]);
+  WORD cycWidth = maxArrayTextLength(g_GadCycLocationLabels, arraySize);
+  cycWidth += 3 * hSpace;
 
   //
   // Set up the gadgets
@@ -100,23 +107,14 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   // Declare the basic gadget structure
   struct NewGadget newGadget;
 
-  //
-  // Row 1: contains the text box for search text input
-  //
-  // newGadget.ng_LeftEdge   = left;
-  // newGadget.ng_Width      = 80; // stringGadgetWidth
-  // newGadget.ng_Height     = btnsHeight;
-  // newGadget.ng_GadgetText = (UBYTE*) "_Search for";
-  // newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
-
-  // Create the string gadget
+  // Create the string gadget for the search text
   newGadget.ng_TextAttr   = m_Screen.IntuiTextAttr();
   newGadget.ng_VisualInfo = m_Screen.GadtoolsVisualInfo();
   newGadget.ng_Flags      = NG_HIGHLABEL;
-  newGadget.ng_LeftEdge   = labelWidth;
+  newGadget.ng_LeftEdge   = labelsWidth + left + hSpace;
   newGadget.ng_TopEdge    = top;
-  newGadget.ng_Width      = stringGadWidth;
-  newGadget.ng_Height     = btnsHeight;
+  newGadget.ng_Width      = contentWidth;
+  newGadget.ng_Height     = fontHeight + 5;
   newGadget.ng_GadgetText = (UBYTE*) "_Search for";
   newGadget.ng_GadgetID   = GID_StrSearchText;
 
@@ -141,7 +139,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
                                    m_pGadStrSearchText,
                                    &newGadget,
                                    GT_Underscore, '_',
-                                   GTCY_Labels, (ULONG)m_GadCycLocationLabels,
+                                   GTCY_Labels, (ULONG)g_GadCycLocationLabels,
                                    TAG_DONE);
 
   if(m_pGadCycLocation == NULL)
@@ -150,108 +148,38 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-/*
-  // Create the Select button
-  newGadget.ng_LeftEdge   = btnSelectLeft;
-  newGadget.ng_Width      = btnSelectWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "...";
-  newGadget.ng_GadgetID   = GID_CycLocation;
-  newGadget.ng_Flags      = 0;
+  // Create the 'Ignore case' checkbox
+  newGadget.ng_LeftEdge   += (cycWidth + hSpace + hSpace + labelsWidth);
+  newGadget.ng_TopEdge    ++; // Manually center text vertically as 
+                              // GadTools doesn't do it
 
-  m_pGadCycLocation = CreateGadget(BUTTON_KIND,
-                                     m_pGadStrSearchText,
-                                     &newGadget,
-                                     TAG_DONE);
+  newGadget.ng_Width      = right - newGadget.ng_LeftEdge;
+  newGadget.ng_GadgetText = (UBYTE*) "Ignore _case";
+  newGadget.ng_GadgetID   = GID_CbxIgnoreCase;
+
+  m_pGadCycLocation = CreateGadget(CHECKBOX_KIND,
+                                   m_pGadCycLocation,
+                                   &newGadget,
+                                   GT_Underscore, '_',
+                                   GTCB_Checked, TRUE,
+                                   TAG_DONE);
+
   if(m_pGadCycLocation == NULL)
   {
     cleanup();
     throw pErrMsg;
   }
 
-  //
-  // Row 3:  contains a label
-  //
-  newGadget.ng_LeftEdge   = left + 2;
-  newGadget.ng_TopEdge    += btnsHeight + vSpace;
-  newGadget.ng_Width      = stringGadWidth;
-  newGadget.ng_Height     = fontHeight;
-  newGadget.ng_GadgetText = (UBYTE*) "_Right file";
-  newGadget.ng_Flags = PLACETEXT_RIGHT | PLACETEXT_LEFT | NG_HIGHLABEL;
-
-  pLabelGadget = CreateGadget(TEXT_KIND,
-                              m_pGadCycLocation,
-                              &newGadget,
-                              GT_Underscore, '_',
-                              TAG_DONE);
-  if(pLabelGadget == NULL)
-  {
-    cleanup();
-    throw pErrMsg;
-  }
-
-  //
-  // Row 4: contains a string gadget and selection button for the
-  // filename of the right file
-  //
-
-  // Create the string gadget
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += fontHeight + 2;
-  newGadget.ng_Width      = stringGadWidth;
-  newGadget.ng_Height     = btnsHeight;
-  newGadget.ng_GadgetText = NULL;
-  newGadget.ng_GadgetID   = GID_StrRightFile;
-  newGadget.ng_Flags      = 0;
-
-  m_pGadStrRightFile = CreateGadget(STRING_KIND,
-                                    pLabelGadget,
-                                    &newGadget,
-                                    GTST_MaxChars, m_MaxPathLength,
-                                    TAG_DONE);
-  if(m_pGadStrRightFile == NULL)
-  {
-    cleanup();
-    throw pErrMsg;
-  }
-
-  // Create the Select button
-  newGadget.ng_LeftEdge   = btnSelectLeft;
-  newGadget.ng_Width      = btnSelectWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "...";
-  newGadget.ng_GadgetID   = GID_CbxIgnoreCase;
-  newGadget.ng_Flags      = 0;
-
-  m_pGadCbxIgnoreCase = CreateGadget(BUTTON_KIND,
-                                      m_pGadStrRightFile,
-                                      &newGadget,
-                                      TAG_DONE);
-
-  //
-  // Row 5: conatins the buttons Compare, Swap, Clear and Cancel
-  //
-
-  // Calculate the 'field width' of each of the four bottom buttons
-  // 1) Calculate the free / uncovered area between all 4 buttons
-  ULONG bottomBtnsDistances = m_Width - pIntuiScreen->WBorLeft
-                                      - pIntuiScreen->WBorRight
-                                      - 2 * hSpace
-                                      - 4 * btnsWidth;
-
-  // 2) Between 4 buttons there are 3 free areas
-  bottomBtnsDistances /= 3;
-
-
-  // Creating the Diff button
-  newGadget.ng_LeftEdge   = left;
-  newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
-  newGadget.ng_Width      = btnsWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "Compare";
+  // Create the 'Find' button
+  newGadget.ng_TopEdge    += (btnsHeight + vSpace + vSpace - 1);
+  newGadget.ng_LeftEdge   = left + hSpace;
+  newGadget.ng_Width      = cycWidth;
+  newGadget.ng_GadgetText = (UBYTE*) "Find";
   newGadget.ng_GadgetID   = GID_BtnFind;
 
   m_pGadBtnFind = CreateGadget(BUTTON_KIND,
-                               m_pGadCbxIgnoreCase,
+                               m_pGadCycLocation,
                                &newGadget,
-                               GT_Underscore, '_',
                                TAG_DONE);
   if(m_pGadBtnFind == NULL)
   {
@@ -259,62 +187,12 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Creating the Swap button
-  newGadget.ng_LeftEdge   += btnsWidth + bottomBtnsDistances;
-  newGadget.ng_GadgetText = (UBYTE*) "_Swap";
-  newGadget.ng_GadgetID   = GID_BtnSwap;
-
-  m_pGadBtnSwap = CreateGadget(BUTTON_KIND,
-                               m_pGadBtnFind,
-                               &newGadget,
-                               GT_Underscore, '_',
-                               TAG_DONE);
-  if(m_pGadBtnSwap == NULL)
-  {
-    cleanup();
-    throw pErrMsg;
-  }
-
-  // Create the Clear button
-  newGadget.ng_LeftEdge   += btnsWidth + bottomBtnsDistances;
-  newGadget.ng_GadgetText = (UBYTE*) "Cl_ear";
-  newGadget.ng_GadgetID   = GID_BtnClear;
-
-  m_pGadBtnClear = CreateGadget(BUTTON_KIND,
-                                m_pGadBtnSwap,
-                                &newGadget,
-                                GT_Underscore, '_',
-                                TAG_DONE);
-  if(m_pGadBtnClear == NULL)
-  {
-    cleanup();
-    throw pErrMsg;
-  }
-
-  // Creating the Cancel button
-  newGadget.ng_LeftEdge   += btnsWidth + bottomBtnsDistances;
-  newGadget.ng_GadgetText = (UBYTE*) "Cancel";
-  newGadget.ng_GadgetID   = GID_BtnCancel;
-
-  m_pGadBtnCancel = CreateGadget(BUTTON_KIND,
-                                 m_pGadBtnClear,
-                                 &newGadget,
-                                 GT_Underscore, '_',
-                                 TAG_DONE);
-  if(m_pGadBtnCancel == NULL)
-  {
-    cleanup();
-    throw pErrMsg;
-  }
-
-  */
-
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
   m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
 
   // Setting window title
-  SetTitle("Find text");
+  SetTitle("Find");
 
   // Setting the window flags
   addFlags(WFLG_CLOSEGADGET |     // Add a close gadget
