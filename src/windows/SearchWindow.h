@@ -81,26 +81,9 @@ private:
   void handleGadgetEvent(struct Gadget* pGadget);
   void handleVanillaKey(UWORD code);
 
-  //
-  // These next methods are the main functions of this window and are
-  // mapped to the butons and keys.
-  //
-  void selectLeftFile();
   void find();
 
   void cleanup();
-
-  /**
-   * Enables or disables the 'FInd' button depending on some conditions.
-   */
-  void checkEnableButtons();
-
-
-  /**
-   * Sets the text of given string gadget to given value
-   */
-  void setStringGadgetText(struct Gadget* pGadget,
-                           const char* pText);
 
   /**
    * Returns the text from given string gadget. This can also be an

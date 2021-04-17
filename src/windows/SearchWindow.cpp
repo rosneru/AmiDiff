@@ -228,10 +228,6 @@ bool SearchWindow::Open(InitialPosition initialPos)
     return false;
   }
 
-  // Enable or disable the 'Diff' and 'Swap' buttons depending on some
-  // conditions
-  checkEnableButtons();
-
   return true;
 }
 
@@ -286,18 +282,7 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
   switch(pGadget->GadgetID)
   {
-    case GID_StrSearchText:
-      checkEnableButtons();
-      break;
-
-    case GID_CycLocation:  // Select left file
-      break;
-
-    case GID_CbxIgnoreCase: // Select right file
-      
-      break;
-
-    case GID_BtnFind:      // Compare the files and display the diff
+    case GID_BtnFind:
       find();
       break;
   }
@@ -308,25 +293,8 @@ void SearchWindow::handleVanillaKey(UWORD code)
 {
   switch(code)
   {
-    case 'l': // Select left file
-    case 'L':
-      selectLeftFile();
-      break;
-
-    case 0xD:// <RETURN> Search
+    case 0xD: // <RETURN> Find
     {
-      // Allow only if Find button is enabled
-      long disabled;
-      long numProcessed;
-      numProcessed  = GT_GetGadgetAttrs(m_pGadBtnFind, m_pWindow, NULL,
-                                        GA_Disabled, (ULONG)&disabled,
-                                        TAG_DONE);
-
-      if((numProcessed != 1) || (disabled == 1))
-      {
-        return;
-      }
-
       // Button is enabled, perform its action
       find();
       break;
@@ -338,25 +306,6 @@ void SearchWindow::handleVanillaKey(UWORD code)
 
   }
 }
-
-
-void SearchWindow::selectLeftFile()
-{
-  // Read latest string gadgets contents before continue
-  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrSearchText);
-
-  // if((pLeftStrGadgetText == NULL) || (pRightStrGadgetText == NULL))
-  // {
-  //   checkEnableButtons();
-  //   return;
-  // }
-
-  // setStringGadgetText(m_pGadStrSearchText,
-  //                     m_CmdSelectLeftFile.SelectedFile().c_str());
-
-  checkEnableButtons();
-}
-
 
 
 void SearchWindow::find()
@@ -391,49 +340,6 @@ void SearchWindow::cleanup()
   m_pGadCycLocation = NULL;
   m_pGadCbxIgnoreCase = NULL;
   m_pGadBtnFind = NULL;
-}
-
-void SearchWindow::checkEnableButtons()
-{
-  if(!IsOpen() || (m_pGadBtnFind == NULL))
-  {
-    return;
-  }
-
-  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrSearchText);
-
-  if(pLeftStrGadgetText == NULL)
-  {
-    return;
-  }
-
-  if(strlen(pLeftStrGadgetText) > 0)
-  {
-    // Enable "Find" button
-    GT_SetGadgetAttrs(m_pGadBtnFind, m_pWindow, NULL,
-                      GA_Disabled, FALSE,
-                      TAG_DONE);
-  }
-  else
-  {
-    // Disable "Find" button
-    GT_SetGadgetAttrs(m_pGadBtnFind, m_pWindow, NULL,
-                      GA_Disabled, TRUE,
-                      TAG_DONE);
-  }
-}
-
-void SearchWindow::setStringGadgetText(struct Gadget* pGadget,
-                                      const char* pText)
-{
-  if(!IsOpen() || (pGadget == NULL) || (pText == NULL))
-  {
-    return;
-  }
-
-  GT_SetGadgetAttrs(pGadget, m_pWindow, NULL,
-                    GTST_String, (ULONG)pText,
-                    TAG_DONE);
 }
 
 STRPTR SearchWindow::getStringGadgetText(struct Gadget* pGadget)
