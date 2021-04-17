@@ -84,7 +84,7 @@ Application::Application(ScreenBase& screen,
     m_CmdOpenSearchWindow(&m_AllWindowsList, m_SearchWindow),
     m_CmdCloseSearchWindow(&m_AllWindowsList, m_CmdOpenSearchWindow, m_SearchWindow),
     m_CmdAboutRequester(&m_AllWindowsList, m_AboutMsg, "About", "Ok"),
-    m_CmdSearch(&m_AllWindowsList),
+    m_CmdSearch(&m_AllWindowsList, m_DiffWorker, m_DiffWindow),
     m_Icon(NULL),
     m_pAppIcon(NULL)
 {

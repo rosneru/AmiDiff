@@ -50,17 +50,7 @@ public:
    */
   bool Diff();
 
-  /**
-   * Returns the diff partition for left file or NULL if no diff was
-   * performed.
-   */
-  DiffFileBase& LeftFileDiff();
-
-  /**
-   * Returns the diff partition for right file or NULL if no diff was
-   * performed.
-   */
-  DiffFileBase& RightFileDiff();
+  const DiffDocument* getDiffDocument() const;
 
 private:
   std::string& m_LeftSrcFilePath;

@@ -92,6 +92,8 @@ bool DiffWorker::Diff()
   try
   {
     m_StopWatch.Start();
+
+    // Creating the document starts the file compare
     m_pDiffDocument = new DiffDocument(m_LeftSrcFilePath.c_str(),
                                        m_RightSrcFilePath.c_str(),
                                        m_IsCancelRequested,
@@ -140,4 +142,9 @@ bool DiffWorker::Diff()
 void DiffWorker::doWork()
 {
   Diff();
+}
+
+const DiffDocument* DiffWorker::getDiffDocument() const
+{
+  return m_pDiffDocument;
 }

@@ -74,6 +74,7 @@ target_include_directories (ADiffView_gcc PUBLIC
                             menus
                             model
                             screen
+                            textsearch
                             textselect
                             windows
                             worker

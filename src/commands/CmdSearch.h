@@ -3,6 +3,10 @@
 
 #include <string>
 #include "CommandBase.h"
+#include "DiffDocument.h"
+#include "DiffFileSearchEngine.h"
+#include "DiffWindow.h"
+#include "DiffWorker.h"
 
 /**
  * Command to search for text in diff result window.
@@ -13,7 +17,9 @@
 class CmdSearch : public CommandBase
 {
 public:
-  CmdSearch(std::vector<WindowBase*>* pAllWindowsVector);
+  CmdSearch(std::vector<WindowBase*>* pAllWindowsVector,
+            const DiffWorker& diffWorker,
+            DiffWindow& diffWindow);
   
   virtual ~CmdSearch();
 
@@ -23,7 +29,11 @@ public:
   void setSearchText(const char* pSearchText);
 
 private:
+  const DiffWorker& m_DiffWorker;
+  DiffWindow& m_DiffWindow;
   std::string m_SearchText;
+  const DiffDocument* m_pDiffDocument;
+  DiffFileSearchEngine* m_pSearchEngine;
 };
 
 #endif
