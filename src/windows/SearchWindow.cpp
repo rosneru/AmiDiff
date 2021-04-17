@@ -343,24 +343,3 @@ void SearchWindow::cleanup()
   m_pGadCbxIgnoreCase = NULL;
   m_pGadBtnFind = NULL;
 }
-
-STRPTR SearchWindow::getStringGadgetText(struct Gadget* pGadget)
-{
-  if(!IsOpen() || pGadget == NULL)
-  {
-    return NULL;
-  }
-
-  long pTextPointerStorage;
-  long numProcessed;
-
-  numProcessed  = GT_GetGadgetAttrs(pGadget, m_pWindow, NULL,
-                                    GTST_String, (ULONG)&pTextPointerStorage,
-                                    TAG_DONE);
-  if(numProcessed != 1)
-  {
-    return NULL;
-  }
-
-  return (STRPTR)pTextPointerStorage;
-}

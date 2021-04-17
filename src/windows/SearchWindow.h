@@ -86,14 +86,6 @@ private:
 
   void cleanup();
 
-  /**
-   * Returns the text from given string gadget. This can also be an
-   * empty string.
-   *
-   * Returns NULL if an internal error occurs.
-   */
-  STRPTR getStringGadgetText(struct Gadget* pGadget);
-
 };
 
 

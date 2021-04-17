@@ -124,21 +124,6 @@ private:
    */
   void checkEnableButtons();
 
-
-  /**
-   * Sets the text of given string gadget to given value
-   */
-  void setStringGadgetText(struct Gadget* pGadget,
-                           const char* pText);
-
-  /**
-   * Returns the text from given string gadget. This can also be an
-   * empty string.
-   *
-   * Returns NULL if an internal error occurs.
-   */
-  STRPTR getStringGadgetText(struct Gadget* pGadget);
-
   /**
    * Returns the first string gadget of
    *   {m_pGadStrLeftFile, m_pGadStrRightFile}

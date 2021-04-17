@@ -799,40 +799,6 @@ void FilesWindow::checkEnableButtons()
   }
 }
 
-void FilesWindow::setStringGadgetText(struct Gadget* pGadget,
-                                      const char* pText)
-{
-  if(!IsOpen() || (pGadget == NULL) || (pText == NULL))
-  {
-    return;
-  }
-
-  GT_SetGadgetAttrs(pGadget, m_pWindow, NULL,
-                    GTST_String, (ULONG)pText,
-                    TAG_DONE);
-}
-
-STRPTR FilesWindow::getStringGadgetText(struct Gadget* pGadget)
-{
-  if(!IsOpen() || pGadget == NULL)
-  {
-    return NULL;
-  }
-
-  long pTextPointerStorage;
-  long numProcessed;
-
-  numProcessed  = GT_GetGadgetAttrs(pGadget, m_pWindow, NULL,
-                                    GTST_String, (ULONG)&pTextPointerStorage,
-                                    TAG_DONE);
-  if(numProcessed != 1)
-  {
-    return NULL;
-  }
-
-  return (STRPTR)pTextPointerStorage;
-}
-
 
 struct Gadget* FilesWindow::getFirstEmptyStringGadget()
 {

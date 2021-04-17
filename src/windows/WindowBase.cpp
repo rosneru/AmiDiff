@@ -1,10 +1,12 @@
 #ifdef __clang__
   #include <clib/exec_protos.h>
+  #include <clib/gadtools_protos.h>>
   #include <clib/graphics_protos.h>
   #include <clib/intuition_protos.h>
   #include <clib/wb_protos.h>
 #else
   #include <proto/exec.h>
+  #include <proto/gadtools.h>
   #include <proto/graphics.h>
   #include <proto/intuition.h>
   #include <proto/wb.h>
@@ -364,6 +366,42 @@ size_t WindowBase::maxArrayTextLength(const char** ppArrayOfTexts,
   }
 
   return maxLenght;
+}
+
+
+
+void WindowBase::setStringGadgetText(struct Gadget* pGadget,
+                                      const char* pText)
+{
+  if(!IsOpen() || (pGadget == NULL) || (pText == NULL))
+  {
+    return;
+  }
+
+  GT_SetGadgetAttrs(pGadget, m_pWindow, NULL,
+                    GTST_String, (ULONG)pText,
+                    TAG_DONE);
+}
+
+STRPTR WindowBase::getStringGadgetText(struct Gadget* pGadget)
+{
+  if(!IsOpen() || pGadget == NULL)
+  {
+    return NULL;
+  }
+
+  long pTextPointerStorage;
+  long numProcessed;
+
+  numProcessed  = GT_GetGadgetAttrs(pGadget, m_pWindow, NULL,
+                                    GTST_String, (ULONG)&pTextPointerStorage,
+                                    TAG_DONE);
+  if(numProcessed != 1)
+  {
+    return NULL;
+  }
+
+  return (STRPTR)pTextPointerStorage;
 }
 
 
