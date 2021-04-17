@@ -37,7 +37,7 @@
 SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
                          ScreenBase& screen,
                          struct MsgPort* pIdcmpMsgPort,
-                         CommandBase& cmdSearch,
+                         CmdSearch& cmdSearch,
                          CommandBase& cmdCloseSearchWindow)
   : WindowBase(screen, pIdcmpMsgPort, NULL),
     m_CmdSearch(cmdSearch),
@@ -315,12 +315,14 @@ void SearchWindow::find()
     return;
   }
 
-  STRPTR pLeftStrGadgetText = getStringGadgetText(m_pGadStrSearchText);
-
-  if(pLeftStrGadgetText == NULL)
+  STRPTR pTextToFind = getStringGadgetText(m_pGadStrSearchText);
+  if(pTextToFind == NULL)
   {
     return;
   }
+
+  // Set the user-typed text to find in search command
+  m_CmdSearch.setSearchText(pTextToFind);
 
   // Perform the diff
   m_CmdSearch.Execute(NULL);

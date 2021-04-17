@@ -10,6 +10,7 @@
 
 #include "OpenScreenBase.h"
 #include "CommandBase.h"
+#include "CmdSearch.h"
 #include "CmdFileRequester.h"
 #include "WindowBase.h"
 
@@ -26,7 +27,7 @@ public:
   SearchWindow(std::vector<WindowBase*>& windowArray,
               ScreenBase& screen,
               struct MsgPort* pIdcmpMsgPort,
-              CommandBase& cmdSearch,
+              CmdSearch& cmdSearch,
               CommandBase& cmdCloseSearchWindow);
 
   virtual ~SearchWindow();
@@ -51,7 +52,7 @@ public:
 
 
 private:
-  CommandBase& m_CmdSearch;
+  CmdSearch& m_CmdSearch;
   CommandBase& m_CmdCloseSearchWindow;
 
   const ULONG m_MaxPathLength;
