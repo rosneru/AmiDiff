@@ -7,11 +7,7 @@ TextSelection::TextSelection()
 
 TextSelection::~TextSelection()
 {
-  std::vector<TextSelectionLine*>::iterator it;
-  for(it = m_SelectedLines.begin(); it != m_SelectedLines.end(); it++)
-  {
-    delete *it;
-  }
+  clear();
 }
 
 
@@ -33,6 +29,16 @@ void TextSelection::add(unsigned long lineId,
   }
 }
 
+void TextSelection::clear()
+{
+  std::vector<TextSelectionLine*>::iterator it;
+  for(it = m_SelectedLines.begin(); it != m_SelectedLines.end(); it++)
+  {
+    delete *it;
+  }
+
+  m_SelectedLines.clear();
+}
 
 long TextSelection::getNumMarkedChars(unsigned long lineId, 
                                       unsigned long columnId)

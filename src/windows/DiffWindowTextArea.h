@@ -113,6 +113,8 @@ public:
    */
   void addSelection(ULONG lineId, ULONG fromColumn, ULONG toColumn);
 
+  void clearSelection();
+
 
 private:
   SelectableDiffFile m_DiffFile;

@@ -29,6 +29,14 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     return;
   }
 
+  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
+  DiffWindowTextArea* pRightTextArea = m_DiffWindow.getRightTextArea();
+  if((pLeftTextArea == NULL) || (pRightTextArea == NULL))
+  {
+    return;
+  }
+
+  DiffFileSearchResult* pResult;
   if((m_pDiffDocument != m_DiffWorker.getDiffDocument()) || 
      (m_pSearchEngine == NULL))
   {
@@ -44,28 +52,57 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
       return;
     }
 
-    // TODO This searches both files completely and could take some
-    // time. Consider to create a task.
+    // This searches all occurences of m_SearchText in both files
+    // and could take some time. TODO: Consider to create a task.
     m_pSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
                                                m_pDiffDocument->getRightDiffFile(),
                                                m_SearchText.c_str());
 
-  }
+    pResult = m_pSearchEngine->getFirstResult();
+    if(pResult == NULL)
+    {
+      return;
+    }
 
-  DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult();
+    // Search keyword changed, so all old selections muts be cleared
+    pLeftTextArea->clearSelection();
+    pRightTextArea->clearSelection();
+
+    int lenDelta = m_SearchText.length() - 1;
+
+    do
+    {
+      if(pResult->getLocation() == DiffFileSearchResult::LeftFile)
+      {
+        pLeftTextArea->addSelection(pResult->getLineId(), 
+                                    pResult->getCharId(),
+                                    pResult->getCharId() + lenDelta);
+      }
+      else if(pResult->getLocation() == DiffFileSearchResult::RightFile)
+      {
+        pRightTextArea->addSelection(pResult->getLineId(), 
+                                     pResult->getCharId(),
+                                     pResult->getCharId() + lenDelta);
+      }
+    } while ((pResult = m_pSearchEngine->getNextResult()) != NULL);
+    
+    // Now again get the first result (to be displayed)
+    pResult = m_pSearchEngine->getFirstResult();
+  }
+  else
+  {
+    // Get the next result (to be displayed)
+    pResult = m_pSearchEngine->getNextResult();
+  }
+  
   if(pResult == NULL)
   {
     return;
   }
 
-  if(pResult->getLocation() == DiffFileSearchResult::LeftFile)
-  {
-
-  }
-  else
-  {
-    
-  }
+  // Now scroll the text area in question to the result position
+  m_DiffWindow.XChangedHandler(pResult->getCharId());
+  m_DiffWindow.YChangedHandler(pResult->getLineId());
 }
 
 

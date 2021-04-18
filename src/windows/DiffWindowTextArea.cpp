@@ -114,10 +114,16 @@ void DiffWindowTextArea::setSize(ULONG width, ULONG height)
 
 
 void DiffWindowTextArea::addSelection(ULONG lineId, 
-                                         ULONG fromColumn, 
-                                         ULONG toColumn)
+                                      ULONG fromColumn, 
+                                      ULONG toColumn)
 {
   m_DiffFile.addSelection(lineId, fromColumn, toColumn);
+}
+
+
+void DiffWindowTextArea::clearSelection()
+{
+  m_DiffFile.clearSelection();
 }
 
 

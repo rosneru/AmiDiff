@@ -19,6 +19,8 @@ public:
            unsigned long fromColumn, 
            unsigned long toColumn);
 
+  void clear();
+
   long getNumMarkedChars(unsigned long lineId, unsigned long columnId);
 
   /**

@@ -9,7 +9,7 @@ DiffFileSearchEngine::DiffFileSearchEngine(const DiffFileBase& leftFile,
     m_SearchString(pSearchString)
 {
   find();
-  m_ResultsIterator = m_Results.end();
+  m_ResultsIterator = m_Results.begin();
 }
 
 DiffFileSearchEngine::~DiffFileSearchEngine()
@@ -27,43 +27,40 @@ size_t DiffFileSearchEngine::getNumResults()
   return m_Results.size();
 }
 
-DiffFileSearchResult* DiffFileSearchEngine::getPrevResult()
+DiffFileSearchResult* DiffFileSearchEngine::getFirstResult()
 {
-  if(m_ResultsIterator == m_Results.end())
+  if(m_Results.size() < 1)
   {
-    // Iterator points to the end. This only is true directly after the
-    // creation of the SearchEngine. Set it to the first item.
-    m_ResultsIterator = m_Results.begin();
-  }
-  else if(m_ResultsIterator != m_Results.begin())
-  {
-    // Only if not already the first item
-    m_ResultsIterator--;
+    return NULL;
   }
 
+  m_ResultsIterator = m_Results.begin();
+  return (*m_ResultsIterator);
+}
+
+DiffFileSearchResult* DiffFileSearchEngine::getPrevResult()
+{
+  if(m_ResultsIterator == m_Results.begin())
+  {
+    return NULL;
+  }
+
+  m_ResultsIterator--;
   return (*m_ResultsIterator);
 }
 
 DiffFileSearchResult* DiffFileSearchEngine::getNextResult()
 {
+  m_ResultsIterator++;
+
   if(m_ResultsIterator == m_Results.end())
   {
-    // Iterator points to the end. This only is true directly after the
-    // creation of the SearchEngine. Set it to the first item.
-    m_ResultsIterator = m_Results.begin();
-  }
-  else
-  {
-    m_ResultsIterator++;
-
-    if(m_ResultsIterator == m_Results.end())
-    {
-      // Avoid overflow: back to last valid item
-      m_ResultsIterator--;
-    }
+    // Avoid overflow: back to last valid item
+    m_ResultsIterator--;
+    return NULL;
   }
 
-    return (*m_ResultsIterator);
+  return (*m_ResultsIterator);
 }
 
 

@@ -28,6 +28,10 @@ void SelectableDiffFile::addSelection(unsigned long lineId,
   m_Selection.add(lineId, fromColumn, toColumn);
 }
 
+void SelectableDiffFile::clearSelection()
+{
+  m_Selection.clear();
+}
 
 long SelectableDiffFile::getNumNormalChars(unsigned long lineId, 
                                            unsigned long columnId)

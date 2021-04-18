@@ -65,6 +65,17 @@ public:
   void NavigateToPrevDiff();
 
   /**
+   * Return the left text area
+   */
+  DiffWindowTextArea* getLeftTextArea() const;
+
+  /**
+   * Return the right text area
+   */
+  DiffWindowTextArea* getRightTextArea() const;
+
+
+  /**
    * Extends method of base class ScrollbarWindow.
    */
   virtual void HandleIdcmp(ULONG msgClass,
@@ -102,7 +113,6 @@ public:
    */
   void YDecrease(size_t numLines, bool bTriggeredByScrollPot);
 
-
 private:
   const ADiffViewPens& m_Pens;
 
@@ -122,8 +132,8 @@ private:
   ULONG m_TextAreasWidth;
   ULONG m_TextAreasHeight;
 
-  DiffWindowTextArea* m_pTextArea1;
-  DiffWindowTextArea* m_pTextArea2;
+  DiffWindowTextArea* m_pLeftTextArea;
+  DiffWindowTextArea* m_pRightTextArea;
 
   char m_ChangedText[20];
   char m_AddedText[20];

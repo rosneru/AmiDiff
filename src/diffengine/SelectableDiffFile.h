@@ -24,6 +24,8 @@ public:
                     unsigned long fromColumn, 
                     unsigned long toColumn);
 
+  void clearSelection();
+
   long getNumNormalChars(unsigned long lineId, unsigned long columnId);
   long getNumMarkedChars(unsigned long lineId, unsigned long columnId);
 

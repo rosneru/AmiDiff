@@ -44,8 +44,8 @@ DiffWindow::DiffWindow(ScreenBase& screen,
     m_IndentY(0),
     m_TextAreasWidth(0),
     m_TextAreasHeight(0),
-    m_pTextArea1(NULL),
-    m_pTextArea2(NULL)
+    m_pLeftTextArea(NULL),
+    m_pRightTextArea(NULL)
 {
   // If parent window already defined gadgets, we store the last of
   // these gadgeds and the count of defined gadgets. They are needed
@@ -110,23 +110,23 @@ void DiffWindow::Resized()
   // Resize gadgets to fit into new window size
   resizeGadgets();
 
-  if((m_pTextArea1 == NULL) || (m_pTextArea2 == NULL))
+  if((m_pLeftTextArea == NULL) || (m_pRightTextArea == NULL))
   {
     return;
   }
 
   // Set location and size of the left text area
-  m_pTextArea1->setPosition(m_IndentX, m_IndentY);
-  m_pTextArea1->setSize(m_TextAreasWidth, m_TextAreasHeight);
+  m_pLeftTextArea->setPosition(m_IndentX, m_IndentY);
+  m_pLeftTextArea->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Set location and size of the right text area
-  m_pTextArea2->setPosition(m_IndentX + m_TextAreasWidth, m_IndentY);
-  m_pTextArea2->setSize(m_TextAreasWidth, m_TextAreasHeight);
+  m_pRightTextArea->setPosition(m_IndentX + m_TextAreasWidth, m_IndentY);
+  m_pRightTextArea->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from current y-position,
   //not from start)
-  m_pTextArea1->printPage();
-  m_pTextArea2->printPage();
+  m_pLeftTextArea->printPage();
+  m_pRightTextArea->printPage();
 
   if(m_pDocument == NULL)
   {
@@ -134,11 +134,11 @@ void DiffWindow::Resized()
   }
 
   // Set x-scroll-gadget's pot size in relation of new window size
-  setXScrollPotSize(m_pTextArea1->getMaxVisibleChars(),
+  setXScrollPotSize(m_pLeftTextArea->getMaxVisibleChars(),
                     m_pDocument->getMaxLineLength());
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_pTextArea1->getMaxVisibleLines(),
+  setYScrollPotSize(m_pLeftTextArea->getMaxVisibleLines(),
                     m_pDocument->getNumLines());
 
 
@@ -252,44 +252,41 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   calcSizes();
 
   // Remove diff text areas if still existing
-  if(m_pTextArea1 != NULL)
+  if(m_pLeftTextArea != NULL)
   {
-    delete m_pTextArea1;
-    m_pTextArea1 = NULL;
+    delete m_pLeftTextArea;
+    m_pLeftTextArea = NULL;
   }
 
-  if(m_pTextArea2 != NULL)
+  if(m_pRightTextArea != NULL)
   {
-    delete m_pTextArea2;
-    m_pTextArea2 = NULL;
+    delete m_pRightTextArea;
+    m_pRightTextArea = NULL;
   }
 
-  m_pTextArea1 = new DiffWindowTextArea(pDiffDocument->getLeftDiffFile(),
+  m_pLeftTextArea = new DiffWindowTextArea(pDiffDocument->getLeftDiffFile(),
                                         m_pRPorts,
                                         m_pTextFont,
                                         pDiffDocument->areLineNumbersEnabled(),
                                         pDiffDocument->getMaxLineLength());
 
-  m_pTextArea2 = new DiffWindowTextArea(pDiffDocument->getRightDiffFile(),
+  m_pRightTextArea = new DiffWindowTextArea(pDiffDocument->getRightDiffFile(),
                                         m_pRPorts,
                                         m_pTextFont,
                                         pDiffDocument->areLineNumbersEnabled(),
                                         pDiffDocument->getMaxLineLength());
-
-  // m_pTextArea1->addSelection(1, 2, 7);
-  m_pTextArea1->addSelection(2, 0, 4);
 
   // Set location and size of the left text area
-  m_pTextArea1->setPosition(m_IndentX, m_IndentY);
-  m_pTextArea1->setSize(m_TextAreasWidth, m_TextAreasHeight);
+  m_pLeftTextArea->setPosition(m_IndentX, m_IndentY);
+  m_pLeftTextArea->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Set location and size of the right text area
-  m_pTextArea2->setPosition(m_IndentX + m_TextAreasWidth, m_IndentY);
-  m_pTextArea2->setSize(m_TextAreasWidth, m_TextAreasHeight);
+  m_pRightTextArea->setPosition(m_IndentX + m_TextAreasWidth, m_IndentY);
+  m_pRightTextArea->setSize(m_TextAreasWidth, m_TextAreasHeight);
 
   // Paint the content of the two documents (from start)
-  m_pTextArea1->printPageAt(0, 0);
-  m_pTextArea2->printPageAt(0, 0);
+  m_pLeftTextArea->printPageAt(0, 0);
+  m_pRightTextArea->printPageAt(0, 0);
 
   // With the calculated sizes the gadgets must be re-sized/positioned
   resizeGadgets();
@@ -301,11 +298,11 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
   paintStatusBar();
 
   // Set x-scroll-gadget's pot size in relation of new window size
-  setXScrollPotSize(m_pTextArea1->getMaxVisibleChars(),
+  setXScrollPotSize(m_pLeftTextArea->getMaxVisibleChars(),
                     m_pDocument->getMaxLineLength());
 
   // Set y-scroll-gadget's pot size in relation of new window size
-  setYScrollPotSize(m_pTextArea1->getMaxVisibleLines(),
+  setYScrollPotSize(m_pLeftTextArea->getMaxVisibleLines(),
                     m_pDocument->getNumLines());
 
   return true;
@@ -314,7 +311,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 
 void DiffWindow::NavigateToNextDiff()
 {
-  if(m_pTextArea1->isScrolledToBottom())
+  if(m_pLeftTextArea->isScrolledToBottom())
   {
     // Can't scroll down anymore; all diffs below should already be
     // visible.
@@ -327,13 +324,13 @@ void DiffWindow::NavigateToNextDiff()
   YChangedHandler(idx);
 
   // Set scrollbar to new y position
-  setYScrollTop(m_pTextArea1->getY());
+  setYScrollTop(m_pLeftTextArea->getY());
 }
 
 
 void DiffWindow::NavigateToPrevDiff()
 {
-    if(m_pTextArea1->isScrolledToTop())
+    if(m_pLeftTextArea->isScrolledToTop())
   {
     // Can't scroll up anymore; all diffs above should already be
     // visible.
@@ -346,9 +343,19 @@ void DiffWindow::NavigateToPrevDiff()
   YChangedHandler(idx);
 
   // Set scrollbar to new y position
-  setYScrollTop(m_pTextArea1->getY());
+  setYScrollTop(m_pLeftTextArea->getY());
 }
 
+
+DiffWindowTextArea* DiffWindow::getLeftTextArea() const
+{
+  return m_pLeftTextArea;
+}
+
+DiffWindowTextArea* DiffWindow::getRightTextArea() const
+{
+  return m_pRightTextArea;
+}
 
 void DiffWindow::HandleIdcmp(ULONG msgClass,
                              UWORD msgCode,
@@ -388,29 +395,29 @@ void DiffWindow::HandleIdcmp(ULONG msgClass,
 
 void DiffWindow::XChangedHandler(size_t newX)
 {
-  m_pTextArea1->scrollLeftToColumn(newX);
-  m_pTextArea2->scrollLeftToColumn(newX);
+  m_pLeftTextArea->scrollLeftToColumn(newX);
+  m_pRightTextArea->scrollLeftToColumn(newX);
 }
 
 
 void DiffWindow::YChangedHandler(size_t newY)
 {
-  m_pTextArea1->scrollTopToRow(newY);
-  m_pTextArea2->scrollTopToRow(newY);
+  m_pLeftTextArea->scrollTopToRow(newY);
+  m_pRightTextArea->scrollTopToRow(newY);
 }
 
 
 void DiffWindow::XIncrease(size_t numChars,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->scrollLeft(numChars);
-  m_pTextArea2->scrollLeft(numChars);
+  m_pLeftTextArea->scrollLeft(numChars);
+  m_pRightTextArea->scrollLeft(numChars);
 
   if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollTop(m_pTextArea1->getX());
+    setXScrollTop(m_pLeftTextArea->getX());
   }
 }
 
@@ -418,14 +425,14 @@ void DiffWindow::XIncrease(size_t numChars,
 void DiffWindow::XDecrease(size_t numChars,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->scrollRight(numChars);
-  m_pTextArea2->scrollRight(numChars);
+  m_pLeftTextArea->scrollRight(numChars);
+  m_pRightTextArea->scrollRight(numChars);
 
   if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setXScrollTop(m_pTextArea1->getX());
+    setXScrollTop(m_pLeftTextArea->getX());
   }
 }
 
@@ -433,14 +440,14 @@ void DiffWindow::XDecrease(size_t numChars,
 void DiffWindow::YIncrease(size_t numLines,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->scrollUp(numLines);
-  m_pTextArea2->scrollUp(numLines);
+  m_pLeftTextArea->scrollUp(numLines);
+  m_pRightTextArea->scrollUp(numLines);
 
   if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setYScrollTop(m_pTextArea1->getY());
+    setYScrollTop(m_pLeftTextArea->getY());
   }
 }
 
@@ -448,30 +455,30 @@ void DiffWindow::YIncrease(size_t numLines,
 void DiffWindow::YDecrease(size_t numLines,
                            bool bTriggeredByScrollPot)
 {
-  m_pTextArea1->scrollDown(numLines);
-  m_pTextArea2->scrollDown(numLines);
+  m_pLeftTextArea->scrollDown(numLines);
+  m_pRightTextArea->scrollDown(numLines);
 
   if(!bTriggeredByScrollPot)
   {
     // Y-position-decrease was not triggered by the scrollbar pot
     // directly. So the pot top position must be set manually.
-    setYScrollTop(m_pTextArea1->getY());
+    setYScrollTop(m_pLeftTextArea->getY());
   }
 }
 
 
 void DiffWindow::cleanup()
 {
-  if(m_pTextArea1 != NULL)
+  if(m_pLeftTextArea != NULL)
   {
-    delete m_pTextArea1;
-    m_pTextArea1 = NULL;
+    delete m_pLeftTextArea;
+    m_pLeftTextArea = NULL;
   }
 
-  if(m_pTextArea2 != NULL)
+  if(m_pRightTextArea != NULL)
   {
-    delete m_pTextArea2;
-    m_pTextArea2 = NULL;
+    delete m_pRightTextArea;
+    m_pRightTextArea = NULL;
   }
 
   Close();
@@ -505,12 +512,12 @@ bool DiffWindow::createGadgets()
   WORD gad2Left = m_IndentX + gadWidth;
 
   // If the text areas already exist overwrite the defaults with the actual
-  if((m_pTextArea1 != NULL) && (m_pTextArea2 == NULL))
+  if((m_pLeftTextArea != NULL) && (m_pRightTextArea == NULL))
   {
-    gadWidth = m_pTextArea1->getWidth();
-    gadTop = m_pTextArea1->getTop() - fontHeight - 4;
-    gad1Left = m_pTextArea1->getLeft();
-    gad2Left = m_pTextArea2->getLeft();
+    gadWidth = m_pLeftTextArea->getWidth();
+    gadTop = m_pLeftTextArea->getTop() - fontHeight - 4;
+    gad1Left = m_pLeftTextArea->getLeft();
+    gad2Left = m_pRightTextArea->getLeft();
   }
 
 
@@ -636,7 +643,7 @@ void DiffWindow::resizeGadgets()
            0,
            0,
            m_InnerWindowRight,
-           m_pTextArea1->getTop() - 3);
+           m_pLeftTextArea->getTop() - 3);
 
   // Re-create the gadgets with new position and size
   // TODO handle failure.
@@ -668,26 +675,26 @@ void DiffWindow::resizeGadgets()
 
 void DiffWindow::paintWindowDecoration()
 {
-  if((m_pTextArea1 == NULL) || (m_pTextArea2 == NULL))
+  if((m_pLeftTextArea == NULL) || (m_pRightTextArea == NULL))
   {
     return;
   }
 
   // Create borders for the two text areas
   DrawBevelBox(m_pRPorts->Window(),
-               m_pTextArea1->getLeft(),
-               m_pTextArea1->getTop(),
-               m_pTextArea1->getWidth(),
-               m_pTextArea1->getHeight(),
+               m_pLeftTextArea->getLeft(),
+               m_pLeftTextArea->getTop(),
+               m_pLeftTextArea->getWidth(),
+               m_pLeftTextArea->getHeight(),
                GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
 
   DrawBevelBox(m_pRPorts->Window(),
-               m_pTextArea2->getLeft(),
-               m_pTextArea2->getTop(),
-               m_pTextArea2->getWidth(),
-               m_pTextArea2->getHeight(),
+               m_pRightTextArea->getLeft(),
+               m_pRightTextArea->getTop(),
+               m_pRightTextArea->getWidth(),
+               m_pRightTextArea->getHeight(),
                GT_VisualInfo, (ULONG)m_Screen.GadtoolsVisualInfo(),
                GTBB_Recessed, TRUE,
                TAG_DONE);
@@ -696,17 +703,17 @@ void DiffWindow::paintWindowDecoration()
 
 void DiffWindow::paintStatusBar()
 {
-  if(!IsOpen() || (m_pTextArea1 == NULL))
+  if(!IsOpen() || (m_pLeftTextArea == NULL))
   {
     return;
   }
 
-  int top = m_pTextArea1->getTop() + m_pTextArea1->getHeight() + m_InnerWindowBottom;
+  int top = m_pLeftTextArea->getTop() + m_pLeftTextArea->getHeight() + m_InnerWindowBottom;
   top /= 2;
   top -= m_Screen.IntuiDrawInfo()->dri_Font->tf_Baseline;
   top++;
 
-  int left = m_pTextArea1->getLeft() + 2;
+  int left = m_pLeftTextArea->getLeft() + 2;
 
   // Clear the status bar area
   RectFill(m_pRPorts->APenBackgr(),
