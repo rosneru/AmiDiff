@@ -86,32 +86,32 @@ public:
   /**
    * Implemented abstract method of base class ScrollbarWindow.
    */
-  void XChangedHandler(size_t newX);
+  void handleChangeOfTopPos(size_t newX);
 
   /**
    * Implemented abstract method of base class ScrollbarWindow.
    */
-  void YChangedHandler(size_t newY);
+  void handleChangeOfLeftPos(size_t newY);
 
   /**
    * Implemented abstract method of base class ScrollbarWindow.
    */
-  void XIncrease(size_t numChars, bool bTriggeredByScrollPot);
+  void handleXIncrease(size_t numChars, bool bTriggeredByScrollPot);
 
   /**
    * Implemented abstract method of base class ScrollbarWindow.
    */
-  void XDecrease(size_t numChars, bool bTriggeredByScrollPot);
+  void handleXDecrease(size_t numChars, bool bTriggeredByScrollPot);
 
   /**
    * Implemented abstract method of base class ScrollbarWindow.
    */
-  void YIncrease(size_t numLines, bool bTriggeredByScrollPot);
+  void handleYIncrease(size_t numLines, bool bTriggeredByScrollPot);
 
   /**
    * Implemented abstract method of base class ScrollbarWindow.
    */
-  void YDecrease(size_t numLines, bool bTriggeredByScrollPot);
+  void handleYDecrease(size_t numLines, bool bTriggeredByScrollPot);
 
 private:
   const ADiffViewPens& m_Pens;

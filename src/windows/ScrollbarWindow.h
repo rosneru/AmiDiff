@@ -39,6 +39,11 @@ public:
                            UWORD msgCode,
                            APTR pItemAddress);
 
+protected:
+  long m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
+  long m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar
+
+
   /**
    * This handles the x-changes triggered by the horizontal scrollbar
    * of the window. It is called from the handleIDCMP method of this
@@ -47,7 +52,7 @@ public:
    * Derived classes must implement the method and scroll the content to
    * the given x-position.
    */
-  virtual void XChangedHandler(size_t newX) = 0;
+  virtual void handleChangeOfTopPos(size_t newX) = 0;
 
   /**
    * This handles the y-changes triggered by the vertical scrollbar of
@@ -56,7 +61,7 @@ public:
    * Derived classes must implement the method and scroll the content to
    * the given y-position.
    */
-  virtual void YChangedHandler(size_t newY) = 0;
+  virtual void handleChangeOfLeftPos(size_t newY) = 0;
 
   /**
    * This handles the increase by 1 of the x-position triggered by the
@@ -72,8 +77,8 @@ public:
    * scrollbar pot: true If the call is triggered by other sources:
    * false
    */
-  virtual void XIncrease(size_t numChars,
-                         bool bTriggeredByScrollPot = false) = 0;
+  virtual void handleXIncrease(size_t numChars,
+                               bool bTriggeredByScrollPot = false) = 0;
 
   /**
    * This handles the decrease by 1 of the x-position triggered by the
@@ -90,8 +95,8 @@ public:
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  virtual void XDecrease(size_t numChars,
-                         bool bTriggeredByScrollPot = false) = 0;
+  virtual void handleXDecrease(size_t numChars,
+                               bool bTriggeredByScrollPot = false) = 0;
 
   /**
    * This handles the increase by 1 of the y-position triggered by the
@@ -108,8 +113,8 @@ public:
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  virtual void YIncrease(size_t numLines,
-                         bool bTriggeredByScrollPot = false) = 0;
+  virtual void handleYIncrease(size_t numLines,
+                               bool bTriggeredByScrollPot = false) = 0;
 
   /**
    * This handles the decrease by 1 of the y-position triggered by the
@@ -126,12 +131,8 @@ public:
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  virtual void YDecrease(size_t numLines,
-                         bool bTriggeredByScrollPot = false) = 0;
-
-protected:
-  long m_InnerWindowRight;  ///> X-position of the right-most pixel before the scrollbar
-  long m_InnerWindowBottom; ///> Y-position of the bottom-most pixel before the scrollbar
+  virtual void handleYDecrease(size_t numLines,
+                               bool bTriggeredByScrollPot = false) = 0;
 
   /**
    * Calculates some inner window sizes which is needed after window

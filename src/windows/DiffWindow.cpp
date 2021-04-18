@@ -321,7 +321,7 @@ void DiffWindow::NavigateToNextDiff()
   size_t idx = m_pDocument->getNextDiffLineId();
 
   // Scroll y to next diff
-  YChangedHandler(idx);
+  handleChangeOfLeftPos(idx);
 
   // Set scrollbar to new y position
   setYScrollTop(m_pLeftTextArea->getY());
@@ -340,7 +340,7 @@ void DiffWindow::NavigateToPrevDiff()
   size_t idx = m_pDocument->getPrevDiffLineId();
 
   // Scroll y to prev diff
-  YChangedHandler(idx);
+  handleChangeOfLeftPos(idx);
 
   // Set scrollbar to new y position
   setYScrollTop(m_pLeftTextArea->getY());
@@ -393,21 +393,21 @@ void DiffWindow::HandleIdcmp(ULONG msgClass,
 }
 
 
-void DiffWindow::XChangedHandler(size_t newX)
+void DiffWindow::handleChangeOfTopPos(size_t newX)
 {
   m_pLeftTextArea->scrollLeftToColumn(newX);
   m_pRightTextArea->scrollLeftToColumn(newX);
 }
 
 
-void DiffWindow::YChangedHandler(size_t newY)
+void DiffWindow::handleChangeOfLeftPos(size_t newY)
 {
   m_pLeftTextArea->scrollTopToRow(newY);
   m_pRightTextArea->scrollTopToRow(newY);
 }
 
 
-void DiffWindow::XIncrease(size_t numChars,
+void DiffWindow::handleXIncrease(size_t numChars,
                            bool bTriggeredByScrollPot)
 {
   m_pLeftTextArea->scrollLeft(numChars);
@@ -422,7 +422,7 @@ void DiffWindow::XIncrease(size_t numChars,
 }
 
 
-void DiffWindow::XDecrease(size_t numChars,
+void DiffWindow::handleXDecrease(size_t numChars,
                            bool bTriggeredByScrollPot)
 {
   m_pLeftTextArea->scrollRight(numChars);
@@ -437,7 +437,7 @@ void DiffWindow::XDecrease(size_t numChars,
 }
 
 
-void DiffWindow::YIncrease(size_t numLines,
+void DiffWindow::handleYIncrease(size_t numLines,
                            bool bTriggeredByScrollPot)
 {
   m_pLeftTextArea->scrollUp(numLines);
@@ -452,7 +452,7 @@ void DiffWindow::YIncrease(size_t numLines,
 }
 
 
-void DiffWindow::YDecrease(size_t numLines,
+void DiffWindow::handleYDecrease(size_t numLines,
                            bool bTriggeredByScrollPot)
 {
   m_pLeftTextArea->scrollDown(numLines);

@@ -70,7 +70,7 @@ public:
    * of the window. It is called from the handleIDCMP() method of
    * ScrollbarWindow.
    */
-  virtual void YChangedHandler(size_t p_NewY);
+  virtual void handleChangeOfLeftPos(size_t p_NewY);
 
   /**
    * Increases the X position of the text by the given amount and
@@ -83,7 +83,7 @@ public:
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void XIncrease(size_t p_IncreaseBy, bool p_bTriggeredByScrollbarPot);
+  void handleXIncrease(size_t p_IncreaseBy, bool p_bTriggeredByScrollbarPot);
 
   /**
    * Decreases the X position of the text by the given amount and
@@ -96,7 +96,7 @@ public:
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void XDecrease(size_t p_DecreaseBy, bool p_bTriggeredByScrollbarPot);
+  void handleXDecrease(size_t p_DecreaseBy, bool p_bTriggeredByScrollbarPot);
 
   /**
    * Increases the Y position of the text by the given amount and
@@ -109,7 +109,7 @@ public:
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void YIncrease(size_t p_IncreaseBy, bool p_bTriggeredByScrollbarPot);
+  void handleYIncrease(size_t p_IncreaseBy, bool p_bTriggeredByScrollbarPot);
 
   /**
    * Decreases the Y position of the text by the given amount and
@@ -122,7 +122,7 @@ public:
    * If the call is triggered by moving the scrollbar pot: true
    * If the call is triggered by other sources: false
    */
-  void YDecrease(size_t p_DecreaseBy, bool p_bTriggeredByScrollbarPot);
+  void handleYDecrease(size_t p_DecreaseBy, bool p_bTriggeredByScrollbarPot);
 
 
 private:

@@ -292,7 +292,7 @@ void ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
 
           // Pass the latest found newX value to the childs which have
           // to implement this abstract method
-          XChangedHandler(newX);
+          handleChangeOfTopPos(newX);
 
           break;
         }
@@ -312,32 +312,32 @@ void ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
 
           // Pass the latest found newY value to the childs which have
           // to implement this abstract method
-          YChangedHandler(newY);
+          handleChangeOfLeftPos(newY);
 
           break;
         }
 
         case ScrollbarWindow::GID_ArrowLeft:
         {
-          XDecrease(2);
+          handleXDecrease(2);
           break;
         }
 
         case ScrollbarWindow::GID_ArrowRight:
         {
-          XIncrease(2);
+          handleXIncrease(2);
           break;
         }
 
         case ScrollbarWindow::GID_ArrowUp:
         {
-          YDecrease(2);
+          handleYDecrease(2);
           break;
         }
 
         case ScrollbarWindow::GID_ArrowDown:
         {
-          YIncrease(2);
+          handleYIncrease(2);
           break;
         }
 
@@ -349,19 +349,19 @@ void ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
     {
       if(msgCode == CURSORLEFT)
       {
-        XDecrease(2);
+        handleXDecrease(2);
       }
       else if(msgCode == CURSORRIGHT)
       {
-        XIncrease(2);
+        handleXIncrease(2);
       }
       else if(msgCode == CURSORDOWN)
       {
-        YIncrease(2);
+        handleYIncrease(2);
       }
       else if(msgCode == CURSORUP)
       {
-        YDecrease(2);
+        handleYDecrease(2);
       }
       break;
     }

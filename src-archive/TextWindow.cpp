@@ -140,7 +140,7 @@ void TextWindow::XChangedHandler(size_t p_NewY)
   // TODO
 }
 
-void TextWindow::YChangedHandler(size_t p_NewY)
+void TextWindow::handleChangeOfLeftPos(size_t p_NewY)
 {
   int delta = p_NewY - m_Y;
   if(delta == 0)
@@ -181,7 +181,7 @@ void TextWindow::YChangedHandler(size_t p_NewY)
   paintDocument(true);
 }
 
-void TextWindow::XIncrease(size_t p_IncreaseBy,
+void TextWindow::handleXIncrease(size_t p_IncreaseBy,
   bool p_bTriggeredByScrollbarPot)
 {
   m_X += scrollNCharsLeft(p_IncreaseBy);
@@ -194,7 +194,7 @@ void TextWindow::XIncrease(size_t p_IncreaseBy,
   }
 }
 
-void TextWindow::XDecrease(size_t p_DecreaseBy,
+void TextWindow::handleXDecrease(size_t p_DecreaseBy,
   bool p_bTriggeredByScrollbarPot)
 {
   m_X -= scrollNCharsRight(p_DecreaseBy);
@@ -208,7 +208,7 @@ void TextWindow::XDecrease(size_t p_DecreaseBy,
 }
 
 
-void TextWindow::YIncrease(size_t p_IncreaseBy,
+void TextWindow::handleYIncrease(size_t p_IncreaseBy,
   bool p_bTriggeredByScrollbarPot)
 {
   m_Y += scrollNLinesUp(p_IncreaseBy);
@@ -222,7 +222,7 @@ void TextWindow::YIncrease(size_t p_IncreaseBy,
 }
 
 
-void TextWindow::YDecrease(size_t p_DecreaseBy,
+void TextWindow::handleYDecrease(size_t p_DecreaseBy,
   bool p_bTriggeredByScrollbarPot)
 {
   m_Y -= scrollNLinesDown(p_DecreaseBy);
