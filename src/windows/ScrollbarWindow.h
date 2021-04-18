@@ -52,7 +52,7 @@ protected:
    * Derived classes must implement the method and scroll the content to
    * the given x-position.
    */
-  virtual void handleChangeOfTopPos(size_t newX) = 0;
+  virtual void handleXChange(size_t newX) = 0;
 
   /**
    * This handles the y-changes triggered by the vertical scrollbar of
@@ -61,7 +61,7 @@ protected:
    * Derived classes must implement the method and scroll the content to
    * the given y-position.
    */
-  virtual void handleChangeOfLeftPos(size_t newY) = 0;
+  virtual void handleYChange(size_t newY) = 0;
 
   /**
    * This handles the increase by 1 of the x-position triggered by the

@@ -140,7 +140,7 @@ void TextWindow::XChangedHandler(size_t p_NewY)
   // TODO
 }
 
-void TextWindow::handleChangeOfLeftPos(size_t p_NewY)
+void TextWindow::handleYChange(size_t p_NewY)
 {
   int delta = p_NewY - m_Y;
   if(delta == 0)

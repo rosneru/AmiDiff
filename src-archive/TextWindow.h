@@ -70,7 +70,7 @@ public:
    * of the window. It is called from the handleIDCMP() method of
    * ScrollbarWindow.
    */
-  virtual void handleChangeOfLeftPos(size_t p_NewY);
+  virtual void handleYChange(size_t p_NewY);
 
   /**
    * Increases the X position of the text by the given amount and

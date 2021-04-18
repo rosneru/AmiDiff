@@ -292,7 +292,7 @@ void ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
 
           // Pass the latest found newX value to the childs which have
           // to implement this abstract method
-          handleChangeOfTopPos(newX);
+          handleXChange(newX);
 
           break;
         }
@@ -312,7 +312,7 @@ void ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddre
 
           // Pass the latest found newY value to the childs which have
           // to implement this abstract method
-          handleChangeOfLeftPos(newY);
+          handleYChange(newY);
 
           break;
         }

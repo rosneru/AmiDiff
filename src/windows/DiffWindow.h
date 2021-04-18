@@ -86,12 +86,12 @@ public:
   /**
    * Implemented abstract method of base class ScrollbarWindow.
    */
-  void handleChangeOfTopPos(size_t newX);
+  void handleXChange(size_t newX);
 
   /**
    * Implemented abstract method of base class ScrollbarWindow.
    */
-  void handleChangeOfLeftPos(size_t newY);
+  void handleYChange(size_t newY);
 
   /**
    * Implemented abstract method of base class ScrollbarWindow.
