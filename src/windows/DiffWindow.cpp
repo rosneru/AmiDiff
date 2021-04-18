@@ -309,6 +309,29 @@ bool DiffWindow::setDocument(DiffDocument* pDiffDocument)
 }
 
 
+void DiffWindow::scrollTopTo(size_t top)
+{
+  // Scroll y to next diff
+  handleYChange(top);
+
+  // Set scrollbar to new y position
+  // NOTE: y is equal in left and right text area, so it doesn't 
+  //       matter which one to get.
+  setYScrollTop(m_pLeftTextArea->getY());
+}
+
+void DiffWindow::scrollLeftTo(size_t left)
+{
+  // Scroll y to next diff
+  handleXChange(left);
+
+  // Set scrollbar to new y position
+  // NOTE: x is equal in left and right text area, so it doesn't 
+  //       matter which one to get.
+  setXScrollTop(m_pLeftTextArea->getX());
+}
+
+
 void DiffWindow::navigateToNextDiff()
 {
   if(m_pLeftTextArea->isScrolledToBottom())
@@ -319,12 +342,7 @@ void DiffWindow::navigateToNextDiff()
   }
 
   size_t idx = m_pDocument->getNextDiffLineId();
-
-  // Scroll y to next diff
-  handleYChange(idx);
-
-  // Set scrollbar to new y position
-  setYScrollTop(m_pLeftTextArea->getY());
+  scrollTopTo(idx);
 }
 
 
@@ -338,12 +356,7 @@ void DiffWindow::navigateToPrevDiff()
   }
 
   size_t idx = m_pDocument->getPrevDiffLineId();
-
-  // Scroll y to prev diff
-  handleYChange(idx);
-
-  // Set scrollbar to new y position
-  setYScrollTop(m_pLeftTextArea->getY());
+  scrollTopTo(idx);
 }
 
 

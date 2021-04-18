@@ -45,6 +45,15 @@ public:
    */
   bool setDocument(DiffDocument* pDiffDocument);
 
+  /**
+   * Scroll the window to display given line at top.
+   */
+  void scrollTopTo(size_t top);
+  
+  /**
+   * Scroll the window to display given column at left.
+   */
+  void scrollLeftTo(size_t left);
 
   /**
    * Navigate to the next difference.

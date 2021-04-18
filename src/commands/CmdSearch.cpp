@@ -101,8 +101,8 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   }
 
   // Now scroll the text area in question to the result position
-  // m_DiffWindow.handleXChange(pResult->getCharId());
-  // m_DiffWindow.handleYChange(pResult->getLineId());
+  m_DiffWindow.scrollLeftTo(pResult->getCharId());
+  m_DiffWindow.scrollTopTo(pResult->getLineId());
 }
 
 
