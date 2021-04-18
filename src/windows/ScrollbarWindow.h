@@ -30,12 +30,12 @@ public:
    * @returns
    * false if opening fails
    */
-  virtual bool Open(InitialPosition initialPos = WindowBase::IP_Center);
+  virtual bool open(InitialPosition initialPos = WindowBase::IP_Center);
 
   /**
-   * Implemented abstract method of base class WindowBase.
+   * @implements abstract method of base class WindowBase.
    */
-  virtual void HandleIdcmp(ULONG msgClass,
+  virtual void handleIDCMP(ULONG msgClass,
                            UWORD msgCode,
                            APTR pItemAddress);
 

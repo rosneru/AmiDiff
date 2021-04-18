@@ -67,15 +67,6 @@ public:
 
 
   /**
-   * IMPORTENT: Resizable childs should override this and re-paint their
-   * contents according the new size.
-   *
-   * This should be called from the application if the signal
-   * IDCMP_NEWSIZE for this window is received.
-   */
-  virtual void Resized();
-
-  /**
    * Open the window.
    *
    * NOTE: Derived classes must call this in their Open() method.
@@ -86,21 +77,12 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  virtual bool Open(InitialPosition initialPos = IP_Center);
+  virtual bool open(InitialPosition initialPos = IP_Center);
 
   /**
    * Close the window.
    */
   void Close();
-
-  /**
-   * Abstract method. Must be implemeted in derived classes to handle
-   * the given IDCMP event.
-   */
-  virtual void HandleIdcmp(ULONG msgClass,
-                           UWORD msgCode,
-                           APTR pItemAddress) = 0;
-
 
   /**
    * Returns true if the window is opened.
@@ -196,6 +178,23 @@ public:
    */
   MenuBase* Menu();
 
+  /**
+   * Abstract method. Must be implemeted in derived classes to handle
+   * the given IDCMP event.
+   */
+  virtual void handleIDCMP(ULONG msgClass,
+                           UWORD msgCode,
+                           APTR pItemAddress) = 0;
+
+  /**
+   * IMPORTENT: Resizable childs should override this and re-paint their
+   * contents according the new size.
+   *
+   * This should be called from the application if the signal
+   * IDCMP_NEWSIZE for this window is received.
+   */
+  virtual void performResize();
+
 protected:
   ScreenBase& m_Screen;
   struct MsgPort* m_pIdcmpMsgPort;
@@ -210,6 +209,7 @@ protected:
   MenuBase* m_pMenu;
   struct TextFont* m_pTextFont;
   std::string m_Title;
+
 
   /**
    * Measures the text length of all texts in the given array. Returns

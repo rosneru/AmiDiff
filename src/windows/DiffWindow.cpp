@@ -82,7 +82,7 @@ DiffWindow::~DiffWindow()
 }
 
 
-void DiffWindow::Resized()
+void DiffWindow::performResize()
 {
   if(!IsOpen())
   {
@@ -150,12 +150,12 @@ void DiffWindow::Resized()
 }
 
 
-bool DiffWindow::Open(InitialPosition initialPos)
+bool DiffWindow::open(InitialPosition initialPos)
 {
   //
   // Open the window (and the screen if it isn't open yet)
   //
-  if(!ScrollbarWindow::Open(initialPos))
+  if(!ScrollbarWindow::open(initialPos))
   {
     return false;
   }
@@ -194,7 +194,7 @@ bool DiffWindow::Open(InitialPosition initialPos)
 }
 
 
-bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
+bool DiffWindow::setDocument(DiffDocument* pDiffDocument)
 {
   if(pDiffDocument == NULL)
   {
@@ -309,7 +309,7 @@ bool DiffWindow::SetContent(DiffDocument* pDiffDocument)
 }
 
 
-void DiffWindow::NavigateToNextDiff()
+void DiffWindow::navigateToNextDiff()
 {
   if(m_pLeftTextArea->isScrolledToBottom())
   {
@@ -328,7 +328,7 @@ void DiffWindow::NavigateToNextDiff()
 }
 
 
-void DiffWindow::NavigateToPrevDiff()
+void DiffWindow::navigateToPrevDiff()
 {
     if(m_pLeftTextArea->isScrolledToTop())
   {
@@ -357,11 +357,11 @@ DiffWindowTextArea* DiffWindow::getRightTextArea() const
   return m_pRightTextArea;
 }
 
-void DiffWindow::HandleIdcmp(ULONG msgClass,
+void DiffWindow::handleIDCMP(ULONG msgClass,
                              UWORD msgCode,
                              APTR pItemAddress)
 {
-  ScrollbarWindow::HandleIdcmp(msgClass, msgCode, pItemAddress);
+  ScrollbarWindow::handleIDCMP(msgClass, msgCode, pItemAddress);
 
   switch (msgClass)
   {
@@ -380,7 +380,7 @@ void DiffWindow::HandleIdcmp(ULONG msgClass,
 
     case IDCMP_NEWSIZE:
     {
-      Resized();
+      performResize();
       break;
     }
 

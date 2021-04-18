@@ -331,7 +331,7 @@ void Application::handleIdcmpMessages()
     {
       if(pMsgWindow == (*it)->IntuiWindow())
       {
-        (*it)->HandleIdcmp(msgClass, msgCode, msgIAddress);
+        (*it)->handleIDCMP(msgClass, msgCode, msgIAddress);
       }
     }
   }

@@ -40,7 +40,7 @@ TextWindow::~TextWindow()
 }
 
 
-void TextWindow::Resized()
+void TextWindow::performResize()
 {
   if(!IsOpen())
   {
@@ -72,7 +72,7 @@ void TextWindow::Resized()
 
 bool TextWindow::Open(const APTR p_pMenuItemDisableAtOpen)
 {
-  if(ScrollbarWindow::Open(p_pMenuItemDisableAtOpen) == false)
+  if(ScrollbarWindow::open(p_pMenuItemDisableAtOpen) == false)
   {
     return false;
   }
@@ -103,7 +103,7 @@ bool TextWindow::Open(const APTR p_pMenuItemDisableAtOpen)
 }
 
 
-bool TextWindow::SetContent(TextDocument* p_pTextDocument)
+bool TextWindow::setDocument(TextDocument* p_pTextDocument)
 {
   if(p_pTextDocument == NULL)
   {
@@ -260,9 +260,9 @@ void TextWindow::initialize()
 }
 
 
-bool TextWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
+bool TextWindow::handleIDCMP(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 {
-  if(ScrollbarWindow::HandleIdcmp(p_Class, p_Code, p_IAddress) == true)
+  if(ScrollbarWindow::handleIDCMP(p_Class, p_Code, p_IAddress) == true)
   {
     return true;
   }
@@ -271,7 +271,7 @@ bool TextWindow::HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
   {
     case IDCMP_NEWSIZE:
     {
-      Resized();
+      performResize();
       return true;
       break;
     }

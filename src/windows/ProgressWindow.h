@@ -33,7 +33,7 @@ public:
    * @returns
    * When ok: true, false if opening fails
    */
-  bool Open(InitialPosition initialPos = WindowBase::IP_Center);
+  bool open(InitialPosition initialPos = WindowBase::IP_Center);
 
   /**
    * Handles given IDCMP event.
@@ -41,7 +41,7 @@ public:
    * @returns
    * If this event was handled: true; if it was not handled: false.
    */
-  virtual void HandleIdcmp(ULONG msgClass,
+  virtual void handleIDCMP(ULONG msgClass,
                            UWORD msgCode,
                            APTR pItemAddress);
 

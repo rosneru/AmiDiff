@@ -253,9 +253,9 @@ ScrollbarWindow::~ScrollbarWindow()
 }
 
 
-bool ScrollbarWindow::Open(InitialPosition initialPos)
+bool ScrollbarWindow::open(InitialPosition initialPos)
 {
-  if(!WindowBase::Open(initialPos))
+  if(!WindowBase::open(initialPos))
   {
     return false;
   }
@@ -264,7 +264,7 @@ bool ScrollbarWindow::Open(InitialPosition initialPos)
 }
 
 
-void ScrollbarWindow::HandleIdcmp(ULONG msgClass, UWORD msgCode, APTR pItemAddress)
+void ScrollbarWindow::handleIDCMP(ULONG msgClass, UWORD msgCode, APTR pItemAddress)
 {
   if(!IsOpen())
   {

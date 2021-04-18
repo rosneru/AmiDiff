@@ -30,39 +30,31 @@ public:
 
   virtual ~DiffWindow();
 
-  /**
-   * Reorganizes the window including re-calculating the scrollbars. If
-   * needed also re-drawing the obscured text areas.
-   *
-   * This should be called from the application if the signal
-   * IDCMP_NEWSIZE for this window is received.
-   */
-  void Resized();
 
   /**
-   * Opens the window.
+   * Open the window.
    *
    * @returns
    * false if opening fails
    */
-  virtual bool Open(InitialPosition initialPos = WindowBase::IP_Center);
+  virtual bool open(InitialPosition initialPos = WindowBase::IP_Center);
 
 
   /**
    * Set the diff document to be displayed in DiffWindow.
    */
-  bool SetContent(DiffDocument* pDiffDocument);
+  bool setDocument(DiffDocument* pDiffDocument);
 
 
   /**
    * Navigate to the next difference.
    */
-  void NavigateToNextDiff();
+  void navigateToNextDiff();
 
   /**
    * Navigate to the previous difference.
    */
-  void NavigateToPrevDiff();
+  void navigateToPrevDiff();
 
   /**
    * Return the left text area
@@ -76,40 +68,49 @@ public:
 
 
   /**
-   * Extends method of base class ScrollbarWindow.
+   * @extends method of base class ScrollbarWindow.
    */
-  virtual void HandleIdcmp(ULONG msgClass,
+  virtual void handleIDCMP(ULONG msgClass,
                            UWORD msgCode,
                            APTR pItemAddress);
 
+protected:
+  /**
+   * Recalculate the window content and redraw completely according to
+   * new dimension (m_Width, m_Height).
+   *
+   * This should be called from the application if the signal
+   * IDCMP_NEWSIZE for this window is received.
+   */
+  void performResize();
 
   /**
-   * Implemented abstract method of base class ScrollbarWindow.
+   * @implements abstract method of base class ScrollbarWindow.
    */
   void handleXChange(size_t newX);
 
   /**
-   * Implemented abstract method of base class ScrollbarWindow.
+   * @implements abstract method of base class ScrollbarWindow.
    */
   void handleYChange(size_t newY);
 
   /**
-   * Implemented abstract method of base class ScrollbarWindow.
+   * @implements abstract method of base class ScrollbarWindow.
    */
   void handleXIncrease(size_t numChars, bool bTriggeredByScrollPot);
 
   /**
-   * Implemented abstract method of base class ScrollbarWindow.
+   * @implements abstract method of base class ScrollbarWindow.
    */
   void handleXDecrease(size_t numChars, bool bTriggeredByScrollPot);
 
   /**
-   * Implemented abstract method of base class ScrollbarWindow.
+   * @implements abstract method of base class ScrollbarWindow.
    */
   void handleYIncrease(size_t numLines, bool bTriggeredByScrollPot);
 
   /**
-   * Implemented abstract method of base class ScrollbarWindow.
+   * @implements abstract method of base class ScrollbarWindow.
    */
   void handleYDecrease(size_t numLines, bool bTriggeredByScrollPot);
 

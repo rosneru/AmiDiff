@@ -67,7 +67,7 @@ private:
   DiffDocument* m_pDiffDocument;
 
   /**
-   * Implemented abstract method from WorkerBase.
+   * @implements abstract method from WorkerBase.
    *
    * Here the diff is calculated, the display window opened etc.
    */

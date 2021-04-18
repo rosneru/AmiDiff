@@ -140,9 +140,9 @@ void ProgressWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool ProgressWindow::Open(InitialPosition initialPos)
+bool ProgressWindow::open(InitialPosition initialPos)
 {
-  if(!WindowBase::Open(initialPos))
+  if(!WindowBase::open(initialPos))
   {
     return false;
   }
@@ -230,7 +230,7 @@ bool ProgressWindow::Open(InitialPosition initialPos)
 }
 
 
-void ProgressWindow::HandleIdcmp(ULONG msgClass,
+void ProgressWindow::handleIDCMP(ULONG msgClass,
                                  UWORD msgCode,
                                  APTR pItemAddress)
 {

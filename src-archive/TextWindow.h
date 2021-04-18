@@ -29,7 +29,7 @@ public:
    * This should be called from the application if the signal
    * IDCMP_NEWSIZE for this window is received.
    */
-  virtual void Resized();
+  virtual void performResize();
 
   /**
    * Opens the window.
@@ -44,7 +44,7 @@ public:
    *
    * @returns If this event was handled: true; else: false.
    */
-  virtual bool HandleIdcmp(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
+  virtual bool handleIDCMP(ULONG p_Class, UWORD p_Code, APTR p_IAddress);
 
 
   /**
@@ -56,7 +56,7 @@ public:
    * Full file name with path for to be opened file. If empty a ASL
    * request will be opened asking the user for the file name.
    */
-  bool SetContent(TextDocument* p_pTextDocument);
+  bool setDocument(TextDocument* p_pTextDocument);
 
   /**
    * This handles the x-changes triggered by the horizontal scrollbar

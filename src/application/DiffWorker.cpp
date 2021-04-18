@@ -50,7 +50,7 @@ bool DiffWorker::Diff()
   //
   // Close FilesWindow, open ProgressWindow etc
   //
-  m_ProgressWindow.Open();
+  m_ProgressWindow.open();
   m_CmdCloseFilesWindow.Execute(NULL);
   m_DiffWindow.Close();
 
@@ -129,8 +129,8 @@ bool DiffWorker::Diff()
     }
   } 
 
-  m_DiffWindow.Open(WindowBase::IP_Fill);
-  m_DiffWindow.SetContent(m_pDiffDocument);
+  m_DiffWindow.open(WindowBase::IP_Fill);
+  m_DiffWindow.setDocument(m_pDiffDocument);
 
   m_ProgressWindow.Close();
 

@@ -221,9 +221,9 @@ void SearchWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool SearchWindow::Open(InitialPosition initialPos)
+bool SearchWindow::open(InitialPosition initialPos)
 {
-  if(!WindowBase::Open(initialPos))
+  if(!WindowBase::open(initialPos))
   {
     return false;
   }
@@ -232,7 +232,7 @@ bool SearchWindow::Open(InitialPosition initialPos)
 }
 
 
-void SearchWindow::HandleIdcmp(ULONG msgClass,
+void SearchWindow::handleIDCMP(ULONG msgClass,
                               UWORD msgCode,
                               APTR pItemAddress)
 {

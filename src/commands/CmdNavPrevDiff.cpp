@@ -15,6 +15,6 @@ CmdNavPrevDiff::~CmdNavPrevDiff()
 
 void CmdNavPrevDiff::Execute(struct Window* pActiveWindow)
 {
-  m_DiffWindow.NavigateToPrevDiff();
+  m_DiffWindow.navigateToPrevDiff();
 }
 

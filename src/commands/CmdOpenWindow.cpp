@@ -20,7 +20,7 @@ void CmdOpenWindow::Execute(struct Window* pActiveWindow)
   }
 
   
-  if(m_Window.Open() == true)
+  if(m_Window.open() == true)
   {
     DisableInAllWindowMenus();
   }

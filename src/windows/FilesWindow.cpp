@@ -361,9 +361,9 @@ void FilesWindow::Refresh()
 //  EndRefresh(m_pWindow, TRUE);
 }
 
-bool FilesWindow::Open(InitialPosition initialPos)
+bool FilesWindow::open(InitialPosition initialPos)
 {
-  if(!WindowBase::Open(initialPos))
+  if(!WindowBase::open(initialPos))
   {
     return false;
   }
@@ -379,7 +379,7 @@ bool FilesWindow::Open(InitialPosition initialPos)
 }
 
 
-void FilesWindow::HandleIdcmp(ULONG msgClass,
+void FilesWindow::handleIDCMP(ULONG msgClass,
                               UWORD msgCode,
                               APTR pItemAddress)
 {
