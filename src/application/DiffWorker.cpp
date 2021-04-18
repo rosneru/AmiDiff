@@ -52,20 +52,20 @@ bool DiffWorker::Diff()
   //
   m_ProgressWindow.open();
   m_CmdCloseFilesWindow.Execute(NULL);
-  m_DiffWindow.Close();
+  m_DiffWindow.close();
 
 
   //
   // Some basic tests
   //
-  MessageBox request(m_ProgressWindow.IntuiWindow());
+  MessageBox request(m_ProgressWindow.getIntuiWindow());
   if(m_LeftSrcFilePath.length() == 0)
   {
     request.Show("Error: Left file name not set.",
                  "Ok");
 
     m_CmdOpenFilesWindow.Execute(NULL);
-    m_ProgressWindow.Close();
+    m_ProgressWindow.close();
 
     m_IsExitAllowed = true;
     return false;
@@ -77,7 +77,7 @@ bool DiffWorker::Diff()
                  "Ok");
 
     m_CmdOpenFilesWindow.Execute(NULL);
-    m_ProgressWindow.Close();
+    m_ProgressWindow.close();
 
     m_IsExitAllowed = true;
     return false;
@@ -114,7 +114,7 @@ bool DiffWorker::Diff()
     }
 
     m_CmdOpenFilesWindow.Execute(NULL);
-    m_ProgressWindow.Close();
+    m_ProgressWindow.close();
 
     m_Progress.SetValue(100);
 
@@ -132,7 +132,7 @@ bool DiffWorker::Diff()
   m_DiffWindow.open(WindowBase::IP_Fill);
   m_DiffWindow.setDocument(m_pDiffDocument);
 
-  m_ProgressWindow.Close();
+  m_ProgressWindow.close();
 
   m_IsExitAllowed = true;
   return true;

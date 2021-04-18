@@ -236,7 +236,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
   }
 
   // Set the default title
-  SetTitle("ScrollbarWindow");
+  setTitle("ScrollbarWindow");
 
   // Setting the IDCMP messages we want to receive for this window
   addIDCMP(IDCMP_VANILLAKEY |     // Inform about normal key presses
@@ -266,7 +266,7 @@ bool ScrollbarWindow::open(InitialPosition initialPos)
 
 void ScrollbarWindow::handleIDCMP(ULONG msgClass, UWORD msgCode, APTR pItemAddress)
 {
-  if(!IsOpen())
+  if(!isOpen())
   {
     return;
   }

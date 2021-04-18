@@ -36,13 +36,13 @@ TextWindow::TextWindow(AppScreen& p_AppScreen,
 
 TextWindow::~TextWindow()
 {
-  Close();
+  close();
 }
 
 
 void TextWindow::performResize()
 {
-  if(!IsOpen())
+  if(!isOpen())
   {
     return;
   }
@@ -114,7 +114,7 @@ bool TextWindow::setDocument(TextDocument* p_pTextDocument)
   m_X = 0;
   m_Y = 0;
 
-  if(!IsOpen())
+  if(!isOpen())
   {
     return true;
   }
@@ -123,7 +123,7 @@ bool TextWindow::setDocument(TextDocument* p_pTextDocument)
   SetRast(m_pWindow->RPort, m_AppScreen.Pens().Background());
 
   // Set full path of opened file as window title
-  SetTitle(p_pTextDocument->FileName());
+  setTitle(p_pTextDocument->FileName());
 
   // Display the first [1; m_MaxWinLines] lines
   paintDocument();
@@ -243,7 +243,7 @@ void TextWindow::initialize()
   ScrollbarWindow::initialize();
 
   // Set the default title
-  SetTitle("TextWindow");
+  setTitle("TextWindow");
 
   // Setting the window flags
   addFlags(WFLG_CLOSEGADGET |     // Add a close gadget
@@ -278,7 +278,7 @@ bool TextWindow::handleIDCMP(ULONG p_Class, UWORD p_Code, APTR p_IAddress)
 
     case IDCMP_CLOSEWINDOW:
     {
-      Close();
+      close();
       return true;
       break;
     }

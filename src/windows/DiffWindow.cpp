@@ -61,7 +61,7 @@ DiffWindow::DiffWindow(ScreenBase& screen,
   }
 
   // Set the default title
-  SetTitle("DiffWindow");
+  setTitle("DiffWindow");
 
   // Setting the window flags
   addFlags(WFLG_CLOSEGADGET |     // Add a close gadget
@@ -84,7 +84,7 @@ DiffWindow::~DiffWindow()
 
 void DiffWindow::performResize()
 {
-  if(!IsOpen())
+  if(!isOpen())
   {
     return;
   }
@@ -224,7 +224,7 @@ bool DiffWindow::setDocument(DiffDocument* pDiffDocument)
           "%zu Deleted",
           pDiffDocument->getNumDeleted());
 
-  if(!IsOpen())
+  if(!isOpen())
   {
     return true;
   }
@@ -386,7 +386,7 @@ void DiffWindow::handleIDCMP(ULONG msgClass,
 
     case IDCMP_CLOSEWINDOW:
     {
-      Close();
+      close();
       break;
     }
   }
@@ -481,7 +481,7 @@ void DiffWindow::cleanup()
     m_pRightTextArea = NULL;
   }
 
-  Close();
+  close();
 
   if(m_pRPorts != NULL)
   {
@@ -703,7 +703,7 @@ void DiffWindow::paintWindowDecoration()
 
 void DiffWindow::paintStatusBar()
 {
-  if(!IsOpen() || (m_pLeftTextArea == NULL))
+  if(!isOpen() || (m_pLeftTextArea == NULL))
   {
     return;
   }

@@ -14,7 +14,7 @@ CmdOpenWindow::~CmdOpenWindow()
 
 void CmdOpenWindow::Execute(struct Window* pActiveWindow) 
 {
-  if(m_Window.IsOpen())
+  if(m_Window.isOpen())
   {
     return;
   }

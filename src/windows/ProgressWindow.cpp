@@ -98,7 +98,7 @@ ProgressWindow::ProgressWindow(ScreenBase& screen,
   m_Height = m_NewGadget.ng_TopEdge + m_NewGadget.ng_Height + yOffset + pScr->WBorBottom;
 
   // Setting window title
-  SetTitle("Progress window");
+  setTitle("Progress window");
 
   // Setting the window flags
   addFlags(WFLG_DRAGBAR |         // Add a drag gadget
@@ -122,7 +122,7 @@ ProgressWindow::~ProgressWindow()
 
 void ProgressWindow::cleanup()
 {
-  Close();
+  close();
 
   if(m_pGadtoolsContext != NULL)
   {
@@ -148,7 +148,7 @@ bool ProgressWindow::open(InitialPosition initialPos)
   }
 
   // Enable the Stop button in case it has been disabled
-  GT_SetGadgetAttrs(m_pGadBtnStop, IntuiWindow(), NULL,
+  GT_SetGadgetAttrs(m_pGadBtnStop, getIntuiWindow(), NULL,
                     GA_Disabled, FALSE,
                     TAG_DONE);
 
@@ -234,7 +234,7 @@ void ProgressWindow::handleIDCMP(ULONG msgClass,
                                  UWORD msgCode,
                                  APTR pItemAddress)
 {
-  if(!IsOpen())
+  if(!isOpen())
   {
     return;
   }
@@ -257,8 +257,8 @@ void ProgressWindow::handleIDCMP(ULONG msgClass,
     case IDCMP_REFRESHWINDOW:
     {
       // This handling is REQUIRED with GadTools
-      GT_BeginRefresh(IntuiWindow());
-      GT_EndRefresh(IntuiWindow(), TRUE);
+      GT_BeginRefresh(getIntuiWindow());
+      GT_EndRefresh(getIntuiWindow(), TRUE);
       break;
     }
   }
@@ -267,7 +267,7 @@ void ProgressWindow::handleIDCMP(ULONG msgClass,
 
 void ProgressWindow::HandleProgress(struct ProgressMessage* pProgrMsg)
 {
-  if(!IsOpen())
+  if(!isOpen())
   {
     return;
   }
@@ -323,7 +323,7 @@ void ProgressWindow::stopBtnPressed()
   m_IsCancelRequested = true;
 
   // Disable the Stop button
-  GT_SetGadgetAttrs(m_pGadBtnStop, IntuiWindow(), NULL,
+  GT_SetGadgetAttrs(m_pGadBtnStop, getIntuiWindow(), NULL,
                     GA_Disabled, TRUE,
                     TAG_DONE);
 }

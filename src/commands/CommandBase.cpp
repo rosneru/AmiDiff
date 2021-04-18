@@ -24,12 +24,12 @@ void CommandBase::EnableInAllWindowMenus() const
 {
   for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
   {
-    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
-    MenuBase* pMenu = (*m_pAllWindowsArray)[i]->Menu();
+    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->getIntuiWindow();
+    MenuBase* pMenu = (*m_pAllWindowsArray)[i]->getMenu();
 
     if(pIntuiWindow != NULL && pMenu != NULL)
     {
-      pMenu->EnableMenuItem((*m_pAllWindowsArray)[i]->IntuiWindow(), (APTR)this);
+      pMenu->EnableMenuItem((*m_pAllWindowsArray)[i]->getIntuiWindow(), (APTR)this);
     }
   }
 }
@@ -39,12 +39,12 @@ void CommandBase::DisableInAllWindowMenus() const
 {
   for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
   {
-    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
-    MenuBase* pMenu = (*m_pAllWindowsArray)[i]->Menu();
+    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->getIntuiWindow();
+    MenuBase* pMenu = (*m_pAllWindowsArray)[i]->getMenu();
 
     if(pIntuiWindow != NULL && pMenu != NULL)
     {
-      pMenu->DisableMenuItem((*m_pAllWindowsArray)[i]->IntuiWindow(), (APTR)this);
+      pMenu->DisableMenuItem((*m_pAllWindowsArray)[i]->getIntuiWindow(), (APTR)this);
     }
   }
 }
@@ -54,9 +54,9 @@ void CommandBase::disableBusyPointerForAllWindows()
 {
   for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
   {
-    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
+    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->getIntuiWindow();
 
-    if(pIntuiWindow != NULL && (*m_pAllWindowsArray)[i]->IsOpen())
+    if(pIntuiWindow != NULL && (*m_pAllWindowsArray)[i]->isOpen())
     {
       EndRequest(&m_SleepRequester, pIntuiWindow);
       SetWindowPointer(pIntuiWindow, WA_BusyPointer, FALSE, TAG_DONE);
@@ -70,7 +70,7 @@ void CommandBase::enableBusyPointerForAllWindows()
 
   for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
   {
-    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->IntuiWindow();
+    struct Window* pIntuiWindow = (*m_pAllWindowsArray)[i]->getIntuiWindow();
 
     if(pIntuiWindow != NULL)
     {

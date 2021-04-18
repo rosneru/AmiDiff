@@ -332,7 +332,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
   m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
 
   // Setting window title
-  SetTitle("Open the files to diff");
+  setTitle("Open the files to diff");
 
   // Setting the window flags
   addFlags(WFLG_CLOSEGADGET |     // Add a close gadget
@@ -383,7 +383,7 @@ void FilesWindow::handleIDCMP(ULONG msgClass,
                               UWORD msgCode,
                               APTR pItemAddress)
 {
-  if(!IsOpen())
+  if(!isOpen())
   {
     return;
   }
@@ -422,7 +422,7 @@ void FilesWindow::handleIDCMP(ULONG msgClass,
 
 void FilesWindow::HandleAppMessage(struct AppMessage* pAppMsg)
 {
-  if(!IsOpen())
+  if(!isOpen())
   {
     return;
   }
@@ -695,7 +695,7 @@ void FilesWindow::swapFiles()
 
 void FilesWindow::compare()
 {
-  if(!IsOpen() || (m_pGadBtnDiff == NULL) || (m_pGadBtnSwap == NULL))
+  if(!isOpen() || (m_pGadBtnDiff == NULL) || (m_pGadBtnSwap == NULL))
   {
     return;
   }
@@ -743,7 +743,7 @@ void FilesWindow::cleanup()
 
 void FilesWindow::checkEnableButtons()
 {
-  if(!IsOpen() || (m_pGadBtnDiff == NULL) || (m_pGadBtnSwap == NULL))
+  if(!isOpen() || (m_pGadBtnDiff == NULL) || (m_pGadBtnSwap == NULL))
   {
     return;
   }

@@ -103,7 +103,7 @@ long CmdRequester::showRequester(struct Window* pActiveWindow)
           case IDCMP_NEWSIZE:
             for(size_t i = 0; i < m_pAllWindowsArray->size(); i++)
             {
-              if((*m_pAllWindowsArray)[i]->IntuiWindow() == pMsg->IDCMPWindow)
+              if((*m_pAllWindowsArray)[i]->getIntuiWindow() == pMsg->IDCMPWindow)
               {
                 // Re-paint the resized window
                 (*m_pAllWindowsArray)[i]->performResize();

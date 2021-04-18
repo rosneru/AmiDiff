@@ -117,7 +117,7 @@ Application::Application(ScreenBase& screen,
     if(m_IsAppWindow)
     {
       // FilesWindow should be an AppWindow
-      m_FilesWindow.EnableAppWindow(m_Ports.Workbench(), 0L);
+      m_FilesWindow.enableAppWindow(m_Ports.Workbench(), 0L);
     }
 
     if(m_IsAppIcon)
@@ -137,8 +137,8 @@ Application::Application(ScreenBase& screen,
   }
 
 
-  m_FilesWindow.SetMenu(&m_FilesWindowMenu);
-  m_DiffWindow.SetMenu(&m_DiffWindowMenu);
+  m_FilesWindow.setMenu(&m_FilesWindowMenu);
+  m_DiffWindow.setMenu(&m_DiffWindowMenu);
 
   if((m_LeftFilePath.length() > 0) &&
      (m_RightFilePath.length() > 0) &&
@@ -180,7 +180,7 @@ Application::~Application()
   std::vector<WindowBase*>::iterator it;
   for(it = m_AllWindowsList.begin(); it != m_AllWindowsList.end(); it++)
   {
-    (*it)->Close();
+    (*it)->close();
   }
 }
 
@@ -289,7 +289,7 @@ void Application::handleIdcmpMessages()
     if(msgClass == IDCMP_MENUPICK)
     {
       //
-      // Menu-pick messages are handled here
+      // getMenu-pick messages are handled here
       //
       UWORD menuNumber = msgCode;
       struct MenuItem* pSelectedItem = NULL;
@@ -329,7 +329,7 @@ void Application::handleIdcmpMessages()
     std::vector<WindowBase*>::iterator it;
     for(it = m_AllWindowsList.begin(); it != m_AllWindowsList.end(); it++)
     {
-      if(pMsgWindow == (*it)->IntuiWindow())
+      if(pMsgWindow == (*it)->getIntuiWindow())
       {
         (*it)->handleIDCMP(msgClass, msgCode, msgIAddress);
       }

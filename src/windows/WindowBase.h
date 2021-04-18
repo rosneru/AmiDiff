@@ -19,7 +19,7 @@
 #endif
 
 /**
- * Abstract base class for all other windows
+ * Abstract base class for all windows
  *
  *
  * @author Uwe Rosner
@@ -30,7 +30,7 @@ class WindowBase
 public:
   /**
    * Used to define an initial position of the window on the screen
-   * without messing around with too many parameters.
+   * without having to mess around with too many parameters.
    */
   enum InitialPosition
   {
@@ -72,7 +72,7 @@ public:
    * NOTE: Derived classes must call this in their Open() method.
    *
    * Attaches a menu strip to the window if one had been provided with
-   * SetMenu.
+   * setMenu.
    *
    * @returns
    * When ok: true, false if opening fails
@@ -82,23 +82,22 @@ public:
   /**
    * Close the window.
    */
-  void Close();
+  void close();
 
   /**
-   * Returns true if the window is opened.
+   * Return true if the window is opened.
    */
-  bool IsOpen() const;
+  bool isOpen() const;
 
   /**
-   * Returns the window title
+   * Return the window title
    */
-  const char* Title() const;
+  const char* getTitle() const;
 
   /**
-   * Sets the window title
-   * NOTE: Works only before opening the window
+   * Set the window title
    */
-  void SetTitle(std::string newTitle);
+  void setTitle(const char* pNewTitle);
 
 
   /**
@@ -120,7 +119,7 @@ public:
    * @param height
    * Height of the Window.
    */
-  void SetInitialDimension(ULONG left,
+  void setInitialDimension(ULONG left,
                            ULONG top,
                            ULONG width,
                            ULONG height);
@@ -128,38 +127,40 @@ public:
 
   /**
    * Sets if the window appears fixed or if it is draggable with the
-   * mouse. Only is applied when called before opening the window.
+   * mouse. 
+   * 
+   * @note Only is applied when called before opening the window.
    *
    * @param bFixWindow
    * When true the window will not be moveable/draggable after opening.
    */
-  void SetFixed(bool bFixWindow);
+  void setFixed(bool bFixWindow);
 
 
   /**
-   * Sets if the window is without border. Only is applied when
-   * called before opening the window
+   * Sets if the window is without border. 
    *
-   * @param bFixWindow
-   * When true the window will have no border.
+   * @note Only is applied when called before opening the window
+   *
+   * @param bFixWindow When true the window will have no border.
    */
-  void SetBorderless(bool bBorderless);
+  void setBorderless(bool bBorderless);
 
 
   /**
    * The window is prepared to be a Workbench AppWindow using given 
    * port and id.
    * 
-   * NOTE: Works only before opening the window
+   * @note Only is applied when called before opening the window
    */
-  void EnableAppWindow(struct MsgPort* pAppWindowPort, 
+  void enableAppWindow(struct MsgPort* pAppWindowPort, 
                        ULONG appWindowId);
 
   /**
    * Returns the intuition window structure or NULL if window is not
    * open.
    */
-  struct Window* IntuiWindow();
+  struct Window* getIntuiWindow();
 
 
   /**
@@ -171,12 +172,12 @@ public:
    * If the window isn't open the given menu strip will be there after
    * opening.
    */
-  void SetMenu(MenuBase* pMenu);
+  void setMenu(MenuBase* pMenu);
 
   /**
    * Returns the menu strip which is attached to this window
    */
-  MenuBase* Menu();
+  MenuBase* getMenu();
 
   /**
    * Abstract method. Must be implemeted in derived classes to handle

@@ -16,12 +16,12 @@ CmdCloseWindow::~CmdCloseWindow()
 
 void CmdCloseWindow::Execute(struct Window* pActiveWindow) 
 {
-  if(!m_Window.IsOpen())
+  if(!m_Window.isOpen())
   {
     return;
   }
 
-  m_Window.Close();
+  m_Window.close();
 
   // Re-enable the command that was used to open the window in all menus
   m_OpenWindowCommand.EnableInAllWindowMenus();

@@ -192,7 +192,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
 
   // Setting window title
-  SetTitle("Find");
+  setTitle("Find");
 
   // Setting the window flags
   addFlags(WFLG_CLOSEGADGET |     // Add a close gadget
@@ -236,7 +236,7 @@ void SearchWindow::handleIDCMP(ULONG msgClass,
                               UWORD msgCode,
                               APTR pItemAddress)
 {
-  if(!IsOpen())
+  if(!isOpen())
   {
     return;
   }
@@ -310,7 +310,7 @@ void SearchWindow::handleVanillaKey(UWORD code)
 
 void SearchWindow::find()
 {
-  if(!IsOpen() || (m_pGadBtnFind == NULL))
+  if(!isOpen() || (m_pGadBtnFind == NULL))
   {
     return;
   }

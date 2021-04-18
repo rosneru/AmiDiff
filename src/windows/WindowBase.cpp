@@ -49,7 +49,7 @@ WindowBase::WindowBase(ScreenBase& screen,
 
 WindowBase::~WindowBase()
 {
-  Close();
+  close();
 }
 
 void WindowBase::performResize()
@@ -66,7 +66,7 @@ bool WindowBase::open(InitialPosition initialPos)
   // Initial validations
   //
 
-  if(IsOpen())
+  if(isOpen())
   {
     // Not opening the window if it is already open
     // TODO Alternatively: bring window to front and return true;
@@ -151,7 +151,7 @@ bool WindowBase::open(InitialPosition initialPos)
                              WA_Gadgets, (ULONG)m_pFirstGadget,
                              TAG_DONE);
 
-  if(!IsOpen())
+  if(!isOpen())
   {
     // Opening failed
     return false;
@@ -193,9 +193,9 @@ bool WindowBase::open(InitialPosition initialPos)
 }
 
 
-void WindowBase::Close()
+void WindowBase::close()
 {
-  if(!IsOpen())
+  if(!isOpen())
   {
     return;
   }
@@ -216,40 +216,46 @@ void WindowBase::Close()
 }
 
 
-bool WindowBase::IsOpen() const
+bool WindowBase::isOpen() const
 {
   return m_pWindow != NULL;
 }
 
 
-const char* WindowBase::Title() const
+const char* WindowBase::getTitle() const
 {
   return m_Title.c_str();
 }
 
 
-void WindowBase::SetTitle(std::string newTitle)
+void WindowBase::setTitle(const char* pNewTitle)
 {
-  m_Title = newTitle;
+  if(pNewTitle == NULL)
+  {
+    return;
+  }
 
-  if(!IsOpen())
+  m_Title = pNewTitle;
+
+  if(!isOpen())
   {
     // Window is not open, so we don't change its title dynamically
     return;
   }
 
-  // Call intuition function to set the window title
-  // Note the ~0 inverts the value and is a value of -1
+  // Call intuition function to set the window title Note the ~0 inverts
+  // the value and is a value of -1. That means the screen title remains
+  // unchanged.
   SetWindowTitles(m_pWindow, m_Title.c_str(), (STRPTR) ~0);
 }
 
 
-void WindowBase::SetInitialDimension(ULONG left,
+void WindowBase::setInitialDimension(ULONG left,
                                      ULONG top,
                                      ULONG width,
                                      ULONG height)
 {
-  if(IsOpen())
+  if(isOpen())
   {
     return;
   }
@@ -262,9 +268,9 @@ void WindowBase::SetInitialDimension(ULONG left,
 }
 
 
-void WindowBase::SetFixed(bool bFixWindow)
+void WindowBase::setFixed(bool bFixWindow)
 {
-  if(IsOpen())
+  if(isOpen())
   {
     return;
   }
@@ -273,9 +279,9 @@ void WindowBase::SetFixed(bool bFixWindow)
 }
 
 
-void WindowBase::SetBorderless(bool bBorderless)
+void WindowBase::setBorderless(bool bBorderless)
 {
-  if(IsOpen())
+  if(isOpen())
   {
     return;
   }
@@ -284,10 +290,10 @@ void WindowBase::SetBorderless(bool bBorderless)
 }
 
 
-void WindowBase::EnableAppWindow(struct MsgPort* pAppWindowPort,
+void WindowBase::enableAppWindow(struct MsgPort* pAppWindowPort,
                                  ULONG appWindowId)
 {
-  if(IsOpen())
+  if(isOpen())
   {
     return;
   }
@@ -297,13 +303,13 @@ void WindowBase::EnableAppWindow(struct MsgPort* pAppWindowPort,
 }
 
 
-struct Window* WindowBase::IntuiWindow()
+struct Window* WindowBase::getIntuiWindow()
 {
   return m_pWindow;
 }
 
 
-void WindowBase::SetMenu(MenuBase* pMenu)
+void WindowBase::setMenu(MenuBase* pMenu)
 {
   if(pMenu == NULL)
   {
@@ -320,7 +326,7 @@ void WindowBase::SetMenu(MenuBase* pMenu)
   m_pMenu = pMenu;
 
 
-  if(!IsOpen())
+  if(!isOpen())
   {
     // The window isn't open yet: don't attach the menu now
     return;
@@ -336,7 +342,7 @@ void WindowBase::SetMenu(MenuBase* pMenu)
   return;
 }
 
-MenuBase* WindowBase::Menu()
+MenuBase* WindowBase::getMenu()
 {
   return m_pMenu;
 }
@@ -373,7 +379,7 @@ size_t WindowBase::maxArrayTextLength(const char** ppArrayOfTexts,
 void WindowBase::setStringGadgetText(struct Gadget* pGadget,
                                       const char* pText)
 {
-  if(!IsOpen() || (pGadget == NULL) || (pText == NULL))
+  if(!isOpen() || (pGadget == NULL) || (pText == NULL))
   {
     return;
   }
@@ -385,7 +391,7 @@ void WindowBase::setStringGadgetText(struct Gadget* pGadget,
 
 STRPTR WindowBase::getStringGadgetText(struct Gadget* pGadget)
 {
-  if(!IsOpen() || pGadget == NULL)
+  if(!isOpen() || pGadget == NULL)
   {
     return NULL;
   }
@@ -482,7 +488,7 @@ struct Image* WindowBase::createImageObj(ULONG sysImageId,
 
 void WindowBase::closeWindowSafely()
 {
-  if(!IsOpen())
+  if(!isOpen())
   {
     return;
   }
