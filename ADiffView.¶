@@ -19,6 +19,8 @@ C/C++ Environment
 0
 "src/screen"
 0
+"src/textsearch"
+0
 "src/textselect"
 0
 "src/windows"
@@ -190,6 +192,7 @@ File
 "src/windows/DiffWindowTextArea.h"
 "src/textselect/TextSelectionLine.h"
 "src/textselect/TextSelectionRange.h"
+"src/textsearch/DiffFileSearchResult.h"
 Storm Shell Project (Dependencies)
 "build-stromc/Application.o" "build-stromc/Application.debug"
 ""
@@ -347,6 +350,18 @@ File
 "src/commands/CmdSearch.cpp"
 "src/commands/CmdSearch.h"
 "src/commands/CommandBase.h"
+"src/diffengine/DiffInputFileBase.h"
+"src/diffengine/DiffFileBase.h"
+"src/diffengine/DiffLine.h"
+"src/diffengine/DiffOutputFileBase.h"
+"src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
+"src/windows/ScrollbarWindow.h"
+"src/commands/CmdOpenWindow.h"
+"src/application/DiffWorkerProgressReporter.h"
+"src/worker/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdSearch.o" "build-stromc/CmdSearch.debug"
 ""
@@ -485,6 +500,7 @@ File
 "src/windows/DiffWindowTextArea.h"
 "src/textselect/TextSelectionLine.h"
 "src/textselect/TextSelectionRange.h"
+"src/textsearch/DiffFileSearchResult.h"
 Storm Shell Project (Dependencies)
 "build-stromc/main.o" "build-stromc/main.debug"
 ""
@@ -670,6 +686,19 @@ File
 1 "src/windows/SearchWindow.cpp"
 "src/windows/SearchWindow.cpp"
 "src/windows/SearchWindow.h"
+"src/diffengine/DiffInputFileBase.h"
+"src/diffengine/DiffFileBase.h"
+"src/diffengine/DiffLine.h"
+"src/diffengine/DiffOutputFileBase.h"
+"src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
+"src/windows/ScrollbarWindow.h"
+"src/commands/CmdOpenWindow.h"
+"src/application/DiffWorkerProgressReporter.h"
+"src/worker/WorkerStartupMsg.h"
+"src/textsearch/DiffFileSearchResult.h"
 Storm Shell Project (Dependencies)
 "build-stromc/SearchWindow.o" "build-stromc/SearchWindow.debug"
 ""
