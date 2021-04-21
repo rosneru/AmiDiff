@@ -52,7 +52,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
       return;
     }
 
-    // This searches all occurences of m_SearchText in both files
+    // This searches all occurrences of m_SearchText in both files
     // and could take some time. TODO: Consider to create a task.
     m_pSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
                                                m_pDiffDocument->getRightDiffFile(),
@@ -64,28 +64,6 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
       return;
     }
 
-    // Search keyword changed, so all old selections muts be cleared
-    pLeftTextArea->clearSelection();
-    pRightTextArea->clearSelection();
-
-    int lenDelta = m_SearchText.length() - 1;
-
-    do
-    {
-      if(pResult->getLocation() == DiffFileSearchResult::LeftFile)
-      {
-        pLeftTextArea->addSelection(pResult->getLineId(), 
-                                    pResult->getCharId(),
-                                    pResult->getCharId() + lenDelta);
-      }
-      else if(pResult->getLocation() == DiffFileSearchResult::RightFile)
-      {
-        pRightTextArea->addSelection(pResult->getLineId(), 
-                                     pResult->getCharId(),
-                                     pResult->getCharId() + lenDelta);
-      }
-    } while ((pResult = m_pSearchEngine->getNextResult()) != NULL);
-    
     // Now again get the first result (to be displayed)
     pResult = m_pSearchEngine->getFirstResult();
   }
@@ -98,6 +76,24 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   if(pResult == NULL)
   {
     return;
+  }
+
+  // Search keyword changed, so all old selections must be cleared
+  pLeftTextArea->clearSelection();
+  pRightTextArea->clearSelection();
+
+  int lenDelta = m_SearchText.length() - 1;
+  if(pResult->getLocation() == DiffFileSearchResult::LeftFile)
+  {
+    pLeftTextArea->addSelection(pResult->getLineId(), 
+                                pResult->getCharId(),
+                                pResult->getCharId() + lenDelta);
+  }
+  else if(pResult->getLocation() == DiffFileSearchResult::RightFile)
+  {
+    pRightTextArea->addSelection(pResult->getLineId(), 
+                                  pResult->getCharId(),
+                                  pResult->getCharId() + lenDelta);
   }
 
   // Now scroll the text area in question to the result position
@@ -121,7 +117,7 @@ void CmdSearch::setSearchText(const char* pSearchText)
 
   m_SearchText = pSearchText;
 
-  // With new search text the old search engione is obsolete
+  // With new search text the old search engine is obsolete
   if(m_pSearchEngine != NULL)
   {
     delete m_pSearchEngine;
