@@ -48,7 +48,7 @@ DiffWindow::DiffWindow(ScreenBase& screen,
     m_pRightTextArea(NULL)
 {
   // If parent window already defined gadgets, we store the last of
-  // these gadgeds and the count of defined gadgets. They are needed
+  // these gadgets and the count of defined gadgets. They are needed
   // for dynamically re-creating this window's gadgets at window
   // resizing etc.
   m_pLastParentGadget = getLastGadget();
@@ -89,7 +89,7 @@ void DiffWindow::performResize()
     return;
   }
 
-  // TODO check if this test and m_Widht/Height assignment can be removed.
+  // TODO check if this test and m_Width/Height assignment can be removed.
   if(((ULONG)m_pWindow->Width) == m_Width &&
      ((ULONG)m_pWindow->Height) == m_Height)
   {
@@ -183,8 +183,8 @@ bool DiffWindow::open(InitialPosition initialPos)
   m_TextAttr.ta_Flags = m_Screen.IntuiDrawInfo()->dri_Font->tf_Flags;
 
 
-  // Calculate some sizes which are only calculatable with window
-  // already open
+  // Calculate some sizes which are only calculable with window already
+  // open
   calcSizes();
 
   // Paint the window decoration
@@ -633,7 +633,7 @@ void DiffWindow::calcSizes()
   m_TextAreasWidth = m_InnerWindowRight - m_IndentX - m_IndentX;
   m_TextAreasWidth /= 2;
 
-  // Pre-calc text areas heigt. Will later be limited to int multiples.
+  // Pre-calc text areas height. Will later be limited to int multiples.
   m_TextAreasHeight = m_InnerWindowBottom - m_IndentY - m_IndentY;
 }
 
@@ -646,7 +646,7 @@ void DiffWindow::resizeGadgets()
     return;
   }
 
-  // Save a copy of the soon to be obsolete GadgTools context
+  // Save a copy of the soon to be obsolete GadTools context
   struct Gadget* pOldContext = m_pGadtoolsContext;
 
   // Detach this windows gadgets from the ones defined in parent window

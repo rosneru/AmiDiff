@@ -55,7 +55,7 @@ private:
   CmdSearch& m_CmdSearch;
   CommandBase& m_CmdCloseSearchWindow;
 
-  const ULONG m_MaxPathLength;
+  const ULONG m_NumLocationLabels;
 
   /**
    * IDs to help to interpret the events of this window's Gadtools
@@ -83,6 +83,7 @@ private:
   void handleVanillaKey(UWORD code);
 
   void find();
+  void toggleLocationGadget();
 
   void cleanup();
 

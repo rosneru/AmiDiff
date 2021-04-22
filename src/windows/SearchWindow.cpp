@@ -42,14 +42,17 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   : WindowBase(screen, pIdcmpMsgPort, NULL),
     m_CmdSearch(cmdSearch),
     m_CmdCloseSearchWindow(cmdCloseSearchWindow),
-    m_MaxPathLength(1024),
+    m_NumLocationLabels(sizeof(g_GadCycLocationLabels) /
+                        sizeof(g_GadCycLocationLabels[0])
+                        - 1), // Skip trailing NULL item
     m_pGadtoolsContext(NULL),
     m_pGadStrSearchText(NULL),
     m_pGadCycLocation(NULL),
     m_pGadCbxIgnoreCase(NULL),
     m_pGadBtnFind(NULL)
-{
+{     
   const char* pErrMsg = "SearchWindow: Failed to create gadgets.";
+
   //
   // Calculate some basic values
   //
@@ -121,7 +124,6 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   m_pGadStrSearchText = CreateGadget(STRING_KIND,
                                    pFakeGad,
                                    &newGadget,
-                                   GTST_MaxChars, m_MaxPathLength,
                                    GT_Underscore, '_',
                                    TAG_DONE);
   if(m_pGadStrSearchText == NULL)
@@ -150,21 +152,21 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
 
   // Create the 'Ignore case' checkbox
   newGadget.ng_LeftEdge   += (cycWidth + hSpace + hSpace + labelsWidth);
-  newGadget.ng_TopEdge    ++; // Manually center text vertically as 
+  newGadget.ng_TopEdge    ++; // Manually center text vertically as
                               // GadTools doesn't do it
 
   newGadget.ng_Width      = right - newGadget.ng_LeftEdge;
   newGadget.ng_GadgetText = (UBYTE*) "Ignore _case";
   newGadget.ng_GadgetID   = GID_CbxIgnoreCase;
 
-  m_pGadCycLocation = CreateGadget(CHECKBOX_KIND,
-                                   m_pGadCycLocation,
-                                   &newGadget,
-                                   GT_Underscore, '_',
-                                   GTCB_Checked, TRUE,
-                                   TAG_DONE);
+  m_pGadCbxIgnoreCase = CreateGadget(CHECKBOX_KIND,
+                                     m_pGadCycLocation,
+                                     &newGadget,
+                                     GT_Underscore, '_',
+                                     GTCB_Checked, TRUE,
+                                     TAG_DONE);
 
-  if(m_pGadCycLocation == NULL)
+  if(m_pGadCbxIgnoreCase == NULL)
   {
     cleanup();
     throw pErrMsg;
@@ -178,7 +180,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_GadgetID   = GID_BtnFind;
 
   m_pGadBtnFind = CreateGadget(BUTTON_KIND,
-                               m_pGadCycLocation,
+                               m_pGadCbxIgnoreCase,
                                &newGadget,
                                TAG_DONE);
   if(m_pGadBtnFind == NULL)
@@ -304,6 +306,21 @@ void SearchWindow::handleVanillaKey(UWORD code)
       break;
     }
 
+    case 'l':
+    case 'L':
+    {
+      toggleLocationGadget();
+      break;
+    }
+
+    case 's':
+    case 'S':
+    {
+      ActivateGadget(m_pGadStrSearchText, m_pWindow, NULL);
+      break;
+    }
+
+
     case 0x1B: // <ESC> Cancel
       m_CmdCloseSearchWindow.Execute(NULL);
       break;
@@ -332,6 +349,30 @@ void SearchWindow::find()
   m_CmdSearch.Execute(NULL);
 }
 
+
+void SearchWindow::toggleLocationGadget()
+{
+  // Get the current index value from 'locaion' cycle gadget
+  ULONG currentId = 0;
+  if(GT_GetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                      GTCY_Active, (ULONG)&currentId,
+                      TAG_DONE) != 1)
+  {
+    return;
+  }
+
+  // Increase the id; start from 0 when over max
+  currentId++;
+  if(currentId >= m_NumLocationLabels)
+  {
+    currentId = 0;
+  }
+
+  // Set the new index value in gadget
+  GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                    GTCY_Active, currentId,
+                    TAG_DONE);
+}
 
 
 void SearchWindow::cleanup()
