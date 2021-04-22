@@ -46,6 +46,11 @@ public:
   bool setDocument(DiffDocument* pDiffDocument);
 
   /**
+   * Re-renders the documents without clearing the area before
+   */
+  void renderDocuments();
+
+  /**
    * Scroll the window to display given line at top.
    */
   void scrollTopTo(size_t top);

@@ -99,6 +99,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   // Now scroll the text area in question to the result position
   m_DiffWindow.scrollLeftTo(pResult->getCharId());
   m_DiffWindow.scrollTopTo(pResult->getLineId());
+  m_DiffWindow.renderDocuments();
 }
 
 
@@ -109,7 +110,7 @@ const char* CmdSearch::getSearchText()
 
 void CmdSearch::setSearchText(const char* pSearchText)
 {
-  if(m_SearchText.c_str() == pSearchText)
+  if(m_SearchText == pSearchText)
   {
     // Search text didn't change
     return;

@@ -309,6 +309,13 @@ bool DiffWindow::setDocument(DiffDocument* pDiffDocument)
 }
 
 
+void DiffWindow::renderDocuments()
+{
+  m_pLeftTextArea->printPage();
+  m_pRightTextArea->printPage();
+}
+
+
 void DiffWindow::scrollTopTo(size_t top)
 {
   // Scroll y to next diff
