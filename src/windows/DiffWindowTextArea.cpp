@@ -339,7 +339,7 @@ ULONG DiffWindowTextArea::scrollUp(ULONG numLines)
 
   if(m_DiffFile.getNumLines() <= m_AreaMaxLines)
   {
-    // All text fits into the window. Dont't scroll.
+    // All text fits into the window. Don't scroll.
     return 0;
   }
 
