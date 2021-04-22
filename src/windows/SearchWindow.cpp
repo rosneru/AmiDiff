@@ -228,6 +228,9 @@ bool SearchWindow::open(InitialPosition initialPos)
     return false;
   }
 
+  // Activate the search text gadget
+  ActivateGadget(m_pGadStrSearchText, m_pWindow, NULL);
+
   return true;
 }
 
@@ -282,6 +285,7 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
   switch(pGadget->GadgetID)
   {
+    case GID_StrSearchText:
     case GID_BtnFind:
       find();
       break;
