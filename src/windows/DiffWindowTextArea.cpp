@@ -437,11 +437,16 @@ void DiffWindowTextArea::printPage(bool dontPrintLineNumbers)
   }
 }
 
+void DiffWindowTextArea::printLine(ULONG lineId)
+{
+  WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
+  printDiffLine(lineId, true, lineTopEdge);
+}
 
 void DiffWindowTextArea::printDiffLine(ULONG lineId, 
-                                       bool doDisplayLineNumbers, 
-                                       long lineTop, 
-                                       long numCharLimit)
+                                   bool doDisplayLineNumbers, 
+                                   long lineTop, 
+                                   long numCharLimit)
 {
   const DiffLine* pLine = m_DiffFile[lineId];
   if(pLine == NULL)

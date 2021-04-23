@@ -102,6 +102,8 @@ public:
    */
   void printPage(bool dontPrintLineNumbers = false);
 
+  void printLine(ULONG lineId);
+
 
   /**
    * Adds a text selection to the DiffFile which is displayed in this 

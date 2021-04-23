@@ -179,8 +179,10 @@ public:
    */
   MenuBase* getMenu();
 
+  ScreenBase& getScreen();
+
   /**
-   * Abstract method. Must be implemeted in derived classes to handle
+   * Abstract method. Must be implemented in derived classes to handle
    * the given IDCMP event.
    */
   virtual void handleIDCMP(ULONG msgClass,
@@ -214,7 +216,7 @@ protected:
 
   /**
    * Measures the text length of all texts in the given array. Returns
-   * the longest text lenght in pixels.
+   * the longest text length in pixels.
    * 
    * The measured value depends of the font which is set to the screen.
    */

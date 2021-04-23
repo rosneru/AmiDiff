@@ -91,7 +91,7 @@ bool WindowBase::open(InitialPosition initialPos)
 
       if(m_Height == 0)
       {
-        // Initial window heigth not set in initialize()
+        // Initial window height not set in initialize()
         m_Height = screenHeight * 60 / 10;
       }
 
@@ -348,6 +348,11 @@ MenuBase* WindowBase::getMenu()
 }
 
 
+ScreenBase& WindowBase::getScreen()
+{
+  return m_Screen;
+}
+
 size_t WindowBase::maxArrayTextLength(const char** ppArrayOfTexts, 
                                       size_t arrayNumItems)
 {
@@ -357,21 +362,21 @@ size_t WindowBase::maxArrayTextLength(const char** ppArrayOfTexts,
     return 0;
   }
 
-  size_t maxLenght = 0;
+  size_t maxLength = 0;
   for(size_t i = 0; i < arrayNumItems; i++)
   {
     const char* pTxt = ppArrayOfTexts[i];
     if(pTxt != NULL)
     {
       size_t txtWidth = TextLength(&pIntuiScreen->RastPort, pTxt, strlen(pTxt));
-      if(txtWidth > maxLenght)
+      if(txtWidth > maxLength)
       {
-        maxLenght = txtWidth;
+        maxLength = txtWidth;
       }
     }
   }
 
-  return maxLenght;
+  return maxLength;
 }
 
 

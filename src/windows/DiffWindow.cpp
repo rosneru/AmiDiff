@@ -309,10 +309,19 @@ bool DiffWindow::setDocument(DiffDocument* pDiffDocument)
 }
 
 
-void DiffWindow::renderDocuments()
+void DiffWindow::renderDocuments(long long justThisLineId)
 {
-  m_pLeftTextArea->printPage();
-  m_pRightTextArea->printPage();
+  if(justThisLineId < 0)
+  {
+    m_pLeftTextArea->printPage();
+    m_pRightTextArea->printPage();
+  }
+  else
+  {
+    m_pLeftTextArea->printLine(justThisLineId);
+    m_pRightTextArea->printLine(justThisLineId);
+  }
+  
 }
 
 
@@ -339,20 +348,26 @@ void DiffWindow::scrollLeftTo(size_t left)
 }
 
 
-void DiffWindow::scrollToVisible(size_t left, 
+bool DiffWindow::scrollToVisible(size_t left, 
                                  size_t top, 
                                  size_t numChars, 
                                  size_t numLines)
 {
+  bool hasScrolled = false;
+
   if(!isHorizontallyVisible(left))
   {
     scrollLeftTo(left);
+    hasScrolled = true;
   }
 
   if(!isVerticallyVisible(top))
   {
     scrollTopTo(top);
+    hasScrolled = true;
   }
+
+  return hasScrolled;
 }
 
 
@@ -364,7 +379,8 @@ bool DiffWindow::isHorizontallyVisible(size_t startCharId) const
   }
 
   size_t rightMostCharId = m_pLeftTextArea->getX() 
-                         + m_pLeftTextArea->getMaxVisibleChars();
+                         + m_pLeftTextArea->getMaxVisibleChars()
+                         - 1;
 
   if(startCharId > rightMostCharId)
   {
@@ -382,7 +398,8 @@ bool DiffWindow::isVerticallyVisible(size_t startLineId) const
   }
 
   size_t bottomMostLineId = m_pLeftTextArea->getY()
-                          + m_pLeftTextArea->getMaxVisibleLines();
+                          + m_pLeftTextArea->getMaxVisibleLines()
+                          - 1;
 
   if(startLineId > bottomMostLineId)
   {

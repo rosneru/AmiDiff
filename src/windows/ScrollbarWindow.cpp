@@ -243,7 +243,7 @@ ScrollbarWindow::ScrollbarWindow(ScreenBase& screen,
            IDCMP_RAWKEY |         // Inform about RAW key presses
            IDCMP_IDCMPUPDATE);    // Inform about BOOPSI gadget updates
 
-  // Setting the first gadget of the gadet list for the window
+  // Setting the first gadget of the gadget list for the window
   setFirstGadget(m_pGadBtnDownArrow);
 }
 

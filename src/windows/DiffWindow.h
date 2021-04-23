@@ -47,8 +47,9 @@ public:
 
   /**
    * Re-renders the documents without clearing the area before
+   * If a lineId is given, only this line is rendered.
    */
-  void renderDocuments();
+  void renderDocuments(long long justThisLineId = -1);
 
   /**
    * Scroll the window to display given line at top.
@@ -63,8 +64,10 @@ public:
   /**
    * Scrolls the given area of (left, top), numLines x numChars into the
    * visible area. Don't scrolls if this area is already visible
+   * 
+   *  @returns true if scrolling has been done.
    */
-  void scrollToVisible(size_t left, 
+  bool scrollToVisible(size_t left, 
                        size_t top, 
                        size_t numChars, 
                        size_t numLines);

@@ -34,6 +34,7 @@ private:
   std::string m_SearchText;
   const DiffDocument* m_pDiffDocument;
   DiffFileSearchEngine* m_pSearchEngine;
+  long long m_LastFoundLineId;
 };
 
 #endif

@@ -1,3 +1,9 @@
+#ifdef __clang__
+  #include <clib/intuition_protos.h>
+#else
+  #include <proto/intuition.h>
+#endif
+
 #include "DiffFileSearchResult.h"
 #include "CmdSearch.h"
 
@@ -9,7 +15,8 @@ CmdSearch::CmdSearch(std::vector<WindowBase*>* pAllWindowsVector,
     m_DiffWorker(diffWorker),
     m_DiffWindow(diffWindow),
     m_pDiffDocument(NULL),
-    m_pSearchEngine(NULL)
+    m_pSearchEngine(NULL),
+    m_LastFoundLineId(-1)
 {
 }
 
@@ -40,16 +47,31 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   if((m_pDiffDocument != m_DiffWorker.getDiffDocument()) || 
      (m_pSearchEngine == NULL))
   {
-    // Must create or re-create the DiffEngine
-    if(m_pSearchEngine == NULL)
-    {
-      delete m_pSearchEngine;
-    }
+    //
+    // Must create or re-create the SearchEngine
+    //
 
+    // Get current document
     m_pDiffDocument = m_DiffWorker.getDiffDocument();
     if(m_pDiffDocument == NULL)
     {
       return;
+    }
+
+    // Search keyword changed, so all old selections must be cleared
+    pLeftTextArea->clearSelection();
+    pRightTextArea->clearSelection();
+    if(m_LastFoundLineId > -1)
+    {
+      // Re-render old line to remove former selection from document
+      m_DiffWindow.renderDocuments(m_LastFoundLineId);
+    }
+
+    m_LastFoundLineId = -1;
+
+    if(m_pSearchEngine != NULL)
+    {
+      delete m_pSearchEngine;
     }
 
     // This searches all occurrences of m_SearchText in both files
@@ -61,6 +83,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     pResult = m_pSearchEngine->getFirstResult();
     if(pResult == NULL)
     {
+      DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
       return;
     }
 
@@ -75,34 +98,53 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   
   if(pResult == NULL)
   {
+    DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
     return;
   }
 
-  // Search keyword changed, so all old selections must be cleared
-  pLeftTextArea->clearSelection();
-  pRightTextArea->clearSelection();
+  if(m_LastFoundLineId > -1)
+  {
+    // Clear selection
+    pLeftTextArea->clearSelection();
+    pRightTextArea->clearSelection();
 
-  int lenDelta = m_SearchText.length() - 1;
+    // Re-render old line to remove former selection from document
+    m_DiffWindow.renderDocuments(m_LastFoundLineId);
+  }
+
+  // Apply the new line
+  m_LastFoundLineId = pResult->getLineId();
+
+  int stopCharId = pResult->getCharId() + m_SearchText.length() - 1;
   if(pResult->getLocation() == DiffFileSearchResult::LeftFile)
   {
     pLeftTextArea->addSelection(pResult->getLineId(), 
                                 pResult->getCharId(),
-                                pResult->getCharId() + lenDelta);
+                                stopCharId);
   }
   else if(pResult->getLocation() == DiffFileSearchResult::RightFile)
   {
     pRightTextArea->addSelection(pResult->getLineId(), 
-                                  pResult->getCharId(),
-                                  pResult->getCharId() + lenDelta);
+                                 pResult->getCharId(),
+                                 stopCharId);
   }
 
   // If necessary scroll the window to have the result visible
-  m_DiffWindow.scrollToVisible(pResult->getCharId(), 
-                               pResult->getLineId(),
-                               m_SearchText.length(),
-                               1);
+  bool hasScrolled = m_DiffWindow.scrollToVisible(pResult->getCharId(), 
+                                                  pResult->getLineId(),
+                                                  m_SearchText.length(),
+                                                  1);
 
-  m_DiffWindow.renderDocuments();
+  if(hasScrolled)
+  {
+    // Re-render complete document
+    m_DiffWindow.renderDocuments();
+  }
+  else
+  {
+    // Re-render only line with the result
+    m_DiffWindow.renderDocuments(pResult->getLineId());
+  }
 }
 
 

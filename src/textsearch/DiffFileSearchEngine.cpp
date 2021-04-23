@@ -40,6 +40,11 @@ DiffFileSearchResult* DiffFileSearchEngine::getFirstResult()
 
 DiffFileSearchResult* DiffFileSearchEngine::getPrevResult()
 {
+  if(m_Results.size() < 1)
+  {
+    return NULL;
+  }
+  
   if(m_ResultsIterator == m_Results.begin())
   {
     return NULL;
@@ -51,6 +56,11 @@ DiffFileSearchResult* DiffFileSearchEngine::getPrevResult()
 
 DiffFileSearchResult* DiffFileSearchEngine::getNextResult()
 {
+  if(m_Results.size() < 1)
+  {
+    return NULL;
+  }
+
   m_ResultsIterator++;
 
   if(m_ResultsIterator == m_Results.end())
