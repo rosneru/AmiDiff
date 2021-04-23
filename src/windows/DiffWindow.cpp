@@ -339,6 +339,59 @@ void DiffWindow::scrollLeftTo(size_t left)
 }
 
 
+void DiffWindow::scrollToVisible(size_t left, 
+                                 size_t top, 
+                                 size_t numChars, 
+                                 size_t numLines)
+{
+  if(!isHorizontallyVisible(left))
+  {
+    scrollLeftTo(left);
+  }
+
+  if(!isVerticallyVisible(top))
+  {
+    scrollTopTo(top);
+  }
+}
+
+
+bool DiffWindow::isHorizontallyVisible(size_t startCharId) const
+{
+  if(startCharId < m_pLeftTextArea->getX())
+  {
+    return false;
+  }
+
+  size_t rightMostCharId = m_pLeftTextArea->getX() 
+                         + m_pLeftTextArea->getMaxVisibleChars();
+
+  if(startCharId > rightMostCharId)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+bool DiffWindow::isVerticallyVisible(size_t startLineId) const
+{
+  if(startLineId < m_pLeftTextArea->getY())
+  {
+    return false;
+  }
+
+  size_t bottomMostLineId = m_pLeftTextArea->getY()
+                          + m_pLeftTextArea->getMaxVisibleLines();
+
+  if(startLineId > bottomMostLineId)
+  {
+    return false;
+  }
+
+  return true;
+}
+
 void DiffWindow::navigateToNextDiff()
 {
   if(m_pLeftTextArea->isScrolledToBottom())

@@ -61,6 +61,18 @@ public:
   void scrollLeftTo(size_t left);
 
   /**
+   * Scrolls the given area of (left, top), numLines x numChars into the
+   * visible area. Don't scrolls if this area is already visible
+   */
+  void scrollToVisible(size_t left, 
+                       size_t top, 
+                       size_t numChars, 
+                       size_t numLines);
+
+  bool isHorizontallyVisible(size_t startCharId) const;
+  bool isVerticallyVisible(size_t startLineId) const;
+
+  /**
    * Navigate to the next difference.
    */
   void navigateToNextDiff();
