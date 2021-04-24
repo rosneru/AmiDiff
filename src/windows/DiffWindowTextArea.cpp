@@ -11,7 +11,7 @@
 
 DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
                                        DiffWindowRastports*& pRPorts,
-                                       struct TextFont* pTextFont,
+                                       TextFont* pTextFont,
                                        bool lineNumbersEnabled,
                                        ULONG maxNumChars)
   : m_DiffFile(diffFile),
@@ -101,12 +101,12 @@ void DiffWindowTextArea::setSize(ULONG width, ULONG height)
   ULONG maxTextWidth_pix = m_AreaMaxChars * m_FontWidth_pix;
   maxTextWidth_pix += m_LineNumsWidth_pix;
 
-  m_HScrollRect.set(getLeft() + m_LineNumsWidth_pix + 3,
+  m_HScrollRect.set(getLeft() + m_LineNumsWidth_pix + 2,
                     getTop() + 1,
                     getLeft() + maxTextWidth_pix + 2,
                     getTop() + getHeight() - 3);
 
-  m_VScrollRect.set(getLeft() + 3,
+  m_VScrollRect.set(getLeft() + 2,
                     getTop() + 1,
                     getLeft() + maxTextWidth_pix + 2,
                     getTop() + getHeight() - 3);
