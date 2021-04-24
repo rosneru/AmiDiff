@@ -102,7 +102,7 @@ Application::Application(ScreenBase& screen,
   m_AboutMsg += "Copyright(c) 2021 Uwe Rosner (u.rosner@ymail.com)";
   m_AboutMsg += "\n\n";
   m_AboutMsg += "This release of ADiffView may be freely distributed.\n";
-  m_AboutMsg += "It may not be comercially distributed without the\n";
+  m_AboutMsg += "It may not be commercially distributed without the\n";
   m_AboutMsg += "explicit permission of the author.\n";
 
   // Add all windows to the array
@@ -315,10 +315,10 @@ void Application::handleIdcmpMessages()
         if(pUserData != NULL)
         {
           // The menu user_data contains a pointer to a Command
-          CommandBase* pSelecedCommand = static_cast<CommandBase*>(pUserData);
+          CommandBase* pSelectedCommand = static_cast<CommandBase*>(pUserData);
 
           // Execute this command
-          pSelecedCommand->Execute(pMsgWindow);
+          pSelectedCommand->Execute(pMsgWindow);
         }
       }
 

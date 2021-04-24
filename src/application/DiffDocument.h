@@ -13,7 +13,7 @@
 #include "StopWatch.h"
 
 /**
- * The document wich holds the result of the compare operation and can
+ * The document which holds the result of the compare operation and can
  * be displayed in a DiffWindow.
  * 
  * @author Uwe Rosner

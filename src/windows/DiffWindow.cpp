@@ -208,7 +208,7 @@ bool DiffWindow::setDocument(DiffDocument* pDiffDocument)
                    + pDiffDocument->getNumDeleted();
 
   sprintf(m_StatusBarText,
-          "Diff performed in %ld s. Total changes: %ld   |   ",
+          "Diff performed in %ld ms. Total changes: %ld   |   ",
           pDiffDocument->getElapsedDiffTime(),
           m_NumDifferences);
 
