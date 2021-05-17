@@ -21,11 +21,13 @@ Matthias Hertel. See the file LICENSE-3RD-PARTY for more information.
 CHANGES
 =======
 2.0 (xx.xx.2021)
-- When running on a custom or public screen other than Workbench, 
-  an AppIcon is displayed on the Workbench. Double clicking on it brings
-  ADiffView to front. The AppIcon allows drag'n'drop of files to insert
-  their names into the open files window on an empty file place. AppIcon
-  can be disabled with the (tooltype / cli) option NOAPPICON.
+- Replaced the Shell / Workbench argument ASKONWORKBENCH with an appicon
+  mechanism. Now, when ADiffView is started from WorkBench but is 
+  running on screen other than Workbench, an AppIcon is displayed. 
+  Double clicking on it brings ADiffView to front. The AppIcon allows 
+  drag'n'drop of files to insert their names into the open files window 
+  on an empty file place. The AppIcon can be disabled with the 
+  (tooltype / cli) option NOAPPICON.
 - Optimized reading of the input files. Now each file is read as a whole
   and no unnecessary string copying is done anymore. Improved overall
   speed.

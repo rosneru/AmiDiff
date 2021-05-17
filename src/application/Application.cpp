@@ -85,7 +85,6 @@ Application::Application(ScreenBase& screen,
     m_CmdCloseSearchWindow(&m_AllWindowsList, m_CmdOpenSearchWindow, m_SearchWindow),
     m_CmdAboutRequester(&m_AllWindowsList, m_AboutMsg, "About", "Ok"),
     m_CmdSearch(&m_AllWindowsList, m_DiffWorker, m_DiffWindow),
-    m_Icon(NULL),
     m_pAppIcon(NULL)
 {
   //
@@ -120,19 +119,15 @@ Application::Application(ScreenBase& screen,
       m_FilesWindow.enableAppWindow(m_Ports.Workbench(), 0L);
     }
 
-    if(m_IsAppIcon)
+    if(m_IsAppIcon && m_Args.getDiscObject() != NULL)
     {
-      m_Icon = GetDefDiskObject(WBTOOL);
-      if(m_Icon != NULL)
-      {
-        m_pAppIcon = AddAppIcon(0L,
-                                0L,
-                                (UBYTE*)"ADiffView",
-                                m_Ports.Workbench(),
-                                0,
-                                m_Icon,
-                                TAG_DONE);
-      }
+      m_pAppIcon = AddAppIcon(0L,
+                              0L,
+                              (UBYTE*)"ADiffView",
+                              m_Ports.Workbench(),
+                              0,
+                              m_Args.getDiscObject(),
+                              TAG_DONE);
     }
   }
 
@@ -168,12 +163,6 @@ Application::~Application()
   {
     RemoveAppIcon(m_pAppIcon);
     m_pAppIcon = NULL;
-  }
-
-  if(m_Icon != NULL)
-  {
-    FreeDiskObject(m_Icon);
-    m_Icon = NULL;
   }
 
   // Ensure that all windows are closed

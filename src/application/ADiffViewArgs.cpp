@@ -21,6 +21,7 @@
 ADiffViewArgs::ADiffViewArgs(int argc, char **argv)
   : m_ArgC(argc),
     m_pArgV(argv),
+    m_pDiskObject(NULL),
     m_bDontAsk(false),
     m_bNoAppIcon(false),
     m_bShowLineNumbers(true)
@@ -45,7 +46,16 @@ ADiffViewArgs::ADiffViewArgs(int argc, char **argv)
 
 ADiffViewArgs::~ADiffViewArgs()
 {
+  if(m_pDiskObject != NULL)
+  {
+    FreeDiskObject(m_pDiskObject);
+    m_pDiskObject = NULL;
+  }
+}
 
+DiskObject* ADiffViewArgs::getDiscObject()
+{
+  return m_pDiskObject;
 }
 
 
@@ -108,12 +118,11 @@ void ADiffViewArgs::readWorkbenchArgs()
         // Make the directory of the icon to the current dir (cd)
         BPTR oldDir = CurrentDir(pWbArg[i].wa_Lock);
 
-        struct DiskObject* pDiskObject = GetDiskObjectNew(
-          (STRPTR) pWbArg[i].wa_Name);
+        m_pDiskObject = GetDiskObjectNew((STRPTR) pWbArg[i].wa_Name);
 
-        if(pDiskObject != NULL)
+        if(m_pDiskObject != NULL)
         {
-          const STRPTR* ppTooltypeArray = pDiskObject->do_ToolTypes;
+          const STRPTR* ppTooltypeArray = m_pDiskObject->do_ToolTypes;
 
           char* pValue = toolTypeValue(ppTooltypeArray, "PUBSCREEN");
           if(pValue != NULL)
@@ -126,7 +135,7 @@ void ADiffViewArgs::readWorkbenchArgs()
             m_bDontAsk = true;
           }
 
-          if(toolTypeValue(ppTooltypeArray, "ASKONWORKBENCH") != NULL)
+          if(toolTypeValue(ppTooltypeArray, "NOAPPICON") != NULL)
           {
             m_bNoAppIcon = true;
           }
@@ -135,8 +144,6 @@ void ADiffViewArgs::readWorkbenchArgs()
           {
              m_bShowLineNumbers = false;
           }
-
-          FreeDiskObject(pDiskObject);
         }
 
         // Change back to the formerly current directory

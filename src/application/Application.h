@@ -82,7 +82,6 @@ private:
 
   std::vector<WindowBase*> m_AllWindowsList;
 
-  struct DiskObject* m_Icon;
   struct AppIcon* m_pAppIcon;
 
   /**

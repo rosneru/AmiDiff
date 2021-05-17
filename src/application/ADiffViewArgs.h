@@ -31,6 +31,13 @@ public:
   virtual ~ADiffViewArgs();
 
   /**
+   * When started from workbench this returns the DiscObject associated
+   * with the application icon. Returns NULL when started from Shell or
+   * when it failed to get the disc object.
+   */
+  DiskObject* getDiscObject();
+
+  /**
    * Name of the public screen to run ADiffView on
    * If empty a own screen will be opened (Workbench clone, 8 colors)
    */
@@ -74,6 +81,7 @@ private:
   int m_ArgC;
   char** m_pArgV;
 
+  struct DiskObject* m_pDiskObject;
   std::string m_PubScreenName;
   std::string m_LeftFilePath;
   std::string m_RightFilePath;
