@@ -1220,7 +1220,7 @@ BOOST_AUTO_TEST_CASE( testcase_explore_search_algorithm )
 
     BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 6);
 
-    DiffFileSearchResult* pSearchResult = searchEngine.getNextResult();
+    DiffFileSearchResult* pSearchResult = searchEngine.getFirstResult();
     BOOST_CHECK(pSearchResult != NULL);
     
     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
@@ -1271,7 +1271,7 @@ BOOST_AUTO_TEST_CASE( testcase_dig_into_search_algorithm )
 
     BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 4);
 
-    DiffFileSearchResult* pSearchResult = searchEngine.getNextResult();
+    DiffFileSearchResult* pSearchResult = searchEngine.getFirstResult();
     BOOST_CHECK(pSearchResult != NULL);
     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
     BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 2);
@@ -1299,7 +1299,7 @@ BOOST_AUTO_TEST_CASE( testcase_dig_into_search_algorithm )
 
     BOOST_CHECK_EQUAL(searchEngine2.getNumResults(), 4);
 
-    pSearchResult = searchEngine2.getNextResult();
+    pSearchResult = searchEngine2.getFirstResult();
     BOOST_CHECK(pSearchResult != NULL);
     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
     BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 0);
