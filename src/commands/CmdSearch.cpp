@@ -80,7 +80,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
                                                m_pDiffDocument->getRightDiffFile(),
                                                m_SearchText.c_str());
 
-    pResult = m_pSearchEngine->getFirstResult();
+    pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
     if(pResult == NULL)
     {
       DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
@@ -88,7 +88,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     }
 
     // Now again get the first result (to be displayed)
-    pResult = m_pSearchEngine->getFirstResult();
+    pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
   }
   else
   {
