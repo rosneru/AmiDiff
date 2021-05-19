@@ -22,7 +22,7 @@ public:
   virtual ~DiffFileSearchEngine();
 
   size_t getNumResults();
-  DiffFileSearchResult* getFirstResult();
+  DiffFileSearchResult* getFirstResult(size_t startLineId);
   DiffFileSearchResult* getPrevResult();
   DiffFileSearchResult* getNextResult();
 

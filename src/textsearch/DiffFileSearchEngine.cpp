@@ -27,7 +27,7 @@ size_t DiffFileSearchEngine::getNumResults()
   return m_Results.size();
 }
 
-DiffFileSearchResult* DiffFileSearchEngine::getFirstResult()
+DiffFileSearchResult* DiffFileSearchEngine::getFirstResult(size_t startLineId)
 {
   if(m_Results.size() < 1)
   {
@@ -35,6 +35,18 @@ DiffFileSearchResult* DiffFileSearchEngine::getFirstResult()
   }
 
   m_ResultsIterator = m_Results.begin();
+
+  // Forward iterator to the first result after or equal startLineId
+  while((*m_ResultsIterator)->getLineId() < startLineId)
+  {
+    m_ResultsIterator++;
+    if(m_ResultsIterator == m_Results.end())
+    {
+      // Avoid overflow: back to last valid item
+      m_ResultsIterator = m_Results.begin();
+    }
+  }
+
   return (*m_ResultsIterator);
 }
 
