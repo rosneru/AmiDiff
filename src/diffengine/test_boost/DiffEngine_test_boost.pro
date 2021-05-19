@@ -28,6 +28,7 @@ SOURCES += \
     ../SelectableDiffFile.cpp \
     ../../model/Pair.cpp \
     ../../textsearch/DiffFileSearchEngine.cpp \
+    ../../textsearch/DiffFileSearchEngineSteadily.cpp \
     ../../textsearch/DiffFileSearchResult.cpp \
     ../../textselect/TextSelection.cpp \
     ../../textselect/TextSelectionRange.cpp \
@@ -46,6 +47,7 @@ HEADERS += \
     ../SelectableDiffFile.h \
     ../../model/Pair.h \
     ../../textsearch/DiffFileSearchEngine.h \
+    ../../textsearch/DiffFileSearchEngineSteadily.h \
     ../../textsearch/DiffFileSearchResult.h \
     ../../textselect/TextSelection.h \
     ../../textselect/TextSelectionRange.h \
