@@ -44,8 +44,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   }
 
   DiffFileSearchResult* pResult;
-  if((m_pDiffDocument != m_DiffWorker.getDiffDocument()) || 
-     (m_pSearchEngine == NULL))
+  if(didDiffDocumentChange() || didSearchParamsChange() || (m_pSearchEngine == NULL))
   {
     //
     // Must create or re-create the SearchEngine
@@ -78,7 +77,8 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     // and could take some time. TODO: Consider to create a task.
     m_pSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
                                                m_pDiffDocument->getRightDiffFile(),
-                                               m_SearchText.c_str());
+                                               m_SearchText.c_str(),
+                                               false);  // TODO
 
     pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
     if(pResult == NULL)
@@ -148,7 +148,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
 }
 
 
-const char* CmdSearch::getSearchText()
+const char* CmdSearch::getSearchText() const
 {
   return m_SearchText.c_str();
 }
@@ -169,4 +169,42 @@ void CmdSearch::setSearchText(const char* pSearchText)
     delete m_pSearchEngine;
     m_pSearchEngine = NULL;
   }
+}
+
+
+bool CmdSearch::isCaseIgnored() const
+{
+  return m_IsCaseIgnored;
+}
+
+
+void CmdSearch::setCaseIgnored(bool isCaseIgnored)
+{
+  m_IsCaseIgnored = isCaseIgnored;
+}
+
+
+bool CmdSearch::didDiffDocumentChange() const
+{
+  return m_pDiffDocument != m_DiffWorker.getDiffDocument();
+}
+
+bool CmdSearch::didSearchParamsChange() const
+{
+  if(m_pSearchEngine == NULL)
+  {
+    return false;
+  }
+
+  if(m_SearchText != m_pSearchEngine->getSearchString())
+  {
+    return true;
+  }
+
+  if(m_IsCaseIgnored != m_pSearchEngine->isCaseIgnored())
+  {
+    return true;
+  }
+
+  return false;
 }

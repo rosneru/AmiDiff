@@ -2,11 +2,13 @@
 #include "DiffFileSearchEngine.h"
 
 DiffFileSearchEngine::DiffFileSearchEngine(const DiffFileBase& leftFile, 
-                       const DiffFileBase& rightFile, 
-                       const char* pSearchString)
+                                           const DiffFileBase& rightFile, 
+                                           const char* pSearchString,
+                                           bool isCaseIgnored)
   : m_LeftFile(leftFile),
     m_RightFile(rightFile),
-    m_SearchString(pSearchString)
+    m_SearchString(pSearchString),
+    m_IsCaseIgnored(isCaseIgnored)
 {
   find();
   m_ResultsIterator = m_Results.begin();
@@ -85,6 +87,17 @@ DiffFileSearchResult* DiffFileSearchEngine::getNextResult()
   return (*m_ResultsIterator);
 }
 
+
+const std::string& DiffFileSearchEngine::getSearchString() const
+{
+  return m_SearchString;
+}
+
+
+bool DiffFileSearchEngine::isCaseIgnored() const
+{
+  return m_IsCaseIgnored;
+}
 
 
 void DiffFileSearchEngine::find()
