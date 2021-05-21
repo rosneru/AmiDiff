@@ -25,17 +25,26 @@ public:
 
   virtual void Execute(struct Window* pActiveWindow);
 
-  const char* getSearchText();
+  const char* getSearchText() const;
   void setSearchText(const char* pSearchText);
+
+
+  bool isCaseIgnored() const;
+  void setCaseIgnored(bool isCaseIgnored);
 
 private:
   const DiffWorker& m_DiffWorker;
   DiffWindow& m_DiffWindow;
   std::string m_SearchText;
+  bool m_IsCaseIgnored;
+
   const DiffDocument* m_pDiffDocument;
   DiffFileSearchEngine* m_pSearchEngine;
   long long m_LastFoundLineId;
+
+
+  bool didDiffDocumentChange() const;
+  bool didSearchParamsChange() const;
 };
 
 #endif
-
