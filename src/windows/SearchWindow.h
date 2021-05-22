@@ -65,15 +65,20 @@ private:
   {
     GID_StrSearchText,
     GID_CycLocation,
+    GID_CycStartSearchFrom,
     GID_CbxIgnoreCase,
-    GID_BtnFind,
+    GID_BtnFindNext,
+    GID_BtnFindPrev,
   };
 
   struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pGadStrSearchText;
   struct Gadget* m_pGadCycLocation;
+  struct Gadget* m_pGadCycStartSearchFrom;
   struct Gadget* m_pGadCbxIgnoreCase;
-  struct Gadget* m_pGadBtnFind;
+  struct Gadget* m_pGadBtnFindNext;
+  struct Gadget* m_pGadBtnFindPrev;
+
 
   //
   // The next two are called from HandleIDCMP() to get that method not

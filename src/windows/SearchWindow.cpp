@@ -31,6 +31,7 @@
    * Array of string constants for 'Location' cycle gadget
    */
   const char* g_GadCycLocationLabels [4] = {"Both files", "Left file", "Right file", NULL};
+  const char* g_GadCycStartSearchLabels [3] = {"Current page", "Document top", NULL};
 
 
 
@@ -48,8 +49,10 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     m_pGadtoolsContext(NULL),
     m_pGadStrSearchText(NULL),
     m_pGadCycLocation(NULL),
+    m_pGadCycStartSearchFrom(NULL),
     m_pGadCbxIgnoreCase(NULL),
-    m_pGadBtnFind(NULL)
+    m_pGadBtnFindNext(NULL),
+    m_pGadBtnFindPrev(NULL)
 {     
   const char* pErrMsg = "SearchWindow: Failed to create gadgets.";
 
@@ -59,12 +62,25 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   struct Screen* pIntuiScreen = m_Screen.IntuiScreen();
   UWORD fontHeight = m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
 
-  // Default button dimensions
-  WORD btnsHeight = fontHeight + 6;
-
   WORD hSpace = 10;
   WORD vSpace = 6;
 
+  //
+  // Default button dimensions
+  //
+
+  // Extra space by which a button must be wider than its text to look good
+  const int btnExtraHSpace = 8;
+
+  // Set the same width for all of the bottom buttons row according to
+  // the longest button text
+  const char* btnTexts[]  = {"Find next", "Find prev"};
+  size_t numBottomButtons = sizeof(btnTexts) / (sizeof btnTexts[0]);
+  WORD btnsWidth = maxArrayTextLength(btnTexts, numBottomButtons);
+  btnsWidth += btnExtraHSpace;
+
+  // Buttons height
+  WORD btnsHeight = fontHeight + 6;
 
   // as default the window's width should be half of the screen's width
   m_Width = (WORD)pIntuiScreen->Width / 2;
@@ -81,14 +97,31 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   WORD right = m_Width - pIntuiScreen->WBorRight - hSpace - hSpace;
 
   // Set the labelWidth to the longest label text
-  const char* labelTexts[]  = {"Search for", "Location", "Ignore case"};
+  const char* labelTexts[]  = 
+  { 
+    "Search for", "Location", "Ignore case", "Start from"
+  };
+
   size_t arraySize = sizeof(labelTexts) / (sizeof labelTexts[0]);
   WORD labelsWidth = maxArrayTextLength(labelTexts, arraySize);
 
   WORD contentWidth = right - left - labelsWidth;
 
+  // Both cycle gadgets should be the same width. Calculate this width 
+  // by measuring the longest text width
+
   arraySize = sizeof(g_GadCycLocationLabels) / sizeof(g_GadCycLocationLabels[0]);
-  WORD cycWidth = maxArrayTextLength(g_GadCycLocationLabels, arraySize);
+  WORD cyc1Width = maxArrayTextLength(g_GadCycLocationLabels, arraySize);
+
+  arraySize = sizeof(g_GadCycStartSearchLabels) / sizeof(g_GadCycStartSearchLabels[0]);
+  WORD cyc2Width = maxArrayTextLength(g_GadCycStartSearchLabels, arraySize);
+
+  WORD cycWidth = cyc1Width;
+  if(cyc2Width > cycWidth)
+  {
+    cycWidth = cyc2Width;
+  }
+
   cycWidth += 3 * hSpace;
 
   //
@@ -104,7 +137,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Set the first gadget of the gadet list for the window
+  // Set the first gadget of the gadget list for the window
   setFirstGadget(m_pGadtoolsContext);
 
   // Declare the basic gadget structure
@@ -122,10 +155,10 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_GadgetID   = GID_StrSearchText;
 
   m_pGadStrSearchText = CreateGadget(STRING_KIND,
-                                   pFakeGad,
-                                   &newGadget,
-                                   GT_Underscore, '_',
-                                   TAG_DONE);
+                                     pFakeGad,
+                                     &newGadget,
+                                     GT_Underscore, '_',
+                                     TAG_DONE);
   if(m_pGadStrSearchText == NULL)
   {
     cleanup();
@@ -172,18 +205,61 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Create the 'Find' button
-  newGadget.ng_TopEdge    += (btnsHeight + vSpace + vSpace - 1);
-  newGadget.ng_LeftEdge   = left + hSpace;
+  // Create the 'Start search from' cycle gadget
+  newGadget.ng_LeftEdge   = labelsWidth + left + hSpace;
+  newGadget.ng_TopEdge    += btnsHeight + vSpace - 1;
   newGadget.ng_Width      = cycWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "Find";
-  newGadget.ng_GadgetID   = GID_BtnFind;
+  newGadget.ng_GadgetText = (UBYTE*) "Start from";
+  newGadget.ng_GadgetID   = GID_CycStartSearchFrom;
+  m_pGadCycStartSearchFrom = CreateGadget(CYCLE_KIND,
+                                          m_pGadCbxIgnoreCase,
+                                          &newGadget,
+                                          GT_Underscore, '_',
+                                          GTCY_Labels, (ULONG)g_GadCycStartSearchLabels,
+                                          TAG_DONE);
 
-  m_pGadBtnFind = CreateGadget(BUTTON_KIND,
-                               m_pGadCbxIgnoreCase,
-                               &newGadget,
-                               TAG_DONE);
-  if(m_pGadBtnFind == NULL)
+  // Create the 'Find next' button
+  newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
+  newGadget.ng_LeftEdge   = left + hSpace;
+  newGadget.ng_Width      = btnsWidth;
+  newGadget.ng_GadgetText = (UBYTE*) "Find _next";
+  newGadget.ng_GadgetID   = GID_BtnFindNext;
+
+  m_pGadBtnFindNext = CreateGadget(BUTTON_KIND,
+                                   m_pGadCycStartSearchFrom,
+                                   &newGadget,
+                                   GT_Underscore, '_',
+                                   TAG_DONE);
+  if(m_pGadBtnFindNext == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
+
+  // Create the 'Find prev' button
+  newGadget.ng_LeftEdge  += btnsWidth;
+  if(newGadget.ng_LeftEdge < (labelsWidth + left + hSpace))
+  {
+    // Hope this h-distance is enough. But it is visually a good idea
+    // to start the button on a vertical line with the gadgets above.
+    newGadget.ng_LeftEdge = labelsWidth + left + hSpace;
+  }
+  else
+  {
+    // Add a h-distance to previous button
+    newGadget.ng_LeftEdge += 10;
+  }
+
+  newGadget.ng_GadgetText = (UBYTE*) "Find _prev";
+  newGadget.ng_GadgetID   = GID_BtnFindPrev;
+
+  m_pGadBtnFindPrev = CreateGadget(BUTTON_KIND,
+                                   m_pGadBtnFindNext,
+                                   &newGadget,
+                                   GT_Underscore, '_',
+                                   TAG_DONE);
+
+  if(m_pGadBtnFindPrev == NULL)
   {
     cleanup();
     throw pErrMsg;
@@ -288,7 +364,7 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
   switch(pGadget->GadgetID)
   {
     case GID_StrSearchText:
-    case GID_BtnFind:
+    case GID_BtnFindNext:
       find();
       break;
   }
@@ -331,7 +407,7 @@ void SearchWindow::handleVanillaKey(UWORD code)
 
 void SearchWindow::find()
 {
-  if(!isOpen() || (m_pGadBtnFind == NULL))
+  if(!isOpen() || (m_pGadBtnFindNext == NULL))
   {
     return;
   }
@@ -386,5 +462,5 @@ void SearchWindow::cleanup()
   m_pGadStrSearchText = NULL;
   m_pGadCycLocation = NULL;
   m_pGadCbxIgnoreCase = NULL;
-  m_pGadBtnFind = NULL;
+  m_pGadBtnFindNext = NULL;
 }

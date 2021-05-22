@@ -54,28 +54,32 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     m_pGadBtnCancel(NULL)
 {
   const char* pErrMsg = "FilesWindow: Failed to create gadgets.";
+
   //
   // Calculate some basic values
   //
   struct Screen* pIntuiScreen = m_Screen.IntuiScreen();
   UWORD fontHeight = m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
 
+  WORD hSpace = 10;
+  WORD vSpace = 10;
+
+  //
   // Default button dimensions
-  WORD btnsWidth = 70;
-  WORD btnsHeight = fontHeight + 6;
+  //
 
   // Extra space by which a button must be wider than its text to look good
   const int btnExtraHSpace = 8;
-
-  WORD hSpace = 10;
-  WORD vSpace = 10;
 
   // Set the same width for all of the bottom buttons row according to
   // the longest button text
   const char* btnTexts[]  = {"Compare", "Swap", "Clear", "Cancel"};
   size_t numBottomButtons = sizeof(btnTexts) / (sizeof btnTexts[0]);
-  btnsWidth = maxArrayTextLength(btnTexts, numBottomButtons);
+  WORD btnsWidth = maxArrayTextLength(btnTexts, numBottomButtons);
   btnsWidth += btnExtraHSpace;
+
+  // Buttons height
+  WORD btnsHeight = fontHeight + 6;
 
   // as default the window's width should be half of the screen's width
   m_Width = (WORD)pIntuiScreen->Width / 2;
@@ -247,7 +251,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
                                       TAG_DONE);
 
   //
-  // Row 5: conatins the buttons Compare, Swap, Clear and Cancel
+  // Row 5: contains the buttons Compare, Swap, Clear and Cancel
   //
 
   // Calculate the 'field width' of each of the four bottom buttons
