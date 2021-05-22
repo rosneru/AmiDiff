@@ -121,7 +121,7 @@ FilesWindow::FilesWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Set the first gadget of the gadet list for the window
+  // Set the first gadget of the gadget list for the window
   setFirstGadget(m_pGadtoolsContext);
 
   // Declare the basic gadget structure

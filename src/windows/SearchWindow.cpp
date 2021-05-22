@@ -46,6 +46,9 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     m_NumLocationLabels(sizeof(g_GadCycLocationLabels) /
                         sizeof(g_GadCycLocationLabels[0])
                         - 1), // Skip trailing NULL item
+    m_NumStartSearchFromLabels(sizeof(g_GadCycStartSearchLabels) /
+                        sizeof(g_GadCycStartSearchLabels[0])
+                        - 1), // Skip trailing NULL item
     m_pGadtoolsContext(NULL),
     m_pGadStrSearchText(NULL),
     m_pGadCycLocation(NULL),
@@ -209,7 +212,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_LeftEdge   = labelsWidth + left + hSpace;
   newGadget.ng_TopEdge    += btnsHeight + vSpace - 1;
   newGadget.ng_Width      = cycWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "Start from";
+  newGadget.ng_GadgetText = (UBYTE*) "Start _from";
   newGadget.ng_GadgetID   = GID_CycStartSearchFrom;
   m_pGadCycStartSearchFrom = CreateGadget(CYCLE_KIND,
                                           m_pGadCbxIgnoreCase,
@@ -363,6 +366,12 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
   switch(pGadget->GadgetID)
   {
+    case GID_CycLocation:
+    {
+      
+      break;
+    }
+
     case GID_StrSearchText:
     case GID_BtnFindNext:
       find();
@@ -379,6 +388,13 @@ void SearchWindow::handleVanillaKey(UWORD code)
     {
       // Button is enabled, perform its action
       find();
+      break;
+    }
+
+    case 'f':
+    case 'F':
+    {
+      toggleStartSearchFromGadget();
       break;
     }
 
@@ -428,7 +444,7 @@ void SearchWindow::find()
 
 void SearchWindow::toggleLocationGadget()
 {
-  // Get the current index value from 'locaion' cycle gadget
+  // Get the current index value from 'location' cycle gadget
   ULONG currentId = 0;
   if(GT_GetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
                       GTCY_Active, (ULONG)&currentId,
@@ -446,6 +462,30 @@ void SearchWindow::toggleLocationGadget()
 
   // Set the new index value in gadget
   GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                    GTCY_Active, currentId,
+                    TAG_DONE);
+}
+
+void SearchWindow::toggleStartSearchFromGadget()
+{
+  // Get the current index value from 'location' cycle gadget
+  ULONG currentId = 0;
+  if(GT_GetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
+                      GTCY_Active, (ULONG)&currentId,
+                      TAG_DONE) != 1)
+  {
+    return;
+  }
+
+  // Increase the id; start from 0 when over max
+  currentId++;
+  if(currentId >= m_NumStartSearchFromLabels)
+  {
+    currentId = 0;
+  }
+
+  // Set the new index value in gadget
+  GT_SetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
                     GTCY_Active, currentId,
                     TAG_DONE);
 }

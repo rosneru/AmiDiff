@@ -56,6 +56,7 @@ private:
   CommandBase& m_CmdCloseSearchWindow;
 
   const ULONG m_NumLocationLabels;
+  const ULONG m_NumStartSearchFromLabels;
 
   /**
    * IDs to help to interpret the events of this window's Gadtools
@@ -89,6 +90,7 @@ private:
 
   void find();
   void toggleLocationGadget();
+  void toggleStartSearchFromGadget();
 
   void cleanup();
 
