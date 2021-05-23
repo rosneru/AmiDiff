@@ -7,6 +7,9 @@
 #include "DiffFileSearchEngine.h"
 #include "DiffWindow.h"
 #include "DiffWorker.h"
+#include "SearchConstants.h"
+
+
 
 /**
  * Command to search for text in diff result window.
@@ -28,20 +31,28 @@ public:
   const char* getSearchText() const;
   void setSearchText(const char* pSearchText);
 
-
   bool isCaseIgnored() const;
   void setCaseIgnored(bool isCaseIgnored);
+
+  SearchLocation getLocation() const;
+  void setLocation(SearchLocation location);
+
+  SearchDirection getDirection();
+  void setDirection(SearchDirection direction);
 
 private:
   const DiffWorker& m_DiffWorker;
   DiffWindow& m_DiffWindow;
   std::string m_SearchText;
   bool m_IsCaseIgnored;
+  SearchLocation m_Location;
+  SearchDirection m_Direction;
 
   const DiffDocument* m_pDiffDocument;
   DiffFileSearchEngine* m_pSearchEngine;
   long long m_LastFoundLineId;
 
+  DiffFileSearchResult* performSearch();
 
   bool didDiffDocumentChange() const;
   bool didSearchParamsChange() const;

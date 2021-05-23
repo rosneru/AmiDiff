@@ -14,6 +14,9 @@ CmdSearch::CmdSearch(std::vector<WindowBase*>* pAllWindowsVector,
   : CommandBase(pAllWindowsVector),
     m_DiffWorker(diffWorker),
     m_DiffWindow(diffWindow),
+    m_IsCaseIgnored(true),
+    m_Location(SL_BothFiles),
+    m_Direction(SD_Downward),
     m_pDiffDocument(NULL),
     m_pSearchEngine(NULL),
     m_LastFoundLineId(-1)
@@ -46,49 +49,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   DiffFileSearchResult* pResult;
   if(didDiffDocumentChange() || didSearchParamsChange() || (m_pSearchEngine == NULL))
   {
-    //
-    // Must create or re-create the SearchEngine
-    //
-
-    // Get current document
-    m_pDiffDocument = m_DiffWorker.getDiffDocument();
-    if(m_pDiffDocument == NULL)
-    {
-      return;
-    }
-
-    // Search keyword changed, so all old selections must be cleared
-    pLeftTextArea->clearSelection();
-    pRightTextArea->clearSelection();
-    if(m_LastFoundLineId > -1)
-    {
-      // Re-render old line to remove former selection from document
-      m_DiffWindow.renderDocuments(m_LastFoundLineId);
-    }
-
-    m_LastFoundLineId = -1;
-
-    if(m_pSearchEngine != NULL)
-    {
-      delete m_pSearchEngine;
-    }
-
-    // This searches all occurrences of m_SearchText in both files
-    // and could take some time. TODO: Consider to create a task.
-    m_pSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
-                                               m_pDiffDocument->getRightDiffFile(),
-                                               m_SearchText.c_str(),
-                                               false);  // TODO
-
-    pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
-    if(pResult == NULL)
-    {
-      DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
-      return;
-    }
-
-    // Now again get the first result (to be displayed)
-    pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
+    pResult = performSearch();
   }
   else
   {
@@ -147,6 +108,62 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   }
 }
 
+DiffFileSearchResult* CmdSearch::performSearch()
+{
+  DiffFileSearchResult* pResult = NULL;
+  
+  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
+  DiffWindowTextArea* pRightTextArea = m_DiffWindow.getRightTextArea();
+  if((pLeftTextArea == NULL) || (pRightTextArea == NULL))
+  {
+    return NULL;
+  }
+
+  //
+  // Must create or re-create the SearchEngine
+  //
+
+  // Get current document
+  m_pDiffDocument = m_DiffWorker.getDiffDocument();
+  if(m_pDiffDocument == NULL)
+  {
+    return NULL;
+  }
+
+  // Search keyword changed, so all old selections must be cleared
+  pLeftTextArea->clearSelection();
+  pRightTextArea->clearSelection();
+  if(m_LastFoundLineId > -1)
+  {
+    // Re-render old line to remove former selection from document
+    m_DiffWindow.renderDocuments(m_LastFoundLineId);
+  }
+
+  m_LastFoundLineId = -1;
+
+  if(m_pSearchEngine != NULL)
+  {
+    delete m_pSearchEngine;
+  }
+
+  // This searches all occurrences of m_SearchText in both files
+  // and could take some time. TODO: Consider to create a task.
+  m_pSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
+                                              m_pDiffDocument->getRightDiffFile(),
+                                              m_SearchText.c_str(),
+                                              false);  // TODO
+
+  pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
+  if(pResult == NULL)
+  {
+    DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
+    return NULL;
+  }
+
+  // Now again get the first result (to be displayed)
+  pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
+}
+
 
 const char* CmdSearch::getSearchText() const
 {
@@ -181,6 +198,27 @@ bool CmdSearch::isCaseIgnored() const
 void CmdSearch::setCaseIgnored(bool isCaseIgnored)
 {
   m_IsCaseIgnored = isCaseIgnored;
+}
+
+
+SearchLocation CmdSearch::getLocation() const
+{
+  return m_Location;
+}
+
+void CmdSearch::setLocation(SearchLocation location)
+{
+  m_Location = location;
+}
+
+SearchDirection CmdSearch::getDirection()
+{
+  return m_Direction;
+}
+
+void CmdSearch::setDirection(SearchDirection direction)
+{
+  m_Direction = direction;
 }
 
 
