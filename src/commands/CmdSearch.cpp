@@ -160,7 +160,8 @@ DiffFileSearchResult* CmdSearch::performSearch()
   m_pSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
                                               m_pDiffDocument->getRightDiffFile(),
                                               m_SearchText.c_str(),
-                                              false);  // TODO
+                                              m_IsCaseIgnored,
+                                              m_Location);
 
   pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
   if(pResult == NULL)
@@ -171,6 +172,7 @@ DiffFileSearchResult* CmdSearch::performSearch()
 
   // Now again get the first result (to be displayed)
   pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
+  return pResult;
 }
 
 
@@ -220,7 +222,7 @@ void CmdSearch::setLocation(SearchLocation location)
   m_Location = location;
 }
 
-SearchDirection CmdSearch::getDirection()
+SearchDirection CmdSearch::getDirection() const
 {
   return m_Direction;
 }
@@ -250,6 +252,11 @@ bool CmdSearch::didSearchParamsChange() const
   }
 
   if(m_IsCaseIgnored != m_pSearchEngine->isCaseIgnored())
+  {
+    return true;
+  }
+
+  if(m_Location != m_pSearchEngine->getLocation())
   {
     return true;
   }

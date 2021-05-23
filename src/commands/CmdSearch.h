@@ -37,7 +37,7 @@ public:
   SearchLocation getLocation() const;
   void setLocation(SearchLocation location);
 
-  SearchDirection getDirection();
+  SearchDirection getDirection() const;
   void setDirection(SearchDirection direction);
 
 private:

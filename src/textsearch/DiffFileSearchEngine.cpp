@@ -4,11 +4,13 @@
 DiffFileSearchEngine::DiffFileSearchEngine(const DiffFileBase& leftFile, 
                                            const DiffFileBase& rightFile, 
                                            const char* pSearchString,
-                                           bool isCaseIgnored)
+                                           bool isCaseIgnored,
+                                           SearchLocation location)
   : m_LeftFile(leftFile),
     m_RightFile(rightFile),
     m_SearchString(pSearchString),
-    m_IsCaseIgnored(isCaseIgnored)
+    m_IsCaseIgnored(isCaseIgnored),
+    m_Location(location)
 {
   find();
   m_ResultsIterator = m_Results.begin();
@@ -97,6 +99,12 @@ const std::string& DiffFileSearchEngine::getSearchString() const
 bool DiffFileSearchEngine::isCaseIgnored() const
 {
   return m_IsCaseIgnored;
+}
+
+
+SearchLocation DiffFileSearchEngine::getLocation() const
+{
+  return m_Location;
 }
 
 
