@@ -1,7 +1,10 @@
 #ifndef ADIFFVIEW_ARGS_H
 #define ADIFFVIEW_ARGS_H
 
+#include <workbench/workbench.h>
+
 #include <string>
+
 
 /**
  * Class to parse and store the command line / workbench arguments
@@ -54,12 +57,12 @@ public:
   const std::string& RightFile() const;
 
   /**
-   * If true, the diff will be performed immediately without waiting 
-   * for the user to click the "Diff" button in OpenFilesWindow. 
-   * 
-   * This only works when both files, left and right are also passed 
+   * If true, the diff will be performed immediately without waiting
+   * for the user to click the "Diff" button in OpenFilesWindow.
+   *
+   * This only works when both files, left and right are also passed
    * as arguments.
-   * 
+   *
    * Defaults to false.
    */
   bool DontAsk() const;
@@ -73,7 +76,7 @@ public:
   /**
    * If true, the line numbers will be shown in the diff result window.
    *
-   * Defaults to true; 
+   * Defaults to true;
    */
   bool ShowLineNumbers() const;
 
@@ -95,12 +98,12 @@ private:
   /**
    * Uses FindTooltype to find and return the value of given name.
    * Returns NULL if tooltype not found.
-   * 
+   *
    * Is basically just a wrapper around FindTooltype with the proper
-   * types needed. Helps to avoid some casts and STRPTR compiler 
+   * types needed. Helps to avoid some casts and STRPTR compiler
    * warnings in readWorkbenchArgs()
    */
-  char* toolTypeValue(const STRPTR* ppTooltypeArray, 
+  char* toolTypeValue(const STRPTR* ppTooltypeArray,
                       const char* pTooltypeName);
 };
 

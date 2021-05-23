@@ -1036,6 +1036,12 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "src/textsearch/SearchConstants.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "src/textselect/TextSelection.h"
 "src/textselect/TextSelection.h"
 Storm Shell Project (Dependencies)
@@ -1146,7 +1152,6 @@ Section
 7
 File
 10 "ADiffView"
-"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

@@ -47,7 +47,16 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   }
 
   DiffFileSearchResult* pResult;
-  if(didDiffDocumentChange() || didSearchParamsChange() || (m_pSearchEngine == NULL))
+
+  if(m_pSearchEngine == NULL)
+  {
+    pResult = performSearch();
+  }
+  else if(didDiffDocumentChange())
+  {
+    pResult = performSearch();
+  }
+  else if(didSearchParamsChange())
   {
     pResult = performSearch();
   }
@@ -56,7 +65,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     // Get the next result (to be displayed)
     pResult = m_pSearchEngine->getNextResult();
   }
-  
+
   if(pResult == NULL)
   {
     DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
@@ -79,19 +88,19 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   int stopCharId = pResult->getCharId() + m_SearchText.length() - 1;
   if(pResult->getLocation() == DiffFileSearchResult::LeftFile)
   {
-    pLeftTextArea->addSelection(pResult->getLineId(), 
+    pLeftTextArea->addSelection(pResult->getLineId(),
                                 pResult->getCharId(),
                                 stopCharId);
   }
   else if(pResult->getLocation() == DiffFileSearchResult::RightFile)
   {
-    pRightTextArea->addSelection(pResult->getLineId(), 
+    pRightTextArea->addSelection(pResult->getLineId(),
                                  pResult->getCharId(),
                                  stopCharId);
   }
 
   // If necessary scroll the window to have the result visible
-  bool hasScrolled = m_DiffWindow.scrollToVisible(pResult->getCharId(), 
+  bool hasScrolled = m_DiffWindow.scrollToVisible(pResult->getCharId(),
                                                   pResult->getLineId(),
                                                   m_SearchText.length(),
                                                   1);
@@ -111,7 +120,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
 DiffFileSearchResult* CmdSearch::performSearch()
 {
   DiffFileSearchResult* pResult = NULL;
-  
+
   DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
   DiffWindowTextArea* pRightTextArea = m_DiffWindow.getRightTextArea();
   if((pLeftTextArea == NULL) || (pRightTextArea == NULL))
@@ -224,7 +233,8 @@ void CmdSearch::setDirection(SearchDirection direction)
 
 bool CmdSearch::didDiffDocumentChange() const
 {
-  return m_pDiffDocument != m_DiffWorker.getDiffDocument();
+  const DiffDocument* pWorkerDiffDoc = m_DiffWorker.getDiffDocument();
+  return m_pDiffDocument != pWorkerDiffDoc;
 }
 
 bool CmdSearch::didSearchParamsChange() const
