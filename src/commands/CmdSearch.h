@@ -7,7 +7,7 @@
 #include "DiffFileSearchEngine.h"
 #include "DiffWindow.h"
 #include "DiffWorker.h"
-#include "SearchConstants.h"
+#include "SearchOptions.h"
 
 
 
@@ -40,6 +40,9 @@ public:
   SearchDirection getDirection() const;
   void setDirection(SearchDirection direction);
 
+  StartSearchFrom getStartFrom() const;
+  void setStartFrom(StartSearchFrom startFrom);
+
 private:
   const DiffWorker& m_DiffWorker;
   DiffWindow& m_DiffWindow;
@@ -47,6 +50,7 @@ private:
   bool m_IsCaseIgnored;
   SearchLocation m_Location;
   SearchDirection m_Direction;
+  StartSearchFrom m_StartFrom;
 
   const DiffDocument* m_pDiffDocument;
   DiffFileSearchEngine* m_pSearchEngine;

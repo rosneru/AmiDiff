@@ -6,7 +6,7 @@
 
 #include "DiffFileBase.h"
 #include "DiffFileSearchResult.h"
-#include "SearchConstants.h"
+#include "SearchOptions.h"
 
 /**
  * A text search engine that operates on two DiffFiles.

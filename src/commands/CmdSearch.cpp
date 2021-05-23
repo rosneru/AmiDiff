@@ -17,6 +17,7 @@ CmdSearch::CmdSearch(std::vector<WindowBase*>* pAllWindowsVector,
     m_IsCaseIgnored(true),
     m_Location(SL_BothFiles),
     m_Direction(SD_Downward),
+    m_StartFrom(SF_CurrentPage),
     m_pDiffDocument(NULL),
     m_pSearchEngine(NULL),
     m_LastFoundLineId(-1)
@@ -158,10 +159,10 @@ DiffFileSearchResult* CmdSearch::performSearch()
   // This searches all occurrences of m_SearchText in both files
   // and could take some time. TODO: Consider to create a task.
   m_pSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
-                                              m_pDiffDocument->getRightDiffFile(),
-                                              m_SearchText.c_str(),
-                                              m_IsCaseIgnored,
-                                              m_Location);
+                                             m_pDiffDocument->getRightDiffFile(),
+                                             m_SearchText.c_str(),
+                                             m_IsCaseIgnored,
+                                             m_Location);
 
   pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
   if(pResult == NULL)
@@ -230,6 +231,17 @@ SearchDirection CmdSearch::getDirection() const
 void CmdSearch::setDirection(SearchDirection direction)
 {
   m_Direction = direction;
+}
+
+
+StartSearchFrom CmdSearch::getStartFrom() const
+{
+  return m_StartFrom;
+}
+
+void CmdSearch::setStartFrom(StartSearchFrom startFrom)
+{
+  m_StartFrom = startFrom;
 }
 
 

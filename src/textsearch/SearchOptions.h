@@ -1,5 +1,5 @@
-#ifndef SEARCH_CONSTANTS_H
-#define SEARCH_CONSTANTS_H
+#ifndef SEARCH_OPTIONS_H
+#define SEARCH_OPTIONS_H
 
 enum SearchLocation
 {
@@ -8,6 +8,11 @@ enum SearchLocation
   SL_RightFile
 };
 
+enum StartSearchFrom
+{
+  SF_CurrentPage,
+  SF_DocumentTop,
+};
 
 enum SearchDirection
 {

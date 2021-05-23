@@ -199,7 +199,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
                                      m_pGadCycLocation,
                                      &newGadget,
                                      GT_Underscore, '_',
-                                     GTCB_Checked, TRUE,
+                                     GTCB_Checked, FALSE,
                                      TAG_DONE);
 
   if(m_pGadCbxIgnoreCase == NULL)
@@ -304,13 +304,97 @@ void SearchWindow::Refresh()
 
 bool SearchWindow::open(InitialPosition initialPos)
 {
+  /**
+   * If this is the first opening of search window (when no search text
+   * is present in cmdSearch) then apply the options from search command
+   * before opening.
+   *
+   * NOTE: This can and should be done before opening the window to
+   * avoid possible visible changing of the cycle boxes when the window
+   * already is open
+   *
+   * NOTE: No check of gadget pointers needed. If there would be
+   * something wrong the constructor had already thrown an exception and
+   * this wouldn't be executed.
+   */
+
+  if(strlen(m_CmdSearch.getSearchText()) < 1)
+  {
+    if(m_CmdSearch.isCaseIgnored())
+    {
+      GT_SetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
+                        GTCB_Checked, TRUE,
+                        TAG_DONE);
+    }
+    else
+    {
+      GT_SetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
+                        GTCB_Checked, FALSE,
+                        TAG_DONE);
+    }
+
+    switch(m_CmdSearch.getLocation())
+    {
+      case SL_BothFiles:
+      {
+        GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                          GTCY_Active, 0, // TODO Change manual value; use map?
+                          TAG_DONE);
+        break;
+      }
+
+      case SL_LeftFile:
+      {
+        GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                          GTCY_Active, 1, // TODO Change manual value; use map?
+                          TAG_DONE);
+        break;
+      }
+
+      case SL_RightFile:
+      {
+        GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                          GTCY_Active, 2, // TODO Change manual value; use map?
+                          TAG_DONE);
+        break;
+      }
+    }
+
+    switch(m_CmdSearch.getStartFrom())
+    {
+      case SF_CurrentPage:
+      {
+        GT_SetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
+                          GTCY_Active, 0, // TODO Change manual value; use map?
+                          TAG_DONE);
+        break;
+      }
+
+      case SF_DocumentTop:
+      {
+        GT_SetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
+                          GTCY_Active, 1, // TODO Change manual value; use map?
+                          TAG_DONE);
+        break;
+      }
+    }
+  }
+
+  //
+  // Open the window
+  //
   if(!WindowBase::open(initialPos))
   {
     return false;
   }
 
-  // Activate the search text gadget
-  ActivateGadget(m_pGadStrSearchText, m_pWindow, NULL);
+  // Also on when opened for the first time, the search text gadget
+  // should be activated
+  if(strlen(m_CmdSearch.getSearchText()) < 1)
+  {
+    ActivateGadget(m_pGadStrSearchText, m_pWindow, NULL);
+  }
+
 
   return true;
 }
@@ -373,9 +457,33 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
     }
 
     case GID_StrSearchText:
-    case GID_BtnFindNext:
-      find();
+    {
+      STRPTR pTextToFind = getStringGadgetText(m_pGadStrSearchText);
+      if(pTextToFind == NULL)
+      {
+        return;
+      }
+
+      // Set the user-typed text to find in search command
+      m_CmdSearch.setSearchText(pTextToFind);
       break;
+    }
+
+    case GID_BtnFindNext:
+    {
+      // Set the search direction and search
+      m_CmdSearch.setDirection(SD_Downward);
+      m_CmdSearch.Execute(NULL);
+      break;
+    }
+
+    case GID_BtnFindPrev:
+    {
+      // Set the search direction and search
+      m_CmdSearch.setDirection(SD_Upward);
+      m_CmdSearch.Execute(NULL);
+      break;
+    } 
   }
 }
 
@@ -384,12 +492,12 @@ void SearchWindow::handleVanillaKey(UWORD code)
 {
   switch(code)
   {
-    case 0xD: // <RETURN> Find
-    {
-      // Button is enabled, perform its action
-      find();
-      break;
-    }
+    // case 0xD: // <RETURN> Find
+    // {
+    //   // Button is enabled, perform its action
+    //   find();
+    //   break;
+    // }
 
     case 'f':
     case 'F':
@@ -418,27 +526,6 @@ void SearchWindow::handleVanillaKey(UWORD code)
       break;
 
   }
-}
-
-
-void SearchWindow::find()
-{
-  if(!isOpen() || (m_pGadBtnFindNext == NULL))
-  {
-    return;
-  }
-
-  STRPTR pTextToFind = getStringGadgetText(m_pGadStrSearchText);
-  if(pTextToFind == NULL)
-  {
-    return;
-  }
-
-  // Set the user-typed text to find in search command
-  m_CmdSearch.setSearchText(pTextToFind);
-
-  // Perform the diff
-  m_CmdSearch.Execute(NULL);
 }
 
 

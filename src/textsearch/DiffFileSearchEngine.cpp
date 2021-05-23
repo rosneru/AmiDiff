@@ -116,24 +116,30 @@ void DiffFileSearchEngine::find()
 
   for(size_t lineId = 0; lineId < m_LeftFile.getNumLines(); lineId++)
   {
-    // Try to find pStrToSearch in line of left file
-    pSearchStart = m_LeftFile[lineId]->getText();
-    while ((pFoundAtPos = strstr(pSearchStart, m_SearchString.c_str())) != NULL)
+    // If enabled, try to find pStrToSearch in line of left file
+    if((m_Location == SL_BothFiles) || (m_Location == SL_LeftFile))
     {
-      size_t charId = pFoundAtPos - m_LeftFile[lineId]->getText();
-      pResult = new DiffFileSearchResult(DiffFileSearchResult::LeftFile, lineId, charId);
-      m_Results.push_back(pResult);
-      pSearchStart = pFoundAtPos + 1;
+      pSearchStart = m_LeftFile[lineId]->getText();
+      while ((pFoundAtPos = strstr(pSearchStart, m_SearchString.c_str())) != NULL)
+      {
+        size_t charId = pFoundAtPos - m_LeftFile[lineId]->getText();
+        pResult = new DiffFileSearchResult(DiffFileSearchResult::LeftFile, lineId, charId);
+        m_Results.push_back(pResult);
+        pSearchStart = pFoundAtPos + 1;
+      }
     }
 
-    // Try to find pStrToSearch in line of right file
-    pSearchStart = m_RightFile[lineId]->getText();
-    while ((pFoundAtPos = strstr(pSearchStart, m_SearchString.c_str())) != NULL)
+    // If enabled, try to find pStrToSearch in line of right file
+    if((m_Location == SL_BothFiles) || (m_Location == SL_LeftFile))
     {
-      size_t charId = pFoundAtPos - m_RightFile[lineId]->getText();
-      pResult = new DiffFileSearchResult(DiffFileSearchResult::RightFile, lineId, charId);
-      m_Results.push_back(pResult);
-      pSearchStart = pFoundAtPos + 1;
+      pSearchStart = m_RightFile[lineId]->getText();
+      while ((pFoundAtPos = strstr(pSearchStart, m_SearchString.c_str())) != NULL)
+      {
+        size_t charId = pFoundAtPos - m_RightFile[lineId]->getText();
+        pResult = new DiffFileSearchResult(DiffFileSearchResult::RightFile, lineId, charId);
+        m_Results.push_back(pResult);
+        pSearchStart = pFoundAtPos + 1;
+      }
     }
   }
 }

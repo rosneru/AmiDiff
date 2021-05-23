@@ -88,7 +88,6 @@ private:
   void handleGadgetEvent(struct Gadget* pGadget);
   void handleVanillaKey(UWORD code);
 
-  void find();
   void toggleLocationGadget();
   void toggleStartSearchFromGadget();
 
