@@ -478,6 +478,38 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
       break;
     }
 
+    case GID_CycStartSearchFrom:
+    {
+      // Get the current index value from 'start search from' cycle gadget
+      ULONG currentId = 0;
+      if(GT_GetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
+                          GTCY_Active, (ULONG)&currentId,
+                          TAG_DONE) != 1)
+      {
+        return;
+      }
+
+      m_CmdSearch.setStartFrom((StartSearchFrom)currentId);
+
+      break;
+    }
+
+    case GID_CbxIgnoreCase:
+    {
+      // Get the current state of 'is case ignored' checkbox gadget
+      ULONG isChecked = FALSE;
+      if(GT_GetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
+                          GTCB_Checked, (ULONG)&isChecked,
+                          TAG_DONE) != 1)
+      {
+        return;
+      }
+
+      m_CmdSearch.setCaseIgnored(isChecked == TRUE);
+
+      break;
+    }
+
     case GID_BtnFindNext:
     {
       // Set the search direction and search

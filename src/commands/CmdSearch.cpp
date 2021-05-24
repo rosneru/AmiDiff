@@ -175,7 +175,16 @@ bool CmdSearch::isCaseIgnored() const
 
 void CmdSearch::setCaseIgnored(bool isCaseIgnored)
 {
+  if(m_IsCaseIgnored == isCaseIgnored)
+  {
+    // Case ignored option didn't change
+    return;
+  }
+
   m_IsCaseIgnored = isCaseIgnored;
+
+  // Perform the search with the changed ase ignored option
+  performSearch();
 }
 
 
@@ -188,7 +197,7 @@ void CmdSearch::setLocation(SearchLocation location)
 {
   if(m_Location == location)
   {
-    // Search text didn't change
+    // Location didn't change
     return;
   }
 
@@ -205,12 +214,16 @@ SearchDirection CmdSearch::getDirection() const
 
 void CmdSearch::setDirection(SearchDirection direction)
 {
+  // No need to perform the search because this option is after search
+  // in commad execution method
   m_Direction = direction;
 }
 
 
 StartSearchFrom CmdSearch::getStartFrom() const
 {
+  // No need to perform the search because this option is after search
+  // in commad execution method
   return m_StartFrom;
 }
 
