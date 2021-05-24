@@ -395,7 +395,6 @@ bool SearchWindow::open(InitialPosition initialPos)
     ActivateGadget(m_pGadStrSearchText, m_pWindow, NULL);
   }
 
-
   return true;
 }
 

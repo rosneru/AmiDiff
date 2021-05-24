@@ -47,26 +47,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     return;
   }
 
-  DiffFileSearchResult* pResult;
-
-  if(m_pSearchEngine == NULL)
-  {
-    pResult = performSearch();
-  }
-  else if(didDiffDocumentChange())
-  {
-    pResult = performSearch();
-  }
-  else if(didSearchParamsChange())
-  {
-    pResult = performSearch();
-  }
-  else
-  {
-    // Get the next result (to be displayed)
-    pResult = m_pSearchEngine->getNextResult();
-  }
-
+  DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult();
   if(pResult == NULL)
   {
     DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
@@ -118,15 +99,13 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   }
 }
 
-DiffFileSearchResult* CmdSearch::performSearch()
+bool CmdSearch::performSearch()
 {
-  DiffFileSearchResult* pResult = NULL;
-
   DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
   DiffWindowTextArea* pRightTextArea = m_DiffWindow.getRightTextArea();
   if((pLeftTextArea == NULL) || (pRightTextArea == NULL))
   {
-    return NULL;
+    return false;
   }
 
   //
@@ -137,7 +116,7 @@ DiffFileSearchResult* CmdSearch::performSearch()
   m_pDiffDocument = m_DiffWorker.getDiffDocument();
   if(m_pDiffDocument == NULL)
   {
-    return NULL;
+    return false;
   }
 
   // Search keyword changed, so all old selections must be cleared
@@ -164,16 +143,7 @@ DiffFileSearchResult* CmdSearch::performSearch()
                                              m_IsCaseIgnored,
                                              m_Location);
 
-  pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
-  if(pResult == NULL)
-  {
-    DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
-    return NULL;
-  }
-
-  // Now again get the first result (to be displayed)
-  pResult = m_pSearchEngine->getFirstResult(m_DiffWindow.getLeftTextArea()->getY());
-  return pResult;
+  return m_pSearchEngine->getNumResults() > 0;
 }
 
 
@@ -192,12 +162,8 @@ void CmdSearch::setSearchText(const char* pSearchText)
 
   m_SearchText = pSearchText;
 
-  // With new search text the old search engine is obsolete
-  if(m_pSearchEngine != NULL)
-  {
-    delete m_pSearchEngine;
-    m_pSearchEngine = NULL;
-  }
+  // Perform the search with the changed search text
+  performSearch();
 }
 
 

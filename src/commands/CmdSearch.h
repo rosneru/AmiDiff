@@ -56,7 +56,7 @@ private:
   DiffFileSearchEngine* m_pSearchEngine;
   long long m_LastFoundLineId;
 
-  DiffFileSearchResult* performSearch();
+  bool performSearch();
 
   bool didDiffDocumentChange() const;
   bool didSearchParamsChange() const;

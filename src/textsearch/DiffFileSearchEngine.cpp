@@ -14,6 +14,7 @@ DiffFileSearchEngine::DiffFileSearchEngine(const DiffFileBase& leftFile,
 {
   find();
   m_ResultsIterator = m_Results.begin();
+  m_ResultsIterator--;
 }
 
 DiffFileSearchEngine::~DiffFileSearchEngine()
