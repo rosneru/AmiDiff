@@ -47,7 +47,18 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     return;
   }
 
-  DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult();
+
+  DiffFileSearchResult* pResult = NULL;
+  
+  if(m_Direction == SD_Downward)
+  {
+    pResult = m_pSearchEngine->getNextResult();
+  }
+  else
+  {
+    pResult = m_pSearchEngine->getPrevResult();
+  }
+
   if(pResult == NULL)
   {
     DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
@@ -135,8 +146,9 @@ bool CmdSearch::performSearch()
     delete m_pSearchEngine;
   }
 
-  // This searches all occurrences of m_SearchText in both files
-  // and could take some time. TODO: Consider to create a task.
+  // This searches all occurrences of m_SearchText in one or both files
+  // (dependent on SearchLocation setting) and can take some time. 
+  // TODO: Consider to create a task.
   m_pSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
                                              m_pDiffDocument->getRightDiffFile(),
                                              m_SearchText.c_str(),

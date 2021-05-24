@@ -362,6 +362,7 @@ File
 "src/commands/CmdOpenWindow.h"
 "src/application/DiffWorkerProgressReporter.h"
 "src/worker/WorkerStartupMsg.h"
+"src/textsearch/SearchOptions.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdSearch.o" "build-stromc/CmdSearch.debug"
 ""
@@ -577,6 +578,7 @@ File
 "src/textsearch/DiffFileSearchEngine.h"
 "src/diffengine/DiffLine.h"
 "src/textsearch/DiffFileSearchResult.h"
+"src/textsearch/SearchOptions.h"
 Storm Shell Project (Dependencies)
 "build-stromc/DiffFileSearchEngine.o" "build-stromc/DiffFileSearchEngine.debug"
 ""
@@ -699,6 +701,7 @@ File
 "src/application/DiffWorkerProgressReporter.h"
 "src/worker/WorkerStartupMsg.h"
 "src/textsearch/DiffFileSearchResult.h"
+"src/textsearch/SearchOptions.h"
 Storm Shell Project (Dependencies)
 "build-stromc/SearchWindow.o" "build-stromc/SearchWindow.debug"
 ""
@@ -1037,6 +1040,7 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "src/textsearch/SearchOptions.h"
+"src/textsearch/SearchOptions.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -1152,6 +1156,7 @@ Section
 7
 File
 10 "ADiffView"
+"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

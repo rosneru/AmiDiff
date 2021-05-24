@@ -61,6 +61,11 @@ DiffFileSearchResult* DiffFileSearchEngine::getPrevResult()
   {
     return NULL;
   }
+
+  if(m_ResultsIterator == (m_Results.begin() - 1))
+  {
+    return NULL;
+  }
   
   if(m_ResultsIterator == m_Results.begin())
   {
