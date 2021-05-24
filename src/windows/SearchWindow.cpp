@@ -449,12 +449,6 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
   switch(pGadget->GadgetID)
   {
-    case GID_CycLocation:
-    {
-      
-      break;
-    }
-
     case GID_StrSearchText:
     {
       STRPTR pTextToFind = getStringGadgetText(m_pGadStrSearchText);
@@ -465,6 +459,22 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
       // Set the user-typed text to find in search command
       m_CmdSearch.setSearchText(pTextToFind);
+      break;
+    }
+
+    case GID_CycLocation:
+    {
+      // Get the current index value from 'location' cycle gadget
+      ULONG currentId = 0;
+      if(GT_GetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                          GTCY_Active, (ULONG)&currentId,
+                          TAG_DONE) != 1)
+      {
+        return;
+      }
+
+      m_CmdSearch.setLocation((SearchLocation)currentId);
+
       break;
     }
 
@@ -557,8 +567,8 @@ void SearchWindow::toggleStartSearchFromGadget()
   // Get the current index value from 'location' cycle gadget
   ULONG currentId = 0;
   if(GT_GetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
-                      GTCY_Active, (ULONG)&currentId,
-                      TAG_DONE) != 1)
+                       GTCY_Active, (ULONG)&currentId,
+                       TAG_DONE) != 1)
   {
     return;
   }

@@ -157,8 +157,10 @@ void CmdSearch::setSearchText(const char* pSearchText)
   if(m_SearchText == pSearchText)
   {
     // Search text didn't change
+    printf("Search text *not* changed.\n");
     return;
   }
+    printf("Search text changed.\n");
 
   m_SearchText = pSearchText;
 
@@ -186,7 +188,16 @@ SearchLocation CmdSearch::getLocation() const
 
 void CmdSearch::setLocation(SearchLocation location)
 {
+  if(m_Location == location)
+  {
+    // Search text didn't change
+    return;
+  }
+
   m_Location = location;
+
+  // Perform the search with the changed location option
+  performSearch();
 }
 
 SearchDirection CmdSearch::getDirection() const

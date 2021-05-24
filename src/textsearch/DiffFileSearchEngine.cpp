@@ -131,7 +131,7 @@ void DiffFileSearchEngine::find()
     }
 
     // If enabled, try to find pStrToSearch in line of right file
-    if((m_Location == SL_BothFiles) || (m_Location == SL_LeftFile))
+    if((m_Location == SL_BothFiles) || (m_Location == SL_RightFile))
     {
       pSearchStart = m_RightFile[lineId]->getText();
       while ((pFoundAtPos = strstr(pSearchStart, m_SearchString.c_str())) != NULL)
