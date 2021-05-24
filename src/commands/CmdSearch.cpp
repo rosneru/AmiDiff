@@ -157,10 +157,8 @@ void CmdSearch::setSearchText(const char* pSearchText)
   if(m_SearchText == pSearchText)
   {
     // Search text didn't change
-    printf("Search text *not* changed.\n");
     return;
   }
-    printf("Search text changed.\n");
 
   m_SearchText = pSearchText;
 
