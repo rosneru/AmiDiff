@@ -91,6 +91,8 @@ private:
   void toggleLocationGadget();
   void toggleStartSearchFromGadget();
 
+  void setFindButtonsEnabled(bool enabled);
+
   void cleanup();
 
 };
