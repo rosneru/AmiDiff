@@ -93,7 +93,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   }
 
   // If necessary scroll the window to have the result visible
-  bool hasScrolled = m_DiffWindow.scrollToVisible(pResult->getCharId(),
+  bool hasScrolled = m_DiffWindow.scrollToPage(pResult->getCharId(),
                                                   pResult->getLineId(),
                                                   m_SearchText.length(),
                                                   1);

@@ -62,12 +62,13 @@ public:
   void scrollLeftTo(size_t left);
 
   /**
-   * Scrolls the given area of (left, top), numLines x numChars into the
-   * visible area. Don't scrolls if this area is already visible
-   * 
+   * Scrolls until the the given page of (left, top), (numLines x
+   * numChars) is visible in current display. Doesn't scroll if given
+   * page is already visible.
+   *
    *  @returns true if scrolling has been done.
    */
-  bool scrollToVisible(size_t left, 
+  bool scrollToPage(size_t left, 
                        size_t top, 
                        size_t numChars, 
                        size_t numLines);

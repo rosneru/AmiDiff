@@ -348,7 +348,7 @@ void DiffWindow::scrollLeftTo(size_t left)
 }
 
 
-bool DiffWindow::scrollToVisible(size_t left, 
+bool DiffWindow::scrollToPage(size_t left, 
                                  size_t top, 
                                  size_t numChars, 
                                  size_t numLines)
