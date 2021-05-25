@@ -93,6 +93,13 @@ private:
 
   void setFindButtonsEnabled(bool enabled);
 
+  /**
+   * Check if the search text is valid. If so, enable the find buttons
+   * and return this text. If not, disable the find buttons and return
+   * NULL.
+   */
+  STRPTR applySearchText();
+
   void cleanup();
 
 };

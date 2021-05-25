@@ -456,18 +456,14 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
   {
     case GID_StrSearchText:
     {
-      STRPTR pTextToFind = getStringGadgetText(m_pGadStrSearchText);
-      if((pTextToFind == NULL) || (strlen(pTextToFind) < 1))
+      STRPTR pTextToFind = applySearchText();
+      if(pTextToFind == NULL)
       {
-        setFindButtonsEnabled(false);
         return;
       }
 
       // Set the user-typed text to find in search command
       m_CmdSearch.setSearchText(pTextToFind);
-
-      setFindButtonsEnabled(true);
-
       break;
     }
 
@@ -521,7 +517,18 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
     case GID_BtnFindNext:
     {
-      // Set the search direction and search
+      STRPTR pTextToFind = applySearchText();
+      if(pTextToFind == NULL)
+      {
+        return;
+      }
+
+      // Set the user-typed text to find in search command: This
+      // performs the search
+      m_CmdSearch.setSearchText(pTextToFind);
+
+      // Set the search direction and execute the search command: This
+      // jumps to the result
       m_CmdSearch.setDirection(SD_Downward);
       m_CmdSearch.Execute(NULL);
       break;
@@ -529,7 +536,18 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
     case GID_BtnFindPrev:
     {
-      // Set the search direction and search
+      STRPTR pTextToFind = applySearchText();
+      if(pTextToFind == NULL)
+      {
+        return;
+      }
+
+      // Set the user-typed text to find in search command: This
+      // performs the search
+      m_CmdSearch.setSearchText(pTextToFind);
+
+      // Set the search direction and execute the search command: This
+      // jumps to the result
       m_CmdSearch.setDirection(SD_Upward);
       m_CmdSearch.Execute(NULL);
       break;
@@ -650,6 +668,20 @@ void SearchWindow::setFindButtonsEnabled(bool enabled)
 
 }
 
+
+STRPTR SearchWindow::applySearchText()
+{
+  STRPTR pTextToFind = getStringGadgetText(m_pGadStrSearchText);
+  if((pTextToFind == NULL) || (strlen(pTextToFind) < 1))
+  {
+    setFindButtonsEnabled(false);
+    return NULL;
+  }
+
+  setFindButtonsEnabled(true);
+
+  return pTextToFind;
+}
 
 void SearchWindow::cleanup()
 {
