@@ -112,6 +112,11 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
 
 bool CmdSearch::performSearch()
 {
+  if(m_SearchText.length() < 1)
+  {
+    return false;
+  }
+
   DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
   DiffWindowTextArea* pRightTextArea = m_DiffWindow.getRightTextArea();
   if((pLeftTextArea == NULL) || (pRightTextArea == NULL))

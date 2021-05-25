@@ -320,8 +320,6 @@ bool SearchWindow::open(InitialPosition initialPos)
 
   if(strlen(m_CmdSearch.getSearchText()) < 1)
   {
-    setFindButtonsEnabled(false);
-
     if(m_CmdSearch.isCaseIgnored())
     {
       GT_SetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
@@ -381,10 +379,6 @@ bool SearchWindow::open(InitialPosition initialPos)
       }
     }
   }
-  else
-  {
-    setFindButtonsEnabled(true);
-  }
 
   //
   // Open the window
@@ -398,7 +392,12 @@ bool SearchWindow::open(InitialPosition initialPos)
   // should be activated
   if(strlen(m_CmdSearch.getSearchText()) < 1)
   {
+    setFindButtonsEnabled(false);
     ActivateGadget(m_pGadStrSearchText, m_pWindow, NULL);
+  }
+  else
+  {
+    setFindButtonsEnabled(true);
   }
 
   return true;
@@ -458,24 +457,16 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
     case GID_StrSearchText:
     {
       STRPTR pTextToFind = getStringGadgetText(m_pGadStrSearchText);
-      if(pTextToFind == NULL)
+      if((pTextToFind == NULL) || (strlen(pTextToFind) < 1))
       {
+        setFindButtonsEnabled(false);
         return;
       }
 
       // Set the user-typed text to find in search command
       m_CmdSearch.setSearchText(pTextToFind);
 
-      // Disable / enable find buttons according to weather there is
-      // search text available or not
-      if(strlen(pTextToFind) < 1)
-      {
-        setFindButtonsEnabled(false);
-      }
-      else
-      {
-        setFindButtonsEnabled(false);
-      }
+      setFindButtonsEnabled(true);
 
       break;
     }
