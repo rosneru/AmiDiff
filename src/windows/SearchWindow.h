@@ -90,15 +90,21 @@ private:
 
   void toggleLocationGadget();
   void toggleStartSearchFromGadget();
+  void toggleCaseGadget();
+
 
   void setFindButtonsEnabled(bool enabled);
+
+  void applyChangedLocation();
+  void applyChangedSearchFrom();
+  void applyChangedCase();
 
   /**
    * Check if the search text is valid. If so, enable the find buttons
    * and return this text. If not, disable the find buttons and return
    * NULL.
    */
-  STRPTR applySearchText();
+  STRPTR applyChangedSearchText();
 
   void cleanup();
 

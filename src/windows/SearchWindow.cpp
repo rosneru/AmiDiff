@@ -456,7 +456,7 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
   {
     case GID_StrSearchText:
     {
-      STRPTR pTextToFind = applySearchText();
+      STRPTR pTextToFind = applyChangedSearchText();
       if(pTextToFind == NULL)
       {
         return;
@@ -469,55 +469,25 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
     case GID_CycLocation:
     {
-      // Get the current index value from 'location' cycle gadget
-      ULONG currentId = 0;
-      if(GT_GetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
-                          GTCY_Active, (ULONG)&currentId,
-                          TAG_DONE) != 1)
-      {
-        return;
-      }
-
-      m_CmdSearch.setLocation((SearchLocation)currentId);
-
+      applyChangedLocation();
       break;
     }
 
     case GID_CycStartSearchFrom:
     {
-      // Get the current index value from 'start search from' cycle gadget
-      ULONG currentId = 0;
-      if(GT_GetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
-                          GTCY_Active, (ULONG)&currentId,
-                          TAG_DONE) != 1)
-      {
-        return;
-      }
-
-      m_CmdSearch.setStartFrom((StartSearchFrom)currentId);
-
+      applyChangedSearchFrom();
       break;
     }
 
     case GID_CbxIgnoreCase:
     {
-      // Get the current state of 'is case ignored' checkbox gadget
-      ULONG isChecked = FALSE;
-      if(GT_GetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
-                          GTCB_Checked, (ULONG)&isChecked,
-                          TAG_DONE) != 1)
-      {
-        return;
-      }
-
-      m_CmdSearch.setCaseIgnored(isChecked == TRUE);
-
+      applyChangedCase();
       break;
     }
 
     case GID_BtnFindNext:
     {
-      STRPTR pTextToFind = applySearchText();
+      STRPTR pTextToFind = applyChangedSearchText();
       if(pTextToFind == NULL)
       {
         return;
@@ -536,7 +506,7 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
     case GID_BtnFindPrev:
     {
-      STRPTR pTextToFind = applySearchText();
+      STRPTR pTextToFind = applyChangedSearchText();
       if(pTextToFind == NULL)
       {
         return;
@@ -567,10 +537,19 @@ void SearchWindow::handleVanillaKey(UWORD code)
     //   break;
     // }
 
+    case 'c':
+    case 'C':
+    {
+      toggleCaseGadget();
+      applyChangedCase();
+      break;
+    }
+
     case 'f':
     case 'F':
     {
       toggleStartSearchFromGadget();
+      applyChangedSearchFrom();
       break;
     }
 
@@ -578,6 +557,7 @@ void SearchWindow::handleVanillaKey(UWORD code)
     case 'L':
     {
       toggleLocationGadget();
+      applyChangedLocation();
       break;
     }
 
@@ -646,6 +626,31 @@ void SearchWindow::toggleStartSearchFromGadget()
 }
 
 
+void SearchWindow::toggleCaseGadget()
+{
+  ULONG isChecked = 0;
+  if(GT_GetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
+                       GTCB_Checked, (ULONG)&isChecked,
+                       TAG_DONE) != 1)
+  {
+    return;
+  }
+
+  if(isChecked == 0)
+  {
+    isChecked = 1;
+  }
+  else
+  {
+    isChecked = 0;
+  }
+
+  // Set the new checked value in gadget
+  GT_SetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
+                    GTCB_Checked, isChecked,
+                    TAG_DONE);
+}
+
 void SearchWindow::setFindButtonsEnabled(bool enabled)
 {
   BOOL disabled;
@@ -668,8 +673,55 @@ void SearchWindow::setFindButtonsEnabled(bool enabled)
 
 }
 
+void SearchWindow::applyChangedLocation()
+{
+  // Get the current index value from 'location' cycle gadget
+  ULONG currentId = 0;
+  if(GT_GetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                      GTCY_Active, (ULONG)&currentId,
+                      TAG_DONE) != 1)
+  {
+    return;
+  }
 
-STRPTR SearchWindow::applySearchText()
+  m_CmdSearch.setLocation((SearchLocation)currentId);
+  applyChangedSearchText(); // because this enables/disables the buttons
+}
+
+
+void SearchWindow::applyChangedSearchFrom()
+{
+  // Get the current index value from 'start search from' cycle gadget
+  ULONG currentId = 0;
+  if(GT_GetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
+                      GTCY_Active, (ULONG)&currentId,
+                      TAG_DONE) != 1)
+  {
+    return;
+  }
+
+  m_CmdSearch.setStartFrom((StartSearchFrom)currentId);
+  applyChangedSearchText(); // because this enables/disables the buttons
+}
+
+
+void SearchWindow::applyChangedCase()
+{
+  // Get the current state of 'is case ignored' checkbox gadget
+  ULONG isChecked = FALSE;
+  if(GT_GetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
+                      GTCB_Checked, (ULONG)&isChecked,
+                      TAG_DONE) != 1)
+  {
+    return;
+  }
+
+  m_CmdSearch.setCaseIgnored(isChecked == TRUE);
+  applyChangedSearchText(); // because this enables/disables the buttons
+}
+
+
+STRPTR SearchWindow::applyChangedSearchText()
 {
   STRPTR pTextToFind = getStringGadgetText(m_pGadStrSearchText);
   if((pTextToFind == NULL) || (strlen(pTextToFind) < 1))
