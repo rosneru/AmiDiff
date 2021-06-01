@@ -1217,7 +1217,11 @@ BOOST_AUTO_TEST_CASE( testcase_explore_search_algorithm )
     BOOST_CHECK_EQUAL(numDifferences, 11);
 
     const char* pSearchFor = "Software";
-    DiffFileSearchEngine searchEngine(diffA, diffB, "Software");
+    DiffFileSearchEngine searchEngine(diffA, 
+                                      diffB, 
+                                      "Software",
+                                      true,
+                                      SearchLocation::SL_BothFiles);
 
     BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 6);
 
@@ -1268,7 +1272,11 @@ BOOST_AUTO_TEST_CASE( testcase_dig_into_search_algorithm )
     size_t numDifferences = diffEngine.getNumDifferences();
     BOOST_CHECK_EQUAL(numDifferences, 2);
 
-    DiffFileSearchEngine searchEngine(diffA, diffB, "test");
+    DiffFileSearchEngine searchEngine(diffA, 
+                                      diffB, 
+                                      "test",
+                                      true,
+                                      SearchLocation::SL_BothFiles);
 
     BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 4);
 
@@ -1296,7 +1304,11 @@ BOOST_AUTO_TEST_CASE( testcase_dig_into_search_algorithm )
     BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 2);
     BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 28);
 
-    DiffFileSearchEngine searchEngine2(diffA, diffB, "can");
+    DiffFileSearchEngine searchEngine2(diffA, 
+                                       diffB, 
+                                       "can",
+                                       true,
+                                       SearchLocation::SL_BothFiles);
 
     BOOST_CHECK_EQUAL(searchEngine2.getNumResults(), 4);
 
@@ -1314,7 +1326,11 @@ BOOST_AUTO_TEST_CASE( testcase_dig_into_search_algorithm )
     BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 12);
 
     // Now searching for the word 'left'
-    DiffFileSearchEngine searchEngine3(diffA, diffB, "left");
+    DiffFileSearchEngine searchEngine3(diffA, 
+                                       diffB, 
+                                       "left",
+                                       true,
+                                       SearchLocation::SL_BothFiles);
 
     BOOST_CHECK_EQUAL(searchEngine3.getNumResults(), 4);
 
