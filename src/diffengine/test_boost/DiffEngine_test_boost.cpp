@@ -1192,7 +1192,7 @@ BOOST_AUTO_TEST_CASE( testcase_crash )
 }
 
 
-BOOST_AUTO_TEST_CASE( testcase_explore_search_algorithm )
+BOOST_AUTO_TEST_CASE( testcase_search_algorithm_basic )
 {
   try
   {
@@ -1248,7 +1248,7 @@ BOOST_AUTO_TEST_CASE( testcase_explore_search_algorithm )
 }
 
 
-BOOST_AUTO_TEST_CASE( testcase_dig_into_search_algorithm )
+BOOST_AUTO_TEST_CASE( search_algorithm_extended_1 )
 {
   try
   {
@@ -1390,7 +1390,62 @@ BOOST_AUTO_TEST_CASE( testcase_dig_into_search_algorithm )
   }
 }
 
-BOOST_AUTO_TEST_CASE( testcase_diff_engine_steadily )
+
+BOOST_AUTO_TEST_CASE( search_algorithm_case_ignored )
+{
+  try
+  {
+    bool cancelRequested = false;
+    std::list<size_t> m_DiffIndices;
+
+    DiffInputFileLinux srcA(cancelRequested, 
+                            "testfiles/testcase_33_search_left.txt",
+                            true);
+
+    DiffInputFileLinux srcB(cancelRequested, 
+                            "testfiles/testcase_33_search_right.txt",
+                            true);
+
+    DiffOutputFileLinux diffA(srcA);
+    DiffOutputFileLinux diffB(srcB);
+    DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
+                          "Comparing...", cancelRequested, m_DiffIndices);
+
+
+    size_t numDifferences = diffEngine.getNumDifferences();
+    BOOST_CHECK_EQUAL(numDifferences, 2);
+
+    DiffFileSearchEngine searchEngine(diffA, 
+                                      diffB, 
+                                      "Left",
+                                      false,
+                                      SearchLocation::SL_BothFiles);
+
+    BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 4);
+
+    DiffFileSearchResult* pSearchResult = searchEngine.getFirstResult(0);
+    BOOST_CHECK(pSearchResult != NULL);
+    BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 6);
+    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+
+  }
+  catch(const char* pError)
+  {
+    auto locationBoost = boost::unit_test::framework::current_test_case().p_name;
+    std::string location(locationBoost);
+    printf("Exception in test %s: %s\n", 
+           location.c_str(),
+           pError);
+
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
+  }
+}
+
+
+
+BOOST_AUTO_TEST_CASE( testcase_search_algorithm_steadily )
 {
   try
   {
