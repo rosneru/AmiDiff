@@ -1220,7 +1220,7 @@ BOOST_AUTO_TEST_CASE( testcase_search_algorithm_basic )
     DiffFileSearchEngine searchEngine(diffA, 
                                       diffB, 
                                       "Software",
-                                      true,
+                                      false,
                                       SearchLocation::SL_BothFiles);
 
     BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 6);
@@ -1275,7 +1275,7 @@ BOOST_AUTO_TEST_CASE( search_algorithm_extended_1 )
     DiffFileSearchEngine searchEngine(diffA, 
                                       diffB, 
                                       "test",
-                                      true,
+                                      false,
                                       SearchLocation::SL_BothFiles);
 
     BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 4);
@@ -1307,7 +1307,7 @@ BOOST_AUTO_TEST_CASE( search_algorithm_extended_1 )
     DiffFileSearchEngine searchEngine2(diffA, 
                                        diffB, 
                                        "can",
-                                       true,
+                                       false,
                                        SearchLocation::SL_BothFiles);
 
     BOOST_CHECK_EQUAL(searchEngine2.getNumResults(), 4);
@@ -1329,7 +1329,7 @@ BOOST_AUTO_TEST_CASE( search_algorithm_extended_1 )
     DiffFileSearchEngine searchEngine3(diffA, 
                                        diffB, 
                                        "left",
-                                       true,
+                                       false,
                                        SearchLocation::SL_BothFiles);
 
     BOOST_CHECK_EQUAL(searchEngine3.getNumResults(), 4);
@@ -1418,7 +1418,7 @@ BOOST_AUTO_TEST_CASE( search_algorithm_case_ignored )
     DiffFileSearchEngine searchEngine(diffA, 
                                       diffB, 
                                       "Left",
-                                      false,
+                                      true,
                                       SearchLocation::SL_BothFiles);
 
     BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 4);
