@@ -250,13 +250,13 @@ void CmdSearch::setStartFrom(StartSearchFrom startFrom)
 }
 
 
-bool CmdSearch::didDiffDocumentChange() const
+bool CmdSearch::hasDiffDocumentChanged() const
 {
   const DiffDocument* pWorkerDiffDoc = m_DiffWorker.getDiffDocument();
   return m_pDiffDocument != pWorkerDiffDoc;
 }
 
-bool CmdSearch::didSearchParamsChange() const
+bool CmdSearch::hasSearchParamsChanged() const
 {
   if(m_pSearchEngine == NULL)
   {

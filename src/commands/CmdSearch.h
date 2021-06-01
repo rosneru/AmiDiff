@@ -58,8 +58,8 @@ private:
 
   bool performSearch();
 
-  bool didDiffDocumentChange() const;
-  bool didSearchParamsChange() const;
+  bool hasDiffDocumentChanged() const;
+  bool hasSearchParamsChanged() const;
 };
 
 #endif
