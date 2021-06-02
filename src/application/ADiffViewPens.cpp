@@ -26,7 +26,7 @@ ADiffViewPens::ADiffViewPens(ScreenBase& screenBase,
   const ULONG* pColYellow = m_Settings.GetColorYellowArray();
   const ULONG* pColGray = m_Settings.GetColorGrayArray();
 
-  // Find the best pens for the neded colors
+  // Find the best pens for the needed colors
   m_RedPen = ObtainBestPen(m_ScreenBase.IntuiScreen()->ViewPort.ColorMap,
     pColRed[0], pColRed[1], pColRed[2],
     OBP_FailIfBad, FALSE,
