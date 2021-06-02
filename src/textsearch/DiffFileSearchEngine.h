@@ -44,6 +44,8 @@ private:
   std::vector<DiffFileSearchResult*>::iterator m_ResultsIterator;
 
   void find();
+
+  char* findSubStr(const char* pHaystack, const char* pNeedle);
   
 
 };
