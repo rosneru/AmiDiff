@@ -78,6 +78,30 @@ DiffFileSearchResult* DiffFileSearchEngine::getPrevResult()
   return (*m_ResultsIterator);
 }
 
+DiffFileSearchResult* DiffFileSearchEngine::getPrevResult(size_t startLineId)
+{
+  if(m_Results.size() < 1)
+  {
+    return NULL;
+  }
+
+  m_ResultsIterator = m_Results.end() - 1;
+
+  // Forward iterator to the first result after or equal startLineId
+  while((*m_ResultsIterator)->getLineId() >= startLineId)
+  {
+    m_ResultsIterator--;
+    if(m_ResultsIterator == (m_Results.begin() - 1))
+    {
+      // Avoid overflow: back to last valid item
+      m_ResultsIterator = m_Results.begin();
+      return NULL;
+    }
+  }
+
+  return (*m_ResultsIterator);
+}
+
 DiffFileSearchResult* DiffFileSearchEngine::getNextResult()
 {
   if(m_Results.size() < 1)
@@ -95,6 +119,12 @@ DiffFileSearchResult* DiffFileSearchEngine::getNextResult()
   }
 
   return (*m_ResultsIterator);
+}
+
+
+DiffFileSearchResult* DiffFileSearchEngine::getNextResult(size_t startLineId)
+{
+  return NULL;
 }
 
 

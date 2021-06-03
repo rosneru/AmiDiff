@@ -26,8 +26,12 @@ public:
 
   size_t getNumResults();
   DiffFileSearchResult* getFirstResult(size_t startLineId);
+  
   DiffFileSearchResult* getPrevResult();
+  DiffFileSearchResult* getPrevResult(size_t startLineId);
+  
   DiffFileSearchResult* getNextResult();
+  DiffFileSearchResult* getNextResult(size_t startLineId);
 
   const std::string& getSearchString() const;
   bool isCaseIgnored() const;
