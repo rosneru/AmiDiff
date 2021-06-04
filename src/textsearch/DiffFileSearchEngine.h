@@ -50,8 +50,6 @@ private:
   void find();
 
   char* findSubStr(const char* pHaystack, const char* pNeedle);
-  
-
 };
 
 #endif

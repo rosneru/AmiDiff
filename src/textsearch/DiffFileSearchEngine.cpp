@@ -1,5 +1,3 @@
-#define _GNU_SOURCE
-
 #include <string.h>
 #include "DiffFileSearchEngine.h"
 
@@ -182,12 +180,37 @@ void DiffFileSearchEngine::find()
   }
 }
 
+char* myStrCaseStr(const char* pHaystack, const char* pNeedle)
+{ 
+  const char *c1,*c2;
+
+  do 
+  {
+    c1 = pHaystack; 
+    c2 = pNeedle;
+
+    while(tolower(*c1) && tolower(*c1)==tolower(*c2)) 
+    {
+      c1++; c2++;
+    }
+
+    if (!*c2)
+    {
+      return (char *)pHaystack;
+    }
+  } 
+  while(*pHaystack++);
+  
+  return (char *)0;
+}
+
+
 char* DiffFileSearchEngine::findSubStr(const char* pHaystack, 
                                        const char* pNeedle)
 {
   if(m_IsCaseIgnored)
   {
-    return (char*)strcasestr(pHaystack, pNeedle);
+    return (char*)myStrCaseStr(pHaystack, pNeedle);
   }
   else
   {

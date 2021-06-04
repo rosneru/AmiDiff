@@ -1431,27 +1431,42 @@ BOOST_AUTO_TEST_CASE( search_algorithm_case_ignored )
 
     pSearchResult = searchEngine.getNextResult();
     BOOST_CHECK(pSearchResult != NULL);
-    BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::RightFile);
-    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 4);
-    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 29);
+    if(pSearchResult != NULL)
+    {
+      BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::RightFile);
+      BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 4);
+      BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 29);
+    }
+
 
     pSearchResult = searchEngine.getNextResult();
     BOOST_CHECK(pSearchResult != NULL);
-    BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
-    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 6);
-    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    if(pSearchResult != NULL)
+    {
+      BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+      BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 6);
+      BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    }
+
 
     pSearchResult = searchEngine.getNextResult();
     BOOST_CHECK(pSearchResult != NULL);
-    BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
-    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 8);
-    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    if(pSearchResult != NULL)
+    {
+      BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+      BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 8);
+      BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    }
+
 
     pSearchResult = searchEngine.getNextResult();
     BOOST_CHECK(pSearchResult != NULL);
-    BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
-    BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 10);
-    BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    if(pSearchResult != NULL)
+    {
+      BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+      BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 10);
+      BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    }
   }
   catch(const char* pError)
   {
