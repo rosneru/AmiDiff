@@ -25,12 +25,29 @@ public:
   virtual ~DiffFileSearchEngine();
 
   size_t getNumResults();
-  DiffFileSearchResult* getFirstResult(size_t startLineId);
   
+  /**
+   * Return the previous result (relative to the current one) or NULL if
+   * there is none.
+   */
   DiffFileSearchResult* getPrevResult();
+
+  /**
+   * Return the next result above the given line id or NULL if there is
+   * none.
+   */
   DiffFileSearchResult* getPrevResult(size_t startLineId);
   
+  /**
+   * Return the next result (from the current one) or NULL if there is
+   * none.
+   */
   DiffFileSearchResult* getNextResult();
+
+  /**
+   * Return the next result after the given line id or NULL if there is
+   * none.
+   */
   DiffFileSearchResult* getNextResult(size_t startLineId);
 
   const std::string& getSearchString() const;

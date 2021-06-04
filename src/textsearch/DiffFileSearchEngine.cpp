@@ -32,28 +32,6 @@ size_t DiffFileSearchEngine::getNumResults()
   return m_Results.size();
 }
 
-DiffFileSearchResult* DiffFileSearchEngine::getFirstResult(size_t startLineId)
-{
-  if(m_Results.size() < 1)
-  {
-    return NULL;
-  }
-
-  m_ResultsIterator = m_Results.begin();
-
-  // Forward iterator to the first result after or equal startLineId
-  while((*m_ResultsIterator)->getLineId() < startLineId)
-  {
-    m_ResultsIterator++;
-    if(m_ResultsIterator == m_Results.end())
-    {
-      // Avoid overflow: back to last valid item
-      m_ResultsIterator = m_Results.begin();
-    }
-  }
-
-  return (*m_ResultsIterator);
-}
 
 DiffFileSearchResult* DiffFileSearchEngine::getPrevResult()
 {
@@ -119,10 +97,27 @@ DiffFileSearchResult* DiffFileSearchEngine::getNextResult()
   return (*m_ResultsIterator);
 }
 
-
 DiffFileSearchResult* DiffFileSearchEngine::getNextResult(size_t startLineId)
 {
-  return NULL;
+  if(m_Results.size() < 1)
+  {
+    return NULL;
+  }
+
+  m_ResultsIterator = m_Results.begin();
+
+  // Forward iterator to the first result after or equal startLineId
+  while((*m_ResultsIterator)->getLineId() < startLineId)
+  {
+    m_ResultsIterator++;
+    if(m_ResultsIterator == m_Results.end())
+    {
+      // Avoid overflow: back to last valid item
+      m_ResultsIterator = m_Results.begin();
+    }
+  }
+
+  return (*m_ResultsIterator);
 }
 
 
