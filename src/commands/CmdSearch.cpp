@@ -52,11 +52,27 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   
   if(m_Direction == SD_Downward)
   {
-    pResult = m_pSearchEngine->getNextResult();
+    if(m_LastFoundLineId < 0)
+    {
+      // The command is executed for the first time with this search settings
+      pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
+    }
+    else
+    {
+      pResult = m_pSearchEngine->getNextResult();
+    }
   }
   else
   {
-    pResult = m_pSearchEngine->getPrevResult();
+    if(m_LastFoundLineId < 0)
+    {
+      // The command is executed for the first time with this search settings
+      pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY());
+    }
+    else
+    {
+      pResult = m_pSearchEngine->getPrevResult();
+    }
   }
 
   if(pResult == NULL)
@@ -231,8 +247,9 @@ SearchDirection CmdSearch::getDirection() const
 
 void CmdSearch::setDirection(SearchDirection direction)
 {
-  // No need to perform the search because this option is after search
-  // in commad execution method
+  // No need to perform the search because this option doesn't affect
+  // the search results. It is applied after search in commad execute
+  // method.
   m_Direction = direction;
 }
 
