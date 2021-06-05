@@ -10,6 +10,13 @@
 DiffWindowRastports::DiffWindowRastports(struct Window* pIntuiWindow,
                                          const ADiffViewPens& pens)
 {
+  BitMap* pScreenBitmap = pIntuiWindow->WScreen->RastPort.BitMap;
+  bool isNatviveBitMap = false;
+  if((GetBitMapAttr(pScreenBitmap, BMA_FLAGS) & BMF_STANDARD) != 0)
+  {
+    isNatviveBitMap = true;
+  }
+
   SetAPen(pIntuiWindow->RPort, pens.NormalText());
 
   m_RPortWindow = *pIntuiWindow->RPort;
@@ -22,6 +29,12 @@ DiffWindowRastports::DiffWindowRastports(struct Window* pIntuiWindow,
 
   m_RPortTextDefault = *pIntuiWindow->RPort;
   SetBPen(&m_RPortTextDefault, pens.Background());
+
+  if(isNatviveBitMap)
+  {
+    // Speedup scrolling on non RTG screens / Amiga native chipsets
+    m_RPortTextDefault.Mask = 0x01;
+  }
 
   m_RPortTextSelected = *pIntuiWindow->RPort;
   SetAPen(&m_RPortTextSelected, pens.NormalText());
