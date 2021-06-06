@@ -513,7 +513,7 @@ void DiffWindow::handleXIncrease(size_t numChars,
 
 
 void DiffWindow::handleXDecrease(size_t numChars,
-                           bool bTriggeredByScrollPot)
+                                 bool bTriggeredByScrollPot)
 {
   m_pLeftTextArea->scrollRight(numChars);
   m_pRightTextArea->scrollRight(numChars);
@@ -528,7 +528,7 @@ void DiffWindow::handleXDecrease(size_t numChars,
 
 
 void DiffWindow::handleYIncrease(size_t numLines,
-                           bool bTriggeredByScrollPot)
+                                 bool bTriggeredByScrollPot)
 {
   m_pLeftTextArea->scrollUp(numLines);
   m_pRightTextArea->scrollUp(numLines);
@@ -543,7 +543,7 @@ void DiffWindow::handleYIncrease(size_t numLines,
 
 
 void DiffWindow::handleYDecrease(size_t numLines,
-                           bool bTriggeredByScrollPot)
+                                 bool bTriggeredByScrollPot)
 {
   m_pLeftTextArea->scrollDown(numLines);
   m_pRightTextArea->scrollDown(numLines);

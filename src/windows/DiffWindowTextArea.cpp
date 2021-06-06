@@ -379,20 +379,22 @@ ULONG DiffWindowTextArea::scrollUp(ULONG numLines)
 
 ULONG DiffWindowTextArea::scrollDown(ULONG numLines)
 {
-  if(numLines < 1)
+  if(numLines < 1 || m_Y < 1)
   {
     // Nothing to do
     return 0;
   }
 
-  if(m_Y < 1)
+  if(numLines > m_Y)
   {
-    // Do not move the text area downward if text is already at top
-    return 0;
+    // Limit to not excee / go below lineId 0
+    numLines = m_Y;
   }
 
   if(numLines > m_AreaMaxLines)
   {
+    // Limit to scroll maximum one page.
+    // TODO Why is this needed here?
     numLines = m_AreaMaxLines;
   }
 
