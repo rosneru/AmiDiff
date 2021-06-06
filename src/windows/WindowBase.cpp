@@ -131,6 +131,11 @@ bool WindowBase::open(InitialPosition initialPos)
     m_WindowFlags |= WFLG_DRAGBAR;
   }
 
+  // Define a minimum height that won't crash ADiffViewwhen 
+  // performResize() is called in DiffWindow. 
+  // TODO: This is just a quick fix. Find something better.B
+  ULONG minHeight = 8 * m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
+
   // Open the window
   m_pWindow = OpenWindowTags(NULL,
                              WA_SmartRefresh, TRUE,
@@ -143,7 +148,7 @@ bool WindowBase::open(InitialPosition initialPos)
                              WA_PubScreen, (ULONG) m_Screen.IntuiScreen(),
                              WA_Flags, m_WindowFlags,
                              WA_MinWidth, 230,
-                             WA_MinHeight, 64,
+                             WA_MinHeight, minHeight,
                              WA_MaxWidth, ~0,
                              WA_MaxHeight, ~0,
                              WA_NewLookMenus, TRUE,
