@@ -54,7 +54,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   {
     if(m_LastFoundLineId < 0)
     {
-      // The command is executed for the first time with this search settings
+      // First invocation of search command with the actual settings
       pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
     }
     else
@@ -66,7 +66,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   {
     if(m_LastFoundLineId < 0)
     {
-      // The command is executed for the first time with this search settings
+      // First invocation of search command with the actual settings
       pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY());
     }
     else
