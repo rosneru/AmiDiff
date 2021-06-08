@@ -27,12 +27,10 @@
 #include "SearchWindow.h"
 
 
-  /**
-   * Array of string constants for 'Location' cycle gadget
-   */
-  const char* g_GadCycLocationLabels [4] = {"Both files", "Left file", "Right file", NULL};
-  const char* g_GadCycStartSearchLabels [3] = {"Current page", "Document top", NULL};
-
+/**
+ * Array of string constants for 'Location' cycle gadget
+ */
+const char* g_GadCycLocationLabels [4] = {"Both files", "Left file", "Right file", NULL};
 
 
 SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
@@ -46,13 +44,9 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     m_NumLocationLabels(sizeof(g_GadCycLocationLabels) /
                         sizeof(g_GadCycLocationLabels[0])
                         - 1), // Skip trailing NULL item
-    m_NumStartSearchFromLabels(sizeof(g_GadCycStartSearchLabels) /
-                        sizeof(g_GadCycStartSearchLabels[0])
-                        - 1), // Skip trailing NULL item
     m_pGadtoolsContext(NULL),
     m_pGadStrSearchText(NULL),
     m_pGadCycLocation(NULL),
-    m_pGadCycStartSearchFrom(NULL),
     m_pGadCbxIgnoreCase(NULL),
     m_pGadBtnFindNext(NULL),
     m_pGadBtnFindPrev(NULL)
@@ -116,14 +110,11 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   arraySize = sizeof(g_GadCycLocationLabels) / sizeof(g_GadCycLocationLabels[0]);
   WORD cyc1Width = maxArrayTextLength(g_GadCycLocationLabels, arraySize);
 
-  arraySize = sizeof(g_GadCycStartSearchLabels) / sizeof(g_GadCycStartSearchLabels[0]);
-  WORD cyc2Width = maxArrayTextLength(g_GadCycStartSearchLabels, arraySize);
-
   WORD cycWidth = cyc1Width;
-  if(cyc2Width > cycWidth)
-  {
-    cycWidth = cyc2Width;
-  }
+  // if(cyc2Width > cycWidth)
+  // {
+  //   cycWidth = cyc2Width;
+  // }
 
   cycWidth += 3 * hSpace;
 
@@ -208,19 +199,6 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Create the 'Start search from' cycle gadget
-  newGadget.ng_LeftEdge   = labelsWidth + left + hSpace;
-  newGadget.ng_TopEdge    += btnsHeight + vSpace - 1;
-  newGadget.ng_Width      = cycWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "Start _from";
-  newGadget.ng_GadgetID   = GID_CycStartSearchFrom;
-  m_pGadCycStartSearchFrom = CreateGadget(CYCLE_KIND,
-                                          m_pGadCbxIgnoreCase,
-                                          &newGadget,
-                                          GT_Underscore, '_',
-                                          GTCY_Labels, (ULONG)g_GadCycStartSearchLabels,
-                                          TAG_DONE);
-
   // Create the 'Find next' button
   newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
   newGadget.ng_LeftEdge   = left + hSpace;
@@ -229,7 +207,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_GadgetID   = GID_BtnFindNext;
 
   m_pGadBtnFindNext = CreateGadget(BUTTON_KIND,
-                                   m_pGadCycStartSearchFrom,
+                                   m_pGadCbxIgnoreCase,
                                    &newGadget,
                                    GT_Underscore, '_',
                                    TAG_DONE);
@@ -359,25 +337,6 @@ bool SearchWindow::open(InitialPosition initialPos)
         break;
       }
     }
-
-    switch(m_CmdSearch.getStartFrom())
-    {
-      case SF_CurrentPage:
-      {
-        GT_SetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
-                          GTCY_Active, 0, // TODO Change manual value; use map?
-                          TAG_DONE);
-        break;
-      }
-
-      case SF_DocumentTop:
-      {
-        GT_SetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
-                          GTCY_Active, 1, // TODO Change manual value; use map?
-                          TAG_DONE);
-        break;
-      }
-    }
   }
 
   //
@@ -473,12 +432,6 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
       break;
     }
 
-    case GID_CycStartSearchFrom:
-    {
-      applyChangedSearchFrom();
-      break;
-    }
-
     case GID_CbxIgnoreCase:
     {
       applyChangedCase();
@@ -545,14 +498,6 @@ void SearchWindow::handleVanillaKey(UWORD code)
       break;
     }
 
-    case 'f':
-    case 'F':
-    {
-      toggleStartSearchFromGadget();
-      applyChangedSearchFrom();
-      break;
-    }
-
     case 'l':
     case 'L':
     {
@@ -597,30 +542,6 @@ void SearchWindow::toggleLocationGadget()
 
   // Set the new index value in gadget
   GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
-                    GTCY_Active, currentId,
-                    TAG_DONE);
-}
-
-void SearchWindow::toggleStartSearchFromGadget()
-{
-  // Get the current index value from 'location' cycle gadget
-  ULONG currentId = 0;
-  if(GT_GetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
-                       GTCY_Active, (ULONG)&currentId,
-                       TAG_DONE) != 1)
-  {
-    return;
-  }
-
-  // Increase the id; start from 0 when over max
-  currentId++;
-  if(currentId >= m_NumStartSearchFromLabels)
-  {
-    currentId = 0;
-  }
-
-  // Set the new index value in gadget
-  GT_SetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
                     GTCY_Active, currentId,
                     TAG_DONE);
 }
@@ -685,22 +606,6 @@ void SearchWindow::applyChangedLocation()
   }
 
   m_CmdSearch.setLocation((SearchLocation)currentId);
-  applyChangedSearchText(); // because this enables/disables the buttons
-}
-
-
-void SearchWindow::applyChangedSearchFrom()
-{
-  // Get the current index value from 'start search from' cycle gadget
-  ULONG currentId = 0;
-  if(GT_GetGadgetAttrs(m_pGadCycStartSearchFrom, m_pWindow, NULL,
-                      GTCY_Active, (ULONG)&currentId,
-                      TAG_DONE) != 1)
-  {
-    return;
-  }
-
-  m_CmdSearch.setStartFrom((StartSearchFrom)currentId);
   applyChangedSearchText(); // because this enables/disables the buttons
 }
 

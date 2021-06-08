@@ -56,7 +56,6 @@ private:
   CommandBase& m_CmdCloseSearchWindow;
 
   const ULONG m_NumLocationLabels;
-  const ULONG m_NumStartSearchFromLabels;
 
   /**
    * IDs to help to interpret the events of this window's Gadtools
@@ -66,7 +65,6 @@ private:
   {
     GID_StrSearchText,
     GID_CycLocation,
-    GID_CycStartSearchFrom,
     GID_CbxIgnoreCase,
     GID_BtnFindNext,
     GID_BtnFindPrev,
@@ -75,7 +73,6 @@ private:
   struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pGadStrSearchText;
   struct Gadget* m_pGadCycLocation;
-  struct Gadget* m_pGadCycStartSearchFrom;
   struct Gadget* m_pGadCbxIgnoreCase;
   struct Gadget* m_pGadBtnFindNext;
   struct Gadget* m_pGadBtnFindPrev;
@@ -89,14 +86,12 @@ private:
   void handleVanillaKey(UWORD code);
 
   void toggleLocationGadget();
-  void toggleStartSearchFromGadget();
   void toggleCaseGadget();
 
 
   void setFindButtonsEnabled(bool enabled);
 
   void applyChangedLocation();
-  void applyChangedSearchFrom();
   void applyChangedCase();
 
   /**

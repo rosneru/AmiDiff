@@ -17,7 +17,6 @@ CmdSearch::CmdSearch(std::vector<WindowBase*>* pAllWindowsVector,
     m_IsCaseIgnored(true),
     m_Location(SL_BothFiles),
     m_Direction(SD_Downward),
-    m_StartFrom(SF_CurrentPage),
     m_pDiffDocument(NULL),
     m_pCurrentSearchEngine(NULL),
     m_pNewSearchEngine(NULL)
@@ -250,19 +249,6 @@ void CmdSearch::setDirection(SearchDirection direction)
   // the search results. It is applied after search in commad execute
   // method.
   m_Direction = direction;
-}
-
-
-StartSearchFrom CmdSearch::getStartFrom() const
-{
-  // No need to perform the search because this option is after search
-  // in commad execution method
-  return m_StartFrom;
-}
-
-void CmdSearch::setStartFrom(StartSearchFrom startFrom)
-{
-  m_StartFrom = startFrom;
 }
 
 

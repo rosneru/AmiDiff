@@ -8,11 +8,6 @@ enum SearchLocation
   SL_RightFile
 };
 
-enum StartSearchFrom
-{
-  SF_CurrentPage,
-  SF_DocumentTop,
-};
 
 enum SearchDirection
 {
