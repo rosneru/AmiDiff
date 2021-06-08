@@ -20,8 +20,7 @@ CmdSearch::CmdSearch(std::vector<WindowBase*>* pAllWindowsVector,
     m_StartFrom(SF_CurrentPage),
     m_pDiffDocument(NULL),
     m_pCurrentSearchEngine(NULL),
-    m_pNewSearchEngine(NULL),
-    m_LastFoundLineId(-1)
+    m_pNewSearchEngine(NULL)
 {
 }
 
@@ -54,39 +53,43 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     return;
   }
 
-  if(m_pNewSearchEngine == NULL)
-  {
-    return;
-  }
-
-  if(m_pCurrentSearchEngine != NULL)
-  {
-    delete m_pCurrentSearchEngine;
-    m_pCurrentSearchEngine = m_pNewSearchEngine;
-    m_pNewSearchEngine = NULL;
-  }
-
-
   DiffFileSearchResult* pResult = NULL;
-  
-  if(m_Direction == SD_Downward)
+  if(m_pNewSearchEngine != NULL)
   {
-    if(m_LastFoundLineId < 0)
+    // Apply the new search engine (which performed a search with
+    // changed settings) if there is one
+    if(m_pCurrentSearchEngine != NULL)
     {
-      // First invocation of search command with the actual settings
+      // Clear of former ('current') search engine
+      pLeftTextArea->clearSelection();
+      pRightTextArea->clearSelection();
+
+      // Re-render old line to remove former selection from document
+      if(m_pCurrentSearchEngine->getCurrentResult() != NULL)
+      {
+        m_DiffWindow
+          .renderDocuments(m_pCurrentSearchEngine->getCurrentResult()->getLineId());
+      }
+
+      delete m_pCurrentSearchEngine;
+      m_pCurrentSearchEngine = m_pNewSearchEngine;
+      m_pNewSearchEngine = NULL;
+    }
+
+    if(m_Direction == SD_Downward)
+    {
       pResult = m_pCurrentSearchEngine->getNextResult(pLeftTextArea->getY());
     }
     else
     {
-      pResult = m_pCurrentSearchEngine->getNextResult();
+      pResult = m_pCurrentSearchEngine->getPrevResult(pLeftTextArea->getY());
     }
   }
   else
   {
-    if(m_LastFoundLineId < 0)
+    if(m_Direction == SD_Downward)
     {
-      // First invocation of search command with the actual settings
-      pResult = m_pCurrentSearchEngine->getPrevResult(pLeftTextArea->getY());
+      pResult = m_pCurrentSearchEngine->getNextResult();
     }
     else
     {
@@ -100,18 +103,6 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     return;
   }
 
-  if(m_LastFoundLineId > -1)
-  {
-    // Clear selection
-    pLeftTextArea->clearSelection();
-    pRightTextArea->clearSelection();
-
-    // Re-render old line to remove former selection from document
-    m_DiffWindow.renderDocuments(m_LastFoundLineId);
-  }
-
-  // Apply the new line
-  m_LastFoundLineId = pResult->getLineId();
 
   int stopCharId = pResult->getCharId() + m_SearchText.length() - 1;
   if(pResult->getLocation() == DiffFileSearchResult::LeftFile)
@@ -169,17 +160,6 @@ bool CmdSearch::performSearch()
   {
     return false;
   }
-
-  // Search keyword changed, so all old selections must be cleared
-  pLeftTextArea->clearSelection();
-  pRightTextArea->clearSelection();
-  if(m_LastFoundLineId > -1)
-  {
-    // Re-render old line to remove former selection from document
-    m_DiffWindow.renderDocuments(m_LastFoundLineId);
-  }
-
-  m_LastFoundLineId = -1;
 
   if(m_pNewSearchEngine != NULL)
   {

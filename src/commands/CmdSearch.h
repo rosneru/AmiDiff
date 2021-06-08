@@ -55,10 +55,8 @@ private:
   const DiffDocument* m_pDiffDocument;
   DiffFileSearchEngine* m_pCurrentSearchEngine;
   DiffFileSearchEngine* m_pNewSearchEngine;
-  long long m_LastFoundLineId;
 
   bool performSearch();
-
   bool hasDiffDocumentChanged() const;
 };
 

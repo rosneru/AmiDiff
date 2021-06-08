@@ -26,6 +26,8 @@ public:
 
   size_t getNumResults();
   
+  DiffFileSearchResult* getCurrentResult();
+
   /**
    * Return the previous result (relative to the current one) or NULL if
    * there is none.

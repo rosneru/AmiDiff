@@ -33,6 +33,22 @@ size_t DiffFileSearchEngine::getNumResults()
 }
 
 
+DiffFileSearchResult* DiffFileSearchEngine::getCurrentResult()
+{
+  if(m_Results.size() < 1)
+  {
+    return NULL;
+  }
+
+  if(m_ResultsIterator == (m_Results.begin() - 1))
+  {
+    return NULL;
+  }
+
+  return (*m_ResultsIterator);
+}
+
+
 DiffFileSearchResult* DiffFileSearchEngine::getPrevResult()
 {
   if(m_Results.size() < 1)
