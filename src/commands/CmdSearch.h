@@ -53,13 +53,13 @@ private:
   StartSearchFrom m_StartFrom;
 
   const DiffDocument* m_pDiffDocument;
-  DiffFileSearchEngine* m_pSearchEngine;
+  DiffFileSearchEngine* m_pCurrentSearchEngine;
+  DiffFileSearchEngine* m_pNewSearchEngine;
   long long m_LastFoundLineId;
 
   bool performSearch();
 
   bool hasDiffDocumentChanged() const;
-  bool hasSearchParamsChanged() const;
 };
 
 #endif

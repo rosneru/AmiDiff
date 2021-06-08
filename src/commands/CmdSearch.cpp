@@ -19,17 +19,24 @@ CmdSearch::CmdSearch(std::vector<WindowBase*>* pAllWindowsVector,
     m_Direction(SD_Downward),
     m_StartFrom(SF_CurrentPage),
     m_pDiffDocument(NULL),
-    m_pSearchEngine(NULL),
+    m_pCurrentSearchEngine(NULL),
+    m_pNewSearchEngine(NULL),
     m_LastFoundLineId(-1)
 {
 }
 
 CmdSearch::~CmdSearch()
 {
-  if(m_pSearchEngine != NULL)
+  if(m_pCurrentSearchEngine != NULL)
   {
-    delete m_pSearchEngine;
-    m_pSearchEngine = NULL;
+    delete m_pCurrentSearchEngine;
+    m_pCurrentSearchEngine = NULL;
+  }
+
+  if(m_pNewSearchEngine != NULL)
+  {
+    delete m_pNewSearchEngine;
+    m_pCurrentSearchEngine = NULL;
   }
 }
 
@@ -47,6 +54,18 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     return;
   }
 
+  if(m_pNewSearchEngine == NULL)
+  {
+    return;
+  }
+
+  if(m_pCurrentSearchEngine != NULL)
+  {
+    delete m_pCurrentSearchEngine;
+    m_pCurrentSearchEngine = m_pNewSearchEngine;
+    m_pNewSearchEngine = NULL;
+  }
+
 
   DiffFileSearchResult* pResult = NULL;
   
@@ -55,11 +74,11 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     if(m_LastFoundLineId < 0)
     {
       // First invocation of search command with the actual settings
-      pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
+      pResult = m_pCurrentSearchEngine->getNextResult(pLeftTextArea->getY());
     }
     else
     {
-      pResult = m_pSearchEngine->getNextResult();
+      pResult = m_pCurrentSearchEngine->getNextResult();
     }
   }
   else
@@ -67,11 +86,11 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     if(m_LastFoundLineId < 0)
     {
       // First invocation of search command with the actual settings
-      pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY());
+      pResult = m_pCurrentSearchEngine->getPrevResult(pLeftTextArea->getY());
     }
     else
     {
-      pResult = m_pSearchEngine->getPrevResult();
+      pResult = m_pCurrentSearchEngine->getPrevResult();
     }
   }
 
@@ -162,21 +181,21 @@ bool CmdSearch::performSearch()
 
   m_LastFoundLineId = -1;
 
-  if(m_pSearchEngine != NULL)
+  if(m_pNewSearchEngine != NULL)
   {
-    delete m_pSearchEngine;
+    delete m_pNewSearchEngine;
   }
 
   // This searches all occurrences of m_SearchText in one or both files
   // (dependent on SearchLocation setting) and can take some time. 
   // TODO: Consider to create a task.
-  m_pSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
-                                             m_pDiffDocument->getRightDiffFile(),
-                                             m_SearchText.c_str(),
-                                             m_IsCaseIgnored,
-                                             m_Location);
+  m_pNewSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
+                                                m_pDiffDocument->getRightDiffFile(),
+                                                m_SearchText.c_str(),
+                                                m_IsCaseIgnored,
+                                                m_Location);
 
-  return m_pSearchEngine->getNumResults() > 0;
+  return m_pNewSearchEngine->getNumResults() > 0;
 }
 
 
@@ -271,29 +290,4 @@ bool CmdSearch::hasDiffDocumentChanged() const
 {
   const DiffDocument* pWorkerDiffDoc = m_DiffWorker.getDiffDocument();
   return m_pDiffDocument != pWorkerDiffDoc;
-}
-
-bool CmdSearch::hasSearchParamsChanged() const
-{
-  if(m_pSearchEngine == NULL)
-  {
-    return false;
-  }
-
-  if(m_SearchText != m_pSearchEngine->getSearchString())
-  {
-    return true;
-  }
-
-  if(m_IsCaseIgnored != m_pSearchEngine->isCaseIgnored())
-  {
-    return true;
-  }
-
-  if(m_Location != m_pSearchEngine->getLocation())
-  {
-    return true;
-  }
-
-  return false;
 }
