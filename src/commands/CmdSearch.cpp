@@ -52,6 +52,17 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     return;
   }
 
+  if(hasDiffDocumentChanged())
+  {
+    // Meanwhile the user 'opened' another diff document
+    if(m_pSearchEngine != NULL)
+    {
+      m_pNewSearchEngine = createNewSearchEngine(m_pSearchEngine->getSearchString().c_str(),
+                                                 m_pSearchEngine->isCaseIgnored(),
+                                                 m_pSearchEngine->getLocation());
+    }
+  }
+
   DiffFileSearchResult* pResult = NULL;
   if(m_pNewSearchEngine != NULL)
   {
