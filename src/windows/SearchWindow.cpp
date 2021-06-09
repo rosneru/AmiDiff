@@ -283,9 +283,7 @@ void SearchWindow::Refresh()
 bool SearchWindow::open(InitialPosition initialPos)
 {
   /**
-   * If this is the first opening of search window (when no search text
-   * is present in cmdSearch) then apply the options from search command
-   * before opening.
+   * Apply the options from search command
    *
    * NOTE: This can and should be done before opening the window to
    * avoid possible visible changing of the cycle boxes when the window
@@ -296,48 +294,49 @@ bool SearchWindow::open(InitialPosition initialPos)
    * this wouldn't be executed.
    */
 
-  if(strlen(m_CmdSearch.getSearchText()) < 1)
+  setStringGadgetText(m_pGadStrSearchText, m_CmdSearch.getSearchText());
+
+
+  if(m_CmdSearch.isCaseIgnored())
   {
-    if(m_CmdSearch.isCaseIgnored())
+    GT_SetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
+                      GTCB_Checked, TRUE,
+                      TAG_DONE);
+  }
+  else
+  {
+    GT_SetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
+                      GTCB_Checked, FALSE,
+                      TAG_DONE);
+  }
+
+  switch(m_CmdSearch.getLocation())
+  {
+    case SL_BothFiles:
     {
-      GT_SetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
-                        GTCB_Checked, TRUE,
+      GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                        GTCY_Active, 0, // TODO Change manual value; use map?
                         TAG_DONE);
+      break;
     }
-    else
+
+    case SL_LeftFile:
     {
-      GT_SetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
-                        GTCB_Checked, FALSE,
+      GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                        GTCY_Active, 1, // TODO Change manual value; use map?
                         TAG_DONE);
+      break;
     }
 
-    switch(m_CmdSearch.getLocation())
+    case SL_RightFile:
     {
-      case SL_BothFiles:
-      {
-        GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
-                          GTCY_Active, 0, // TODO Change manual value; use map?
-                          TAG_DONE);
-        break;
-      }
-
-      case SL_LeftFile:
-      {
-        GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
-                          GTCY_Active, 1, // TODO Change manual value; use map?
-                          TAG_DONE);
-        break;
-      }
-
-      case SL_RightFile:
-      {
-        GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
-                          GTCY_Active, 2, // TODO Change manual value; use map?
-                          TAG_DONE);
-        break;
-      }
+      GT_SetGadgetAttrs(m_pGadCycLocation, m_pWindow, NULL,
+                        GTCY_Active, 2, // TODO Change manual value; use map?
+                        TAG_DONE);
+      break;
     }
   }
+
 
   //
   // Open the window
