@@ -43,16 +43,17 @@ public:
 private:
   const DiffWorker& m_DiffWorker;
   DiffWindow& m_DiffWindow;
-  std::string m_SearchText;
-  bool m_IsCaseIgnored;
-  SearchLocation m_Location;
+
   SearchDirection m_Direction;
 
   const DiffDocument* m_pDiffDocument;
-  DiffFileSearchEngine* m_pCurrentSearchEngine;
+  DiffFileSearchEngine* m_pSearchEngine;
   DiffFileSearchEngine* m_pNewSearchEngine;
 
-  bool performSearch();
+  DiffFileSearchEngine* createNewSearchEngine(const char* pSearchText, 
+                                              bool isCaseIgnored, 
+                                              SearchLocation location);
+
   bool hasDiffDocumentChanged() const;
 };
 
