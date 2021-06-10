@@ -282,6 +282,14 @@ void SearchWindow::Refresh()
 
 bool SearchWindow::open(InitialPosition initialPos)
 {
+  //
+  // Open the window
+  //
+  if(!WindowBase::open(initialPos))
+  {
+    return false;
+  }
+
   /**
    * Apply the options from search command
    *
@@ -295,7 +303,6 @@ bool SearchWindow::open(InitialPosition initialPos)
    */
 
   setStringGadgetText(m_pGadStrSearchText, m_CmdSearch.getSearchText());
-
 
   if(m_CmdSearch.isCaseIgnored())
   {
@@ -338,13 +345,7 @@ bool SearchWindow::open(InitialPosition initialPos)
   }
 
 
-  //
-  // Open the window
-  //
-  if(!WindowBase::open(initialPos))
-  {
-    return false;
-  }
+
 
   // Also on when opened for the first time, the search text gadget
   // should be activated

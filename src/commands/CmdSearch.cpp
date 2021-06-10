@@ -40,7 +40,7 @@ CmdSearch::~CmdSearch()
 
 void CmdSearch::Execute(struct Window* pActiveWindow)
 {
-  if((m_pSearchEngine == NULL) || (m_pNewSearchEngine == NULL))
+  if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
   {
     return;
   }
@@ -140,9 +140,9 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
 
   // If necessary scroll the window to have the result visible
   bool hasScrolled = m_DiffWindow.scrollToPage(pResult->getCharId(),
-                                                  pResult->getLineId(),
-                                                  searchStringLength,
-                                                  1);
+                                               pResult->getLineId(),
+                                               searchStringLength,
+                                               1);
 
   if(hasScrolled)
   {
@@ -237,6 +237,13 @@ void CmdSearch::setSearchText(const char* pSearchText)
                                                m_pSearchEngine->isCaseIgnored(),
                                                m_pSearchEngine->getLocation());
   }
+  else
+  {
+    // No search engine exists
+    m_pNewSearchEngine = createNewSearchEngine(pSearchText,
+                                               isCaseIgnored(),
+                                               getLocation());
+  }
 }
 
 
@@ -276,6 +283,13 @@ void CmdSearch::setCaseIgnored(bool isCaseIgnored)
                                                isCaseIgnored,
                                                m_pSearchEngine->getLocation());
   }
+  else
+  {
+    // No search engine exists
+    m_pNewSearchEngine = createNewSearchEngine(getSearchText(),
+                                               isCaseIgnored,
+                                               getLocation());
+  }
 }
 
 
@@ -312,6 +326,13 @@ void CmdSearch::setLocation(SearchLocation location)
     // from the already existing new search engine.
     m_pNewSearchEngine = createNewSearchEngine(m_pSearchEngine->getSearchString().c_str(),
                                                m_pSearchEngine->isCaseIgnored(),
+                                               location);
+  }
+  else
+  {
+    // No search engine exists
+    m_pNewSearchEngine = createNewSearchEngine(getSearchText(),
+                                               isCaseIgnored(),
                                                location);
   }
 }
