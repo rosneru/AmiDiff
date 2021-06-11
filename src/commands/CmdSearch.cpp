@@ -213,7 +213,7 @@ void CmdSearch::setSearchText(const char* pSearchText)
   {
     if(m_pNewSearchEngine->getSearchString() == pSearchText)
     {
-      // Search text didn't change
+      // Search text hasn't changed
       return;
     }
 
@@ -233,7 +233,7 @@ void CmdSearch::setSearchText(const char* pSearchText)
   {
     if(m_pSearchEngine->getSearchString() == pSearchText)
     {
-      // Search text didn't change
+      // Search text hasn't changed
       return;
     }
 
@@ -269,6 +269,12 @@ void CmdSearch::setCaseIgnored(bool isCaseIgnored)
 {
   if(m_pNewSearchEngine != NULL)
   {
+    if(m_pNewSearchEngine->isCaseIgnored() == isCaseIgnored)
+    {
+      // Case ignored flag hasn't changed
+      return;
+    }
+
     // Apply changed isCaseIgnored parameter. But there's already a new
     // created search engine with some other search parameter changed.
     // So we create another new search engine and take the other
@@ -283,6 +289,12 @@ void CmdSearch::setCaseIgnored(bool isCaseIgnored)
   }
   else if(m_pSearchEngine != NULL)
   {
+    if(m_pSearchEngine->isCaseIgnored() == isCaseIgnored)
+    {
+      // Case ignored flag hasn't changed
+      return;
+    }
+
     // Apply changed isCaseIgnored parameter. A new search engine is
     // created which takes all other parameters from the current search
     // engine. from the already existing new search engine.
@@ -314,6 +326,12 @@ void CmdSearch::setLocation(SearchLocation location)
 {
   if(m_pNewSearchEngine != NULL)
   {
+    if(m_pNewSearchEngine->getLocation() == location)
+    {
+      // Location hasn't changed
+      return;
+    }
+
     // Apply changed location parameter. But there's already a new
     // created search engine with some other search parameter changed.
     // So we create another new search engine and take the other
@@ -328,6 +346,12 @@ void CmdSearch::setLocation(SearchLocation location)
   }
   else if(m_pSearchEngine != NULL)
   {
+    if(m_pSearchEngine->getLocation() == location)
+    {
+      // Location hasn't changed
+      return;
+    }
+
     // Apply changed location parameter. A new search engine is created
     // which takes all other parameters from the current search engine.
     // from the already existing new search engine.
