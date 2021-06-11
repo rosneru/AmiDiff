@@ -162,7 +162,7 @@ DiffFileSearchEngine* CmdSearch::createNewSearchEngine(const char* pSearchText,
 {
   DiffFileSearchEngine* pNewSearchEngine = NULL;
 
-  if((pSearchText == NULL) || ( strlen(pSearchText) < 1))
+  if((pSearchText == NULL) || (strlen(pSearchText) < 1))
   {
     return NULL;
   }
@@ -180,11 +180,6 @@ DiffFileSearchEngine* CmdSearch::createNewSearchEngine(const char* pSearchText,
   if(m_pDiffDocument == NULL)
   {
     return NULL;
-  }
-
-  if(m_pNewSearchEngine != NULL)
-  {
-    delete m_pNewSearchEngine;
   }
 
   // This already performes the search of all occurrences of pSearchText
@@ -216,6 +211,12 @@ void CmdSearch::setSearchText(const char* pSearchText)
 {
   if(m_pNewSearchEngine != NULL)
   {
+    if(m_pNewSearchEngine->getSearchString() == pSearchText)
+    {
+      // Search text didn't change
+      return;
+    }
+
     // Apply changed search text. But there's already a new created
     // search engine with some other search parameter changed. So we
     // create another new search engine and take the other parameters
@@ -230,6 +231,12 @@ void CmdSearch::setSearchText(const char* pSearchText)
   }
   else if(m_pSearchEngine != NULL)
   {
+    if(m_pSearchEngine->getSearchString() == pSearchText)
+    {
+      // Search text didn't change
+      return;
+    }
+
     // Apply changed search text. A new search engine is created which
     // takes all other parameters from the current search engine. from
     // the already existing new search engine.
