@@ -63,28 +63,28 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     }
   }
 
+  if(m_pSearchEngine != NULL)
+  {
+    // And there's also an old search engine: Clear the old one
+    pLeftTextArea->clearSelection();
+    pRightTextArea->clearSelection();
+
+    // Re-render the line line with the former search result to
+    // visually remove the selection
+    if(m_pSearchEngine->getCurrentResult() != NULL)
+    {
+      m_DiffWindow.renderDocuments(
+        m_pSearchEngine->getCurrentResult()->getLineId());
+    }
+  }
+
+
   DiffFileSearchResult* pResult = NULL;
   if(m_pNewSearchEngine != NULL)
   {
-    // There is a new search engine
-    if(m_pSearchEngine != NULL)
-    {
-      // And there's also an old search engine: Clear the old one
-      pLeftTextArea->clearSelection();
-      pRightTextArea->clearSelection();
-
-      // Re-render the line line with the former search result to
-      // visually remove the selection
-      if(m_pSearchEngine->getCurrentResult() != NULL)
-      {
-        m_DiffWindow.renderDocuments(
-          m_pSearchEngine->getCurrentResult()->getLineId());
-      }
-
-      // Old search engine is not needed anymore as the new one will be
-      // taken
-      delete m_pSearchEngine;
-    }
+    // Old search engine is not needed anymore as the new one will be
+    // taken
+    delete m_pSearchEngine;
 
     // The new search engine now becomes the current one
     m_pSearchEngine = m_pNewSearchEngine;
