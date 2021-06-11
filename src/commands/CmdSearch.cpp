@@ -123,7 +123,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   }
 
   size_t searchStringLength = m_pSearchEngine->getSearchString().length();
-  int stopCharId = pResult->getCharId() + searchStringLength;
+  int stopCharId = pResult->getCharId() + searchStringLength - 1;
 
   if(pResult->getLocation() == DiffFileSearchResult::LeftFile)
   {
@@ -156,8 +156,8 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   }
 }
 
-DiffFileSearchEngine* CmdSearch::createNewSearchEngine(const char* pSearchText, 
-                                                       bool isCaseIgnored, 
+DiffFileSearchEngine* CmdSearch::createNewSearchEngine(const char* pSearchText,
+                                                       bool isCaseIgnored,
                                                        SearchLocation location)
 {
   DiffFileSearchEngine* pNewSearchEngine = NULL;
@@ -184,7 +184,7 @@ DiffFileSearchEngine* CmdSearch::createNewSearchEngine(const char* pSearchText,
 
   // This already performes the search of all occurrences of pSearchText
   // in one or both files (dependent on location parameter) and can take
-  // some time. 
+  // some time.
   //
   // TODO: Consider to create a task.
   pNewSearchEngine = new DiffFileSearchEngine(m_pDiffDocument->getLeftDiffFile(),
