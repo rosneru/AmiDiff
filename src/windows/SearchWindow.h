@@ -66,16 +66,18 @@ private:
     GID_StrSearchText,
     GID_CycLocation,
     GID_CbxIgnoreCase,
-    GID_BtnFindNext,
-    GID_BtnFindPrev,
+    GID_BtnFind,
+    GID_BtnFromStart,
+    GID_BtnBackwards,
   };
 
   struct Gadget* m_pGadtoolsContext;
   struct Gadget* m_pGadStrSearchText;
   struct Gadget* m_pGadCycLocation;
   struct Gadget* m_pGadCbxIgnoreCase;
-  struct Gadget* m_pGadBtnFindNext;
-  struct Gadget* m_pGadBtnFindPrev;
+  struct Gadget* m_pGadBtnFind;
+  struct Gadget* m_pGadBtnFromStart;
+  struct Gadget* m_pGadBtnBackwards;
 
 
   //

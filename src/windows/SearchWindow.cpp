@@ -48,8 +48,9 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     m_pGadStrSearchText(NULL),
     m_pGadCycLocation(NULL),
     m_pGadCbxIgnoreCase(NULL),
-    m_pGadBtnFindNext(NULL),
-    m_pGadBtnFindPrev(NULL)
+    m_pGadBtnFind(NULL),
+    m_pGadBtnFromStart(NULL),
+    m_pGadBtnBackwards(NULL)
 {     
   const char* pErrMsg = "SearchWindow: Failed to create gadgets.";
 
@@ -77,7 +78,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
 
   // Set the same width for all of the bottom buttons row according to
   // the longest button text
-  const char* btnTexts[]  = {"Find next", "Find prev"};
+  const char* btnTexts[]  = {"Find", "From start", "Backwards"};
   size_t numBottomButtons = sizeof(btnTexts) / (sizeof btnTexts[0]);
   WORD btnsWidth = maxArrayTextLength(btnTexts, numBottomButtons);
   btnsWidth += btnExtraHSpace;
@@ -151,7 +152,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_TopEdge    = top;
   newGadget.ng_Width      = contentWidth;
   newGadget.ng_Height     = fontHeight + 5;
-  newGadget.ng_GadgetText = (UBYTE*) "_Search for";
+  newGadget.ng_GadgetText = (UBYTE*) "_Find";
   newGadget.ng_GadgetID   = GID_StrSearchText;
 
   m_pGadStrSearchText = CreateGadget(STRING_KIND,
@@ -206,48 +207,70 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
     throw pErrMsg;
   }
 
-  // Create the 'Find next' button
+  // Create the 'Find' button
   newGadget.ng_TopEdge    += btnsHeight + vSpace + vSpace;
   newGadget.ng_LeftEdge   = left + hSpace;
   newGadget.ng_Width      = btnsWidth;
-  newGadget.ng_GadgetText = (UBYTE*) "Find _next";
-  newGadget.ng_GadgetID   = GID_BtnFindNext;
+  newGadget.ng_GadgetText = (UBYTE*) "Find";
+  newGadget.ng_GadgetID   = GID_BtnFind;
 
-  m_pGadBtnFindNext = CreateGadget(BUTTON_KIND,
-                                   m_pGadCbxIgnoreCase,
-                                   &newGadget,
-                                   GT_Underscore, '_',
-                                   TAG_DONE);
-  if(m_pGadBtnFindNext == NULL)
+  m_pGadBtnFind = CreateGadget(BUTTON_KIND,
+                               m_pGadCbxIgnoreCase,
+                               &newGadget,
+                               TAG_DONE);
+  if(m_pGadBtnFind == NULL)
   {
     cleanup();
     throw pErrMsg;
   }
 
-  // Create the 'Find prev' button
-  newGadget.ng_LeftEdge  += btnsWidth;
-  if(newGadget.ng_LeftEdge < (labelsWidth + left + hSpace))
+  // Calculate the distance between the left edges of the buttons in
+  // this line
+  LONG btnsLeftEdgeDist = btnsWidth;
+  if((newGadget.ng_LeftEdge + btnsLeftEdgeDist) < (labelsWidth + left + hSpace))
   {
-    // Hope this h-distance is enough. But it is visually a good idea
+    // Hope, this h-distance is enough. But it is visually a good idea
     // to start the button on a vertical line with the gadgets above.
-    newGadget.ng_LeftEdge = labelsWidth + left + hSpace;
+    btnsLeftEdgeDist = labelsWidth + left + hSpace - newGadget.ng_LeftEdge;
   }
   else
   {
     // Add a h-distance to previous button
-    newGadget.ng_LeftEdge += 10;
+    // newGadget.ng_LeftEdge += 10;
+    btnsLeftEdgeDist += 10;
   }
+  
+  // Create the 'From start' button
+  newGadget.ng_LeftEdge += btnsLeftEdgeDist;
 
-  newGadget.ng_GadgetText = (UBYTE*) "Find _prev";
-  newGadget.ng_GadgetID   = GID_BtnFindPrev;
+  newGadget.ng_GadgetText = (UBYTE*) "From _start";
+  newGadget.ng_GadgetID   = GID_BtnFromStart;
 
-  m_pGadBtnFindPrev = CreateGadget(BUTTON_KIND,
-                                   m_pGadBtnFindNext,
+  m_pGadBtnFromStart = CreateGadget(BUTTON_KIND,
+                                   m_pGadBtnFind,
                                    &newGadget,
                                    GT_Underscore, '_',
                                    TAG_DONE);
 
-  if(m_pGadBtnFindPrev == NULL)
+  if(m_pGadBtnFromStart == NULL)
+  {
+    cleanup();
+    throw pErrMsg;
+  }
+
+
+  // Create the 'Backwards' button
+  newGadget.ng_LeftEdge  += btnsLeftEdgeDist;
+  newGadget.ng_GadgetText = (UBYTE*) "_Backwards";
+  newGadget.ng_GadgetID   = GID_BtnBackwards;
+
+  m_pGadBtnBackwards = CreateGadget(BUTTON_KIND,
+                                    m_pGadBtnFromStart,
+                                    &newGadget,
+                                    GT_Underscore, '_',
+                                    TAG_DONE);
+
+  if(m_pGadBtnBackwards == NULL)
   {
     cleanup();
     throw pErrMsg;
@@ -255,7 +278,9 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
 
   // Adjust the window height depending on the y-Pos and height of the
   // last gadget
-  m_Height = newGadget.ng_TopEdge + newGadget.ng_Height + vSpace;
+  m_Height = newGadget.ng_TopEdge 
+          + newGadget.ng_Height 
+          + (3 * pIntuiScreen->WBorBottom);
 
   // Setting window title
   setTitle("Find");
@@ -445,7 +470,7 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
       break;
     }
 
-    case GID_BtnFindNext:
+    case GID_BtnFind:
     {
       STRPTR pTextToFind = applyChangedSearchText();
       if(pTextToFind == NULL)
@@ -464,7 +489,7 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
       break;
     }
 
-    case GID_BtnFindPrev:
+    case GID_BtnFromStart:
     {
       STRPTR pTextToFind = applyChangedSearchText();
       if(pTextToFind == NULL)
@@ -591,11 +616,15 @@ void SearchWindow::setFindButtonsEnabled(bool enabled)
     disabled = TRUE;
   }
 
-  GT_SetGadgetAttrs(m_pGadBtnFindNext, m_pWindow, NULL,
+  GT_SetGadgetAttrs(m_pGadBtnFind, m_pWindow, NULL,
                     GA_Disabled, disabled,
                     TAG_DONE);
 
-  GT_SetGadgetAttrs(m_pGadBtnFindPrev, m_pWindow, NULL,
+  GT_SetGadgetAttrs(m_pGadBtnFromStart, m_pWindow, NULL,
+                    GA_Disabled, disabled,
+                    TAG_DONE);
+
+  GT_SetGadgetAttrs(m_pGadBtnBackwards, m_pWindow, NULL,
                     GA_Disabled, disabled,
                     TAG_DONE);
 
@@ -658,5 +687,5 @@ void SearchWindow::cleanup()
   m_pGadStrSearchText = NULL;
   m_pGadCycLocation = NULL;
   m_pGadCbxIgnoreCase = NULL;
-  m_pGadBtnFindNext = NULL;
+  m_pGadBtnFind = NULL;
 }
