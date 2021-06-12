@@ -14,7 +14,6 @@ TextFinder::TextFinder(const DiffWorker& diffWorker,
                        DiffWindow& diffWindow)
   : m_DiffWorker(diffWorker),
     m_DiffWindow(diffWindow),
-    m_Direction(SD_Downward),
     m_pDiffDocument(NULL),
     m_pSearchEngine(NULL),
     m_pNewSearchEngine(NULL)
@@ -36,92 +35,212 @@ TextFinder::~TextFinder()
   }
 }
 
-void TextFinder::Execute(struct Window* pActiveWindow)
+
+bool TextFinder::find()
 {
   if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
+  {
+    return false;
+  }
+
+  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
+  if(pLeftTextArea == NULL)
+  {
+    // No left text area available - should not be possible
+    return false;
+  }
+  
+  // Perform a new search if the document has changed
+  applyDocumentChanged();
+
+  // Apply a new search engine iif one exists and remember the last
+  // search result of the old search engine
+  DiffFileSearchResult* pFormerResult = applyNewSearchEngine();
+
+  /**
+   * Get the next search result from current document top line id
+   */
+  DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
+  if(pResult == NULL)
+  {
+    signalNoResultFound();
+    return false;
+  }
+
+  unmarkFormerResult(pFormerResult);
+
+  markNewResult(pResult);
+
+  scrollToNewResult(pResult);
+
+  return true;
+}
+
+
+bool TextFinder::findFromStart()
+{
+  if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
+  {
+    return false;
+  }
+
+  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
+  if(pLeftTextArea == NULL)
+  {
+    // No left text area available - should not be possible
+    return false;
+  }
+
+  // Perform a new search if the document has changed
+  applyDocumentChanged();
+
+  // Apply a new search engine iif one exists and remember the last
+  // search result of the old search engine
+  DiffFileSearchResult* pFormerResult = applyNewSearchEngine();
+
+  /**
+   * Get the first search result (the next one starting from line id 0)
+   */
+  DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult(0);
+  if(pResult == NULL)
+  {
+    signalNoResultFound();
+    return false;
+  }
+
+  unmarkFormerResult(pFormerResult);
+
+  markNewResult(pResult);
+
+  scrollToNewResult(pResult);
+
+  return true;
+}
+
+
+bool TextFinder::findBackwards()
+{
+  if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
+  {
+    return false;
+  }
+
+  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
+  if(pLeftTextArea == NULL)
+  {
+    // No left text area available - should not be possible
+    return false;
+  }
+  
+  // Perform a new search if the document has changed
+  applyDocumentChanged();
+
+  // Apply a new search engine iif one exists and remember the last
+  // search result of the old search engine
+  DiffFileSearchResult* pFormerResult = applyNewSearchEngine();
+
+  /**
+   * Get the previous search result from current document top line id
+   */
+  DiffFileSearchResult* pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY());
+  if(pResult == NULL)
+  {
+    signalNoResultFound();
+    return false;
+  }
+
+  unmarkFormerResult(pFormerResult);
+
+  markNewResult(pResult);
+
+  scrollToNewResult(pResult);
+
+  return true;
+}
+
+
+void TextFinder::applyDocumentChanged()
+{
+  if(hasDiffDocumentChanged() == false)
+  {
+    return;
+  }
+
+  // Meanwhile the user 'opened' another diff document
+  if(m_pSearchEngine != NULL)
+  {
+    m_pNewSearchEngine = createNewSearchEngine(m_pSearchEngine->getSearchString().c_str(),
+                                                m_pSearchEngine->isCaseIgnored(),
+                                                m_pSearchEngine->getLocation());
+  }
+}
+
+
+DiffFileSearchResult* TextFinder::applyNewSearchEngine()
+{
+  if(m_pNewSearchEngine == NULL)
+  {
+    // No new search engine
+    return NULL;
+  }
+
+  DiffFileSearchResult* pFormerResult = m_pSearchEngine->getCurrentResult();
+
+  // Old search engine is not needed anymore as the new one will be
+  // taken
+  delete m_pSearchEngine;
+
+  // The new search engine now becomes the current one
+  m_pSearchEngine = m_pNewSearchEngine;
+
+  // And is not 'the new search engine' anymore
+  m_pNewSearchEngine = NULL;
+
+  return pFormerResult;
+}
+
+void TextFinder::signalNoResultFound()
+{
+  DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
+}
+
+void TextFinder::unmarkFormerResult(DiffFileSearchResult* pFormerResult)
+{
+  // Clear the former search result visually
+  if(pFormerResult == NULL)
   {
     return;
   }
 
   DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
   DiffWindowTextArea* pRightTextArea = m_DiffWindow.getRightTextArea();
-  if((pLeftTextArea == NULL) || (pRightTextArea == NULL))
+  if( (pLeftTextArea == NULL) || (pLeftTextArea == NULL) )
   {
     return;
   }
 
-  if(hasDiffDocumentChanged())
-  {
-    // Meanwhile the user 'opened' another diff document
-    if(m_pSearchEngine != NULL)
-    {
-      m_pNewSearchEngine = createNewSearchEngine(m_pSearchEngine->getSearchString().c_str(),
-                                                 m_pSearchEngine->isCaseIgnored(),
-                                                 m_pSearchEngine->getLocation());
-    }
-  }
+  // Clear all result selections
+  pLeftTextArea->clearSelection();
+  pRightTextArea->clearSelection();
 
-  // If there's already a search engine remember its last result
-  DiffFileSearchResult* pFormerResult = NULL;
-  if(m_pSearchEngine != NULL)
-  {
-    pFormerResult = m_pSearchEngine->getCurrentResult();
-  }
+  // Re-render the line line with the former search result to visually
+  // remove the selection
+  m_DiffWindow.renderDocuments(pFormerResult->getLineId());
+}
 
-
-  DiffFileSearchResult* pResult = NULL;
-  if(m_pNewSearchEngine != NULL)
-  {
-    // Old search engine is not needed anymore as the new one will be
-    // taken
-    delete m_pSearchEngine;
-
-    // The new search engine now becomes the current one
-    m_pSearchEngine = m_pNewSearchEngine;
-
-    // And is not 'the new search engine' anymore
-    m_pNewSearchEngine = NULL;
-
-    // Get the first search result in upward/downward direction from
-    // current line
-    if(m_Direction == SD_Downward)
-    {
-      pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
-    }
-    else
-    {
-      pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY());
-    }
-  }
-  else if(m_pSearchEngine != NULL)
-  {
-    // Get the prev/next search result
-    if(m_Direction == SD_Downward)
-    {
-      pResult = m_pSearchEngine->getNextResult();
-    }
-    else
-    {
-      pResult = m_pSearchEngine->getPrevResult();
-    }
-  }
-
+void TextFinder::markNewResult(DiffFileSearchResult* pResult)
+{
+  // Clear the former search result visually
   if(pResult == NULL)
   {
-    DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
     return;
   }
 
-  // Clear the former search result visually
-  if(pFormerResult != NULL)
+  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
+  DiffWindowTextArea* pRightTextArea = m_DiffWindow.getRightTextArea();
+  if( (pLeftTextArea == NULL) || (pLeftTextArea == NULL) )
   {
-    // Clear all result selections
-    pLeftTextArea->clearSelection();
-    pRightTextArea->clearSelection();
-
-    // Re-render the line line with the former search result to
-    // visually remove the selection
-    m_DiffWindow.renderDocuments(pFormerResult->getLineId());
+    return;
   }
 
   size_t searchStringLength = m_pSearchEngine->getSearchString().length();
@@ -139,6 +258,11 @@ void TextFinder::Execute(struct Window* pActiveWindow)
                                  pResult->getCharId(),
                                  stopCharId);
   }
+}
+
+void TextFinder::scrollToNewResult(DiffFileSearchResult* pResult)
+{
+  size_t searchStringLength = m_pSearchEngine->getSearchString().length();
 
   // If necessary scroll the window to have the result visible
   bool hasScrolled = m_DiffWindow.scrollToPage(pResult->getCharId(),
@@ -157,6 +281,7 @@ void TextFinder::Execute(struct Window* pActiveWindow)
     m_DiffWindow.renderDocuments(pResult->getLineId());
   }
 }
+
 
 DiffFileSearchEngine* TextFinder::createNewSearchEngine(const char* pSearchText,
                                                        bool isCaseIgnored,
@@ -368,19 +493,6 @@ void TextFinder::setLocation(SearchLocation location)
                                                isCaseIgnored(),
                                                location);
   }
-}
-
-SearchDirection TextFinder::getDirection() const
-{
-  return m_Direction;
-}
-
-void TextFinder::setDirection(SearchDirection direction)
-{
-  // No need to perform the search / create a new search engine because
-  // this option doesn't affect the search results. It is applied
-  // directly in commad execute method.
-  m_Direction = direction;
 }
 
 

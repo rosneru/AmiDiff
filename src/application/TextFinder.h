@@ -24,7 +24,9 @@ public:
 
   virtual ~TextFinder();
 
-  virtual void Execute(struct Window* pActiveWindow);
+  bool find();
+  bool findFromStart();
+  bool findBackwards();
 
   const char* getSearchText() const;
   void setSearchText(const char* pSearchText);
@@ -35,18 +37,20 @@ public:
   SearchLocation getLocation() const;
   void setLocation(SearchLocation location);
 
-  SearchDirection getDirection() const;
-  void setDirection(SearchDirection direction);
-
 private:
   const DiffWorker& m_DiffWorker;
   DiffWindow& m_DiffWindow;
 
-  SearchDirection m_Direction;
-
   const DiffDocument* m_pDiffDocument;
   DiffFileSearchEngine* m_pSearchEngine;
   DiffFileSearchEngine* m_pNewSearchEngine;
+
+  void applyDocumentChanged();
+  DiffFileSearchResult* applyNewSearchEngine();
+  void signalNoResultFound();
+  void unmarkFormerResult(DiffFileSearchResult* pFormerResult);
+  void markNewResult(DiffFileSearchResult* pResult);
+  void scrollToNewResult(DiffFileSearchResult* pResult);
 
   DiffFileSearchEngine* createNewSearchEngine(const char* pSearchText, 
                                               bool isCaseIgnored, 

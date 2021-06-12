@@ -79,6 +79,9 @@ private:
   struct Gadget* m_pGadBtnFromStart;
   struct Gadget* m_pGadBtnBackwards;
 
+  void find();
+  void findFromStart();
+  void findBackwards();
 
   //
   // The next two are called from HandleIDCMP() to get that method not

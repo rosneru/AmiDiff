@@ -102,7 +102,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
 
   // Set the labelWidth to the longest label text
   const char* labelTexts[]  = 
-  { 
+  { // TODO change
     "Search for", "Location", "Ignore case", "Start from"
   };
 
@@ -435,6 +435,65 @@ void SearchWindow::handleIDCMP(ULONG msgClass,
   }
 }
 
+void SearchWindow::find()
+{
+  STRPTR pTextToFind = applyChangedSearchText();
+  if(pTextToFind == NULL)
+  {
+    return;
+  }
+
+  // Set the user-typed text to find in search command: This performs
+  // the search if pTextToFind differs from the text which (maybe) is
+  // already set in  TextFinder.
+  m_TextFinder.setSearchText(pTextToFind);
+
+  // Jump to the result
+  if(m_TextFinder.find() == true)
+  {
+    m_CmdCloseSearchWindow.Execute(NULL);
+  }
+}
+
+void SearchWindow::findFromStart()
+{
+  STRPTR pTextToFind = applyChangedSearchText();
+  if(pTextToFind == NULL)
+  {
+    return;
+  }
+
+  // Set the user-typed text to find in search command: This performs
+  // the search if pTextToFind differs from the text which (maybe) is
+  // already set in  TextFinder.
+  m_TextFinder.setSearchText(pTextToFind);
+
+  // Jump to the result
+  if(m_TextFinder.findFromStart() == true)
+  {
+    m_CmdCloseSearchWindow.Execute(NULL);
+  }
+}
+
+void SearchWindow::findBackwards()
+{
+  STRPTR pTextToFind = applyChangedSearchText();
+  if(pTextToFind == NULL)
+  {
+    return;
+  }
+
+  // Set the user-typed text to find in search command: This performs
+  // the search if pTextToFind differs from the text which (maybe) is
+  // already set in  TextFinder.
+  m_TextFinder.setSearchText(pTextToFind);
+
+  // Jump to the result
+  if(m_TextFinder.findBackwards() == true)
+  {
+    m_CmdCloseSearchWindow.Execute(NULL);
+  }
+}
 
 void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 {
@@ -472,39 +531,19 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
     case GID_BtnFind:
     {
-      STRPTR pTextToFind = applyChangedSearchText();
-      if(pTextToFind == NULL)
-      {
-        return;
-      }
-
-      // Set the user-typed text to find in search command: This
-      // performs the search
-      m_TextFinder.setSearchText(pTextToFind);
-
-      // Set the search direction and execute the search command: This
-      // jumps to the result
-      m_TextFinder.setDirection(SD_Downward);
-      m_TextFinder.Execute(NULL);
+      find();
       break;
     }
 
     case GID_BtnFromStart:
     {
-      STRPTR pTextToFind = applyChangedSearchText();
-      if(pTextToFind == NULL)
-      {
-        return;
-      }
+      findFromStart();
+      break;
+    }
 
-      // Set the user-typed text to find in search command: This
-      // performs the search
-      m_TextFinder.setSearchText(pTextToFind);
-
-      // Set the search direction and execute the search command: This
-      // jumps to the result
-      m_TextFinder.setDirection(SD_Upward);
-      m_TextFinder.Execute(NULL);
+    case GID_BtnBackwards:
+    {
+      findBackwards();
       break;
     } 
   }
@@ -515,18 +554,25 @@ void SearchWindow::handleVanillaKey(UWORD code)
 {
   switch(code)
   {
-    // case 0xD: // <RETURN> Find
-    // {
-    //   // Button is enabled, perform its action
-    //   find();
-    //   break;
-    // }
+    case 'b':
+    case 'B':
+    {
+      findBackwards();
+      break;
+    }
 
     case 'c':
     case 'C':
     {
       toggleCaseGadget();
       applyChangedCase();
+      break;
+    }
+
+    case 'f':
+    case 'F':
+    {
+      ActivateGadget(m_pGadStrSearchText, m_pWindow, NULL);
       break;
     }
 
@@ -541,14 +587,21 @@ void SearchWindow::handleVanillaKey(UWORD code)
     case 's':
     case 'S':
     {
-      ActivateGadget(m_pGadStrSearchText, m_pWindow, NULL);
+      findFromStart();
       break;
     }
 
+    case 0xD:// <RETURN> Compare the files and display the diff
+    {
+      find();
+      break;
+    }
 
     case 0x1B: // <ESC> Cancel
+    {
       m_CmdCloseSearchWindow.Execute(NULL);
       break;
+    }
 
   }
 }
