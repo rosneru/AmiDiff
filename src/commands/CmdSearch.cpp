@@ -63,19 +63,11 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
     }
   }
 
+  // If there's already a search engine remember its last result
+  DiffFileSearchResult* pFormerResult = NULL;
   if(m_pSearchEngine != NULL)
   {
-    // And there's also an old search engine: Clear the old one
-    pLeftTextArea->clearSelection();
-    pRightTextArea->clearSelection();
-
-    // Re-render the line line with the former search result to
-    // visually remove the selection
-    if(m_pSearchEngine->getCurrentResult() != NULL)
-    {
-      m_DiffWindow.renderDocuments(
-        m_pSearchEngine->getCurrentResult()->getLineId());
-    }
+    pFormerResult = m_pSearchEngine->getCurrentResult();
   }
 
 
@@ -120,6 +112,18 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   {
     DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
     return;
+  }
+
+  // Clear the former search result visually
+  if(pFormerResult != NULL)
+  {
+    // Clear all result selections
+    pLeftTextArea->clearSelection();
+    pRightTextArea->clearSelection();
+
+    // Re-render the line line with the former search result to
+    // visually remove the selection
+    m_DiffWindow.renderDocuments(pFormerResult->getLineId());
   }
 
   size_t searchStringLength = m_pSearchEngine->getSearchString().length();
