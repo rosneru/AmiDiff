@@ -10,11 +10,9 @@
 #include "TextFinder.h"
 
 
-TextFinder::TextFinder(std::vector<WindowBase*>* pAllWindowsVector,
-                     const DiffWorker& diffWorker,
-                     DiffWindow& diffWindow)
-  : CommandBase(pAllWindowsVector),
-    m_DiffWorker(diffWorker),
+TextFinder::TextFinder(const DiffWorker& diffWorker,
+                       DiffWindow& diffWindow)
+  : m_DiffWorker(diffWorker),
     m_DiffWindow(diffWindow),
     m_Direction(SD_Downward),
     m_pDiffDocument(NULL),

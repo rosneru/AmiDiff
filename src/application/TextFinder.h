@@ -2,7 +2,6 @@
 #define TEXT_FINDER_H
 
 #include <string>
-#include "CommandBase.h"
 #include "DiffDocument.h"
 #include "DiffFileSearchEngine.h"
 #include "DiffWindow.h"
@@ -12,18 +11,17 @@
 
 
 /**
- * Command to search for text in diff result window.
+ * Command to find for text in diff result window.
  *
  * @author Uwe Rosner
  * @date 12/04/2021
  */
-class TextFinder : public CommandBase
+class TextFinder
 {
 public:
-  TextFinder(std::vector<WindowBase*>* pAllWindowsVector,
-            const DiffWorker& diffWorker,
-            DiffWindow& diffWindow);
-  
+  TextFinder(const DiffWorker& diffWorker,
+             DiffWindow& diffWindow);
+
   virtual ~TextFinder();
 
   virtual void Execute(struct Window* pActiveWindow);

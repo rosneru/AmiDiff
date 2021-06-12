@@ -22,6 +22,7 @@ add_executable (ADiffView_gcc
                 application/DiffDocument.cpp
                 application/DiffWorker.cpp
                 application/DiffWorkerProgressReporter.cpp
+                application/TextFinder.cpp
                 commands/CmdCloseWindow.cpp
                 commands/CmdDiff.cpp
                 commands/CmdFileRequester.cpp
@@ -30,7 +31,6 @@ add_executable (ADiffView_gcc
                 commands/CmdOpenWindow.cpp
                 commands/CmdQuit.cpp
                 commands/CmdRequester.cpp
-                commands/TextFinder.cpp
                 commands/CommandBase.cpp
                 diffengine/DiffEngine.cpp
                 diffengine/DiffFileBase.cpp
