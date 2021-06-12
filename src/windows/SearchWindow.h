@@ -10,7 +10,7 @@
 
 #include "OpenScreenBase.h"
 #include "CommandBase.h"
-#include "CmdSearch.h"
+#include "TextFinder.h"
 #include "CmdFileRequester.h"
 #include "WindowBase.h"
 
@@ -27,7 +27,7 @@ public:
   SearchWindow(std::vector<WindowBase*>& windowArray,
               ScreenBase& screen,
               struct MsgPort* pIdcmpMsgPort,
-              CmdSearch& cmdSearch,
+              TextFinder& TextFinder,
               CommandBase& cmdCloseSearchWindow);
 
   virtual ~SearchWindow();
@@ -52,7 +52,7 @@ public:
 
 
 private:
-  CmdSearch& m_CmdSearch;
+  TextFinder& m_TextFinder;
   CommandBase& m_CmdCloseSearchWindow;
 
   const ULONG m_NumLocationLabels;

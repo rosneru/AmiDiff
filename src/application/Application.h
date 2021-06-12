@@ -28,7 +28,7 @@
 #include "CmdOpenWindow.h"
 #include "CmdQuit.h"
 #include "CmdRequester.h"
-#include "CmdSearch.h"
+#include "TextFinder.h"
 #include "DiffWindow.h"
 #include "DiffWorker.h"
 #include "FilesWindow.h"
@@ -77,7 +77,7 @@ private:
   CmdOpenWindow m_CmdOpenSearchWindow;
   CmdCloseWindow m_CmdCloseSearchWindow;
   CmdRequester m_CmdAboutRequester;
-  CmdSearch m_CmdSearch;
+  TextFinder m_TextFinder;
   std::string m_AboutMsg;
 
   std::vector<WindowBase*> m_AllWindowsList;

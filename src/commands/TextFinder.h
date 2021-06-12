@@ -1,5 +1,5 @@
-#ifndef CMD_SEARCH_H
-#define CMD_SEARCH_H
+#ifndef TEXT_FINDER_H
+#define TEXT_FINDER_H
 
 #include <string>
 #include "CommandBase.h"
@@ -17,14 +17,14 @@
  * @author Uwe Rosner
  * @date 12/04/2021
  */
-class CmdSearch : public CommandBase
+class TextFinder : public CommandBase
 {
 public:
-  CmdSearch(std::vector<WindowBase*>* pAllWindowsVector,
+  TextFinder(std::vector<WindowBase*>* pAllWindowsVector,
             const DiffWorker& diffWorker,
             DiffWindow& diffWindow);
   
-  virtual ~CmdSearch();
+  virtual ~TextFinder();
 
   virtual void Execute(struct Window* pActiveWindow);
 

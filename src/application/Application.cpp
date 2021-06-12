@@ -73,7 +73,7 @@ Application::Application(ScreenBase& screen,
     m_SearchWindow(m_AllWindowsList,
                    screen,
                    m_Ports.Idcmp(),
-                   m_CmdSearch,
+                   m_TextFinder,
                    m_CmdCloseSearchWindow),
     m_CmdDiff(&m_AllWindowsList, m_DiffWorker),
     m_CmdNavNextDiff(&m_AllWindowsList, m_DiffWindow),
@@ -84,7 +84,7 @@ Application::Application(ScreenBase& screen,
     m_CmdOpenSearchWindow(&m_AllWindowsList, m_SearchWindow),
     m_CmdCloseSearchWindow(&m_AllWindowsList, m_CmdOpenSearchWindow, m_SearchWindow),
     m_CmdAboutRequester(&m_AllWindowsList, m_AboutMsg, "About", "Ok"),
-    m_CmdSearch(&m_AllWindowsList, m_DiffWorker, m_DiffWindow),
+    m_TextFinder(&m_AllWindowsList, m_DiffWorker, m_DiffWindow),
     m_pAppIcon(NULL)
 {
   //

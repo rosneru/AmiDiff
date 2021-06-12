@@ -36,10 +36,10 @@ const char* g_GadCycLocationLabels [4] = {"Both files", "Left file", "Right file
 SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
                          ScreenBase& screen,
                          struct MsgPort* pIdcmpMsgPort,
-                         CmdSearch& cmdSearch,
+                         TextFinder& TextFinder,
                          CommandBase& cmdCloseSearchWindow)
   : WindowBase(screen, pIdcmpMsgPort, NULL),
-    m_CmdSearch(cmdSearch),
+    m_TextFinder(TextFinder),
     m_CmdCloseSearchWindow(cmdCloseSearchWindow),
     m_NumLocationLabels(sizeof(g_GadCycLocationLabels) /
                         sizeof(g_GadCycLocationLabels[0])
@@ -302,9 +302,9 @@ bool SearchWindow::open(InitialPosition initialPos)
    * this wouldn't be executed.
    */
 
-  setStringGadgetText(m_pGadStrSearchText, m_CmdSearch.getSearchText());
+  setStringGadgetText(m_pGadStrSearchText, m_TextFinder.getSearchText());
 
-  if(m_CmdSearch.isCaseIgnored())
+  if(m_TextFinder.isCaseIgnored())
   {
     GT_SetGadgetAttrs(m_pGadCbxIgnoreCase, m_pWindow, NULL,
                       GTCB_Checked, TRUE,
@@ -317,7 +317,7 @@ bool SearchWindow::open(InitialPosition initialPos)
                       TAG_DONE);
   }
 
-  switch(m_CmdSearch.getLocation())
+  switch(m_TextFinder.getLocation())
   {
     case SL_BothFiles:
     {
@@ -349,7 +349,7 @@ bool SearchWindow::open(InitialPosition initialPos)
 
   // Also on when opened for the first time, the search text gadget
   // should be activated
-  if(strlen(m_CmdSearch.getSearchText()) < 1)
+  if(strlen(m_TextFinder.getSearchText()) < 1)
   {
     setFindButtonsEnabled(false);
     ActivateGadget(m_pGadStrSearchText, m_pWindow, NULL);
@@ -422,7 +422,7 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
       }
 
       // Set the user-typed text to find in search command
-      m_CmdSearch.setSearchText(pTextToFind);
+      m_TextFinder.setSearchText(pTextToFind);
       break;
     }
 
@@ -448,12 +448,12 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
       // Set the user-typed text to find in search command: This
       // performs the search
-      m_CmdSearch.setSearchText(pTextToFind);
+      m_TextFinder.setSearchText(pTextToFind);
 
       // Set the search direction and execute the search command: This
       // jumps to the result
-      m_CmdSearch.setDirection(SD_Downward);
-      m_CmdSearch.Execute(NULL);
+      m_TextFinder.setDirection(SD_Downward);
+      m_TextFinder.Execute(NULL);
       break;
     }
 
@@ -467,12 +467,12 @@ void SearchWindow::handleGadgetEvent(struct Gadget* pGadget)
 
       // Set the user-typed text to find in search command: This
       // performs the search
-      m_CmdSearch.setSearchText(pTextToFind);
+      m_TextFinder.setSearchText(pTextToFind);
 
       // Set the search direction and execute the search command: This
       // jumps to the result
-      m_CmdSearch.setDirection(SD_Upward);
-      m_CmdSearch.Execute(NULL);
+      m_TextFinder.setDirection(SD_Upward);
+      m_TextFinder.Execute(NULL);
       break;
     } 
   }
@@ -605,7 +605,7 @@ void SearchWindow::applyChangedLocation()
     return;
   }
 
-  m_CmdSearch.setLocation((SearchLocation)currentId);
+  m_TextFinder.setLocation((SearchLocation)currentId);
   applyChangedSearchText(); // because this enables/disables the buttons
 }
 
@@ -621,7 +621,7 @@ void SearchWindow::applyChangedCase()
     return;
   }
 
-  m_CmdSearch.setCaseIgnored(isChecked == TRUE);
+  m_TextFinder.setCaseIgnored(isChecked == TRUE);
   applyChangedSearchText(); // because this enables/disables the buttons
 }
 

@@ -30,7 +30,7 @@ add_executable (ADiffView_gcc
                 commands/CmdOpenWindow.cpp
                 commands/CmdQuit.cpp
                 commands/CmdRequester.cpp
-                commands/CmdSearch.cpp
+                commands/TextFinder.cpp
                 commands/CommandBase.cpp
                 diffengine/DiffEngine.cpp
                 diffengine/DiffFileBase.cpp

@@ -7,10 +7,10 @@
 #include <string.h>
 
 #include "DiffFileSearchResult.h"
-#include "CmdSearch.h"
+#include "TextFinder.h"
 
 
-CmdSearch::CmdSearch(std::vector<WindowBase*>* pAllWindowsVector,
+TextFinder::TextFinder(std::vector<WindowBase*>* pAllWindowsVector,
                      const DiffWorker& diffWorker,
                      DiffWindow& diffWindow)
   : CommandBase(pAllWindowsVector),
@@ -23,7 +23,7 @@ CmdSearch::CmdSearch(std::vector<WindowBase*>* pAllWindowsVector,
 {
 }
 
-CmdSearch::~CmdSearch()
+TextFinder::~TextFinder()
 {
   if(m_pSearchEngine != NULL)
   {
@@ -38,7 +38,7 @@ CmdSearch::~CmdSearch()
   }
 }
 
-void CmdSearch::Execute(struct Window* pActiveWindow)
+void TextFinder::Execute(struct Window* pActiveWindow)
 {
   if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
   {
@@ -160,7 +160,7 @@ void CmdSearch::Execute(struct Window* pActiveWindow)
   }
 }
 
-DiffFileSearchEngine* CmdSearch::createNewSearchEngine(const char* pSearchText,
+DiffFileSearchEngine* TextFinder::createNewSearchEngine(const char* pSearchText,
                                                        bool isCaseIgnored,
                                                        SearchLocation location)
 {
@@ -201,7 +201,7 @@ DiffFileSearchEngine* CmdSearch::createNewSearchEngine(const char* pSearchText,
 }
 
 
-const char* CmdSearch::getSearchText() const
+const char* TextFinder::getSearchText() const
 {
   if(m_pSearchEngine == NULL)
   {
@@ -211,7 +211,7 @@ const char* CmdSearch::getSearchText() const
   return m_pSearchEngine->getSearchString().c_str();
 }
 
-void CmdSearch::setSearchText(const char* pSearchText)
+void TextFinder::setSearchText(const char* pSearchText)
 {
   if(m_pNewSearchEngine != NULL)
   {
@@ -258,7 +258,7 @@ void CmdSearch::setSearchText(const char* pSearchText)
 }
 
 
-bool CmdSearch::isCaseIgnored() const
+bool TextFinder::isCaseIgnored() const
 {
   if(m_pSearchEngine == NULL)
   {
@@ -269,7 +269,7 @@ bool CmdSearch::isCaseIgnored() const
 }
 
 
-void CmdSearch::setCaseIgnored(bool isCaseIgnored)
+void TextFinder::setCaseIgnored(bool isCaseIgnored)
 {
   if(m_pNewSearchEngine != NULL)
   {
@@ -316,7 +316,7 @@ void CmdSearch::setCaseIgnored(bool isCaseIgnored)
 }
 
 
-SearchLocation CmdSearch::getLocation() const
+SearchLocation TextFinder::getLocation() const
 {
   if(m_pSearchEngine == NULL)
   {
@@ -326,7 +326,7 @@ SearchLocation CmdSearch::getLocation() const
   return m_pSearchEngine->getLocation();
 }
 
-void CmdSearch::setLocation(SearchLocation location)
+void TextFinder::setLocation(SearchLocation location)
 {
   if(m_pNewSearchEngine != NULL)
   {
@@ -372,12 +372,12 @@ void CmdSearch::setLocation(SearchLocation location)
   }
 }
 
-SearchDirection CmdSearch::getDirection() const
+SearchDirection TextFinder::getDirection() const
 {
   return m_Direction;
 }
 
-void CmdSearch::setDirection(SearchDirection direction)
+void TextFinder::setDirection(SearchDirection direction)
 {
   // No need to perform the search / create a new search engine because
   // this option doesn't affect the search results. It is applied
@@ -386,7 +386,7 @@ void CmdSearch::setDirection(SearchDirection direction)
 }
 
 
-bool CmdSearch::hasDiffDocumentChanged() const
+bool TextFinder::hasDiffDocumentChanged() const
 {
   const DiffDocument* pWorkerDiffDoc = m_DiffWorker.getDiffDocument();
   return m_pDiffDocument != pWorkerDiffDoc;
