@@ -25,6 +25,7 @@ add_executable (ADiffView_gcc
                 application/TextFinder.cpp
                 commands/CmdCloseWindow.cpp
                 commands/CmdDiff.cpp
+                commands/CmdFindNext.cpp
                 commands/CmdFileRequester.cpp
                 commands/CmdNavNextDiff.cpp
                 commands/CmdNavPrevDiff.cpp
