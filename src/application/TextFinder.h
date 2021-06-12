@@ -28,6 +28,9 @@ public:
   bool findFromStart();
   bool findBackwards();
 
+  bool findNext();
+  bool findPrev();
+
   const char* getSearchText() const;
   void setSearchText(const char* pSearchText);
 

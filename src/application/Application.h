@@ -23,6 +23,7 @@
 #include "OpenJoinedPublicScreen.h"
 #include "CmdCloseWindow.h"
 #include "CmdDiff.h"
+#include "CmdFindNext.h"
 #include "CmdNavNextDiff.h"
 #include "CmdNavPrevDiff.h"
 #include "CmdOpenWindow.h"
@@ -68,7 +69,9 @@ private:
   FilesWindow m_FilesWindow;
   ProgressWindow m_ProgressWindow;
   SearchWindow m_SearchWindow;
+  TextFinder m_TextFinder;
   CmdDiff m_CmdDiff;
+  CmdFindNext m_CmdFindNext;
   CmdNavNextDiff m_CmdNavNextDiff;
   CmdNavPrevDiff m_CmdNavPrevDiff;
   CmdQuit m_CmdQuit;
@@ -77,7 +80,6 @@ private:
   CmdOpenWindow m_CmdOpenSearchWindow;
   CmdCloseWindow m_CmdCloseSearchWindow;
   CmdRequester m_CmdAboutRequester;
-  TextFinder m_TextFinder;
   std::string m_AboutMsg;
 
   std::vector<WindowBase*> m_AllWindowsList;

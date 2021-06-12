@@ -12,7 +12,8 @@ public:
                  CommandBase* pCmdQuit,
                  CommandBase* pCmdNavPrevDiff,
                  CommandBase* pCmdNavNextDiff,
-                 CommandBase* pCmdOpenSearchWindow);
+                 CommandBase* pCmdOpenSearchWindow,
+                 CommandBase* pCmdFindNext);
 };
 
 #endif

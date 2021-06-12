@@ -141,6 +141,8 @@ bool TextFinder::findBackwards()
 
   /**
    * Get the previous search result from current document top line id
+   * 
+   * TODO: Change ->getY() to id of last line
    */
   DiffFileSearchResult* pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY());
   if(pResult == NULL)
@@ -158,6 +160,86 @@ bool TextFinder::findBackwards()
   return true;
 }
 
+
+bool TextFinder::findNext()
+{
+  if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
+  {
+    return false;
+  }
+
+  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
+  if(pLeftTextArea == NULL)
+  {
+    // No left text area available - should not be possible
+    return false;
+  }
+  
+  // Perform a new search if the document has changed
+  applyDocumentChanged();
+
+  // Apply a new search engine iif one exists and remember the last
+  // search result of the old search engine
+  DiffFileSearchResult* pFormerResult = applyNewSearchEngine();
+
+  /**
+   * Get the next search result from result list
+   */
+  DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult();
+  if(pResult == NULL)
+  {
+    signalNoResultFound();
+    return false;
+  }
+
+  unmarkFormerResult(pFormerResult);
+
+  markNewResult(pResult);
+
+  scrollToNewResult(pResult);
+
+  return true;
+}
+
+bool TextFinder::findPrev()
+{
+  if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
+  {
+    return false;
+  }
+
+  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
+  if(pLeftTextArea == NULL)
+  {
+    // No left text area available - should not be possible
+    return false;
+  }
+  
+  // Perform a new search if the document has changed
+  applyDocumentChanged();
+
+  // Apply a new search engine iif one exists and remember the last
+  // search result of the old search engine
+  DiffFileSearchResult* pFormerResult = applyNewSearchEngine();
+
+  /**
+   * Get the previous search result from result list
+   */
+  DiffFileSearchResult* pResult = m_pSearchEngine->getPrevResult();
+  if(pResult == NULL)
+  {
+    signalNoResultFound();
+    return false;
+  }
+
+  unmarkFormerResult(pFormerResult);
+
+  markNewResult(pResult);
+
+  scrollToNewResult(pResult);
+
+  return true;
+}
 
 void TextFinder::applyDocumentChanged()
 {
