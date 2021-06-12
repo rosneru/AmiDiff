@@ -92,3 +92,31 @@ bool ScreenBase::IsHiresMode() const
 
   return false;
 }
+
+bool ScreenBase::ArePixelsSquare() const
+{
+  if(m_pIntuiScreen == NULL)
+  {
+    return false;
+  }
+  
+  LONG modeId = GetVPModeID(&m_pIntuiScreen->ViewPort);
+  if(modeId == INVALID_ID)
+  {
+    return false;  // TODO or true..or throw?
+  }
+
+  DisplayInfo dispInfo;
+
+  DisplayInfoHandle dh = FindDisplayInfo(modeId);
+  GetDisplayInfoData(dh,
+                     (APTR)&dispInfo,
+                     sizeof(struct DisplayInfo),
+                     DTAG_DISP,
+                     INVALID_ID);
+
+  WORD xAspect = dispInfo.Resolution.x;
+  WORD yAspect = dispInfo.Resolution.y;
+
+  return xAspect == yAspect;
+}

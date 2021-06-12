@@ -182,7 +182,13 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_TopEdge    ++; // Manually center text vertically as
                               // GadTools doesn't do it
 
-  newGadget.ng_Width      = right - newGadget.ng_LeftEdge;
+  ULONG doScale = FALSE;
+  if(m_Screen.ArePixelsSquare())
+  {
+    doScale = TRUE;
+  }
+
+  newGadget.ng_Width = newGadget.ng_Height + 3;
   newGadget.ng_GadgetText = (UBYTE*) "Ignore _case";
   newGadget.ng_GadgetID   = GID_CbxIgnoreCase;
 
@@ -190,6 +196,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
                                      m_pGadCycLocation,
                                      &newGadget,
                                      GT_Underscore, '_',
+                                     GTCB_Scaled, doScale,
                                      GTCB_Checked, FALSE,
                                      TAG_DONE);
 

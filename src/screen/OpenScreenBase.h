@@ -65,6 +65,12 @@ public:
    */
   bool IsHiresMode() const;
 
+  /**
+   * Returns true if (according to the display database) the pixels of
+   * this screen are square.
+   */
+  bool ArePixelsSquare() const;
+
 protected:
   struct Screen* m_pIntuiScreen;
   struct DrawInfo* m_pDrawInfo;
