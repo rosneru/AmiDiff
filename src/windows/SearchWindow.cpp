@@ -59,6 +59,12 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   struct Screen* pIntuiScreen = m_Screen.IntuiScreen();
   UWORD fontHeight = m_Screen.IntuiDrawInfo()->dri_Font->tf_YSize;
 
+  ULONG doScaleCheckboxes = FALSE;
+  if(m_Screen.ArePixelsSquare())
+  {
+    doScaleCheckboxes = TRUE;
+  }
+
   WORD hSpace = 10;
   WORD vSpace = 6;
 
@@ -182,12 +188,6 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
   newGadget.ng_TopEdge    ++; // Manually center text vertically as
                               // GadTools doesn't do it
 
-  ULONG doScale = FALSE;
-  if(m_Screen.ArePixelsSquare())
-  {
-    doScale = TRUE;
-  }
-
   newGadget.ng_Width = newGadget.ng_Height + 3;
   newGadget.ng_GadgetText = (UBYTE*) "Ignore _case";
   newGadget.ng_GadgetID   = GID_CbxIgnoreCase;
@@ -196,7 +196,7 @@ SearchWindow::SearchWindow(std::vector<WindowBase*>& windowArray,
                                      m_pGadCycLocation,
                                      &newGadget,
                                      GT_Underscore, '_',
-                                     GTCB_Scaled, doScale,
+                                     GTCB_Scaled, doScaleCheckboxes,
                                      GTCB_Checked, FALSE,
                                      TAG_DONE);
 
