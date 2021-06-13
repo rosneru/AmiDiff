@@ -272,7 +272,11 @@ DiffFileSearchResult* TextFinder::applyNewSearchEngine()
     return m_pSearchEngine->getCurrentResult();
   }
 
-  DiffFileSearchResult* pFormerResult = m_pSearchEngine->getCurrentResult();
+  DiffFileSearchResult* pFormerResult = NULL;
+  if(m_pSearchEngine != NULL)
+  {
+    pFormerResult = m_pSearchEngine->getCurrentResult();
+  }
 
   // Old search engine is not needed anymore as the new one will be
   // taken
