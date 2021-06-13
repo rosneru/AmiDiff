@@ -13,7 +13,8 @@ public:
                  CommandBase* pCmdNavPrevDiff,
                  CommandBase* pCmdNavNextDiff,
                  CommandBase* pCmdOpenSearchWindow,
-                 CommandBase* pCmdFindNext);
+                 CommandBase* pCmdFindNext,
+                 CommandBase* pCmdFindPrev);
 };
 
 #endif

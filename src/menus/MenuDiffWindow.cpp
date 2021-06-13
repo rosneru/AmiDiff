@@ -12,7 +12,8 @@ MenuDiffWindow::MenuDiffWindow(CommandBase* pCmdOpenFilesWindow,
                                CommandBase* pCmdNavPrevDiff,
                                CommandBase* pCmdNavNextDiff,
                                CommandBase* pCmdOpenSearchWindow,
-                               CommandBase* pCmdFindNext)
+                               CommandBase* pCmdFindNext,
+                               CommandBase* pCmdFindPrev)
 {
   struct NewMenu newMenu[] = 
   {
@@ -26,6 +27,7 @@ MenuDiffWindow::MenuDiffWindow(CommandBase* pCmdOpenFilesWindow,
     {   NM_ITEM,    "Next difference",      "N", 0, 0, pCmdNavNextDiff },
     {   NM_ITEM,    NM_BARLABEL,             0 , 0, 0, 0 },
     {   NM_ITEM,    "Find...",              "F", 0, 0, pCmdOpenSearchWindow },
+    {   NM_ITEM,    "Find prev",            "2", 0, 0, pCmdFindPrev },
     {   NM_ITEM,    "Find next",            "3", 0, 0, pCmdFindNext },
     { NM_END,     NULL,                      0 , 0, 0, 0 },
   };

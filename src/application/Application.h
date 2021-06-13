@@ -23,6 +23,7 @@
 #include "OpenJoinedPublicScreen.h"
 #include "CmdCloseWindow.h"
 #include "CmdDiff.h"
+#include "CmdFindPrev.h"
 #include "CmdFindNext.h"
 #include "CmdNavNextDiff.h"
 #include "CmdNavPrevDiff.h"
@@ -71,6 +72,7 @@ private:
   SearchWindow m_SearchWindow;
   TextFinder m_TextFinder;
   CmdDiff m_CmdDiff;
+  CmdFindPrev m_CmdFindPrev;
   CmdFindNext m_CmdFindNext;
   CmdNavNextDiff m_CmdNavNextDiff;
   CmdNavPrevDiff m_CmdNavPrevDiff;
