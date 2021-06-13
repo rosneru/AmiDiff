@@ -241,6 +241,12 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "src/application/TextFinder.cpp"
+Storm Shell Project (Dependencies)
+"build-stromc/TextFinder.o" "build-stromc/TextFinder.debug"
+""
+1 1
+File
 1 "src/commands/CmdCloseWindow.cpp"
 "src/commands/CmdCloseWindow.cpp"
 "src/commands/CmdCloseWindow.h"
@@ -279,6 +285,12 @@ File
 "src/commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdFileRequester.o" "build-stromc/CmdFileRequester.debug"
+""
+1 1
+File
+1 "src/commands/CmdFindNext.cpp"
+Storm Shell Project (Dependencies)
+"build-stromc/CmdFindNext.o" "build-stromc/CmdFindNext.debug"
 ""
 1 1
 File
@@ -344,28 +356,6 @@ File
 "src/commands/CommandBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdRequester.o" "build-stromc/CmdRequester.debug"
-""
-1 1
-File
-1 "src/commands/TextFinder.cpp"
-"src/commands/TextFinder.cpp"
-"src/commands/TextFinder.h"
-"src/commands/CommandBase.h"
-"src/diffengine/DiffInputFileBase.h"
-"src/diffengine/DiffFileBase.h"
-"src/diffengine/DiffLine.h"
-"src/diffengine/DiffOutputFileBase.h"
-"src/windows/DiffWindowRastports.h"
-"src/windows/DiffWindowTextArea.h"
-"src/textselect/TextSelectionLine.h"
-"src/textselect/TextSelectionRange.h"
-"src/windows/ScrollbarWindow.h"
-"src/commands/CmdOpenWindow.h"
-"src/application/DiffWorkerProgressReporter.h"
-"src/worker/WorkerStartupMsg.h"
-"src/textsearch/SearchOptions.h"
-Storm Shell Project (Dependencies)
-"build-stromc/TextFinder.o" "build-stromc/TextFinder.debug"
 ""
 1 1
 File
@@ -831,6 +821,12 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
+2 "src/application/TextFinder.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
 2 "src/commands/CmdCloseWindow.h"
 "src/commands/CmdCloseWindow.h"
 Storm Shell Project (Dependencies)
@@ -847,6 +843,12 @@ Storm Shell Project (Dependencies)
 File
 2 "src/commands/CmdFileRequester.h"
 "src/commands/CmdFileRequester.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "src/commands/CmdFindNext.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -882,13 +884,6 @@ Storm Shell Project (Dependencies)
 File
 2 "src/commands/CmdRequester.h"
 "src/commands/CmdRequester.h"
-Storm Shell Project (Dependencies)
-"" ""
-""
-0 0
-File
-2 "src/commands/TextFinder.h"
-"src/commands/TextFinder.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -1158,7 +1153,6 @@ Section
 7
 File
 10 "ADiffView"
-"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

@@ -263,7 +263,13 @@ DiffFileSearchResult* TextFinder::applyNewSearchEngine()
   if(m_pNewSearchEngine == NULL)
   {
     // No new search engine
-    return NULL;
+    if(m_pSearchEngine == NULL)
+    {
+      // No current search engine
+      return NULL;
+    }
+
+    return m_pSearchEngine->getCurrentResult();
   }
 
   DiffFileSearchResult* pFormerResult = m_pSearchEngine->getCurrentResult();
