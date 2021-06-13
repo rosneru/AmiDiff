@@ -449,7 +449,7 @@ void SearchWindow::find()
   m_TextFinder.setSearchText(pTextToFind);
 
   // Jump to the result
-  if(m_TextFinder.find() == true)
+  if(m_TextFinder.jumpToNextResultFromPage() == true)
   {
     m_CmdCloseSearchWindow.Execute(NULL);
   }
@@ -469,7 +469,7 @@ void SearchWindow::findFromStart()
   m_TextFinder.setSearchText(pTextToFind);
 
   // Jump to the result
-  if(m_TextFinder.findFromStart() == true)
+  if(m_TextFinder.jumpToFirstResult() == true)
   {
     m_CmdCloseSearchWindow.Execute(NULL);
   }
@@ -489,7 +489,7 @@ void SearchWindow::findBackwards()
   m_TextFinder.setSearchText(pTextToFind);
 
   // Jump to the result
-  if(m_TextFinder.findBackwards() == true)
+  if(m_TextFinder.jumpToPrevResultFromPage() == true)
   {
     m_CmdCloseSearchWindow.Execute(NULL);
   }

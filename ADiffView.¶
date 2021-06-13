@@ -86,7 +86,7 @@ Linker
 Run
 30 "" "" "" 0
 ""
-Shared:dev/projects_2018_2020/ADiffView/testfiles/testcase_23_RealLifeApp-left.cs Shared:dev/projects_2018_2020/ADiffView/testfiles/testcase_23_RealLifeApp-right.cs
+Shared:dev/projects_2018_2020/ADiffView/testfiles/testcase_24_1500_numbers_left.txt Shared:dev/projects_2018_2020/ADiffView/testfiles/testcase_24_1500_numbers_right.txt
 1 "CON://400/180/Storm Console/AUTO/WAIT/SCREEN StormScreen" "RAM:Output" "RAM:Input"
 0 0
 0 0 0 "" ""
@@ -242,6 +242,25 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "src/application/TextFinder.cpp"
+"src/application/TextFinder.cpp"
+"src/application/TextFinder.h"
+"src/application/DiffDocument.h"
+"src/diffengine/DiffInputFileBase.h"
+"src/diffengine/DiffFileBase.h"
+"src/diffengine/DiffLine.h"
+"src/diffengine/DiffOutputFileBase.h"
+"src/textsearch/SearchOptions.h"
+"src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
+"src/windows/ScrollbarWindow.h"
+"src/windows/WindowBase.h"
+"src/application/DiffWorker.h"
+"src/commands/CmdOpenWindow.h"
+"src/commands/CommandBase.h"
+"src/application/DiffWorkerProgressReporter.h"
+"src/worker/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "build-stromc/TextFinder.o" "build-stromc/TextFinder.debug"
 ""
@@ -289,8 +308,54 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "src/commands/CmdFindNext.cpp"
+"src/commands/CmdFindNext.cpp"
+"src/commands/CmdFindNext.h"
+"src/application/DiffDocument.h"
+"src/diffengine/DiffInputFileBase.h"
+"src/diffengine/DiffFileBase.h"
+"src/diffengine/DiffLine.h"
+"src/diffengine/DiffOutputFileBase.h"
+"src/textsearch/DiffFileSearchResult.h"
+"src/textsearch/SearchOptions.h"
+"src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
+"src/windows/ScrollbarWindow.h"
+"src/windows/WindowBase.h"
+"src/application/DiffWorker.h"
+"src/commands/CmdOpenWindow.h"
+"src/commands/CommandBase.h"
+"src/application/DiffWorkerProgressReporter.h"
+"src/worker/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdFindNext.o" "build-stromc/CmdFindNext.debug"
+""
+1 1
+File
+1 "src/commands/CmdFindPrev.cpp"
+"src/commands/CmdFindPrev.cpp"
+"src/commands/CmdFindPrev.h"
+"src/application/DiffDocument.h"
+"src/diffengine/DiffInputFileBase.h"
+"src/diffengine/DiffFileBase.h"
+"src/diffengine/DiffLine.h"
+"src/diffengine/DiffOutputFileBase.h"
+"src/textsearch/DiffFileSearchResult.h"
+"src/textsearch/SearchOptions.h"
+"src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
+"src/windows/ScrollbarWindow.h"
+"src/windows/WindowBase.h"
+"src/application/DiffWorker.h"
+"src/commands/CmdOpenWindow.h"
+"src/commands/CommandBase.h"
+"src/application/DiffWorkerProgressReporter.h"
+"src/worker/WorkerStartupMsg.h"
+Storm Shell Project (Dependencies)
+"build-stromc/CmdFindPrev.o" "build-stromc/CmdFindPrev.debug"
 ""
 1 1
 File
@@ -694,6 +759,8 @@ File
 "src/worker/WorkerStartupMsg.h"
 "src/textsearch/DiffFileSearchResult.h"
 "src/textsearch/SearchOptions.h"
+"src/application/DiffDocument.h"
+"src/application/DiffWorker.h"
 Storm Shell Project (Dependencies)
 "build-stromc/SearchWindow.o" "build-stromc/SearchWindow.debug"
 ""
@@ -822,6 +889,7 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "src/application/TextFinder.h"
+"src/application/TextFinder.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -849,6 +917,14 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "src/commands/CmdFindNext.h"
+"src/commands/CmdFindNext.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "src/commands/CmdFindPrev.h"
+"src/commands/CmdFindPrev.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -1153,6 +1229,7 @@ Section
 7
 File
 10 "ADiffView"
+"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""

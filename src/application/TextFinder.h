@@ -24,9 +24,9 @@ public:
 
   virtual ~TextFinder();
 
-  bool find();
-  bool findFromStart();
-  bool findBackwards();
+  bool jumpToNextResultFromPage();
+  bool jumpToFirstResult();
+  bool jumpToPrevResultFromPage();
 
   bool findNext();
   bool findPrev();

@@ -15,6 +15,53 @@ DiffFileSearchResult::~DiffFileSearchResult()
 
 }
 
+bool DiffFileSearchResult::equals(DiffFileSearchResult* pOther)
+{
+  if(m_Location != pOther->m_Location)
+  {
+    return false;
+  }
+
+  if(m_LineId != pOther->m_LineId)
+  {
+    return false;
+  }
+
+  if(m_CharId != pOther->m_CharId)
+  {
+    return false;
+  }
+
+  return true;
+}
+
+
+bool DiffFileSearchResult::isBefore(DiffFileSearchResult* pOther)
+{
+  if(m_LineId < pOther->m_LineId)
+  {
+    return true;
+  }
+
+  if(m_LineId == pOther->m_LineId)
+  {
+    if(m_Location < pOther->m_Location)
+    {
+      return true;
+    }
+    else if(m_Location == pOther->m_Location)
+    {
+      if(m_CharId < pOther->m_CharId)
+      {
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+
 DiffFileSearchResult::Location DiffFileSearchResult::getLocation() const
 {
   return m_Location;

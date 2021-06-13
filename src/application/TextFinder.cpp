@@ -44,7 +44,7 @@ TextFinder::~TextFinder()
 }
 
 
-bool TextFinder::find()
+bool TextFinder::jumpToNextResultFromPage()
 {
   if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
   {
@@ -69,6 +69,20 @@ bool TextFinder::find()
    * Get the next search result from current document top line id
    */
   DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
+  
+  if(pResult != NULL && m_pFormerResult != NULL)
+  {
+    do
+    {
+      pResult = m_pSearchEngine->getNextResult();
+      if(pResult == NULL)
+      {
+        break;
+      }
+    }
+    while(m_pFormerResult->isBefore(pResult));
+  }
+
   if(pResult == NULL)
   {
     signalNoResultFound();
@@ -85,7 +99,7 @@ bool TextFinder::find()
 }
 
 
-bool TextFinder::findFromStart()
+bool TextFinder::jumpToFirstResult()
 {
   if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
   {
@@ -125,7 +139,7 @@ bool TextFinder::findFromStart()
 }
 
 
-bool TextFinder::findBackwards()
+bool TextFinder::jumpToPrevResultFromPage()
 {
   if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
   {

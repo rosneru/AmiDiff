@@ -15,5 +15,5 @@ CmdFindNext::~CmdFindNext()
 
 void CmdFindNext::Execute(struct Window* pActiveWindow)
 {
-  m_TextFinder.findNext();
+  m_TextFinder.jumpToNextResultFromPage();
 }

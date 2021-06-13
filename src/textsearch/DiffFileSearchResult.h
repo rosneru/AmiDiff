@@ -22,6 +22,9 @@ public:
   DiffFileSearchResult(Location location, size_t lineId, size_t charId);
   virtual ~DiffFileSearchResult();
 
+  bool equals(DiffFileSearchResult* pOther);
+  bool isBefore(DiffFileSearchResult* pOther);
+
   Location getLocation() const;
   size_t getLineId() const;
   size_t getCharId() const;
