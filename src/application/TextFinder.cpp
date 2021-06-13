@@ -16,16 +16,17 @@ TextFinder::TextFinder(const DiffWorker& diffWorker,
     m_DiffWindow(diffWindow),
     m_pDiffDocument(NULL),
     m_pSearchEngine(NULL),
-    m_pNewSearchEngine(NULL)
+    m_pNewSearchEngine(NULL),
+    m_pFormerResult(NULL)
 {
 }
 
 TextFinder::~TextFinder()
 {
-  if(m_pSearchEngine != NULL)
+  if(m_pFormerResult != NULL)
   {
-    delete m_pSearchEngine;
-    m_pSearchEngine = NULL;
+    delete m_pFormerResult;
+    m_pFormerResult = NULL;
   }
 
   if(m_pNewSearchEngine != NULL)
@@ -33,6 +34,13 @@ TextFinder::~TextFinder()
     delete m_pNewSearchEngine;
     m_pNewSearchEngine = NULL;
   }
+  
+  if(m_pSearchEngine != NULL)
+  {
+    delete m_pSearchEngine;
+    m_pSearchEngine = NULL;
+  }
+
 }
 
 
@@ -53,9 +61,9 @@ bool TextFinder::find()
   // Perform a new search if the document has changed
   applyDocumentChanged();
 
-  // Apply a new search engine iif one exists and remember the last
+  // Apply a new search engine if one exists and remember the last
   // search result of the old search engine
-  DiffFileSearchResult* pFormerResult = applyNewSearchEngine();
+  applyNewSearchEngine();
 
   /**
    * Get the next search result from current document top line id
@@ -67,7 +75,7 @@ bool TextFinder::find()
     return false;
   }
 
-  unmarkFormerResult(pFormerResult);
+  unmarkFormerResult();
 
   markNewResult(pResult);
 
@@ -94,9 +102,8 @@ bool TextFinder::findFromStart()
   // Perform a new search if the document has changed
   applyDocumentChanged();
 
-  // Apply a new search engine iif one exists and remember the last
-  // search result of the old search engine
-  DiffFileSearchResult* pFormerResult = applyNewSearchEngine();
+  // Apply a new search engine if one exists
+  applyNewSearchEngine();
 
   /**
    * Get the first search result (the next one starting from line id 0)
@@ -108,7 +115,7 @@ bool TextFinder::findFromStart()
     return false;
   }
 
-  unmarkFormerResult(pFormerResult);
+  unmarkFormerResult();
 
   markNewResult(pResult);
 
@@ -135,9 +142,8 @@ bool TextFinder::findBackwards()
   // Perform a new search if the document has changed
   applyDocumentChanged();
 
-  // Apply a new search engine iif one exists and remember the last
-  // search result of the old search engine
-  DiffFileSearchResult* pFormerResult = applyNewSearchEngine();
+  // Apply a new search engine if one exists
+  applyNewSearchEngine();
 
   /**
    * Get the previous search result from current document top line id
@@ -151,7 +157,7 @@ bool TextFinder::findBackwards()
     return false;
   }
 
-  unmarkFormerResult(pFormerResult);
+  unmarkFormerResult();
 
   markNewResult(pResult);
 
@@ -178,9 +184,8 @@ bool TextFinder::findNext()
   // Perform a new search if the document has changed
   applyDocumentChanged();
 
-  // Apply a new search engine iif one exists and remember the last
-  // search result of the old search engine
-  DiffFileSearchResult* pFormerResult = applyNewSearchEngine();
+  // Apply a new search engine if one exists
+  applyNewSearchEngine();
 
   /**
    * Get the next search result from result list
@@ -192,7 +197,7 @@ bool TextFinder::findNext()
     return false;
   }
 
-  unmarkFormerResult(pFormerResult);
+  unmarkFormerResult();
 
   markNewResult(pResult);
 
@@ -218,9 +223,8 @@ bool TextFinder::findPrev()
   // Perform a new search if the document has changed
   applyDocumentChanged();
 
-  // Apply a new search engine iif one exists and remember the last
-  // search result of the old search engine
-  DiffFileSearchResult* pFormerResult = applyNewSearchEngine();
+  // Apply a new search engine if one exists
+  applyNewSearchEngine();
 
   /**
    * Get the previous search result from result list
@@ -232,7 +236,7 @@ bool TextFinder::findPrev()
     return false;
   }
 
-  unmarkFormerResult(pFormerResult);
+  unmarkFormerResult();
 
   markNewResult(pResult);
 
@@ -258,7 +262,7 @@ void TextFinder::applyDocumentChanged()
 }
 
 
-DiffFileSearchResult* TextFinder::applyNewSearchEngine()
+void TextFinder::applyNewSearchEngine()
 {
   if(m_pNewSearchEngine == NULL)
   {
@@ -266,16 +270,10 @@ DiffFileSearchResult* TextFinder::applyNewSearchEngine()
     if(m_pSearchEngine == NULL)
     {
       // No current search engine
-      return NULL;
+      return;
     }
 
-    return m_pSearchEngine->getCurrentResult();
-  }
-
-  DiffFileSearchResult* pFormerResult = NULL;
-  if(m_pSearchEngine != NULL)
-  {
-    pFormerResult = m_pSearchEngine->getCurrentResult();
+    return;
   }
 
   // Old search engine is not needed anymore as the new one will be
@@ -287,8 +285,6 @@ DiffFileSearchResult* TextFinder::applyNewSearchEngine()
 
   // And is not 'the new search engine' anymore
   m_pNewSearchEngine = NULL;
-
-  return pFormerResult;
 }
 
 void TextFinder::signalNoResultFound()
@@ -296,10 +292,10 @@ void TextFinder::signalNoResultFound()
   DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
 }
 
-void TextFinder::unmarkFormerResult(DiffFileSearchResult* pFormerResult)
+void TextFinder::unmarkFormerResult()
 {
   // Clear the former search result visually
-  if(pFormerResult == NULL)
+  if(m_pFormerResult == NULL)
   {
     return;
   }
@@ -317,7 +313,7 @@ void TextFinder::unmarkFormerResult(DiffFileSearchResult* pFormerResult)
 
   // Re-render the line line with the former search result to visually
   // remove the selection
-  m_DiffWindow.renderDocuments(pFormerResult->getLineId());
+  m_DiffWindow.renderDocuments(m_pFormerResult->getLineId());
 }
 
 void TextFinder::markNewResult(DiffFileSearchResult* pResult)
@@ -350,6 +346,16 @@ void TextFinder::markNewResult(DiffFileSearchResult* pResult)
                                  pResult->getCharId(),
                                  stopCharId);
   }
+
+  // Remember newResult as formerResult
+  if(m_pFormerResult != NULL)
+  {
+    delete m_pFormerResult;
+  }
+
+  m_pFormerResult = new DiffFileSearchResult(pResult->getLocation(),
+                                             pResult->getLineId(),
+                                             pResult->getCharId());
 }
 
 void TextFinder::scrollToNewResult(DiffFileSearchResult* pResult)

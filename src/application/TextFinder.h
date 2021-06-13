@@ -48,10 +48,12 @@ private:
   DiffFileSearchEngine* m_pSearchEngine;
   DiffFileSearchEngine* m_pNewSearchEngine;
 
+  DiffFileSearchResult* m_pFormerResult;
+
   void applyDocumentChanged();
-  DiffFileSearchResult* applyNewSearchEngine();
+  void applyNewSearchEngine();
   void signalNoResultFound();
-  void unmarkFormerResult(DiffFileSearchResult* pFormerResult);
+  void unmarkFormerResult();
   void markNewResult(DiffFileSearchResult* pResult);
   void scrollToNewResult(DiffFileSearchResult* pResult);
 
