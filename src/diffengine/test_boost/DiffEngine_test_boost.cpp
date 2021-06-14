@@ -1555,88 +1555,127 @@ BOOST_AUTO_TEST_CASE( search_algorithm_get_prev_result )
 }
 
 
+DiffFileSearchResult* getNextResultFromPage(DiffFileSearchEngine* m_pSearchEngine,
+                                            size_t lineId)
+{
+  DiffFileSearchResult* m_pFormerResult = m_pSearchEngine->getCurrentResult();
+  DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult(lineId);
+  
+  if((pResult != NULL) && (m_pFormerResult != NULL) &&
+     (pResult->getLineId() == m_pFormerResult->getLineId()))
+  {
+    // New result is on the same line as former result. If Necessary,
+    // repeat getNextResult until new result is after former result on
+    // this line.
+    while(!m_pFormerResult->isBefore(pResult))
+    {
+      pResult = m_pSearchEngine->getNextResult();
+      if(pResult == NULL)
+      {
+        break;
+      }
+    }
+  }
 
-// BOOST_AUTO_TEST_CASE( testcase_search_algorithm_steadily )
-// {
-//   try
-//   {
-//     bool cancelRequested = false;
-//     std::list<size_t> m_DiffIndices;
+  return pResult;
+}
 
-//     DiffInputFileLinux srcA(cancelRequested, 
-//                             "testfiles/testcase_33_search_left.txt",
-//                             true);
+BOOST_AUTO_TEST_CASE( search_algorithm_get_next_and_prev_from_current_position )
+{
+  try
+  {
+    bool cancelRequested = false;
+    std::list<size_t> m_DiffIndices;
 
-//     DiffInputFileLinux srcB(cancelRequested, 
-//                             "testfiles/testcase_33_search_right.txt",
-//                             true);
+    DiffInputFileLinux srcA(cancelRequested, 
+                            "testfiles/testcase_33_search_left.txt",
+                            true);
 
-//     DiffOutputFileLinux diffA(srcA);
-//     DiffOutputFileLinux diffB(srcB);
-//     DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
-//                           "Comparing...", cancelRequested, m_DiffIndices);
+    DiffInputFileLinux srcB(cancelRequested, 
+                            "testfiles/testcase_33_search_right.txt",
+                            true);
+
+    DiffOutputFileLinux diffA(srcA);
+    DiffOutputFileLinux diffB(srcB);
+    DiffEngine diffEngine(srcA, srcB, diffA, diffB, progress,
+                          "Comparing...", cancelRequested, m_DiffIndices);
 
 
-//     size_t numDifferences = diffEngine.getNumDifferences();
-//     BOOST_CHECK_EQUAL(numDifferences, 2);
+    size_t numDifferences = diffEngine.getNumDifferences();
+    BOOST_CHECK_EQUAL(numDifferences, 2);
 
-//     // Now searching for the word 'left'
-//     DiffFileSearchEngineSteadily searchEngine3(diffA, diffB, "left");
+    DiffFileSearchEngine searchEngine(diffA, 
+                                      diffB, 
+                                      "left",
+                                      true,
+                                      SearchLocation::SL_BothFiles);
 
-//     BOOST_CHECK_EQUAL(searchEngine3.getNumResults(), 4);
+    BOOST_CHECK_EQUAL(searchEngine.getNumResults(), 5);
 
-//     // The first result when starting from line 0 should be in the left
-//     // file on lineId = 4
-//     DiffFileSearchResult* pSearchResult = searchEngine3.getNextResult(0);
-//     BOOST_CHECK(pSearchResult != NULL);
-//     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
-//     BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 4);
-//     BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 29);
+    DiffFileSearchResult* pSearchResult = getNextResultFromPage(&searchEngine,
+                                                                0);
+    BOOST_CHECK(pSearchResult != NULL);
+    if(pSearchResult != NULL)
+    {
+      BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+      BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 4);
+      BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 29);
+    }
+    
+    pSearchResult = getNextResultFromPage(&searchEngine,
+                                          pSearchResult->getLineId());
+    BOOST_CHECK(pSearchResult != NULL);
+    if(pSearchResult != NULL)
+    {
+      BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::RightFile);
+      BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 4);
+      BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 29);
+    }
 
-//     // The next result should be in the right file 
-//     pSearchResult = searchEngine3.getNextResult();
-//     BOOST_CHECK(pSearchResult != NULL);
-//     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::RightFile);
-//     BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 4);
-//     BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 29);
+    pSearchResult = getNextResultFromPage(&searchEngine,
+                                          pSearchResult->getLineId());
+    BOOST_CHECK(pSearchResult != NULL);
+    if(pSearchResult != NULL)
+    {
+      BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+      BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 6);
+      BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    }
 
-//     // The next result should be in the left file again
-//     pSearchResult = searchEngine3.getNextResult();
-//     BOOST_CHECK(pSearchResult != NULL);
-//     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
-//     BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 6);
-//     BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    pSearchResult = getNextResultFromPage(&searchEngine,
+                                          pSearchResult->getLineId());
+    BOOST_CHECK(pSearchResult != NULL);
+    if(pSearchResult != NULL)
+    {
+      BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+      BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 8);
+      BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    }
 
-//     // But now consider we have (virtually) scrolled some lines down.
-//     // Now, the first search result we want should be past line 4. So,
-//     // the lineId=6 at first charPosition should be the result.
-//     pSearchResult = searchEngine3.getNextResult(5);
-//     BOOST_CHECK(pSearchResult != NULL);
-//     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
-//     BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 6);
-//     BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    //
+    // Now the users scrolls three lines up to lineId=5, so the next
+    // result should be that one in line six
+    //
+    pSearchResult = getNextResultFromPage(&searchEngine,
+                                          5);
+    BOOST_CHECK(pSearchResult != NULL);
+    if(pSearchResult != NULL)
+    {
+      BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
+      BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 6);
+      BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+    }
 
-//     // And the next result should be four lines below
-//     pSearchResult = searchEngine3.getNextResult();
-//     BOOST_CHECK(pSearchResult != NULL);
-//     BOOST_CHECK_EQUAL(pSearchResult->getLocation(), DiffFileSearchResult::LeftFile);
-//     BOOST_CHECK_EQUAL(pSearchResult->getLineId(), 10);
-//     BOOST_CHECK_EQUAL(pSearchResult->getCharId(), 0);
+  }
+  catch(const char* pError)
+  {
+    auto locationBoost = boost::unit_test::framework::current_test_case().p_name;
+    std::string location(locationBoost);
+    printf("Exception in test %s: %s\n", 
+           location.c_str(),
+           pError);
 
-//     // And then there should be no next result
-//     pSearchResult = searchEngine3.getNextResult();
-//     BOOST_CHECK(pSearchResult == NULL);
-
-//   }
-//   catch(const char* pError)
-//   {
-//     auto locationBoost = boost::unit_test::framework::current_test_case().p_name;
-//     std::string location(locationBoost);
-//     printf("Exception in test %s: %s\n", 
-//            location.c_str(),
-//            pError);
-
-//     // To let the test fail
-//     BOOST_CHECK_EQUAL(1, 2);
-//   }
-// }
+    // To let the test fail
+    BOOST_CHECK_EQUAL(1, 2);
+  }
+}
