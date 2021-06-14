@@ -64,7 +64,12 @@ bool DiffWindowTextArea::isScrolledToTop() const
 
 bool DiffWindowTextArea::isScrolledToBottom() const
 {
-  return (m_Y + m_AreaMaxChars) >= m_DiffFile.getNumLines();
+  return (m_Y + m_AreaMaxLines) >= m_DiffFile.getNumLines();
+}
+
+bool DiffWindowTextArea::isLineVisible(ULONG lineId) const
+{
+  return (lineId >= m_Y) && (lineId < (m_Y + m_AreaMaxLines));
 }
 
 

@@ -30,6 +30,7 @@ public:
 
   bool isScrolledToTop() const;
   bool isScrolledToBottom() const;
+  bool isLineVisible(ULONG lineId) const;
 
   ULONG getMaxVisibleChars() const;
   ULONG getMaxVisibleLines() const;
