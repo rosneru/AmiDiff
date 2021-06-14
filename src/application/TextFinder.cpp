@@ -68,8 +68,27 @@ bool TextFinder::displayNextResult()
   /**
    * Get the next search result from current document top line id
    */
-  DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
-  
+  DiffFileSearchResult* pResult = NULL;
+  if(m_pFormerResult != NULL)
+  {
+    // TODO
+    // if(isFormerResultCurrentlyDisplayed())
+    // {
+    //   // The former result is currently displayed. So getting the 
+    //   // next result after that former result, not from the window 
+    //   // top line.
+    //   pResult = m_pSearchEngine->getNextResult()
+    // }
+
+    // TODO Then move the line below this if block into the else
+  }
+  else
+  {
+
+  }
+
+  pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
+
   if((pResult != NULL) && (m_pFormerResult != NULL) &&
      (pResult->getLineId() == m_pFormerResult->getLineId()))
   {
