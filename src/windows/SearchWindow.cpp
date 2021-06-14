@@ -449,7 +449,7 @@ void SearchWindow::find()
   m_TextFinder.setSearchText(pTextToFind);
 
   // Jump to the result
-  if(m_TextFinder.jumpToNextResultFromPage() == true)
+  if(m_TextFinder.displayNextResult() == true)
   {
     m_CmdCloseSearchWindow.Execute(NULL);
   }

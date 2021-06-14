@@ -24,7 +24,7 @@ public:
 
   virtual ~TextFinder();
 
-  bool jumpToNextResultFromPage();
+  bool displayNextResult();
   bool jumpToFirstResult();
   bool jumpToPrevResultFromPage();
 

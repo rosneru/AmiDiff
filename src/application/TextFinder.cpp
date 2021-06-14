@@ -44,7 +44,7 @@ TextFinder::~TextFinder()
 }
 
 
-bool TextFinder::jumpToNextResultFromPage()
+bool TextFinder::displayNextResult()
 {
   if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
   {
@@ -70,9 +70,13 @@ bool TextFinder::jumpToNextResultFromPage()
    */
   DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
   
-  if(pResult != NULL && m_pFormerResult != NULL)
+  if((pResult != NULL) && (m_pFormerResult != NULL) &&
+     (pResult->getLineId() == m_pFormerResult->getLineId()))
   {
-    do
+    // New result is on the same line as former result. If Necessary,
+    // repeat getNextResult until new result is after former result on
+    // this line.
+    while(!m_pFormerResult->isBefore(pResult))
     {
       pResult = m_pSearchEngine->getNextResult();
       if(pResult == NULL)
@@ -80,7 +84,6 @@ bool TextFinder::jumpToNextResultFromPage()
         break;
       }
     }
-    while(m_pFormerResult->isBefore(pResult));
   }
 
   if(pResult == NULL)
