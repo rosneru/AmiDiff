@@ -77,6 +77,12 @@ DiffFileSearchResult* DiffFileSearchEngine::getPrevResult(size_t startLineId)
     return NULL;
   }
 
+  if(startLineId >= m_LeftFile.getNumLines())
+  {
+    // Avoid limit overrun
+    startLineId = m_LeftFile.getNumLines() -1;
+  }
+
   m_ResultsIterator = m_Results.end() - 1;
 
   // Forward iterator to the first result after or equal startLineId

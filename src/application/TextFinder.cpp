@@ -44,6 +44,46 @@ TextFinder::~TextFinder()
 }
 
 
+bool TextFinder::displayFirstResult()
+{
+  if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
+  {
+    return false;
+  }
+
+  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
+  if(pLeftTextArea == NULL)
+  {
+    // No left text area available - should not be possible
+    return false;
+  }
+
+  // Perform a new search if the document has changed
+  applyDocumentChanged();
+
+  // Apply a new search engine if one exists
+  applyNewSearchEngine();
+
+  /**
+   * Get the first search result (the next one starting from line id 0)
+   */
+  DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult(0);
+  if(pResult == NULL)
+  {
+    signalNoResultFound();
+    return false;
+  }
+
+  unmarkFormerResult();
+
+  markNewResult(pResult);
+
+  scrollToNewResult(pResult);
+
+  return true;
+}
+
+
 bool TextFinder::displayNextResult()
 {
   if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
@@ -118,47 +158,7 @@ bool TextFinder::displayNextResult()
 }
 
 
-bool TextFinder::jumpToFirstResult()
-{
-  if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
-  {
-    return false;
-  }
-
-  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
-  if(pLeftTextArea == NULL)
-  {
-    // No left text area available - should not be possible
-    return false;
-  }
-
-  // Perform a new search if the document has changed
-  applyDocumentChanged();
-
-  // Apply a new search engine if one exists
-  applyNewSearchEngine();
-
-  /**
-   * Get the first search result (the next one starting from line id 0)
-   */
-  DiffFileSearchResult* pResult = m_pSearchEngine->getNextResult(0);
-  if(pResult == NULL)
-  {
-    signalNoResultFound();
-    return false;
-  }
-
-  unmarkFormerResult();
-
-  markNewResult(pResult);
-
-  scrollToNewResult(pResult);
-
-  return true;
-}
-
-
-bool TextFinder::jumpToPrevResultFromPage()
+bool TextFinder::displayPrevResult()
 {
   if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
   {
@@ -175,15 +175,48 @@ bool TextFinder::jumpToPrevResultFromPage()
   // Perform a new search if the document has changed
   applyDocumentChanged();
 
-  // Apply a new search engine if one exists
+  // Apply a new search engine if one exists and remember the last
+  // search result of the old search engine
   applyNewSearchEngine();
 
   /**
-   * Get the previous search result from current document top line id
-   * 
-   * TODO: Change ->getY() to id of last line
+   * Get the prev search result from current document top line id
    */
-  DiffFileSearchResult* pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY());
+  DiffFileSearchResult* pResult = NULL;
+
+  if(m_pFormerResult == NULL)
+  {
+    pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY() 
+                                             + pLeftTextArea->getMaxVisibleLines());
+  }
+  else if(pLeftTextArea->isLineVisible(m_pFormerResult->getLineId()))
+  {
+    // The former result is currently displayed. So getting the 
+    // next result after that former result, not from the window 
+    // top line.
+    pResult = m_pSearchEngine->getPrevResult();
+  }
+  else
+  {
+    pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY());
+
+    if((pResult != NULL) &&
+      (pResult->getLineId() == m_pFormerResult->getLineId()))
+    {
+      // New result is on the same line as former result. If Necessary,
+      // repeat getNextResult until new result is after former result on
+      // this line.
+      while(!pResult->isBefore(m_pFormerResult))
+      {
+        pResult = m_pSearchEngine->getPrevResult();
+        if(pResult == NULL)
+        {
+          break;
+        }
+      }
+    }
+  }
+
   if(pResult == NULL)
   {
     signalNoResultFound();
