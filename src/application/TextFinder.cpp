@@ -83,6 +83,47 @@ bool TextFinder::displayFirstResult()
   return true;
 }
 
+bool TextFinder::displayLastResult()
+{
+  if((m_pSearchEngine == NULL) && (m_pNewSearchEngine == NULL))
+  {
+    return false;
+  }
+
+  DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
+  if(pLeftTextArea == NULL)
+  {
+    // No left text area available - should not be possible
+    return false;
+  }
+
+  // Perform a new search if the document has changed
+  applyDocumentChanged();
+
+  // Apply a new search engine if one exists
+  applyNewSearchEngine();
+
+  /**
+   * Get the last search result (search backwards from last line id)
+   */
+  DiffFileSearchResult* pResult = 
+    m_pSearchEngine->getPrevResult(m_pDiffDocument->getNumLines() - 1);
+
+  if(pResult == NULL)
+  {
+    signalNoResultFound();
+    return false;
+  }
+
+  unmarkFormerResult();
+
+  markNewResult(pResult);
+
+  scrollToNewResult(pResult);
+
+  return true;
+}
+
 
 bool TextFinder::displayNextResult()
 {

@@ -489,7 +489,7 @@ void SearchWindow::findBackwards()
   m_TextFinder.setSearchText(pTextToFind);
 
   // Jump to the result
-  if(m_TextFinder.displayPrevResult() == true)
+  if(m_TextFinder.displayLastResult() == true)
   {
     m_CmdCloseSearchWindow.Execute(NULL);
   }

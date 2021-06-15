@@ -25,6 +25,7 @@ public:
   virtual ~TextFinder();
 
   bool displayFirstResult();
+  bool displayLastResult();
   bool displayNextResult();
   bool displayPrevResult();
 
