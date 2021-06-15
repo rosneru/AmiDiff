@@ -373,15 +373,12 @@ void TextFinder::applyNewSearchEngine()
 {
   if(m_pNewSearchEngine == NULL)
   {
-    // No new search engine
-    if(m_pSearchEngine == NULL)
-    {
-      // No current search engine
-      return;
-    }
-
     return;
   }
+
+  unmarkFormerResult();
+
+  m_pFormerResult = NULL;
 
   // Old search engine is not needed anymore as the new one will be
   // taken
