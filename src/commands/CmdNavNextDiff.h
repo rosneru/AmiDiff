@@ -2,7 +2,7 @@
 #define CMD_NAV_NEXT_DIFF_H
 
 #include "DiffWindow.h"
-#include "CommandBase.h"
+#include "CmdNavigateDiffBase.h"
 
 /**
  * Command for displaying the next difference in DiffWindow.
@@ -10,17 +10,15 @@
  * @author Uwe Rosner
  * @date 14/12/2019
  */
-class CmdNavNextDiff : public CommandBase
+class CmdNavNextDiff : public CmdNavigateDiffBase
 {
 public:
   CmdNavNextDiff(std::vector<WindowBase*>* pAllWindowsVector,
+                 const DiffWorker& diffWorker,
                  DiffWindow& diffWindow);
 
   virtual ~CmdNavNextDiff();
   virtual void Execute(struct Window* pActiveWindow);
-
-private:
-  DiffWindow& m_DiffWindow;
 };
 
-#endif // CMD_PERFORM_DIFF_H
+#endif

@@ -51,8 +51,7 @@ public:
   const DiffOutputFileBase& getLeftDiffFile() const;
   const DiffOutputFileBase& getRightDiffFile() const;
 
-  size_t getNextDiffLineId();
-  size_t getPrevDiffLineId();
+  const std::list<size_t>& getDiffIndices() const;
 
   bool areLineNumbersEnabled() const;
 
@@ -68,8 +67,6 @@ private:
   std::list<size_t> m_DiffIndices;
 
   DiffEngine m_DiffEngine;
-
-  std::list<size_t>::iterator m_DiffIndicesIterator;
 
   bool m_LineNumbersEnabled;
   long m_DiffTime;

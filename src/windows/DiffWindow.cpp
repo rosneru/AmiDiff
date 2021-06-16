@@ -409,33 +409,6 @@ bool DiffWindow::isVerticallyVisible(size_t startLineId) const
   return true;
 }
 
-void DiffWindow::navigateToNextDiff()
-{
-  if(m_pLeftTextArea->isScrolledToBottom())
-  {
-    // Can't scroll down anymore; all diffs below should already be
-    // visible.
-    return;
-  }
-
-  size_t idx = m_pDocument->getNextDiffLineId();
-  scrollTopTo(idx);
-}
-
-
-void DiffWindow::navigateToPrevDiff()
-{
-    if(m_pLeftTextArea->isScrolledToTop())
-  {
-    // Can't scroll up anymore; all diffs above should already be
-    // visible.
-    return;
-  }
-
-  size_t idx = m_pDocument->getPrevDiffLineId();
-  scrollTopTo(idx);
-}
-
 
 DiffWindowTextArea* DiffWindow::getLeftTextArea() const
 {

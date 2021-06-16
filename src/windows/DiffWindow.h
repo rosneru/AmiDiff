@@ -77,16 +77,6 @@ public:
   bool isVerticallyVisible(size_t startLineId) const;
 
   /**
-   * Navigate to the next difference.
-   */
-  void navigateToNextDiff();
-
-  /**
-   * Navigate to the previous difference.
-   */
-  void navigateToPrevDiff();
-
-  /**
    * Return the left text area
    */
   DiffWindowTextArea* getLeftTextArea() const;
