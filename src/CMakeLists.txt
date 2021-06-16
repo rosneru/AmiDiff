@@ -9,6 +9,8 @@ SET(CMAKE_CXX_FLAGS "-noixemul -m68020 -Wall -O2 -s")
 
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <OBJECTS> -o <TARGET>")
 
+set(default_build_type "Release")
+
 add_executable (ADiffView_gcc
                 amigautils/AmigaFile.cpp
                 amigautils/MemoryPool.cpp
