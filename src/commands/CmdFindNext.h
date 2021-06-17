@@ -5,7 +5,8 @@
 #include "CommandBase.h"
 
 /**
- * Command to display the next search result
+ * Command to display the next search result (Next from the current
+ * y-scroll position of the text in DiffWindow)
  *
  * @author Uwe Rosner
  * @date 12/06/2021

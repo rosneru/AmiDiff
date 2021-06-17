@@ -2,24 +2,26 @@
 #define CMD_NAV_PREV_DIFF_H
 
 #include "DiffWindow.h"
-#include "CmdNavigateDiffBase.h"
+#include "CmdNavigateBase.h"
 
 /**
- * Command for displaying the previous difference in DiffWindow.
+ * Command to display ('jump to') the previous diff block in DiffWindow.
+ * Previous diff block is the next one before current scroll position of
+ * the text in DiffWindow.
  *
  * @author Uwe Rosner
  * @date 14/12/2019
  */
-class CmdNavigatePrevDiff : public CmdNavigateDiffBase
+class CmdNavigatePrevDiff : public CmdNavigateBase
 {
 public:
   CmdNavigatePrevDiff(std::vector<WindowBase*>* pAllWindowsVector,
-                 const DiffWorker& diffWorker,
-                 DiffWindow& diffWindow);
+                      const DiffWorker& diffWorker,
+                      DiffWindow& diffWindow);
 
   virtual ~CmdNavigatePrevDiff();
   virtual void Execute(struct Window* pActiveWindow);
 
 };
 
-#endif // CMD_PERFORM_DIFF_H
+#endif

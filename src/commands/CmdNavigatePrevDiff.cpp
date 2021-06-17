@@ -3,7 +3,7 @@
 CmdNavigatePrevDiff::CmdNavigatePrevDiff(std::vector<WindowBase*>* pAllWindowsVector,
                                const DiffWorker& diffWorker,
                                DiffWindow& diffWindow)
-  : CmdNavigateDiffBase(pAllWindowsVector, diffWorker, diffWindow)
+  : CmdNavigateBase(pAllWindowsVector, diffWorker, diffWindow)
 {
 
 }

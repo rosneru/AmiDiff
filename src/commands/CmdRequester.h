@@ -7,7 +7,7 @@
 
 
 /**
- * This command opens a message box informing the user and allows to
+ * Command to open a message box, informing the user and allows to
  * select one or more buttons.
  *
  * @author Uwe Rosner

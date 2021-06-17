@@ -194,7 +194,7 @@ File
 "src/textselect/TextSelectionRange.h"
 "src/textsearch/DiffFileSearchResult.h"
 "src/textsearch/SearchOptions.h"
-"src/commands/CmdNavigateDiffBase.h"
+"src/commands/CmdNavigateBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/Application.o" "build-stromc/Application.debug"
 ""
@@ -360,9 +360,9 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "src/commands/CmdNavigateDiffBase.cpp"
-"src/commands/CmdNavigateDiffBase.cpp"
-"src/commands/CmdNavigateDiffBase.h"
+1 "src/commands/CmdNavigateBase.cpp"
+"src/commands/CmdNavigateBase.cpp"
+"src/commands/CmdNavigateBase.h"
 "src/commands/CommandBase.h"
 "src/commands/CmdOpenWindow.h"
 "src/application/DiffDocument.h"
@@ -378,7 +378,7 @@ File
 "src/application/DiffWorkerProgressReporter.h"
 "src/worker/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
-"build-stromc/CmdNavigateDiffBase.o" "build-stromc/CmdNavigateDiffBase.debug"
+"build-stromc/CmdNavigateBase.o" "build-stromc/CmdNavigateBase.debug"
 ""
 1 1
 File
@@ -396,7 +396,7 @@ File
 "src/commands/CommandBase.h"
 "src/textselect/TextSelectionLine.h"
 "src/textselect/TextSelectionRange.h"
-"src/commands/CmdNavigateDiffBase.h"
+"src/commands/CmdNavigateBase.h"
 "src/commands/CmdOpenWindow.h"
 "src/application/DiffWorkerProgressReporter.h"
 "src/worker/WorkerStartupMsg.h"
@@ -419,7 +419,7 @@ File
 "src/commands/CommandBase.h"
 "src/textselect/TextSelectionLine.h"
 "src/textselect/TextSelectionRange.h"
-"src/commands/CmdNavigateDiffBase.h"
+"src/commands/CmdNavigateBase.h"
 "src/commands/CmdOpenWindow.h"
 "src/application/DiffWorkerProgressReporter.h"
 "src/worker/WorkerStartupMsg.h"
@@ -590,7 +590,7 @@ File
 "src/textselect/TextSelectionRange.h"
 "src/textsearch/DiffFileSearchResult.h"
 "src/textsearch/SearchOptions.h"
-"src/commands/CmdNavigateDiffBase.h"
+"src/commands/CmdNavigateBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/main.o" "build-stromc/main.debug"
 ""
@@ -962,8 +962,8 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "src/commands/CmdNavigateDiffBase.h"
-"src/commands/CmdNavigateDiffBase.h"
+2 "src/commands/CmdNavigateBase.h"
+"src/commands/CmdNavigateBase.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

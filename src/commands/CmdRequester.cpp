@@ -58,9 +58,9 @@ long CmdRequester::showRequester(struct Window* pActiveWindow)
   //
   // Build the EasyRequest manually. This low-level approach allows
   // better control of the requests behavior. For example it gives
-  // access to the event loop where the windows messages can be
-  // received. In this way it can be detected if any of the windows has
-  // been reseized and it can be repainted.
+  // access to the requesters event loop where its windows messages can
+  // be received. In this way it can be detected if e.g. the requester
+  // parent window has been resized; and it can be repainted.
   //
 
   struct EasyStruct easyStruct;

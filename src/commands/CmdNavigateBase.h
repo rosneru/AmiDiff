@@ -5,10 +5,16 @@
 #include "DiffWorker.h"
 #include "DiffWindow.h"
 
-class CmdNavigateDiffBase  : public CommandBase
+/**
+ * Base class for the Navigate-between-diff-blocks commands.
+ * 
+ * @author Uwe Rosner
+ * @date 16/06/2021
+ */
+class CmdNavigateBase  : public CommandBase
 {
 public:
-  CmdNavigateDiffBase(std::vector<WindowBase*>* pAllWindowsVector,
+  CmdNavigateBase(std::vector<WindowBase*>* pAllWindowsVector,
                       const DiffWorker& diffWorker,
                       DiffWindow& diffWindow);
 

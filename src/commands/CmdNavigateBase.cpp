@@ -4,9 +4,9 @@
   #include <proto/intuition.h>
 #endif
 
-#include "CmdNavigateDiffBase.h"
+#include "CmdNavigateBase.h"
 
-CmdNavigateDiffBase::CmdNavigateDiffBase(std::vector<WindowBase*>* pAllWindowsVector,
+CmdNavigateBase::CmdNavigateBase(std::vector<WindowBase*>* pAllWindowsVector,
                                          const DiffWorker& diffWorker,
                                          DiffWindow& diffWindow)
   : CommandBase(pAllWindowsVector),
@@ -19,7 +19,7 @@ CmdNavigateDiffBase::CmdNavigateDiffBase(std::vector<WindowBase*>* pAllWindowsVe
 }
 
 
-long CmdNavigateDiffBase::getPrevResult()
+long CmdNavigateBase::getPrevResult()
 {
   applyDocumentChanged();
   if((m_pDiffDocument == NULL) || 
@@ -38,7 +38,7 @@ long CmdNavigateDiffBase::getPrevResult()
 }
 
 
-long CmdNavigateDiffBase::getPrevResult(size_t startLineId)
+long CmdNavigateBase::getPrevResult(size_t startLineId)
 {
   applyDocumentChanged();
   if((m_pDiffDocument == NULL) || 
@@ -75,7 +75,7 @@ long CmdNavigateDiffBase::getPrevResult(size_t startLineId)
 }
 
 
-long CmdNavigateDiffBase::getNextResult()
+long CmdNavigateBase::getNextResult()
 {
   applyDocumentChanged();
   if((m_pDiffDocument == NULL) || 
@@ -97,7 +97,7 @@ long CmdNavigateDiffBase::getNextResult()
 }
 
 
-long CmdNavigateDiffBase::getNextResult(size_t startLineId)
+long CmdNavigateBase::getNextResult(size_t startLineId)
 {
   applyDocumentChanged();
   if((m_pDiffDocument == NULL) || 
@@ -123,13 +123,13 @@ long CmdNavigateDiffBase::getNextResult(size_t startLineId)
 }
 
 
-void CmdNavigateDiffBase::signalNoResultFound()
+void CmdNavigateBase::signalNoResultFound()
 {
   DisplayBeep(m_DiffWindow.getScreen().IntuiScreen());
 }
 
 
-void CmdNavigateDiffBase::applyDocumentChanged()
+void CmdNavigateBase::applyDocumentChanged()
 {
   if(m_pDiffDocument != m_DiffWorker.getDiffDocument())
   {

@@ -353,6 +353,11 @@ bool DiffWindow::scrollToPage(size_t left,
                                  size_t numChars, 
                                  size_t numLines)
 {
+  if((m_pLeftTextArea == NULL) || (m_pRightTextArea == NULL))
+  {
+    return false;
+  }
+
   bool hasScrolled = false;
 
   if(!isHorizontallyVisible(left))
