@@ -13,10 +13,10 @@ MenuFilesWindow::MenuFilesWindow(CommandBase* pCmdOpenFilesWindow,
   struct NewMenu newMenu[] = 
   {
     { NM_TITLE,   "Project",                 0 , 0, 0, 0 },
-    {   NM_ITEM,    "Open...",              "O", 0, 0, pCmdOpenFilesWindow },
+    {   NM_ITEM,    "Open...",              "o", 0, 0, pCmdOpenFilesWindow },
     {   NM_ITEM,    "About...",              0 , 0, 0, pCmdAboutRequester },
     {   NM_ITEM,    NM_BARLABEL,             0 , 0, 0, 0 },
-    {   NM_ITEM,    "Quit",                 "Q", 0, 0, pCmdQuit },
+    {   NM_ITEM,    "Quit",                 "q", 0, 0, pCmdQuit },
     { NM_END,     NULL,                      0 , 0, 0, 0 },
   };
 
