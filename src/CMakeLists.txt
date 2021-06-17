@@ -31,8 +31,8 @@ add_executable (ADiffView_gcc
                 commands/CmdFindPrev.cpp
                 commands/CmdFileRequester.cpp
                 commands/CmdNavigateDiffBase.cpp
-                commands/CmdNavNextDiff.cpp
-                commands/CmdNavPrevDiff.cpp
+                commands/CmdNavigateNextDiff.cpp
+                commands/CmdNavigatePrevDiff.cpp
                 commands/CmdOpenWindow.cpp
                 commands/CmdQuit.cpp
                 commands/CmdRequester.cpp

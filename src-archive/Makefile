@@ -34,8 +34,8 @@ DEPS=$(SRC_ROOT)/amigautils/AmigaFile.h \
 		$(SRC_ROOT)/application/Application.h \
 		$(SRC_ROOT)/commands/CmdRequester.h \
 		$(SRC_ROOT)/commands/CmdDiff.h \
-		$(SRC_ROOT)/commands/CmdNavNextDiff.h \
-		$(SRC_ROOT)/commands/CmdNavPrevDiff.h \
+		$(SRC_ROOT)/commands/CmdNavigateNextDiff.h \
+		$(SRC_ROOT)/commands/CmdNavigatePrevDiff.h \
 		$(SRC_ROOT)/commands/CmdOpenWindow.h \
 		$(SRC_ROOT)/commands/CmdQuit.h \
 		$(SRC_ROOT)/commands/Command.h \
@@ -74,8 +74,8 @@ _OBJ=$(SRC_ROOT)/amigautils/AmigaFile.o \
 		$(SRC_ROOT)/application/main.o \
 		$(SRC_ROOT)/commands/CmdRequester.o \
 		$(SRC_ROOT)/commands/CmdDiff.o \
-		$(SRC_ROOT)/commands/CmdNavNextDiff.o \
-		$(SRC_ROOT)/commands/CmdNavPrevDiff.o \
+		$(SRC_ROOT)/commands/CmdNavigateNextDiff.o \
+		$(SRC_ROOT)/commands/CmdNavigatePrevDiff.o \
 		$(SRC_ROOT)/commands/CmdOpenWindow.o \
 		$(SRC_ROOT)/commands/CmdQuit.o \
 		$(SRC_ROOT)/commands/Command.o \

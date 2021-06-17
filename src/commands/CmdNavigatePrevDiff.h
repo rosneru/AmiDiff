@@ -10,14 +10,14 @@
  * @author Uwe Rosner
  * @date 14/12/2019
  */
-class CmdNavPrevDiff : public CmdNavigateDiffBase
+class CmdNavigatePrevDiff : public CmdNavigateDiffBase
 {
 public:
-  CmdNavPrevDiff(std::vector<WindowBase*>* pAllWindowsVector,
+  CmdNavigatePrevDiff(std::vector<WindowBase*>* pAllWindowsVector,
                  const DiffWorker& diffWorker,
                  DiffWindow& diffWindow);
 
-  virtual ~CmdNavPrevDiff();
+  virtual ~CmdNavigatePrevDiff();
   virtual void Execute(struct Window* pActiveWindow);
 
 };

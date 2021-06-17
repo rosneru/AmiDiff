@@ -25,8 +25,8 @@
 #include "CmdDiff.h"
 #include "CmdFindPrev.h"
 #include "CmdFindNext.h"
-#include "CmdNavNextDiff.h"
-#include "CmdNavPrevDiff.h"
+#include "CmdNavigateNextDiff.h"
+#include "CmdNavigatePrevDiff.h"
 #include "CmdOpenWindow.h"
 #include "CmdQuit.h"
 #include "CmdRequester.h"
@@ -74,8 +74,8 @@ private:
   CmdDiff m_CmdDiff;
   CmdFindPrev m_CmdFindPrev;
   CmdFindNext m_CmdFindNext;
-  CmdNavNextDiff m_CmdNavNextDiff;
-  CmdNavPrevDiff m_CmdNavPrevDiff;
+  CmdNavigateNextDiff m_CmdNavigateNextDiff;
+  CmdNavigatePrevDiff m_CmdNavigatePrevDiff;
   CmdQuit m_CmdQuit;
   CmdOpenWindow m_CmdOpenFilesWindow;
   CmdCloseWindow m_CmdCloseFilesWindow;

@@ -1,5 +1,5 @@
-#ifndef CMD_NAV_NEXT_DIFF_H
-#define CMD_NAV_NEXT_DIFF_H
+#ifndef CMD_NAVIGATE_NEXT_DIFF_H
+#define CMD_NAVIGATE_NEXT_DIFF_H
 
 #include "DiffWindow.h"
 #include "CmdNavigateDiffBase.h"
@@ -10,14 +10,14 @@
  * @author Uwe Rosner
  * @date 14/12/2019
  */
-class CmdNavNextDiff : public CmdNavigateDiffBase
+class CmdNavigateNextDiff : public CmdNavigateDiffBase
 {
 public:
-  CmdNavNextDiff(std::vector<WindowBase*>* pAllWindowsVector,
+  CmdNavigateNextDiff(std::vector<WindowBase*>* pAllWindowsVector,
                  const DiffWorker& diffWorker,
                  DiffWindow& diffWindow);
 
-  virtual ~CmdNavNextDiff();
+  virtual ~CmdNavigateNextDiff();
   virtual void Execute(struct Window* pActiveWindow);
 };
 

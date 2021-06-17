@@ -10,8 +10,8 @@ public:
   MenuDiffWindow(CommandBase* pCmdOpenFilesWindow,
                  CommandBase* pCmdAboutRequester,
                  CommandBase* pCmdQuit,
-                 CommandBase* pCmdNavPrevDiff,
-                 CommandBase* pCmdNavNextDiff,
+                 CommandBase* pCmdNavigatePrevDiff,
+                 CommandBase* pCmdNavigateNextDiff,
                  CommandBase* pCmdOpenSearchWindow,
                  CommandBase* pCmdFindNext,
                  CommandBase* pCmdFindPrev);

@@ -382,9 +382,9 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
-1 "src/commands/CmdNavNextDiff.cpp"
-"src/commands/CmdNavNextDiff.cpp"
-"src/commands/CmdNavNextDiff.h"
+1 "src/commands/CmdNavigateNextDiff.cpp"
+"src/commands/CmdNavigateNextDiff.cpp"
+"src/commands/CmdNavigateNextDiff.h"
 "src/diffengine/DiffInputFileBase.h"
 "src/diffengine/DiffFileBase.h"
 "src/diffengine/DiffLine.h"
@@ -401,13 +401,13 @@ File
 "src/application/DiffWorkerProgressReporter.h"
 "src/worker/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
-"build-stromc/CmdNavNextDiff.o" "build-stromc/CmdNavNextDiff.debug"
+"build-stromc/CmdNavigateNextDiff.o" "build-stromc/CmdNavigateNextDiff.debug"
 ""
 1 1
 File
-1 "src/commands/CmdNavPrevDiff.cpp"
-"src/commands/CmdNavPrevDiff.cpp"
-"src/commands/CmdNavPrevDiff.h"
+1 "src/commands/CmdNavigatePrevDiff.cpp"
+"src/commands/CmdNavigatePrevDiff.cpp"
+"src/commands/CmdNavigatePrevDiff.h"
 "src/diffengine/DiffInputFileBase.h"
 "src/diffengine/DiffFileBase.h"
 "src/diffengine/DiffLine.h"
@@ -424,7 +424,7 @@ File
 "src/application/DiffWorkerProgressReporter.h"
 "src/worker/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
-"build-stromc/CmdNavPrevDiff.o" "build-stromc/CmdNavPrevDiff.debug"
+"build-stromc/CmdNavigatePrevDiff.o" "build-stromc/CmdNavigatePrevDiff.debug"
 ""
 1 1
 File
@@ -969,15 +969,15 @@ Storm Shell Project (Dependencies)
 ""
 0 0
 File
-2 "src/commands/CmdNavNextDiff.h"
-"src/commands/CmdNavNextDiff.h"
+2 "src/commands/CmdNavigateNextDiff.h"
+"src/commands/CmdNavigateNextDiff.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
-2 "src/commands/CmdNavPrevDiff.h"
-"src/commands/CmdNavPrevDiff.h"
+2 "src/commands/CmdNavigatePrevDiff.h"
+"src/commands/CmdNavigatePrevDiff.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""

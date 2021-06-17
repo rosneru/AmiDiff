@@ -1,6 +1,6 @@
-#include "CmdNavPrevDiff.h"
+#include "CmdNavigatePrevDiff.h"
 
-CmdNavPrevDiff::CmdNavPrevDiff(std::vector<WindowBase*>* pAllWindowsVector,
+CmdNavigatePrevDiff::CmdNavigatePrevDiff(std::vector<WindowBase*>* pAllWindowsVector,
                                const DiffWorker& diffWorker,
                                DiffWindow& diffWindow)
   : CmdNavigateDiffBase(pAllWindowsVector, diffWorker, diffWindow)
@@ -8,12 +8,12 @@ CmdNavPrevDiff::CmdNavPrevDiff(std::vector<WindowBase*>* pAllWindowsVector,
 
 }
 
-CmdNavPrevDiff::~CmdNavPrevDiff()
+CmdNavigatePrevDiff::~CmdNavigatePrevDiff()
 {
 
 }
 
-void CmdNavPrevDiff::Execute(struct Window* pActiveWindow)
+void CmdNavigatePrevDiff::Execute(struct Window* pActiveWindow)
 {
   DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
   if(pLeftTextArea == NULL)
