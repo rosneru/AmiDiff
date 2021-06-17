@@ -29,9 +29,6 @@ public:
   bool displayNextResult();
   bool displayPrevResult();
 
-  bool findNext();
-  bool findPrev();
-
   const char* getSearchText() const;
   void setSearchText(const char* pSearchText);
 

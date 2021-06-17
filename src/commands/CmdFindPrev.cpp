@@ -15,5 +15,5 @@ CmdFindPrev::~CmdFindPrev()
 
 void CmdFindPrev::Execute(struct Window* pActiveWindow)
 {
-  m_TextFinder.findPrev();
+  m_TextFinder.displayPrevResult();
 }
