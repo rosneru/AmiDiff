@@ -23,31 +23,35 @@ void CmdNavPrevDiff::Execute(struct Window* pActiveWindow)
 
   // Get lineId of next diff block
   long lineId = -1;
-  if(m_FormerLineId < 0)
+  bool hasScrolled = false;
+  do
   {
-    lineId = getNextResult(pLeftTextArea->getY() 
-                           + pLeftTextArea->getMaxVisibleLines());
-  }
-  else if(pLeftTextArea->isLineVisible(m_FormerLineId))
-  {
-    // The former result is currently displayed. So getting the 
-    // next result after that former result, not from the window 
-    // top line.
-    lineId = getPrevResult();
-  }
-  else
-  {
-    lineId = getPrevResult(pLeftTextArea->getY());
-  }
+    if(m_FormerLineId < 0)
+    {
+      lineId = getPrevResult(pLeftTextArea->getY() 
+                            + pLeftTextArea->getMaxVisibleLines());
+    }
+    else if(pLeftTextArea->isLineVisible(m_FormerLineId))
+    {
+      // The former result is currently displayed. So getting the 
+      // next result after that former result, not from the window 
+      // top line.
+      lineId = getPrevResult();
+    }
+    else
+    {
+      lineId = getPrevResult(pLeftTextArea->getY());
+    }
 
-  if(lineId < 0)
-  {
-    signalNoResultFound();
-    return;
-  }
+    if(lineId < 0)
+    {
+      signalNoResultFound();
+      return;
+    }
 
-  m_FormerLineId = lineId;
-
-  // Scroll to this lineId
-  m_DiffWindow.scrollToPage(0, lineId, 1, 1);
+    m_FormerLineId = lineId;
+    hasScrolled = m_DiffWindow.scrollToPage(0, lineId, 1, 1);
+  } 
+  while (hasScrolled == false); // Repeatedly getting the next diff block
+                                // until the view scrolled once.
 }

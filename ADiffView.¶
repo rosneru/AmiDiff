@@ -194,6 +194,7 @@ File
 "src/textselect/TextSelectionRange.h"
 "src/textsearch/DiffFileSearchResult.h"
 "src/textsearch/SearchOptions.h"
+"src/commands/CmdNavigateDiffBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/Application.o" "build-stromc/Application.debug"
 ""
@@ -359,6 +360,28 @@ Storm Shell Project (Dependencies)
 ""
 1 1
 File
+1 "src/commands/CmdNavigateDiffBase.cpp"
+"src/commands/CmdNavigateDiffBase.cpp"
+"src/commands/CmdNavigateDiffBase.h"
+"src/commands/CommandBase.h"
+"src/commands/CmdOpenWindow.h"
+"src/application/DiffDocument.h"
+"src/diffengine/DiffInputFileBase.h"
+"src/diffengine/DiffFileBase.h"
+"src/diffengine/DiffLine.h"
+"src/diffengine/DiffOutputFileBase.h"
+"src/windows/DiffWindowRastports.h"
+"src/windows/DiffWindowTextArea.h"
+"src/textselect/TextSelectionLine.h"
+"src/textselect/TextSelectionRange.h"
+"src/windows/ScrollbarWindow.h"
+"src/application/DiffWorkerProgressReporter.h"
+"src/worker/WorkerStartupMsg.h"
+Storm Shell Project (Dependencies)
+"build-stromc/CmdNavigateDiffBase.o" "build-stromc/CmdNavigateDiffBase.debug"
+""
+1 1
+File
 1 "src/commands/CmdNavNextDiff.cpp"
 "src/commands/CmdNavNextDiff.cpp"
 "src/commands/CmdNavNextDiff.h"
@@ -373,6 +396,10 @@ File
 "src/commands/CommandBase.h"
 "src/textselect/TextSelectionLine.h"
 "src/textselect/TextSelectionRange.h"
+"src/commands/CmdNavigateDiffBase.h"
+"src/commands/CmdOpenWindow.h"
+"src/application/DiffWorkerProgressReporter.h"
+"src/worker/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdNavNextDiff.o" "build-stromc/CmdNavNextDiff.debug"
 ""
@@ -392,6 +419,10 @@ File
 "src/commands/CommandBase.h"
 "src/textselect/TextSelectionLine.h"
 "src/textselect/TextSelectionRange.h"
+"src/commands/CmdNavigateDiffBase.h"
+"src/commands/CmdOpenWindow.h"
+"src/application/DiffWorkerProgressReporter.h"
+"src/worker/WorkerStartupMsg.h"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdNavPrevDiff.o" "build-stromc/CmdNavPrevDiff.debug"
 ""
@@ -559,6 +590,7 @@ File
 "src/textselect/TextSelectionRange.h"
 "src/textsearch/DiffFileSearchResult.h"
 "src/textsearch/SearchOptions.h"
+"src/commands/CmdNavigateDiffBase.h"
 Storm Shell Project (Dependencies)
 "build-stromc/main.o" "build-stromc/main.debug"
 ""
@@ -925,6 +957,13 @@ Storm Shell Project (Dependencies)
 File
 2 "src/commands/CmdFindPrev.h"
 "src/commands/CmdFindPrev.h"
+Storm Shell Project (Dependencies)
+"" ""
+""
+0 0
+File
+2 "src/commands/CmdNavigateDiffBase.h"
+"src/commands/CmdNavigateDiffBase.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
