@@ -16,7 +16,7 @@ CmdNavigateLastDiff::~CmdNavigateLastDiff()
 void CmdNavigateLastDiff::Execute(struct Window* pActiveWindow)
 {
   DiffWindowTextArea* pLeftTextArea = m_DiffWindow.getLeftTextArea();
-  if((pLeftTextArea == NULL) || (m_pDiffDocument == NULL))
+  if(pLeftTextArea == NULL)
   {
     return;
   }
