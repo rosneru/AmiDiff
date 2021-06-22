@@ -278,7 +278,7 @@ ULONG DiffWindowTextArea::scrollLeft(ULONG numChars)
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
     WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
-    printDiffLine(lineId, false, lineTopEdge, -numChars);
+    renderLine(lineId, false, lineTopEdge, -numChars);
   }
 
   m_X += numChars;
@@ -326,7 +326,7 @@ ULONG DiffWindowTextArea::scrollRight(ULONG numChars)
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
     WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
-    printDiffLine(lineId, false, lineTopEdge, numChars);
+    renderLine(lineId, false, lineTopEdge, numChars);
   }
 
   m_X -= numChars;
@@ -373,7 +373,7 @@ ULONG DiffWindowTextArea::scrollUp(ULONG numLines)
   {
     ULONG lineId = m_Y + m_AreaMaxLines + i;
     WORD lineTopEdge = (m_AreaMaxLines - numLines + i) * m_FontHeight_pix;
-    printDiffLine(lineId, true, lineTopEdge);
+    renderLine(lineId, true, lineTopEdge);
   }
 
   m_Y += numLines;
@@ -417,7 +417,7 @@ ULONG DiffWindowTextArea::scrollDown(ULONG numLines)
   {
     ULONG lineId = m_Y - numLines + i;
     WORD lineTopEdge = i * m_FontHeight_pix;
-    printDiffLine(lineId, true, lineTopEdge);
+    renderLine(lineId, true, lineTopEdge);
   }
   
   m_Y -= numLines;
@@ -440,20 +440,20 @@ void DiffWindowTextArea::printPage(bool dontPrintLineNumbers)
   for(ULONG lineId = m_Y; lineId < m_Y + m_AreaMaxLines; lineId++)
   {
     WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
-    printDiffLine(lineId, !dontPrintLineNumbers, lineTopEdge);
+    renderLine(lineId, !dontPrintLineNumbers, lineTopEdge);
   }
 }
 
 void DiffWindowTextArea::printLine(ULONG lineId)
 {
   WORD lineTopEdge = (lineId - m_Y) * m_FontHeight_pix;
-  printDiffLine(lineId, true, lineTopEdge);
+  renderLine(lineId, true, lineTopEdge);
 }
 
-void DiffWindowTextArea::printDiffLine(ULONG lineId, 
-                                   bool doDisplayLineNumbers, 
-                                   long lineTop, 
-                                   long numCharLimit)
+void DiffWindowTextArea::renderLine(ULONG lineId, 
+                                    bool doDisplayLineNumbers, 
+                                    long lineTop, 
+                                    long numCharLimit)
 {
   const DiffLine* pLine = m_DiffFile[lineId];
   if(pLine == NULL)

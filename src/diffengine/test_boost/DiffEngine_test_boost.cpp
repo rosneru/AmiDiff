@@ -1581,32 +1581,6 @@ DiffFileSearchResult* getNextResultFromPage(DiffFileSearchEngine* m_pSearchEngin
 }
 
 
-DiffFileSearchResult* getPrevResultFromPage(DiffFileSearchEngine* m_pSearchEngine,
-                                            size_t lineId)
-{
-  DiffFileSearchResult* m_pFormerResult = m_pSearchEngine->getCurrentResult();
-  DiffFileSearchResult* pResult = m_pSearchEngine->getPrevResult(lineId);
-  
-  if((pResult != NULL) && (m_pFormerResult != NULL) &&
-     (pResult->getLineId() == m_pFormerResult->getLineId()))
-  {
-    // New result is on the same line as former result. If Necessary,
-    // repeat getNextResult until new result is after former result on
-    // this line.
-    while(!m_pResult->isBefore(pFormerResult))
-    {
-      pResult = m_pSearchEngine->getPrevResult();
-      if(pResult == NULL)
-      {
-        break;
-      }
-    }
-  }
-
-  return pResult;
-}
-
-
 BOOST_AUTO_TEST_CASE( search_algorithm_get_next_and_prev_from_current_position )
 {
   try

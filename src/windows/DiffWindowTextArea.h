@@ -151,7 +151,7 @@ private:
    * display area. When < 0, max. up to numCharLimit chars are printed
    * to the right of the display area.
    */
-  void printDiffLine(ULONG lineId, 
+  void renderLine(ULONG lineId, 
                      bool doDisplayLineNumbers, 
                      long lineTop, 
                      long numCharLimit = 0);
