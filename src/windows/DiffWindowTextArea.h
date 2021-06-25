@@ -13,7 +13,42 @@
 
 #include <vector>
 
+/**
+ * Used to hold parse results of (the part of) a text line. Is needed
+ * for rendering tab stops. 
+ *
+ * When for example 'numRemainingSpaces' is > 0 then the text position
+ * is inside a tabulator cell  and 'numRemainingSpaces' spaces must be
+ * rendered until the tabulator cell is rendered properly.
+ *
+ * Or, when 'numRemainingChars' is > 0 then the text position is in
+ * normal text and 'numRemainingChars' can be rendered without having to
+ * deal with a tabulator.
+ *
+ * The method getTextPositionInfo(..) can be used to get this info for a
+ * given portion of a text line.
+ *
+ * NOTE: In the result of getTextPositionInfo(..) there is always one of
+ * the both fields '0'. If both fields are '0', eol was reached.
+ */
+typedef struct
+{
+  size_t numRemainingSpaces;
+  size_t numRemainingChars;
+} TextPositionInfo;
 
+
+/**
+ * A text area which can display DiffOutputFiles. These files are the
+ * result of a text compare operation and contain informations about
+ * inserted, deleted and changed lines. This text area can display these
+ * documents with or without line numbers. The background color of the
+ * rendered text lines is set to reflect normal, unchanged text or one
+ * the states mentioned above.
+ * 
+ * @author Uwe Rosner
+ * @date 12/08/2020
+ */
 class DiffWindowTextArea : public Rect
 {
 public:
@@ -125,6 +160,8 @@ private:
   bool m_AreLineNumbersEnabled;
   ULONG m_LongestLineChars; ///> Number of chars of the longest line of DiffFile.
 
+  ULONG m_TabWidth;         ///> Number of spaces of each tabulator
+
   UWORD m_FontWidth_pix;    ///> Width of the rastport text font
   UWORD m_FontHeight_pix;   ///> Height of the rastport text font
   UWORD m_FontBaseline_pix; ///> Baseline (from top) of the rastport text font
@@ -164,6 +201,15 @@ private:
   ULONG calcNumPrintChars(const DiffLine* pDiffLine, 
                           int count,
                           int startIndex);
+
+  /**
+   * Returns the information if on desired resultingTextColumn is normal
+   * text to render or if there are some (white)spaces to render to
+   * fulfill a tabulator cell width.
+   */
+  TextPositionInfo getTextPositionInfo(const char* m_Text, 
+                                       ULONG m_TextLength, 
+                                       ULONG resultingTextColumn);
 
   /**
    * Returns the appropriate rastport for a DiffLine with given

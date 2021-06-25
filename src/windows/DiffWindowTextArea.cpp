@@ -18,6 +18,7 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
     m_pRPorts(pRPorts),
     m_AreLineNumbersEnabled(lineNumbersEnabled),
     m_LongestLineChars(maxNumChars),
+    m_TabWidth(8),  // TODO Parametrize
     m_FontWidth_pix(pTextFont->tf_XSize),
     m_FontHeight_pix(pTextFont->tf_YSize),
     m_FontBaseline_pix(pTextFont->tf_Baseline),
@@ -96,12 +97,18 @@ void DiffWindowTextArea::setSize(ULONG width, ULONG height)
   Rect::setSize(width, height);
 
   //
-  // Define two the scrolling areas. Note that there are two different
-  // scroll rects used because:
-  //   The 'Left' values depend on if the scroll is done horizontally or
-  //   vertically. On vertical scroll the block containing line numbers
-  //   is scrolled too. On horizontal scroll, it is not.
+
   //
+
+  /**
+   * NOTE: The TextArea contains two different rects, and this is the
+   * reason:
+   *
+   *   It is needed for scrolling. The 'Left' values depend on if the
+   *   scroll is done horizontally or vertically. On vertical scroll the
+   *   block containing line numbers is scrolled too. On horizontal
+   *   scroll, it is not.
+   */
 
   ULONG maxTextWidth_pix = m_AreaMaxChars * m_FontWidth_pix;
   maxTextWidth_pix += m_LineNumsWidth_pix;
@@ -598,6 +605,78 @@ ULONG DiffWindowTextArea::calcNumPrintChars(const DiffLine* pDiffLine,
 
   return numCharsToPrint;
 }
+
+
+
+
+
+
+TextPositionInfo DiffWindowTextArea::getTextPositionInfo(const char* pSrcText, 
+                                                         ULONG srcTextLength, 
+                                                         ULONG resultingTextColumn)
+{
+  TextPositionInfo info = {0};
+  ULONG i, j, accumulatedColumn, tabIndent;
+
+  accumulatedColumn = 0;
+
+  // Parse each character of input text
+  for(i = 0; i < srcTextLength; i++)
+  {
+    if(accumulatedColumn >= resultingTextColumn)
+    {
+      tabIndent = m_TabWidth - (size_t)(resultingTextColumn % m_TabWidth);
+
+      if(accumulatedColumn > resultingTextColumn)
+      {
+        // In midst of / among a tabulator block
+        info.numRemainingChars = 0;
+        info.numRemainingSpaces = tabIndent;
+      }
+      else
+      {
+        if(((i > 1) && (pSrcText[i] == '\t')) || ((i == 0) && (pSrcText[i] == '\t')))
+        {
+          // Directly on the start of a tabulator block
+          info.numRemainingChars = 0;
+          info.numRemainingSpaces = tabIndent;
+        }
+        else
+        {
+          // A printable character, no tabulator block
+          
+          // Check how many chars / spaces until next tab position or eol
+          for(j = i; j < srcTextLength; j++)
+          {
+            if(pSrcText[j] == '\t')
+            {
+              break;
+            }
+          }
+
+          info.numRemainingChars = j - i;
+          info.numRemainingSpaces = 0;
+        }
+      }
+
+      return info;
+    }
+
+    if(pSrcText[i] == '\t')
+    {
+      // Increase actual result column by current position tabulator indent
+      accumulatedColumn += (size_t)( m_TabWidth - (accumulatedColumn % m_TabWidth));
+    }
+    else
+    {
+      // Increase actual result column by one
+      accumulatedColumn++;
+    }
+  }
+
+  return info;
+}
+
 
 
 RastPort* DiffWindowTextArea::diffStateToRastPort(DiffLine::LineState state)
