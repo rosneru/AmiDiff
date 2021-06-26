@@ -554,12 +554,14 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
 
     TextPositionInfo positionInfo;
     positionInfo = getTextPositionInfo(pLine->getText() + currentTextColumn,
-                                       pLine->getNumChars() - currentTextColumn,
+                                       numCharsToPrint,
                                        resultingTextColumn);
-
+// char buf[10];
     while(!hasNumCharsBeenLimited &&
          (positionInfo.numRemainingChars > 0 || positionInfo.numRemainingSpaces > 0))
     {
+      // printf(" pi.RemainingChars = %lu, pi.RemainingSpaces = %lu\n", positionInfo.numRemainingChars, positionInfo.numRemainingSpaces);
+      // sscanf("%s", buf);
       if(positionInfo.numRemainingChars > 0)
       {
         // Set the text print pointer to te nax char to be printed
@@ -610,22 +612,22 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
 
       if(positionInfo.numRemainingChars > 0)
       {
-        currentTextColumn += numCharsToPrint;
+        currentTextColumn += nextNumCharsToPrint;
       }
       else
       {
         currentTextColumn++;
       }
 
-      currentDisplayColumn += numCharsToPrint;
-      sumPrintedChars += numCharsToPrint;
+      currentDisplayColumn += nextNumCharsToPrint;
+      sumPrintedChars += nextNumCharsToPrint;
 
-      resultingTextColumn += numCharsToPrint;
+      resultingTextColumn += nextNumCharsToPrint;
 
       positionInfo = getTextPositionInfo(pLine->getText() + currentTextColumn,
-                                        pLine->getNumChars() - currentTextColumn,
-                                        resultingTextColumn);
-    } 
+                                         pLine->getNumChars() - currentTextColumn,
+                                         resultingTextColumn);
+    }
 
   } 
   while (numCharsToPrint > 0); 
