@@ -19,6 +19,7 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
     m_AreLineNumbersEnabled(lineNumbersEnabled),
     m_LongestLineChars(maxNumChars),
     m_TabWidth(8),  // TODO Parametrize
+    m_pLineOfSpaces(NULL),
     m_FontWidth_pix(pTextFont->tf_XSize),
     m_FontHeight_pix(pTextFont->tf_YSize),
     m_FontBaseline_pix(pTextFont->tf_Baseline),
@@ -42,7 +43,11 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
 
 DiffWindowTextArea::~DiffWindowTextArea()
 {
-
+  if(m_pLineOfSpaces != NULL)
+  {
+    delete[] m_pLineOfSpaces;
+    m_pLineOfSpaces = NULL;
+  }
 }
 
 
@@ -91,20 +96,29 @@ void DiffWindowTextArea::setSize(ULONG width, ULONG height)
   m_AreaMaxLines = (height - 4) /  m_FontHeight_pix;
   m_AreaMaxChars = (width - 7 - m_LineNumsWidth_pix) / m_FontWidth_pix;
 
-  // Limit height to int multiples
+  // Create a full line of spaces, to be used for tab rendering
+  if(m_pLineOfSpaces != NULL)
+  {
+    delete[] m_pLineOfSpaces;
+    m_pLineOfSpaces = NULL;
+  }
+
+  m_pLineOfSpaces = new char[m_AreaMaxChars + 1];
+  memset(m_pLineOfSpaces, ' ', m_AreaMaxChars);
+  m_pLineOfSpaces[m_AreaMaxChars] = '\0';
+
+  // Limit height to whole lines
   height = m_AreaMaxLines * m_FontHeight_pix + 3;
 
+  // Set the outer rect of this text area to new width and height
   Rect::setSize(width, height);
 
-  //
-
-  //
-
   /**
-   * NOTE: The TextArea contains two different rects, and this is the
-   * reason:
+   * NOTE: The TextArea 'is' a Rect by itself but it additionally
+   * contains two other rects which are needed for scrolling. The reason
+   * two other rects are needed is:
    *
-   *   It is needed for scrolling. The 'Left' values depend on if the
+   *   The 'Left edge' values of the scrolling area depend on if the
    *   scroll is done horizontally or vertically. On vertical scroll the
    *   block containing line numbers is scrolled too. On horizontal
    *   scroll, it is not.

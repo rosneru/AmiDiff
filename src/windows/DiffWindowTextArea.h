@@ -161,6 +161,7 @@ private:
   ULONG m_LongestLineChars; ///> Number of chars of the longest line of DiffFile.
 
   ULONG m_TabWidth;         ///> Number of spaces of each tabulator
+  char* m_pLineOfSpaces;    ///> A text containing m_AreaMaxChars spaces, initialized in setSize()
 
   UWORD m_FontWidth_pix;    ///> Width of the rastport text font
   UWORD m_FontHeight_pix;   ///> Height of the rastport text font
