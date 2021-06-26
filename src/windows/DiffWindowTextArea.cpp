@@ -413,7 +413,7 @@ ULONG DiffWindowTextArea::scrollDown(ULONG numLines)
 
   if(numLines > m_Y)
   {
-    // Limit to not excee / go below lineId 0
+    // Limit to not exceed / go below lineId 0
     numLines = m_Y;
   }
 
@@ -548,41 +548,85 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
       return;
     }
 
-    // Move rastport cursor to start of line
-    Move(pRPort,
-         m_HScrollRect.getLeft() + m_FontWidth_pix * currentDisplayColumn,
-         getTop() + lineTop + m_FontBaseline_pix + 1);
+    ULONG resultingTextColumn = currentTextColumn;
+    ULONG nextNumCharsToPrint;
+    const char* pTextToPrint;
 
-    // Print line
-    if(currentDisplayColumn + numCharsToPrint > m_AreaMaxChars)
-    {
-      numCharsToPrint = m_AreaMaxChars - currentDisplayColumn;
-      hasNumCharsBeenLimited = true;
-    }
+    TextPositionInfo positionInfo;
+    positionInfo = getTextPositionInfo(pLine->getText() + currentTextColumn,
+                                       pLine->getNumChars() - currentTextColumn,
+                                       resultingTextColumn);
 
-    if(numCharLimit > 0)
+    while(!hasNumCharsBeenLimited &&
+         (positionInfo.numRemainingChars > 0 || positionInfo.numRemainingSpaces > 0))
     {
-      if(sumPrintedChars + numCharsToPrint > numCharLimit)
+      if(positionInfo.numRemainingChars > 0)
       {
-        numCharsToPrint = numCharLimit - sumPrintedChars;
+        // Set the text print pointer to te nax char to be printed
+        nextNumCharsToPrint = positionInfo.numRemainingChars;
+        pTextToPrint = pLine->getText() + currentTextColumn;
+      }
+      else
+      {
+        // Set the text print pointer to the line of spaces
+        nextNumCharsToPrint = positionInfo.numRemainingSpaces;
+        pTextToPrint = m_pLineOfSpaces;
+      }
+
+
+      // Move rastport cursor to start of line
+      Move(pRPort,
+          m_HScrollRect.getLeft() + m_FontWidth_pix * currentDisplayColumn,
+          getTop() + lineTop + m_FontBaseline_pix + 1);
+
+      
+      
+      // Limit the number of Chars to print to the maximum
+      if(currentDisplayColumn + nextNumCharsToPrint > m_AreaMaxChars)
+      {
+        nextNumCharsToPrint = m_AreaMaxChars - currentDisplayColumn;
         hasNumCharsBeenLimited = true;
       }
-    }
 
-    Text(pRPort,
-         pLine->getText() + currentTextColumn,
-         numCharsToPrint);
+      if(numCharLimit > 0)
+      {
+        if(sumPrintedChars + nextNumCharsToPrint > numCharLimit)
+        {
+          nextNumCharsToPrint = numCharLimit - sumPrintedChars;
+          hasNumCharsBeenLimited = true;
+        }
+      }
 
-    if(hasNumCharsBeenLimited)
-    {
-      // Nothing more to print as number of chars to print had already
-      // been limited
-      return;
-    }
+      Text(pRPort,
+          pTextToPrint,
+          nextNumCharsToPrint);
 
-    currentTextColumn += numCharsToPrint;
-    currentDisplayColumn += numCharsToPrint;
-    sumPrintedChars += numCharsToPrint;
+      if(hasNumCharsBeenLimited)
+      {
+        // Nothing more to print as number of chars to print had already
+        // been limited
+        return;
+      }
+
+      if(positionInfo.numRemainingChars > 0)
+      {
+        currentTextColumn += numCharsToPrint;
+      }
+      else
+      {
+        currentTextColumn++;
+      }
+
+      currentDisplayColumn += numCharsToPrint;
+      sumPrintedChars += numCharsToPrint;
+
+      resultingTextColumn += numCharsToPrint;
+
+      positionInfo = getTextPositionInfo(pLine->getText() + currentTextColumn,
+                                        pLine->getNumChars() - currentTextColumn,
+                                        resultingTextColumn);
+    } 
+
   } 
   while (numCharsToPrint > 0); 
 }
@@ -688,6 +732,7 @@ TextPositionInfo DiffWindowTextArea::getTextPositionInfo(const char* pSrcText,
     }
   }
 
+  info.numRemainingChars = i;
   return info;
 }
 
