@@ -525,7 +525,7 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
     currentDisplayColumn = 0;
   }
 
-  long numCharsToPrint = 0;
+  long maxCharsToPrint = 0;
 
   do
   {
@@ -533,13 +533,13 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
     bool hasNumCharsBeenLimited = false;
     RastPort* pRPort;
 
-    if((numCharsToPrint = m_DiffFile.getNumNormalChars(lineId, currentTextColumn)) > 0)
+    if((maxCharsToPrint = m_DiffFile.getNumNormalChars(lineId, currentTextColumn)) > 0)
     {
       // Get the RastPort for the line to draw. Depends on the diff state
       // of the line.
       pRPort = diffStateToRastPort(pLine->getState());
     }
-    else if ((numCharsToPrint = m_DiffFile.getNumMarkedChars(lineId, currentTextColumn)) > 0)
+    else if ((maxCharsToPrint = m_DiffFile.getNumMarkedChars(lineId, currentTextColumn)) > 0)
     {
       pRPort = m_pRPorts->TextSelected();
     }
@@ -553,8 +553,8 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
     const char* pTextToPrint;
 
     TextPositionInfo positionInfo;
-    positionInfo = getTextPositionInfo(pLine->getText() + currentTextColumn,
-                                       numCharsToPrint,
+    positionInfo = getTextPositionInfo(pLine->getText(),
+                                       pLine->getNumChars(),
                                        resultingTextColumn);
 // char buf[10];
     while(!hasNumCharsBeenLimited &&
@@ -624,13 +624,13 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
 
       resultingTextColumn += nextNumCharsToPrint;
 
-      positionInfo = getTextPositionInfo(pLine->getText() + currentTextColumn,
-                                         pLine->getNumChars() - currentTextColumn,
+      positionInfo = getTextPositionInfo(pLine->getText(),
+                                         pLine->getNumChars(),
                                          resultingTextColumn);
     }
 
   } 
-  while (numCharsToPrint > 0); 
+  while (maxCharsToPrint > 0); 
 }
 
 
@@ -734,7 +734,6 @@ TextPositionInfo DiffWindowTextArea::getTextPositionInfo(const char* pSrcText,
     }
   }
 
-  info.numRemainingChars = i;
   return info;
 }
 

@@ -383,12 +383,14 @@ Storm Shell Project (Dependencies)
 1 1
 File
 1 "src/commands/CmdNavigateFirstDiff.cpp"
+"src/commands/CmdNavigateFirstDiff.cpp"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdNavigateFirstDiff.o" "build-stromc/CmdNavigateFirstDiff.debug"
 ""
 1 1
 File
 1 "src/commands/CmdNavigateLastDiff.cpp"
+"src/commands/CmdNavigateLastDiff.cpp"
 Storm Shell Project (Dependencies)
 "build-stromc/CmdNavigateLastDiff.o" "build-stromc/CmdNavigateLastDiff.debug"
 ""
@@ -982,12 +984,14 @@ Storm Shell Project (Dependencies)
 0 0
 File
 2 "src/commands/CmdNavigateFirstDiff.h"
+"src/commands/CmdNavigateFirstDiff.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
 0 0
 File
 2 "src/commands/CmdNavigateLastDiff.h"
+"src/commands/CmdNavigateLastDiff.h"
 Storm Shell Project (Dependencies)
 "" ""
 ""
@@ -1292,6 +1296,7 @@ Section
 7
 File
 10 "ADiffView"
+"ADiffView"
 Storm Shell Project (Dependencies)
 "" ""
 ""
