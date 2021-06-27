@@ -35,6 +35,7 @@ typedef struct
 {
   size_t numRemainingSpaces;
   size_t numRemainingChars;
+  size_t srcTextColumn;
 } TextPositionInfo;
 
 

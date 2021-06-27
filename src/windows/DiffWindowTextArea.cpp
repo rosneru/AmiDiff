@@ -566,7 +566,7 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
       {
         // Set the text print pointer to te nax char to be printed
         nextNumCharsToPrint = positionInfo.numRemainingChars;
-        pTextToPrint = pLine->getText() + currentTextColumn;
+        pTextToPrint = pLine->getText() + positionInfo.srcTextColumn;
       }
       else
       {
@@ -676,12 +676,12 @@ TextPositionInfo DiffWindowTextArea::getTextPositionInfo(const char* pSrcText,
                                                          ULONG resultingTextColumn)
 {
   TextPositionInfo info = {0};
-  ULONG i, j, accumulatedColumn, tabIndent;
+  ULONG i, accumulatedColumn, tabIndent;
 
   accumulatedColumn = 0;
 
   // Parse each character of input text
-  for(i = 0; i < srcTextLength; i++)
+  for(info.srcTextColumn = 0; info.srcTextColumn < srcTextLength; info.srcTextColumn++)
   {
     if(accumulatedColumn >= resultingTextColumn)
     {
@@ -695,7 +695,8 @@ TextPositionInfo DiffWindowTextArea::getTextPositionInfo(const char* pSrcText,
       }
       else
       {
-        if(((i > 1) && (pSrcText[i] == '\t')) || ((i == 0) && (pSrcText[i] == '\t')))
+        if(((info.srcTextColumn > 1) && (pSrcText[info.srcTextColumn] == '\t')) || 
+           ((info.srcTextColumn == 0) && (pSrcText[info.srcTextColumn] == '\t')))
         {
           // Directly on the start of a tabulator block
           info.numRemainingChars = 0;
@@ -706,15 +707,15 @@ TextPositionInfo DiffWindowTextArea::getTextPositionInfo(const char* pSrcText,
           // A printable character, no tabulator block
           
           // Check how many chars / spaces until next tab position or eol
-          for(j = i; j < srcTextLength; j++)
+          for(i = info.srcTextColumn; i < srcTextLength; i++)
           {
-            if(pSrcText[j] == '\t')
+            if(pSrcText[i] == '\t')
             {
               break;
             }
           }
 
-          info.numRemainingChars = j - i;
+          info.numRemainingChars = i - info.srcTextColumn;
           info.numRemainingSpaces = 0;
         }
       }
@@ -722,7 +723,7 @@ TextPositionInfo DiffWindowTextArea::getTextPositionInfo(const char* pSrcText,
       return info;
     }
 
-    if(pSrcText[i] == '\t')
+    if(pSrcText[info.srcTextColumn] == '\t')
     {
       // Increase actual result column by current position tabulator indent
       accumulatedColumn += (size_t)( m_TabWidth - (accumulatedColumn % m_TabWidth));
