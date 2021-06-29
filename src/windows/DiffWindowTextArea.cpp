@@ -471,6 +471,7 @@ void DiffWindowTextArea::printLine(ULONG lineId)
   renderLine(lineId, true, lineTopEdge);
 }
 
+
 void DiffWindowTextArea::renderLine(ULONG lineId, 
                                     bool doDisplayLineNumbers, 
                                     long lineTop, 
@@ -482,9 +483,10 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
     return;
   }
 
-  //
-  // Print the line numbers
-  //
+  /**
+   * Render the line numbers
+   */
+
   if(doDisplayLineNumbers && m_AreLineNumbersEnabled)
   {
     // Move rastport cursor to start of line numbers block
@@ -500,137 +502,144 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
   }
 
 
+  /**
+   * Render the line
+   */
 
   ULONG currentTextColumn;
   ULONG currentDisplayColumn;
-
+  long numRemainingChars; // Number of ramaining chars for rendering on current line
   if(numCharLimit < 0)
   {
-    // Only display the right 'onlyNumChars' chars of the line's visible text
-    numCharLimit = -numCharLimit;
+    // Only render 'numCharLimit' chars  at the right of the lines
+    // visible area
+    numRemainingChars = -numCharLimit;
 
     currentTextColumn = m_AreaMaxChars + m_X;
-    currentDisplayColumn = m_AreaMaxChars - numCharLimit;
+    currentDisplayColumn = m_AreaMaxChars - numRemainingChars;
   }
   else if(numCharLimit > 0)
   {
-    // Only display the left 'onlyNumChars' chars of the line's visible text
-    currentTextColumn = m_X - numCharLimit;
+    // Only render 'numCharLimit' chars at the left of the lines visible
+    // area
+    numRemainingChars = numCharLimit;
+    currentTextColumn = m_X - numRemainingChars;
     currentDisplayColumn = 0;
   }
   else
   {
     // Default, no scrolling
+    numRemainingChars = m_AreaMaxChars;
     currentTextColumn = m_X;
     currentDisplayColumn = 0;
   }
 
-  long maxCharsToPrint = 0;
+  // Get the text position info of resulting text column. This also
+  // calculates the srcTextColumn which is needed next.
+  ULONG resultingTextColumn = currentTextColumn;
+  TextPositionInfo positionInfo;
+  positionInfo = getTextPositionInfo(pLine->getText(),
+                                      pLine->getNumChars(),
+                                      resultingTextColumn);
 
-  do
+  // Get the RastPort to render the next block of marked / not marked
+  // text in the line.
+  ULONG numCharsInBlock;
+  RastPort* pRPort;
+  if((numCharsInBlock = m_DiffFile.getNumNormalChars(lineId, positionInfo.srcTextColumn)) > 0)
   {
-    long sumPrintedChars = 0;
-    bool hasNumCharsBeenLimited = false;
-    RastPort* pRPort;
+    // The RastPort of the normal, not marked text depends on the diff
+    // state of the line.
+    pRPort = diffStateToRastPort(pLine->getState());
+  }
+  else if ((numCharsInBlock = m_DiffFile.getNumMarkedChars(lineId, positionInfo.srcTextColumn)) > 0)
+  {
+    pRPort = m_pRPorts->TextSelected();
+  }
+  else
+  {
+    return;
+  }
 
-    if((maxCharsToPrint = m_DiffFile.getNumNormalChars(lineId, currentTextColumn)) > 0)
+  ULONG nextNumCharsToPrint;
+  const char* pTextToPrint;
+  bool hasMarkedNormalBlockLimitReached = false;
+  bool hasNumCharsBeenLimited = false;
+
+  while(numRemainingChars > 0 &&
+        (positionInfo.numRemainingChars > 0 || positionInfo.numRemainingSpaces > 0))
+  {
+    if(positionInfo.numRemainingChars > 0)
     {
-      // Get the RastPort for the line to draw. Depends on the diff state
-      // of the line.
-      pRPort = diffStateToRastPort(pLine->getState());
-    }
-    else if ((maxCharsToPrint = m_DiffFile.getNumMarkedChars(lineId, currentTextColumn)) > 0)
-    {
-      pRPort = m_pRPorts->TextSelected();
+      // Set the text print pointer to te nax char to be printed
+      nextNumCharsToPrint = positionInfo.numRemainingChars;
+      pTextToPrint = pLine->getText() + positionInfo.srcTextColumn;
     }
     else
     {
+      // Set the text print pointer to the line of spaces
+      nextNumCharsToPrint = positionInfo.numRemainingSpaces;
+      pTextToPrint = m_pLineOfSpaces;
+    }
+
+    if(nextNumCharsToPrint > numCharsInBlock)
+    {
+      nextNumCharsToPrint = numCharsInBlock;
+      hasMarkedNormalBlockLimitReached = true;
+    }
+
+    if(nextNumCharsToPrint > numRemainingChars)
+    {
+      nextNumCharsToPrint = numRemainingChars;
+      hasNumCharsBeenLimited = true;
+    }
+    
+    // Limit the number of Chars to print to the maximum
+    if(currentDisplayColumn + nextNumCharsToPrint > m_AreaMaxChars)
+    {
+      nextNumCharsToPrint = m_AreaMaxChars - currentDisplayColumn;
+      hasNumCharsBeenLimited = true;
+    }
+
+    // Move rastport cursor to start of rendering
+    Move(pRPort,
+        m_HScrollRect.getLeft() + m_FontWidth_pix * currentDisplayColumn,
+        getTop() + lineTop + m_FontBaseline_pix + 1);
+
+    // Render the text
+    Text(pRPort,
+        pTextToPrint,
+        nextNumCharsToPrint);
+
+    if(hasMarkedNormalBlockLimitReached)
+    {
+      break;
+    }
+
+    if(hasNumCharsBeenLimited)
+    {
+      // Nothing more to print as number of chars to print had already
+      // been limited
       return;
     }
 
-    ULONG resultingTextColumn = currentTextColumn;
-    ULONG nextNumCharsToPrint;
-    const char* pTextToPrint;
-
-    TextPositionInfo positionInfo;
-    positionInfo = getTextPositionInfo(pLine->getText(),
-                                       pLine->getNumChars(),
-                                       resultingTextColumn);
-// char buf[10];
-    while(!hasNumCharsBeenLimited &&
-         (positionInfo.numRemainingChars > 0 || positionInfo.numRemainingSpaces > 0))
+    if(positionInfo.numRemainingChars > 0)
     {
-      // printf(" pi.RemainingChars = %lu, pi.RemainingSpaces = %lu\n", positionInfo.numRemainingChars, positionInfo.numRemainingSpaces);
-      // sscanf("%s", buf);
-      if(positionInfo.numRemainingChars > 0)
-      {
-        // Set the text print pointer to te nax char to be printed
-        nextNumCharsToPrint = positionInfo.numRemainingChars;
-        pTextToPrint = pLine->getText() + positionInfo.srcTextColumn;
-      }
-      else
-      {
-        // Set the text print pointer to the line of spaces
-        nextNumCharsToPrint = positionInfo.numRemainingSpaces;
-        pTextToPrint = m_pLineOfSpaces;
-      }
-
-
-      // Move rastport cursor to start of line
-      Move(pRPort,
-          m_HScrollRect.getLeft() + m_FontWidth_pix * currentDisplayColumn,
-          getTop() + lineTop + m_FontBaseline_pix + 1);
-
-      
-      
-      // Limit the number of Chars to print to the maximum
-      if(currentDisplayColumn + nextNumCharsToPrint > m_AreaMaxChars)
-      {
-        nextNumCharsToPrint = m_AreaMaxChars - currentDisplayColumn;
-        hasNumCharsBeenLimited = true;
-      }
-
-      if(numCharLimit > 0)
-      {
-        if(sumPrintedChars + nextNumCharsToPrint > numCharLimit)
-        {
-          nextNumCharsToPrint = numCharLimit - sumPrintedChars;
-          hasNumCharsBeenLimited = true;
-        }
-      }
-
-      Text(pRPort,
-          pTextToPrint,
-          nextNumCharsToPrint);
-
-      if(hasNumCharsBeenLimited)
-      {
-        // Nothing more to print as number of chars to print had already
-        // been limited
-        return;
-      }
-
-      if(positionInfo.numRemainingChars > 0)
-      {
-        currentTextColumn += nextNumCharsToPrint;
-      }
-      else
-      {
-        currentTextColumn++;
-      }
-
-      currentDisplayColumn += nextNumCharsToPrint;
-      sumPrintedChars += nextNumCharsToPrint;
-
-      resultingTextColumn += nextNumCharsToPrint;
-
-      positionInfo = getTextPositionInfo(pLine->getText(),
-                                         pLine->getNumChars(),
-                                         resultingTextColumn);
+      currentTextColumn += nextNumCharsToPrint;
+    }
+    else
+    {
+      currentTextColumn++;
     }
 
-  } 
-  while (maxCharsToPrint > 0); 
+    numRemainingChars -= nextNumCharsToPrint;
+    currentDisplayColumn += nextNumCharsToPrint;
+    resultingTextColumn += nextNumCharsToPrint;
+
+    positionInfo = getTextPositionInfo(pLine->getText(),
+                                        pLine->getNumChars(),
+                                        resultingTextColumn);
+  }
 }
 
 
