@@ -538,9 +538,8 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
   // calculates the srcTextColumn which is needed next.
   ULONG resultingTextColumn = currentTextColumn;
   TextPositionInfo positionInfo;
-  positionInfo = getTextPositionInfo(pLine->getText(),
-                                      pLine->getNumChars(),
-                                      resultingTextColumn);
+  positionInfo = pLine->getTextPositionInfo(resultingTextColumn,
+                                            m_TabWidth);
 
   // Get the RastPort to render the next block of marked / not marked
   // text in the line.
@@ -636,9 +635,8 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
     currentDisplayColumn += nextNumCharsToPrint;
     resultingTextColumn += nextNumCharsToPrint;
 
-    positionInfo = getTextPositionInfo(pLine->getText(),
-                                        pLine->getNumChars(),
-                                        resultingTextColumn);
+    positionInfo = pLine->getTextPositionInfo(resultingTextColumn,
+                                              m_TabWidth);
   }
 }
 
@@ -674,79 +672,6 @@ ULONG DiffWindowTextArea::calcNumPrintChars(const DiffLine* pDiffLine,
 
   return numCharsToPrint;
 }
-
-
-
-
-
-
-TextPositionInfo DiffWindowTextArea::getTextPositionInfo(const char* pSrcText, 
-                                                         ULONG srcTextLength, 
-                                                         ULONG resultingTextColumn)
-{
-  TextPositionInfo info = {0};
-  ULONG i, accumulatedColumn, tabIndent;
-
-  accumulatedColumn = 0;
-
-  // Parse each character of input text
-  for(info.srcTextColumn = 0; info.srcTextColumn < srcTextLength; info.srcTextColumn++)
-  {
-    if(accumulatedColumn >= resultingTextColumn)
-    {
-      tabIndent = m_TabWidth - (size_t)(resultingTextColumn % m_TabWidth);
-
-      if(accumulatedColumn > resultingTextColumn)
-      {
-        // In midst of / among a tabulator block
-        info.numRemainingChars = 0;
-        info.numRemainingSpaces = tabIndent;
-      }
-      else
-      {
-        if(((info.srcTextColumn > 1) && (pSrcText[info.srcTextColumn] == '\t')) || 
-           ((info.srcTextColumn == 0) && (pSrcText[info.srcTextColumn] == '\t')))
-        {
-          // Directly on the start of a tabulator block
-          info.numRemainingChars = 0;
-          info.numRemainingSpaces = tabIndent;
-        }
-        else
-        {
-          // A printable character, no tabulator block
-          
-          // Check how many chars / spaces until next tab position or eol
-          for(i = info.srcTextColumn; i < srcTextLength; i++)
-          {
-            if(pSrcText[i] == '\t')
-            {
-              break;
-            }
-          }
-
-          info.numRemainingChars = i - info.srcTextColumn;
-          info.numRemainingSpaces = 0;
-        }
-      }
-
-      return info;
-    }
-
-    if(pSrcText[info.srcTextColumn] == '\t')
-    {
-      // Increase actual result column by current position tabulator indent
-      accumulatedColumn += (size_t)( m_TabWidth - (accumulatedColumn % m_TabWidth));
-    }
-    else
-    {
-      // Increase actual result column by one
-      accumulatedColumn++;
-    }
-  }
-
-  return info;
-}
-
 
 
 RastPort* DiffWindowTextArea::diffStateToRastPort(DiffLine::LineState state)

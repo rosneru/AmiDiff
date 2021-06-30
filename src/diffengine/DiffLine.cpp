@@ -66,3 +66,71 @@ unsigned long DiffLine::getToken() const
 {
   return m_Token;
 }
+
+
+
+TextPositionInfo DiffLine::getTextPositionInfo(unsigned long resultingTextColumn,
+                                               unsigned long tabWidth) const
+{
+  TextPositionInfo info = {0};
+  unsigned long i, accumulatedColumn, tabIndent;
+
+  accumulatedColumn = 0;
+
+  // Parse each character of input text
+  for(info.srcTextColumn = 0; info.srcTextColumn < m_TextLength; info.srcTextColumn++)
+  {
+    if(accumulatedColumn >= resultingTextColumn)
+    {
+      tabIndent = tabWidth - (size_t)(resultingTextColumn % tabWidth);
+
+      if(accumulatedColumn > resultingTextColumn)
+      {
+        // In midst of / among a tabulator block
+        info.numRemainingChars = 0;
+        info.numRemainingSpaces = tabIndent;
+      }
+      else
+      {
+        if(((info.srcTextColumn > 1) && (m_Text[info.srcTextColumn] == '\t')) || 
+           ((info.srcTextColumn == 0) && (m_Text[info.srcTextColumn] == '\t')))
+        {
+          // Directly on the start of a tabulator block
+          info.numRemainingChars = 0;
+          info.numRemainingSpaces = tabIndent;
+        }
+        else
+        {
+          // A printable character, no tabulator block
+          
+          // Check how many chars / spaces until next tab position or eol
+          for(i = info.srcTextColumn; i < m_TextLength; i++)
+          {
+            if(m_Text[i] == '\t')
+            {
+              break;
+            }
+          }
+
+          info.numRemainingChars = i - info.srcTextColumn;
+          info.numRemainingSpaces = 0;
+        }
+      }
+
+      return info;
+    }
+
+    if(m_Text[info.srcTextColumn] == '\t')
+    {
+      // Increase actual result column by current position tabulator indent
+      accumulatedColumn += (size_t)( tabWidth - (accumulatedColumn % tabWidth));
+    }
+    else
+    {
+      // Increase actual result column by one
+      accumulatedColumn++;
+    }
+  }
+
+  return info;
+}

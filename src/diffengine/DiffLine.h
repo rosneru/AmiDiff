@@ -4,6 +4,31 @@
 #include <stdlib.h>
 
 /**
+ * Used to hold parse results of (the part of) a text line. Is needed
+ * for rendering tab stops. 
+ *
+ * When for example 'numRemainingSpaces' is > 0 then the text position
+ * is inside a tabulator cell  and 'numRemainingSpaces' spaces must be
+ * rendered until the tabulator cell is rendered properly.
+ *
+ * Or, when 'numRemainingChars' is > 0 then the text position is in
+ * normal text and 'numRemainingChars' can be rendered without having to
+ * deal with a tabulator.
+ *
+ * The method getTextPositionInfo(..) can be used to get this info for a
+ * given portion of a text line.
+ *
+ * NOTE: In the result of getTextPositionInfo(..) there is always one of
+ * the both fields '0'. If both fields are '0', eol was reached.
+ */
+typedef struct
+{
+  size_t numRemainingSpaces;
+  size_t numRemainingChars;
+  size_t srcTextColumn;
+} TextPositionInfo;
+
+/**
  * Represents a line in a Diff which contains of Text and a LineState.
  *
  * It originates from Stephane Rodriguez open diff implementation:
@@ -72,7 +97,7 @@ public:
    * E.g. when highest line number is three-digits long, the returned
    * value will be something like "  1", " 82" or "123".
    *
-   * Returns NULL if collecting the line numbers was't enabled in the
+   * Returns NULL if collecting the line numbers wasn't enabled in the
    * corresponding src DiffFile before PreProcess().
    */
   const char* getLineNumText() const;
@@ -87,6 +112,14 @@ public:
    * representation of this lines text context
    */
   unsigned long getToken() const;
+
+  /**
+   * Returns the information if on desired resultingTextColumn is normal
+   * text to render or if there are some (white)spaces to render to
+   * fulfill a tabulator cell width.
+   */
+  TextPositionInfo getTextPositionInfo(unsigned long resultingTextColumn, 
+                                       unsigned long tabWidth) const;
 
 protected:
   const char* m_Text;

@@ -13,31 +13,6 @@
 
 #include <vector>
 
-/**
- * Used to hold parse results of (the part of) a text line. Is needed
- * for rendering tab stops. 
- *
- * When for example 'numRemainingSpaces' is > 0 then the text position
- * is inside a tabulator cell  and 'numRemainingSpaces' spaces must be
- * rendered until the tabulator cell is rendered properly.
- *
- * Or, when 'numRemainingChars' is > 0 then the text position is in
- * normal text and 'numRemainingChars' can be rendered without having to
- * deal with a tabulator.
- *
- * The method getTextPositionInfo(..) can be used to get this info for a
- * given portion of a text line.
- *
- * NOTE: In the result of getTextPositionInfo(..) there is always one of
- * the both fields '0'. If both fields are '0', eol was reached.
- */
-typedef struct
-{
-  size_t numRemainingSpaces;
-  size_t numRemainingChars;
-  size_t srcTextColumn;
-} TextPositionInfo;
-
 
 /**
  * A text area which can display DiffOutputFiles. These files are the
@@ -191,9 +166,9 @@ private:
    * to the right of the display area.
    */
   void renderLine(ULONG lineId, 
-                     bool doDisplayLineNumbers, 
-                     long lineTop, 
-                     long numCharLimit = 0);
+                  bool doDisplayLineNumbers, 
+                  long lineTop, 
+                  long numCharLimit = 0);
 
   /**
    * Calculate how many chars of given DiffLine must be print 
@@ -204,14 +179,6 @@ private:
                           int count,
                           int startIndex);
 
-  /**
-   * Returns the information if on desired resultingTextColumn is normal
-   * text to render or if there are some (white)spaces to render to
-   * fulfill a tabulator cell width.
-   */
-  TextPositionInfo getTextPositionInfo(const char* m_Text, 
-                                       ULONG m_TextLength, 
-                                       ULONG resultingTextColumn);
 
   /**
    * Returns the appropriate rastport for a DiffLine with given
