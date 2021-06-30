@@ -1680,3 +1680,210 @@ BOOST_AUTO_TEST_CASE( search_algorithm_get_next_and_prev_from_current_position )
     BOOST_CHECK_EQUAL(1, 2);
   }
 }
+
+BOOST_AUTO_TEST_CASE( test_DiffLine_getTextPositionInfo_1 )
+{
+  DiffLine line("\tThis\tis\ta\ttab\ttest\tyeah", 
+                DiffLine::Normal,
+                "001");
+
+  BOOST_CHECK_EQUAL(line.getNumChars(), 24);
+
+  TextPositionInfo nominal[] =
+  {
+    // {numRemainingSpaces, numRemainingChars, srcTextColumn}
+    { 8, 0, 0 },
+    { 7, 0, 1 },
+    { 6, 0, 1 },
+    { 5, 0, 1 },
+    { 4, 0, 1 },
+    { 3, 0, 1 },
+    { 2, 0, 1 },
+    { 1, 0, 1 },
+    { 0, 4, 1 },
+    { 0, 3, 2 },
+    { 0, 2, 3 },
+    { 0, 1, 4 },
+    { 4, 0, 5 },
+    { 3, 0, 6 },
+    { 2, 0, 6 },
+    { 1, 0, 6 },
+    { 0, 2, 6 },
+    { 0, 1, 7 },
+    { 6, 0, 8 },
+    { 5, 0, 9 },
+    { 4, 0, 9 },
+    { 3, 0, 9 },
+    { 2, 0, 9 },
+    { 1, 0, 9 },
+    { 0, 1, 9 },
+    { 7, 0, 10 }, 
+    { 6, 0, 11 }, 
+    { 5, 0, 11 }, 
+    { 4, 0, 11 }, 
+    { 3, 0, 11 }, 
+    { 2, 0, 11 }, 
+    { 1, 0, 11 }, 
+    { 0, 3, 11 }, 
+    { 0, 2, 12 }, 
+    { 0, 1, 13 }, 
+    { 5, 0, 14 }, 
+    { 4, 0, 15 }, 
+    { 3, 0, 15 }, 
+    { 2, 0, 15 }, 
+    { 1, 0, 15 }, 
+    { 0, 4, 15 }, 
+    { 0, 3, 16 }, 
+    { 0, 2, 17 }, 
+    { 0, 1, 18 }, 
+    { 4, 0, 19 }, 
+    { 3, 0, 20 }, 
+    { 2, 0, 20 }, 
+    { 1, 0, 20 }, 
+    { 0, 4, 20 }, 
+    { 0, 3, 21 }, 
+    { 0, 2, 22 }, 
+    { 0, 1, 23 }, 
+    { 0, 0, 24 },
+  };
+
+  size_t arraySize = sizeof(nominal) / sizeof(nominal[0]);
+  for(size_t i = 0; i < arraySize; i++)
+  {
+    TextPositionInfo actual = line.getTextPositionInfo(i, 8);
+    BOOST_CHECK_EQUAL(actual.numRemainingSpaces, nominal[i].numRemainingSpaces);
+    BOOST_CHECK_EQUAL(actual.numRemainingChars, nominal[i].numRemainingChars);
+    BOOST_CHECK_EQUAL(actual.srcTextColumn, nominal[i].srcTextColumn);
+  }
+
+}
+
+BOOST_AUTO_TEST_CASE( test_DiffLine_getTextPositionInfo_2 )
+{
+  DiffLine line("\tXDEF\t_SysBase", 
+                DiffLine::Normal,
+                "001");
+
+  BOOST_CHECK_EQUAL(line.getNumChars(), 14);
+
+  TextPositionInfo nominal[] =
+  {
+    // {numRemainingSpaces, numRemainingChars, srcTextColumn}
+    { 8, 0, 0  },
+    { 7, 0, 1  },
+    { 6, 0, 1  },
+    { 5, 0, 1  },
+    { 4, 0, 1  },
+    { 3, 0, 1  },
+    { 2, 0, 1  },
+    { 1, 0, 1  },
+    { 0, 4, 1  },
+    { 0, 3, 2  },
+    { 0, 2, 3  },
+    { 0, 1, 4  },
+    { 4, 0, 5  },
+    { 3, 0, 6  },
+    { 2, 0, 6  },
+    { 1, 0, 6  },
+    { 0, 8, 6  },
+    { 0, 7, 7  },
+    { 0, 6, 8  },
+    { 0, 5, 9  },
+    { 0, 4, 10 },
+    { 0, 3, 11 },
+    { 0, 2, 12 },
+    { 0, 1, 13 },
+    { 0, 0, 14 },
+  };
+
+  size_t arraySize = sizeof(nominal) / sizeof(nominal[0]);
+  for(size_t i = 0; i < arraySize; i++)
+  {
+    TextPositionInfo actual = line.getTextPositionInfo(i, 8);
+    BOOST_CHECK_EQUAL(actual.numRemainingSpaces, nominal[i].numRemainingSpaces);
+    BOOST_CHECK_EQUAL(actual.numRemainingChars, nominal[i].numRemainingChars);
+    BOOST_CHECK_EQUAL(actual.srcTextColumn, nominal[i].srcTextColumn);
+  }
+
+}
+
+
+BOOST_AUTO_TEST_CASE( test_DiffLine_getTextPositionInfo_3 )
+{
+  DiffLine line("\t\tdc.w\tdmacon,$0020\t;Disable sprites", 
+                DiffLine::Normal,
+                "001");
+
+  BOOST_CHECK_EQUAL(line.getNumChars(), 36);
+
+  TextPositionInfo nominal[] =
+  {
+    // {numRemainingSpaces, numRemainingChars, srcTextColumn}
+    { 8,  0,  0 },
+    { 7,  0,  0 },
+    // { 6,  0,  0 },
+    // { 5,  0,  0 },
+    // { 4,  0,  0 },
+    // { 3,  0,  0 },
+    // { 2,  0,  0 },
+    // { 1,  0,  0 },
+    // { 8,  0,  1 },
+    // { 7,  0,  1 },
+    // { 6,  0,  1 },
+    // { 5,  0,  1 },
+    // { 4,  0,  1 },
+    // { 3,  0,  1 },
+    // { 2,  0,  1 },
+    // { 1,  0,  1 },
+    // { 0,  4,  2 },
+    // { 0,  3,  3 },
+    // { 0,  2,  4 },
+    // { 0,  1,  5 },
+    // { 4,  0,  6 },
+    // { 3,  0,  6 },
+    // { 2,  0,  6 },
+    // { 1,  0,  6 },
+    // { 0, 12,  7 },
+    // { 0, 11,  7 },
+    // { 0, 10,  7 },
+    // { 0,  9,  7 },
+    // { 0,  8,  7 },
+    // { 0,  7,  7 },
+    // { 0,  6,  7 },
+    // { 0,  5,  7 },
+    // { 0,  4,  7 },
+    // { 0,  3,  7 },
+    // { 0,  2,  7 },
+    // { 0,  1,  7 },
+    // { 4,  0,  8 },
+    // { 3,  0,  8 },
+    // { 2,  0,  8 },
+    // { 1,  0,  8 },
+    // { 0, 16,  9 },
+    // { 0, 15, 10 },
+    // { 0, 14, 11 },
+    // { 0, 13, 12 },
+    // { 0, 12, 13 },
+    // { 0, 11, 14 },
+    // { 0, 10, 15 },
+    // { 0,  9, 16 },
+    // { 0,  8, 17 },
+    // { 0,  7, 18 },
+    // { 0,  6, 19 },
+    // { 0,  5, 20 },
+    // { 0,  4, 21 },
+    // { 0,  3, 22 },
+    // { 0,  2, 23 },
+    // { 0,  1, 24 },
+    // { 0,  0, 25 },
+  };
+
+  size_t arraySize = sizeof(nominal) / sizeof(nominal[0]);
+  for(size_t i = 0; i < arraySize; i++)
+  {
+    TextPositionInfo actual = line.getTextPositionInfo(i, 8);
+    BOOST_CHECK_EQUAL(actual.numRemainingSpaces, nominal[i].numRemainingSpaces);
+    BOOST_CHECK_EQUAL(actual.numRemainingChars, nominal[i].numRemainingChars);
+    BOOST_CHECK_EQUAL(actual.srcTextColumn, nominal[i].srcTextColumn);
+  }
+}
