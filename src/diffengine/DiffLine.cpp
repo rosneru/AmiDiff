@@ -87,6 +87,7 @@ TextPositionInfo DiffLine::getTextPositionInfo(unsigned long resultingTextColumn
       if(accumulatedColumn > resultingTextColumn)
       {
         // In midst of / among a tabulator block
+        info.srcTextColumn--;
         info.numRemainingChars = 0;
         info.numRemainingSpaces = tabIndent;
       }
