@@ -92,8 +92,7 @@ TextPositionInfo DiffLine::getTextPositionInfo(unsigned long resultingTextColumn
       }
       else
       {
-        if(((info.srcTextColumn > 1) && (m_Text[info.srcTextColumn] == '\t')) || 
-           ((info.srcTextColumn == 0) && (m_Text[info.srcTextColumn] == '\t')))
+        if(m_Text[info.srcTextColumn] == '\t')
         {
           // Directly on the start of a tabulator block
           info.numRemainingChars = 0;
