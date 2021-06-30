@@ -69,16 +69,16 @@ unsigned long DiffLine::getToken() const
 
 
 
-TextPositionInfo DiffLine::getTextPositionInfo(unsigned long resultingTextColumn,
-                                               unsigned long tabWidth) const
+void DiffLine::getTextPositionInfo(TextPositionInfo* pInfo,
+                                   unsigned long resultingTextColumn,
+                                   unsigned long tabWidth) const
 {
-  TextPositionInfo info = {0};
   unsigned long i, accumulatedColumn, tabIndent;
 
   accumulatedColumn = 0;
 
   // Parse each character of input text
-  for(info.srcTextColumn = 0; info.srcTextColumn < m_TextLength; info.srcTextColumn++)
+  for(pInfo->srcTextColumn = 0; pInfo->srcTextColumn < m_TextLength; pInfo->srcTextColumn++)
   {
     if(accumulatedColumn >= resultingTextColumn)
     {
@@ -87,24 +87,24 @@ TextPositionInfo DiffLine::getTextPositionInfo(unsigned long resultingTextColumn
       if(accumulatedColumn > resultingTextColumn)
       {
         // In midst of / among a tabulator block
-        info.srcTextColumn--;
-        info.numRemainingChars = 0;
-        info.numRemainingSpaces = tabIndent;
+        pInfo->srcTextColumn--;
+        pInfo->numRemainingChars = 0;
+        pInfo->numRemainingSpaces = tabIndent;
       }
       else
       {
-        if(m_Text[info.srcTextColumn] == '\t')
+        if(m_Text[pInfo->srcTextColumn] == '\t')
         {
           // Directly on the start of a tabulator block
-          info.numRemainingChars = 0;
-          info.numRemainingSpaces = tabIndent;
+          pInfo->numRemainingChars = 0;
+          pInfo->numRemainingSpaces = tabIndent;
         }
         else
         {
           // A printable character, no tabulator block
           
           // Check how many chars / spaces until next tab position or eol
-          for(i = info.srcTextColumn; i < m_TextLength; i++)
+          for(i = pInfo->srcTextColumn; i < m_TextLength; i++)
           {
             if(m_Text[i] == '\t')
             {
@@ -112,15 +112,15 @@ TextPositionInfo DiffLine::getTextPositionInfo(unsigned long resultingTextColumn
             }
           }
 
-          info.numRemainingChars = i - info.srcTextColumn;
-          info.numRemainingSpaces = 0;
+          pInfo->numRemainingChars = i - pInfo->srcTextColumn;
+          pInfo->numRemainingSpaces = 0;
         }
       }
 
-      return info;
+      return;
     }
 
-    if(m_Text[info.srcTextColumn] == '\t')
+    if(m_Text[pInfo->srcTextColumn] == '\t')
     {
       // Increase actual result column by current position tabulator indent
       accumulatedColumn += (size_t)( tabWidth - (accumulatedColumn % tabWidth));
@@ -132,5 +132,6 @@ TextPositionInfo DiffLine::getTextPositionInfo(unsigned long resultingTextColumn
     }
   }
 
-  return info;
+  pInfo->numRemainingChars = 0;
+  pInfo->numRemainingSpaces = 0;
 }

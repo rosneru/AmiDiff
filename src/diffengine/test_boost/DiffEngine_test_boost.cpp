@@ -1750,7 +1750,8 @@ BOOST_AUTO_TEST_CASE( test_DiffLine_getTextPositionInfo_1 )
   size_t arraySize = sizeof(nominal) / sizeof(nominal[0]);
   for(size_t i = 0; i < arraySize; i++)
   {
-    TextPositionInfo actual = line.getTextPositionInfo(i, 8);
+    TextPositionInfo actual;
+    line.getTextPositionInfo(&actual, i, 8);
     BOOST_CHECK_EQUAL(actual.numRemainingSpaces, nominal[i].numRemainingSpaces);
     BOOST_CHECK_EQUAL(actual.numRemainingChars, nominal[i].numRemainingChars);
     BOOST_CHECK_EQUAL(actual.srcTextColumn, nominal[i].srcTextColumn);
@@ -1799,7 +1800,8 @@ BOOST_AUTO_TEST_CASE( test_DiffLine_getTextPositionInfo_2 )
   size_t arraySize = sizeof(nominal) / sizeof(nominal[0]);
   for(size_t i = 0; i < arraySize; i++)
   {
-    TextPositionInfo actual = line.getTextPositionInfo(i, 8);
+    TextPositionInfo actual;
+    line.getTextPositionInfo(&actual, i, 8);
     BOOST_CHECK_EQUAL(actual.numRemainingSpaces, nominal[i].numRemainingSpaces);
     BOOST_CHECK_EQUAL(actual.numRemainingChars, nominal[i].numRemainingChars);
     BOOST_CHECK_EQUAL(actual.srcTextColumn, nominal[i].srcTextColumn);
@@ -1881,7 +1883,8 @@ BOOST_AUTO_TEST_CASE( test_DiffLine_getTextPositionInfo_3 )
   size_t arraySize = sizeof(nominal) / sizeof(nominal[0]);
   for(size_t i = 0; i < arraySize; i++)
   {
-    TextPositionInfo actual = line.getTextPositionInfo(i, 8);
+    TextPositionInfo actual;
+    line.getTextPositionInfo(&actual, i, 8);
     BOOST_CHECK_EQUAL(actual.numRemainingSpaces, nominal[i].numRemainingSpaces);
     BOOST_CHECK_EQUAL(actual.numRemainingChars, nominal[i].numRemainingChars);
     BOOST_CHECK_EQUAL(actual.srcTextColumn, nominal[i].srcTextColumn);

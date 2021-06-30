@@ -537,21 +537,21 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
   // Get the text position info of resulting text column. This also
   // calculates the srcTextColumn which is needed next.
   ULONG resultingTextColumn = currentTextColumn;
-  TextPositionInfo positionInfo;
-  positionInfo = pLine->getTextPositionInfo(resultingTextColumn,
-                                            m_TabWidth);
+  pLine->getTextPositionInfo(&m_PositionInfo, 
+                             resultingTextColumn, 
+                             m_TabWidth);
 
   // Get the RastPort to render the next block of marked / not marked
   // text in the line.
   ULONG numCharsInBlock;
   RastPort* pRPort;
-  if((numCharsInBlock = m_DiffFile.getNumNormalChars(lineId, positionInfo.srcTextColumn)) > 0)
+  if((numCharsInBlock = m_DiffFile.getNumNormalChars(lineId, m_PositionInfo.srcTextColumn)) > 0)
   {
     // The RastPort of the normal, not marked text depends on the diff
     // state of the line.
     pRPort = diffStateToRastPort(pLine->getState());
   }
-  else if ((numCharsInBlock = m_DiffFile.getNumMarkedChars(lineId, positionInfo.srcTextColumn)) > 0)
+  else if ((numCharsInBlock = m_DiffFile.getNumMarkedChars(lineId, m_PositionInfo.srcTextColumn)) > 0)
   {
     pRPort = m_pRPorts->TextSelected();
   }
@@ -566,18 +566,18 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
   bool hasNumCharsBeenLimited = false;
 
   while(numRemainingCharsToRender > 0 &&
-        (positionInfo.numRemainingChars > 0 || positionInfo.numRemainingSpaces > 0))
+        (m_PositionInfo.numRemainingChars > 0 || m_PositionInfo.numRemainingSpaces > 0))
   {
-    if(positionInfo.numRemainingChars > 0)
+    if(m_PositionInfo.numRemainingChars > 0)
     {
       // Set the text print pointer to te nax char to be printed
-      nextNumCharsToPrint = positionInfo.numRemainingChars;
-      pTextToPrint = pLine->getText() + positionInfo.srcTextColumn;
+      nextNumCharsToPrint = m_PositionInfo.numRemainingChars;
+      pTextToPrint = pLine->getText() + m_PositionInfo.srcTextColumn;
     }
     else
     {
       // Set the text print pointer to the line of spaces
-      nextNumCharsToPrint = positionInfo.numRemainingSpaces;
+      nextNumCharsToPrint = m_PositionInfo.numRemainingSpaces;
       pTextToPrint = m_pLineOfSpaces;
     }
 
@@ -622,7 +622,7 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
       return;
     }
 
-    if(positionInfo.numRemainingChars > 0)
+    if(m_PositionInfo.numRemainingChars > 0)
     {
       currentTextColumn += nextNumCharsToPrint;
     }
@@ -635,8 +635,9 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
     currentDisplayColumn += nextNumCharsToPrint;
     resultingTextColumn += nextNumCharsToPrint;
 
-    positionInfo = pLine->getTextPositionInfo(resultingTextColumn,
-                                              m_TabWidth);
+    pLine->getTextPositionInfo(&m_PositionInfo, 
+                               resultingTextColumn, 
+                               m_TabWidth);
   }
 }
 

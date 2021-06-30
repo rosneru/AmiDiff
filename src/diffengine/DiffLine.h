@@ -114,12 +114,13 @@ public:
   unsigned long getToken() const;
 
   /**
-   * Returns the information if on desired resultingTextColumn is normal
-   * text to render or if there are some (white)spaces to render to
-   * fulfill a tabulator cell width.
+   * Fills the given TextPositionInfo with the information if on desired
+   * resultingTextColumn is normal text to render or if there are some
+   * (white)spaces to render to fulfill a tabulator cell width.
    */
-  TextPositionInfo getTextPositionInfo(unsigned long resultingTextColumn, 
-                                       unsigned long tabWidth) const;
+  void getTextPositionInfo(TextPositionInfo* pInfo,
+                           unsigned long resultingTextColumn, 
+                           unsigned long tabWidth) const;
 
 protected:
   const char* m_Text;

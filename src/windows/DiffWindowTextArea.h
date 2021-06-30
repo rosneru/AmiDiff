@@ -136,6 +136,7 @@ private:
   bool m_AreLineNumbersEnabled;
   ULONG m_LongestLineChars; ///> Number of chars of the longest line of DiffFile.
 
+  TextPositionInfo m_PositionInfo;  ///> Destination to calculate current column informations
   ULONG m_TabWidth;         ///> Number of spaces of each tabulator
   char* m_pLineOfSpaces;    ///> A text containing m_AreaMaxChars spaces, initialized in setSize()
 
