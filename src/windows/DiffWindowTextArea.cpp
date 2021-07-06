@@ -541,104 +541,118 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
                              resultingTextColumn, 
                              m_TabWidth);
 
-  // Get the RastPort to render the next block of marked / not marked
-  // text in the line.
-  ULONG numCharsInBlock;
-  RastPort* pRPort;
-  if((numCharsInBlock = m_DiffFile.getNumNormalChars(lineId, m_PositionInfo.srcTextColumn)) > 0)
+  do
   {
-    // The RastPort of the normal, not marked text depends on the diff
-    // state of the line.
-    pRPort = diffStateToRastPort(pLine->getState());
-  }
-  else if ((numCharsInBlock = m_DiffFile.getNumMarkedChars(lineId, m_PositionInfo.srcTextColumn)) > 0)
-  {
-    pRPort = m_pRPorts->TextSelected();
-  }
-  else
-  {
-    return;
-  }
-
-  ULONG nextNumCharsToPrint;
-  const char* pTextToPrint;
-  bool hasMarkedNormalBlockLimitReached = false;
-  bool hasNumCharsBeenLimited = false;
-
-  while(numRemainingCharsToRender > 0 &&
-        (m_PositionInfo.numRemainingChars > 0 || m_PositionInfo.numRemainingSpaces > 0))
-  {
-    if(m_PositionInfo.numRemainingChars > 0)
+    // Get the RastPort to render the next block of marked / not marked
+    // text in the line.
+    ULONG numCharsInBlock;
+    RastPort* pRPort;
+    if((numCharsInBlock = m_DiffFile.getNumNormalChars(lineId, m_PositionInfo.srcTextColumn)) > 0)
     {
-      // Set the text print pointer to te nax char to be printed
-      nextNumCharsToPrint = m_PositionInfo.numRemainingChars;
-      pTextToPrint = pLine->getText() + m_PositionInfo.srcTextColumn;
+      // The RastPort of the normal, not marked text depends on the diff
+      // state of the line.
+      pRPort = diffStateToRastPort(pLine->getState());
+    }
+    else if ((numCharsInBlock = m_DiffFile.getNumMarkedChars(lineId, m_PositionInfo.srcTextColumn)) > 0)
+    {
+      pRPort = m_pRPorts->TextSelected();
     }
     else
     {
-      // Set the text print pointer to the line of spaces
-      nextNumCharsToPrint = m_PositionInfo.numRemainingSpaces;
-      pTextToPrint = m_pLineOfSpaces;
-    }
-
-    if(nextNumCharsToPrint > numCharsInBlock)
-    {
-      nextNumCharsToPrint = numCharsInBlock;
-      hasMarkedNormalBlockLimitReached = true;
-    }
-
-    if(nextNumCharsToPrint > numRemainingCharsToRender)
-    {
-      nextNumCharsToPrint = numRemainingCharsToRender;
-      hasNumCharsBeenLimited = true;
-    }
-    
-    // Limit the number of Chars to print to the maximum
-    if(currentDisplayColumn + nextNumCharsToPrint > m_AreaMaxChars)
-    {
-      nextNumCharsToPrint = m_AreaMaxChars - currentDisplayColumn;
-      hasNumCharsBeenLimited = true;
-    }
-
-    // Move rastport cursor to start of rendering
-    Move(pRPort,
-        m_HScrollRect.getLeft() + m_FontWidth_pix * currentDisplayColumn,
-        getTop() + lineTop + m_FontBaseline_pix + 1);
-
-    // Render the text
-    Text(pRPort,
-        pTextToPrint,
-        nextNumCharsToPrint);
-
-    if(hasMarkedNormalBlockLimitReached)
-    {
-      break;
-    }
-
-    if(hasNumCharsBeenLimited)
-    {
-      // Nothing more to print as number of chars to print had already
-      // been limited
       return;
     }
 
-    if(m_PositionInfo.numRemainingChars > 0)
-    {
-      currentTextColumn += nextNumCharsToPrint;
-    }
-    else
-    {
-      currentTextColumn++;
-    }
 
-    numRemainingCharsToRender -= nextNumCharsToPrint;
-    currentDisplayColumn += nextNumCharsToPrint;
-    resultingTextColumn += nextNumCharsToPrint;
+    while(numRemainingCharsToRender > 0 &&
+          (m_PositionInfo.numRemainingChars > 0 || m_PositionInfo.numRemainingSpaces > 0))
+    {
+      ULONG nextNumCharsToPrint;
+      const char* pTextToPrint;
+      bool hasMarkedNormalBlockLimitReached = false;
+      bool hasNumCharsBeenLimited = false;
+      
+      if(m_PositionInfo.numRemainingChars > 0)
+      {
+        // Set the text print pointer to te nax char to be printed
+        nextNumCharsToPrint = m_PositionInfo.numRemainingChars;
+        pTextToPrint = pLine->getText() + m_PositionInfo.srcTextColumn;
+      }
+      else
+      {
+        // Set the text print pointer to the line of spaces
+        nextNumCharsToPrint = m_PositionInfo.numRemainingSpaces;
+        pTextToPrint = m_pLineOfSpaces;
+      }
+
+      if(nextNumCharsToPrint > numCharsInBlock)
+      {
+        nextNumCharsToPrint = numCharsInBlock;
+        hasMarkedNormalBlockLimitReached = true;
+      }
+
+      if(nextNumCharsToPrint > numRemainingCharsToRender)
+      {
+        nextNumCharsToPrint = numRemainingCharsToRender;
+        hasNumCharsBeenLimited = true;
+      }
+      
+      // Limit the number of Chars to print to the maximum
+      if(currentDisplayColumn + nextNumCharsToPrint > m_AreaMaxChars)
+      {
+        nextNumCharsToPrint = m_AreaMaxChars - currentDisplayColumn;
+        hasNumCharsBeenLimited = true;
+      }
+
+      // Move rastport cursor to start of rendering
+      Move(pRPort,
+          m_HScrollRect.getLeft() + m_FontWidth_pix * currentDisplayColumn,
+          getTop() + lineTop + m_FontBaseline_pix + 1);
+
+      // Render the text
+      Text(pRPort,
+          pTextToPrint,
+          nextNumCharsToPrint);
+
+      if(hasMarkedNormalBlockLimitReached)
+      {
+        numRemainingCharsToRender -= nextNumCharsToPrint;
+        currentDisplayColumn += nextNumCharsToPrint;
+        resultingTextColumn += nextNumCharsToPrint;
+
+        break;
+      }
+
+      if(hasNumCharsBeenLimited)
+      {
+        // Nothing more to print as number of chars to print had already
+        // been limited
+        return;
+      }
+
+      if(m_PositionInfo.numRemainingChars > 0)
+      {
+        currentTextColumn += nextNumCharsToPrint;
+      }
+      else
+      {
+        currentTextColumn++;
+      }
+
+      numRemainingCharsToRender -= nextNumCharsToPrint;
+      currentDisplayColumn += nextNumCharsToPrint;
+      resultingTextColumn += nextNumCharsToPrint;
+
+      pLine->getTextPositionInfo(&m_PositionInfo, 
+                                resultingTextColumn, 
+                                m_TabWidth);
+    }
 
     pLine->getTextPositionInfo(&m_PositionInfo, 
-                               resultingTextColumn, 
-                               m_TabWidth);
+                              resultingTextColumn, 
+                              m_TabWidth);
+
   }
+  while(numRemainingCharsToRender > 0);
 }
 
 
