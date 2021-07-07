@@ -386,10 +386,42 @@ void TextFinder::markNewResult(DiffFileSearchResult* pResult)
 
 void TextFinder::scrollToNewResult(DiffFileSearchResult* pResult)
 {
-  size_t searchStringLength = m_pSearchEngine->getSearchString().length();
+  if((pResult == NULL) || (m_pDiffDocument == NULL) || (m_pSearchEngine == NULL))
+  {
+    return;
+  }
+
+  // Get the DiffLine which contains the result  
+  const DiffLine* pResultLine = NULL;
+  if(pResult->getLocation() == DiffFileSearchResult::LeftFile)
+  {
+    pResultLine = m_pDiffDocument->getLeftDiffFile()[pResult->getLineId()];
+  }
+  else if(pResult->getLocation() == DiffFileSearchResult::RightFile)
+  {
+    pResultLine = m_pDiffDocument->getRightDiffFile()[pResult->getLineId()];
+  }
+  else
+  {
+    return;
+  }
+
+  if(pResultLine == NULL)
+  {
+    return;
+  }
+
+  // Get the postition (column) of the search string in original text line
+  size_t srcTextColumn = pResult->getCharId();
+
+  // Get the position of search string in rendered line (with TABulators
+  // calculated in). TODO: Parametrize TAB_WIDTH
+  size_t resultingTextColumn = pResultLine->getRenderColumn(srcTextColumn,
+                                                            8);
 
   // If necessary scroll the window to have the result visible
-  bool hasScrolled = m_DiffWindow.scrollToPage(pResult->getCharId(),
+  size_t searchStringLength = m_pSearchEngine->getSearchString().length();
+  bool hasScrolled = m_DiffWindow.scrollToPage(resultingTextColumn,
                                                pResult->getLineId(),
                                                searchStringLength,
                                                1);

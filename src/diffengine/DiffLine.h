@@ -122,6 +122,13 @@ public:
                            unsigned long resultingTextColumn, 
                            unsigned long tabWidth) const;
 
+  /**
+   * Returns the column position on which the given originalColumn would
+   * be rendered, respecting all previous TABulastors.
+   */
+  unsigned long getRenderColumn(unsigned long originalColumn,
+                                unsigned long tabWidth) const;
+
 protected:
   const char* m_Text;
   const size_t m_TextLength;

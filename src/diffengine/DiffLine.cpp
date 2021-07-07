@@ -135,3 +135,9 @@ void DiffLine::getTextPositionInfo(TextPositionInfo* pInfo,
   pInfo->numRemainingChars = 0;
   pInfo->numRemainingSpaces = 0;
 }
+
+unsigned long DiffLine::getRenderColumn(unsigned long originalColumn,
+                                        unsigned long tabWidth) const
+{
+
+}
