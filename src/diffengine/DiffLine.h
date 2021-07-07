@@ -79,7 +79,7 @@ public:
   /**
    * Returns the line length in number of chars.
    */
-  size_t getNumChars() const;
+  unsigned long getNumChars() const;
 
   /**
    * Return the state of the this line
@@ -124,14 +124,14 @@ public:
 
   /**
    * Returns the column position on which the given originalColumn would
-   * be rendered, respecting all previous TABulastors.
+   * be rendered, respecting all previous TABulator chars.
    */
   unsigned long getRenderColumn(unsigned long originalColumn,
                                 unsigned long tabWidth) const;
 
 protected:
   const char* m_Text;
-  const size_t m_TextLength;
+  const unsigned long m_TextLength;
   LineState m_State;
   const char* m_pLineNumberText;
   unsigned long m_Token;

@@ -1890,3 +1890,16 @@ BOOST_AUTO_TEST_CASE( test_DiffLine_getTextPositionInfo_3 )
     BOOST_CHECK_EQUAL(actual.srcTextColumn, nominal[i].srcTextColumn);
   }
 }
+
+
+BOOST_AUTO_TEST_CASE( test_DiffLine_getRenderColumn )
+{
+  const int TAB_WIDTH = 8;
+  DiffLine line("\tThis\tis\ta\ttab\ttest\tyeah", 
+                DiffLine::Normal,
+                "001");
+
+  BOOST_CHECK_EQUAL(line.getNumChars(), 24);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(6, TAB_WIDTH), 16); // position of 'is' on TAB_WIDTH = 8
+  BOOST_CHECK_EQUAL(line.getRenderColumn(11, TAB_WIDTH), 32); // position of 'tab' on TAB_WIDTH = 8
+}

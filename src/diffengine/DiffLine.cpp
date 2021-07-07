@@ -139,5 +139,29 @@ void DiffLine::getTextPositionInfo(TextPositionInfo* pInfo,
 unsigned long DiffLine::getRenderColumn(unsigned long originalColumn,
                                         unsigned long tabWidth) const
 {
+  if(originalColumn > m_TextLength)
+  {
+    return 0;
+  }
 
+  unsigned long renderColumn = 0;
+  for(unsigned long i = 0; i < m_TextLength; i++)
+  {
+    if(m_Text[i] == '\t')
+    {
+      unsigned long indent = tabWidth - (i % tabWidth);
+      renderColumn += indent;
+    }
+    else
+    {
+      renderColumn++;
+    }
+
+    if(i == originalColumn)
+    {
+      return renderColumn;
+    }
+  }
+
+  return renderColumn;
 }
