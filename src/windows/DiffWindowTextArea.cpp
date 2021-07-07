@@ -562,10 +562,23 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
       return;
     }
 
-
     while(numRemainingCharsToRender > 0 &&
           (m_PositionInfo.numRemainingChars > 0 || m_PositionInfo.numRemainingSpaces > 0))
     {
+    if((numCharsInBlock = m_DiffFile.getNumNormalChars(lineId, m_PositionInfo.srcTextColumn)) > 0)
+    {
+      // The RastPort of the normal, not marked text depends on the diff
+      // state of the line.
+      pRPort = diffStateToRastPort(pLine->getState());
+    }
+    else if ((numCharsInBlock = m_DiffFile.getNumMarkedChars(lineId, m_PositionInfo.srcTextColumn)) > 0)
+    {
+      pRPort = m_pRPorts->TextSelected();
+    }
+    else
+    {
+      return;
+    }
       ULONG nextNumCharsToPrint;
       const char* pTextToPrint;
       bool hasMarkedNormalBlockLimitReached = false;
