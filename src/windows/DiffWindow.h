@@ -62,16 +62,16 @@ public:
   void scrollLeftTo(size_t left);
 
   /**
-   * Scrolls until the the given page of (left, top), (numLines x
+   * Scrolls until the the given page of (charId, lineId), (numLines x
    * numChars) is visible in current display. Doesn't scroll if given
    * page is already visible.
    *
    *  @returns true if scrolling has been done.
    */
-  bool scrollToPage(size_t left, 
-                       size_t top, 
-                       size_t numChars, 
-                       size_t numLines);
+  bool scrollToPage(size_t charId, 
+                    size_t lineId, 
+                    size_t numChars, 
+                    size_t numLines);
 
   bool isHorizontallyVisible(size_t startCharId) const;
   bool isVerticallyVisible(size_t startLineId) const;

@@ -348,10 +348,10 @@ void DiffWindow::scrollLeftTo(size_t left)
 }
 
 
-bool DiffWindow::scrollToPage(size_t left, 
-                                 size_t top, 
-                                 size_t numChars, 
-                                 size_t numLines)
+bool DiffWindow::scrollToPage(size_t charId, 
+                              size_t lineId, 
+                              size_t numChars, 
+                              size_t numLines)
 {
   if((m_pLeftTextArea == NULL) || (m_pRightTextArea == NULL))
   {
@@ -360,15 +360,15 @@ bool DiffWindow::scrollToPage(size_t left,
 
   bool hasScrolled = false;
 
-  if(!isHorizontallyVisible(left))
+  if(!isHorizontallyVisible(charId))
   {
-    scrollLeftTo(left);
+    scrollLeftTo(charId);
     hasScrolled = true;
   }
 
-  if(!isVerticallyVisible(top))
+  if(!isVerticallyVisible(lineId))
   {
-    scrollTopTo(top);
+    scrollTopTo(lineId);
     hasScrolled = true;
   }
 

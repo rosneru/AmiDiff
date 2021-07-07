@@ -408,8 +408,8 @@ void TextFinder::scrollToNewResult(DiffFileSearchResult* pResult)
 
 
 DiffFileSearchEngine* TextFinder::createNewSearchEngine(const char* pSearchText,
-                                                       bool isCaseIgnored,
-                                                       SearchLocation location)
+                                                        bool isCaseIgnored,
+                                                        SearchLocation location)
 {
   DiffFileSearchEngine* pNewSearchEngine = NULL;
 
