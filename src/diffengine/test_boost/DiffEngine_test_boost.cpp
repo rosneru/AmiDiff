@@ -1900,6 +1900,13 @@ BOOST_AUTO_TEST_CASE( test_DiffLine_getRenderColumn )
                 "001");
 
   BOOST_CHECK_EQUAL(line.getNumChars(), 24);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(0, TAB_WIDTH), 0);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(1, TAB_WIDTH), 8);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(2, TAB_WIDTH), 9);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(3, TAB_WIDTH), 10);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(4, TAB_WIDTH), 11);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(5, TAB_WIDTH), 12);
   BOOST_CHECK_EQUAL(line.getRenderColumn(6, TAB_WIDTH), 16); // position of 'is' on TAB_WIDTH = 8
-  BOOST_CHECK_EQUAL(line.getRenderColumn(11, TAB_WIDTH), 32); // position of 'tab' on TAB_WIDTH = 8
+  BOOST_CHECK_EQUAL(line.getRenderColumn(7, TAB_WIDTH), 17);
+  // BOOST_CHECK_EQUAL(line.getRenderColumn(11, TAB_WIDTH), 32); // position of 'tab' on TAB_WIDTH = 8
 }

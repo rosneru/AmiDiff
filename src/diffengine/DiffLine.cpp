@@ -147,20 +147,24 @@ unsigned long DiffLine::getRenderColumn(unsigned long originalColumn,
   unsigned long renderColumn = 0;
   for(unsigned long i = 0; i < m_TextLength; i++)
   {
+    unsigned long indent;
     if(m_Text[i] == '\t')
     {
-      unsigned long indent = tabWidth - (i % tabWidth);
-      renderColumn += indent;
+      indent = tabWidth - (i % tabWidth);
     }
     else
     {
-      renderColumn++;
+      indent = 1;
     }
+
+    renderColumn += indent;
 
     if(i == originalColumn)
     {
-      return renderColumn;
+      return renderColumn - indent;
     }
+
+
   }
 
   return renderColumn;
