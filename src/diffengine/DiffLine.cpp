@@ -37,7 +37,7 @@ const char* DiffLine::getText() const
   return m_Text;
 }
 
-size_t DiffLine::getNumChars() const
+unsigned long DiffLine::getNumChars() const
 {
   return m_TextLength;
 }
