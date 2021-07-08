@@ -1908,5 +1908,20 @@ BOOST_AUTO_TEST_CASE( test_DiffLine_getRenderColumn )
   BOOST_CHECK_EQUAL(line.getRenderColumn(5, TAB_WIDTH), 12);
   BOOST_CHECK_EQUAL(line.getRenderColumn(6, TAB_WIDTH), 16); // position of 'is' on TAB_WIDTH = 8
   BOOST_CHECK_EQUAL(line.getRenderColumn(7, TAB_WIDTH), 17);
-  // BOOST_CHECK_EQUAL(line.getRenderColumn(11, TAB_WIDTH), 32); // position of 'tab' on TAB_WIDTH = 8
+  BOOST_CHECK_EQUAL(line.getRenderColumn(8, TAB_WIDTH), 18);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(9, TAB_WIDTH), 24);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(10, TAB_WIDTH), 25);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(11, TAB_WIDTH), 32); // position of 'tab' on TAB_WIDTH = 8
+  BOOST_CHECK_EQUAL(line.getRenderColumn(12, TAB_WIDTH), 33);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(13, TAB_WIDTH), 34);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(14, TAB_WIDTH), 35);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(15, TAB_WIDTH), 40);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(16, TAB_WIDTH), 41);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(17, TAB_WIDTH), 42);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(18, TAB_WIDTH), 43);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(19, TAB_WIDTH), 44);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(20, TAB_WIDTH), 48);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(21, TAB_WIDTH), 49);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(22, TAB_WIDTH), 50);
+  BOOST_CHECK_EQUAL(line.getRenderColumn(23, TAB_WIDTH), 51);
 }

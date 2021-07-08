@@ -150,7 +150,7 @@ unsigned long DiffLine::getRenderColumn(unsigned long originalColumn,
     unsigned long indent;
     if(m_Text[i] == '\t')
     {
-      indent = tabWidth - (i % tabWidth);
+      indent = tabWidth - (renderColumn % tabWidth);
     }
     else
     {
@@ -163,7 +163,6 @@ unsigned long DiffLine::getRenderColumn(unsigned long originalColumn,
     {
       return renderColumn - indent;
     }
-
 
   }
 
