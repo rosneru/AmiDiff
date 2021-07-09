@@ -15,7 +15,6 @@
 #include <workbench/workbench.h>
 
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "ADiffViewArgs.h"
 
@@ -159,7 +158,6 @@ void ADiffViewArgs::readWorkbenchArgs()
             long parsedTabSize = strtol(pValue, NULL, 10);
             if(parsedTabSize > 0)
             {
-              printf("WB argument TABSIZE : %ld\n", parsedTabSize);
               m_TabSize = parsedTabSize;
             }
           }
@@ -252,7 +250,6 @@ void ADiffViewArgs::readCommandLineArgs()
       LONG parsedTabSize = *((LONG*)args[5]);
       if(parsedTabSize > 0)
       {
-        printf("CLI argument TABSIZE : %ld\n", parsedTabSize);
         m_TabSize = parsedTabSize;
       }
     }
