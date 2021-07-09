@@ -47,9 +47,13 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
 
   // Determine the max. line length in chars. Can either be found in the
   // left or in the right file.
+  unsigned long numChars;
+  unsigned long renderColumn;
   for(size_t i = 0; i < m_LeftDiffFile.getNumLines(); i++)
   {
-    if(m_LeftDiffFile[i]->getNumChars() > m_MaxLineLength)
+    numChars = m_LeftDiffFile[i]->getNumChars();
+    renderColumn = m_LeftDiffFile[i]->getRenderColumn(numChars, 8);
+    if(renderColumn > m_MaxLineLength)
     {
       m_MaxLineLength = m_LeftDiffFile[i]->getNumChars();
     }
@@ -57,7 +61,9 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
 
   for(size_t i = 0; i < m_RightDiffFile.getNumLines(); i++)
   {
-    if(m_RightDiffFile[i]->getNumChars() > m_MaxLineLength)
+    numChars = m_RightDiffFile[i]->getNumChars();
+    renderColumn = m_RightDiffFile[i]->getRenderColumn(numChars, 8);
+    if(renderColumn > m_MaxLineLength)
     {
       m_MaxLineLength = m_RightDiffFile[i]->getNumChars();
     }

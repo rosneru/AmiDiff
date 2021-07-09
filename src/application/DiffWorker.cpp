@@ -13,7 +13,7 @@ DiffWorker::DiffWorker(std::string& leftFilePath,
                        ProgressWindow& progressWindow,
                        CmdOpenWindow& cmdOpenFilesWindow,
                        CmdCloseWindow& cmdCloseFilesWindow,
-                       struct MsgPort* pProgressPort,
+                       MsgPort* pProgressPort,
                        bool& isCancelRequested,
                        bool& isExitAllowed,
                        bool bShowLineNumbers)
@@ -93,7 +93,7 @@ bool DiffWorker::Diff()
   {
     m_StopWatch.Start();
 
-    // Creating the document starts the file compare
+    // NOTE: Creating the document starts the file compare
     m_pDiffDocument = new DiffDocument(m_LeftSrcFilePath.c_str(),
                                        m_RightSrcFilePath.c_str(),
                                        m_IsCancelRequested,
