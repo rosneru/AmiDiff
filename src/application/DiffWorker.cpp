@@ -16,7 +16,8 @@ DiffWorker::DiffWorker(std::string& leftFilePath,
                        MsgPort* pProgressPort,
                        bool& isCancelRequested,
                        bool& isExitAllowed,
-                       bool bShowLineNumbers)
+                       bool bShowLineNumbers,
+                       unsigned long tabSize)
   : m_LeftSrcFilePath(leftFilePath),
     m_RightSrcFilePath(rightFilePath),
     m_Progress(pProgressPort, m_pReplyPort),
@@ -27,6 +28,7 @@ DiffWorker::DiffWorker(std::string& leftFilePath,
     m_IsCancelRequested(isCancelRequested),
     m_IsExitAllowed(isExitAllowed),
     m_bShowLineNumbers(bShowLineNumbers),
+    m_TabSize(tabSize),
     m_pDiffDocument(NULL)
 {
 }
@@ -99,7 +101,8 @@ bool DiffWorker::Diff()
                                        m_IsCancelRequested,
                                        m_StopWatch,
                                        m_Progress,
-                                       m_bShowLineNumbers);
+                                       m_bShowLineNumbers,
+                                       m_TabSize);
 
     if(m_pDiffDocument->getNumDifferences() < 1)
     {

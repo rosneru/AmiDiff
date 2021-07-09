@@ -14,7 +14,8 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
                            bool& isCancelRequested,
                            StopWatch& stopWatch,
                            ProgressReporter& progress,
-                           bool lineNumbersEnabled)
+                           bool lineNumbersEnabled,
+                           unsigned long tabSize)
   : m_LeftSrcFile(m_Pool.Header(),
                   isCancelRequested,
                   progress,
@@ -52,7 +53,7 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
   for(size_t i = 0; i < m_LeftDiffFile.getNumLines(); i++)
   {
     numChars = m_LeftDiffFile[i]->getNumChars();
-    renderColumn = m_LeftDiffFile[i]->getRenderColumn(numChars, 8);
+    renderColumn = m_LeftDiffFile[i]->getRenderColumn(numChars, tabSize);
     if(renderColumn > m_MaxLineLength)
     {
       m_MaxLineLength = m_LeftDiffFile[i]->getNumChars();
@@ -62,7 +63,7 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
   for(size_t i = 0; i < m_RightDiffFile.getNumLines(); i++)
   {
     numChars = m_RightDiffFile[i]->getNumChars();
-    renderColumn = m_RightDiffFile[i]->getRenderColumn(numChars, 8);
+    renderColumn = m_RightDiffFile[i]->getRenderColumn(numChars, tabSize);
     if(renderColumn > m_MaxLineLength)
     {
       m_MaxLineLength = m_RightDiffFile[i]->getNumChars();

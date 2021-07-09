@@ -24,7 +24,8 @@ ADiffViewArgs::ADiffViewArgs(int argc, char **argv)
     m_pDiskObject(NULL),
     m_bDontAsk(false),
     m_bNoAppIcon(false),
-    m_bShowLineNumbers(true)
+    m_bShowLineNumbers(true),
+    m_TabSize(8)
 {
   if(argc == 0)
   {
@@ -90,6 +91,12 @@ bool ADiffViewArgs::NoAppIcon()
 bool ADiffViewArgs::ShowLineNumbers() const
 {
   return m_bShowLineNumbers;
+}
+
+
+long ADiffViewArgs::getTabSize() const
+{
+  return m_TabSize;
 }
 
 

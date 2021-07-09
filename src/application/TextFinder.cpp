@@ -11,9 +11,11 @@
 
 
 TextFinder::TextFinder(const DiffWorker& diffWorker,
-                       DiffWindow& diffWindow)
+                       DiffWindow& diffWindow,
+                       unsigned long tabSize)
   : m_DiffWorker(diffWorker),
     m_DiffWindow(diffWindow),
+    m_TabSize(tabSize),
     m_pDiffDocument(NULL),
     m_pSearchEngine(NULL),
     m_pNewSearchEngine(NULL),
@@ -417,7 +419,7 @@ void TextFinder::scrollToNewResult(DiffFileSearchResult* pResult)
   // Get the position of search string in rendered line (with TABulators
   // calculated in). TODO: Parametrize TAB_WIDTH
   size_t resultingTextColumn = pResultLine->getRenderColumn(srcTextColumn,
-                                                            8);
+                                                            m_TabSize);
 
   // If necessary scroll the window to have the result visible
   size_t searchStringLength = m_pSearchEngine->getSearchString().length();

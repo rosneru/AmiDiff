@@ -29,9 +29,11 @@
 DiffWindow::DiffWindow(ScreenBase& screen,
                        const ADiffViewPens& pens,
                        struct MsgPort* pIdcmpMsgPort,
-                       MenuBase* pMenu)
+                       MenuBase* pMenu,
+                       ULONG tabSize)
   : ScrollbarWindow(screen, pIdcmpMsgPort, pMenu),
     m_Pens(pens),
+    m_TabSize(tabSize),
     m_pRPorts(NULL),
     m_pDocument(NULL),
     m_EmptyChar('\0'),
@@ -268,13 +270,15 @@ bool DiffWindow::setDocument(DiffDocument* pDiffDocument)
                                         m_pRPorts,
                                         m_pTextFont,
                                         pDiffDocument->areLineNumbersEnabled(),
-                                        pDiffDocument->getMaxLineLength());
+                                        pDiffDocument->getMaxLineLength(),
+                                        m_TabSize);
 
   m_pRightTextArea = new DiffWindowTextArea(pDiffDocument->getRightDiffFile(),
                                         m_pRPorts,
                                         m_pTextFont,
                                         pDiffDocument->areLineNumbersEnabled(),
-                                        pDiffDocument->getMaxLineLength());
+                                        pDiffDocument->getMaxLineLength(),
+                                        m_TabSize);
 
   // Set location and size of the left text area
   m_pLeftTextArea->setPosition(m_IndentX, m_IndentY);

@@ -13,12 +13,13 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
                                        DiffWindowRastports*& pRPorts,
                                        TextFont* pTextFont,
                                        bool lineNumbersEnabled,
-                                       ULONG maxNumChars)
+                                       ULONG maxNumChars,
+                                       ULONG tabSize)
   : m_DiffFile(diffFile),
     m_pRPorts(pRPorts),
     m_AreLineNumbersEnabled(lineNumbersEnabled),
     m_LongestLineChars(maxNumChars),
-    m_TabWidth(8),  // TODO Parametrize
+    m_TabSize(tabSize),
     m_pLineOfSpaces(NULL),
     m_FontWidth_pix(pTextFont->tf_XSize),
     m_FontHeight_pix(pTextFont->tf_YSize),
@@ -539,7 +540,7 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
   ULONG resultingTextColumn = currentTextColumn;
   pLine->getTextPositionInfo(&m_PositionInfo, 
                              resultingTextColumn, 
-                             m_TabWidth);
+                             m_TabSize);
 
   do
   {
@@ -657,12 +658,12 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
 
       pLine->getTextPositionInfo(&m_PositionInfo, 
                                 resultingTextColumn, 
-                                m_TabWidth);
+                                m_TabSize);
     }
 
     pLine->getTextPositionInfo(&m_PositionInfo, 
                               resultingTextColumn, 
-                              m_TabWidth);
+                              m_TabSize);
 
   }
   while(numRemainingCharsToRender > 0);

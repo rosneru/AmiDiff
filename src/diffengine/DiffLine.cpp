@@ -71,7 +71,7 @@ unsigned long DiffLine::getToken() const
 
 void DiffLine::getTextPositionInfo(TextPositionInfo* pInfo,
                                    unsigned long resultingTextColumn,
-                                   unsigned long tabWidth) const
+                                   unsigned long tabSize) const
 {
   unsigned long i, accumulatedColumn, tabIndent;
 
@@ -82,7 +82,7 @@ void DiffLine::getTextPositionInfo(TextPositionInfo* pInfo,
   {
     if(accumulatedColumn >= resultingTextColumn)
     {
-      tabIndent = tabWidth - (size_t)(resultingTextColumn % tabWidth);
+      tabIndent = tabSize - (size_t)(resultingTextColumn % tabSize);
 
       if(accumulatedColumn > resultingTextColumn)
       {
@@ -123,7 +123,7 @@ void DiffLine::getTextPositionInfo(TextPositionInfo* pInfo,
     if(m_Text[pInfo->srcTextColumn] == '\t')
     {
       // Increase actual result column by current position tabulator indent
-      accumulatedColumn += (size_t)( tabWidth - (accumulatedColumn % tabWidth));
+      accumulatedColumn += (size_t)( tabSize - (accumulatedColumn % tabSize));
     }
     else
     {
@@ -137,7 +137,7 @@ void DiffLine::getTextPositionInfo(TextPositionInfo* pInfo,
 }
 
 unsigned long DiffLine::getRenderColumn(unsigned long originalColumn,
-                                        unsigned long tabWidth) const
+                                        unsigned long tabSize) const
 {
   if(originalColumn > m_TextLength)
   {
@@ -154,7 +154,7 @@ unsigned long DiffLine::getRenderColumn(unsigned long originalColumn,
 
     if(m_Text[i] == '\t')
     {
-      unsigned long  indent = tabWidth - (renderColumn % tabWidth);
+      unsigned long  indent = tabSize - (renderColumn % tabSize);
       renderColumn += indent;
     }
     else

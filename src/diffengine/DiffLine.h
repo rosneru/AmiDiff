@@ -120,14 +120,14 @@ public:
    */
   void getTextPositionInfo(TextPositionInfo* pInfo,
                            unsigned long resultingTextColumn, 
-                           unsigned long tabWidth) const;
+                           unsigned long tabSize) const;
 
   /**
    * Returns the column position on which the given originalColumn would
    * be rendered, respecting all previous TABulator chars.
    */
   unsigned long getRenderColumn(unsigned long originalColumn,
-                                unsigned long tabWidth) const;
+                                unsigned long tabSize) const;
 
 protected:
   const char* m_Text;

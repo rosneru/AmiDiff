@@ -26,7 +26,8 @@ public:
   DiffWindow(ScreenBase& screen,
              const ADiffViewPens& pens,
              struct MsgPort* pIdcmpMsgPort,
-             MenuBase* pMenu);
+             MenuBase* pMenu,
+             ULONG tabSize);
 
   virtual ~DiffWindow();
 
@@ -136,6 +137,8 @@ protected:
 
 private:
   const ADiffViewPens& m_Pens;
+
+  ULONG m_TabSize;
 
   DiffWindowRastports* m_pRPorts;
   DiffDocument* m_pDocument;
