@@ -1270,7 +1270,7 @@ BOOST_AUTO_TEST_CASE( search_algorithm_extended_1 )
 
 
     size_t numDifferences = diffEngine.getNumDifferences();
-    BOOST_CHECK_EQUAL(numDifferences, 2);
+    BOOST_CHECK_EQUAL(numDifferences, 4);
 
     DiffFileSearchEngine searchEngine(diffA, 
                                       diffB, 
@@ -1413,7 +1413,7 @@ BOOST_AUTO_TEST_CASE( search_algorithm_case_ignored )
 
 
     size_t numDifferences = diffEngine.getNumDifferences();
-    BOOST_CHECK_EQUAL(numDifferences, 2);
+    BOOST_CHECK_EQUAL(numDifferences, 4);
 
     DiffFileSearchEngine searchEngine(diffA, 
                                       diffB, 
@@ -1504,7 +1504,7 @@ BOOST_AUTO_TEST_CASE( search_algorithm_get_prev_result )
 
 
     size_t numDifferences = diffEngine.getNumDifferences();
-    BOOST_CHECK_EQUAL(numDifferences, 2);
+    BOOST_CHECK_EQUAL(numDifferences, 4);
 
     DiffFileSearchEngine searchEngine(diffA, 
                                       diffB, 
@@ -1603,7 +1603,7 @@ BOOST_AUTO_TEST_CASE( search_algorithm_get_next_and_prev_from_current_position )
 
 
     size_t numDifferences = diffEngine.getNumDifferences();
-    BOOST_CHECK_EQUAL(numDifferences, 2);
+    BOOST_CHECK_EQUAL(numDifferences, 4);
 
     DiffFileSearchEngine searchEngine(diffA, 
                                       diffB, 
