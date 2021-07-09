@@ -14,6 +14,8 @@
 #include <workbench/startup.h>
 #include <workbench/workbench.h>
 
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "ADiffViewArgs.h"
 
@@ -151,6 +153,16 @@ void ADiffViewArgs::readWorkbenchArgs()
           {
              m_bShowLineNumbers = false;
           }
+
+          if((pValue = toolTypeValue(ppTooltypeArray, "TABSIZE")) != NULL)
+          {
+            long parsedTabSize = strtol(pValue, NULL, 10);
+            if(parsedTabSize > 0)
+            {
+              printf("WB argument TABSIZE : %ld\n", parsedTabSize);
+              m_TabSize = parsedTabSize;
+            }
+          }
         }
 
         // Change back to the formerly current directory
@@ -188,8 +200,8 @@ void ADiffViewArgs::readWorkbenchArgs()
 void ADiffViewArgs::readCommandLineArgs()
 {
     // Reading the command line arguments
-    const char argTempl[] = "FILES/M,PUBSCREEN/K,DONOTASK/S,NOAPPICON/S,NOLINENUMBERS/S";
-    LONG args[] = {0, 0, 0, 0, 0};
+    const char argTempl[] = "FILES/M,PUBSCREEN/K,DONOTASK/S,NOAPPICON/S,NOLINENUMBERS/S,TABSIZE/K/N";
+    LONG args[] = {0, 0, 0, 0, 0, 0};
 
     struct RDArgs* pReadArgs = ReadArgs(argTempl, args, NULL);
     if(pReadArgs == NULL)
@@ -233,6 +245,16 @@ void ADiffViewArgs::readCommandLineArgs()
     if(args[4] != 0)
     {
       m_bShowLineNumbers = false;
+    }
+
+    if(args[5] != 0)
+    {
+      LONG parsedTabSize = *((LONG*)args[5]);
+      if(parsedTabSize > 0)
+      {
+        printf("CLI argument TABSIZE : %ld\n", parsedTabSize);
+        m_TabSize = parsedTabSize;
+      }
     }
 
     FreeArgs(pReadArgs);
