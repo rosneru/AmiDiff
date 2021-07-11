@@ -538,12 +538,13 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
   // Get the text position info of resulting text column. This also
   // calculates the srcTextColumn which is needed next.
   ULONG resultingTextColumn = currentTextColumn;
-  pLine->getTextPositionInfo(&m_PositionInfo, 
-                             resultingTextColumn, 
-                             m_TabSize);
 
   do
   {
+    pLine->getTextPositionInfo(&m_PositionInfo, 
+                               resultingTextColumn, 
+                               m_TabSize);
+
     // Get the RastPort to render the next block of marked / not marked
     // text in the line.
     ULONG numCharsInBlock;
@@ -660,11 +661,6 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
                                 resultingTextColumn, 
                                 m_TabSize);
     }
-
-    pLine->getTextPositionInfo(&m_PositionInfo, 
-                              resultingTextColumn, 
-                              m_TabSize);
-
   }
   while(maxRemainingCharsToRender > 0);
 }
