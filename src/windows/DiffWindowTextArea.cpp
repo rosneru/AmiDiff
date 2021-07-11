@@ -9,6 +9,7 @@
 
 #include "DiffWindowTextArea.h"
 
+
 DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
                                        DiffWindowRastports*& pRPorts,
                                        TextFont* pTextFont,
@@ -41,6 +42,7 @@ DiffWindowTextArea::DiffWindowTextArea(const DiffOutputFileBase& diffFile,
   }
 }
 
+
 DiffWindowTextArea::~DiffWindowTextArea()
 {
   if (m_pLineOfSpaces != NULL)
@@ -50,40 +52,48 @@ DiffWindowTextArea::~DiffWindowTextArea()
   }
 }
 
+
 ULONG DiffWindowTextArea::getX() const
 {
   return m_X;
 }
+
 
 ULONG DiffWindowTextArea::getY() const
 {
   return m_Y;
 }
 
+
 bool DiffWindowTextArea::isScrolledToTop() const
 {
   return m_Y < 1;
 }
+
 
 bool DiffWindowTextArea::isScrolledToBottom() const
 {
   return (m_Y + m_AreaMaxLines) >= m_DiffFile.getNumLines();
 }
 
+
 bool DiffWindowTextArea::isLineVisible(ULONG lineId) const
 {
   return (lineId >= m_Y) && (lineId < (m_Y + m_AreaMaxLines));
 }
+
 
 ULONG DiffWindowTextArea::getMaxVisibleChars() const
 {
   return m_AreaMaxChars;
 }
 
+
 ULONG DiffWindowTextArea::getMaxVisibleLines() const
 {
   return m_AreaMaxLines;
 }
+
 
 void DiffWindowTextArea::setSize(ULONG width, ULONG height)
 {
@@ -129,15 +139,20 @@ void DiffWindowTextArea::setSize(ULONG width, ULONG height)
                     getTop() + getHeight() - 3);
 }
 
-void DiffWindowTextArea::addSelection(ULONG lineId, ULONG fromColumn, ULONG toColumn)
+
+void DiffWindowTextArea::addSelection(ULONG lineId, 
+                                      ULONG fromColumn, 
+                                      ULONG toColumn)
 {
   m_DiffFile.addSelection(lineId, fromColumn, toColumn);
 }
+
 
 void DiffWindowTextArea::clearSelection()
 {
   m_DiffFile.clearSelection();
 }
+
 
 void DiffWindowTextArea::scrollTopToRow(ULONG rowId)
 {
@@ -188,6 +203,7 @@ void DiffWindowTextArea::scrollTopToRow(ULONG rowId)
   printPage();
 }
 
+
 void DiffWindowTextArea::scrollLeftToColumn(ULONG columId)
 {
   long delta = columId - m_X;
@@ -230,6 +246,7 @@ void DiffWindowTextArea::scrollLeftToColumn(ULONG columId)
 
   printPage(true);
 }
+
 
 ULONG DiffWindowTextArea::scrollLeft(ULONG numChars)
 {
@@ -280,6 +297,7 @@ ULONG DiffWindowTextArea::scrollLeft(ULONG numChars)
   return numChars;
 }
 
+
 ULONG DiffWindowTextArea::scrollRight(ULONG numChars)
 {
   if (numChars < 1)
@@ -321,6 +339,7 @@ ULONG DiffWindowTextArea::scrollRight(ULONG numChars)
   m_X -= numChars;
   return numChars;
 }
+
 
 ULONG DiffWindowTextArea::scrollUp(ULONG numLines)
 {
@@ -365,6 +384,7 @@ ULONG DiffWindowTextArea::scrollUp(ULONG numLines)
   return numLines;
 }
 
+
 ULONG DiffWindowTextArea::scrollDown(ULONG numLines)
 {
   if (numLines < 1 || m_Y < 1)
@@ -386,6 +406,7 @@ ULONG DiffWindowTextArea::scrollDown(ULONG numLines)
     numLines = m_AreaMaxLines;
   }
 
+
   // Move each text area downward by n * the height of one text line
   ScrollRasterBF(m_pRPorts->Window(), 0,
                  -numLines * m_FontHeight_pix, // n * height
@@ -405,6 +426,7 @@ ULONG DiffWindowTextArea::scrollDown(ULONG numLines)
   return numLines;
 }
 
+
 void DiffWindowTextArea::printPageAt(ULONG left, ULONG top)
 {
   m_X = left;
@@ -421,6 +443,7 @@ void DiffWindowTextArea::printPage(bool dontPrintLineNumbers)
     renderLine(lineId, !dontPrintLineNumbers, lineTopEdge);
   }
 }
+
 
 void DiffWindowTextArea::printLine(ULONG lineId)
 {
@@ -495,25 +518,11 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
   do
   {
     pLine->getTextPositionInfo(&m_PositionInfo, resultingTextColumn, m_TabSize);
-
-    // Get the RastPort to render the next block of marked / not marked
-    // text in the line.
-    ULONG numCharsInBlock;
-    RastPort* pRPort;
-    if ((numCharsInBlock = m_DiffFile.getNumNormalChars(
-           lineId, m_PositionInfo.srcTextColumn)) > 0)
+    
+    if(m_DiffFile.getNumNormalChars(lineId, m_PositionInfo.srcTextColumn) == 0 &&
+       m_DiffFile.getNumMarkedChars(lineId, m_PositionInfo.srcTextColumn) == 0)
     {
-      // The RastPort of the normal, not marked text depends on the diff
-      // state of the line.
-      pRPort = diffStateToRastPort(pLine->getState());
-    }
-    else if ((numCharsInBlock = m_DiffFile.getNumMarkedChars(
-                lineId, m_PositionInfo.srcTextColumn)) > 0)
-    {
-      pRPort = m_pRPorts->TextSelected();
-    }
-    else
-    {
+      // Line finished
       return;
     }
 
@@ -521,6 +530,10 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
            (m_PositionInfo.numRemainingChars > 0 ||
             m_PositionInfo.numRemainingSpaces > 0))
     {
+      // Get the RastPort (with the appropriate color) to render the
+      // next block of marked / not marked text in the line.
+      ULONG numCharsInBlock;
+      RastPort* pRPort;
       if ((numCharsInBlock = m_DiffFile.getNumNormalChars(
              lineId, m_PositionInfo.srcTextColumn)) > 0)
       {
@@ -535,42 +548,46 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
       }
       else
       {
+        // Line finished
         return;
       }
-      ULONG nextNumCharsToPrint;
+
+      ULONG nextNumCharsToRender;
       const char* pTextToPrint;
       bool hasMarkedNormalBlockLimitReached = false;
       bool hasNumCharsBeenLimited = false;
 
       if (m_PositionInfo.numRemainingChars > 0)
       {
-        // Set the text print pointer to te nax char to be printed
-        nextNumCharsToPrint = m_PositionInfo.numRemainingChars;
+        // Set the text print pointer to te next char to be rendered
+        nextNumCharsToRender = m_PositionInfo.numRemainingChars;
         pTextToPrint = pLine->getText() + m_PositionInfo.srcTextColumn;
       }
       else
       {
         // Set the text print pointer to the line of spaces
-        nextNumCharsToPrint = m_PositionInfo.numRemainingSpaces;
+        nextNumCharsToRender = m_PositionInfo.numRemainingSpaces;
         pTextToPrint = m_pLineOfSpaces;
       }
 
-      if (nextNumCharsToPrint > numCharsInBlock)
+      // Check if block limit {marked test|normal text} reached 
+      if (nextNumCharsToRender > numCharsInBlock)
       {
-        nextNumCharsToPrint = numCharsInBlock;
+        nextNumCharsToRender = numCharsInBlock;
         hasMarkedNormalBlockLimitReached = true;
       }
 
-      if (nextNumCharsToPrint > maxRemainingCharsToRender)
+      // Check if max remaining chars limit reached
+      if (nextNumCharsToRender > maxRemainingCharsToRender)
       {
-        nextNumCharsToPrint = maxRemainingCharsToRender;
+        nextNumCharsToRender = maxRemainingCharsToRender;
         hasNumCharsBeenLimited = true;
       }
 
       // Limit the number of Chars to print to the maximum
-      if (currentDisplayColumn + nextNumCharsToPrint > m_AreaMaxChars)
+      if (currentDisplayColumn + nextNumCharsToRender > m_AreaMaxChars)
       {
-        nextNumCharsToPrint = m_AreaMaxChars - currentDisplayColumn;
+        nextNumCharsToRender = m_AreaMaxChars - currentDisplayColumn;
         hasNumCharsBeenLimited = true;
       }
 
@@ -579,13 +596,13 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
            getTop() + lineTop + m_FontBaseline_pix + 1);
 
       // Render the text
-      Text(pRPort, pTextToPrint, nextNumCharsToPrint);
+      Text(pRPort, pTextToPrint, nextNumCharsToRender);
 
       if (hasMarkedNormalBlockLimitReached)
       {
-        maxRemainingCharsToRender -= nextNumCharsToPrint;
-        currentDisplayColumn += nextNumCharsToPrint;
-        resultingTextColumn += nextNumCharsToPrint;
+        maxRemainingCharsToRender -= nextNumCharsToRender;
+        currentDisplayColumn += nextNumCharsToRender;
+        resultingTextColumn += nextNumCharsToRender;
 
         break;
       }
@@ -599,23 +616,26 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
 
       if (m_PositionInfo.numRemainingChars > 0)
       {
-        currentTextColumn += nextNumCharsToPrint;
+        currentTextColumn += nextNumCharsToRender;
       }
       else
       {
         currentTextColumn++;
       }
 
-      maxRemainingCharsToRender -= nextNumCharsToPrint;
-      currentDisplayColumn += nextNumCharsToPrint;
-      resultingTextColumn += nextNumCharsToPrint;
+      maxRemainingCharsToRender -= nextNumCharsToRender;
+      currentDisplayColumn += nextNumCharsToRender;
+      resultingTextColumn += nextNumCharsToRender;
 
       pLine->getTextPositionInfo(&m_PositionInfo, resultingTextColumn, m_TabSize);
     }
   } while (maxRemainingCharsToRender > 0);
 }
 
-ULONG DiffWindowTextArea::calcNumPrintChars(const DiffLine* pDiffLine, int count, int startIndex)
+
+ULONG DiffWindowTextArea::calcNumPrintChars(const DiffLine* pDiffLine, 
+                                            int count, 
+                                            int startIndex)
 {
   ULONG numCharsToPrint = 0;
 
@@ -643,6 +663,7 @@ ULONG DiffWindowTextArea::calcNumPrintChars(const DiffLine* pDiffLine, int count
 
   return numCharsToPrint;
 }
+
 
 RastPort* DiffWindowTextArea::diffStateToRastPort(DiffLine::LineState state)
 {
