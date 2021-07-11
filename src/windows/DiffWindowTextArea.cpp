@@ -509,28 +509,28 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
 
   ULONG currentTextColumn;
   ULONG currentDisplayColumn;
-  long numRemainingCharsToRender;
+  long maxRemainingCharsToRender;
   if(numCharLimit < 0)
   {
     // Only render 'numCharLimit' chars  at the right of the lines
     // visible area
-    numRemainingCharsToRender = -numCharLimit;
+    maxRemainingCharsToRender = -numCharLimit;
 
     currentTextColumn = m_AreaMaxChars + m_X;
-    currentDisplayColumn = m_AreaMaxChars - numRemainingCharsToRender;
+    currentDisplayColumn = m_AreaMaxChars - maxRemainingCharsToRender;
   }
   else if(numCharLimit > 0)
   {
     // Only render 'numCharLimit' chars at the left of the lines visible
     // area
-    numRemainingCharsToRender = numCharLimit;
-    currentTextColumn = m_X - numRemainingCharsToRender;
+    maxRemainingCharsToRender = numCharLimit;
+    currentTextColumn = m_X - maxRemainingCharsToRender;
     currentDisplayColumn = 0;
   }
   else
   {
     // Default, no scrolling
-    numRemainingCharsToRender = m_AreaMaxChars;
+    maxRemainingCharsToRender = m_AreaMaxChars;
     currentTextColumn = m_X;
     currentDisplayColumn = 0;
   }
@@ -563,7 +563,7 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
       return;
     }
 
-    while(numRemainingCharsToRender > 0 &&
+    while(maxRemainingCharsToRender > 0 &&
           (m_PositionInfo.numRemainingChars > 0 || m_PositionInfo.numRemainingSpaces > 0))
     {
     if((numCharsInBlock = m_DiffFile.getNumNormalChars(lineId, m_PositionInfo.srcTextColumn)) > 0)
@@ -604,9 +604,9 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
         hasMarkedNormalBlockLimitReached = true;
       }
 
-      if(nextNumCharsToPrint > numRemainingCharsToRender)
+      if(nextNumCharsToPrint > maxRemainingCharsToRender)
       {
-        nextNumCharsToPrint = numRemainingCharsToRender;
+        nextNumCharsToPrint = maxRemainingCharsToRender;
         hasNumCharsBeenLimited = true;
       }
       
@@ -629,7 +629,7 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
 
       if(hasMarkedNormalBlockLimitReached)
       {
-        numRemainingCharsToRender -= nextNumCharsToPrint;
+        maxRemainingCharsToRender -= nextNumCharsToPrint;
         currentDisplayColumn += nextNumCharsToPrint;
         resultingTextColumn += nextNumCharsToPrint;
 
@@ -652,7 +652,7 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
         currentTextColumn++;
       }
 
-      numRemainingCharsToRender -= nextNumCharsToPrint;
+      maxRemainingCharsToRender -= nextNumCharsToPrint;
       currentDisplayColumn += nextNumCharsToPrint;
       resultingTextColumn += nextNumCharsToPrint;
 
@@ -666,7 +666,7 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
                               m_TabSize);
 
   }
-  while(numRemainingCharsToRender > 0);
+  while(maxRemainingCharsToRender > 0);
 }
 
 

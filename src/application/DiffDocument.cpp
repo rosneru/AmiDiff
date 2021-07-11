@@ -56,7 +56,7 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
     renderColumn = m_LeftDiffFile[i]->getRenderColumn(numChars, tabSize);
     if(renderColumn > m_MaxLineLength)
     {
-      m_MaxLineLength = m_LeftDiffFile[i]->getNumChars();
+      m_MaxLineLength = renderColumn;
     }
   }
 
@@ -66,7 +66,7 @@ DiffDocument::DiffDocument(const char* pLeftFilePath,
     renderColumn = m_RightDiffFile[i]->getRenderColumn(numChars, tabSize);
     if(renderColumn > m_MaxLineLength)
     {
-      m_MaxLineLength = m_RightDiffFile[i]->getNumChars();
+      m_MaxLineLength = renderColumn;
     }
   }
 }
