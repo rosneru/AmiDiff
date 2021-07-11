@@ -584,19 +584,17 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
         hasNumCharsBeenLimited = true;
       }
 
-      // Limit the number of Chars to print to the maximum
-      if (currentDisplayColumn + nextNumCharsToRender > m_AreaMaxChars)
-      {
-        nextNumCharsToRender = m_AreaMaxChars - currentDisplayColumn;
-        hasNumCharsBeenLimited = true;
-      }
-
-      // Move rastport cursor to start of rendering
+      /**
+       * Move rastport cursor to render position and render the text
+       */
       Move(pRPort, m_HScrollRect.getLeft() + m_FontWidth_pix * currentDisplayColumn,
            getTop() + lineTop + m_FontBaseline_pix + 1);
 
-      // Render the text
       Text(pRPort, pTextToPrint, nextNumCharsToRender);
+
+      /*
+       * After-rendering checks
+       */
 
       if (hasMarkedNormalBlockLimitReached)
       {
@@ -604,13 +602,13 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
         currentDisplayColumn += nextNumCharsToRender;
         resultingTextColumn += nextNumCharsToRender;
 
+        // Block finished
         break;
       }
 
       if (hasNumCharsBeenLimited)
       {
-        // Nothing more to print as number of chars to print had already
-        // been limited
+        // Line finished
         return;
       }
 
