@@ -148,41 +148,22 @@ bool TextFinder::displayNextResult()
   // search result of the old search engine
   applyNewSearchEngine();
 
-  /**
-   * Get the next search result from current document top line id
-   */
-  DiffFileSearchResult* pResult = NULL;
 
-  if(m_pFormerResult == NULL)
+  DiffFileSearchResult* pResult = NULL;
+  if(m_pFormerResult == NULL || 
+     !pLeftTextArea->isLineVisible(m_pFormerResult->getLineId()))
   {
+    // No former search result exists or it is currently not displayed
+    // in window. So get the next search result from current window top
+    // line id.
     pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
   }
-  else if(pLeftTextArea->isLineVisible(m_pFormerResult->getLineId()))
+  else
   {
     // The former result is currently displayed. So getting the 
     // next result after that former result, not from the window 
     // top line.
     pResult = m_pSearchEngine->getNextResult();
-  }
-  else
-  {
-    pResult = m_pSearchEngine->getNextResult(pLeftTextArea->getY());
-
-    if((pResult != NULL) &&
-      (pResult->getLineId() == m_pFormerResult->getLineId()))
-    {
-      // New result is on the same line as former result. If Necessary,
-      // repeat getNextResult until new result is after former result on
-      // this line.
-      while(!m_pFormerResult->isBefore(pResult))
-      {
-        pResult = m_pSearchEngine->getNextResult();
-        if(pResult == NULL)
-        {
-          break;
-        }
-      }
-    }
   }
 
   if(pResult == NULL)
@@ -222,42 +203,23 @@ bool TextFinder::displayPrevResult()
   // search result of the old search engine
   applyNewSearchEngine();
 
-  /**
-   * Get the prev search result from current document top line id
-   */
-  DiffFileSearchResult* pResult = NULL;
 
-  if(m_pFormerResult == NULL)
+  DiffFileSearchResult* pResult = NULL;
+  if(m_pFormerResult == NULL || 
+     !pLeftTextArea->isLineVisible(m_pFormerResult->getLineId()))
   {
+    // No former search result exists or it is currently not displayed
+    // in window. So get the previous search result from current window
+    // bottom line id.
     pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY() 
                                              + pLeftTextArea->getMaxVisibleLines());
   }
-  else if(pLeftTextArea->isLineVisible(m_pFormerResult->getLineId()))
-  {
-    // The former result is currently displayed. So getting the 
-    // next result after that former result, not from the window 
-    // top line.
-    pResult = m_pSearchEngine->getPrevResult();
-  }
   else
   {
-    pResult = m_pSearchEngine->getPrevResult(pLeftTextArea->getY());
-
-    if((pResult != NULL) &&
-      (pResult->getLineId() == m_pFormerResult->getLineId()))
-    {
-      // New result is on the same line as former result. If Necessary,
-      // repeat getNextResult until new result is after former result on
-      // this line.
-      while(!pResult->isBefore(m_pFormerResult))
-      {
-        pResult = m_pSearchEngine->getPrevResult();
-        if(pResult == NULL)
-        {
-          break;
-        }
-      }
-    }
+    // The former result is currently displayed. So getting the 
+    // previous result above that former result, not from the window 
+    // top line.
+    pResult = m_pSearchEngine->getPrevResult();
   }
 
   if(pResult == NULL)
