@@ -82,7 +82,7 @@ void DiffLine::getTextPositionInfo(TextPositionInfo* pInfo,
   {
     if(accumulatedColumn >= resultingTextColumn)
     {
-      tabIndent = tabSize - (size_t)(resultingTextColumn % tabSize);
+      tabIndent = tabSize - (unsigned long)(resultingTextColumn % tabSize);
 
       if(accumulatedColumn > resultingTextColumn)
       {

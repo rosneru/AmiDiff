@@ -625,9 +625,11 @@ void DiffWindowTextArea::renderLine(ULONG lineId,
       currentDisplayColumn += nextNumCharsToRender;
       resultingTextColumn += nextNumCharsToRender;
 
+      // TODO-optimize: Do the following line only if needed
       pLine->getTextPositionInfo(&m_PositionInfo, resultingTextColumn, m_TabSize);
     }
-  } while (maxRemainingCharsToRender > 0);
+  } 
+  while (maxRemainingCharsToRender > 0);
 }
 
 
